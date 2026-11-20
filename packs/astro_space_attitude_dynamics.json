@@ -1,0 +1,883 @@
+{
+  "pack_meta": {
+    "pack_id": "astro.space.attitude_dynamics",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "orbital_mechanics",
+    "title": "宇宙機姿勢力学：クォータニオン運動学・重力傾度トルク・リアクションホイール",
+    "language": "ja",
+    "description": "オイラーの剛体方程式、四元数（クォータニオン）の微分方程式、スピン安定化、重力傾度安定条件、角運動量交換による姿勢制御則を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "astro.att.n01_rigid_body_inertia_angular_momentum",
+      "short_code": "AT01",
+      "kind": "definition",
+      "title": "剛体の慣性テンソルと機体固定座標系における角運動量",
+      "summary": "剛体内の質量分布を表す対称正定値な慣性テンソル I と、機体固定座標系における角速度ベクトル ω に対する角運動量ベクトル H = Iω の定義。",
+      "canonical_latex": "\\mathbf{H} = \\mathbf{I}\\boldsymbol{\\omega},\\quad \\mathbf{I} := \\int_{\\mathcal{B}} \\big(\\|\\mathbf{r}\\|^2 I_3 - \\mathbf{r}\\mathbf{r}^\\top\\big)\\,dm,\\quad \\mathbf{I} = \\mathrm{diag}(I_1, I_2, I_3)\\text{ (principal axes)}",
+      "aliases_latex": [
+        "H_i = \\sum_{j=1}^{3} I_{ij}\\omega_j",
+        "\\mathbf{I} = -\\int_{\\mathcal{B}} [\\mathbf{r}]_\\times^2\\,dm"
+      ],
+      "keywords": [
+        "慣性テンソル",
+        "角運動量",
+        "主慣性モーメント",
+        "剛体力学"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "attitude_dynamics"
+      ]
+    },
+    {
+      "id": "astro.att.n02_euler_rigid_body_equations",
+      "short_code": "AT02",
+      "kind": "theorem_formula",
+      "title": "オイラーの剛体回転運動方程式",
+      "summary": "回転する機体固定座標系での時間微分則（輸送定理）を角運動量保存則に適用して得られる、剛体の非線形姿勢運動方程式。",
+      "canonical_latex": "\\mathbf{I}\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}\\boldsymbol{\\omega}) = \\boldsymbol{\\tau},\\quad I_1\\dot{\\omega}_1 - (I_2 - I_3)\\omega_2\\omega_3 = \\tau_1,\\; I_2\\dot{\\omega}_2 - (I_3 - I_1)\\omega_3\\omega_1 = \\tau_2,\\; I_3\\dot{\\omega}_3 - (I_1 - I_2)\\omega_1\\omega_2 = \\tau_3",
+      "aliases_latex": [
+        "\\dot{\\mathbf{H}} + \\boldsymbol{\\omega}\\times\\mathbf{H} = \\boldsymbol{\\tau}"
+      ],
+      "keywords": [
+        "オイラー方程式",
+        "剛体回転",
+        "角運動量",
+        "輸送定理"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "attitude_dynamics"
+      ]
+    },
+    {
+      "id": "astro.att.n03_attitude_quaternion_def",
+      "short_code": "AT03",
+      "kind": "definition",
+      "title": "姿勢クォータニオン（オイラーパラメータ）と方向余弦行列",
+      "summary": "特異点のない姿勢表現として用いられる単位四元数 q = (q_0, q_v^T)^T の定義と、SU(2) から SO(3) への二重被覆写像による方向余弦行列 C(q) の表示。",
+      "canonical_latex": "q = \\begin{pmatrix} q_0 \\\\ \\mathbf{q}_v \\end{pmatrix} = \\begin{pmatrix} \\cos\\frac{\\theta}{2} \\\\ \\hat{\\mathbf{n}}\\sin\\frac{\\theta}{2} \\end{pmatrix},\\quad q_0^2 + \\|\\mathbf{q}_v\\|^2 = 1,\\quad C(q) = (q_0^2 - \\|\\mathbf{q}_v\\|^2)I_3 + 2\\mathbf{q}_v\\mathbf{q}_v^\\top - 2q_0[\\mathbf{q}_v]_\\times",
+      "aliases_latex": [
+        "q = q_0 + q_1 i + q_2 j + q_3 k,\\; \\|q\\|=1"
+      ],
+      "keywords": [
+        "クォータニオン",
+        "四元数",
+        "オイラーパラメータ",
+        "方向余弦行列"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "attitude_dynamics"
+      ]
+    },
+    {
+      "id": "astro.att.n04_quaternion_kinematics_ode",
+      "short_code": "AT04",
+      "kind": "theorem_formula",
+      "title": "クォータニオン姿勢運動学微分方程式",
+      "summary": "機体角速度ベクトル ω による姿勢クォータニオンの時間発展を記述する線形時変微分方程式。",
+      "canonical_latex": "\\dot{q} = \\frac{1}{2}\\Omega(\\boldsymbol{\\omega})q = \\frac{1}{2}\\begin{pmatrix} 0 & -\\boldsymbol{\\omega}^\\top \\\\ \\boldsymbol{\\omega} & -[\\boldsymbol{\\omega}]_\\times \\end{pmatrix}\\begin{pmatrix} q_0 \\\\ \\mathbf{q}_v \\end{pmatrix},\\quad \\dot{q}_0 = -\\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{q}_v,\\quad \\dot{\\mathbf{q}}_v = \\frac{1}{2}\\big(q_0 I_3 + [\\mathbf{q}_v]_\\times\\big)\\boldsymbol{\\omega}",
+      "aliases_latex": [
+        "\\dot{q} = \\frac{1}{2}q \\otimes \\begin{pmatrix} 0 \\\\ \\boldsymbol{\\omega} \\end{pmatrix}"
+      ],
+      "keywords": [
+        "クォータニオン運動学",
+        "姿勢運動学",
+        "角速度"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "attitude_dynamics"
+      ]
+    },
+    {
+      "id": "astro.att.n05_torque_free_spin_stability",
+      "short_code": "AT05",
+      "kind": "theorem_formula",
+      "title": "無トルク剛体の純粋スピン安定性と中間軸定理",
+      "summary": "外力トルクがない剛体における主軸周りの定常スピン運動の線形安定性条件。最大または最小慣性主軸周りのスピンは安定であり、中間軸周りは不安定となる。",
+      "canonical_latex": "\\lambda^2 + \\frac{(I_3 - I_1)(I_3 - I_2)}{I_1 I_2}\\Omega^2 = 0 \\implies \\text{linearly stable} \\iff (I_3 > I_1 \\land I_3 > I_2) \\lor (I_3 < I_1 \\land I_3 < I_2)",
+      "aliases_latex": [
+        "(I_3 - I_1)(I_3 - I_2) > 0"
+      ],
+      "keywords": [
+        "スピン安定化",
+        "中間軸定理",
+        "テニスラケットの定理",
+        "線形安定性"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "attitude_dynamics"
+      ]
+    },
+    {
+      "id": "astro.att.n06_gravity_gradient_torque",
+      "short_code": "AT06",
+      "kind": "theorem_formula",
+      "title": "中心重力場における重力傾度トルク",
+      "summary": "軌道半径に比べ宇宙機寸法が十分小さいときの重力勾配に起因する復元・擾乱トルクの1次近似公式。",
+      "canonical_latex": "\\mathbf{T}_{\\mathrm{gg}} = \\frac{3\\mu}{R_0^3}\\hat{\\mathbf{o}}_3 \\times (\\mathbf{I}\\hat{\\mathbf{o}}_3) = 3n^2\\hat{\\mathbf{o}}_3 \\times (\\mathbf{I}\\hat{\\mathbf{o}}_3)\\quad \\left(n = \\sqrt{\\frac{\\mu}{R_0^3}}\\right)",
+      "aliases_latex": [
+        "\\mathbf{T}_{\\mathrm{gg}} = \\frac{3\\mu}{R_0^5}\\mathbf{R}_0 \\times (\\mathbf{I}\\mathbf{R}_0)"
+      ],
+      "keywords": [
+        "重力傾度トルク",
+        "重力勾配",
+        "環境トルク"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "attitude_dynamics"
+      ]
+    },
+    {
+      "id": "astro.att.n07_gravity_gradient_stability_conditions",
+      "short_code": "AT07",
+      "kind": "theorem_formula",
+      "title": "円軌道上の重力傾度姿勢安定条件",
+      "summary": "LVLH軌道座標系で微小姿勢角線形化したピッチ・ロール・ヨー運動の安定条件。ラグランジュ領域 I_2 > I_1 > I_3 とデブラ＝デルプ領域を与える。",
+      "canonical_latex": "k_2 = \\frac{I_1 - I_3}{I_2} > 0 \\text{ (pitch)},\\quad 1 + 3k_1 + k_1 k_3 > 0,\\; 4k_1 k_3 > 0,\\; (1 + 3k_1 + k_1 k_3)^2 - 16 k_1 k_3 > 0\\;\\left(k_1 = \\frac{I_2 - I_3}{I_1},\\; k_3 = \\frac{I_2 - I_1}{I_3}\\right);\\quad I_2 > I_1 > I_3 \\text{ (sufficient)}",
+      "aliases_latex": [
+        "I_{\\text{pitch}} > I_{\\text{roll}} > I_{\\text{yaw}}"
+      ],
+      "keywords": [
+        "重力傾度安定化",
+        "デブラ・デルプ領域",
+        "ピッチ・ロール・ヨー",
+        "LVLH"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "attitude_dynamics"
+      ]
+    },
+    {
+      "id": "astro.att.n08_reaction_wheel_coupled_eom",
+      "short_code": "AT08",
+      "kind": "theorem_formula",
+      "title": "リアクションホイール搭載宇宙機の角運動量交換運動方程式",
+      "summary": "内部角運動量貯蔵デバイス（リアクションホイール）の角運動量ベクトル h_w を含む宇宙機全体の角運動量保存則と結合運動方程式。",
+      "canonical_latex": "\\mathbf{H}_{\\mathrm{tot}} = \\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w,\\quad \\mathbf{I}_s\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w) = \\boldsymbol{\\tau}_{\\mathrm{ext}} + \\boldsymbol{\\tau}_w,\\quad \\boldsymbol{\\tau}_w := -\\dot{\\mathbf{h}}_w",
+      "aliases_latex": [
+        "\\mathbf{I}_s\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times\\mathbf{I}_s\\boldsymbol{\\omega} = \\boldsymbol{\\tau}_{\\mathrm{ext}} - \\dot{\\mathbf{h}}_w - \\boldsymbol{\\omega}\\times\\mathbf{h}_w"
+      ],
+      "keywords": [
+        "リアクションホイール",
+        "角運動量交換",
+        "姿勢アクチュエータ"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "attitude_dynamics"
+      ]
+    },
+    {
+      "id": "astro.att.n09_quaternion_pd_feedback_control",
+      "short_code": "AT09",
+      "kind": "theorem_formula",
+      "title": "クォータニオン誤差に基づくリアクションホイールPD姿勢安定化則",
+      "summary": "誤差クォータニオンのベクトル部と角速度フィードバックおよびジャイロ補償項による3軸姿勢安定化制御則と、リアプノフ関数による大域漸近安定性。",
+      "canonical_latex": "\\boldsymbol{\\tau}_w = -K_p\\mathbf{q}_{e,v} - K_d\\boldsymbol{\\omega} + \\boldsymbol{\\omega}\\times(\\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w),\\quad V(q_e,\\boldsymbol{\\omega}) = \\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{I}_s\\boldsymbol{\\omega} + K_p\\big((q_{e,0}-1)^2 + \\|\\mathbf{q}_{e,v}\\|^2\\big) \\implies \\dot{V} = -\\boldsymbol{\\omega}^\\top K_d\\boldsymbol{\\omega} \\le 0",
+      "aliases_latex": [
+        "\\dot{\\mathbf{h}}_w = K_p\\mathbf{q}_{e,v} + K_d\\boldsymbol{\\omega} - \\boldsymbol{\\omega}\\times(\\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w)"
+      ],
+      "keywords": [
+        "クォータニオンフィードバック",
+        "PD制御",
+        "リアプノフ安定性",
+        "3軸姿勢制御"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "attitude_dynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_at01_inertia_angular_momentum",
+      "target_node_id": "astro.att.n01_rigid_body_inertia_angular_momentum",
+      "route_kind": "deductive",
+      "title": "剛体の運動学と角運動量積分からの慣性テンソル導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "required_math_node_ids": [
+        "astro.att.n01_rigid_body_inertia_angular_momentum"
+      ],
+      "assumptions": [
+        "剛体内の質点間の相対距離は不変であり、重心周りの速度は v = ω × r で与えられる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{H} = \\int_{\\mathcal{B}} \\mathbf{r}\\times\\mathbf{v}\\,dm,\\quad \\mathbf{v} = \\boldsymbol{\\omega}\\times\\mathbf{r}",
+          "to_latex": "\\mathbf{H} = \\mathbf{I}\\boldsymbol{\\omega},\\quad \\mathbf{I} := \\int_{\\mathcal{B}} \\big(\\|\\mathbf{r}\\|^2 I_3 - \\mathbf{r}\\mathbf{r}^\\top\\big)\\,dm",
+          "operation_label": "ベクトル三重積展開による慣性テンソル定義",
+          "explanation": "剛体速度場 v = ω × r を角運動量積分に代入し、ベクトル三重積の恒等式 r × (ω × r) = ||r||^2 ω - (r^T ω)r を用いることで、角速度に線形な慣性テンソル I が定義される。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{H} = \\int_{\\mathcal{B}} \\mathbf{r}\\times\\mathbf{v}\\,dm,\\quad \\mathbf{v} = \\boldsymbol{\\omega}\\times\\mathbf{r}",
+          "to_latex": "\\mathbf{H} = \\int_{\\mathcal{B}} \\mathbf{r}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r})\\,dm",
+          "operation_label": "剛体回転速度場の代入",
+          "explanation": "重心周りの各微小質量要素の速度 v = ω × r を角運動量の定義式に代入する。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{H} = \\int_{\\mathcal{B}} \\mathbf{r}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r})\\,dm",
+          "to_latex": "\\mathbf{H} = \\left[\\int_{\\mathcal{B}} \\big(\\|\\mathbf{r}\\|^2 I_3 - \\mathbf{r}\\mathbf{r}^\\top\\big)\\,dm\\right]\\boldsymbol{\\omega}",
+          "operation_label": "BAC-CAB恒等式の適用とωの括り出し",
+          "explanation": "ベクトル三重積の恒等式 r × (ω × r) = (r · r)ω - (r · ω)r = (||r||^2 I_3 - r r^T)ω を適用し、空間積分と独立な ω を積分の外に括り出す。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{H} = \\left[\\int_{\\mathcal{B}} \\big(\\|\\mathbf{r}\\|^2 I_3 - \\mathbf{r}\\mathbf{r}^\\top\\big)\\,dm\\right]\\boldsymbol{\\omega}",
+          "to_latex": "\\mathbf{H} = \\mathbf{I}\\boldsymbol{\\omega},\\quad \\mathbf{I} := \\int_{\\mathcal{B}} \\big(\\|\\mathbf{r}\\|^2 I_3 - \\mathbf{r}\\mathbf{r}^\\top\\big)\\,dm",
+          "operation_label": "慣性テンソルおよび主慣性軸表示の定義",
+          "explanation": "積分部分を実対称正定値行列である慣性テンソル I として定義し、直交対角化により主慣性モーメント diag(I_1, I_2, I_3) 表示を得る。",
+          "used_node_ids": [
+            "astro.att.n01_rigid_body_inertia_angular_momentum"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_at02_euler_equations",
+      "target_node_id": "astro.att.n02_euler_rigid_body_equations",
+      "route_kind": "deductive",
+      "title": "角運動量保存則と回転座標系時間微分によるオイラー方程式の導出",
+      "premise_node_ids": [
+        "astro.att.n01_rigid_body_inertia_angular_momentum",
+        "phys.mech.p02_newton_second_law",
+        "math.vec.m03_dot_cross_product",
+        "math.alg.gr06_so3_generators_commutation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "機体固定座標系は剛体とともに角速度 ω で回転し、主慣性軸系では I = diag(I_1, I_2, I_3) は時間定数である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\left.\\frac{d\\mathbf{H}}{dt}\\right|_{\\mathcal{I}} = \\boldsymbol{\\tau},\\quad \\mathbf{H} = \\mathbf{I}\\boldsymbol{\\omega}",
+          "to_latex": "\\mathbf{I}\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}\\boldsymbol{\\omega}) = \\boldsymbol{\\tau},\\quad I_1\\dot{\\omega}_1 - (I_2 - I_3)\\omega_2\\omega_3 = \\tau_1,\\; I_2\\dot{\\omega}_2 - (I_3 - I_1)\\omega_3\\omega_1 = \\tau_2,\\; I_3\\dot{\\omega}_3 - (I_1 - I_2)\\omega_1\\omega_2 = \\tau_3",
+          "operation_label": "回転座標系の時間微分則と主軸展開",
+          "explanation": "慣性系での角運動量時間変化率を外力トルク τ に等置し、機体座標系の時間微分と角速度との外積項へ変換して成分展開することでオイラー方程式を得る。",
+          "used_node_ids": [
+            "astro.att.n01_rigid_body_inertia_angular_momentum",
+            "math.alg.gr06_so3_generators_commutation",
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left.\\frac{d\\mathbf{H}}{dt}\\right|_{\\mathcal{I}} = \\boldsymbol{\\tau},\\quad \\mathbf{H} = \\mathbf{I}\\boldsymbol{\\omega}",
+          "to_latex": "\\dot{\\mathbf{H}} + \\boldsymbol{\\omega}\\times\\mathbf{H} = \\boldsymbol{\\tau}",
+          "operation_label": "輸送定理（回転系基底の時間微分）の適用",
+          "explanation": "機体基底ベクトル e_i の慣性系での時間変化 d(e_i)/dt = ω × e_i を用いて、慣性系時間微分を機体座標系成分微分と外積項 ω × H に分解する。",
+          "used_node_ids": [
+            "math.alg.gr06_so3_generators_commutation",
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{H}} + \\boldsymbol{\\omega}\\times\\mathbf{H} = \\boldsymbol{\\tau}",
+          "to_latex": "\\mathbf{I}\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}\\boldsymbol{\\omega}) = \\boldsymbol{\\tau}",
+          "operation_label": "H = Iω と定数慣性テンソルの代入",
+          "explanation": "機体固定系では I が時間不変であるため d(Iω)/dt = I dω/dt となり、ベクトル形式のオイラー方程式が得られる。",
+          "used_node_ids": [
+            "astro.att.n01_rigid_body_inertia_angular_momentum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{I}\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}\\boldsymbol{\\omega}) = \\boldsymbol{\\tau}",
+          "to_latex": "\\mathbf{I}\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}\\boldsymbol{\\omega}) = \\boldsymbol{\\tau},\\quad I_1\\dot{\\omega}_1 - (I_2 - I_3)\\omega_2\\omega_3 = \\tau_1,\\; I_2\\dot{\\omega}_2 - (I_3 - I_1)\\omega_3\\omega_1 = \\tau_2,\\; I_3\\dot{\\omega}_3 - (I_1 - I_2)\\omega_1\\omega_2 = \\tau_3",
+          "operation_label": "主慣性軸 I = diag(I_1, I_2, I_3) での成分展開",
+          "explanation": "Iω = (I_1 ω_1, I_2 ω_2, I_3 ω_3)^T として外積 ω × (Iω) を計算し、3成分のスカラ微分方程式を得る。",
+          "used_node_ids": [
+            "astro.att.n01_rigid_body_inertia_angular_momentum",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_at03_quaternion_dcm",
+      "target_node_id": "astro.att.n03_attitude_quaternion_def",
+      "route_kind": "deductive",
+      "title": "SU(2)-SO(3)二重被覆とロドリゲス公式からの姿勢クォータニオン・DCM導出",
+      "premise_node_ids": [
+        "math.alg.gr07_rodrigues_rotation_exp_map",
+        "math.alg.gr09_su2_exp_spinor_rotation",
+        "math.alg.gr10_su2_so3_double_cover"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "機体座標系は慣性座標系から回転軸 n_hat・回転角 θ の単一回転で与えられる（オイラーの回転定理）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "U(\\hat{\\mathbf{n}},\\theta) = \\cos\\frac{\\theta}{2} I_2 - i\\sin\\frac{\\theta}{2}(\\hat{\\mathbf{n}}\\cdot\\boldsymbol{\\sigma}),\\quad C = R(\\hat{\\mathbf{n}},\\theta)^\\top = I_3 - \\sin\\theta[\\hat{\\mathbf{n}}]_\\times + (1-\\cos\\theta)[\\hat{\\mathbf{n}}]_\\times^2",
+          "to_latex": "q = \\begin{pmatrix} q_0 \\\\ \\mathbf{q}_v \\end{pmatrix} = \\begin{pmatrix} \\cos\\frac{\\theta}{2} \\\\ \\hat{\\mathbf{n}}\\sin\\frac{\\theta}{2} \\end{pmatrix},\\quad q_0^2 + \\|\\mathbf{q}_v\\|^2 = 1,\\quad C(q) = (q_0^2 - \\|\\mathbf{q}_v\\|^2)I_3 + 2\\mathbf{q}_v\\mathbf{q}_v^\\top - 2q_0[\\mathbf{q}_v]_\\times",
+          "operation_label": "倍角公式によるオイラーパラメータへの書き換え",
+          "explanation": "SU(2) 回転元の成分から単位クォータニオン q を定義し、ロドリゲスの回転公式（転置による座標変換 DCM）に三角関数の倍角公式を代入してクォータニオン DCM 公式を得る。",
+          "used_node_ids": [
+            "math.alg.gr07_rodrigues_rotation_exp_map",
+            "math.alg.gr09_su2_exp_spinor_rotation",
+            "math.alg.gr10_su2_so3_double_cover"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U(\\hat{\\mathbf{n}},\\theta) = \\cos\\frac{\\theta}{2} I_2 - i\\sin\\frac{\\theta}{2}(\\hat{\\mathbf{n}}\\cdot\\boldsymbol{\\sigma}),\\quad C = R(\\hat{\\mathbf{n}},\\theta)^\\top = I_3 - \\sin\\theta[\\hat{\\mathbf{n}}]_\\times + (1-\\cos\\theta)[\\hat{\\mathbf{n}}]_\\times^2",
+          "to_latex": "q_0 := \\cos\\frac{\\theta}{2},\\quad \\mathbf{q}_v := \\hat{\\mathbf{n}}\\sin\\frac{\\theta}{2},\\quad q_0^2 + \\|\\mathbf{q}_v\\|^2 = 1",
+          "operation_label": "単位クォータニオン成分の定義と正規化条件",
+          "explanation": "SU(2) の生成子係数よりスカラー部 q_0 とベクトル部 q_v を定義し、||n_hat|| = 1 からノルム1の拘束条件を確認する。",
+          "used_node_ids": [
+            "math.alg.gr09_su2_exp_spinor_rotation",
+            "math.alg.gr10_su2_so3_double_cover"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q_0 := \\cos\\frac{\\theta}{2},\\quad \\mathbf{q}_v := \\hat{\\mathbf{n}}\\sin\\frac{\\theta}{2},\\quad q_0^2 + \\|\\mathbf{q}_v\\|^2 = 1",
+          "to_latex": "C = I_3 - 2q_0[\\mathbf{q}_v]_\\times + 2[\\mathbf{q}_v]_\\times^2",
+          "operation_label": "半角の三角恒等式によるロドリゲス公式の変換",
+          "explanation": "sin θ = 2 sin(θ/2)cos(θ/2) と 1 - cos θ = 2 sin^2(θ/2) を方向余弦行列 C = R^T に代入する。",
+          "used_node_ids": [
+            "math.alg.gr07_rodrigues_rotation_exp_map"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C = I_3 - 2q_0[\\mathbf{q}_v]_\\times + 2[\\mathbf{q}_v]_\\times^2",
+          "to_latex": "q = \\begin{pmatrix} q_0 \\\\ \\mathbf{q}_v \\end{pmatrix} = \\begin{pmatrix} \\cos\\frac{\\theta}{2} \\\\ \\hat{\\mathbf{n}}\\sin\\frac{\\theta}{2} \\end{pmatrix},\\quad q_0^2 + \\|\\mathbf{q}_v\\|^2 = 1,\\quad C(q) = (q_0^2 - \\|\\mathbf{q}_v\\|^2)I_3 + 2\\mathbf{q}_v\\mathbf{q}_v^\\top - 2q_0[\\mathbf{q}_v]_\\times",
+          "operation_label": "歪対称行列の平方展開 [q_v]_×^2 = q_v q_v^T - ||q_v||^2 I_3",
+          "explanation": "外積行列の平方公式と q_0^2 + ||q_v||^2 = 1 を用いて、クォータニオンによる方向余弦行列 C(q) の2次多項式表示を得る。",
+          "used_node_ids": [
+            "math.alg.gr07_rodrigues_rotation_exp_map"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_at04_quaternion_kinematics",
+      "target_node_id": "astro.att.n04_quaternion_kinematics_ode",
+      "route_kind": "deductive",
+      "title": "微小回転の合成則からのクォータニオン運動学微分方程式の導出",
+      "premise_node_ids": [
+        "astro.att.n03_attitude_quaternion_def",
+        "math.alg.gr06_so3_generators_commutation",
+        "math.calc.m01_chain_rule",
+        "math.calc.m15_product_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "微小時間 dt の間に機体は機体座標系で表現された角速度 ω により微小回転角度 δθ = ||ω||dt だけ回転する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "q(t + dt) = q(t) \\otimes \\delta q,\\quad \\delta q = \\begin{pmatrix} 1 \\\\ \\frac{1}{2}\\boldsymbol{\\omega}\\,dt \\end{pmatrix} + \\mathcal{O}(dt^2)",
+          "to_latex": "\\dot{q} = \\frac{1}{2}\\Omega(\\boldsymbol{\\omega})q = \\frac{1}{2}\\begin{pmatrix} 0 & -\\boldsymbol{\\omega}^\\top \\\\ \\boldsymbol{\\omega} & -[\\boldsymbol{\\omega}]_\\times \\end{pmatrix}\\begin{pmatrix} q_0 \\\\ \\mathbf{q}_v \\end{pmatrix},\\quad \\dot{q}_0 = -\\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{q}_v,\\quad \\dot{\\mathbf{q}}_v = \\frac{1}{2}\\big(q_0 I_3 + [\\mathbf{q}_v]_\\times\\big)\\boldsymbol{\\omega}",
+          "operation_label": "四元数積の1次展開と時間極限",
+          "explanation": "時刻 t+dt の姿勢クォータニオンを時刻 t の姿勢と微小回転クォータニオン δq のハミルトン積として表し、dt → 0 の極限をとることでクォータニオン微分方程式を導出する。",
+          "used_node_ids": [
+            "astro.att.n03_attitude_quaternion_def",
+            "math.alg.gr06_so3_generators_commutation",
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q(t + dt) = q(t) \\otimes \\delta q,\\quad \\delta q = \\begin{pmatrix} 1 \\\\ \\frac{1}{2}\\boldsymbol{\\omega}\\,dt \\end{pmatrix} + \\mathcal{O}(dt^2)",
+          "to_latex": "q(t + dt) - q(t) = \\frac{1}{2}\\left(q(t) \\otimes \\begin{pmatrix} 0 \\\\ \\boldsymbol{\\omega} \\end{pmatrix}\\right)dt + \\mathcal{O}(dt^2)",
+          "operation_label": "四元数積の分配展開",
+          "explanation": "ハミルトン積の線形性を用いて q(t) ⊗ (1, (1/2)ω dt)^T を展開し、q(t) を左辺に移項する。",
+          "used_node_ids": [
+            "astro.att.n03_attitude_quaternion_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q(t + dt) - q(t) = \\frac{1}{2}\\left(q(t) \\otimes \\begin{pmatrix} 0 \\\\ \\boldsymbol{\\omega} \\end{pmatrix}\\right)dt + \\mathcal{O}(dt^2)",
+          "to_latex": "\\dot{q} = \\frac{1}{2}\\begin{pmatrix} -\\mathbf{q}_v^\\top\\boldsymbol{\\omega} \\\\ q_0\\boldsymbol{\\omega} + \\mathbf{q}_v\\times\\boldsymbol{\\omega} \\end{pmatrix}",
+          "operation_label": "時間微分極限とハミルトン積の成分評価",
+          "explanation": "両辺を dt で割り dt → 0 とし、四元数積 (q_0, q_v) ⊗ (0, ω) = (-q_v·ω, q_0 ω + q_v × ω) を展開する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{q} = \\frac{1}{2}\\begin{pmatrix} -\\mathbf{q}_v^\\top\\boldsymbol{\\omega} \\\\ q_0\\boldsymbol{\\omega} + \\mathbf{q}_v\\times\\boldsymbol{\\omega} \\end{pmatrix}",
+          "to_latex": "\\dot{q} = \\frac{1}{2}\\Omega(\\boldsymbol{\\omega})q = \\frac{1}{2}\\begin{pmatrix} 0 & -\\boldsymbol{\\omega}^\\top \\\\ \\boldsymbol{\\omega} & -[\\boldsymbol{\\omega}]_\\times \\end{pmatrix}\\begin{pmatrix} q_0 \\\\ \\mathbf{q}_v \\end{pmatrix},\\quad \\dot{q}_0 = -\\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{q}_v,\\quad \\dot{\\mathbf{q}}_v = \\frac{1}{2}\\big(q_0 I_3 + [\\mathbf{q}_v]_\\times\\big)\\boldsymbol{\\omega}",
+          "operation_label": "歪対称行列 Ω(ω) による行列表現化",
+          "explanation": "q_v × ω = -[ω]_× q_v を用いて q に関する線形行列積 Ω(ω)q に整理する。",
+          "used_node_ids": [
+            "math.alg.gr06_so3_generators_commutation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_at05_spin_stability",
+      "target_node_id": "astro.att.n05_torque_free_spin_stability",
+      "route_kind": "deductive",
+      "title": "無トルク・オイラー方程式の摂動線形化によるスピン安定性条件の導出",
+      "premise_node_ids": [
+        "astro.att.n02_euler_rigid_body_equations",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "外力トルク τ = 0、定常スピン角速度 ω_0 = (0, 0, Ω)^T の周りで微小摂動 |δ_1|, |δ_2|, |δ_3| << |Ω| を仮定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_1\\dot{\\omega}_1 - (I_2 - I_3)\\omega_2\\omega_3 = 0,\\; I_2\\dot{\\omega}_2 - (I_3 - I_1)\\omega_3\\omega_1 = 0,\\; I_3\\dot{\\omega}_3 - (I_1 - I_2)\\omega_1\\omega_2 = 0",
+          "to_latex": "\\lambda^2 + \\frac{(I_3 - I_1)(I_3 - I_2)}{I_1 I_2}\\Omega^2 = 0 \\implies \\text{linearly stable} \\iff (I_3 > I_1 \\land I_3 > I_2) \\lor (I_3 < I_1 \\land I_3 < I_2)",
+          "operation_label": "摂動線形化と2階定数係数ODEの固有値判定",
+          "explanation": "第3主軸周りの定常スピン ω = (δ_1, δ_2, Ω + δ_3)^T を無トルク・オイラー方程式に代入して線形化し、横軸摂動の特性方程式から安定条件（最大または最小慣性軸）を導く。",
+          "used_node_ids": [
+            "astro.att.n02_euler_rigid_body_equations",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_1\\dot{\\omega}_1 - (I_2 - I_3)\\omega_2\\omega_3 = 0,\\; I_2\\dot{\\omega}_2 - (I_3 - I_1)\\omega_3\\omega_1 = 0,\\; I_3\\dot{\\omega}_3 - (I_1 - I_2)\\omega_1\\omega_2 = 0",
+          "to_latex": "\\dot{\\delta}_1 = \\frac{I_2 - I_3}{I_1}\\Omega\\delta_2,\\quad \\dot{\\delta}_2 = \\frac{I_3 - I_1}{I_2}\\Omega\\delta_1,\\quad \\dot{\\delta}_3 = 0",
+          "operation_label": "定常スピン周りの1次摂動展開",
+          "explanation": "ω_1 = δ_1, ω_2 = δ_2, ω_3 = Ω + δ_3 を代入し、摂動の2次以上の微小項 δ_i δ_j を無視する。",
+          "used_node_ids": [
+            "astro.att.n02_euler_rigid_body_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\delta}_1 = \\frac{I_2 - I_3}{I_1}\\Omega\\delta_2,\\quad \\dot{\\delta}_2 = \\frac{I_3 - I_1}{I_2}\\Omega\\delta_1,\\quad \\dot{\\delta}_3 = 0",
+          "to_latex": "\\ddot{\\delta}_1 + \\frac{(I_3 - I_1)(I_3 - I_2)}{I_1 I_2}\\Omega^2 \\delta_1 = 0",
+          "operation_label": "連立1階ODEの2階単振動型ODEへの統合",
+          "explanation": "第1式を時間微分して第2式を代入することで、δ_1 に関する2階定数係数線形微分方程式を得る。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\delta}_1 + \\frac{(I_3 - I_1)(I_3 - I_2)}{I_1 I_2}\\Omega^2 \\delta_1 = 0",
+          "to_latex": "\\lambda^2 + \\frac{(I_3 - I_1)(I_3 - I_2)}{I_1 I_2}\\Omega^2 = 0 \\implies \\text{linearly stable} \\iff (I_3 > I_1 \\land I_3 > I_2) \\lor (I_3 < I_1 \\land I_3 < I_2)",
+          "operation_label": "特性根の純虚数条件による安定判定",
+          "explanation": "解が有界振動（純虚数特性根）となる条件は係数が正、すなわち (I_3 - I_1)(I_3 - I_2) > 0 であり、I_3 が最大または最小の主慣性モーメントであることと同値である。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_at06_gravity_gradient_torque",
+      "target_node_id": "astro.att.n06_gravity_gradient_torque",
+      "route_kind": "deductive",
+      "title": "逆二乗重力場の1次テイラー展開による重力傾度トルクの導出",
+      "premise_node_ids": [
+        "phys.orbit.g01_two_body_eom",
+        "astro.att.n01_rigid_body_inertia_angular_momentum",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "宇宙機の代表寸法 ||r|| は軌道中心距離 R_0 = ||R_0|| に比べて十分小さく（||r|| << R_0）、質量中心を原点とする。",
+        "機体中心から地球中心へ向かう単位天底ベクトルを o_hat_3 = -R_0 / R_0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{T}_{\\mathrm{gg}} = -\\mu\\int_{\\mathcal{B}} \\mathbf{r}\\times\\frac{\\mathbf{R}_0 + \\mathbf{r}}{\\|\\mathbf{R}_0 + \\mathbf{r}\\|^3}\\,dm",
+          "to_latex": "\\mathbf{T}_{\\mathrm{gg}} = \\frac{3\\mu}{R_0^3}\\hat{\\mathbf{o}}_3 \\times (\\mathbf{I}\\hat{\\mathbf{o}}_3) = 3n^2\\hat{\\mathbf{o}}_3 \\times (\\mathbf{I}\\hat{\\mathbf{o}}_3)\\quad \\left(n = \\sqrt{\\frac{\\mu}{R_0^3}}\\right)",
+          "operation_label": "||R_0 + r||^(-3) の1次展開と慣性テンソル積の抽出",
+          "explanation": "微小質量要素への重力トルク積分に逆二乗重力の1次漸近展開を適用し、重心定義 ∫r dm = 0 を用いて0次項を消去したのち、慣性テンソル I を用いて整理する。",
+          "used_node_ids": [
+            "astro.att.n01_rigid_body_inertia_angular_momentum",
+            "math.calc.t10_taylor_asymptotic_approx",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{T}_{\\mathrm{gg}} = -\\mu\\int_{\\mathcal{B}} \\mathbf{r}\\times\\frac{\\mathbf{R}_0 + \\mathbf{r}}{\\|\\mathbf{R}_0 + \\mathbf{r}\\|^3}\\,dm",
+          "to_latex": "\\mathbf{T}_{\\mathrm{gg}} \\approx -\\frac{\\mu}{R_0^3}\\int_{\\mathcal{B}} \\mathbf{r}\\times(\\mathbf{R}_0 + \\mathbf{r})\\left(1 - \\frac{3\\mathbf{R}_0\\cdot\\mathbf{r}}{R_0^2}\\right)\\,dm",
+          "operation_label": "||R_0 + r||^(-3) の1次テイラー展開",
+          "explanation": "||R_0 + r||^(-3) = R_0^(-3)(1 - 3(R_0·r)/R_0^2 + O(||r||^2/R_0^2)) を代入する。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{T}_{\\mathrm{gg}} \\approx -\\frac{\\mu}{R_0^3}\\int_{\\mathcal{B}} \\mathbf{r}\\times(\\mathbf{R}_0 + \\mathbf{r})\\left(1 - \\frac{3\\mathbf{R}_0\\cdot\\mathbf{r}}{R_0^2}\\right)\\,dm",
+          "to_latex": "\\mathbf{T}_{\\mathrm{gg}} = \\frac{3\\mu}{R_0^5}\\int_{\\mathcal{B}} (\\mathbf{r}\\times\\mathbf{R}_0)(\\mathbf{R}_0\\cdot\\mathbf{r})\\,dm",
+          "operation_label": "r×r=0 および重心条件 ∫r dm = 0 による0次項消去",
+          "explanation": "r × r = 0 より r との外積は R_0 のみ残り、0次項 -∫(r × R_0)dm = -(∫r dm) × R_0 = 0 となるため1次項のみが残る。",
+          "used_node_ids": [
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{T}_{\\mathrm{gg}} = \\frac{3\\mu}{R_0^5}\\int_{\\mathcal{B}} (\\mathbf{r}\\times\\mathbf{R}_0)(\\mathbf{R}_0\\cdot\\mathbf{r})\\,dm",
+          "to_latex": "\\mathbf{T}_{\\mathrm{gg}} = \\frac{3\\mu}{R_0^3}\\hat{\\mathbf{o}}_3 \\times (\\mathbf{I}\\hat{\\mathbf{o}}_3) = 3n^2\\hat{\\mathbf{o}}_3 \\times (\\mathbf{I}\\hat{\\mathbf{o}}_3)\\quad \\left(n = \\sqrt{\\frac{\\mu}{R_0^3}}\\right)",
+          "operation_label": "慣性テンソル定義と天底単位ベクトル o_hat_3 の導入",
+          "explanation": "R_0 = -R_0 o_hat_3 を代入し、∫(r × o_hat_3)(o_hat_3 · r)dm = -o_hat_3 × ∫(r r^T)dm o_hat_3 = o_hat_3 × (I o_hat_3)（ただし o_hat_3 × o_hat_3 = 0 を利用）により重力傾度トルク公式を得る。",
+          "used_node_ids": [
+            "astro.att.n01_rigid_body_inertia_angular_momentum"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_at07_gravity_gradient_stability",
+      "target_node_id": "astro.att.n07_gravity_gradient_stability_conditions",
+      "route_kind": "deductive",
+      "title": "LVLH座標系での微小角線形化による重力傾度安定条件の導出",
+      "premise_node_ids": [
+        "astro.att.n02_euler_rigid_body_equations",
+        "astro.att.n06_gravity_gradient_torque",
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+        "math.calc.e05_hessian_extremum_test"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "円軌道（離心率 e = 0、軌道角速度 n = sqrt(μ/R_0^3) = const.）を仮定する。",
+        "LVLH座標系（1: ロール進行方向, 2: ピッチ軌道法線負方向, 3: ヨー天底方向）からの微小姿勢角 φ, θ, ψ を考える。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{I}\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}\\boldsymbol{\\omega}) = 3n^2\\hat{\\mathbf{o}}_3 \\times (\\mathbf{I}\\hat{\\mathbf{o}}_3),\\quad \\boldsymbol{\\omega} \\approx \\begin{pmatrix} \\dot{\\phi} - n\\psi \\\\ \\dot{\\theta} - n \\\\ \\dot{\\psi} + n\\phi \\end{pmatrix},\\quad \\hat{\\mathbf{o}}_3 \\approx \\begin{pmatrix} -\\theta \\\\ \\phi \\\\ 1 \\end{pmatrix}",
+          "to_latex": "k_2 = \\frac{I_1 - I_3}{I_2} > 0 \\text{ (pitch)},\\quad 1 + 3k_1 + k_1 k_3 > 0,\\; 4k_1 k_3 > 0,\\; (1 + 3k_1 + k_1 k_3)^2 - 16 k_1 k_3 > 0\\;\\left(k_1 = \\frac{I_2 - I_3}{I_1},\\; k_3 = \\frac{I_2 - I_1}{I_3}\\right);\\quad I_2 > I_1 > I_3 \\text{ (sufficient)}",
+          "operation_label": "微小姿勢角線形化と特性方程式の安定根判定",
+          "explanation": "LVLH基準姿勢周りの角速度と天底ベクトルを1次展開してオイラー方程式に代入し、ピッチ独立系とロール・ヨー連成系の特性方程式から正値振動条件（ラグランジュ領域・デブラ＝デルプ領域）を導出する。",
+          "used_node_ids": [
+            "astro.att.n02_euler_rigid_body_equations",
+            "astro.att.n06_gravity_gradient_torque",
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{I}\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}\\boldsymbol{\\omega}) = 3n^2\\hat{\\mathbf{o}}_3 \\times (\\mathbf{I}\\hat{\\mathbf{o}}_3),\\quad \\boldsymbol{\\omega} \\approx \\begin{pmatrix} \\dot{\\phi} - n\\psi \\\\ \\dot{\\theta} - n \\\\ \\dot{\\psi} + n\\phi \\end{pmatrix},\\quad \\hat{\\mathbf{o}}_3 \\approx \\begin{pmatrix} -\\theta \\\\ \\phi \\\\ 1 \\end{pmatrix}",
+          "to_latex": "\\ddot{\\theta} + 3n^2\\frac{I_1 - I_3}{I_2}\\theta = 0,\\quad \\ddot{\\phi} + 4n^2 k_1\\phi - n(1 - k_1)\\dot{\\psi} = 0,\\quad \\ddot{\\psi} + n^2 k_3\\psi + n(1 - k_3)\\dot{\\phi} = 0",
+          "operation_label": "ピッチ系とロール・ヨー連成系の1次線形化",
+          "explanation": "微小角 (φ, θ, ψ) の2次以上の項を落とし、ピッチ角 θ の独立方程式とロール φ・ヨー ψ のジャイロ連成方程式を得る。",
+          "used_node_ids": [
+            "astro.att.n02_euler_rigid_body_equations",
+            "astro.att.n06_gravity_gradient_torque",
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\theta} + 3n^2\\frac{I_1 - I_3}{I_2}\\theta = 0,\\quad \\ddot{\\phi} + 4n^2 k_1\\phi - n(1 - k_1)\\dot{\\psi} = 0,\\quad \\ddot{\\psi} + n^2 k_3\\psi + n(1 - k_3)\\dot{\\phi} = 0",
+          "to_latex": "k_2 = \\frac{I_1 - I_3}{I_2} > 0,\\quad s^4 + n^2(1 + 3k_1 + k_1 k_3)s^2 + 4n^4 k_1 k_3 = 0",
+          "operation_label": "ピッチ安定条件とロール・ヨー4次特性方程式の導出",
+          "explanation": "ピッチ方程式より I_1 > I_3 が直ちに得られ、ロール・ヨー連成系に exp(st) を代入して行列式から s^2 に関する2次特性方程式を得る。",
+          "used_node_ids": [
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_2 = \\frac{I_1 - I_3}{I_2} > 0,\\quad s^4 + n^2(1 + 3k_1 + k_1 k_3)s^2 + 4n^4 k_1 k_3 = 0",
+          "to_latex": "k_2 = \\frac{I_1 - I_3}{I_2} > 0 \\text{ (pitch)},\\quad 1 + 3k_1 + k_1 k_3 > 0,\\; 4k_1 k_3 > 0,\\; (1 + 3k_1 + k_1 k_3)^2 - 16 k_1 k_3 > 0\\;\\left(k_1 = \\frac{I_2 - I_3}{I_1},\\; k_3 = \\frac{I_2 - I_1}{I_3}\\right);\\quad I_2 > I_1 > I_3 \\text{ (sufficient)}",
+          "operation_label": "s^2 < 0 なる2実根条件（安定領域）の特定",
+          "explanation": "すべての根 s が純虚数（s^2 < 0）となるための2次方程式の係数・判別式条件を書き下し、k_1 > 0, k_3 > 0 を満たす I_2 > I_1 > I_3 が十分条件であることを確認する。",
+          "used_node_ids": [
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_at08_reaction_wheel_eom",
+      "target_node_id": "astro.att.n08_reaction_wheel_coupled_eom",
+      "route_kind": "deductive",
+      "title": "全角運動量分解によるリアクションホイール搭載宇宙機の運動方程式導出",
+      "premise_node_ids": [
+        "astro.att.n02_euler_rigid_body_equations",
+        "astro.att.n01_rigid_body_inertia_angular_momentum",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "宇宙機全体の慣性テンソル I_s（ホイールロータの横方向慣性を含む）は機体固定系で定数であり、ホイールの機体に対する相対角運動量を h_w とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{H}}_{\\mathrm{tot}} + \\boldsymbol{\\omega}\\times\\mathbf{H}_{\\mathrm{tot}} = \\boldsymbol{\\tau}_{\\mathrm{ext}},\\quad \\mathbf{H}_{\\mathrm{tot}} = \\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w",
+          "to_latex": "\\mathbf{H}_{\\mathrm{tot}} = \\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w,\\quad \\mathbf{I}_s\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w) = \\boldsymbol{\\tau}_{\\mathrm{ext}} + \\boldsymbol{\\tau}_w,\\quad \\boldsymbol{\\tau}_w := -\\dot{\\mathbf{h}}_w",
+          "operation_label": "全角運動量の時間微分とホイール反作用トルクの定義",
+          "explanation": "機体とホイールの合成角運動量 H_tot = I_s ω + h_w に回転系の角運動量方程式を適用し、ホイール駆動による内部反作用トルク τ_w = -dh_w/dt を分離して制御系運動方程式を得る。",
+          "used_node_ids": [
+            "astro.att.n01_rigid_body_inertia_angular_momentum",
+            "astro.att.n02_euler_rigid_body_equations",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{H}}_{\\mathrm{tot}} + \\boldsymbol{\\omega}\\times\\mathbf{H}_{\\mathrm{tot}} = \\boldsymbol{\\tau}_{\\mathrm{ext}},\\quad \\mathbf{H}_{\\mathrm{tot}} = \\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w",
+          "to_latex": "\\mathbf{I}_s\\dot{\\boldsymbol{\\omega}} + \\dot{\\mathbf{h}}_w + \\boldsymbol{\\omega}\\times(\\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w) = \\boldsymbol{\\tau}_{\\mathrm{ext}}",
+          "operation_label": "微分の線形性による合成角運動量の時間微分",
+          "explanation": "H_tot = I_s ω + h_w を運動方程式に代入し、微分の線形性を適用する。",
+          "used_node_ids": [
+            "astro.att.n02_euler_rigid_body_equations",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{I}_s\\dot{\\boldsymbol{\\omega}} + \\dot{\\mathbf{h}}_w + \\boldsymbol{\\omega}\\times(\\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w) = \\boldsymbol{\\tau}_{\\mathrm{ext}}",
+          "to_latex": "\\mathbf{H}_{\\mathrm{tot}} = \\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w,\\quad \\mathbf{I}_s\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w) = \\boldsymbol{\\tau}_{\\mathrm{ext}} + \\boldsymbol{\\tau}_w,\\quad \\boldsymbol{\\tau}_w := -\\dot{\\mathbf{h}}_w",
+          "operation_label": "ホイール制御トルク τ_w = -dh_w/dt の移項と定義",
+          "explanation": "ホイール角運動量変化率の符号反転を機体に作用する制御トルク τ_w として右辺へ移項し、宇宙機・ホイール結合方程式を完成させる。",
+          "used_node_ids": [
+            "astro.att.n01_rigid_body_inertia_angular_momentum"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_at09_quaternion_pd_control",
+      "target_node_id": "astro.att.n09_quaternion_pd_feedback_control",
+      "route_kind": "deductive",
+      "title": "クォータニオンリアプノフ関数によるリアクションホイールPD姿勢安定化則の導出",
+      "premise_node_ids": [
+        "astro.att.n04_quaternion_kinematics_ode",
+        "astro.att.n08_reaction_wheel_coupled_eom",
+        "math.vec.m03_dot_cross_product",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "目標姿勢 q_d は一定（静止目標姿勢）であり、外乱トルク τ_ext = 0、ゲイン K_p > 0 および対称正定値行列 K_d > 0 を仮定する。",
+        "誤差クォータニオンを q_e = q_d^(-1) ⊗ q = (q_{e,0}, q_{e,v}^T)^T とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V(q_e,\\boldsymbol{\\omega}) = \\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{I}_s\\boldsymbol{\\omega} + K_p\\big((q_{e,0}-1)^2 + \\|\\mathbf{q}_{e,v}\\|^2\\big),\\quad \\dot{q}_{e,0} = -\\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{q}_{e,v}",
+          "to_latex": "\\boldsymbol{\\tau}_w = -K_p\\mathbf{q}_{e,v} - K_d\\boldsymbol{\\omega} + \\boldsymbol{\\omega}\\times(\\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w),\\quad V(q_e,\\boldsymbol{\\omega}) = \\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{I}_s\\boldsymbol{\\omega} + K_p\\big((q_{e,0}-1)^2 + \\|\\mathbf{q}_{e,v}\\|^2\\big) \\implies \\dot{V} = -\\boldsymbol{\\omega}^\\top K_d\\boldsymbol{\\omega} \\le 0",
+          "operation_label": "リアプノフ関数時間微分の負半定値化による制御則設計",
+          "explanation": "誤差クォータニオンと回転運動エネルギーからなるリアプノフ候補関数 V を時間微分し、クォータニオン運動学とホイール運動方程式を代入して dV/dt <= 0 を満たすPD制御則とジャイロ補償項を決定する。",
+          "used_node_ids": [
+            "astro.att.n04_quaternion_kinematics_ode",
+            "astro.att.n08_reaction_wheel_coupled_eom",
+            "math.calc.m36_derivative_linearity",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(q_e,\\boldsymbol{\\omega}) = \\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{I}_s\\boldsymbol{\\omega} + K_p\\big((q_{e,0}-1)^2 + \\|\\mathbf{q}_{e,v}\\|^2\\big),\\quad \\dot{q}_{e,0} = -\\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{q}_{e,v}",
+          "to_latex": "V(q_e,\\boldsymbol{\\omega}) = \\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{I}_s\\boldsymbol{\\omega} + 2K_p(1 - q_{e,0}),\\quad \\dot{V} = \\boldsymbol{\\omega}^\\top\\mathbf{I}_s\\dot{\\boldsymbol{\\omega}} + K_p\\boldsymbol{\\omega}^\\top\\mathbf{q}_{e,v}",
+          "operation_label": "単位ノルム条件 q_{e,0}^2 + ||q_{e,v}||^2 = 1 によるVの簡約と時間微分",
+          "explanation": "単位クォータニオン条件を用いて V を 2K_p(1 - q_{e,0}) と整理し、時間微分にクォータニオン運動学 d(q_{e,0})/dt = -(1/2)ω^T q_{e,v} を代入する。",
+          "used_node_ids": [
+            "astro.att.n04_quaternion_kinematics_ode",
+            "math.calc.m36_derivative_linearity",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(q_e,\\boldsymbol{\\omega}) = \\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{I}_s\\boldsymbol{\\omega} + 2K_p(1 - q_{e,0}),\\quad \\dot{V} = \\boldsymbol{\\omega}^\\top\\mathbf{I}_s\\dot{\\boldsymbol{\\omega}} + K_p\\boldsymbol{\\omega}^\\top\\mathbf{q}_{e,v}",
+          "to_latex": "\\dot{V} = \\boldsymbol{\\omega}^\\top\\big(\\boldsymbol{\\tau}_w - \\boldsymbol{\\omega}\\times(\\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w) + K_p\\mathbf{q}_{e,v}\\big)",
+          "operation_label": "ホイール結合運動方程式の代入",
+          "explanation": "I_s dω/dt = τ_w - ω × (I_s ω + h_w) を代入し、共通因子 ω^T で括る。",
+          "used_node_ids": [
+            "astro.att.n08_reaction_wheel_coupled_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{V} = \\boldsymbol{\\omega}^\\top\\big(\\boldsymbol{\\tau}_w - \\boldsymbol{\\omega}\\times(\\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w) + K_p\\mathbf{q}_{e,v}\\big)",
+          "to_latex": "\\boldsymbol{\\tau}_w = -K_p\\mathbf{q}_{e,v} - K_d\\boldsymbol{\\omega} + \\boldsymbol{\\omega}\\times(\\mathbf{I}_s\\boldsymbol{\\omega} + \\mathbf{h}_w),\\quad V(q_e,\\boldsymbol{\\omega}) = \\frac{1}{2}\\boldsymbol{\\omega}^\\top\\mathbf{I}_s\\boldsymbol{\\omega} + K_p\\big((q_{e,0}-1)^2 + \\|\\mathbf{q}_{e,v}\\|^2\\big) \\implies \\dot{V} = -\\boldsymbol{\\omega}^\\top K_d\\boldsymbol{\\omega} \\le 0",
+          "operation_label": "PD制御則の選択による dV/dt <= 0 の成立",
+          "explanation": "ジャイロ非線形項とポテンシャル勾配項を相殺し減衰項 -K_d ω を残す制御則 τ_w を選択することで、dV/dt = -ω^T K_d ω <= 0（ラサールの不変性原理により平衡点 q_{e,v}=0, ω=0 へ漸近収束）が得られる。",
+          "used_node_ids": [
+            "astro.att.n08_reaction_wheel_coupled_eom"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

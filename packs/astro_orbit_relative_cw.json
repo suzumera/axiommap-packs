@@ -1,0 +1,707 @@
+{
+  "pack_meta": {
+    "pack_id": "astro.orbit.relative_cw",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "orbital_mechanics",
+    "title": "ランデブー・ドッキング力学：ヒル／クロヘッシー＝ウィルトシャー（CW）方程式",
+    "language": "ja",
+    "description": "円軌道上の基準機に対するLVLH回転座標系での相対運動線形化からCW方程式とその解析解（状態遷移行列）を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "astro.cw.cw01_lvlh_frame_def",
+      "short_code": "CW01",
+      "kind": "definition",
+      "title": "LVLH（局所垂直・局所水平）回転座標系と相対位置ベクトルの定義",
+      "summary": "半径 r0 の円軌道上を平均運動 n で周回する基準機（チーフ）に固定された LVLH 右手正規直交基底と、追従機（デピュティ）の相対位置ベクトルを定義する。",
+      "canonical_latex": "\\hat{\\mathbf{i}} := \\frac{\\mathbf{r}_0}{r_0},\\quad \\hat{\\mathbf{k}} := \\frac{\\mathbf{h}_0}{h_0},\\quad \\hat{\\mathbf{j}} := \\hat{\\mathbf{k}} \\times \\hat{\\mathbf{i}},\\quad \\boldsymbol{\\omega} = n\\hat{\\mathbf{k}},\\quad \\boldsymbol{\\rho} := \\mathbf{r} - \\mathbf{r}_0 = x\\hat{\\mathbf{i}} + y\\hat{\\mathbf{j}} + z\\hat{\\mathbf{k}}",
+      "aliases_latex": [
+        "\\mathbf{r} = \\mathbf{r}_0 + \\boldsymbol{\\rho},\\; \\boldsymbol{\\rho} = (x, y, z)_{\\mathrm{LVLH}}^\\top,\\; \\mathbf{r}_0 = r_0\\hat{\\mathbf{i}},\\; n = \\sqrt{\\mu / r_0^3}"
+      ],
+      "keywords": [
+        "LVLH",
+        "Hill frame",
+        "relative motion",
+        "circular orbit",
+        "rotating frame"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "spacecraft_rendezvous"
+      ]
+    },
+    {
+      "id": "astro.cw.cw02_rotating_frame_kinematics",
+      "short_code": "CW02",
+      "kind": "theorem_formula",
+      "title": "LVLH 回転座標系における相対加速度の運動学的変換",
+      "summary": "定角速度 ω = n k_hat で回転する LVLH 座標系における輸送定理を用いて、慣性系加速度の差を LVLH 成分の 2 階微分・コリオリ項・遠心力項へ展開する。",
+      "canonical_latex": "\\ddot{\\mathbf{r}} - \\ddot{\\mathbf{r}}_0 = (\\ddot{x} - 2n\\dot{y} - n^2 x)\\hat{\\mathbf{i}} + (\\ddot{y} + 2n\\dot{x} - n^2 y)\\hat{\\mathbf{j}} + \\ddot{z}\\hat{\\mathbf{k}}",
+      "aliases_latex": [
+        "\\ddot{\\boldsymbol{\\rho}}_{\\mathrm{inertial}} = \\ddot{\\boldsymbol{\\rho}}_{\\mathrm{LVLH}} + 2\\boldsymbol{\\omega}\\times\\dot{\\boldsymbol{\\rho}}_{\\mathrm{LVLH}} + \\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\boldsymbol{\\rho})"
+      ],
+      "keywords": [
+        "transport theorem",
+        "Coriolis acceleration",
+        "centrifugal acceleration",
+        "LVLH kinematics"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "kinematics"
+      ]
+    },
+    {
+      "id": "astro.cw.cw03_nonlinear_relative_eom",
+      "short_code": "CW03",
+      "kind": "theorem_formula",
+      "title": "2体重力場における厳密な非線形相対運動方程式",
+      "summary": "基準機と追従機の双方に 2 体問題のニュートン重力を適用し、LVLH 回転座標系における厳密な非線形相対運動方程式を導く。",
+      "canonical_latex": "\\ddot{x} - 2n\\dot{y} - n^2(r_0 + x) = -\\frac{\\mu(r_0 + x)}{\\left[(r_0+x)^2 + y^2 + z^2\\right]^{3/2}},\\quad \\ddot{y} + 2n\\dot{x} - n^2 y = -\\frac{\\mu y}{\\left[(r_0+x)^2 + y^2 + z^2\\right]^{3/2}},\\quad \\ddot{z} = -\\frac{\\mu z}{\\left[(r_0+x)^2 + y^2 + z^2\\right]^{3/2}}",
+      "aliases_latex": [
+        "\\ddot{\\mathbf{r}} - \\ddot{\\mathbf{r}}_0 = -\\frac{\\mu}{\\|\\mathbf{r}_0 + \\boldsymbol{\\rho}\\|^3}(\\mathbf{r}_0 + \\boldsymbol{\\rho}) + \\frac{\\mu}{r_0^3}\\mathbf{r}_0"
+      ],
+      "keywords": [
+        "nonlinear relative motion",
+        "two-body relative EOM",
+        "exact LVLH equations"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "spacecraft_rendezvous"
+      ]
+    },
+    {
+      "id": "astro.cw.cw04_gravity_gradient_linearization",
+      "short_code": "CW04",
+      "kind": "theorem_formula",
+      "title": "微小相対距離における重力勾配の1次線形化",
+      "summary": "相対距離が基準軌道半径より十分小さい（||ρ|| << r0）仮定の下で、重力項を 1 次までテイラー展開し、重力勾配項を導出する。",
+      "canonical_latex": "-\\frac{\\mu}{\\|\\mathbf{r}_0 + \\boldsymbol{\\rho}\\|^3}(\\mathbf{r}_0 + \\boldsymbol{\\rho}) + \\frac{\\mu}{r_0^3}\\mathbf{r}_0 = n^2(2x\\hat{\\mathbf{i}} - y\\hat{\\mathbf{j}} - z\\hat{\\mathbf{k}}) + \\mathcal{O}\\!\\left(\\frac{\\|\\boldsymbol{\\rho}\\|^2}{r_0}\\right)n^2",
+      "aliases_latex": [
+        "\\mathbf{g}(\\mathbf{r}_0 + \\boldsymbol{\\rho}) - \\mathbf{g}(\\mathbf{r}_0) \\approx \\left(2n^2 x,\\; -n^2 y,\\; -n^2 z\\right)_{\\mathrm{LVLH}}^\\top"
+      ],
+      "keywords": [
+        "gravity gradient",
+        "linearization",
+        "binomial expansion",
+        "tidal force"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "perturbation"
+      ]
+    },
+    {
+      "id": "astro.cw.cw05_clohessy_wiltshire_equations",
+      "short_code": "CW05",
+      "kind": "theorem_formula",
+      "title": "クロヘッシー＝ウィルトシャー（CW / ヒル）方程式",
+      "summary": "LVLH 系の運動学的変換と線形化重力勾配を等置することで得られる、円軌道上の線形相対運動方程式（CW 方程式）。",
+      "canonical_latex": "\\ddot{x} - 2n\\dot{y} - 3n^2 x = f_x,\\quad \\ddot{y} + 2n\\dot{x} = f_y,\\quad \\ddot{z} + n^2 z = f_z",
+      "aliases_latex": [
+        "\\ddot{x} - 2n\\dot{y} - 3n^2 x = 0,\\quad \\ddot{y} + 2n\\dot{x} = 0,\\quad \\ddot{z} + n^2 z = 0"
+      ],
+      "keywords": [
+        "Clohessy-Wiltshire equations",
+        "Hill equations",
+        "CW equations",
+        "linear relative dynamics"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "spacecraft_rendezvous"
+      ]
+    },
+    {
+      "id": "astro.cw.cw06_cw_out_of_plane_solution",
+      "short_code": "CW06",
+      "kind": "theorem_formula",
+      "title": "CW 方程式の面外（z方向）単振動解",
+      "summary": "面内運動から完全に分離された面外 z 方向の自由運動を解き、軌道角速度 n で振動する調和振動解を得る。",
+      "canonical_latex": "z(t) = z_0\\cos(nt) + \\frac{\\dot{z}_0}{n}\\sin(nt),\\quad \\dot{z}(t) = -n z_0\\sin(nt) + \\dot{z}_0\\cos(nt) \\quad (f_z = 0,\\; t_0 = 0))",
+      "aliases_latex": [
+        "z(t) = z_0\\cos(nt) + \\frac{\\dot{z}_0}{n}\\sin(nt),\\; \\dot{z}(t) = -n z_0\\sin(nt) + \\dot{z}_0\\cos(nt)"
+      ],
+      "keywords": [
+        "out-of-plane motion",
+        "cross-track oscillation",
+        "decoupled harmonic oscillator"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "spacecraft_rendezvous"
+      ]
+    },
+    {
+      "id": "astro.cw.cw07_cw_in_plane_analytical_solution",
+      "short_code": "CW07",
+      "kind": "theorem_formula",
+      "title": "CW 方程式の面内（x-y平面）閉形式解析解",
+      "summary": "y 方向方程式の 1 回積分を用いて x 方向の強制単振動方程式を解き、さらに y(t) を積分して面内相対運動の厳密解析解を得る。",
+      "canonical_latex": "x(t) = (4 - 3\\cos nt)x_0 + \\frac{\\sin nt}{n}\\dot{x}_0 + \\frac{2(1 - \\cos nt)}{n}\\dot{y}_0,\\quad y(t) = 6(\\sin nt - nt)x_0 + y_0 - \\frac{2(1 - \\cos nt)}{n}\\dot{x}_0 + \\frac{4\\sin nt - 3nt}{n}\\dot{y}_0",
+      "aliases_latex": [
+        "\\dot{x}(t) = 3n\\sin(nt)x_0 + \\cos(nt)\\dot{x}_0 + 2\\sin(nt)\\dot{y}_0,\\; \\dot{y}(t) = 6n(\\cos nt - 1)x_0 - 2\\sin(nt)\\dot{x}_0 + (4\\cos nt - 3)\\dot{y}_0"
+      ],
+      "keywords": [
+        "in-plane CW solution",
+        "closed-form solution",
+        "secular drift"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "spacecraft_rendezvous"
+      ]
+    },
+    {
+      "id": "astro.cw.cw08_cw_state_transition_matrix",
+      "short_code": "CW08",
+      "kind": "theorem_formula",
+      "title": "CW 方程式の状態遷移行列（STM）と無ドリフト周期条件",
+      "summary": "面内および面外解析解を 6×6 の状態遷移行列 Φ(t) に統合し、さらに永年ドリフトが消滅する閉じた 2×1 相対楕円軌道の条件を導く。",
+      "canonical_latex": "\\mathbf{X}(t) = \\Phi(t)\\mathbf{X}_0,\\quad \\Phi(t) = \\begin{pmatrix} \\Phi_{rr}(t) & \\Phi_{rv}(t) \\\\ \\Phi_{vr}(t) & \\Phi_{vv}(t) \\end{pmatrix} \\in \\mathbb{R}^{6\\times 6};\\qquad \\dot{y}_0 = -2n x_0 \\implies \\text{no secular drift } (y(t)\\text{ periodic})",
+      "aliases_latex": [
+        "\\Phi_{rr}(t)=\\begin{pmatrix}4-3\\cos nt & 0 & 0\\\\ 6(\\sin nt-nt) & 1 & 0\\\\ 0 & 0 & \\cos nt\\end{pmatrix},\\; \\Phi_{rv}(t)=\\frac{1}{n}\\begin{pmatrix}\\sin nt & 2(1-\\cos nt) & 0\\\\ -2(1-\\cos nt) & 4\\sin nt-3nt & 0\\\\ 0 & 0 & \\sin nt\\end{pmatrix}"
+      ],
+      "keywords": [
+        "state transition matrix",
+        "STM",
+        "2-by-1 relative ellipse",
+        "drift-free condition"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "spacecraft_rendezvous"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.cw.cw01_from_circular_orbit",
+      "target_node_id": "astro.cw.cw01_lvlh_frame_def",
+      "route_kind": "deductive",
+      "title": "円軌道上の比角運動量と平均運動からの LVLH 座標系構成",
+      "premise_node_ids": [
+        "astro.orbit.ka01_angular_momentum_areal_velocity",
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+      ],
+      "required_math_node_ids": [
+        "astro.cw.cw01_lvlh_frame_def",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "基準機は半径 r0 の円軌道（e = 0, a = r0）上を運動する",
+        "比角運動量ベクトル h0 は空間に固定された一定ベクトルである"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{h}_0 = \\mathbf{r}_0 \\times \\dot{\\mathbf{r}}_0 = \\text{const.},\\quad n = \\sqrt{\\frac{\\mu}{r_0^3}}",
+          "to_latex": "\\hat{\\mathbf{i}} := \\frac{\\mathbf{r}_0}{r_0},\\quad \\hat{\\mathbf{k}} := \\frac{\\mathbf{h}_0}{h_0},\\quad \\hat{\\mathbf{j}} := \\hat{\\mathbf{k}} \\times \\hat{\\mathbf{i}},\\quad \\boldsymbol{\\omega} = n\\hat{\\mathbf{k}},\\quad \\boldsymbol{\\rho} := \\mathbf{r} - \\mathbf{r}_0 = x\\hat{\\mathbf{i}} + y\\hat{\\mathbf{j}} + z\\hat{\\mathbf{k}}",
+          "operation_label": "LVLH基底・角速度ベクトル・相対位置の定義",
+          "explanation": "基準機の動径方向と比角運動量方向から右手正規直交基底を張り、回転角速度 n k_hat と相対位置成分 (x,y,z) を定める。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_basis_vectors",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{h}_0 = \\mathbf{r}_0 \\times \\dot{\\mathbf{r}}_0 = \\text{const.},\\quad n = \\sqrt{\\frac{\\mu}{r_0^3}}",
+          "to_latex": "\\hat{\\mathbf{i}} := \\frac{\\mathbf{r}_0}{r_0},\\quad \\hat{\\mathbf{k}} := \\frac{\\mathbf{h}_0}{h_0},\\quad \\hat{\\mathbf{j}} := \\hat{\\mathbf{k}} \\times \\hat{\\mathbf{i}},\\quad \\hat{\\mathbf{i}} \\perp \\hat{\\mathbf{k}}",
+          "operation_label": "右手正規直交基底の構成",
+          "explanation": "h0 は r0 に直交するため i_hat と k_hat は直交する単位ベクトルであり、j_hat = k_hat × i_hat により右手正規直交基底が完成する。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_angular_velocity_and_rel_pos",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{i}} := \\frac{\\mathbf{r}_0}{r_0},\\quad \\hat{\\mathbf{k}} := \\frac{\\mathbf{h}_0}{h_0},\\quad \\hat{\\mathbf{j}} := \\hat{\\mathbf{k}} \\times \\hat{\\mathbf{i}},\\quad \\hat{\\mathbf{i}} \\perp \\hat{\\mathbf{k}}",
+          "to_latex": "\\hat{\\mathbf{i}} := \\frac{\\mathbf{r}_0}{r_0},\\quad \\hat{\\mathbf{k}} := \\frac{\\mathbf{h}_0}{h_0},\\quad \\hat{\\mathbf{j}} := \\hat{\\mathbf{k}} \\times \\hat{\\mathbf{i}},\\quad \\boldsymbol{\\omega} = n\\hat{\\mathbf{k}},\\quad \\boldsymbol{\\rho} := \\mathbf{r} - \\mathbf{r}_0 = x\\hat{\\mathbf{i}} + y\\hat{\\mathbf{j}} + z\\hat{\\mathbf{k}}",
+          "operation_label": "円軌道角速度と相対位置展開",
+          "explanation": "円軌道では角速度が一定の平均運動 n に一致し、軌道面法線 k_hat まわりに回転するため ω = n k_hat となる。さらに相対位置 ρ = r - r0 を LVLH 基底で展開する。",
+          "used_node_ids": [
+            "astro.cw.cw01_lvlh_frame_def",
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cw.cw02_from_lvlh_kinematics",
+      "target_node_id": "astro.cw.cw02_rotating_frame_kinematics",
+      "route_kind": "deductive",
+      "title": "LVLH 基底ベクトルの時間微分による相対加速度の展開",
+      "premise_node_ids": [
+        "astro.cw.cw01_lvlh_frame_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "ω = n k_hat は時間に関して定ベクトルである（円軌道）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r} - \\mathbf{r}_0 = \\boldsymbol{\\rho} = x\\hat{\\mathbf{i}} + y\\hat{\\mathbf{j}} + z\\hat{\\mathbf{k}},\\quad \\boldsymbol{\\omega} = n\\hat{\\mathbf{k}} = \\text{const.}",
+          "to_latex": "\\ddot{\\mathbf{r}} - \\ddot{\\mathbf{r}}_0 = (\\ddot{x} - 2n\\dot{y} - n^2 x)\\hat{\\mathbf{i}} + (\\ddot{y} + 2n\\dot{x} - n^2 y)\\hat{\\mathbf{j}} + \\ddot{z}\\hat{\\mathbf{k}}",
+          "operation_label": "回転座標系での2階時間微分（輸送定理）",
+          "explanation": "LVLH 基底ベクトルの時間微分 d(i_hat)/dt = ω × i_hat 等を用いて ρ を 2 回時間微分し、成分ごとに整理する。",
+          "used_node_ids": [
+            "astro.cw.cw01_lvlh_frame_def",
+            "math.calc.m15_product_rule",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_first_derivative",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r} - \\mathbf{r}_0 = \\boldsymbol{\\rho} = x\\hat{\\mathbf{i}} + y\\hat{\\mathbf{j}} + z\\hat{\\mathbf{k}},\\quad \\boldsymbol{\\omega} = n\\hat{\\mathbf{k}} = \\text{const.}",
+          "to_latex": "\\dot{\\boldsymbol{\\rho}} = (\\dot{x} - ny)\\hat{\\mathbf{i}} + (\\dot{y} + nx)\\hat{\\mathbf{j}} + \\dot{z}\\hat{\\mathbf{k}}",
+          "operation_label": "1階時間微分と基底微分の適用",
+          "explanation": "積の微分法則と d(i_hat)/dt = n j_hat, d(j_hat)/dt = -n i_hat, d(k_hat)/dt = 0 を用いて相対速度を LVLH 成分で表す。",
+          "used_node_ids": [
+            "astro.cw.cw01_lvlh_frame_def",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_second_derivative",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\boldsymbol{\\rho}} = (\\dot{x} - ny)\\hat{\\mathbf{i}} + (\\dot{y} + nx)\\hat{\\mathbf{j}} + \\dot{z}\\hat{\\mathbf{k}}",
+          "to_latex": "\\ddot{\\mathbf{r}} - \\ddot{\\mathbf{r}}_0 = (\\ddot{x} - 2n\\dot{y} - n^2 x)\\hat{\\mathbf{i}} + (\\ddot{y} + 2n\\dot{x} - n^2 y)\\hat{\\mathbf{j}} + \\ddot{z}\\hat{\\mathbf{k}}",
+          "operation_label": "2階時間微分とコリオリ・遠心力項の整理",
+          "explanation": "再度時間微分し d(i_hat)/dt = n j_hat, d(j_hat)/dt = -n i_hat を代入して同類項をまとめると、コリオリ項 (±2n) と遠心力項 (-n^2) が得られる。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cw.cw03_from_two_body_eom",
+      "target_node_id": "astro.cw.cw03_nonlinear_relative_eom",
+      "route_kind": "deductive",
+      "title": "2体運動方程式と LVLH 運動学からの厳密相対運動方程式の導出",
+      "premise_node_ids": [
+        "phys.orbit.g01_two_body_eom",
+        "astro.cw.cw02_rotating_frame_kinematics",
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "追従機の質量は中心天体に比べ無視でき、非重力摂動は働かない"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r},\\quad \\ddot{\\mathbf{r}}_0 = -\\frac{\\mu}{r_0^3}\\mathbf{r}_0,\\quad \\mathbf{r} = \\mathbf{r}_0 + \\boldsymbol{\\rho} = (r_0+x)\\hat{\\mathbf{i}} + y\\hat{\\mathbf{j}} + z\\hat{\\mathbf{k}}",
+          "to_latex": "\\ddot{x} - 2n\\dot{y} - n^2(r_0 + x) = -\\frac{\\mu(r_0 + x)}{\\left[(r_0+x)^2 + y^2 + z^2\\right]^{3/2}},\\quad \\ddot{y} + 2n\\dot{x} - n^2 y = -\\frac{\\mu y}{\\left[(r_0+x)^2 + y^2 + z^2\\right]^{3/2}},\\quad \\ddot{z} = -\\frac{\\mu z}{\\left[(r_0+x)^2 + y^2 + z^2\\right]^{3/2}}",
+          "operation_label": "2体重力差の LVLH 成分表示",
+          "explanation": "追従機と基準機の 2 体運動方程式の差をとり、CW02 の加速度成分と μ/r0^3 = n^2 を用いて各軸の非線形運動方程式を得る。",
+          "used_node_ids": [
+            "astro.cw.cw02_rotating_frame_kinematics",
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_gravity_difference",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r},\\quad \\ddot{\\mathbf{r}}_0 = -\\frac{\\mu}{r_0^3}\\mathbf{r}_0,\\quad \\mathbf{r} = \\mathbf{r}_0 + \\boldsymbol{\\rho} = (r_0+x)\\hat{\\mathbf{i}} + y\\hat{\\mathbf{j}} + z\\hat{\\mathbf{k}}",
+          "to_latex": "\\ddot{\\mathbf{r}} - \\ddot{\\mathbf{r}}_0 = -\\frac{\\mu\\big[(r_0+x)\\hat{\\mathbf{i}} + y\\hat{\\mathbf{j}} + z\\hat{\\mathbf{k}}\\big]}{\\left[(r_0+x)^2 + y^2 + z^2\\right]^{3/2}} + n^2 r_0 \\hat{\\mathbf{i}}",
+          "operation_label": "相対重力加速度の LVLH 座標表示",
+          "explanation": "r = ||r0 + ρ|| = sqrt((r0+x)^2 + y^2 + z^2) および円軌道関係 μ/r0^3 = n^2 を代入する。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_equate_components",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\mathbf{r}} - \\ddot{\\mathbf{r}}_0 = -\\frac{\\mu\\big[(r_0+x)\\hat{\\mathbf{i}} + y\\hat{\\mathbf{j}} + z\\hat{\\mathbf{k}}\\big]}{\\left[(r_0+x)^2 + y^2 + z^2\\right]^{3/2}} + n^2 r_0 \\hat{\\mathbf{i}}",
+          "to_latex": "\\ddot{x} - 2n\\dot{y} - n^2(r_0 + x) = -\\frac{\\mu(r_0 + x)}{\\left[(r_0+x)^2 + y^2 + z^2\\right]^{3/2}},\\quad \\ddot{y} + 2n\\dot{x} - n^2 y = -\\frac{\\mu y}{\\left[(r_0+x)^2 + y^2 + z^2\\right]^{3/2}},\\quad \\ddot{z} = -\\frac{\\mu z}{\\left[(r_0+x)^2 + y^2 + z^2\\right]^{3/2}}",
+          "operation_label": "CW02 左辺との成分比較",
+          "explanation": "左辺に CW02 の相対加速度成分を代入し、n^2 r0 i_hat を左辺へ移項して x, y, z 成分ごとに等置する。",
+          "used_node_ids": [
+            "astro.cw.cw02_rotating_frame_kinematics"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cw.cw04_from_binomial_linearization",
+      "target_node_id": "astro.cw.cw04_gravity_gradient_linearization",
+      "route_kind": "deductive",
+      "title": "二項展開による重力勾配の1次線形化",
+      "premise_node_ids": [
+        "astro.cw.cw03_nonlinear_relative_eom"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t09_maclaurin_binomial",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "assumptions": [
+        "相対距離は基準軌道半径に比べて十分小さい（||ρ|| << r0）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-\\frac{\\mu}{\\|\\mathbf{r}_0 + \\boldsymbol{\\rho}\\|^3}(\\mathbf{r}_0 + \\boldsymbol{\\rho}) + \\frac{\\mu}{r_0^3}\\mathbf{r}_0,\\quad \\frac{\\|\\boldsymbol{\\rho}\\|}{r_0} \\ll 1",
+          "to_latex": "-\\frac{\\mu}{\\|\\mathbf{r}_0 + \\boldsymbol{\\rho}\\|^3}(\\mathbf{r}_0 + \\boldsymbol{\\rho}) + \\frac{\\mu}{r_0^3}\\mathbf{r}_0 = n^2(2x\\hat{\\mathbf{i}} - y\\hat{\\mathbf{j}} - z\\hat{\\mathbf{k}}) + \\mathcal{O}\\!\\left(\\frac{\\|\\boldsymbol{\\rho}\\|^2}{r_0}\\right)n^2",
+          "operation_label": "逆3乗重力項の1次テイラー展開",
+          "explanation": "r^(-3) を ρ/r0 に関して 1 次まで二項展開し、定数項を相殺して線形重力勾配項を抽出する。",
+          "used_node_ids": [
+            "astro.cw.cw03_nonlinear_relative_eom",
+            "math.calc.t09_maclaurin_binomial",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_radius_expansion",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{\\mu}{\\|\\mathbf{r}_0 + \\boldsymbol{\\rho}\\|^3}(\\mathbf{r}_0 + \\boldsymbol{\\rho}) + \\frac{\\mu}{r_0^3}\\mathbf{r}_0,\\quad \\frac{\\|\\boldsymbol{\\rho}\\|}{r_0} \\ll 1",
+          "to_latex": "\\left[(r_0+x)^2 + y^2 + z^2\\right]^{-3/2} = \\frac{1}{r_0^3}\\left(1 - \\frac{3x}{r_0} + \\mathcal{O}\\!\\left(\\frac{\\|\\boldsymbol{\\rho}\\|^2}{r_0^2}\\right)\\right)$$",
+          "operation_label": "距離の逆3乗の二項展開",
+          "explanation": "||r0 + ρ||^2 = r0^2(1 + 2x/r0 + ||ρ||^2/r0^2) に対し、(1+ε)^(-3/2) = 1 - (3/2)ε + O(ε^2) を適用する。",
+          "used_node_ids": [
+            "math.calc.t09_maclaurin_binomial",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_linear_gravity_gradient",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left[(r_0+x)^2 + y^2 + z^2\\right]^{-3/2} = \\frac{1}{r_0^3}\\left(1 - \\frac{3x}{r_0} + \\mathcal{O}\\!\\left(\\frac{\\|\\boldsymbol{\\rho}\\|^2}{r_0^2}\\right)\\right)$$",
+          "to_latex": "-\\frac{\\mu}{\\|\\mathbf{r}_0 + \\boldsymbol{\\rho}\\|^3}(\\mathbf{r}_0 + \\boldsymbol{\\rho}) + \\frac{\\mu}{r_0^3}\\mathbf{r}_0 = n^2(2x\\hat{\\mathbf{i}} - y\\hat{\\mathbf{j}} - z\\hat{\\mathbf{k}}) + \\mathcal{O}\\!\\left(\\frac{\\|\\boldsymbol{\\rho}\\|^2}{r_0}\\right)n^2",
+          "operation_label": "1次項の積と基準機重力の相殺",
+          "explanation": "-μ[(r0+x)i_hat + y j_hat + z k_hat]/r0^3 に (1 - 3x/r0) を掛けて 2 次以上の微小項を落とし、+n^2 r0 i_hat と相殺すると n^2(2x i_hat - y j_hat - z k_hat) が残る。",
+          "used_node_ids": [
+            "astro.cw.cw03_nonlinear_relative_eom",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cw.cw05_from_kinematics_and_gradient",
+      "target_node_id": "astro.cw.cw05_clohessy_wiltshire_equations",
+      "route_kind": "deductive",
+      "title": "運動学的加速度と線形化重力勾配の等置による CW 方程式の導出",
+      "premise_node_ids": [
+        "astro.cw.cw02_rotating_frame_kinematics",
+        "astro.cw.cw04_gravity_gradient_linearization"
+      ],
+      "required_math_node_ids": [
+        "astro.cw.cw05_clohessy_wiltshire_equations"
+      ],
+      "assumptions": [
+        "||ρ||/r0 に関する 2 次以上の非線形項を無視し、外力加速度 f = (fx, fy, fz) を付加する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(\\ddot{x} - 2n\\dot{y} - n^2 x)\\hat{\\mathbf{i}} + (\\ddot{y} + 2n\\dot{x} - n^2 y)\\hat{\\mathbf{j}} + \\ddot{z}\\hat{\\mathbf{k}} = n^2(2x\\hat{\\mathbf{i}} - y\\hat{\\mathbf{j}} - z\\hat{\\mathbf{k}}) + \\mathbf{f}$$",
+          "to_latex": "\\ddot{x} - 2n\\dot{y} - 3n^2 x = f_x,\\quad \\ddot{y} + 2n\\dot{x} = f_y,\\quad \\ddot{z} + n^2 z = f_z",
+          "operation_label": "線形化運動方程式の成分整理",
+          "explanation": "LVLH 加速度と線形化重力勾配の等式から各成分を左辺へ移項し、CW 方程式を得る。",
+          "used_node_ids": [
+            "astro.cw.cw02_rotating_frame_kinematics",
+            "astro.cw.cw04_gravity_gradient_linearization"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_x_component",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\ddot{x} - 2n\\dot{y} - n^2 x)\\hat{\\mathbf{i}} + (\\ddot{y} + 2n\\dot{x} - n^2 y)\\hat{\\mathbf{j}} + \\ddot{z}\\hat{\\mathbf{k}} = n^2(2x\\hat{\\mathbf{i}} - y\\hat{\\mathbf{j}} - z\\hat{\\mathbf{k}}) + \\mathbf{f}$$",
+          "to_latex": "\\ddot{x} - 2n\\dot{y} - 3n^2 x = f_x,\\quad \\ddot{y} + 2n\\dot{x} - n^2 y = -n^2 y + f_y,\\quad \\ddot{z} = -n^2 z + f_z",
+          "operation_label": "x, y, z 各成分への分解",
+          "explanation": "i_hat 成分では -n^2 x - 2n^2 x = -3n^2 x となり、j_hat・k_hat 成分をそれぞれ等置する。",
+          "used_node_ids": [
+            "astro.cw.cw02_rotating_frame_kinematics",
+            "astro.cw.cw04_gravity_gradient_linearization"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_yz_simplification",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{x} - 2n\\dot{y} - 3n^2 x = f_x,\\quad \\ddot{y} + 2n\\dot{x} - n^2 y = -n^2 y + f_y,\\quad \\ddot{z} = -n^2 z + f_z",
+          "to_latex": "\\ddot{x} - 2n\\dot{y} - 3n^2 x = f_x,\\quad \\ddot{y} + 2n\\dot{x} = f_y,\\quad \\ddot{z} + n^2 z = f_z",
+          "operation_label": "y方向遠心力項の相殺とz方向移項",
+          "explanation": "y 方向では遠心力項 -n^2 y と重力勾配項 -n^2 y が相殺し、z 方向では -n^2 z を左辺へ移項して CW 方程式が完成する。",
+          "used_node_ids": [
+            "astro.cw.cw05_clohessy_wiltshire_equations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cw.cw06_from_cw_z_ode",
+      "target_node_id": "astro.cw.cw06_cw_out_of_plane_solution",
+      "route_kind": "deductive",
+      "title": "面外 CW 方程式（単振動 ODE）の初期値解法",
+      "premise_node_ids": [
+        "astro.cw.cw05_clohessy_wiltshire_equations"
+      ],
+      "required_math_node_ids": [
+        "astro.cw.cw06_cw_out_of_plane_solution",
+        "math.calc.m31_trig_derivatives",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "自由ドリフト運動（fz = 0）であり、初期時刻を t0 = 0 とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{z} + n^2 z = 0,\\quad z(0) = z_0,\\quad \\dot{z}(0) = \\dot{z}_0",
+          "to_latex": "z(t) = z_0\\cos(nt) + \\frac{\\dot{z}_0}{n}\\sin(nt),\\quad \\dot{z}(t) = -n z_0\\sin(nt) + \\dot{z}_0\\cos(nt) \\quad (f_z = 0,\\; t_0 = 0))",
+          "operation_label": "2階定数係数線形 ODE の初期値解",
+          "explanation": "面外方程式は独立な単振動子であり、一般解に初期条件 z(0)=z0, z_dot(0)=z0_dot を代入して決定する。",
+          "used_node_ids": [
+            "astro.cw.cw05_clohessy_wiltshire_equations",
+            "math.calc.m31_trig_derivatives",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_general_solution",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{z} + n^2 z = 0,\\quad z(0) = z_0,\\quad \\dot{z}(0) = \\dot{z}_0",
+          "to_latex": "z(t) = C_1\\cos(nt) + C_2\\sin(nt),\\quad \\dot{z}(t) = -n C_1\\sin(nt) + n C_2\\cos(nt)$$",
+          "operation_label": "単振動の一般解と時間微分",
+          "explanation": "M06 より z(t) の一般解を三角関数の線形結合で置き、M31 を用いて速度 z_dot(t) を計算する。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_initial_conditions",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "z(t) = C_1\\cos(nt) + C_2\\sin(nt),\\quad \\dot{z}(t) = -n C_1\\sin(nt) + n C_2\\cos(nt)$$",
+          "to_latex": "z(t) = z_0\\cos(nt) + \\frac{\\dot{z}_0}{n}\\sin(nt),\\quad \\dot{z}(t) = -n z_0\\sin(nt) + \\dot{z}_0\\cos(nt) \\quad (f_z = 0,\\; t_0 = 0))",
+          "operation_label": "初期条件の代入による積分定数の確定",
+          "explanation": "t = 0 で C1 = z0, n C2 = z0_dot となることから C2 = z0_dot / n を代入して面外解を得る。",
+          "used_node_ids": [
+            "astro.cw.cw06_cw_out_of_plane_solution"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cw.cw07_from_cw_in_plane_odes",
+      "target_node_id": "astro.cw.cw07_cw_in_plane_analytical_solution",
+      "route_kind": "deductive",
+      "title": "面内 CW 連立方程式の消去法による閉形式解法",
+      "premise_node_ids": [
+        "astro.cw.cw05_clohessy_wiltshire_equations"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m31_trig_derivatives",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "自由ドリフト運動（fx = fy = 0）であり、初期時刻を t0 = 0 とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{x} - 2n\\dot{y} - 3n^2 x = 0,\\quad \\ddot{y} + 2n\\dot{x} = 0,\\quad (x(0),y(0),\\dot{x}(0),\\dot{y}(0)) = (x_0,y_0,\\dot{x}_0,\\dot{y}_0)$$",
+          "to_latex": "x(t) = (4 - 3\\cos nt)x_0 + \\frac{\\sin nt}{n}\\dot{x}_0 + \\frac{2(1 - \\cos nt)}{n}\\dot{y}_0,\\quad y(t) = 6(\\sin nt - nt)x_0 + y_0 - \\frac{2(1 - \\cos nt)}{n}\\dot{x}_0 + \\frac{4\\sin nt - 3nt}{n}\\dot{y}_0",
+          "operation_label": "y_dot 消去による x(t) と y(t) の解析積分",
+          "explanation": "第 2 式を 1 回積分して y_dot を x で表し、第 1 式に代入して x(t) を解いた後、再び積分して y(t) を求める。",
+          "used_node_ids": [
+            "astro.cw.cw05_clohessy_wiltshire_equations",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_first_integral_y",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{x} - 2n\\dot{y} - 3n^2 x = 0,\\quad \\ddot{y} + 2n\\dot{x} = 0,\\quad (x(0),y(0),\\dot{x}(0),\\dot{y}(0)) = (x_0,y_0,\\dot{x}_0,\\dot{y}_0)$$",
+          "to_latex": "\\dot{y}(t) + 2nx(t) = \\dot{y}_0 + 2nx_0 \\implies \\ddot{x} + n^2 x = 2n(\\dot{y}_0 + 2nx_0)$$",
+          "operation_label": "y方向方程式の第1積分と x 方程式への代入",
+          "explanation": "d/dt(y_dot + 2nx) = 0 を [0, t] で積分して y_dot = y0_dot + 2n(x0 - x) を得、第 1 式に代入すると x の定数強制単振動方程式になる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_solve_x",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{y}(t) + 2nx(t) = \\dot{y}_0 + 2nx_0 \\implies \\ddot{x} + n^2 x = 2n(\\dot{y}_0 + 2nx_0)$$",
+          "to_latex": "x(t) = (4 - 3\\cos nt)x_0 + \\frac{\\sin nt}{n}\\dot{x}_0 + \\frac{2(1 - \\cos nt)}{n}\\dot{y}_0,\\quad \\dot{y}(t) = 6n(\\cos nt - 1)x_0 - 2\\sin(nt)\\dot{x}_0 + (4\\cos nt - 3)\\dot{y}_0",
+          "operation_label": "x(t) の一般解・特解と y_dot(t) の決定",
+          "explanation": "特解 x_p = 2(y0_dot + 2nx0)/n に同次解 A cos(nt) + B sin(nt) を加え、初期条件 x(0)=x0, x_dot(0)=x0_dot を満たすように係数を決定し、y_dot(t) = y0_dot + 2n(x0 - x(t)) を求める。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_integrate_y",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x(t) = (4 - 3\\cos nt)x_0 + \\frac{\\sin nt}{n}\\dot{x}_0 + \\frac{2(1 - \\cos nt)}{n}\\dot{y}_0,\\quad \\dot{y}(t) = 6n(\\cos nt - 1)x_0 - 2\\sin(nt)\\dot{x}_0 + (4\\cos nt - 3)\\dot{y}_0",
+          "to_latex": "x(t) = (4 - 3\\cos nt)x_0 + \\frac{\\sin nt}{n}\\dot{x}_0 + \\frac{2(1 - \\cos nt)}{n}\\dot{y}_0,\\quad y(t) = 6(\\sin nt - nt)x_0 + y_0 - \\frac{2(1 - \\cos nt)}{n}\\dot{x}_0 + \\frac{4\\sin nt - 3nt}{n}\\dot{y}_0",
+          "operation_label": "y_dot(t) の定積分による y(t) の導出",
+          "explanation": "y(t) = y0 + ∫_0^t y_dot(τ) dτ を微積分学の基本定理により積分し、面内の閉形式解を完成させる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cw.cw08_from_analytical_solutions",
+      "target_node_id": "astro.cw.cw08_cw_state_transition_matrix",
+      "route_kind": "reformulation",
+      "title": "CW 解析解の行列表現（状態遷移行列）と無ドリフト周期条件",
+      "premise_node_ids": [
+        "astro.cw.cw06_cw_out_of_plane_solution",
+        "astro.cw.cw07_cw_in_plane_analytical_solution"
+      ],
+      "required_math_node_ids": [
+        "astro.cw.cw08_cw_state_transition_matrix",
+        "math.calc.m31_trig_derivatives"
+      ],
+      "assumptions": [
+        "線形性より任意時刻の状態ベクトルは初期状態ベクトルの線形写像として表される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(x(t), y(t), z(t), \\dot{z}(t))\\text{ in terms of } (x_0, y_0, z_0, \\dot{x}_0, \\dot{y}_0, \\dot{z}_0)$$",
+          "to_latex": "\\mathbf{X}(t) = \\Phi(t)\\mathbf{X}_0,\\quad \\Phi(t) = \\begin{pmatrix} \\Phi_{rr}(t) & \\Phi_{rv}(t) \\\\ \\Phi_{vr}(t) & \\Phi_{vv}(t) \\end{pmatrix} \\in \\mathbb{R}^{6\\times 6};\\qquad \\dot{y}_0 = -2n x_0 \\implies \\text{no secular drift } (y(t)\\text{ periodic})",
+          "operation_label": "状態空間行列表現と永年項消去条件",
+          "explanation": "x, y, z とその時間微分を初期状態 X0 について整理して 6×6 状態遷移行列 Φ(t) を構成し、y(t) の nt 比例項をゼロにする条件を求める。",
+          "used_node_ids": [
+            "astro.cw.cw06_cw_out_of_plane_solution",
+            "astro.cw.cw07_cw_in_plane_analytical_solution",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_velocity_differentiation",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(x(t), y(t), z(t), \\dot{z}(t))\\text{ in terms of } (x_0, y_0, z_0, \\dot{x}_0, \\dot{y}_0, \\dot{z}_0)$$",
+          "to_latex": "\\mathbf{X}(t) = \\begin{pmatrix} \\mathbf{r}_{\\mathrm{rel}}(t) \\\\ \\mathbf{v}_{\\mathrm{rel}}(t) \\end{pmatrix} = \\begin{pmatrix} \\Phi_{rr}(t) & \\Phi_{rv}(t) \\\\ \\Phi_{vr}(t) & \\Phi_{vv}(t) \\end{pmatrix}\\begin{pmatrix} \\mathbf{r}_{\\mathrm{rel},0} \\\\ \\mathbf{v}_{\\mathrm{rel},0} \\end{pmatrix}$$",
+          "operation_label": "位置・速度解のブロック行列 Φ(t) への格納",
+          "explanation": "x(t), y(t), z(t) の係数を位置ブロック Φ_rr, Φ_rv に、x_dot(t), y_dot(t), z_dot(t) の係数を速度ブロック Φ_vr, Φ_vv に並べて 6×6 行列 Φ(t) を得る。",
+          "used_node_ids": [
+            "astro.cw.cw06_cw_out_of_plane_solution",
+            "astro.cw.cw07_cw_in_plane_analytical_solution",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_drift_free_condition",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{X}(t) = \\begin{pmatrix} \\mathbf{r}_{\\mathrm{rel}}(t) \\\\ \\mathbf{v}_{\\mathrm{rel}}(t) \\end{pmatrix} = \\begin{pmatrix} \\Phi_{rr}(t) & \\Phi_{rv}(t) \\\\ \\Phi_{vr}(t) & \\Phi_{vv}(t) \\end{pmatrix}\\begin{pmatrix} \\mathbf{r}_{\\mathrm{rel},0} \\\\ \\mathbf{v}_{\\mathrm{rel},0} \\end{pmatrix}$$",
+          "to_latex": "\\mathbf{X}(t) = \\Phi(t)\\mathbf{X}_0,\\quad \\Phi(t) = \\begin{pmatrix} \\Phi_{rr}(t) & \\Phi_{rv}(t) \\\\ \\Phi_{vr}(t) & \\Phi_{vv}(t) \\end{pmatrix} \\in \\mathbb{R}^{6\\times 6};\\qquad \\dot{y}_0 = -2n x_0 \\implies \\text{no secular drift } (y(t)\\text{ periodic})",
+          "operation_label": "永年ドリフト項の消去条件",
+          "explanation": "y(t) に含まれる時間線形項 -(6n x0 + 3 y0_dot)t が消滅する条件 6n x0 + 3 y0_dot = 0 より、無ドリフト条件 y0_dot = -2n x0 が導かれる。",
+          "used_node_ids": [
+            "astro.cw.cw07_cw_in_plane_analytical_solution",
+            "astro.cw.cw08_cw_state_transition_matrix"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,828 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.optics.interference_diffraction",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "波動光学：干渉・フラウンホーファー回折・分解能（レイリー基準）",
+    "language": "ja",
+    "description": "ホイヘンス＝フレネルの原理、ヤングの干渉、単スリット・回折格子のフラウンホーファー回折、円形開口のエアリーディスクとレイリー基準を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.opt.id01_scalar_wave_intensity",
+      "short_code": "ID01",
+      "kind": "definition",
+      "title": "スカラー波動近似（ヘルムホルツ方程式）と光強度",
+      "summary": "偏光効果を無視できる単色電磁波を複素スカラー場とヘルムホルツ方程式で記述し、ポインティングベクトルの時間平均から光強度（放射照度）を定義する。",
+      "canonical_latex": "(\\nabla^2 + k^2)u(\\mathbf{r}) = 0,\\qquad U(\\mathbf{r},t) = \\operatorname{Re}\\big[u(\\mathbf{r})e^{-i\\omega t}\\big],\\qquad I(\\mathbf{r}) := \\langle |\\mathbf{S}| \\rangle = \\frac{1}{2}\\varepsilon_0 c |u(\\mathbf{r})|^2 \\propto |u(\\mathbf{r})|^2",
+      "aliases_latex": [
+        "\\nabla^2 u + k^2 u = 0,\\quad I \\propto |u|^2"
+      ],
+      "keywords": [
+        "スカラー波動近似",
+        "ヘルムホルツ方程式",
+        "複素振幅",
+        "光強度",
+        "放射照度"
+      ],
+      "domain_tags": [
+        "physics",
+        "optics",
+        "wave_optics"
+      ]
+    },
+    {
+      "id": "phys.opt.id02_huygens_fresnel_principle",
+      "short_code": "ID02",
+      "kind": "theorem_formula",
+      "title": "ホイヘンス＝フレネルの原理（フレネル＝キルヒホッフ回折積分）",
+      "summary": "開口面上の各点を二次球面波の波源とみなし、その重ね合わせによって観測点での複素振幅を与える回折積分公式。",
+      "canonical_latex": "u(P) = \\frac{1}{i\\lambda}\\iint_{\\Sigma} u(Q)\\frac{e^{ikr}}{r}K(\\theta)\\,dS\\qquad\\left(r = |\\mathbf{r}_P - \\mathbf{r}_Q|,\\; K(\\theta) = \\frac{1+\\cos\\theta}{2}\\right)",
+      "aliases_latex": [
+        "u(P) = \\frac{1}{i\\lambda}\\iint_{\\Sigma} u(Q)\\frac{e^{ikr}}{r}\\frac{1+\\cos\\theta}{2}\\,dS"
+      ],
+      "keywords": [
+        "ホイヘンス＝フレネルの原理",
+        "キルヒホッフ回折積分",
+        "傾斜因子",
+        "素元波"
+      ],
+      "domain_tags": [
+        "physics",
+        "optics",
+        "diffraction"
+      ]
+    },
+    {
+      "id": "phys.opt.id03_two_beam_interference",
+      "short_code": "ID03",
+      "kind": "theorem_formula",
+      "title": "2光束干渉の強度分布と強め合い・弱め合いの条件",
+      "summary": "2つの可干渉な光波の重ね合わせによる合成強度と干渉項、および光路差による明暗条件。",
+      "canonical_latex": "I = I_1 + I_2 + 2\\sqrt{I_1 I_2}\\cos\\Delta\\phi,\\qquad \\Delta\\phi = \\frac{2\\pi}{\\lambda}\\Delta L,\\qquad \\Delta L = \\begin{cases} m\\lambda & (\\text{constructive}) \\\\ (m+\\tfrac{1}{2})\\lambda & (\\text{destructive}) \\end{cases}",
+      "aliases_latex": [
+        "I = I_1 + I_2 + 2\\sqrt{I_1 I_2}\\cos\\Delta\\phi"
+      ],
+      "keywords": [
+        "2光束干渉",
+        "干渉項",
+        "光路差",
+        "位相差",
+        "可干渉性"
+      ],
+      "domain_tags": [
+        "physics",
+        "optics",
+        "interference"
+      ]
+    },
+    {
+      "id": "phys.opt.id04_young_double_slit",
+      "short_code": "ID04",
+      "kind": "theorem_formula",
+      "title": "ヤングの二重スリット干渉と干渉縞間隔",
+      "summary": "間隔 d の2本の狭スリットを通過した光が遠方スクリーン上に作る余弦二乗型の干渉縞分布と縞間隔。",
+      "canonical_latex": "\\Delta L \\approx d\\sin\\theta \\approx \\frac{d y}{L},\\qquad I(y) = 4I_0\\cos^2\\left(\\frac{\\pi d y}{\\lambda L}\\right),\\qquad \\Delta y = \\frac{\\lambda L}{d}",
+      "aliases_latex": [
+        "d\\sin\\theta = m\\lambda,\\quad \\Delta y = \\frac{\\lambda L}{d}"
+      ],
+      "keywords": [
+        "ヤングの実験",
+        "二重スリット",
+        "干渉縞",
+        "縞間隔"
+      ],
+      "domain_tags": [
+        "physics",
+        "optics",
+        "interference"
+      ]
+    },
+    {
+      "id": "phys.opt.id05_fraunhofer_diffraction_integral",
+      "short_code": "ID05",
+      "kind": "theorem_formula",
+      "title": "フラウンホーファー回折積分（遠方界のフーリエ変換表示）",
+      "summary": "観測点が開口に比べて十分遠方にある極限において、回折振幅が開口透過関数の2次元フーリエ変換として表される定理。",
+      "canonical_latex": "u(x,y) = \\frac{e^{ikR_0}}{i\\lambda R_0}e^{i\\frac{k}{2R_0}(x^2+y^2)}\\iint_{\\Sigma} A(x',y')\\exp\\left[-i\\frac{2\\pi}{\\lambda R_0}(xx'+yy')\\right]dx'\\,dy'",
+      "aliases_latex": [
+        "u(\\mathbf{k}_\\perp) \\propto \\iint_{\\Sigma} A(x',y')e^{-i(k_x x' + k_y y')}\\,dx'\\,dy'"
+      ],
+      "keywords": [
+        "フラウンホーファー回折",
+        "遠方界近似",
+        "フーリエ光学",
+        "開口関数"
+      ],
+      "domain_tags": [
+        "physics",
+        "optics",
+        "diffraction"
+      ]
+    },
+    {
+      "id": "phys.opt.id06_single_slit_diffraction",
+      "short_code": "ID06",
+      "kind": "theorem_formula",
+      "title": "単スリットのフラウンホーファー回折と暗線条件",
+      "summary": "幅 a の1次元単スリットによるフラウンホーファー回折強度（sinc関数の二乗分布）と回折暗線の条件。",
+      "canonical_latex": "I(\\theta) = I_0\\left(\\frac{\\sin\\beta}{\\beta}\\right)^2\\quad\\left(\\beta := \\frac{\\pi a\\sin\\theta}{\\lambda}\\right),\\qquad a\\sin\\theta = m\\lambda\\quad(m = \\pm 1,\\pm 2,\\dots:\\; \\text{minima})",
+      "aliases_latex": [
+        "I(\\theta) = I_0\\operatorname{sinc}^2\\!\\left(\\frac{a\\sin\\theta}{\\lambda}\\right)"
+      ],
+      "keywords": [
+        "単スリット回折",
+        "sinc関数",
+        "回折暗線",
+        "中央極大"
+      ],
+      "domain_tags": [
+        "physics",
+        "optics",
+        "diffraction"
+      ]
+    },
+    {
+      "id": "phys.opt.id07_diffraction_grating",
+      "short_code": "ID07",
+      "kind": "theorem_formula",
+      "title": "回折格子の強度分布・主極大条件と波長分解能",
+      "summary": "スリット幅 a・格子定数 d・総本数 N の回折格子による回折強度分布、回折角の格子方程式、および波長分解能。",
+      "canonical_latex": "I(\\theta) = I_0\\left(\\frac{\\sin\\beta}{\\beta}\\right)^2\\left(\\frac{\\sin(N\\gamma)}{\\sin\\gamma}\\right)^2\\quad\\left(\\gamma := \\frac{\\pi d\\sin\\theta}{\\lambda}\\right),\\qquad d\\sin\\theta = m\\lambda,\\qquad R := \\frac{\\lambda}{\\Delta\\lambda} = mN",
+      "aliases_latex": [
+        "d\\sin\\theta = m\\lambda,\\quad R = mN"
+      ],
+      "keywords": [
+        "回折格子",
+        "グレーティング",
+        "主極大",
+        "波長分解能"
+      ],
+      "domain_tags": [
+        "physics",
+        "optics",
+        "diffraction"
+      ]
+    },
+    {
+      "id": "phys.opt.id08_circular_aperture_airy_disk",
+      "short_code": "ID08",
+      "kind": "theorem_formula",
+      "title": "円形開口のフラウンホーファー回折とエアリーディスク",
+      "summary": "直径 D の円形開口によるフラウンホーファー回折パターン（第1種ベッセル関数表示）と第1暗環の角度半径。",
+      "canonical_latex": "I(\\theta) = I_0\\left[\\frac{2J_1(x)}{x}\\right]^2\\quad\\left(x := \\frac{\\pi D\\sin\\theta}{\\lambda}\\right),\\qquad \\sin\\theta_1 = \\frac{j_{1,1}\\lambda}{\\pi D} \\approx 1.22\\frac{\\lambda}{D}",
+      "aliases_latex": [
+        "I(\\theta) = I_0\\left[\\frac{2J_1(\\pi D\\sin\\theta/\\lambda)}{\\pi D\\sin\\theta/\\lambda}\\right]^2,\\quad \\sin\\theta_1 \\approx 1.22\\frac{\\lambda}{D}"
+      ],
+      "keywords": [
+        "円形開口",
+        "エアリーディスク",
+        "ベッセル関数",
+        "第1暗環"
+      ],
+      "domain_tags": [
+        "physics",
+        "optics",
+        "diffraction"
+      ]
+    },
+    {
+      "id": "phys.opt.id09_rayleigh_criterion_resolution",
+      "short_code": "ID09",
+      "kind": "definition",
+      "title": "レイリー基準と光学系の角度分解能・回折限界",
+      "summary": "一方の点光源のエアリーディスク中心極大が他方の第1暗環に一致するときを分解の限界とするレイリー基準と、望遠鏡・顕微鏡の分解能。",
+      "canonical_latex": "\\theta_{\\min} = \\theta_1 \\approx 1.22\\frac{\\lambda}{D},\\qquad d_{\\min} = \\frac{0.61\\lambda}{\\mathrm{NA}}\\quad\\left(\\mathrm{NA} := n\\sin\\alpha\\right)",
+      "aliases_latex": [
+        "\\theta_{\\min} = 1.22\\frac{\\lambda}{D},\\quad d_{\\min} = \\frac{0.61\\lambda}{\\mathrm{NA}}"
+      ],
+      "keywords": [
+        "レイリー基準",
+        "分解能",
+        "回折限界",
+        "開口数"
+      ],
+      "domain_tags": [
+        "physics",
+        "optics",
+        "imaging"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv.opt.id01_from_mw",
+      "target_node_id": "phys.opt.id01_scalar_wave_intensity",
+      "route_kind": "reformulation",
+      "title": "電磁波動方程式とポインティングベクトルからのスカラー波動近似・光強度の導出",
+      "premise_node_ids": [
+        "phys.em.mw06_em_wave_equation_vacuum",
+        "phys.em.mw08_em_energy_density_poynting_vector"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "真空中または均質等方媒質中での単色調和波",
+        "偏光状態を一定とみなすスカラー近似"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla^2\\mathbf{E} - \\frac{1}{c^2}\\frac{\\partial^2\\mathbf{E}}{\\partial t^2} = \\mathbf{0},\\quad \\mathbf{S} = \\frac{1}{\\mu_0}(\\mathbf{E}\\times\\mathbf{B})",
+          "to_latex": "(\\nabla^2 + k^2)u(\\mathbf{r}) = 0,\\quad I(\\mathbf{r}) = \\frac{1}{2}\\varepsilon_0 c |u(\\mathbf{r})|^2 \\propto |u(\\mathbf{r})|^2",
+          "operation_label": "単色スカラー近似と時間平均エネルギー流束の評価",
+          "explanation": "電場の1成分に単色時間依存性 e^{-i\\omega t} を仮定してヘルムホルツ方程式を導き、ポインティングベクトルの時間平均から光強度が複素振幅の二乗に比例することを示す。",
+          "used_node_ids": [
+            "phys.em.mw06_em_wave_equation_vacuum",
+            "phys.em.mw08_em_energy_density_poynting_vector"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla^2\\mathbf{E} - \\frac{1}{c^2}\\frac{\\partial^2\\mathbf{E}}{\\partial t^2} = \\mathbf{0}",
+          "to_latex": "\\nabla^2 U(\\mathbf{r},t) - \\frac{1}{c^2}\\frac{\\partial^2 U(\\mathbf{r},t)}{\\partial t^2} = 0",
+          "operation_label": "スカラー成分の抽出",
+          "explanation": "偏光が空間的に変化しない均質媒質中では電場の各直交成分が独立に同一の波動方程式を満たすため、代表成分 U(\\mathbf{r},t) で記述する。",
+          "used_node_ids": [
+            "phys.em.mw06_em_wave_equation_vacuum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla^2 U(\\mathbf{r},t) - \\frac{1}{c^2}\\frac{\\partial^2 U(\\mathbf{r},t)}{\\partial t^2} = 0",
+          "to_latex": "(\\nabla^2 + k^2)u(\\mathbf{r}) = 0\\quad\\left(k := \\frac{\\omega}{c}\\right)",
+          "operation_label": "調和時間依存性の分離",
+          "explanation": "U(\\mathbf{r},t) = \\operatorname{Re}[u(\\mathbf{r})e^{-i\\omega t}] を代入し、時間微分を -\\omega^2 に置き換えることで空間振幅 u(\\mathbf{r}) に対するヘルムホルツ方程式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\nabla^2 + k^2)u(\\mathbf{r}) = 0",
+          "to_latex": "(\\nabla^2 + k^2)u(\\mathbf{r}) = 0,\\quad I(\\mathbf{r}) = \\frac{1}{2}\\varepsilon_0 c |u(\\mathbf{r})|^2 \\propto |u(\\mathbf{r})|^2",
+          "operation_label": "ポインティングベクトルの時間平均",
+          "explanation": "局所平面波関係 |\\mathbf{B}| = |\\mathbf{E}|/c と \\langle \\cos^2(\\omega t - \\phi)\\rangle = 1/2 をポインティングベクトル \\mathbf{S} に適用し、光強度 I を定義する。",
+          "used_node_ids": [
+            "phys.em.mw08_em_energy_density_poynting_vector"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.opt.id02_from_id01",
+      "target_node_id": "phys.opt.id02_huygens_fresnel_principle",
+      "route_kind": "deductive",
+      "title": "ヘルムホルツ方程式と外向き球面グリーン関数からの回折積分の導出",
+      "premise_node_ids": [
+        "phys.opt.id01_scalar_wave_intensity",
+        "phys.em.emr03_retarded_potentials"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "キルヒホッフの境界条件（開口外で場と法線微分が零）",
+        "短波長近似 kr >> 1"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(\\nabla^2 + k^2)u(\\mathbf{r}) = 0,\\quad G_+(\\mathbf{r}-\\mathbf{r}') = -\\frac{e^{ik|\\mathbf{r}-\\mathbf{r}'|}}{4\\pi|\\mathbf{r}-\\mathbf{r}'|}",
+          "to_latex": "u(P) = \\frac{1}{i\\lambda}\\iint_{\\Sigma} u(Q)\\frac{e^{ikr}}{r}K(\\theta)\\,dS",
+          "operation_label": "グリーンの定理と短波長近似によるホイヘンス＝フレネル積分",
+          "explanation": "ヘルムホルツ方程式の自由空間グリーン関数とグリーンの第2恒等式を用いて境界積分表示を作り、短波長近似を適用してフレネル＝キルヒホッフの回折積分を導く。",
+          "used_node_ids": [
+            "phys.em.emr03_retarded_potentials",
+            "phys.opt.id01_scalar_wave_intensity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\nabla^2 + k^2)u(\\mathbf{r}) = 0,\\quad G_+(\\mathbf{r}-\\mathbf{r}') = -\\frac{e^{ik|\\mathbf{r}-\\mathbf{r}'|}}{4\\pi|\\mathbf{r}-\\mathbf{r}'|}",
+          "to_latex": "u(P) = \\iint_{\\Sigma}\\left(u(Q)\\frac{\\partial G_+}{\\partial n} - G_+\\frac{\\partial u(Q)}{\\partial n}\\right)dS",
+          "operation_label": "ヘルムホルツ＝キルヒホッフ積分定理",
+          "explanation": "観測点 P を囲む閉曲面のうち開口面 \\Sigma のみが寄与するキルヒホッフ境界条件の下で、グリーンの第2恒等式を適用する。",
+          "used_node_ids": [
+            "phys.em.emr03_retarded_potentials",
+            "phys.opt.id01_scalar_wave_intensity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(P) = \\iint_{\\Sigma}\\left(u(Q)\\frac{\\partial G_+}{\\partial n} - G_+\\frac{\\partial u(Q)}{\\partial n}\\right)dS",
+          "to_latex": "u(P) = \\frac{1}{4\\pi}\\iint_{\\Sigma} u(Q)\\frac{e^{ikr}}{r}\\left(-ik\\cos\\theta - ik\\right)dS",
+          "operation_label": "短波長近似と法線微分の評価",
+          "explanation": "kr \\gg 1 より \\partial G_+/\\partial n \\approx -ik\\cos\\theta\\,G_+ と近似し、開口への入射波を局所平面波として \\partial u/\\partial n \\approx ik u を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(P) = \\frac{1}{4\\pi}\\iint_{\\Sigma} u(Q)\\frac{e^{ikr}}{r}\\left(-ik\\cos\\theta - ik\\right)dS",
+          "to_latex": "u(P) = \\frac{1}{i\\lambda}\\iint_{\\Sigma} u(Q)\\frac{e^{ikr}}{r}K(\\theta)\\,dS",
+          "operation_label": "傾斜因子 K(\\theta) の整理",
+          "explanation": "k = 2\\pi/\\lambda を代入し、-i = 1/i を用いて傾斜因子 K(\\theta) = (1+\\cos\\theta)/2 をくくり出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.opt.id03_from_id01",
+      "target_node_id": "phys.opt.id03_two_beam_interference",
+      "route_kind": "deductive",
+      "title": "複素振幅の線形重ね合わせからの2光束干渉式の導出",
+      "premise_node_ids": [
+        "phys.opt.id01_scalar_wave_intensity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "同一周波数・同一偏光の完全コヒーレントな2光波"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u = u_1 + u_2,\\quad I \\propto |u|^2",
+          "to_latex": "I = I_1 + I_2 + 2\\sqrt{I_1 I_2}\\cos\\Delta\\phi",
+          "operation_label": "複素振幅の和の絶対値二乗計算",
+          "explanation": "2つの波の複素振幅を重ね合わせて絶対値二乗をとることで、それぞれの強度の和に位相差に依存する干渉項が加わることを示す。",
+          "used_node_ids": [
+            "phys.opt.id01_scalar_wave_intensity"
+          ],
+          "sympy_check_hint": "abs(sqrt(I1)*exp(I*phi1) + sqrt(I2)*exp(I*phi2))**2"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u = u_1 + u_2,\\quad I \\propto |u|^2",
+          "to_latex": "I \\propto |u_1 + u_2|^2 = |u_1|^2 + |u_2|^2 + u_1 u_2^* + u_1^* u_2",
+          "operation_label": "複素共役積の展開",
+          "explanation": "|u|^2 = (u_1 + u_2)(u_1^* + u_2^*) を展開する。",
+          "used_node_ids": [
+            "phys.opt.id01_scalar_wave_intensity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I \\propto |u_1 + u_2|^2 = |u_1|^2 + |u_2|^2 + u_1 u_2^* + u_1^* u_2",
+          "to_latex": "I = I_1 + I_2 + 2\\sqrt{I_1 I_2}\\cos(\\phi_2 - \\phi_1)",
+          "operation_label": "極形式代入とオイラーの公式",
+          "explanation": "u_j = |u_j|e^{i\\phi_j} を代入し、e^{i(\\phi_1-\\phi_2)} + e^{-i(\\phi_1-\\phi_2)} = 2\\cos(\\phi_2 - \\phi_1) を用いる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I = I_1 + I_2 + 2\\sqrt{I_1 I_2}\\cos(\\phi_2 - \\phi_1)",
+          "to_latex": "I = I_1 + I_2 + 2\\sqrt{I_1 I_2}\\cos\\Delta\\phi",
+          "operation_label": "位相差と光路差の定義",
+          "explanation": "\\Delta\\phi = \\phi_2 - \\phi_1 = \\frac{2\\pi}{\\lambda}\\Delta L とおき、\\cos\\Delta\\phi = \\pm 1 から強め合い・弱め合いの条件を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.opt.id04_from_id03",
+      "target_node_id": "phys.opt.id04_young_double_slit",
+      "route_kind": "deductive",
+      "title": "2光束干渉式と遠方幾何近似からのヤングの干渉縞の導出",
+      "premise_node_ids": [
+        "phys.opt.id03_two_beam_interference"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "等強度 I_1 = I_2 = I_0",
+        "スリット間隔 d << スクリーン距離 L、小角近似 y << L"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I = I_1 + I_2 + 2\\sqrt{I_1 I_2}\\cos\\left(\\frac{2\\pi}{\\lambda}\\Delta L\\right)",
+          "to_latex": "I(y) = 4I_0\\cos^2\\left(\\frac{\\pi d y}{\\lambda L}\\right),\\quad \\Delta y = \\frac{\\lambda L}{d}",
+          "operation_label": "二重スリットの光路差近似と倍角公式",
+          "explanation": "等強度の2光束干渉式に幾何学的光路差 \\Delta L \\approx dy/L を代入し、スクリーン上の強度分布と縞間隔を導く。",
+          "used_node_ids": [
+            "phys.opt.id03_two_beam_interference"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I = I_1 + I_2 + 2\\sqrt{I_1 I_2}\\cos\\left(\\frac{2\\pi}{\\lambda}\\Delta L\\right)",
+          "to_latex": "I = 2I_0(1 + \\cos\\Delta\\phi) = 4I_0\\cos^2\\left(\\frac{\\Delta\\phi}{2}\\right)",
+          "operation_label": "等強度条件と半角の公式",
+          "explanation": "I_1 = I_2 = I_0 とし、1 + \\cos\\Delta\\phi = 2\\cos^2(\\Delta\\phi/2) を適用する。",
+          "used_node_ids": [
+            "phys.opt.id03_two_beam_interference"
+          ],
+          "sympy_check_hint": "2*(1 + cos(phi)) - 4*cos(phi/2)**2"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I = 2I_0(1 + \\cos\\Delta\\phi) = 4I_0\\cos^2\\left(\\frac{\\Delta\\phi}{2}\\right)",
+          "to_latex": "I(y) = 4I_0\\cos^2\\left(\\frac{\\pi d\\sin\\theta}{\\lambda}\\right) \\approx 4I_0\\cos^2\\left(\\frac{\\pi d y}{\\lambda L}\\right)",
+          "operation_label": "フラウンホーファー光路差近似",
+          "explanation": "d \\ll L のもとで光路差 \\Delta L \\approx d\\sin\\theta \\approx dy/L を用いて \\Delta\\phi = \\frac{2\\pi}{\\lambda}\\Delta L を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I(y) = 4I_0\\cos^2\\left(\\frac{\\pi d\\sin\\theta}{\\lambda}\\right) \\approx 4I_0\\cos^2\\left(\\frac{\\pi d y}{\\lambda L}\\right)",
+          "to_latex": "I(y) = 4I_0\\cos^2\\left(\\frac{\\pi d y}{\\lambda L}\\right),\\quad \\Delta y = \\frac{\\lambda L}{d}",
+          "operation_label": "明線位置と干渉縞間隔の決定",
+          "explanation": "\\frac{\\pi d y_m}{\\lambda L} = m\\pi から m 次明線位置 y_m = m\\frac{\\lambda L}{d} を求め、隣接明線の間隔 \\Delta y = y_{m+1} - y_m を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.opt.id05_from_id02",
+      "target_node_id": "phys.opt.id05_fraunhofer_diffraction_integral",
+      "route_kind": "deductive",
+      "title": "ホイヘンス＝フレネル積分からのフラウンホーファー回折積分の導出",
+      "premise_node_ids": [
+        "phys.opt.id02_huygens_fresnel_principle"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "近軸近似（\\theta が小さく K(\\theta) \\approx 1）",
+        "フラウンホーファー条件 R_0 >> k(x'^2 + y'^2)/2"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u(P) = \\frac{1}{i\\lambda}\\iint_{\\Sigma} u(Q)\\frac{e^{ikr}}{r}K(\\theta)\\,dS",
+          "to_latex": "u(x,y) = \\frac{e^{ikR_0}}{i\\lambda R_0}e^{i\\frac{k}{2R_0}(x^2+y^2)}\\iint_{\\Sigma} A(x',y')\\exp\\left[-i\\frac{2\\pi}{\\lambda R_0}(xx'+yy')\\right]dx'\\,dy'",
+          "operation_label": "遠方界の距離展開と二次位相項の無視",
+          "explanation": "開口と観測点間の距離 r を2次まで展開してフレネル回折積分を導き、さらにフラウンホーファー条件により開口座標の2次位相項を落とす。",
+          "used_node_ids": [
+            "phys.opt.id02_huygens_fresnel_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(P) = \\frac{1}{i\\lambda}\\iint_{\\Sigma} u(Q)\\frac{e^{ikr}}{r}K(\\theta)\\,dS",
+          "to_latex": "u(x,y) \\approx \\frac{1}{i\\lambda R_0}\\iint_{\\Sigma} A(x',y')e^{ikr}\\,dx'\\,dy'",
+          "operation_label": "振幅因子と傾斜因子の遠方近似",
+          "explanation": "分母の r を開口中心からの距離 R_0 で置き換え、小角近似 K(\\theta) \\approx 1、開口上の場を A(x',y') とおく。",
+          "used_node_ids": [
+            "phys.opt.id02_huygens_fresnel_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(x,y) \\approx \\frac{1}{i\\lambda R_0}\\iint_{\\Sigma} A(x',y')e^{ikr}\\,dx'\\,dy'",
+          "to_latex": "u(x,y) \\approx \\frac{e^{ikR_0}}{i\\lambda R_0}e^{i\\frac{k}{2R_0}(x^2+y^2)}\\iint_{\\Sigma} A(x',y')\\exp\\left[-i\\frac{k}{R_0}(xx'+yy')\\right]dx'\\,dy'",
+          "operation_label": "位相項の2次展開とフラウンホーファー極限",
+          "explanation": "r = \\sqrt{R_0^2 + (x-x')^2 + (y-y')^2} \\approx R_0 + \\frac{x^2+y^2}{2R_0} - \\frac{xx'+yy'}{R_0} + \\frac{x'^2+y'^2}{2R_0} を代入し、R_0 \\gg k(x'^2+y'^2)/2 より最後の項を無視する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(x,y) \\approx \\frac{e^{ikR_0}}{i\\lambda R_0}e^{i\\frac{k}{2R_0}(x^2+y^2)}\\iint_{\\Sigma} A(x',y')\\exp\\left[-i\\frac{k}{R_0}(xx'+yy')\\right]dx'\\,dy'",
+          "to_latex": "u(x,y) = \\frac{e^{ikR_0}}{i\\lambda R_0}e^{i\\frac{k}{2R_0}(x^2+y^2)}\\iint_{\\Sigma} A(x',y')\\exp\\left[-i\\frac{2\\pi}{\\lambda R_0}(xx'+yy')\\right]dx'\\,dy'",
+          "operation_label": "波数 k = 2\\pi/\\lambda による表記",
+          "explanation": "被積分関数内の k を 2\\pi/\\lambda に書き換え、空間周波数 (x/(\\lambda R_0), y/(\\lambda R_0)) に関するフーリエ変換表示を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.opt.id06_from_id05",
+      "target_node_id": "phys.opt.id06_single_slit_diffraction",
+      "route_kind": "deductive",
+      "title": "フラウンホーファー回折積分からの単スリット回折強度分布の導出",
+      "premise_node_ids": [
+        "phys.opt.id05_fraunhofer_diffraction_integral",
+        "phys.opt.id01_scalar_wave_intensity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "幅 a の一様照明された1次元スリット"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u(\\theta) \\propto \\int_{-a/2}^{a/2} e^{-ik x'\\sin\\theta}\\,dx'",
+          "to_latex": "I(\\theta) = I_0\\left(\\frac{\\sin\\beta}{\\beta}\\right)^2,\\quad a\\sin\\theta = m\\lambda\\;(m=\\pm 1,\\pm 2,\\dots)",
+          "operation_label": "区間 [-a/2, a/2] の積分と絶対値二乗",
+          "explanation": "単スリットに対するフラウンホーファー積分を実行して sinc 関数型の振幅を求め、二乗して強度分布と暗線条件を得る。",
+          "used_node_ids": [
+            "phys.opt.id01_scalar_wave_intensity",
+            "phys.opt.id05_fraunhofer_diffraction_integral"
+          ],
+          "sympy_check_hint": "integrate(exp(-I*k*x*sin(theta)), (x, -a/2, a/2))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(\\theta) \\propto \\int_{-a/2}^{a/2} e^{-ik x'\\sin\\theta}\\,dx'",
+          "to_latex": "u(\\theta) = u_0 \\frac{e^{i\\beta} - e^{-i\\beta}}{2i\\beta} = u_0\\frac{\\sin\\beta}{\\beta}\\quad\\left(\\beta := \\frac{\\pi a\\sin\\theta}{\\lambda}\\right)",
+          "operation_label": "指数関数の定積分",
+          "explanation": "\\sin\\theta \\approx x/R_0 とおき、x' について [-a/2, a/2] で積分して \\beta = \\frac{1}{2}ka\\sin\\theta = \\frac{\\pi a\\sin\\theta}{\\lambda} で整理する。",
+          "used_node_ids": [
+            "phys.opt.id05_fraunhofer_diffraction_integral"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(\\theta) = u_0 \\frac{e^{i\\beta} - e^{-i\\beta}}{2i\\beta} = u_0\\frac{\\sin\\beta}{\\beta}\\quad\\left(\\beta := \\frac{\\pi a\\sin\\theta}{\\lambda}\\right)",
+          "to_latex": "I(\\theta) = I_0\\left(\\frac{\\sin\\beta}{\\beta}\\right)^2",
+          "operation_label": "光強度の計算",
+          "explanation": "I(\\theta) \\propto |u(\\theta)|^2 と I_0 = I(0) を用いて規格化する。",
+          "used_node_ids": [
+            "phys.opt.id01_scalar_wave_intensity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I(\\theta) = I_0\\left(\\frac{\\sin\\beta}{\\beta}\\right)^2",
+          "to_latex": "I(\\theta) = I_0\\left(\\frac{\\sin\\beta}{\\beta}\\right)^2,\\quad a\\sin\\theta = m\\lambda\\;(m=\\pm 1,\\pm 2,\\dots)",
+          "operation_label": "暗線条件の導出",
+          "explanation": "\\beta \\neq 0 かつ \\sin\\beta = 0 となる条件 \\beta = m\\pi (m = \\pm 1, \\pm 2, \\dots) から a\\sin\\theta = m\\lambda を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.opt.id07_from_id05_id06",
+      "target_node_id": "phys.opt.id07_diffraction_grating",
+      "route_kind": "deductive",
+      "title": "N本スリットの回折積分からの回折格子強度と分解能の導出",
+      "premise_node_ids": [
+        "phys.opt.id05_fraunhofer_diffraction_integral",
+        "phys.opt.id06_single_slit_diffraction"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "間隔 d、幅 a の同一スリット N 本の等間隔配列"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u(\\theta) \\propto \\sum_{n=0}^{N-1} e^{-ik n d\\sin\\theta}\\int_{-a/2}^{a/2} e^{-ik x'\\sin\\theta}\\,dx'",
+          "to_latex": "I(\\theta) = I_0\\left(\\frac{\\sin\\beta}{\\beta}\\right)^2\\left(\\frac{\\sin(N\\gamma)}{\\sin\\gamma}\\right)^2,\\quad d\\sin\\theta = m\\lambda,\\quad R = mN",
+          "operation_label": "単スリット回折因子と N スリット干渉因子の積",
+          "explanation": "N 本のスリットからの位相和を等比級数として計算し、単スリット回折包絡線と多光束干渉項の積を求め、さらにレイリー基準を適用して波長分解能を導く。",
+          "used_node_ids": [
+            "phys.opt.id05_fraunhofer_diffraction_integral",
+            "phys.opt.id06_single_slit_diffraction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(\\theta) \\propto \\sum_{n=0}^{N-1} e^{-ik n d\\sin\\theta}\\int_{-a/2}^{a/2} e^{-ik x'\\sin\\theta}\\,dx'",
+          "to_latex": "u(\\theta) = u_0\\frac{\\sin\\beta}{\\beta}e^{-i(N-1)\\gamma}\\frac{\\sin(N\\gamma)}{\\sin\\gamma}",
+          "operation_label": "等比級数の和の公式",
+          "explanation": "\\gamma = \\frac{1}{2}kd\\sin\\theta = \\frac{\\pi d\\sin\\theta}{\\lambda} とおき、\\sum_{n=0}^{N-1} e^{-2in\\gamma} = \\frac{1-e^{-2iN\\gamma}}{1-e^{-2i\\gamma}} = e^{-i(N-1)\\gamma}\\frac{\\sin(N\\gamma)}{\\sin\\gamma} を計算する。",
+          "used_node_ids": [
+            "phys.opt.id06_single_slit_diffraction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(\\theta) = u_0\\frac{\\sin\\beta}{\\beta}e^{-i(N-1)\\gamma}\\frac{\\sin(N\\gamma)}{\\sin\\gamma}",
+          "to_latex": "I(\\theta) = I_0\\left(\\frac{\\sin\\beta}{\\beta}\\right)^2\\left(\\frac{\\sin(N\\gamma)}{\\sin\\gamma}\\right)^2",
+          "operation_label": "絶対値二乗による強度分布",
+          "explanation": "位相因子 e^{-i(N-1)\\gamma} の絶対値が 1 であることから強度分布が回折因子と干渉因子の積になる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I(\\theta) = I_0\\left(\\frac{\\sin\\beta}{\\beta}\\right)^2\\left(\\frac{\\sin(N\\gamma)}{\\sin\\gamma}\\right)^2",
+          "to_latex": "I(\\theta) = I_0\\left(\\frac{\\sin\\beta}{\\beta}\\right)^2\\left(\\frac{\\sin(N\\gamma)}{\\sin\\gamma}\\right)^2,\\quad d\\sin\\theta = m\\lambda,\\quad R = mN",
+          "operation_label": "主極大条件と半値・零点幅による波長分解能",
+          "explanation": "\\gamma = m\\pi で主極大 d\\sin\\theta = m\\lambda が生じ、隣接する最初の零点までの角度幅 \\Delta\\theta = \\frac{\\lambda}{Nd\\cos\\theta} と角分散 \\frac{d\\theta}{d\\lambda} = \\frac{m}{d\\cos\\theta} の比から R = \\frac{\\lambda}{\\Delta\\lambda} = mN を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.opt.id08_from_id05",
+      "target_node_id": "phys.opt.id08_circular_aperture_airy_disk",
+      "route_kind": "deductive",
+      "title": "円形開口に対する極座標フラウンホーファー積分からのエアリーディスクの導出",
+      "premise_node_ids": [
+        "phys.opt.id05_fraunhofer_diffraction_integral",
+        "phys.opt.id01_scalar_wave_intensity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "直径 D の一様円形開口"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u(\\theta) \\propto \\int_{0}^{D/2}\\int_{0}^{2\\pi} e^{-ik r'\\sin\\theta\\cos\\phi'}\\,r'\\,d\\phi'\\,dr'",
+          "to_latex": "I(\\theta) = I_0\\left[\\frac{2J_1(x)}{x}\\right]^2,\\quad \\sin\\theta_1 \\approx 1.22\\frac{\\lambda}{D}",
+          "operation_label": "極座標フーリエ変換とベッセル関数の積分公式",
+          "explanation": "円形対称性を利用して極座標でフラウンホーファー回折積分を実行し、第1種ベッセル関数 J_1 によるエアリーパターンと第1暗環の式を導く。",
+          "used_node_ids": [
+            "phys.opt.id01_scalar_wave_intensity",
+            "phys.opt.id05_fraunhofer_diffraction_integral"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(\\theta) \\propto \\int_{0}^{D/2}\\int_{0}^{2\\pi} e^{-ik r'\\sin\\theta\\cos\\phi'}\\,r'\\,d\\phi'\\,dr'",
+          "to_latex": "u(\\theta) \\propto 2\\pi\\int_{0}^{D/2} J_0(k r'\\sin\\theta)\\,r'\\,dr'",
+          "operation_label": "方位角積分と J_0 の積分表示",
+          "explanation": "ベッセル関数の積分表示 J_0(z) = \\frac{1}{2\\pi}\\int_0^{2\\pi} e^{-iz\\cos\\phi'}\\,d\\phi' を用いて方位角 \\phi' を積分する。",
+          "used_node_ids": [
+            "phys.opt.id05_fraunhofer_diffraction_integral"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(\\theta) \\propto 2\\pi\\int_{0}^{D/2} J_0(k r'\\sin\\theta)\\,r'\\,dr'",
+          "to_latex": "u(\\theta) = u_0\\frac{2J_1(x)}{x}\\quad\\left(x := \\frac{\\pi D\\sin\\theta}{\\lambda}\\right)",
+          "operation_label": "ベッセル関数の漸化式による動径積分",
+          "explanation": "\\frac{d}{dz}[z J_1(z)] = z J_0(z) を用いて r' 積分を実行し、中心値 u_0 (x \\to 0 で 2J_1(x)/x \\to 1) で規格化する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(\\theta) = u_0\\frac{2J_1(x)}{x}\\quad\\left(x := \\frac{\\pi D\\sin\\theta}{\\lambda}\\right)",
+          "to_latex": "I(\\theta) = I_0\\left[\\frac{2J_1(x)}{x}\\right]^2,\\quad \\sin\\theta_1 \\approx 1.22\\frac{\\lambda}{D}",
+          "operation_label": "強度分布と第1暗環の数値評価",
+          "explanation": "強度の二乗をとり、J_1(x) = 0 の最小の正根 j_{1,1} \\approx 3.8317 より \\sin\\theta_1 = \\frac{3.8317}{\\pi}\\frac{\\lambda}{D} \\approx 1.22\\frac{\\lambda}{D} を得る。",
+          "used_node_ids": [
+            "phys.opt.id01_scalar_wave_intensity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.opt.id09_from_id08",
+      "target_node_id": "phys.opt.id09_rayleigh_criterion_resolution",
+      "route_kind": "deductive",
+      "title": "エアリーディスク第1暗環からのレイリー基準および分解能の導出",
+      "premise_node_ids": [
+        "phys.opt.id08_circular_aperture_airy_disk"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "非干渉性2点光源の重ね合わせ",
+        "角度分解能における小角近似 \\sin\\theta_1 \\approx \\theta_1"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sin\\theta_1 \\approx 1.22\\frac{\\lambda}{D}",
+          "to_latex": "\\theta_{\\min} \\approx 1.22\\frac{\\lambda}{D},\\quad d_{\\min} = \\frac{0.61\\lambda}{\\mathrm{NA}}",
+          "operation_label": "レイリー基準の適用と顕微鏡開口数への換算",
+          "explanation": "エアリーディスクの第1暗環角を最小分離角とし、さらに物空間の最大取り込み角 \\alpha を用いて顕微鏡の空間分解能を表す。",
+          "used_node_ids": [
+            "phys.opt.id08_circular_aperture_airy_disk"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sin\\theta_1 \\approx 1.22\\frac{\\lambda}{D}",
+          "to_latex": "\\theta_{\\min} = \\theta_1 \\approx 1.22\\frac{\\lambda}{D}",
+          "operation_label": "角度分解能の定義（小角近似）",
+          "explanation": "一方の像の中心極大が他方の第1暗環に重なる角距離を限界とし、\\lambda \\ll D により \\sin\\theta_1 \\approx \\theta_1 と近似する。",
+          "used_node_ids": [
+            "phys.opt.id08_circular_aperture_airy_disk"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\theta_{\\min} = \\theta_1 \\approx 1.22\\frac{\\lambda}{D}",
+          "to_latex": "\\theta_{\\min} \\approx 1.22\\frac{\\lambda}{D},\\quad d_{\\min} = \\frac{0.61\\lambda}{\\mathrm{NA}}",
+          "operation_label": "結像系・顕微鏡の分解能換算",
+          "explanation": "焦点距離 f（または物距離 s_o）の対物レンズで D \\approx 2 s_o \\tan\\alpha \\approx 2 s_o \\sin\\alpha とし、媒質屈折率 n 中の波長 \\lambda/n を考慮すると d_{\\min} = s_o \\theta_{\\min} = \\frac{1.22(\\lambda/n)}{2\\sin\\alpha} = \\frac{0.61\\lambda}{\\mathrm{NA}} となる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
