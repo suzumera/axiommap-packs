@@ -1,0 +1,901 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.mech.non_inertial_frames",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "古典力学：回転座標系・遠心力・コリオリ力とフーコーの振り子",
+    "language": "ja",
+    "description": "回転系におけるベクトル時間微分公式から遠心力・コリオリ力・オイラー力を導出し、フーコーの振り子の歳差角速度を求める。"
+  },
+  "nodes": [
+    {
+      "id": "phys.mech.nif01_rotating_basis_kinematics",
+      "short_code": "NIF01",
+      "kind": "theorem_formula",
+      "title": "回転正規直交基底の時間微分公式（ポアソンの運動学公式）",
+      "summary": "慣性系に対して角速度ベクトル ω(t) で回転する正規直交基底 e'_i(t) の時間微分が ω × e'_i で与えられることを表す運動学の基本公式。",
+      "canonical_latex": "\\dot{\\mathbf{e}}'_i(t) = \\boldsymbol{\\omega}(t) \\times \\mathbf{e}'_i(t)\\quad (i=1,2,3)",
+      "aliases_latex": [
+        "\\frac{d\\mathbf{e}'_i}{dt} = \\boldsymbol{\\omega} \\times \\mathbf{e}'_i",
+        "\\dot{R}(t) = \\Omega(t)R(t)"
+      ],
+      "keywords": [
+        "ポアソンの公式",
+        "回転基底",
+        "角速度ベクトル",
+        "SO(3)",
+        "反対称行列"
+      ],
+      "domain_tags": [
+        "physics",
+        "classical_mechanics",
+        "kinematics"
+      ]
+    },
+    {
+      "id": "phys.mech.nif02_vector_time_derivative_operator",
+      "short_code": "NIF02",
+      "kind": "theorem_formula",
+      "title": "回転座標系におけるベクトル時間微分の変換公式（輸送定理）",
+      "summary": "任意のベクトル A(t) の慣性系での時間微分と回転座標系での時間微分を角速度 ω による外積項で結びつける公式。",
+      "canonical_latex": "\\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{in}} = \\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{rot}} + \\boldsymbol{\\omega} \\times \\mathbf{A}",
+      "aliases_latex": [
+        "\\frac{d\\mathbf{A}}{dt} = \\frac{\\tilde{d}\\mathbf{A}}{dt} + \\boldsymbol{\\omega}\\times\\mathbf{A}",
+        "\\left(\\frac{d}{dt}\\right)_{\\mathrm{in}} = \\left(\\frac{d}{dt}\\right)_{\\mathrm{rot}} + \\boldsymbol{\\omega}\\times"
+      ],
+      "keywords": [
+        "輸送定理",
+        "時間微分演算子",
+        "回転座標系",
+        "ベクトル微分"
+      ],
+      "domain_tags": [
+        "physics",
+        "classical_mechanics",
+        "kinematics"
+      ]
+    },
+    {
+      "id": "phys.mech.nif03_rotating_velocity_acceleration",
+      "short_code": "NIF03",
+      "kind": "theorem_formula",
+      "title": "非慣性回転座標系における速度と加速度の変換公式",
+      "summary": "原点並進および回転を伴う座標系から観測した位置・速度・加速度と慣性系における絶対速度・絶対加速度との関係式。",
+      "canonical_latex": "\\mathbf{v}_{\\mathrm{in}} = \\dot{\\mathbf{R}}_0 + \\mathbf{v}_{\\mathrm{rot}} + \\boldsymbol{\\omega}\\times\\mathbf{r},\\quad \\mathbf{a}_{\\mathrm{in}} = \\ddot{\\mathbf{R}}_0 + \\mathbf{a}_{\\mathrm{rot}} + 2\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}} + \\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r} + \\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r})",
+      "aliases_latex": [
+        "\\ddot{\\mathbf{r}}_{\\mathrm{in}} = \\ddot{\\mathbf{R}}_0 + \\ddot{\\mathbf{r}}_{\\mathrm{rot}} + 2\\boldsymbol{\\omega}\\times\\dot{\\mathbf{r}}_{\\mathrm{rot}} + \\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r} + \\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r})"
+      ],
+      "keywords": [
+        "相対速度",
+        "相対加速度",
+        "コリオリ加速度",
+        "向心加速度",
+        "非慣性系"
+      ],
+      "domain_tags": [
+        "physics",
+        "classical_mechanics",
+        "kinematics"
+      ]
+    },
+    {
+      "id": "phys.mech.nif04_fictitious_forces_eom",
+      "short_code": "NIF04",
+      "kind": "theorem_formula",
+      "title": "回転座標系における運動方程式（見かけの力の一般式）",
+      "summary": "慣性系でのニュートンの運動方程式を回転非慣性系の座標量で書き換えた運動方程式。",
+      "canonical_latex": "m\\mathbf{a}_{\\mathrm{rot}} = \\mathbf{F} - m\\ddot{\\mathbf{R}}_0 - 2m(\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}}) - m\\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}) - m(\\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r})",
+      "aliases_latex": [
+        "m\\ddot{\\mathbf{r}}_{\\mathrm{rot}} = \\mathbf{F} + \\mathbf{F}_{\\mathrm{trans}} + \\mathbf{F}_{\\mathrm{Cor}} + \\mathbf{F}_{\\mathrm{cf}} + \\mathbf{F}_{\\mathrm{Euler}}"
+      ],
+      "keywords": [
+        "慣性力",
+        "見かけの力",
+        "回転系の運動方程式",
+        "非慣性系"
+      ],
+      "domain_tags": [
+        "physics",
+        "classical_mechanics",
+        "dynamics"
+      ]
+    },
+    {
+      "id": "phys.mech.nif05_coriolis_centrifugal_euler_defs",
+      "short_code": "NIF05",
+      "kind": "definition",
+      "title": "コリオリ力・遠心力・オイラー力・並進慣性力の定義",
+      "summary": "回転非慣性系の運動方程式に現れる各慣性力項（並進慣性力・コリオリ力・遠心力・オイラー力）の標準的定義。",
+      "canonical_latex": "\\mathbf{F}_{\\mathrm{trans}} := -m\\ddot{\\mathbf{R}}_0,\\; \\mathbf{F}_{\\mathrm{Cor}} := -2m(\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}}),\\; \\mathbf{F}_{\\mathrm{cf}} := -m\\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}),\\; \\mathbf{F}_{\\mathrm{Euler}} := -m(\\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r})",
+      "aliases_latex": [
+        "\\mathbf{F}_{\\mathrm{Cor}} = -2m(\\boldsymbol{\\omega}\\times\\dot{\\mathbf{r}}),\\quad \\mathbf{F}_{\\mathrm{cf}} = m\\omega^2\\mathbf{r}_\\perp"
+      ],
+      "keywords": [
+        "コリオリ力",
+        "遠心力",
+        "オイラー力",
+        "並進慣性力"
+      ],
+      "domain_tags": [
+        "physics",
+        "classical_mechanics",
+        "dynamics"
+      ]
+    },
+    {
+      "id": "phys.mech.nif06_centrifugal_potential",
+      "short_code": "NIF06",
+      "kind": "theorem_formula",
+      "title": "遠心力ポテンシャルと保存力表示",
+      "summary": "角速度が一定である回転系において遠心力が遠心力ポテンシャルの負の勾配として表されること、および回転軸からの垂直距離依存性を示す定理。",
+      "canonical_latex": "U_{\\mathrm{cf}}(\\mathbf{r}) = -\\frac{1}{2}m\\|\\boldsymbol{\\omega}\\times\\mathbf{r}\\|^2 = -\\frac{1}{2}m\\omega^2 r_\\perp^2,\\quad \\mathbf{F}_{\\mathrm{cf}} = -\\nabla U_{\\mathrm{cf}}(\\mathbf{r})",
+      "aliases_latex": [
+        "\\mathbf{F}_{\\mathrm{cf}} = m\\omega^2\\mathbf{r}_\\perp = \\nabla\\!\\left(\\frac{1}{2}m\\|\\boldsymbol{\\omega}\\times\\mathbf{r}\\|^2\\right)",
+        "\\mathbf{g}_{\\mathrm{eff}} = \\mathbf{g}_0 - \\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{R}_E)"
+      ],
+      "keywords": [
+        "遠心力ポテンシャル",
+        "有効重力",
+        "保存力",
+        "ポテンシャルエネルギー"
+      ],
+      "domain_tags": [
+        "physics",
+        "classical_mechanics",
+        "dynamics"
+      ]
+    },
+    {
+      "id": "phys.mech.nif07_foucault_pendulum_eom",
+      "short_code": "NIF07",
+      "kind": "theorem_formula",
+      "title": "フーコーの振り子の水平面内運動方程式",
+      "summary": "北緯 λ の地球表面における小振幅振り子について、鉛直方向コリオリ力と O(Ω^2) の遠心力補正を無視した水平面内の連立線形微分方程式。",
+      "canonical_latex": "\\ddot{x} - 2\\Omega_z\\dot{y} + \\omega_0^2 x = 0,\\quad \\ddot{y} + 2\\Omega_z\\dot{x} + \\omega_0^2 y = 0\\quad \\left(\\Omega_z = \\Omega\\sin\\lambda,\\; \\omega_0 = \\sqrt{\\frac{g}{l}}\\right)",
+      "aliases_latex": [
+        "\\ddot{x} - 2\\Omega\\sin\\lambda\\,\\dot{y} + \\frac{g}{l}x = 0,\\quad \\ddot{y} + 2\\Omega\\sin\\lambda\\,\\dot{x} + \\frac{g}{l}y = 0"
+      ],
+      "keywords": [
+        "フーコーの振り子",
+        "コリオリ力",
+        "地球自転",
+        "小振動近似"
+      ],
+      "domain_tags": [
+        "physics",
+        "classical_mechanics",
+        "oscillations"
+      ]
+    },
+    {
+      "id": "phys.mech.nif08_foucault_complex_solution",
+      "short_code": "NIF08",
+      "kind": "theorem_formula",
+      "title": "複素座標によるフーコーの振り子の解と歳差角速度",
+      "summary": "水平面座標を複素数 z = x + iy にまとめて解くことで得られる回転振動解と、Ω << ω0 の極限における振動面の歳差角速度。",
+      "canonical_latex": "z(t) = e^{-i\\Omega_z t}\\big(C_1 e^{i\\omega_{\\mathrm{eff}}t} + C_2 e^{-i\\omega_{\\mathrm{eff}}t}\\big) \\approx e^{-i\\Omega_z t}\\big(C_1 e^{i\\omega_0 t} + C_2 e^{-i\\omega_0 t}\\big),\\quad \\omega_{\\mathrm{prec}} = -\\Omega\\sin\\lambda",
+      "aliases_latex": [
+        "\\ddot{z} + 2i\\Omega_z\\dot{z} + \\omega_0^2 z = 0",
+        "\\omega_{\\mathrm{eff}} = \\sqrt{\\omega_0^2 + \\Omega_z^2}"
+      ],
+      "keywords": [
+        "フーコーの振り子",
+        "歳差角速度",
+        "複素座標法",
+        "連立振動"
+      ],
+      "domain_tags": [
+        "physics",
+        "classical_mechanics",
+        "oscillations"
+      ]
+    },
+    {
+      "id": "phys.mech.nif09_foucault_precession_period",
+      "short_code": "NIF09",
+      "kind": "theorem_formula",
+      "title": "フーコーの振り子の振動面回転角と歳差周期",
+      "summary": "1恒星日あたりの振動面回転角 Δθ = -2π sin λ および振動面が1周する歳差周期 T_prec = T_sid / |sin λ| の公式。",
+      "canonical_latex": "\\theta(t) = \\theta_0 - (\\Omega\\sin\\lambda)t,\\quad \\Delta\\theta(T_{\\mathrm{sid}}) = -2\\pi\\sin\\lambda,\\quad T_{\\mathrm{prec}} = \\frac{2\\pi}{\\Omega|\\sin\\lambda|} = \\frac{T_{\\mathrm{sid}}}{|\\sin\\lambda|}",
+      "aliases_latex": [
+        "|\\Delta\\theta_{\\mathrm{day}}| = 2\\pi|\\sin\\lambda|",
+        "T_{\\mathrm{prec}} = \\frac{24\\text{ h (sidereal)}}{|\\sin\\lambda|}"
+      ],
+      "keywords": [
+        "歳差周期",
+        "フーコーの振り子",
+        "緯度依存性",
+        "恒星日"
+      ],
+      "domain_tags": [
+        "physics",
+        "classical_mechanics",
+        "geophysics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_nif01_rotating_basis_kinematics",
+      "target_node_id": "phys.mech.nif01_rotating_basis_kinematics",
+      "route_kind": "deductive",
+      "title": "SO(3)回転行列の直交性と生成子からのポアソン公式導出",
+      "premise_node_ids": [
+        "math.alg.gr04_so3_su2_matrix_groups_def",
+        "math.alg.gr06_so3_generators_commutation",
+        "math.vec.m27_vector_component_differentiation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.vec.m29_cross_product_levi_civita_def"
+      ],
+      "assumptions": [
+        "回転行列 R(t) in SO(3) は時刻 t に関して微分可能である",
+        "慣性系の固定基底 {e_i} は時間変化しない"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{e}'_i(t) = R(t)\\mathbf{e}_i,\\quad R(t)^\\top R(t) = I_3",
+          "to_latex": "\\dot{\\mathbf{e}}'_i(t) = \\boldsymbol{\\omega}(t) \\times \\mathbf{e}'_i(t)",
+          "operation_label": "直交行列の時間微分とso(3)生成子による外積表示",
+          "explanation": "直交条件 R(t)R(t)^T = I_3 を時間微分して dR/dt * R^T の反対称性を示し、リー代数 so(3) の生成子と外積の対応から基底ベクトルの時間微分が ω × e'_i になることを導く。",
+          "used_node_ids": [
+            "math.alg.gr04_so3_su2_matrix_groups_def",
+            "math.alg.gr06_so3_generators_commutation",
+            "math.calc.m15_product_rule",
+            "math.vec.m27_vector_component_differentiation",
+            "math.vec.m29_cross_product_levi_civita_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{e}'_i(t) = R(t)\\mathbf{e}_i,\\quad R(t)^\\top R(t) = I_3",
+          "to_latex": "\\dot{R}(t)R(t)^\\top + R(t)\\dot{R}(t)^\\top = O_3 \\implies \\Omega(t) := \\dot{R}(t)R(t)^\\top = -\\Omega(t)^\\top",
+          "operation_label": "直交条件の両辺の時間微分",
+          "explanation": "SO(3) の定義式 R(t)R(t)^T = I_3 に積の微分法を適用すると、行列 Ω(t) := dR/dt * R^T が反対称行列（Ω^T = -Ω）であることが従う。",
+          "used_node_ids": [
+            "math.alg.gr04_so3_su2_matrix_groups_def",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{R}(t)R(t)^\\top + R(t)\\dot{R}(t)^\\top = O_3 \\implies \\Omega(t) := \\dot{R}(t)R(t)^\\top = -\\Omega(t)^\\top",
+          "to_latex": "\\Omega(t) = \\sum_{k=1}^{3}\\omega_k(t) J_k,\\quad \\Omega(t)\\mathbf{v} = \\boldsymbol{\\omega}(t) \\times \\mathbf{v}",
+          "operation_label": "so(3)生成子基底での展開と外積表現",
+          "explanation": "3次元実反対称行列の空間 so(3) は無限小生成子 {J_1, J_2, J_3} によって張られ、J_k v = e_k × v を満たすため、展開係数 ω_k から定まる角速度ベクトル ω(t) により Ω(t)v = ω(t) × v と書ける。",
+          "used_node_ids": [
+            "math.alg.gr06_so3_generators_commutation",
+            "math.vec.m29_cross_product_levi_civita_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Omega(t) = \\sum_{k=1}^{3}\\omega_k(t) J_k,\\quad \\Omega(t)\\mathbf{v} = \\boldsymbol{\\omega}(t) \\times \\mathbf{v}",
+          "to_latex": "\\dot{\\mathbf{e}}'_i(t) = \\boldsymbol{\\omega}(t) \\times \\mathbf{e}'_i(t)",
+          "operation_label": "回転基底への適用",
+          "explanation": "e'_i(t) = R(t)e_i を慣性系で時間微分すると de'_i/dt = (dR/dt)e_i = Ω(t)R(t)e_i = Ω(t)e'_i(t) = ω(t) × e'_i(t) が得られる。",
+          "used_node_ids": [
+            "math.alg.gr06_so3_generators_commutation",
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_nif02_vector_time_derivative_operator",
+      "target_node_id": "phys.mech.nif02_vector_time_derivative_operator",
+      "route_kind": "deductive",
+      "title": "回転基底成分展開によるベクトル時間微分公式（輸送定理）の導出",
+      "premise_node_ids": [
+        "phys.mech.nif01_rotating_basis_kinematics",
+        "math.vec.m27_vector_component_differentiation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity",
+        "math.vec.m29_cross_product_levi_civita_def",
+        "math.vec.m32_scalar_vector_product_rule"
+      ],
+      "assumptions": [
+        "ベクトル A(t) の回転座標系での成分 A_i(t) は時刻 t に関して微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{A}(t) = \\sum_{i=1}^{3} A_i(t)\\mathbf{e}'_i(t)",
+          "to_latex": "\\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{in}} = \\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{rot}} + \\boldsymbol{\\omega} \\times \\mathbf{A}",
+          "operation_label": "成分・基底積のライプニッツ則とポアソン公式の適用",
+          "explanation": "回転基底で展開したベクトルを慣性系で微分し、成分微分の項を回転系での時間微分、基底微分の項を ω × A にまとめる。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.vec.m27_vector_component_differentiation",
+            "math.vec.m32_scalar_vector_product_rule",
+            "phys.mech.nif01_rotating_basis_kinematics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{A}(t) = \\sum_{i=1}^{3} A_i(t)\\mathbf{e}'_i(t)",
+          "to_latex": "\\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{in}} = \\sum_{i=1}^{3}\\dot{A}_i(t)\\mathbf{e}'_i(t) + \\sum_{i=1}^{3} A_i(t)\\dot{\\mathbf{e}}'_i(t)",
+          "operation_label": "スカラー成分と基底ベクトルの積の微分",
+          "explanation": "微分の線形性とスカラー関数・ベクトル値関数の積の微分法則により、成分の時間変化と基底の時間変化の和に分解する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.vec.m32_scalar_vector_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{in}} = \\sum_{i=1}^{3}\\dot{A}_i(t)\\mathbf{e}'_i(t) + \\sum_{i=1}^{3} A_i(t)\\dot{\\mathbf{e}}'_i(t)",
+          "to_latex": "\\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{in}} = \\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{rot}} + \\sum_{i=1}^{3} A_i(t)\\big(\\boldsymbol{\\omega} \\times \\mathbf{e}'_i(t)\\big)",
+          "operation_label": "回転系微分定義の同定とポアソン公式の代入",
+          "explanation": "第1項は基底 e'_i を固定とみなした回転系での微分 (dA/dt)_rot であり、第2項の基底微分にポアソン公式 de'_i/dt = ω × e'_i を代入する。",
+          "used_node_ids": [
+            "math.vec.m27_vector_component_differentiation",
+            "phys.mech.nif01_rotating_basis_kinematics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{in}} = \\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{rot}} + \\sum_{i=1}^{3} A_i(t)\\big(\\boldsymbol{\\omega} \\times \\mathbf{e}'_i(t)\\big)",
+          "to_latex": "\\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{in}} = \\left(\\frac{d\\mathbf{A}}{dt}\\right)_{\\mathrm{rot}} + \\boldsymbol{\\omega} \\times \\mathbf{A}",
+          "operation_label": "外積の線形性による集約",
+          "explanation": "外積の双線形性から Σ A_i(ω × e'_i) = ω × (Σ A_i e'_i) = ω × A となり輸送定理が得られる。",
+          "used_node_ids": [
+            "math.vec.m29_cross_product_levi_civita_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_nif03_rotating_velocity_acceleration",
+      "target_node_id": "phys.mech.nif03_rotating_velocity_acceleration",
+      "route_kind": "deductive",
+      "title": "輸送定理の2回適用による非慣性系の速度・加速度変換公式の導出",
+      "premise_node_ids": [
+        "phys.mech.nif02_vector_time_derivative_operator"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "慣性系原点から回転系原点への位置ベクトル R_0(t) は2回微分可能である",
+        "回転系における相対位置ベクトル r(t) は2回微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}_{\\mathrm{in}}(t) = \\mathbf{R}_0(t) + \\mathbf{r}(t)",
+          "to_latex": "\\mathbf{a}_{\\mathrm{in}} = \\ddot{\\mathbf{R}}_0 + \\mathbf{a}_{\\mathrm{rot}} + 2\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}} + \\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r} + \\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r})",
+          "operation_label": "輸送定理の逐次適用による速度・加速度展開",
+          "explanation": "位置関係 r_in = R_0 + r に輸送定理を1回適用して速度を求め、得られた絶対速度に再び輸送定理と積の微分法を適用して絶対加速度を展開する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.nif02_vector_time_derivative_operator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_{\\mathrm{in}}(t) = \\mathbf{R}_0(t) + \\mathbf{r}(t)",
+          "to_latex": "\\mathbf{v}_{\\mathrm{in}} = \\dot{\\mathbf{R}}_0 + \\mathbf{v}_{\\mathrm{rot}} + \\boldsymbol{\\omega}\\times\\mathbf{r}",
+          "operation_label": "1階時間微分と輸送定理の適用",
+          "explanation": "R_0 の時間微分を dR_0/dt とし、相対位置 r に輸送定理を適用して v_rot := (dr/dt)_rot を用いることで速度変換公式を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "phys.mech.nif02_vector_time_derivative_operator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v}_{\\mathrm{in}} = \\dot{\\mathbf{R}}_0 + \\mathbf{v}_{\\mathrm{rot}} + \\boldsymbol{\\omega}\\times\\mathbf{r}",
+          "to_latex": "\\mathbf{a}_{\\mathrm{in}} = \\ddot{\\mathbf{R}}_0 + \\left(\\frac{d\\mathbf{v}_{\\mathrm{rot}}}{dt}\\right)_{\\mathrm{rot}} + \\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}} + \\left(\\frac{d(\\boldsymbol{\\omega}\\times\\mathbf{r})}{dt}\\right)_{\\mathrm{rot}} + \\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r})",
+          "operation_label": "絶対速度への輸送定理の再適用",
+          "explanation": "絶対速度の各項のうち回転系に関連する v_rot と ω × r に対して再び輸送定理 (d/dt)_in = (d/dt)_rot + ω× を適用する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "phys.mech.nif02_vector_time_derivative_operator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{a}_{\\mathrm{in}} = \\ddot{\\mathbf{R}}_0 + \\left(\\frac{d\\mathbf{v}_{\\mathrm{rot}}}{dt}\\right)_{\\mathrm{rot}} + \\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}} + \\left(\\frac{d(\\boldsymbol{\\omega}\\times\\mathbf{r})}{dt}\\right)_{\\mathrm{rot}} + \\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r})",
+          "to_latex": "\\mathbf{a}_{\\mathrm{in}} = \\ddot{\\mathbf{R}}_0 + \\mathbf{a}_{\\mathrm{rot}} + 2\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}} + \\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r} + \\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r})",
+          "operation_label": "外積の微分展開と同類項の整理",
+          "explanation": "(d(ω×r)/dt)_rot = (dω/dt)_rot × r + ω × v_rot であり、また (dω/dt)_in = (dω/dt)_rot + ω×ω = (dω/dt)_rot なので ω_dot × r となり、コリオリ項 2 ω × v_rot がまとまる。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.nif02_vector_time_derivative_operator"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_nif04_fictitious_forces_eom",
+      "target_node_id": "phys.mech.nif04_fictitious_forces_eom",
+      "route_kind": "deductive",
+      "title": "ニュートンの第2法則への加速度変換公式代入による見かけの力の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "phys.mech.nif03_rotating_velocity_acceleration"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "質点の質量 m は時間によらず一定である",
+        "F は物理的実在力（相互作用に基づく力）の合力である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\mathbf{a}_{\\mathrm{in}} = \\mathbf{F}",
+          "to_latex": "m\\mathbf{a}_{\\mathrm{rot}} = \\mathbf{F} - m\\ddot{\\mathbf{R}}_0 - 2m(\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}}) - m\\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}) - m(\\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r})",
+          "operation_label": "絶対加速度の代入と相対加速度項の分離",
+          "explanation": "慣性系での運動方程式 m a_in = F に加速度変換公式を代入し、m a_rot を左辺に残して残りの加速度起源の項を右辺へ移項する。",
+          "used_node_ids": [
+            "phys.mech.nif03_rotating_velocity_acceleration",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\mathbf{a}_{\\mathrm{in}} = \\mathbf{F}",
+          "to_latex": "m\\big(\\ddot{\\mathbf{R}}_0 + \\mathbf{a}_{\\mathrm{rot}} + 2\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}} + \\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r} + \\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r})\\big) = \\mathbf{F}",
+          "operation_label": "絶対加速度変換式の代入",
+          "explanation": "ニュートンの第2法則の絶対加速度 a_in を回転系の運動学的関係式で置き換える。",
+          "used_node_ids": [
+            "phys.mech.nif03_rotating_velocity_acceleration",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\big(\\ddot{\\mathbf{R}}_0 + \\mathbf{a}_{\\mathrm{rot}} + 2\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}} + \\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r} + \\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r})\\big) = \\mathbf{F}",
+          "to_latex": "m\\mathbf{a}_{\\mathrm{rot}} = \\mathbf{F} - m\\ddot{\\mathbf{R}}_0 - 2m(\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}}) - m\\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}) - m(\\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r})",
+          "operation_label": "慣性力項の移項",
+          "explanation": "m a_rot の項を左辺に孤立させ、座標系の加速度および回転に由来する4つの項を負号付きで右辺へ移項する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_nif05_coriolis_centrifugal_euler_defs",
+      "target_node_id": "phys.mech.nif05_coriolis_centrifugal_euler_defs",
+      "route_kind": "reformulation",
+      "title": "非慣性系運動方程式における各慣性力項の命名と定義",
+      "premise_node_ids": [
+        "phys.mech.nif04_fictitious_forces_eom"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "回転座標系における見かけの力は並進・速度比例・位置比例・角加速度比例の成分に分類する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\mathbf{a}_{\\mathrm{rot}} = \\mathbf{F} - m\\ddot{\\mathbf{R}}_0 - 2m(\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}}) - m\\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}) - m(\\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r})",
+          "to_latex": "m\\mathbf{a}_{\\mathrm{rot}} = \\mathbf{F} + \\mathbf{F}_{\\mathrm{trans}} + \\mathbf{F}_{\\mathrm{Cor}} + \\mathbf{F}_{\\mathrm{cf}} + \\mathbf{F}_{\\mathrm{Euler}}",
+          "operation_label": "慣性力項の分類と定義式導入",
+          "explanation": "回転系の運動方程式右辺に現れる4つの見かけの力をそれぞれ並進慣性力・コリオリ力・遠心力・オイラー力として定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "phys.mech.nif04_fictitious_forces_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\mathbf{a}_{\\mathrm{rot}} = \\mathbf{F} - m\\ddot{\\mathbf{R}}_0 - 2m(\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}}) - m\\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}) - m(\\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r})",
+          "to_latex": "\\mathbf{F}_{\\mathrm{trans}} := -m\\ddot{\\mathbf{R}}_0,\\; \\mathbf{F}_{\\mathrm{Cor}} := -2m(\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}}),\\; \\mathbf{F}_{\\mathrm{cf}} := -m\\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}),\\; \\mathbf{F}_{\\mathrm{Euler}} := -m(\\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r})",
+          "operation_label": "4種の慣性力の物理的定義",
+          "explanation": "原点の加速度による並進慣性力、速度に比例するコリオリ力、位置に依存する遠心力、角速度の時間変化によるオイラー力を定義する。",
+          "used_node_ids": [
+            "phys.mech.nif04_fictitious_forces_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F}_{\\mathrm{trans}} := -m\\ddot{\\mathbf{R}}_0,\\; \\mathbf{F}_{\\mathrm{Cor}} := -2m(\\boldsymbol{\\omega}\\times\\mathbf{v}_{\\mathrm{rot}}),\\; \\mathbf{F}_{\\mathrm{cf}} := -m\\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}),\\; \\mathbf{F}_{\\mathrm{Euler}} := -m(\\dot{\\boldsymbol{\\omega}}\\times\\mathbf{r})",
+          "to_latex": "m\\mathbf{a}_{\\mathrm{rot}} = \\mathbf{F} + \\mathbf{F}_{\\mathrm{trans}} + \\mathbf{F}_{\\mathrm{Cor}} + \\mathbf{F}_{\\mathrm{cf}} + \\mathbf{F}_{\\mathrm{Euler}}",
+          "operation_label": "実効的ニュートン方程式形式への再表現",
+          "explanation": "定義した見かけの力を加算することで、回転系においても形の上でニュートンの運動方程式と同じ和の形で記述できる。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_nif06_centrifugal_potential",
+      "target_node_id": "phys.mech.nif06_centrifugal_potential",
+      "route_kind": "deductive",
+      "title": "ベクトル三重積公式と勾配計算による遠心力ポテンシャルの導出",
+      "premise_node_ids": [
+        "phys.mech.nif05_coriolis_centrifugal_euler_defs",
+        "phys.mech.p08_conservative_potential"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m28_dot_product_component_def",
+        "math.vec.m29_cross_product_levi_civita_def",
+        "math.vec.m33_gradient_definition"
+      ],
+      "assumptions": [
+        "角速度ベクトル ω は空間座標 r に依存せず一定である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{F}_{\\mathrm{cf}} = -m\\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}),\\quad \\dot{\\boldsymbol{\\omega}}=\\mathbf{0}",
+          "to_latex": "U_{\\mathrm{cf}}(\\mathbf{r}) = -\\frac{1}{2}m\\|\\boldsymbol{\\omega}\\times\\mathbf{r}\\|^2 = -\\frac{1}{2}m\\omega^2 r_\\perp^2,\\quad \\mathbf{F}_{\\mathrm{cf}} = -\\nabla U_{\\mathrm{cf}}(\\mathbf{r})",
+          "operation_label": "ベクトル三重積の展開とスカラーポテンシャルの構成",
+          "explanation": "遠心力をベクトル三重積で展開し、回転軸からの動径成分 m ω^2 r_⊥ が -1/2 m ||ω × r||^2 の負の勾配に一致することを示す。",
+          "used_node_ids": [
+            "math.vec.m28_dot_product_component_def",
+            "math.vec.m29_cross_product_levi_civita_def",
+            "math.vec.m33_gradient_definition",
+            "phys.mech.nif05_coriolis_centrifugal_euler_defs",
+            "phys.mech.p08_conservative_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F}_{\\mathrm{cf}} = -m\\boldsymbol{\\omega}\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}),\\quad \\dot{\\boldsymbol{\\omega}}=\\mathbf{0}",
+          "to_latex": "\\mathbf{F}_{\\mathrm{cf}} = -m\\big[(\\boldsymbol{\\omega}\\cdot\\mathbf{r})\\boldsymbol{\\omega} - \\omega^2\\mathbf{r}\\big] = m\\omega^2\\mathbf{r}_\\perp",
+          "operation_label": "BAC-CAB恒等式によるベクトル三重積の展開",
+          "explanation": "外積の三重積公式 a×(b×c) = (a·c)b - (a·b)c を適用し、回転軸に垂直な位置成分 r_⊥ = r - ((ω·r)/ω^2)ω を用いて整理する。",
+          "used_node_ids": [
+            "math.vec.m28_dot_product_component_def",
+            "math.vec.m29_cross_product_levi_civita_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F}_{\\mathrm{cf}} = -m\\big[(\\boldsymbol{\\omega}\\cdot\\mathbf{r})\\boldsymbol{\\omega} - \\omega^2\\mathbf{r}\\big] = m\\omega^2\\mathbf{r}_\\perp",
+          "to_latex": "\\nabla\\left(\\frac{1}{2}\\big[\\omega^2 r^2 - (\\boldsymbol{\\omega}\\cdot\\mathbf{r})^2\\big]\\right) = \\omega^2\\mathbf{r} - (\\boldsymbol{\\omega}\\cdot\\mathbf{r})\\boldsymbol{\\omega}",
+          "operation_label": "スカラー関数の勾配計算",
+          "explanation": "∇(r^2) = 2r および ∇((ω·r)^2) = 2(ω·r)ω を用いて、||ω × r||^2 = ω^2 r^2 - (ω·r)^2 の勾配を計算する。",
+          "used_node_ids": [
+            "math.vec.m28_dot_product_component_def",
+            "math.vec.m33_gradient_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\left(\\frac{1}{2}\\big[\\omega^2 r^2 - (\\boldsymbol{\\omega}\\cdot\\mathbf{r})^2\\big]\\right) = \\omega^2\\mathbf{r} - (\\boldsymbol{\\omega}\\cdot\\mathbf{r})\\boldsymbol{\\omega}",
+          "to_latex": "U_{\\mathrm{cf}}(\\mathbf{r}) = -\\frac{1}{2}m\\|\\boldsymbol{\\omega}\\times\\mathbf{r}\\|^2 = -\\frac{1}{2}m\\omega^2 r_\\perp^2,\\quad \\mathbf{F}_{\\mathrm{cf}} = -\\nabla U_{\\mathrm{cf}}(\\mathbf{r})",
+          "operation_label": "ポテンシャルエネルギーとの同一視",
+          "explanation": "保存力条件 F = -∇U と比較することで遠心力ポテンシャル U_cf(r) = -1/2 m ||ω × r||^2 = -1/2 m ω^2 r_⊥^2 が確定する。",
+          "used_node_ids": [
+            "phys.mech.p08_conservative_potential"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_nif07_foucault_pendulum_eom",
+      "target_node_id": "phys.mech.nif07_foucault_pendulum_eom",
+      "route_kind": "deductive",
+      "title": "地球回転座標系における小振幅振り子の水平面運動方程式の導出",
+      "premise_node_ids": [
+        "phys.mech.nif04_fictitious_forces_eom",
+        "phys.mech.nif05_coriolis_centrifugal_euler_defs",
+        "phys.mech.nif06_centrifugal_potential",
+        "phys.mech.p12_harmonic_oscillator"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t10_taylor_asymptotic_approx",
+        "math.vec.m29_cross_product_levi_civita_def"
+      ],
+      "assumptions": [
+        "地球自転角速度 Ω は定数で、支点位置の遠心力は有効重力 g_eff に吸収される",
+        "振幅は糸の長さ l に比べて十分小さく (x, y << l)、鉛直運動 z 及び dz/dt は2次微小量として無視する",
+        "座標軸は x 軸を東向き、y 軸を北向き、z 軸を局所鉛直上向きにとる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\ddot{\\mathbf{r}} = \\mathbf{T} + m\\mathbf{g}_{\\mathrm{eff}} - 2m(\\boldsymbol{\\Omega}\\times\\dot{\\mathbf{r}})",
+          "to_latex": "\\ddot{x} - 2\\Omega_z\\dot{y} + \\omega_0^2 x = 0,\\quad \\ddot{y} + 2\\Omega_z\\dot{x} + \\omega_0^2 y = 0\\quad \\left(\\Omega_z = \\Omega\\sin\\lambda,\\; \\omega_0 = \\sqrt{\\frac{g}{l}}\\right)",
+          "operation_label": "小振動近似と局所水平座標でのコリオリ力展開",
+          "explanation": "張力の水平復元力と地球自転角速度ベクトル Ω の鉛直成分 Ω_z = Ω sin λ に由来するコリオリ力を組み合わせ、水平面内の連立運動方程式を得る。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "math.vec.m29_cross_product_levi_civita_def",
+            "phys.mech.nif04_fictitious_forces_eom",
+            "phys.mech.nif05_coriolis_centrifugal_euler_defs",
+            "phys.mech.nif06_centrifugal_potential",
+            "phys.mech.p12_harmonic_oscillator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\ddot{\\mathbf{r}} = \\mathbf{T} + m\\mathbf{g}_{\\mathrm{eff}} - 2m(\\boldsymbol{\\Omega}\\times\\dot{\\mathbf{r}})",
+          "to_latex": "\\mathbf{T} = -T\\frac{\\mathbf{r}_{\\mathrm{p}}}{l},\\quad T \\approx mg,\\quad \\mathbf{r}_{\\mathrm{p}} \\approx x\\mathbf{e}_x + y\\mathbf{e}_y - l\\mathbf{e}_z,\\quad \\boldsymbol{\\Omega} = (0, \\Omega\\cos\\lambda, \\Omega\\sin\\lambda)^\\top",
+          "operation_label": "小振動近似と地球自転ベクトルの局所座標表示",
+          "explanation": "懸垂点を (0,0,0) とするおもりの位置 r_p と張力 T の1次近似を行い、北緯 λ における地球の角速度ベクトル Ω を東・北・鉛直成分で表す。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "phys.mech.nif06_centrifugal_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{T} = -T\\frac{\\mathbf{r}_{\\mathrm{p}}}{l}, \\quad T \\approx mg,\\quad \\mathbf{r}_{\\mathrm{p}} \\approx x\\mathbf{e}_x + y\\mathbf{e}_y - l\\mathbf{e}_z,\\quad \\boldsymbol{\\Omega} = (0, \\Omega\\cos\\lambda, \\Omega\\sin\\lambda)^\\top",
+          "to_latex": "\\boldsymbol{\\Omega}\\times\\dot{\\mathbf{r}} \\approx \\big(-\\Omega_z\\dot{y},\\; \\Omega_z\\dot{x},\\; -\\Omega_y\\dot{x}\\big)^\\top,\\quad \\dot{z} \\approx 0,\\; \\Omega_z = \\Omega\\sin\\lambda",
+          "operation_label": "コリオリ項の成分計算",
+          "explanation": "dz/dt が O((x/l) dx/dt) で無視できるため、外積 Ω × r_dot の x, y 成分は鉛直軸角速度 Ω_z = Ω sin λ のみに依存する。",
+          "used_node_ids": [
+            "math.vec.m29_cross_product_levi_civita_def",
+            "phys.mech.nif05_coriolis_centrifugal_euler_defs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\boldsymbol{\\Omega}\\times\\dot{\\mathbf{r}} \\approx \\big(-\\Omega_z\\dot{y},\\; \\Omega_z\\dot{x},\\; -\\Omega_y\\dot{x}\\big)^\\top,\\quad \\dot{z} \\approx 0,\\; \\Omega_z = \\Omega\\sin\\lambda",
+          "to_latex": "\\ddot{x} - 2\\Omega_z\\dot{y} + \\omega_0^2 x = 0,\\quad \\ddot{y} + 2\\Omega_z\\dot{x} + \\omega_0^2 y = 0\\quad \\left(\\Omega_z = \\Omega\\sin\\lambda,\\; \\omega_0 = \\sqrt{\\frac{g}{l}}\\right)",
+          "operation_label": "水平x, y成分運動方程式の整理",
+          "explanation": "張力の水平復元力 -mg(x/l), -mg(y/l) とコリオリ力を合わせて質量 m で割ることで連立2階微分方程式が得られる。",
+          "used_node_ids": [
+            "phys.mech.nif04_fictitious_forces_eom",
+            "phys.mech.p12_harmonic_oscillator"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_nif08_foucault_complex_solution",
+      "target_node_id": "phys.mech.nif08_foucault_complex_solution",
+      "route_kind": "deductive",
+      "title": "複素変数変換によるフーコーの振り子方程式の一般解導出",
+      "premise_node_ids": [
+        "phys.mech.nif07_foucault_pendulum_eom"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.calc.m36_derivative_linearity",
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.calc.t10_taylor_asymptotic_approx",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "地球自転角速度は振り子の固有角振動数より十分小さい (|Ω_z| << ω_0)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{x} - 2\\Omega_z\\dot{y} + \\omega_0^2 x = 0,\\quad \\ddot{y} + 2\\Omega_z\\dot{x} + \\omega_0^2 y = 0",
+          "to_latex": "z(t) = e^{-i\\Omega_z t}\\big(C_1 e^{i\\omega_{\\mathrm{eff}}t} + C_2 e^{-i\\omega_{\\mathrm{eff}}t}\\big) \\approx e^{-i\\Omega_z t}\\big(C_1 e^{i\\omega_0 t} + C_2 e^{-i\\omega_0 t}\\big),\\quad \\omega_{\\mathrm{prec}} = -\\Omega\\sin\\lambda",
+          "operation_label": "複素化と回転座標因子分離による解法",
+          "explanation": "z = x + iy により連立方程式を1本の複素線形ODEへ統合し、回転因子 exp(-i Ω_z t) をくくり出して単振動方程式に帰着させる。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.ode.m06_linear_ode_2nd",
+            "phys.mech.nif07_foucault_pendulum_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{x} - 2\\Omega_z\\dot{y} + \\omega_0^2 x = 0,\\quad \\ddot{y} + 2\\Omega_z\\dot{x} + \\omega_0^2 y = 0",
+          "to_latex": "z(t) := x(t) + i y(t) \\implies \\ddot{z} + 2i\\Omega_z\\dot{z} + \\omega_0^2 z = 0",
+          "operation_label": "複素変数への結合",
+          "explanation": "y 方向の方程式に虚数単位 i を掛けて x 方向の方程式と加えると、2i Ω_z (dx/dt + i dy/dt) = 2i Ω_z dz/dt となり単一の線形ODEが得られる。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "phys.mech.nif07_foucault_pendulum_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "z(t) := x(t) + i y(t) \\implies \\ddot{z} + 2i\\Omega_z\\dot{z} + \\omega_0^2 z = 0",
+          "to_latex": "z(t) = e^{-i\\Omega_z t}w(t) \\implies \\ddot{w} + (\\omega_0^2 + \\Omega_z^2)w = 0,\\quad \\omega_{\\mathrm{eff}} := \\sqrt{\\omega_0^2 + \\Omega_z^2}",
+          "operation_label": "回転位相因子の分離（1階微分項の消去）",
+          "explanation": "z = e^{-i Ω_z t} w を代入して計算すると1階微分項 2i Ω_z dw/dt が相殺し、定数係数単振動方程式が得られる。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "z(t) = e^{-i\\Omega_z t}w(t) \\implies \\ddot{w} + (\\omega_0^2 + \\Omega_z^2)w = 0,\\quad \\omega_{\\mathrm{eff}} := \\sqrt{\\omega_0^2 + \\Omega_z^2}",
+          "to_latex": "z(t) = e^{-i\\Omega_z t}\\big(C_1 e^{i\\omega_{\\mathrm{eff}}t} + C_2 e^{-i\\omega_{\\mathrm{eff}}t}\\big) \\approx e^{-i\\Omega_z t}\\big(C_1 e^{i\\omega_0 t} + C_2 e^{-i\\omega_0 t}\\big),\\quad \\omega_{\\mathrm{prec}} = -\\Omega\\sin\\lambda",
+          "operation_label": "単振動解の代入と緩慢回転極限",
+          "explanation": "単振動の一般解 w(t) を代入し、Ω_z^2 << ω_0^2 より ω_eff ≈ ω_0 と近似すると、振動パターン全体が角速度 -Ω_z = -Ω sin λ で回転することがわかる。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_nif09_foucault_precession_period",
+      "target_node_id": "phys.mech.nif09_foucault_precession_period",
+      "route_kind": "deductive",
+      "title": "初期条件の適用による振動面方位角と歳差周期の導出",
+      "premise_node_ids": [
+        "phys.mech.nif08_foucault_complex_solution"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "初期時刻 t=0 におもりを方位角 θ_0、振幅 A の位置から静かに放す (dz/dt(0) = 0 または w_dot(0) ≈ 0)",
+        "地球の1恒星日 T_sid = 2π / Ω である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "z(t) \\approx e^{-i\\Omega_z t}\\big(C_1 e^{i\\omega_0 t} + C_2 e^{-i\\omega_0 t}\\big),\\quad \\Omega_z = \\Omega\\sin\\lambda",
+          "to_latex": "\\theta(t) = \\theta_0 - (\\Omega\\sin\\lambda)t,\\quad \\Delta\\theta(T_{\\mathrm{sid}}) = -2\\pi\\sin\\lambda,\\quad T_{\\mathrm{prec}} = \\frac{2\\pi}{\\Omega|\\sin\\lambda|} = \\frac{T_{\\mathrm{sid}}}{|\\sin\\lambda|}",
+          "operation_label": "初期条件による直線振動面の回転追跡と周期算出",
+          "explanation": "初期静止条件から係数を決定して振動面の方位角 θ(t) を求め、1恒星日あたりの回転角と360度回転する歳差周期を導出する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "phys.mech.nif08_foucault_complex_solution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "z(t) \\approx e^{-i\\Omega_z t}\\big(C_1 e^{i\\omega_0 t} + C_2 e^{-i\\omega_0 t}\\big),\\quad \\Omega_z = \\Omega\\sin\\lambda",
+          "to_latex": "z(0) = A e^{i\\theta_0},\\; \\dot{z}(0) \\approx 0 \\implies z(t) \\approx A e^{i(\\theta_0 - \\Omega_z t)}\\cos(\\omega_0 t)",
+          "operation_label": "初期条件の適用とオイラーの公式による整理",
+          "explanation": "C_1 = C_2 = (A/2) e^{i θ_0}（O(Ω_z / ω_0) の微小楕円成分を無視）とおくことで、振幅変調された平面振動解が得られる。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "phys.mech.nif08_foucault_complex_solution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "z(0) = A e^{i\\theta_0},\\; \\dot{z}(0) \\approx 0 \\implies z(t) \\approx A e^{i(\\theta_0 - \\Omega_z t)}\\cos(\\omega_0 t)",
+          "to_latex": "\\theta(t) = \\theta_0 - (\\Omega\\sin\\lambda)t,\\quad \\Delta\\theta(T_{\\mathrm{sid}}) = -2\\pi\\sin\\lambda,\\quad T_{\\mathrm{prec}} = \\frac{2\\pi}{\\Omega|\\sin\\lambda|} = \\frac{T_{\\mathrm{sid}}}{|\\sin\\lambda|}",
+          "operation_label": "位相角の読み取りと1恒星日・1回転周期の評価",
+          "explanation": "複素位相角 θ(t) = θ_0 - (Ω sin λ)t に T_sid = 2π/Ω を代入すると1恒星日での回転角 -2π sin λ が得られ、|Δθ| = 2π となる時間から歳差周期 T_prec = T_sid / |sin λ| が導かれる。",
+          "used_node_ids": [
+            "phys.mech.nif08_foucault_complex_solution"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
