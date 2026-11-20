@@ -823,6 +823,84 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_t03",
+      "target_node_id": "math.calc.t03_taylor_polynomial_def",
+      "route_kind": "deductive",
+      "title": "1次近似と微分の線形性からのn次テイラー多項式・剰余項の構成",
+      "premise_node_ids": [
+        "math.calc.m20_derivative_definition",
+        "math.calc.m21_linear_approximation_lemma",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "関数 f は点 a の近傍で定義され、点 a において n 回微分可能である。",
+        "0! = 1 および f^{(0)}(a) = f(a) と規約する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_1(x; a) = f(a) + f'(a)(x - a)",
+          "to_latex": "P_n(x; a) := \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k,\\quad R_n(x; a) := f(x) - P_n(x; a)",
+          "operation_label": "高次多項式近似への拡張と係数決定",
+          "explanation": "1次近似をn次多項式による近似へ拡張し、点aにおける0次からn次までの導関数の値が元の関数fと一致するように係数を定めてn次テイラー多項式および剰余項を定義する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m21_linear_approximation_lemma",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_generalize_ansatz",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(x) = f(a) + f'(a)(x - a) + \\varepsilon(x - a)(x - a)",
+          "to_latex": "P_n(x; a) = \\sum_{j=0}^{n} c_j (x - a)^j",
+          "operation_label": "1次近似からn次多項式仮設への一般化",
+          "explanation": "微分可能性による1次近似では関数値と1階導関数のみを点aで一致させたが、n回微分可能な関数に対して点a周りのn次多項式P_n(x; a)を未定係数c_jを用いて設定する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m21_linear_approximation_lemma"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_match_derivatives",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_n^{(k)}(a) = f^{(k)}(a)\\quad (k = 0, 1, \\dots, n)",
+          "to_latex": "k!\\,c_k = f^{(k)}(a) \\implies c_k = \\frac{f^{(k)}(a)}{k!}",
+          "operation_label": "導関数の一致条件による展開係数の決定",
+          "explanation": "微分の線形性を用いてP_n(x; a)をk回微分しx = aを代入すると、j < kの項は消え、j > kの項も(x - a)の因子により零となるためP_n^{(k)}(a) = k! c_kが得られ、f^{(k)}(a)と等置することで係数が一意に定まる。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": "sp.diff(sum(c[j]*(x-a)**j for j in range(n+1)), x, k).subs(x, a) - sp.factorial(k)*c[k]"
+        },
+        {
+          "step_id": "s2_define_remainder",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_n(x; a) := \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k",
+          "to_latex": "P_n(x; a) := \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k,\\quad R_n(x; a) := f(x) - P_n(x; a)",
+          "operation_label": "n次テイラー多項式と剰余項の定義",
+          "explanation": "決定した係数を代入してn次テイラー多項式P_n(x; a)を定義し、1次近似における誤差項の一般化として真値f(x)と多項式近似P_n(x; a)の差をn次剰余項R_n(x; a)として定義する。",
+          "used_node_ids": [
+            "math.calc.m21_linear_approximation_lemma"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }

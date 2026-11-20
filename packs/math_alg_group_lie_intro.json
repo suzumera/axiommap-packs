@@ -814,6 +814,86 @@
           "sympy_check_hint": "alpha, beta = symbols('alpha beta'); U = Matrix([[alpha, -conjugate(beta)], [beta, conjugate(alpha)]]); simplify(U.H * U)"
         }
       ]
+    },
+    {
+      "id": "drv.link_gr05",
+      "target_node_id": "math.alg.gr05_lie_algebra_commutator_def",
+      "route_kind": "deductive",
+      "title": "行列指数関数と1パラメータ部分群の接空間による行列リー代数の導入",
+      "premise_node_ids": [
+        "math.alg.gr01_group_axioms",
+        "math.ode.sys03_matrix_exponential_def",
+        "math.linalg.vs02_subspace_criterion",
+        "math.calc.m15_product_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "GはGL_n(F)の閉部分群（行列リー群）とする",
+        "行列指数関数exp(tX)は実数パラメータtについて微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "G\\le\\mathrm{GL}_n(\\mathbb{F}),\\quad e^{tX}=\\sum_{k=0}^{\\infty}\\frac{(tX)^k}{k!}",
+          "to_latex": "\\mathfrak{g}:=\\{X\\in M_n(\\mathbb{F})\\mid \\forall t\\in\\mathbb{R},\\; e^{tX}\\in G\\},\\quad [X,Y]:=XY-YX,\\quad [X,Y]=-[Y,X],\\quad [X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]=0",
+          "operation_label": "1パラメータ部分群の接空間と交換子積の全体構成",
+          "explanation": "行列群Gの1パラメータ部分群e^{tX}の単位元における接ベクトル全体の集合としてリー代数gを定義し、群の共役作用の微分から双線形性・歪対称性・ヤコビ恒等式を満たす交換子積[X,Y]=XY-YXを導く。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms",
+            "math.calc.m15_product_rule",
+            "math.linalg.vs02_subspace_criterion",
+            "math.ode.sys03_matrix_exponential_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_lie_algebra_set",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\gamma(t)=e^{tX}\\in G\\;(\\forall t\\in\\mathbb{R}),\\quad \\gamma(t+s)=\\gamma(t)\\gamma(s),\\quad \\left.\\frac{d}{dt}e^{tX}\\right|_{t=0}=X",
+          "to_latex": "\\mathfrak{g}:=\\{X\\in M_n(\\mathbb{F})\\mid \\forall t\\in\\mathbb{R},\\; e^{tX}\\in G\\} \\le M_n(\\mathbb{F})",
+          "operation_label": "1パラメータ部分群によるリー代数の定義",
+          "explanation": "行列指数関数の準同型性e^{(t+s)X}=e^{tX}e^{sX}より、すべての実数tでe^{tX}がGに属するときt↦e^{tX}はGの1パラメータ部分群をなす。そのt=0での微分係数Xの全体としてリー代数gを定義すると、実線形空間M_n(F)の部分空間となる。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms",
+            "math.linalg.vs02_subspace_criterion",
+            "math.ode.sys03_matrix_exponential_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_adjoint_commutator",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X,Y\\in\\mathfrak{g}\\implies e^{tX}e^{sY}e^{-tX}=\\exp(s\\,e^{tX}Ye^{-tX})\\in G\\implies \\left.\\frac{d}{dt}\\left(e^{tX}Ye^{-tX}\\right)\\right|_{t=0} \\in \\mathfrak{g}'",
+          "to_latex": "[X,Y]:=\\left.\\frac{d}{dt}\\left(e^{tX}Ye^{-tX}\\right)\\right|_{t=0}=XY-YX\\in\\mathfrak{g}'",
+          "operation_label": "共役作用の微分による交換子積の導出",
+          "explanation": "群の閉性よりe^{tX}e^{sY}e^{-tX}=exp(s e^{tX}Ye^{-tX})もGに属するため、任意のtについてe^{tX}Ye^{-tX}∈gが成り立つ。積の微分法とd/dt(e^{±tX})|_{t=0}=±Xを用いてt=0で微分すると、交換子積[X,Y]=XY-YXがgの元として得られる。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms",
+            "math.calc.m15_product_rule",
+            "math.ode.sys03_matrix_exponential_def"
+          ],
+          "sympy_check_hint": "sp.expand((X*Y - Y*X) + (Y*X - X*Y)) == 0"
+        },
+        {
+          "step_id": "s2_lie_bracket_axioms",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[X,Y]=XY-YX,\\quad [Y,X]=YX-XY",
+          "to_latex": "[X,Y]=-[Y,X],\\quad [X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]=0",
+          "operation_label": "歪対称性とヤコビ恒等式の検証",
+          "explanation": "行列積の双線形性と結合法則を用いて交換子積を展開すると、歪対称性[X,Y]=-[Y,X]が直ちに成り立ち、さらに[X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]の全12項が互いに打ち消し合って0となる（ヤコビ恒等式）。",
+          "used_node_ids": [],
+          "sympy_check_hint": "Verify commutator skew-symmetry and Jacobi identity for symbolic 2x2 or 3x3 matrices X, Y, Z"
+        }
+      ]
     }
   ]
 }

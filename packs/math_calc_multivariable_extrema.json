@@ -597,6 +597,164 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_e01",
+      "target_node_id": "math.calc.e01_hessian_matrix_def",
+      "route_kind": "deductive",
+      "title": "偏導関数と対称行列の基礎からヘッセ行列・シュワルツの対称性・2次形式を導入する",
+      "premise_node_ids": [
+        "math.calc.m44_partial_derivative_def",
+        "math.calc.m08_partial_total_diff",
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "fはR^nの開集合上で定義された多変数実数値スカラー関数である",
+        "fはC^2級であり、すべての2階偏導関数が存在して連続である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial f}{\\partial x_i}(\\mathbf{x}),\\quad df(\\mathbf{x}) = \\sum_{i=1}^{n} \\frac{\\partial f}{\\partial x_i}(\\mathbf{x})\\,dx_i",
+          "to_latex": "H_f(\\mathbf{x}) := \\left(\\frac{\\partial^2 f}{\\partial x_i \\partial x_j}(\\mathbf{x})\\right)_{1\\le i,j\\le n},\\quad H_f(\\mathbf{x})^\\top = H_f(\\mathbf{x}),\\quad Q(\\mathbf{h}) = \\mathbf{h}^\\top H_f(\\mathbf{x})\\mathbf{h}",
+          "operation_label": "2階偏導関数の行列化・対称性・2次形式の構成",
+          "explanation": "1階偏導関数をさらに各変数で偏微分して得られる全2階偏導関数をn×n行列として配列し、C^2級における偏微分順序交換（シュワルツの定理）から対称行列性を導き、標準内積により2次形式を定義する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m44_partial_derivative_def",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_hessian_matrix",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial f}{\\partial x_j}(\\mathbf{x}) = \\lim_{h \\to 0} \\frac{f(\\mathbf{x} + h\\mathbf{e}_j) - f(\\mathbf{x})}{h}",
+          "to_latex": "H_f(\\mathbf{x}) := \\left(\\frac{\\partial^2 f}{\\partial x_i \\partial x_j}(\\mathbf{x})\\right)_{1\\le i,j\\le n}",
+          "operation_label": "2階偏導関数の定義とヘッセ行列の構成",
+          "explanation": "1階偏導関数に偏微分の定義を反復適用して2階偏導関数を定義し、全変数の組(i,j)に対する偏導関数を(i,j)成分に並べた正方行列としてヘッセ行列H_f(x)を定義する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": "hessian(f(x1, x2), (x1, x2))"
+        },
+        {
+          "step_id": "s3_schwarz_symmetry",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f \\in C^2 \\implies \\frac{\\partial^2 f}{\\partial x_i \\partial x_j}(\\mathbf{x}) = \\frac{\\partial^2 f}{\\partial x_j \\partial x_i}(\\mathbf{x})",
+          "to_latex": "H_f(\\mathbf{x})^\\top = H_f(\\mathbf{x})",
+          "operation_label": "シュワルツの定理による対称行列の帰結",
+          "explanation": "fがC^2級であるとき、混合2階偏導関数の微分順序交換可能性（シュワルツの定理）が成り立つため、H_f(x)の(i,j)成分と(j,i)成分が一致し、実対称行列の条件A^T=Aを満たす。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+          ],
+          "sympy_check_hint": "H.T - H == zeros(n, n)"
+        },
+        {
+          "step_id": "s4_quadratic_form",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle \\mathbf{h}, H_f(\\mathbf{x})\\mathbf{h} \\rangle = \\sum_{i=1}^{n}\\sum_{j=1}^{n} \\frac{\\partial^2 f}{\\partial x_i \\partial x_j}(\\mathbf{x})\\,h_i h_j",
+          "to_latex": "Q(\\mathbf{h}) = \\mathbf{h}^\\top H_f(\\mathbf{x})\\mathbf{h}",
+          "operation_label": "標準内積を用いた2次形式の定義",
+          "explanation": "実空間R^n上の標準内積を用いて、ヘッセ行列H_f(x)が変位ベクトルhに対して定める双線形形式の対角評価として、2次形式Q(h)を定義する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+          ],
+          "sympy_check_hint": "(h.T * H * h)[0, 0]"
+        }
+      ]
+    },
+    {
+      "id": "drv.link_e06",
+      "target_node_id": "math.calc.e06_constrained_extremum_problem",
+      "route_kind": "reformulation",
+      "title": "無制約極値問題から等式制約付き最適化問題および正則点（LICQ）の定式化",
+      "premise_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.linalg.vs03_linear_independence_span",
+        "math.linalg.vs10_rank_nullity_theorem",
+        "math.calc.m60_implicit_function_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f: \\mathbb{R}^n \\to \\mathbb{R} および \\mathbf{g}: \\mathbb{R}^n \\to \\mathbb{R}^m は対象点 \\mathbf{a} の近傍で C^1 級である。",
+        "制約式の本数 m は変数の次元 n より真に小さい（m < n）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\min/\\max_{\\mathbf{x}\\in D} f(\\mathbf{x}),\\quad \\mathbf{g}(\\mathbf{x}) = \\mathbf{0}",
+          "to_latex": "\\min/\\max_{\\mathbf{x}\\in\\mathbb{R}^n} f(\\mathbf{x})\\;\\text{ s.t. }\\mathbf{g}(\\mathbf{x}) = (g_1(\\mathbf{x}),\\dots,g_m(\\mathbf{x}))^\\top = \\mathbf{0},\\quad \\operatorname{rank}\\!\\left(D\\mathbf{g}(\\mathbf{a})\\right) = m\\;(m < n)",
+          "operation_label": "等式制約と正則条件（LICQ）の統合定式化",
+          "explanation": "無制約の極値問題の探索領域を m 本の等式制約 g(x)=0 で制限した上で、制約多様体が局所的に滑らかな (n-m) 次元空間をなすための制約勾配の線形独立性（ヤコビ行列のフルランク条件）を正則点として定義する。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m60_implicit_function_theorem",
+            "math.linalg.vs03_linear_independence_span",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_constrained_formulation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{a} \\in \\operatorname{int}(D) \\implies \\nabla f(\\mathbf{a}) = \\mathbf{0}",
+          "to_latex": "\\min/\\max_{\\mathbf{x}\\in\\mathbb{R}^n} f(\\mathbf{x})\\;\\text{ s.t. }\\mathbf{g}(\\mathbf{x}) = (g_1(\\mathbf{x}),\\dots,g_m(\\mathbf{x}))^\\top = \\mathbf{0}\\;(m < n)",
+          "operation_label": "探索領域の等式制約集合への制限",
+          "explanation": "開領域の内点における無制約極値問題から拡張し、m 本（m < n）のスカラー値制約関数をベクトル値写像 g(x) = 0 としてまとめ、実行可能集合上での目的関数 f(x) の最小化・最大化問題を定式化する。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_licq_rank_condition",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D\\mathbf{g}(\\mathbf{a}) = \\big(\\nabla g_1(\\mathbf{a}),\\dots,\\nabla g_m(\\mathbf{a})\\big)^\\top \\in \\mathbb{R}^{m\\times n}",
+          "to_latex": "\\{\\nabla g_1(\\mathbf{a}),\\dots,\\nabla g_m(\\mathbf{a})\\}\\text{ linearly independent} \\iff \\operatorname{rank}\\!\\left(D\\mathbf{g}(\\mathbf{a})\\right) = m",
+          "operation_label": "制約勾配の線形独立性とフルランク条件",
+          "explanation": "制約曲面の縮退や冗長な制約を排除するため、実行可能点 a において各制約の勾配ベクトルを行ベクトルとする m×n ヤコビ行列 Dg(a) の行ベクトル群が線形独立であること（rank(Dg(a)) = m、すなわち LICQ）を正則点の定義として課す。",
+          "used_node_ids": [
+            "math.linalg.vs03_linear_independence_span"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_manifold_dimension_regularity",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{rank}\\!\\left(D\\mathbf{g}(\\mathbf{a})\\right) = m < n",
+          "to_latex": "\\dim\\ker\\!\\left(D\\mathbf{g}(\\mathbf{a})\\right) = n - m > 0,\\quad \\det\\!\\left(\\frac{\\partial \\mathbf{g}}{\\partial \\mathbf{y}}(\\mathbf{a})\\right) \\neq 0 \\implies \\mathbf{y} = \\boldsymbol{\\psi}(\\mathbf{z})",
+          "operation_label": "次元定理と陰関数定理による局所多様体構造の保証",
+          "explanation": "次元定理より rank(Dg(a)) = m は接空間 ker(Dg(a)) の次元が自由度 n-m (>0) に一致することを保証し、さらに m×m 正則小行列の存在を通じて陰関数定理により m 個の従属変数を残りの n-m 個の独立変数で滑らかに消去できることが正当化される。",
+          "used_node_ids": [
+            "math.calc.m60_implicit_function_theorem",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }
