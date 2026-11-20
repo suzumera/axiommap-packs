@@ -706,6 +706,83 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_pde01",
+      "target_node_id": "math.pde.pde01_second_order_linear_pde_def",
+      "route_kind": "deductive",
+      "title": "偏導関数・ヘッセ行列の対称性および2次形式の主軸分類による2階線形PDEの定義と判別式分類の導入",
+      "premise_node_ids": [
+        "math.calc.m44_partial_derivative_def",
+        "math.calc.e01_hessian_matrix_def",
+        "math.linalg.eig08_quadratic_form_principal_axis"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "未知関数 u(x, y) は領域上で C^2 級であり、混合2階偏導関数について u_{xy} = u_{yx} が成り立つ。",
+        "係数 A, B, C, D, E, F, G は独立変数 (x, y) の実数値関数であり、主部係数 (A, B, C) は同時に 0 ではない。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u = u(x,y) \\in C^2,\\; \\frac{\\partial u}{\\partial x},\\; \\frac{\\partial u}{\\partial y},\\; H_u(x,y)",
+          "to_latex": "A u_{xx} + 2B u_{xy} + C u_{yy} + D u_x + E u_y + F u = G,\\quad \\Delta := B^2 - AC \\begin{cases} > 0 & (\\text{hyperbolic}), \\\\ = 0 & (\\text{parabolic}), \\\\ < 0 & (\\text{elliptic}) \\end{cases}",
+          "operation_label": "偏導関数と2次形式による2階線形PDEの定義と型分類",
+          "explanation": "2変数関数の1階・2階偏導関数を線形結合して2階線形偏微分方程式の一般形を構成し、シュワルツの対称性から2階主部に対応する対称行列と2次形式を定め、その固有値符号（行列式の符号）に対応する判別式 Δ = B^2 - AC によって双曲型・放物型・楕円型に分類する。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.m44_partial_derivative_def",
+            "math.linalg.eig08_quadratic_form_principal_axis"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_linear_pde_form",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_{xx},\\; u_{xy},\\; u_{yx},\\; u_{yy},\\; u_x,\\; u_y,\\; u",
+          "to_latex": "A u_{xx} + 2B u_{xy} + C u_{yy} + D u_x + E u_y + F u = G",
+          "operation_label": "混合偏微分の対称性を用いた一般形の構成",
+          "explanation": "偏導関数の定義に基づき2階までの偏導関数を取り、C^2 級関数のヘッセ行列の対称性（u_{xy} = u_{yx}）を用いて混合2階偏導関数の項を 2B u_{xy} にまとめることで、2変数2階線形偏微分方程式の一般形を定義する。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_principal_quadratic_form",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A u_{xx} + 2B u_{xy} + C u_{yy}",
+          "to_latex": "Q(\\boldsymbol{\\xi}) = \\boldsymbol{\\xi}^\\top M \\boldsymbol{\\xi} = A\\xi_1^2 + 2B\\xi_1\\xi_2 + C\\xi_2^2,\\quad M = \\begin{pmatrix} A & B \\\\ B & C \\end{pmatrix}",
+          "operation_label": "2階主部に対応する実対称行列と2次形式の構成",
+          "explanation": "方程式の最高階（2階）の微分演算を表す主部 A u_{xx} + 2B u_{xy} + C u_{yy} に対し、実対称係数行列 M を持つ2次形式 Q(ξ) = ξ^T M ξ を対応させる。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_discriminant_classification",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det(M) = AC - B^2 = \\lambda_1 \\lambda_2",
+          "to_latex": "\\Delta := B^2 - AC = -\\lambda_1 \\lambda_2 \\begin{cases} > 0 & (\\text{hyperbolic}), \\\\ = 0 & (\\text{parabolic}), \\\\ < 0 & (\\text{elliptic}) \\end{cases}",
+          "operation_label": "2次形式の主軸変換と固有値符号による判別式分類",
+          "explanation": "実2次形式の主軸定理により Q(ξ) = λ_1 η_1^2 + λ_2 η_2^2 と対角化すると、行列式 det(M) = AC - B^2 = λ_1 λ_2 となる。よって判別式 Δ = B^2 - AC = -λ_1 λ_2 の符号は、固有値が異符号（Δ > 0：双曲型）、少なくとも一方が零（Δ = 0：放物型）、同符号（Δ < 0：楕円型）という座標変換に不変な型分類を与える。",
+          "used_node_ids": [
+            "math.linalg.eig08_quadratic_form_principal_axis"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }

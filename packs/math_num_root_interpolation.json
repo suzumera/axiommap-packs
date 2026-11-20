@@ -889,6 +889,84 @@
           "sympy_check_hint": "simplify(cos((n+1)*((2*k+1)*pi/(2*(n+1)))))"
         }
       ]
+    },
+    {
+      "id": "drv.link_ni09",
+      "target_node_id": "math.num.ni09_cubic_spline_definition",
+      "route_kind": "reformulation",
+      "title": "大域的多項式補間からC2級区分3次スプライン補間と境界条件への定式化",
+      "premise_node_ids": [
+        "math.num.ni04_polynomial_interpolation_existence",
+        "math.calc.m20_derivative_definition",
+        "math.linalg.vs04_basis_and_dimension"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "分点列 x_0 < x_1 < ... < x_n が与えられ、各節点でデータ値 y_j が指定されていること。",
+        "補間関数の高次化に伴う振動を避けつつ、曲線全体で2階導関数まで滑らかに接続することを要請すること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_n \\in \\mathcal{P}_n,\\; P_n(x_j)=y_j\\ (j=0,\\dots,n);\\quad \\dim\\mathcal{P}_3 = 4",
+          "to_latex": "S|_{[x_j,x_{j+1}]} = S_j \\in \\mathcal{P}_3,\\quad S\\in C^2([x_0,x_n]),\\quad S(x_j)=y_j,\\quad S''(x_0)=S''(x_n)=0\\text{ (natural)}",
+          "operation_label": "区分3次多項式・C2接続・境界条件によるスプライン定義の導入",
+          "explanation": "n+1点を通る単一n次多項式補間を高次化する代わりに、各小区間を3次多項式で表し、内点で2階導関数までの連続性を課したうえで、自由度と拘束数の差2を境界条件で補うことで3次スプライン補間を一意に定義する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.num.ni04_polynomial_interpolation_existence"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_piecewise_setup",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_n(x_j)=y_j\\ (j=0,\\dots,n),\\quad \\dim\\mathcal{P}_3 = 4",
+          "to_latex": "S|_{[x_j,x_{j+1}]} = S_j \\in \\mathcal{P}_3,\\quad S_j(x_j)=y_j,\\quad S_j(x_{j+1})=y_{j+1}\\ (j=0,\\dots,n-1):\\; 2n\\text{ eqs in }4n\\text{ params.}",
+          "operation_label": "小区間ごとの3次多項式化と節点補間条件の設定",
+          "explanation": "全区間 [x_0, x_n] での単一多項式補間（NI04）をn個の小区間 [x_j, x_{j+1}] 上の区分3次多項式 S_j へ分割する。3次多項式空間 P_3 の次元は4（VS04）であるため全体の未知係数は4n個となり、各小区間両端での補間条件 S_j(x_j)=y_j, S_j(x_{j+1})=y_{j+1} により2n個の線形条件が課される。",
+          "used_node_ids": [
+            "math.linalg.vs04_basis_and_dimension",
+            "math.num.ni04_polynomial_interpolation_existence"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_c2_smoothness",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_j \\in \\mathcal{P}_3,\\quad S_j(x_j)=y_j,\\quad S_j(x_{j+1})=y_{j+1}\\ (j=0,\\dots,n-1\\text{; }n-1\\text{ interior knots})",
+          "to_latex": "S_{j-1}^{(k)}(x_j) = S_j^{(k)}(x_j)\\ (k=0,1,2;\\ j=1,\\dots,n-1) \\implies S \\in C^2([x_0,x_n])\\text{ (}2(n-1)\\text{ extra eqs)}",
+          "operation_label": "内点における1階・2階導関数の連続性（C2級条件）の付加",
+          "explanation": "導関数の定義（M20）に基づき、n-1個の内点 x_j (j=1,...,n-1) において左片側・右片側の1階および2階導関数が一致すること（S'_{j-1}(x_j)=S'_j(x_j), S''_{j-1}(x_j)=S''_j(x_j)）を課す。関数値の連続性（k=0）は補間条件から自動的に従うため、新たに2(n-1)個の独立な滑らかさ条件が加わり、全区間で S が C^2 級となる。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_boundary_uniqueness",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{DOF} = 4n,\\quad \\text{constraints} = 2n + 2(n-1) = 4n - 2",
+          "to_latex": "S''(x_0)=S''(x_n)=0\\text{ (natural)}\\quad \\text{or}\\quad S'(x_0)=y'_0,\\; S'(x_n)=y'_n\\text{ (clamped)}",
+          "operation_label": "自由度勘定に基づく一意化境界条件の定義",
+          "explanation": "ここまでの拘束条件の総数は 2n + 2(n-1) = 4n - 2 個であり、4n個のパラメータに対して2自由度だけ未決定である。そこで両端 x_0, x_n に2個の境界条件（自然境界条件 S''(x_0)=S''(x_n)=0、または固定境界条件 S'(x_0)=y'_0, S'(x_n)=y'_n）を追加することで、3次スプライン補間 S(x) の定義が完成する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }
