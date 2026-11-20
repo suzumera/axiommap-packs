@@ -1,0 +1,706 @@
+{
+  "pack_meta": {
+    "pack_id": "math.linalg.eigen_diagonalization",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "線形代数：固有値・固有ベクトル・対角化とスペクトル定理",
+    "language": "ja",
+    "description": "特性多項式、対称/エルミート行列の直交対角化（スペクトル定理）、ケーリー＝ハミルトンの定理、二次形式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.linalg.eig01_eigenvalue_eigenvector_def",
+      "short_code": "EIG01",
+      "kind": "definition",
+      "title": "固有値・固有ベクトルおよび固有空間の定義",
+      "summary": "n次正方行列A（または線形変換）に対してAv=λvを満たすスカラーλを固有値、零でないベクトルvを固有ベクトルと定義し、λに属する固有空間E_λをker(λI_n-A)として定める。",
+      "canonical_latex": "A\\mathbf{v} = \\lambda\\mathbf{v}\\quad (\\mathbf{v}\\in\\mathbb{F}^n,\\; \\mathbf{v}\\neq\\mathbf{0},\\; \\lambda\\in\\mathbb{F}),\\qquad E_\\lambda(A) := \\ker(\\lambda I_n - A) = \\{\\mathbf{v}\\in\\mathbb{F}^n \\mid A\\mathbf{v}=\\lambda\\mathbf{v}\\}",
+      "aliases_latex": [
+        "T(\\mathbf{v}) = \\lambda\\mathbf{v}",
+        "(\\lambda I_n - A)\\mathbf{v} = \\mathbf{0}"
+      ],
+      "keywords": [
+        "eigenvalue",
+        "eigenvector",
+        "eigenspace",
+        "linear operator"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.eig02_characteristic_polynomial",
+      "short_code": "EIG02",
+      "kind": "theorem_formula",
+      "title": "特性多項式・特性方程式と相似不変性",
+      "summary": "スカラーλがAの固有値であることは特性方程式det(λI_n-A)=0と同値であり、特性多項式p_A(λ)は基底変換（相似変換P^{-1}AP）に対して不変であることを示す。",
+      "canonical_latex": "p_A(\\lambda) := \\det(\\lambda I_n - A),\\quad \\lambda\\text{ is an eigenvalue of }A \\iff p_A(\\lambda) = 0,\\quad p_{P^{-1}AP}(\\lambda) = p_A(\\lambda)",
+      "aliases_latex": [
+        "\\det(A - \\lambda I_n) = 0",
+        "\\chi_A(\\lambda) = \\det(\\lambda I_n - A)"
+      ],
+      "keywords": [
+        "characteristic polynomial",
+        "characteristic equation",
+        "similarity invariance",
+        "determinant"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.eig03_diagonalizability_criterion",
+      "short_code": "EIG03",
+      "kind": "theorem_formula",
+      "title": "固有ベクトルの線形独立性と対角化可能性の必要十分条件",
+      "summary": "相異なる固有値に属する固有ベクトルは線形独立であり、行列Aが対角化可能（P^{-1}AP=Λ）であることは固有ベクトルからなるF^nの基底が存在することと同値である。",
+      "canonical_latex": "\\lambda_i\\neq\\lambda_j\\ (i\\neq j) \\implies \\{\\mathbf{v}_1,\\dots,\\mathbf{v}_k\\}\\text{ linearly independent};\\quad P^{-1}AP = \\operatorname{diag}(\\lambda_1,\\dots,\\lambda_n) \\iff \\mathbb{F}^n = \\bigoplus_{\\lambda} E_\\lambda(A)",
+      "aliases_latex": [
+        "A = P\\Lambda P^{-1}",
+        "\\sum_{\\lambda} \\dim E_\\lambda(A) = n"
+      ],
+      "keywords": [
+        "diagonalization",
+        "linear independence",
+        "eigenspace decomposition",
+        "similarity"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.eig04_cayley_hamilton_theorem",
+      "short_code": "EIG04",
+      "kind": "theorem_formula",
+      "title": "ケーリー＝ハミルトンの定理",
+      "summary": "任意のn次正方行列Aは自身の特性多項式p_A(λ)を行列多項式として満たし、p_A(A)=O_nとなることを余因子行列の恒等式から導出する。",
+      "canonical_latex": "p_A(\\lambda) = \\det(\\lambda I_n - A) = \\sum_{k=0}^{n} c_k\\lambda^k \\implies p_A(A) = \\sum_{k=0}^{n} c_k A^k = O_n",
+      "aliases_latex": [
+        "p_A(A) = 0",
+        "A^n + c_{n-1}A^{n-1} + \\dots + c_0 I_n = O"
+      ],
+      "keywords": [
+        "Cayley-Hamilton theorem",
+        "characteristic polynomial",
+        "adjugate matrix",
+        "matrix polynomial"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+      "short_code": "EIG05",
+      "kind": "definition",
+      "title": "標準内積・随伴行列・エルミート/対称行列・ユニタリ/直交行列の定義",
+      "summary": "C^n（およびR^n）上の標準内積、共役転置による随伴行列A^*、自己随伴であるエルミート行列（実対称行列）、および内積を保つユニタリ行列（直交行列）を定義する。",
+      "canonical_latex": "\\langle \\mathbf{u},\\mathbf{v}\\rangle := \\mathbf{u}^*\\mathbf{v} = \\sum_{i=1}^{n}\\overline{u_i}v_i,\\quad \\langle A\\mathbf{u},\\mathbf{v}\\rangle = \\langle \\mathbf{u},A^*\\mathbf{v}\\rangle,\\quad A^*=A\\text{ (Hermitian/symmetric)},\\quad U^*U=I_n\\text{ (unitary/orthogonal)}",
+      "aliases_latex": [
+        "A^\\top = A,\\; Q^\\top Q = I_n",
+        "A^\\dagger = A,\\; U^\\dagger U = I_n"
+      ],
+      "keywords": [
+        "inner product",
+        "Hermitian matrix",
+        "symmetric matrix",
+        "unitary matrix",
+        "orthogonal matrix"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.eig06_hermitian_eigen_properties",
+      "short_code": "EIG06",
+      "kind": "theorem_formula",
+      "title": "エルミート行列・実対称行列の固有値の実数性と直交不変性",
+      "summary": "エルミート行列（実対称行列を含む）のすべての固有値は実数であり、異なる固有値に属する固有ベクトルは直交し、不変部分空間の直交補空間もまたA不変となる。",
+      "canonical_latex": "A^*=A \\implies \\big(\\lambda\\in\\mathbb{R}\\big) \\land \\big(\\lambda_1\\neq\\lambda_2 \\implies \\langle\\mathbf{v}_1,\\mathbf{v}_2\\rangle = 0\\big) \\land \\big(AW\\subseteq W \\implies AW^\\perp\\subseteq W^\\perp\\big)",
+      "aliases_latex": [
+        "A^\\top = A \\implies \\lambda\\in\\mathbb{R},\\; \\mathbf{v}_1\\cdot\\mathbf{v}_2 = 0"
+      ],
+      "keywords": [
+        "Hermitian matrix",
+        "real symmetric matrix",
+        "real eigenvalues",
+        "orthogonal complement"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.eig07_spectral_theorem",
+      "short_code": "EIG07",
+      "kind": "theorem_formula",
+      "title": "スペクトル定理（エルミート/実対称行列の直交対角化とスペクトル分解）",
+      "summary": "任意のエルミート行列（特に実対称行列）はユニタリ行列（実直交行列）によって実対角行列へ対角化可能であり、正規直交固有ベクトルの射影和としてスペクトル分解される。",
+      "canonical_latex": "A^*=A \\implies \\exists U\\ (U^*U=I_n):\\; U^*AU = \\Lambda = \\operatorname{diag}(\\lambda_1,\\dots,\\lambda_n),\\quad A = \\sum_{i=1}^{n} \\lambda_i\\mathbf{u}_i\\mathbf{u}_i^*\\quad (A\\in\\mathbb{R}^{n\\times n},\\; A^\\top=A \\implies Q^\\top AQ = \\Lambda)",
+      "aliases_latex": [
+        "A = Q\\Lambda Q^\\top",
+        "A = U\\Lambda U^*"
+      ],
+      "keywords": [
+        "spectral theorem",
+        "orthogonal diagonalization",
+        "unitary diagonalization",
+        "spectral decomposition"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.eig08_quadratic_form_principal_axis",
+      "short_code": "EIG08",
+      "kind": "theorem_formula",
+      "title": "実二次形式の標準化（主軸定理）と固有値による定値性判定",
+      "summary": "実対称行列Aによる二次形式Q(x)=x^T Axは直交変換x=Qyによって交差項のない平方和Σλ_i y_i^2に標準化され、Aの正定値性はすべての固有値が正であることと同値となる。",
+      "canonical_latex": "Q(\\mathbf{x}) = \\mathbf{x}^\\top A\\mathbf{x}\\ (A^\\top=A),\\; \\mathbf{x}=Q\\mathbf{y}\\ (Q^\\top Q=I_n) \\implies Q(\\mathbf{x}) = \\sum_{i=1}^{n}\\lambda_i y_i^2;\\quad A\\succ 0 \\iff \\forall i,\\; \\lambda_i > 0",
+      "aliases_latex": [
+        "\\mathbf{x}^\\top A\\mathbf{x} = \\mathbf{y}^\\top\\Lambda\\mathbf{y}",
+        "Q(\\mathbf{x}) = \\sum_{i=1}^{n}\\lambda_i(\\mathbf{q}_i^\\top\\mathbf{x})^2"
+      ],
+      "keywords": [
+        "quadratic form",
+        "principal axis theorem",
+        "definiteness",
+        "orthogonal change of variables"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.eig09_rayleigh_quotient_extremum",
+      "short_code": "EIG09",
+      "kind": "theorem_formula",
+      "title": "レイリー商の固有値挟み込みと変分特徴付け",
+      "summary": "エルミート/実対称行列Aのレイリー商R_A(x)=<x,Ax>/<x,x>は最小固有値と最大固有値の間に常に収まり、それぞれの固有ベクトルにおいて最小値と最大値を達成する。",
+      "canonical_latex": "R_A(\\mathbf{x}) := \\frac{\\langle\\mathbf{x},A\\mathbf{x}\\rangle}{\\langle\\mathbf{x},\\mathbf{x}\\rangle}\\quad (\\mathbf{x}\\neq\\mathbf{0}) \\implies \\lambda_{\\min} \\le R_A(\\mathbf{x}) \\le \\lambda_{\\max},\\quad \\lambda_{\\min} = \\min_{\\|\\mathbf{x}\\|=1}\\langle\\mathbf{x},A\\mathbf{x}\\rangle,\\; \\lambda_{\\max} = \\max_{\\|\\mathbf{x}\\|=1}\\langle\\mathbf{x},A\\mathbf{x}\\rangle",
+      "aliases_latex": [
+        "\\lambda_{\\min} \\le \\frac{\\mathbf{x}^\\top A\\mathbf{x}}{\\mathbf{x}^\\top\\mathbf{x}} \\le \\lambda_{\\max}"
+      ],
+      "keywords": [
+        "Rayleigh quotient",
+        "variational characterization",
+        "eigenvalue bounds",
+        "min-max principle"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_eig02_characteristic_polynomial",
+      "target_node_id": "math.linalg.eig02_characteristic_polynomial",
+      "route_kind": "deductive",
+      "title": "固有値方程式の行列式条件と特性多項式の相似不変性の導出",
+      "premise_node_ids": [
+        "math.linalg.eig01_eigenvalue_eigenvector_def",
+        "math.linalg.det04_product_multiplicativity",
+        "math.linalg.vs08_ker_im_subspace_injectivity",
+        "math.linalg.vs09_matrix_representation_similarity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Aは体F上のn次正方行列とする",
+        "PはF上の正則なn次正方行列とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A\\mathbf{v} = \\lambda\\mathbf{v}\\quad (\\mathbf{v}\\neq\\mathbf{0})",
+          "to_latex": "p_A(\\lambda) = \\det(\\lambda I_n - A) = 0,\\qquad p_{P^{-1}AP}(\\lambda) = p_A(\\lambda)",
+          "operation_label": "特性多項式の同値性と相似不変性の導出",
+          "explanation": "固有値方程式の非自明解の存在を線形写像の核と行列式の非正則性に帰着させ、さらに行列式の乗法性から相似変換に対する不変性を示す。",
+          "used_node_ids": [
+            "math.linalg.det04_product_multiplicativity",
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.vs08_ker_im_subspace_injectivity",
+            "math.linalg.vs09_matrix_representation_similarity"
+          ],
+          "sympy_check_hint": "Verify det(lam*I - A) == det(lam*I - P.inv()*A*P) for symbolic 2x2 or 3x3 matrices."
+        },
+        {
+          "step_id": "s2_1_kernel_singularity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\lambda I_n - A)\\mathbf{v} = \\mathbf{0}\\quad (\\mathbf{v}\\neq\\mathbf{0})",
+          "to_latex": "\\ker(\\lambda I_n - A) \\neq \\{\\mathbf{0}\\} \\iff \\lambda I_n - A \\notin \\mathrm{GL}_n(\\mathbb{F}) \\iff \\det(\\lambda I_n - A) = 0",
+          "operation_label": "核の非自明性と行列式零の同値化",
+          "explanation": "固有ベクトルの存在はker(λI_n-A)≠{0}すなわち単射でないことと同値であり、正方行列の非正則性からdet(λI_n-A)=0を得る。",
+          "used_node_ids": [
+            "math.linalg.det04_product_multiplicativity",
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.vs08_ker_im_subspace_injectivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_similarity_invariance",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_{P^{-1}AP}(\\lambda) = \\det(\\lambda I_n - P^{-1}AP)",
+          "to_latex": "\\det\\big(P^{-1}(\\lambda I_n - A)P\\big) = \\det(P^{-1})\\det(\\lambda I_n - A)\\det(P) = \\det(\\lambda I_n - A) = p_A(\\lambda)",
+          "operation_label": "行列式の乗法性による相似不変性の証明",
+          "explanation": "基底変換による表現行列の相似変換P^{-1}APに対し、単位行列の相似不変性λI_n=P^{-1}(λI_n)Pと行列式の積の法則を用いてp_A(λ)の一致を示す。",
+          "used_node_ids": [
+            "math.linalg.det04_product_multiplicativity",
+            "math.linalg.vs09_matrix_representation_similarity"
+          ],
+          "sympy_check_hint": "Check factor(det(lam*eye(2) - P.inv()*A*P) - det(lam*eye(2) - A)) == 0"
+        }
+      ]
+    },
+    {
+      "id": "drv_eig03_diagonalizability_criterion",
+      "target_node_id": "math.linalg.eig03_diagonalizability_criterion",
+      "route_kind": "deductive",
+      "title": "相異なる固有値の固有ベクトルの線形独立性と対角化可能性条件の導出",
+      "premise_node_ids": [
+        "math.linalg.eig01_eigenvalue_eigenvector_def",
+        "math.linalg.vs03_linear_independence_span",
+        "math.linalg.vs04_basis_and_dimension",
+        "math.linalg.vs06_change_of_basis",
+        "math.linalg.vs09_matrix_representation_similarity"
+      ],
+      "required_math_node_ids": [
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "assumptions": [
+        "Aは体F上のn次正方行列とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A\\mathbf{v}_i = \\lambda_i\\mathbf{v}_i\\quad (\\mathbf{v}_i\\neq\\mathbf{0})",
+          "to_latex": "\\{\\mathbf{v}_1,\\dots,\\mathbf{v}_k\\}\\text{ linearly independent } (\\lambda_i\\neq\\lambda_j);\\quad P^{-1}AP=\\Lambda \\iff \\mathbb{F}^n=\\bigoplus_\\lambda E_\\lambda(A)",
+          "operation_label": "固有ベクトルの線形独立性と対角化基準の導出",
+          "explanation": "相異なる固有値に属する固有ベクトルの線形独立性を帰納法で証明し、対角化が固有ベクトル基底による基底変換と等価であることを示す。",
+          "used_node_ids": [
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.vs03_linear_independence_span",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.linalg.vs06_change_of_basis",
+            "math.linalg.vs09_matrix_representation_similarity",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_distinct_eigen_indep",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{k} c_i\\mathbf{v}_i = \\mathbf{0}\\quad (\\lambda_i\\neq\\lambda_j\\text{ for }i\\neq j)",
+          "to_latex": "(\\lambda_k I_n - A)\\sum_{i=1}^{k} c_i\\mathbf{v}_i = \\sum_{i=1}^{k-1} c_i(\\lambda_k - \\lambda_i)\\mathbf{v}_i = \\mathbf{0} \\implies c_1 = \\dots = c_k = 0",
+          "operation_label": "線形関係への(λ_k I - A)作用による帰納的証明",
+          "explanation": "kに関する帰納法（または極小従属関係への背理法）を用い、λ_k I_n - Aを作用させてv_kを消去することで帰納法の仮定からc_i(λ_k-λ_i)=0ゆえに全係数が0となる。",
+          "used_node_ids": [
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.vs03_linear_independence_span",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_basis_diagonalization_equiv",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P = (\\mathbf{v}_1,\\dots,\\mathbf{v}_n),\\quad AP = (A\\mathbf{v}_1,\\dots,A\\mathbf{v}_n)",
+          "to_latex": "P^{-1}AP = \\operatorname{diag}(\\lambda_1,\\dots,\\lambda_n) \\iff \\big(A\\mathbf{v}_i=\\lambda_i\\mathbf{v}_i\\big) \\land \\big(\\det P\\neq 0\\big) \\iff \\mathbb{F}^n = \\bigoplus_{\\lambda} E_\\lambda(A)",
+          "operation_label": "正則変換行列Pと固有基底の同値関係",
+          "explanation": "AP=PΛは各列が固有ベクトルであることと同値であり、Pの正則性はその列ベクトルがF^nの基底をなすこと、すなわち固有空間の直和が全空間に一致することと等価になる。",
+          "used_node_ids": [
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.linalg.vs06_change_of_basis",
+            "math.linalg.vs09_matrix_representation_similarity"
+          ],
+          "sympy_check_hint": "Verify P.inv()*A*P == diag(*vals) for diagonalizable matrix A with eigenvector matrix P."
+        }
+      ]
+    },
+    {
+      "id": "drv_eig04_cayley_hamilton",
+      "target_node_id": "math.linalg.eig04_cayley_hamilton_theorem",
+      "route_kind": "deductive",
+      "title": "余因子行列の多項式展開によるケーリー＝ハミルトンの定理の導出",
+      "premise_node_ids": [
+        "math.linalg.eig02_characteristic_polynomial",
+        "math.linalg.det07_adjugate_inverse_formula"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Aは可換環（特に体F）上のn次正方行列とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_A(\\lambda) = \\det(\\lambda I_n - A) = \\sum_{k=0}^{n} c_k\\lambda^k",
+          "to_latex": "p_A(A) = \\sum_{k=0}^{n} c_k A^k = O_n",
+          "operation_label": "余因子行列恒等式と係数比較によるp_A(A)=Oの証明",
+          "explanation": "λI_n-Aに対する余因子行列の恒等式をλの多項式行列として展開し、各次の係数関係に左からA^kを乗じて和をとることでテレスコーピングにより零行列を得る。",
+          "used_node_ids": [
+            "math.linalg.det07_adjugate_inverse_formula",
+            "math.linalg.eig02_characteristic_polynomial"
+          ],
+          "sympy_check_hint": "Verify charpoly(A) evaluated at A equals zeros(n, n) for symbolic 2x2 or 3x3 matrix."
+        },
+        {
+          "step_id": "s2_1_adjugate_polynomial_identity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{adj}(\\lambda I_n - A) = \\sum_{k=0}^{n-1} B_k\\lambda^k",
+          "to_latex": "(\\lambda I_n - A)\\sum_{k=0}^{n-1} B_k\\lambda^k = \\det(\\lambda I_n - A)\\,I_n = \\sum_{k=0}^{n} c_k I_n\\lambda^k",
+          "operation_label": "多項式行列としての余因子恒等式の展開",
+          "explanation": "λI_n-Aの各余因子は高々n-1次のλの多項式であるため、adj(λI_n-A)を行列係数多項式として表し、余因子行列の基本恒等式を適用する。",
+          "used_node_ids": [
+            "math.linalg.det07_adjugate_inverse_formula",
+            "math.linalg.eig02_characteristic_polynomial"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_coefficient_telescoping",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_n I_n = B_{n-1},\\quad c_k I_n = B_{k-1} - AB_k\\ (1\\le k\\le n-1),\\quad c_0 I_n = -AB_0",
+          "to_latex": "p_A(A) = \\sum_{k=0}^{n} c_k A^k = A^n B_{n-1} + \\sum_{k=1}^{n-1}(A^k B_{k-1} - A^{k+1}B_k) - AB_0 = O_n",
+          "operation_label": "係数比較とA^k倍のテレスコーピング和",
+          "explanation": "λ^kの係数を比較した等式にそれぞれ左からA^kを掛けてk=0からnまで足し合わせると、隣接項がすべて打ち消し合ってO_nとなる。",
+          "used_node_ids": [
+            "math.linalg.det07_adjugate_inverse_formula",
+            "math.linalg.eig02_characteristic_polynomial"
+          ],
+          "sympy_check_hint": "Check A**2 - trace(A)*A + det(A)*eye(2) == zeros(2, 2)"
+        }
+      ]
+    },
+    {
+      "id": "drv_eig06_hermitian_eigen_properties",
+      "target_node_id": "math.linalg.eig06_hermitian_eigen_properties",
+      "route_kind": "deductive",
+      "title": "エルミート行列の固有値実数性・直交性・直交補空間不変性の導出",
+      "premise_node_ids": [
+        "math.linalg.eig01_eigenvalue_eigenvector_def",
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+        "math.linalg.vs02_subspace_criterion"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Aはエルミート行列（A^*=A）とし、実対称行列（A^\\top=A）をその特別の場合として含む"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A^* = A,\\quad A\\mathbf{v} = \\lambda\\mathbf{v}\\ (\\mathbf{v}\\neq\\mathbf{0})",
+          "to_latex": "\\lambda\\in\\mathbb{R},\\quad (\\lambda_1\\neq\\lambda_2\\implies\\langle\\mathbf{v}_1,\\mathbf{v}_2\\rangle=0),\\quad (AW\\subseteq W\\implies AW^\\perp\\subseteq W^\\perp)",
+          "operation_label": "自己随伴性からのスペクトル基本性質の導出",
+          "explanation": "内積の共役対称性とエルミート性<Au,v>=<u,Av>を用いて、固有値の実数性、異固有値間の直交性、および直交補空間の不変性を導く。",
+          "used_node_ids": [
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.vs02_subspace_criterion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_real_eigenvalues",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lambda\\langle\\mathbf{v},\\mathbf{v}\\rangle = \\langle\\mathbf{v},A\\mathbf{v}\\rangle",
+          "to_latex": "\\langle\\mathbf{v},A\\mathbf{v}\\rangle = \\langle A^*\\mathbf{v},\\mathbf{v}\\rangle = \\langle A\\mathbf{v},\\mathbf{v}\\rangle = \\overline{\\lambda}\\langle\\mathbf{v},\\mathbf{v}\\rangle \\implies (\\lambda - \\overline{\\lambda})\\langle\\mathbf{v},\\mathbf{v}\\rangle = 0 \\implies \\lambda\\in\\mathbb{R}",
+          "operation_label": "自己随伴性による固有値の実数性の証明",
+          "explanation": "内積の第1引数に対する共役線形性と<v,v>>0、およびA^*=Aよりλ=λ̄が得られ、固有値は必ず実数となる。",
+          "used_node_ids": [
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_eigenvector_orthogonality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A\\mathbf{v}_1 = \\lambda_1\\mathbf{v}_1,\\quad A\\mathbf{v}_2 = \\lambda_2\\mathbf{v}_2\\quad (\\lambda_1\\neq\\lambda_2)",
+          "to_latex": "\\lambda_2\\langle\\mathbf{v}_1,\\mathbf{v}_2\\rangle = \\langle\\mathbf{v}_1,A\\mathbf{v}_2\\rangle = \\langle A\\mathbf{v}_1,\\mathbf{v}_2\\rangle = \\lambda_1\\langle\\mathbf{v}_1,\\mathbf{v}_2\\rangle \\implies \\langle\\mathbf{v}_1,\\mathbf{v}_2\\rangle = 0",
+          "operation_label": "異なる固有値に属する固有ベクトルの直交性",
+          "explanation": "固有値が実数であるためλ̄_1=λ_1が成り立ち、(λ_2-λ_1)<v_1,v_2>=0およびλ_1≠λ_2から内積が零となる。",
+          "used_node_ids": [
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_orthogonal_complement_invariance",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall\\mathbf{w}\\in W,\\; A\\mathbf{w}\\in W,\\; \\mathbf{u}\\in W^\\perp",
+          "to_latex": "\\langle\\mathbf{w}, A\\mathbf{u}\\rangle = \\langle A^*\\mathbf{w},\\mathbf{u}\\rangle = \\langle A\\mathbf{w},\\mathbf{u}\\rangle = 0 \\implies A\\mathbf{u}\\in W^\\perp",
+          "operation_label": "A不変部分空間の直交補空間の不変性",
+          "explanation": "W^⊥が部分空間をなし、任意のw∈Wに対してAw∈Wゆえに<w,Au>=<Aw,u>=0が成立するため、Au∈W^⊥すなわちAW^⊥⊆W^⊥が従う。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.vs02_subspace_criterion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_eig07_spectral_theorem",
+      "target_node_id": "math.linalg.eig07_spectral_theorem",
+      "route_kind": "deductive",
+      "title": "次元に関する帰納法によるスペクトル定理（直交対角化とスペクトル分解）の導出",
+      "premise_node_ids": [
+        "math.linalg.eig02_characteristic_polynomial",
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+        "math.linalg.eig06_hermitian_eigen_properties",
+        "math.linalg.vs04_basis_and_dimension",
+        "math.linalg.vs09_matrix_representation_similarity"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs10_rank_nullity_theorem"
+      ],
+      "assumptions": [
+        "代数学の基本定理により、n次特性多項式p_A(λ)=0は複素数体C上に少なくとも1つの根を持つ",
+        "有限次元内積空間の任意の部分空間Wに対して直交直和分解V=W\\oplus W^\\perpが成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A^* = A\\quad (A\\in\\mathbb{C}^{n\\times n}\\text{ or }A^\\top=A\\in\\mathbb{R}^{n\\times n})",
+          "to_latex": "U^*AU = \\Lambda = \\operatorname{diag}(\\lambda_1,\\dots,\\lambda_n),\\qquad A = \\sum_{i=1}^{n} \\lambda_i\\mathbf{u}_i\\mathbf{u}_i^*",
+          "operation_label": "ユニタリ/直交対角化とスペクトル分解の導出",
+          "explanation": "実固有値と単位固有ベクトルの存在から直交補空間への制限に対して次元に関する帰納法を適用し、正規直交固有基底とスペクトル分解を構成する。",
+          "used_node_ids": [
+            "math.linalg.eig02_characteristic_polynomial",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig06_hermitian_eigen_properties",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.linalg.vs09_matrix_representation_similarity",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_first_unit_eigenvector",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_A(\\lambda) = \\det(\\lambda I_n - A) = 0",
+          "to_latex": "\\exists\\lambda_1\\in\\mathbb{R},\\; \\exists\\mathbf{u}_1\\ (\\|\\mathbf{u}_1\\|=1):\\; A\\mathbf{u}_1 = \\lambda_1\\mathbf{u}_1",
+          "operation_label": "実固有値と正規化固有ベクトルの存在",
+          "explanation": "特性方程式は複素根λ_1を持つがエルミート性よりλ_1∈Rであり、実対称行列の場合も実領域でλ_1I_n-Aが非正則となるため実の単位固有ベクトルu_1が取れる。",
+          "used_node_ids": [
+            "math.linalg.eig02_characteristic_polynomial",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig06_hermitian_eigen_properties"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_inductive_orthogonal_reduction",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W_1 = \\operatorname{span}(\\mathbf{u}_1),\\quad AW_1^\\perp \\subseteq W_1^\\perp,\\quad \\dim W_1^\\perp = n - 1",
+          "to_latex": "\\exists\\{\\mathbf{u}_1,\\dots,\\mathbf{u}_n\\}\\text{ orthonormal eigenbasis}:\\; U=(\\mathbf{u}_1,\\dots,\\mathbf{u}_n),\\; U^*U=I_n,\\; U^*AU=\\Lambda",
+          "operation_label": "直交補空間への制限と帰納法による対角化",
+          "explanation": "AのW_1^⊥への制限はn-1次元空間上のエルミート（実対称）作用素となるため、次元に関する帰納法により正規直交固有基底{u_1,...,u_n}が得られ、U^*AU=Λが成立する。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig06_hermitian_eigen_properties",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.linalg.vs09_matrix_representation_similarity",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_spectral_decomposition",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A = U\\Lambda U^* = (\\mathbf{u}_1,\\dots,\\mathbf{u}_n)\\operatorname{diag}(\\lambda_1,\\dots,\\lambda_n)(\\mathbf{u}_1,\\dots,\\mathbf{u}_n)^*",
+          "to_latex": "A = \\sum_{i=1}^{n} \\lambda_i\\mathbf{u}_i\\mathbf{u}_i^*",
+          "operation_label": "直交射影作用素の和へのスペクトル分解",
+          "explanation": "Uがユニタリ行列（U^{-1}=U^*）であることからA=UΛU^*をブロック積で展開し、階数1の直交射影u_i u_i^*の固有値重み付き和を得る。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.vs09_matrix_representation_similarity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_eig08_quadratic_form_principal_axis",
+      "target_node_id": "math.linalg.eig08_quadratic_form_principal_axis",
+      "route_kind": "deductive",
+      "title": "スペクトル定理による実二次形式の主軸変換と定値性条件の導出",
+      "premise_node_ids": [
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+        "math.linalg.eig07_spectral_theorem",
+        "math.linalg.vs06_change_of_basis"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Aはn次実対称行列（A^\\top = A）とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Q(\\mathbf{x}) = \\mathbf{x}^\\top A\\mathbf{x}\\quad (A^\\top = A)",
+          "to_latex": "Q(\\mathbf{x}) = \\sum_{i=1}^{n}\\lambda_i y_i^2\\ (\\mathbf{x}=Q\\mathbf{y}),\\qquad A\\succ 0 \\iff \\forall i,\\; \\lambda_i > 0",
+          "operation_label": "直交座標変換による二次形式の標準化と定値性同値化",
+          "explanation": "実対称行列の直交対角化A=QΛQ^Tと座標変換x=Qyを用いて二次形式から交差項を消去し、すべての固有値の符号による定値性判定を導く。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig07_spectral_theorem",
+            "math.linalg.vs06_change_of_basis"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_orthogonal_diagonalization_substitution",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q(\\mathbf{x}) = \\mathbf{x}^\\top A\\mathbf{x},\\quad A = Q\\Lambda Q^\\top,\\quad \\mathbf{x} = Q\\mathbf{y}",
+          "to_latex": "Q(\\mathbf{x}) = (Q\\mathbf{y})^\\top (Q\\Lambda Q^\\top)(Q\\mathbf{y}) = \\mathbf{y}^\\top (Q^\\top Q)\\Lambda(Q^\\top Q)\\mathbf{y} = \\mathbf{y}^\\top\\Lambda\\mathbf{y} = \\sum_{i=1}^{n}\\lambda_i y_i^2",
+          "operation_label": "直交変換x=Qyの代入による主軸標準形",
+          "explanation": "スペクトル定理による実直交行列Qを用いて新座標y=Q^T xを導入すると、Q^T Q=I_nより二次形式が固有値を係数とする平方和に帰着する。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig07_spectral_theorem",
+            "math.linalg.vs06_change_of_basis"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_definiteness_equivalence",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall\\mathbf{x}\\neq\\mathbf{0},\\; Q(\\mathbf{x}) = \\sum_{i=1}^{n}\\lambda_i y_i^2 > 0\\quad (\\mathbf{y} = Q^\\top\\mathbf{x}\\neq\\mathbf{0})",
+          "to_latex": "A\\succ 0 \\iff \\forall i\\in\\{1,\\dots,n\\},\\; \\lambda_i > 0",
+          "operation_label": "平方和標準形からの正定値性の必要十分条件",
+          "explanation": "Qが正則ゆえx≠0とy≠0は同値であり、全ての固有値が正なら任意のy≠0でQ(x)>0、逆に標準基底ベクトルy=e_iを選べばQ(Qe_i)=λ_i>0が必要となる。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig07_spectral_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_eig09_rayleigh_quotient_extremum",
+      "target_node_id": "math.linalg.eig09_rayleigh_quotient_extremum",
+      "route_kind": "deductive",
+      "title": "スペクトル分解によるレイリー商の固有値挟み込みと極値達成の導出",
+      "premise_node_ids": [
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+        "math.linalg.eig07_spectral_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Aはn次エルミート行列（または実対称行列）とし、固有値を \\lambda_{\\min} = \\lambda_1 \\le \\dots \\le \\lambda_n = \\lambda_{\\max} の順に並べる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "R_A(\\mathbf{x}) = \\frac{\\langle\\mathbf{x},A\\mathbf{x}\\rangle}{\\langle\\mathbf{x},\\mathbf{x}\\rangle}\\quad (\\mathbf{x}\\neq\\mathbf{0})",
+          "to_latex": "\\lambda_{\\min} \\le R_A(\\mathbf{x}) \\le \\lambda_{\\max},\\quad \\lambda_{\\min} = \\min_{\\|\\mathbf{x}\\|=1}\\langle\\mathbf{x},A\\mathbf{x}\\rangle,\\; \\lambda_{\\max} = \\max_{\\|\\mathbf{x}\\|=1}\\langle\\mathbf{x},A\\mathbf{x}\\rangle",
+          "operation_label": "正規直交固有基底展開によるレイリー商の上下界評価",
+          "explanation": "任意の非零ベクトルをAの正規直交固有基底で展開してレイリー商を固有値の凸結合として表し、最小・最大固有値による挟み込みと等号達成を示す。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig07_spectral_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_spectral_expansion_quotient",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x} = \\sum_{i=1}^{n} c_i\\mathbf{u}_i,\\quad A = \\sum_{i=1}^{n} \\lambda_i\\mathbf{u}_i\\mathbf{u}_i^*",
+          "to_latex": "\\langle\\mathbf{x},A\\mathbf{x}\\rangle = \\sum_{i=1}^{n} \\lambda_i|c_i|^2,\\quad \\langle\\mathbf{x},\\mathbf{x}\\rangle = \\sum_{i=1}^{n} |c_i|^2 \\implies R_A(\\mathbf{x}) = \\frac{\\sum_{i=1}^{n}\\lambda_i|c_i|^2}{\\sum_{i=1}^{n}|c_i|^2}",
+          "operation_label": "正規直交固有基底での内積と二次形式の展開",
+          "explanation": "スペクトル定理による正規直交固有基底{u_1,...,u_n}の直交性<u_i,u_j>=δ_{ij}から分子・分母を係数|c_i|^2の重み付き和へ変換する。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig07_spectral_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_eigenvalue_bounds_attainment",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lambda_{\\min}\\sum_{i=1}^{n}|c_i|^2 \\le \\sum_{i=1}^{n}\\lambda_i|c_i|^2 \\le \\lambda_{\\max}\\sum_{i=1}^{n}|c_i|^2",
+          "to_latex": "\\lambda_{\\min} \\le R_A(\\mathbf{x}) \\le \\lambda_{\\max},\\qquad R_A(\\mathbf{u}_1) = \\lambda_{\\min},\\; R_A(\\mathbf{u}_n) = \\lambda_{\\max}",
+          "operation_label": "固有値順序による不等式評価と極値達成",
+          "explanation": "|c_i|^2>=0およびλ_min<=λ_i<=λ_maxより上下の不等式が成立し、単位球面||x||=1上ではu_1, u_nがそれぞれ最小値と最大値を実現する。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig07_spectral_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

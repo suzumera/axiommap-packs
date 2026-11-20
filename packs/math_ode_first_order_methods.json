@@ -1,0 +1,774 @@
+{
+  "pack_meta": {
+    "pack_id": "math.ode.first_order_methods",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "常微分方程式：1階ODE解法（変数分離・定数変化・完全微分）",
+    "language": "ja",
+    "description": "変数分離形、同次形、1階線形ODEの積分因子法・定数変化法、完全微分方程式とベルヌーイ方程式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.ode.fo01_first_order_ode_def",
+      "short_code": "FO01",
+      "kind": "definition",
+      "title": "1階常微分方程式と一般解・初期値問題の定義",
+      "summary": "未知関数 y(x) とその1階導関数 y'(x) を含む方程式 y' = f(x, y) の正規形、任意定数を含む一般解、および初期条件 y(x_0) = y_0 による特解の定義。",
+      "canonical_latex": "\\frac{dy}{dx} = f(x, y),\\quad \\Phi(x, y, C) = 0,\\quad y(x_0) = y_0",
+      "aliases_latex": [
+        "y'(x) = f(x, y(x))",
+        "F(x, y, y') = 0"
+      ],
+      "keywords": [
+        "1階常微分方程式",
+        "一般解",
+        "特解",
+        "初期値問題"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode"
+      ]
+    },
+    {
+      "id": "math.ode.fo02_separable_ode",
+      "short_code": "FO02",
+      "kind": "theorem_formula",
+      "title": "変数分離形1階常微分方程式の解法",
+      "summary": "右辺が x のみの関数と y のみの関数の積 g(x)h(y) に分解できる1階ODEに対し、両辺を分離して積分することで得られる一般解（および h(y_0)=0 に対応する特異解）の公式。",
+      "canonical_latex": "\\frac{dy}{dx} = g(x)h(y) \\implies \\int \\frac{dy}{h(y)} = \\int g(x)\\,dx + C\\quad (h(y) \\neq 0)",
+      "aliases_latex": [
+        "\\int_{y_0}^{y} \\frac{d\\eta}{h(\\eta)} = \\int_{x_0}^{x} g(\\xi)\\,d\\xi"
+      ],
+      "keywords": [
+        "変数分離形",
+        "1階ODE",
+        "求積法"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode"
+      ]
+    },
+    {
+      "id": "math.ode.fo03_homogeneous_ode",
+      "short_code": "FO03",
+      "kind": "theorem_formula",
+      "title": "同次形1階常微分方程式の解法",
+      "summary": "右辺が y/x の関数 f(y/x) として表される同次形1階ODEを、変数変換 u = y/x によって変数分離形に帰着させる公式。",
+      "canonical_latex": "\\frac{dy}{dx} = F\\!\\left(\\frac{y}{x}\\right),\\quad u = \\frac{y}{x} \\implies x\\frac{du}{dx} = F(u) - u \\implies \\int \\frac{du}{F(u) - u} = \\ln|x| + C",
+      "aliases_latex": [
+        "y(x) = x u(x),\\quad \\frac{dy}{dx} = u + x\\frac{du}{dx}"
+      ],
+      "keywords": [
+        "同次形",
+        "変数変換",
+        "変数分離"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode"
+      ]
+    },
+    {
+      "id": "math.ode.fo04_linear_ode_1st_def",
+      "short_code": "FO04",
+      "kind": "definition",
+      "title": "1階線形常微分方程式の標準形と解の構造",
+      "summary": "1階非同次線形ODE y' + P(x)y = Q(x) と対応する同次方程式 y' + P(x)y = 0 の定義、および一般解が同次解と特解の和で表される線形構造。",
+      "canonical_latex": "L[y] := \\frac{dy}{dx} + P(x)y = Q(x),\\quad y = y_h + y_p\\quad (L[y_h] = 0,\\; L[y_p] = Q(x))",
+      "aliases_latex": [
+        "y'(x) + P(x)y(x) = Q(x)"
+      ],
+      "keywords": [
+        "1階線形ODE",
+        "同次解",
+        "特解",
+        "線形作用素"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode"
+      ]
+    },
+    {
+      "id": "math.ode.fo05_integrating_factor_linear",
+      "short_code": "FO05",
+      "kind": "theorem_formula",
+      "title": "1階線形常微分方程式の積分因子法と一般解公式",
+      "summary": "積分因子 mu(x) = exp(int P(x) dx) を乗じて左辺を積の微分 (mu y)' にまとめることで導かれる1階線形ODEの陽的解法公式。",
+      "canonical_latex": "\\mu(x) = \\exp\\!\\left(\\int P(x)\\,dx\\right) \\implies \\frac{d}{dx}\\big(\\mu(x)y\\big) = \\mu(x)Q(x) \\implies y(x) = \\mu(x)^{-1}\\left(\\int \\mu(x)Q(x)\\,dx + C\\right)",
+      "aliases_latex": [
+        "y(x) = e^{-\\int P(x)\\,dx}\\left(\\int Q(x)e^{\\int P(x)\\,dx}\\,dx + C\\right)"
+      ],
+      "keywords": [
+        "積分因子法",
+        "1階線形ODE",
+        "一般解公式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode"
+      ]
+    },
+    {
+      "id": "math.ode.fo06_variation_of_parameters_1st",
+      "short_code": "FO06",
+      "kind": "theorem_formula",
+      "title": "定数変化法による1階非同次線形ODEの解法",
+      "summary": "同次方程式の一般解 y_h = C exp(-int P(x) dx) の任意定数 C を未知関数 C(x) に置き換えて非同次方程式に代入し、C'(x) を求積して特解・一般解を得る手法。",
+      "canonical_latex": "y(x) = C(x)\\exp\\!\\left(-\\int P(x)\\,dx\\right) \\implies C'(x) = Q(x)\\exp\\!\\left(\\int P(x)\\,dx\\right) \\implies C(x) = \\int Q(x)\\exp\\!\\left(\\int P(x)\\,dx\\right)dx + C_0",
+      "aliases_latex": [
+        "y(x) = C(x)y_1(x),\\quad C'(x)y_1(x) = Q(x)"
+      ],
+      "keywords": [
+        "定数変化法",
+        "非同次線形ODE",
+        "求積法"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode"
+      ]
+    },
+    {
+      "id": "math.ode.fo07_bernoulli_ode",
+      "short_code": "FO07",
+      "kind": "theorem_formula",
+      "title": "ベルヌーイの微分方程式の線形化解法",
+      "summary": "非線形項 y^n を含むベルヌーイ方程式 y' + P(x)y = Q(x)y^n (n != 0, 1) を、変数変換 u = y^(1-n) により1階線形ODEへ帰着させる解法公式。",
+      "canonical_latex": "\\frac{dy}{dx} + P(x)y = Q(x)y^n,\\quad u = y^{1-n} \\implies \\frac{du}{dx} + (1-n)P(x)u = (1-n)Q(x)\\quad (n \\neq 0, 1)",
+      "aliases_latex": [
+        "y^{1-n} = e^{-(1-n)\\int P\\,dx}\\left((1-n)\\int Q e^{(1-n)\\int P\\,dx}\\,dx + C\\right)"
+      ],
+      "keywords": [
+        "ベルヌーイ方程式",
+        "非線形ODE",
+        "線形化"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode"
+      ]
+    },
+    {
+      "id": "math.ode.fo08_exact_ode_condition",
+      "short_code": "FO08",
+      "kind": "theorem_formula",
+      "title": "完全微分方程式の判定条件とポテンシャル解法",
+      "summary": "微分形式 M(x, y)dx + N(x, y)dy = 0 が単連結領域上で完全微分 dPhi = 0 となるための必要十分条件 dM/dy = dN/dx と、ポテンシャル関数 Phi(x, y) = C による一般解の構成法。",
+      "canonical_latex": "\\frac{\\partial M}{\\partial y} = \\frac{\\partial N}{\\partial x} \\iff \\exists \\Phi(x,y)\\text{ s.t. } d\\Phi = M\\,dx + N\\,dy,\\quad \\Phi(x,y) = \\int M\\,dx + \\int\\left(N - \\frac{\\partial}{\\partial y}\\int M\\,dx\\right)dy = C",
+      "aliases_latex": [
+        "\\frac{\\partial \\Phi}{\\partial x} = M(x,y),\\quad \\frac{\\partial \\Phi}{\\partial y} = N(x,y)"
+      ],
+      "keywords": [
+        "完全微分方程式",
+        "ポテンシャル関数",
+        "閉形式条件"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode"
+      ]
+    },
+    {
+      "id": "math.ode.fo09_exact_ode_integrating_factor",
+      "short_code": "FO09",
+      "kind": "theorem_formula",
+      "title": "非完全微分方程式の積分因子（1変数依存の判定公式）",
+      "summary": "M dx + N dy = 0 が完全でないとき、積分因子 mu(x, y) を乗じて完全微分化する条件、および (M_y - N_x)/N が x のみ、あるいは (N_x - M_y)/M が y のみに依存する場合の積分因子の陽的公式。",
+      "canonical_latex": "\\frac{1}{N}\\left(\\frac{\\partial M}{\\partial y} - \\frac{\\partial N}{\\partial x}\\right) = \\alpha(x) \\implies \\mu(x) = \\exp\\!\\left(\\int \\alpha(x)\\,dx\\right),\\qquad \\frac{1}{M}\\left(\\frac{\\partial N}{\\partial x} - \\frac{\\partial M}{\\partial y}\\right) = \\beta(y) \\implies \\mu(y) = \\exp\\!\\left(\\int \\beta(y)\\,dy\\right)",
+      "aliases_latex": [
+        "\\frac{\\partial(\\mu M)}{\\partial y} = \\frac{\\partial(\\mu N)}{\\partial x}"
+      ],
+      "keywords": [
+        "積分因子",
+        "完全微分化",
+        "1階ODE"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.ode.fo02_separable_ode",
+      "target_node_id": "math.ode.fo02_separable_ode",
+      "route_kind": "deductive",
+      "title": "変数分離形1階ODEの求積公式の導出",
+      "premise_node_ids": [
+        "math.ode.fo01_first_order_ode_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m26_zero_derivative_constant_lemma",
+        "math.calc.m43_definite_integral_substitution",
+        "math.calc.m60_implicit_function_theorem"
+      ],
+      "assumptions": [
+        "g(x) は区間 I 上で連続である。",
+        "h(y) は区間 J 上で連続かつ h(y) != 0 である（h(y_0) = 0 となる定数関数 y = y_0 は別個に特異解または自明解として扱う）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dy}{dx} = g(x)h(y)",
+          "to_latex": "\\int \\frac{dy}{h(y)} = \\int g(x)\\,dx + C",
+          "operation_label": "separation_and_integration",
+          "explanation": "h(y) != 0 の領域で両辺を h(y) で割り、合成関数の微分の逆操作（置換積分）と微積分学の基本定理により両辺を x で積分して一般解を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.calc.m43_definite_integral_substitution",
+            "math.ode.fo01_first_order_ode_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dy}{dx} = g(x)h(y)",
+          "to_latex": "\\frac{1}{h(y(x))}\\frac{dy}{dx} = g(x)",
+          "operation_label": "variable_separation",
+          "explanation": "h(y) != 0 を仮定して両辺を h(y(x)) で割り、y に依存する因子を左辺、x に依存する因子を右辺へ分離する。",
+          "used_node_ids": [
+            "math.ode.fo01_first_order_ode_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{h(y(x))}\\frac{dy}{dx} = g(x)",
+          "to_latex": "\\frac{d}{dx}\\big(H(y(x)) - G(x)\\big) = 0\\quad \\left(H'(y) = \\frac{1}{h(y)},\\; G'(x) = g(x)\\right)",
+          "operation_label": "antiderivative_chain_rule",
+          "explanation": "1/h(y) と g(x) の原始関数をそれぞれ H(y), G(x) とおくと、連鎖律により左辺は (d/dx)H(y(x)) に等しいため、両辺の差の導関数が恒等的に零になる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dx}\\big(H(y(x)) - G(x)\\big) = 0",
+          "to_latex": "\\int \\frac{dy}{h(y)} = \\int g(x)\\,dx + C",
+          "operation_label": "constant_lemma_and_implicit_solution",
+          "explanation": "導関数が零の関数は定数であるため H(y(x)) - G(x) = C が成り立ち、置換積分の記法を用いて陰解の公式が得られる。また H'(y) = 1/h(y) != 0 より陰関数定理から局所的に y(x) が一意に定まる。",
+          "used_node_ids": [
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.calc.m43_definite_integral_substitution",
+            "math.calc.m60_implicit_function_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.fo03_homogeneous_ode",
+      "target_node_id": "math.ode.fo03_homogeneous_ode",
+      "route_kind": "deductive",
+      "title": "同次形1階ODEの変数変換による変数分離への帰着",
+      "premise_node_ids": [
+        "math.ode.fo01_first_order_ode_def",
+        "math.ode.fo02_separable_ode"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "x != 0 上で y(x) を考え、F(u) は連続かつ F(u) - u != 0 とする（F(u_0) = u_0 となる定数は直線解 y = u_0 x を与える）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dy}{dx} = F\\!\\left(\\frac{y}{x}\\right)",
+          "to_latex": "\\int \\frac{du}{F(u) - u} = \\ln|x| + C\\quad \\left(u = \\frac{y}{x}\\right)",
+          "operation_label": "homogenizing_substitution",
+          "explanation": "新しい未知関数 u(x) = y/x を導入し、積の微分法で dy/dx を消去すると u と x に関する変数分離形ODEが得られ、求積できる。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.ode.fo01_first_order_ode_def",
+            "math.ode.fo02_separable_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y(x) = x\\,u(x)",
+          "to_latex": "\\frac{dy}{dx} = u + x\\frac{du}{dx}",
+          "operation_label": "product_rule_differentiation",
+          "explanation": "u = y/x すなわち y = xu の両辺を x で微分し、積の微分法を適用する。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u + x\\frac{du}{dx} = F(u)",
+          "to_latex": "\\frac{du}{dx} = \\frac{1}{x}\\big(F(u) - u\\big)",
+          "operation_label": "reduction_to_separable",
+          "explanation": "元の同次形方程式に代入して u を移項し、x で割ることで x と u の変数分離形に変形する。",
+          "used_node_ids": [
+            "math.ode.fo01_first_order_ode_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{du}{dx} = \\frac{1}{x}\\big(F(u) - u\\big)",
+          "to_latex": "\\int \\frac{du}{F(u) - u} = \\int \\frac{dx}{x} + C = \\ln|x| + C",
+          "operation_label": "apply_separable_formula",
+          "explanation": "変数分離形ODEの解法を適用して両辺を積分し、1/x の積分として対数関数を得る。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.fo02_separable_ode"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.fo05_integrating_factor_linear",
+      "target_node_id": "math.ode.fo05_integrating_factor_linear",
+      "route_kind": "deductive",
+      "title": "積分因子法による1階線形ODE一般解公式の導出",
+      "premise_node_ids": [
+        "math.ode.fo04_linear_ode_1st_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m15_product_rule",
+        "math.calc.m26_zero_derivative_constant_lemma",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "P(x), Q(x) は開区間 I 上で連続である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dy}{dx} + P(x)y = Q(x)",
+          "to_latex": "y(x) = \\mu(x)^{-1}\\left(\\int \\mu(x)Q(x)\\,dx + C\\right),\\quad \\mu(x) = \\exp\\!\\left(\\int P(x)\\,dx\\right)",
+          "operation_label": "integrating_factor_method",
+          "explanation": "左辺を積の微分 (mu y)' にまとめるような正の関数 mu(x) を求めて両辺に乗じ、直接積分することで一般解公式を導く。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m15_product_rule",
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.fo04_linear_ode_1st_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu(x)\\frac{dy}{dx} + \\mu(x)P(x)y = \\frac{d}{dx}\\big(\\mu(x)y\\big)",
+          "to_latex": "\\mu'(x) = \\mu(x)P(x) \\implies \\mu(x) = \\exp\\!\\left(\\int P(x)\\,dx\\right)",
+          "operation_label": "determine_integrating_factor",
+          "explanation": "積の微分法 (mu y)' = mu y' + mu' y と左辺を比較し、mu' = mu P を満たす積分因子として exp(int P(x) dx) > 0 を構成する（連鎖律と指数関数の微分を用いる）。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dy}{dx} + P(x)y = Q(x)",
+          "to_latex": "\\frac{d}{dx}\\big(\\mu(x)y(x)\\big) = \\mu(x)Q(x)",
+          "operation_label": "multiply_integrating_factor",
+          "explanation": "1階線形ODEの両辺に積分因子 mu(x) を乗じ、左辺を完全微分形 (mu(x)y(x))' に書き換える。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.ode.fo04_linear_ode_1st_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dx}\\big(\\mu(x)y(x)\\big) = \\mu(x)Q(x)",
+          "to_latex": "y(x) = \\mu(x)^{-1}\\left(\\int \\mu(x)Q(x)\\,dx + C\\right)",
+          "operation_label": "integrate_and_solve_for_y",
+          "explanation": "微積分学の基本定理と定数性の補題を用いて両辺を積分し、mu(x) > 0 で割ることで y(x) の一般解公式を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m26_zero_derivative_constant_lemma"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.fo06_variation_of_parameters_1st",
+      "target_node_id": "math.ode.fo06_variation_of_parameters_1st",
+      "route_kind": "deductive",
+      "title": "定数変化法による1階非同次線形ODEの解法の導出",
+      "premise_node_ids": [
+        "math.ode.fo04_linear_ode_1st_def",
+        "math.ode.fo02_separable_ode"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m15_product_rule",
+        "math.calc.m26_zero_derivative_constant_lemma",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "P(x), Q(x) は区間 I 上で連続である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dy}{dx} + P(x)y = Q(x)",
+          "to_latex": "y(x) = C(x)\\exp\\!\\left(-\\int P(x)\\,dx\\right),\\quad C'(x) = Q(x)\\exp\\!\\left(\\int P(x)\\,dx\\right)",
+          "operation_label": "variation_of_parameters",
+          "explanation": "同次方程式の一般解の任意定数 C を関数 C(x) に昇格させた仮設を非同次方程式へ代入し、同次解項が相殺されることで C'(x) を直接積分して解を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m15_product_rule",
+            "math.ode.fo02_separable_ode",
+            "math.ode.fo04_linear_ode_1st_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dy_h}{dx} + P(x)y_h = 0",
+          "to_latex": "y_h(x) = C\\,y_1(x),\\quad y_1(x) := \\exp\\!\\left(-\\int P(x)\\,dx\\right)",
+          "operation_label": "solve_homogeneous_equation",
+          "explanation": "まず Q(x) = 0 とした同次方程式を変数分離形として解き、非零の特解 y_1(x) を得る（y_1' + P y_1 = 0）。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.fo02_separable_ode",
+            "math.ode.fo04_linear_ode_1st_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y(x) = C(x)y_1(x)",
+          "to_latex": "C'(x)y_1(x) + C(x)\\big(y_1'(x) + P(x)y_1(x)\\big) = Q(x) \\implies C'(x)y_1(x) = Q(x)",
+          "operation_label": "substitute_varying_constant",
+          "explanation": "y(x) = C(x)y_1(x) を積の微分法で微分して非同次方程式に代入すると、y_1' + P y_1 = 0 により C(x) を含む項が消え、C'(x) のみの式が残る。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.ode.fo04_linear_ode_1st_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C'(x) = \\frac{Q(x)}{y_1(x)} = Q(x)\\exp\\!\\left(\\int P(x)\\,dx\\right)",
+          "to_latex": "C(x) = \\int Q(x)\\exp\\!\\left(\\int P(x)\\,dx\\right)dx + C_0",
+          "operation_label": "integrate_coefficient_function",
+          "explanation": "y_1(x) != 0 で割って両辺を積分することで C(x) が求まり、y(x) = C(x)y_1(x) に戻して一般解を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m26_zero_derivative_constant_lemma"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.fo07_bernoulli_ode",
+      "target_node_id": "math.ode.fo07_bernoulli_ode",
+      "route_kind": "deductive",
+      "title": "ベルヌーイ方程式の変数変換による線形化の導出",
+      "premise_node_ids": [
+        "math.ode.fo04_linear_ode_1st_def",
+        "math.ode.fo05_integrating_factor_linear"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.t06_exp_power_derivatives",
+        "math.ode.fo01_first_order_ode_def"
+      ],
+      "assumptions": [
+        "n は実数で n != 0, 1 とし、y != 0 なる領域を考える（n > 0 のときは y = 0 も解となりうる）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dy}{dx} + P(x)y = Q(x)y^n",
+          "to_latex": "\\frac{du}{dx} + (1-n)P(x)u = (1-n)Q(x)\\quad (u = y^{1-n})",
+          "operation_label": "power_substitution_linearization",
+          "explanation": "両辺を y^n で割り、変数変換 u = y^(1-n) を施すことで非線形方程式を u に関する1階線形常微分方程式へ帰着させる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.fo04_linear_ode_1st_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dy}{dx} + P(x)y = Q(x)y^n",
+          "to_latex": "y^{-n}\\frac{dy}{dx} + P(x)y^{1-n} = Q(x)",
+          "operation_label": "divide_by_yn",
+          "explanation": "y != 0 上で両辺を y^n で割り、右辺の非線形項を x のみの関数 Q(x) に分離する。",
+          "used_node_ids": [
+            "math.ode.fo01_first_order_ode_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u = y^{1-n}",
+          "to_latex": "\\frac{du}{dx} = (1-n)y^{-n}\\frac{dy}{dx}",
+          "operation_label": "differentiate_substitution",
+          "explanation": "変数変換 u = y^(1-n) を連鎖律とべき関数の微分公式を用いて x で微分する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y^{-n}\\frac{dy}{dx} + P(x)y^{1-n} = Q(x)",
+          "to_latex": "\\frac{du}{dx} + (1-n)P(x)u = (1-n)Q(x)",
+          "operation_label": "rewrite_as_linear_ode",
+          "explanation": "y^(-n) y' = (1/(1-n)) u' と y^(1-n) = u を代入して (1-n) 倍すると、u に関する1階線形ODEが得られ、積分因子法で解ける。",
+          "used_node_ids": [
+            "math.ode.fo04_linear_ode_1st_def",
+            "math.ode.fo05_integrating_factor_linear"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.fo08_exact_ode_condition",
+      "target_node_id": "math.ode.fo08_exact_ode_condition",
+      "route_kind": "equivalence",
+      "title": "完全微分方程式の判定条件とポテンシャル構成の導出",
+      "premise_node_ids": [
+        "math.ode.fo01_first_order_ode_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e01_hessian_matrix_def",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m26_zero_derivative_constant_lemma",
+        "math.calc.m60_implicit_function_theorem"
+      ],
+      "assumptions": [
+        "M(x, y), N(x, y) は単連結な開矩形領域 D 上で C^1 級である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "M(x, y)\\,dx + N(x, y)\\,dy = 0",
+          "to_latex": "\\frac{\\partial M}{\\partial y} = \\frac{\\partial N}{\\partial x} \\iff \\exists \\Phi(x,y):\\; d\\Phi = M\\,dx + N\\,dy,\\; \\Phi(x,y) = C",
+          "operation_label": "exactness_and_potential_construction",
+          "explanation": "シュワルツの対称性から必要性が従い、逆に閉形式条件のもとで x 方向の不定積分と y 方向の補正項の微分が一致することを用いてポテンシャル Phi(x, y) を陽に構成する。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m26_zero_derivative_constant_lemma"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\Phi = \\frac{\\partial \\Phi}{\\partial x}dx + \\frac{\\partial \\Phi}{\\partial y}dy = M\\,dx + N\\,dy",
+          "to_latex": "\\frac{\\partial M}{\\partial y} = \\frac{\\partial^2 \\Phi}{\\partial y\\partial x} = \\frac{\\partial^2 \\Phi}{\\partial x\\partial y} = \\frac{\\partial N}{\\partial x}",
+          "operation_label": "necessity_by_schwarz_symmetry",
+          "explanation": "全微分の表現より Phi_x = M, Phi_y = N であり、M, N が C^1 級なら Phi は C^2 級となるため、偏微分の交換可能性（シュワルツの定理）から必要条件 M_y = N_x が従う。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\Phi}{\\partial x} = M(x,y) \\implies \\Phi(x,y) = \\int_{x_0}^{x} M(\\xi, y)\\,d\\xi + \\psi(y)",
+          "to_latex": "\\psi'(y) = N(x,y) - \\frac{\\partial}{\\partial y}\\int_{x_0}^{x} M(\\xi, y)\\,d\\xi,\\quad \\frac{\\partial \\psi'}{\\partial x} = \\frac{\\partial N}{\\partial x} - \\frac{\\partial M}{\\partial y} = 0",
+          "operation_label": "construct_potential_by_integration",
+          "explanation": "十分性を示すため Phi_x = M を x で積分して任意関数 psi(y) を置く。Phi_y = N を要請したときの右辺を x で偏微分すると条件 N_x - M_y = 0 より零になるため、psi'(y) は x に依存しない。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m26_zero_derivative_constant_lemma"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\Phi(x,y) = 0",
+          "to_latex": "\\Phi(x,y) = \\int_{x_0}^{x} M(\\xi,y)\\,d\\xi + \\int_{y_0}^{y}\\left(N(x,\\eta) - \\frac{\\partial}{\\partial \\eta}\\int_{x_0}^{x} M(\\xi,\\eta)\\,d\\xi\\right)d\\eta = C",
+          "operation_label": "integrate_psi_and_implicit_solution",
+          "explanation": "psi'(y) を y で積分してポテンシャル Phi(x, y) を得ると、方程式は dPhi = 0 すなわち Phi(x, y) = C（N != 0 で陰関数定理より y(x) が定まる）という一般解を与える。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m60_implicit_function_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.fo09_exact_ode_integrating_factor",
+      "target_node_id": "math.ode.fo09_exact_ode_integrating_factor",
+      "route_kind": "deductive",
+      "title": "1変数依存の積分因子判定公式の導出",
+      "premise_node_ids": [
+        "math.ode.fo08_exact_ode_condition",
+        "math.ode.fo02_separable_ode"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "M, N は C^1 級で、対応する分母 N または M は領域上で零にならないとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial(\\mu M)}{\\partial y} = \\frac{\\partial(\\mu N)}{\\partial x}",
+          "to_latex": "\\frac{M_y - N_x}{N} = \\alpha(x) \\implies \\mu(x) = \\exp\\!\\left(\\int \\alpha(x)\\,dx\\right),\\quad \\frac{N_x - M_y}{M} = \\beta(y) \\implies \\mu(y) = \\exp\\!\\left(\\int \\beta(y)\\,dy\\right)",
+          "operation_label": "special_integrating_factors",
+          "explanation": "積分因子 mu に対する完全微分条件を展開し、mu が x のみまたは y のみに依存する場合を仮定することで、1変数ODEに帰着させて積分因子の公式を導く。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.fo02_separable_ode",
+            "math.ode.fo08_exact_ode_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial(\\mu M)}{\\partial y} = \\frac{\\partial(\\mu N)}{\\partial x}",
+          "to_latex": "\\mu\\left(\\frac{\\partial M}{\\partial y} - \\frac{\\partial N}{\\partial x}\\right) = N\\frac{\\partial \\mu}{\\partial x} - M\\frac{\\partial \\mu}{\\partial y}",
+          "operation_label": "expand_exactness_condition",
+          "explanation": "mu M dx + mu N dy = 0 に対する完全微分条件に積の微分法を適用し、mu の偏導関数に関する項と M_y - N_x の項を整理する。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.ode.fo08_exact_ode_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu = \\mu(x) \\implies \\frac{\\partial \\mu}{\\partial y} = 0",
+          "to_latex": "\\frac{1}{\\mu}\\frac{d\\mu}{dx} = \\frac{1}{N}\\left(\\frac{\\partial M}{\\partial y} - \\frac{\\partial N}{\\partial x}\\right) = \\alpha(x) \\implies \\mu(x) = \\exp\\!\\left(\\int \\alpha(x)\\,dx\\right)",
+          "operation_label": "x_only_integrating_factor",
+          "explanation": "mu が x のみの関数なら d(mu)/dy = 0 となり、左辺は (1/mu)(d mu/dx) となる。右辺 (M_y - N_x)/N が x のみの関数 alpha(x) に一致すれば変数分離形として積分因子 mu(x) が求まる。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.fo02_separable_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu = \\mu(y) \\implies \\frac{\\partial \\mu}{\\partial x} = 0",
+          "to_latex": "\\frac{1}{\\mu}\\frac{d\\mu}{dy} = \\frac{1}{M}\\left(\\frac{\\partial N}{\\partial x} - \\frac{\\partial M}{\\partial y}\\right) = \\beta(y) \\implies \\mu(y) = \\exp\\!\\left(\\int \\beta(y)\\,dy\\right)",
+          "operation_label": "y_only_integrating_factor",
+          "explanation": "同様に mu が y のみの関数なら d(mu)/dx = 0 となり、(N_x - M_y)/M が y のみの関数 beta(y) であるとき積分因子 mu(y) が求積される。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.fo02_separable_ode"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

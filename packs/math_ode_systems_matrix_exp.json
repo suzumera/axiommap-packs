@@ -1,0 +1,753 @@
+{
+  "pack_meta": {
+    "pack_id": "math.ode.systems_matrix_exp",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "連立線形常微分方程式と行列指数関数・位相平面解析",
+    "language": "ja",
+    "description": "1階連立線形系の行列指数関数 exp(At)、ロンスキアン、固有値による平衡点分類（安定・鞍点・渦心）を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.ode.sys01_linear_ode_system_def",
+      "short_code": "SYS01",
+      "kind": "definition",
+      "title": "1階連立線形常微分方程式系と基本解行列の定義",
+      "summary": "n次元ベクトル値関数に関する1階連立線形常微分方程式の標準形、および同次系の線形独立なn個の解を列に並べた基本解行列を定義する。",
+      "canonical_latex": "\\dot{\\mathbf{x}}(t) = A(t)\\mathbf{x}(t) + \\mathbf{f}(t),\\quad \\mathbf{x}(t) \\in \\mathbb{R}^n,\\quad \\Phi(t) := \\big(\\mathbf{x}_1(t),\\dots,\\mathbf{x}_n(t)\\big),\\quad \\dot{\\Phi}(t) = A(t)\\Phi(t)\\;(\\det\\Phi(t)\\neq 0).",
+      "aliases_latex": [
+        "\\frac{d\\mathbf{x}}{dt} = A(t)\\mathbf{x} + \\mathbf{f}(t),\\quad \\Phi'(t) = A(t)\\Phi(t)"
+      ],
+      "keywords": [
+        "linear ODE system",
+        "fundamental matrix",
+        "homogeneous system",
+        "nonhomogeneous system"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.ode.sys02_wronskian_liouville",
+      "short_code": "SYS02",
+      "kind": "theorem_formula",
+      "title": "ロンスキアンとアベル＝リウヴィルの公式",
+      "summary": "解行列の行列式として定義されるロンスキアンが、係数行列のトレースを係数とする1階線形微分方程式に従い、任意の時刻で非零性または恒等零性を保つことを示す。",
+      "canonical_latex": "W(t) := \\det\\Phi(t),\\quad \\frac{dW}{dt} = \\operatorname{tr}\\big(A(t)\\big)\\,W(t) \\implies W(t) = W(t_0)\\exp\\!\\left(\\int_{t_0}^{t}\\operatorname{tr}\\big(A(s)\\big)\\,ds\\right).",
+      "aliases_latex": [
+        "W(t) = W(t_0)\\exp\\!\\left(\\int_{t_0}^{t}\\operatorname{tr}(A(s))\\,ds\\right)"
+      ],
+      "keywords": [
+        "Wronskian",
+        "Abel-Liouville formula",
+        "trace",
+        "determinant"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.ode.sys03_matrix_exponential_def",
+      "short_code": "SYS03",
+      "kind": "definition",
+      "title": "行列指数関数 exp(At) の定義と基本性質",
+      "summary": "正方行列Aに対するべき級数として行列指数関数を定義し、その微分公式、可換性、指数法則および逆行列公式を与える。",
+      "canonical_latex": "e^{At} := \\sum_{k=0}^{\\infty}\\frac{(At)^k}{k!} = I_n + At + \\frac{A^2 t^2}{2!} + \\cdots,\\quad \\frac{d}{dt}e^{At} = A e^{At} = e^{At} A,\\quad e^{A(t+s)} = e^{At}e^{As},\\quad (e^{At})^{-1} = e^{-At}.",
+      "aliases_latex": [
+        "\\exp(At) = \\sum_{k=0}^{\\infty}\\frac{t^k}{k!}A^k"
+      ],
+      "keywords": [
+        "matrix exponential",
+        "power series",
+        "exponential law"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.ode.sys04_homogeneous_ivp_matrix_exp",
+      "short_code": "SYS04",
+      "kind": "theorem_formula",
+      "title": "定数係数同次連立線形系の初期値問題と一意解",
+      "summary": "定数係数同次連立線形常微分方程式の初期値問題の解が、行列指数関数 e^{A(t-t_0)} を初期値に作用させることで一意に与えられることを示す。",
+      "canonical_latex": "\\dot{\\mathbf{x}}(t) = A\\mathbf{x}(t),\\; \\mathbf{x}(t_0) = \\mathbf{x}_0 \\implies \\mathbf{x}(t) = e^{A(t-t_0)}\\mathbf{x}_0\\;(\\text{unique}).",
+      "aliases_latex": [
+        "\\mathbf{x}(t) = \\exp(A(t-t_0))\\mathbf{x}_0"
+      ],
+      "keywords": [
+        "initial value problem",
+        "constant coefficient system",
+        "matrix exponential",
+        "uniqueness"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.ode.sys05_variation_of_parameters_system",
+      "short_code": "SYS05",
+      "kind": "theorem_formula",
+      "title": "非同次連立線形系の定数変化法（デュアメルの原理）",
+      "summary": "基本解行列と定数変化法を用いて非同次連立線形常微分方程式の一般解（状態遷移表現）を導出し、定数係数系におけるデュアメルの畳み込み公式を得る。",
+      "canonical_latex": "\\dot{\\mathbf{x}} = A(t)\\mathbf{x} + \\mathbf{f}(t) \\implies \\mathbf{x}(t) = \\Phi(t)\\Phi(t_0)^{-1}\\mathbf{x}_0 + \\int_{t_0}^{t}\\Phi(t)\\Phi(s)^{-1}\\mathbf{f}(s)\\,ds;\\quad A=\\text{const.} \\implies \\mathbf{x}(t) = e^{A(t-t_0)}\\mathbf{x}_0 + \\int_{t_0}^{t}e^{A(t-s)}\\mathbf{f}(s)\\,ds.",
+      "aliases_latex": [
+        "\\mathbf{x}(t) = e^{At}\\mathbf{x}_0 + \\int_{0}^{t}e^{A(t-s)}\\mathbf{f}(s)\\,ds"
+      ],
+      "keywords": [
+        "variation of parameters",
+        "Duhamel principle",
+        "state transition matrix",
+        "nonhomogeneous system"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.ode.sys06_matrix_exp_eigen_jordan",
+      "short_code": "SYS06",
+      "kind": "theorem_formula",
+      "title": "対角化・固有空間・一般固有ベクトルによる exp(At) の計算公式",
+      "summary": "相似変換による対角化、固有ベクトルへの作用、およびべき零分解を用いた一般固有ベクトルに対する有限和表示により行列指数関数を計算する。",
+      "canonical_latex": "A = PDP^{-1} \\implies e^{At} = P e^{Dt} P^{-1};\\quad A\\mathbf{v} = \\lambda\\mathbf{v} \\implies e^{At}\\mathbf{v} = e^{\\lambda t}\\mathbf{v};\\quad (A - \\lambda I_n)^m \\mathbf{u} = \\mathbf{0} \\implies e^{At}\\mathbf{u} = e^{\\lambda t}\\sum_{k=0}^{m-1}\\frac{t^k}{k!}(A - \\lambda I_n)^k\\mathbf{u}.",
+      "aliases_latex": [
+        "e^{At}\\mathbf{u} = e^{\\lambda t}\\sum_{k=0}^{m-1}\\frac{t^k}{k!}(A-\\lambda I)^k\\mathbf{u}"
+      ],
+      "keywords": [
+        "diagonalization",
+        "generalized eigenvector",
+        "Jordan block",
+        "matrix exponential computation"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.ode.sys07_complex_eigen_real_solution",
+      "short_code": "SYS07",
+      "kind": "theorem_formula",
+      "title": "複素共役固有値に対する実基本解と振動・螺旋モード",
+      "summary": "実行列が複素固有値とその固有ベクトルを持つとき、オイラーの公式を用いて複素指数関数解の実部と虚部から2つの線形独立な実解を構成する。",
+      "canonical_latex": "A\\mathbf{w} = (\\alpha + i\\beta)\\mathbf{w}\\;(\\mathbf{w} = \\mathbf{u} + i\\mathbf{v},\\; \\beta \\neq 0) \\implies \\mathbf{x}_1(t) = e^{\\alpha t}(\\mathbf{u}\\cos\\beta t - \\mathbf{v}\\sin\\beta t),\\quad \\mathbf{x}_2(t) = e^{\\alpha t}(\\mathbf{v}\\cos\\beta t + \\mathbf{u}\\sin\\beta t).",
+      "aliases_latex": [
+        "\\operatorname{Re}\\big(e^{(\\alpha+i\\beta)t}(\\mathbf{u}+i\\mathbf{v})\\big),\\quad \\operatorname{Im}\\big(e^{(\\alpha+i\\beta)t}(\\mathbf{u}+i\\mathbf{v})\\big)"
+      ],
+      "keywords": [
+        "complex eigenvalue",
+        "real fundamental solutions",
+        "Euler formula",
+        "oscillatory mode"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.ode.sys08_2d_phase_plane_trace_det",
+      "short_code": "SYS08",
+      "kind": "theorem_formula",
+      "title": "2次元定数係数線形系のトレース＝行列式平面と特性根",
+      "summary": "2次正方行列の特性方程式をトレースと行列式で表し、判別式を含む固有値の閉じた表現を導出する。",
+      "canonical_latex": "p_A(\\lambda) = \\lambda^2 - \\tau\\lambda + \\Delta = 0\\quad (\\tau := \\operatorname{tr}A,\\; \\Delta := \\det A),\\qquad \\lambda_{1,2} = \\frac{\\tau \\pm \\sqrt{\\tau^2 - 4\\Delta}}{2}.",
+      "aliases_latex": [
+        "\\lambda^2 - (\\operatorname{tr}A)\\lambda + \\det A = 0"
+      ],
+      "keywords": [
+        "trace-determinant plane",
+        "characteristic equation",
+        "2D linear system",
+        "discriminant"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.ode.sys09_equilibrium_stability_classification",
+      "short_code": "SYS09",
+      "kind": "theorem_formula",
+      "title": "2次元線形平衡点の位相平面分類（安定節点・鞍点・渦心・渦状点）",
+      "summary": "2次元線形系のトレースと行列式の符号および判別式から、原点の平衡点近傍の軌道構造（漸近安定・不安定・鞍点・渦心）を分類する。",
+      "canonical_latex": "\\Delta < 0 \\implies \\text{saddle (unstable)};\\quad \\Delta > 0 \\land \\tau < 0 \\implies \\text{asymptotically stable (node/spiral)};\\quad \\Delta > 0 \\land \\tau > 0 \\implies \\text{unstable (node/spiral)};\\quad \\Delta > 0 \\land \\tau = 0 \\implies \\text{center (Lyapunov stable)}.",
+      "aliases_latex": [
+        "\\tau < 0 < \\Delta \\implies \\text{stable};\\quad \\Delta < 0 \\implies \\text{saddle};\\quad \\tau = 0 < \\Delta \\implies \\text{center}"
+      ],
+      "keywords": [
+        "phase plane",
+        "equilibrium classification",
+        "saddle",
+        "center",
+        "stable node",
+        "spiral"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "ode",
+        "dynamical_systems"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.ode.sys02_wronskian_liouville",
+      "target_node_id": "math.ode.sys02_wronskian_liouville",
+      "route_kind": "deductive",
+      "title": "アベル＝リウヴィルの公式の導出",
+      "premise_node_ids": [
+        "math.ode.sys01_linear_ode_system_def",
+        "math.linalg.det02_leibniz_formula",
+        "math.ode.fo02_separable_ode"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m15_product_rule",
+        "math.linalg.det01_alternating_multilinear_def"
+      ],
+      "assumptions": [
+        "A(t) is continuous on an interval I containing t_0",
+        "Phi(t) is a C^1 matrix solution of dPhi/dt = A(t)Phi(t)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "W(t) = \\det\\Phi(t),\\quad \\dot{\\Phi}(t) = A(t)\\Phi(t).",
+          "to_latex": "\\frac{dW}{dt} = \\operatorname{tr}\\big(A(t)\\big)W(t) \\implies W(t) = W(t_0)\\exp\\!\\left(\\int_{t_0}^{t}\\operatorname{tr}\\big(A(s)\\big)\\,ds\\right).",
+          "operation_label": "Differentiate determinant via Leibniz formula and integrate separable ODE",
+          "explanation": "行列式の時間微分に積の微分法則と多重線形性を適用すると係数のトレースが現れ、得られた変数分離形1階ODEを積分してアベル＝リウヴィルの公式を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m15_product_rule",
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.linalg.det02_leibniz_formula",
+            "math.ode.fo02_separable_ode",
+            "math.ode.sys01_linear_ode_system_def"
+          ],
+          "sympy_check_hint": "Verify d/dt det(Phi(t)) == trace(A(t))*det(Phi(t)) for a symbolic 2x2 system"
+        },
+        {
+          "step_id": "s2_diff_det_leibniz",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W(t) = \\sum_{\\sigma\\in S_n}\\operatorname{sgn}(\\sigma)\\prod_{i=1}^{n}\\Phi_{i,\\sigma(i)}(t).",
+          "to_latex": "\\dot{W}(t) = \\sum_{k=1}^{n}\\sum_{\\sigma\\in S_n}\\operatorname{sgn}(\\sigma)\\,\\dot{\\Phi}_{k,\\sigma(k)}(t)\\prod_{i\\neq k}\\Phi_{i,\\sigma(i)}(t).",
+          "operation_label": "Differentiate Leibniz determinant sum via product rule",
+          "explanation": "ライプニッツの公式による行列式の展開式を時間tで微分し、各積に対して積の微分法則を適用すると、k行目だけが微分されたn個の行列式の和になる。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.linalg.det02_leibniz_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_trace_reduction",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\Phi}_{k,\\sigma(k)}(t) = \\sum_{j=1}^{n} A_{kj}(t)\\Phi_{j,\\sigma(k)}(t).",
+          "to_latex": "\\dot{W}(t) = \\sum_{k=1}^{n}\\sum_{j=1}^{n} A_{kj}(t)\\det\\Phi^{(k\\leftarrow j)}(t) = \\left(\\sum_{k=1}^{n} A_{kk}(t)\\right)\\det\\Phi(t) = \\operatorname{tr}\\big(A(t)\\big)W(t).",
+          "operation_label": "Apply alternating multilinear property of determinant",
+          "explanation": "微分方程式の各成分を代入し、多重線形性で外に出すと、j != k の項は第k行と第j行が一致する行列式となるため交代性より消え、j = k の項のみが残ってトレース因子が現れる。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.ode.sys01_linear_ode_system_def"
+          ],
+          "sympy_check_hint": "Check sum_{k,j} A_{kj} det(Phi with row k replaced by row j) == trace(A)*det(Phi)"
+        },
+        {
+          "step_id": "s2_integrate_liouville",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dW}{dt} = \\operatorname{tr}\\big(A(t)\\big)W(t).",
+          "to_latex": "W(t) = W(t_0)\\exp\\!\\left(\\int_{t_0}^{t}\\operatorname{tr}\\big(A(s)\\big)\\,ds\\right).",
+          "operation_label": "Integrate separable first-order linear ODE",
+          "explanation": "W(t_0) != 0 のとき変数分離法により t_0 から t まで積分し（W(t_0) = 0 ならば線形1階ODEの一意性より恒等的に0）、リウヴィルの公式を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.ode.fo02_separable_ode"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.sys04_homogeneous_ivp_matrix_exp",
+      "target_node_id": "math.ode.sys04_homogeneous_ivp_matrix_exp",
+      "route_kind": "deductive",
+      "title": "行列指数関数による定数係数同次連立線形系初期値問題の解法と一意性",
+      "premise_node_ids": [
+        "math.ode.sys01_linear_ode_system_def",
+        "math.ode.sys03_matrix_exponential_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.calc.m26_zero_derivative_constant_lemma"
+      ],
+      "assumptions": [
+        "A is an n x n constant matrix",
+        "t_0 in R and x_0 in R^n"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{x}}(t) = A\\mathbf{x}(t),\\quad \\mathbf{x}(t_0) = \\mathbf{x}_0.",
+          "to_latex": "\\mathbf{x}(t) = e^{A(t-t_0)}\\mathbf{x}_0\\;(\\text{unique}).",
+          "operation_label": "Verify ODE/IC satisfaction and prove uniqueness via integrating factor e^{-A(t-t_0)}",
+          "explanation": "x(t)=exp(A(t-t_0))x_0 が方程式と初期条件を満たすことを直接微分で確かめ、さらに逆指数行列を乗じた量の微分が零になることから解の一意性を示す。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.ode.sys01_linear_ode_system_def",
+            "math.ode.sys03_matrix_exponential_def"
+          ],
+          "sympy_check_hint": "Verify diff(exp(A*(t-t0))*x0, t) == A*exp(A*(t-t0))*x0"
+        },
+        {
+          "step_id": "s2_verify_existence",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}(t) := e^{A(t-t_0)}\\mathbf{x}_0.",
+          "to_latex": "\\dot{\\mathbf{x}}(t) = A e^{A(t-t_0)}\\mathbf{x}_0 = A\\mathbf{x}(t),\\quad \\mathbf{x}(t_0) = e^{O_n}\\mathbf{x}_0 = \\mathbf{x}_0.",
+          "operation_label": "Differentiate matrix exponential and evaluate at t_0",
+          "explanation": "行列指数関数の微分公式 (d/dt)exp(A(t-t_0)) = A exp(A(t-t_0)) と exp(O_n) = I_n より、存在性が示される。",
+          "used_node_ids": [
+            "math.ode.sys03_matrix_exponential_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_prove_uniqueness",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{y}}(t) = A\\mathbf{y}(t),\\; \\mathbf{y}(t_0) = \\mathbf{x}_0,\\quad \\mathbf{z}(t) := e^{-A(t-t_0)}\\mathbf{y}(t).",
+          "to_latex": "\\dot{\\mathbf{z}}(t) = e^{-A(t-t_0)}\\big(-A\\mathbf{y}(t) + \\dot{\\mathbf{y}}(t)\\big) = \\mathbf{0} \\implies \\mathbf{z}(t) = \\mathbf{z}(t_0) = \\mathbf{x}_0 \\implies \\mathbf{y}(t) = e^{A(t-t_0)}\\mathbf{x}_0.",
+          "operation_label": "Use matrix integrating factor and zero-derivative constant lemma",
+          "explanation": "任意の解 y(t) に逆行列 exp(-A(t-t_0)) を掛けて積の微分を行うと導関数が恒等的に零となり、定数性補題と指数関数の逆行列則から y(t) の一意性が従う。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.ode.sys03_matrix_exponential_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.sys05_variation_of_parameters_system",
+      "target_node_id": "math.ode.sys05_variation_of_parameters_system",
+      "route_kind": "deductive",
+      "title": "連立線形系における定数変化法（デュアメルの原理）の導出",
+      "premise_node_ids": [
+        "math.ode.sys01_linear_ode_system_def",
+        "math.ode.sys02_wronskian_liouville",
+        "math.ode.sys03_matrix_exponential_def",
+        "math.ode.fo06_variation_of_parameters_1st"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m15_product_rule",
+        "math.linalg.det04_product_multiplicativity"
+      ],
+      "assumptions": [
+        "A(t) and f(t) are continuous on an interval I",
+        "Phi(t) is a fundamental matrix of dx/dt = A(t)x"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{x}}(t) = A(t)\\mathbf{x}(t) + \\mathbf{f}(t),\\quad \\mathbf{x}(t_0) = \\mathbf{x}_0.",
+          "to_latex": "\\mathbf{x}(t) = \\Phi(t)\\Phi(t_0)^{-1}\\mathbf{x}_0 + \\int_{t_0}^{t}\\Phi(t)\\Phi(s)^{-1}\\mathbf{f}(s)\\,ds.",
+          "operation_label": "Apply variation of parameters ansatz x(t) = Phi(t)c(t) and integrate",
+          "explanation": "基本解行列 Phi(t) を用いて x(t) = Phi(t)c(t) とおき、c(t) の微分方程式を導いて積分することで非同次系の一般解公式とデュアメルの原理を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m15_product_rule",
+            "math.ode.fo06_variation_of_parameters_1st",
+            "math.ode.sys01_linear_ode_system_def",
+            "math.ode.sys02_wronskian_liouville",
+            "math.ode.sys03_matrix_exponential_def"
+          ],
+          "sympy_check_hint": "Verify that x(t) = exp(A*(t-t0))*x0 + integrate(exp(A*(t-s))*f(s), (s, t0, t)) satisfies x'(t) = A*x(t) + f(t)"
+        },
+        {
+          "step_id": "s2_ansatz_substitute",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}(t) = \\Phi(t)\\mathbf{c}(t),\\quad \\dot{\\Phi}(t) = A(t)\\Phi(t).",
+          "to_latex": "\\dot{\\Phi}(t)\\mathbf{c}(t) + \\Phi(t)\\dot{\\mathbf{c}}(t) = A(t)\\Phi(t)\\mathbf{c}(t) + \\mathbf{f}(t) \\implies \\Phi(t)\\dot{\\mathbf{c}}(t) = \\mathbf{f}(t).",
+          "operation_label": "Differentiate ansatz and cancel homogeneous term",
+          "explanation": "定数ベクトルを関数 c(t) に置き換えて積の微分を行い、Phi(t) が同次系を満たすことから A(t)Phi(t)c(t) の項を相殺する。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.ode.fo06_variation_of_parameters_1st",
+            "math.ode.sys01_linear_ode_system_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_invert_and_integrate",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Phi(t)\\dot{\\mathbf{c}}(t) = \\mathbf{f}(t),\\quad \\det\\Phi(t) \\neq 0.",
+          "to_latex": "\\mathbf{c}(t) = \\Phi(t_0)^{-1}\\mathbf{x}_0 + \\int_{t_0}^{t}\\Phi(s)^{-1}\\mathbf{f}(s)\\,ds.",
+          "operation_label": "Invert fundamental matrix and integrate from t_0 to t",
+          "explanation": "アベル＝リウヴィルの公式により各時刻で Phi(t) は正則であるため逆行列を掛け、初期条件 c(t_0) = Phi(t_0)^{-1}x_0 のもとで定積分する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.linalg.det04_product_multiplicativity",
+            "math.ode.sys02_wronskian_liouville"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_duhamel_const_coeff",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}(t) = \\Phi(t)\\mathbf{c}(t),\\quad \\Phi(t) = e^{At}\\;(A=\\text{const.}).",
+          "to_latex": "\\mathbf{x}(t) = e^{A(t-t_0)}\\mathbf{x}_0 + \\int_{t_0}^{t}e^{A(t-s)}\\mathbf{f}(s)\\,ds.",
+          "operation_label": "Substitute Phi(t) = exp(At) and apply matrix exponential law",
+          "explanation": "Phi(t) を掛けて一般の遷移行列表示を得た後、定数係数系に対して Phi(t) = exp(At) と exp(At)exp(-As) = exp(A(t-s)) を代入してデュアメルの公式を得る。",
+          "used_node_ids": [
+            "math.ode.sys03_matrix_exponential_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.sys06_matrix_exp_eigen_jordan",
+      "target_node_id": "math.ode.sys06_matrix_exp_eigen_jordan",
+      "route_kind": "deductive",
+      "title": "相似変換・固有ベクトル・一般固有空間を用いた行列指数関数の計算公式の導出",
+      "premise_node_ids": [
+        "math.ode.sys03_matrix_exponential_def",
+        "math.linalg.eig01_eigenvalue_eigenvector_def",
+        "math.linalg.eig03_diagonalizability_criterion"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t07_maclaurin_exp",
+        "math.linalg.vs09_matrix_representation_similarity"
+      ],
+      "assumptions": [
+        "A is an n x n matrix over C or R",
+        "P is an invertible n x n matrix"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "e^{At} = \\sum_{k=0}^{\\infty}\\frac{t^k}{k!}A^k.",
+          "to_latex": "e^{PDP^{-1}t} = P e^{Dt} P^{-1},\\quad e^{At}\\mathbf{v} = e^{\\lambda t}\\mathbf{v},\\quad e^{At}\\mathbf{u} = e^{\\lambda t}\\sum_{k=0}^{m-1}\\frac{t^k}{k!}(A - \\lambda I_n)^k\\mathbf{u}.",
+          "operation_label": "Use power-series similarity invariance and commuting decomposition A = lambda I + N",
+          "explanation": "べき乗の相似不変性、固有ベクトル上でのスカラー倍帰着、および A = lambda I_n + (A - lambda I_n) の可換分解から各計算公式を導く。",
+          "used_node_ids": [
+            "math.calc.t07_maclaurin_exp",
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.eig03_diagonalizability_criterion",
+            "math.linalg.vs09_matrix_representation_similarity",
+            "math.ode.sys03_matrix_exponential_def"
+          ],
+          "sympy_check_hint": "Verify exp(P*D*P**(-1)*t) == P*exp(D*t)*P**(-1) for a 2x2 diagonal or Jordan matrix"
+        },
+        {
+          "step_id": "s2_similarity_transform",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A = PDP^{-1} \\implies A^k = P D^k P^{-1}.",
+          "to_latex": "e^{At} = \\sum_{k=0}^{\\infty}\\frac{t^k}{k!}P D^k P^{-1} = P\\left(\\sum_{k=0}^{\\infty}\\frac{t^k}{k!}D^k\\right)P^{-1} = P e^{Dt} P^{-1}.",
+          "operation_label": "Factor similarity matrices out of convergent series",
+          "explanation": "相似変換の k 乗則をべき級数定義に代入し、行列積の連続性から P と P^{-1} を級数の外にくくり出す。",
+          "used_node_ids": [
+            "math.linalg.eig03_diagonalizability_criterion",
+            "math.linalg.vs09_matrix_representation_similarity",
+            "math.ode.sys03_matrix_exponential_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_eigenvector_mode",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A\\mathbf{v} = \\lambda\\mathbf{v} \\implies A^k\\mathbf{v} = \\lambda^k\\mathbf{v}.",
+          "to_latex": "e^{At}\\mathbf{v} = \\sum_{k=0}^{\\infty}\\frac{t^k}{k!}\\lambda^k\\mathbf{v} = e^{\\lambda t}\\mathbf{v}.",
+          "operation_label": "Sum scalar exponential Maclaurin series",
+          "explanation": "固有ベクトルへの A^k の作用が lambda^k 倍に帰着することを用いて、スカラー指数関数のマクローリン展開に帰着させる。",
+          "used_node_ids": [
+            "math.calc.t07_maclaurin_exp",
+            "math.linalg.eig01_eigenvalue_eigenvector_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_nilpotent_truncation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A = \\lambda I_n + N,\\quad N := A - \\lambda I_n,\\quad N^m\\mathbf{u} = \\mathbf{0}.",
+          "to_latex": "e^{At}\\mathbf{u} = e^{\\lambda I_n t}e^{Nt}\\mathbf{u} = e^{\\lambda t}\\sum_{k=0}^{\\infty}\\frac{t^k}{k!}N^k\\mathbf{u} = e^{\\lambda t}\\sum_{k=0}^{m-1}\\frac{t^k}{k!}(A - \\lambda I_n)^k\\mathbf{u}.",
+          "operation_label": "Split commuting matrices and truncate nilpotent action",
+          "explanation": "lambda I_n と N は可換であるため指数法則より exp(At) = exp(lambda t) exp(Nt) に分解され、N^m u = 0 により k >= m の項が全て消えて有限和となる。",
+          "used_node_ids": [
+            "math.calc.t07_maclaurin_exp",
+            "math.ode.sys03_matrix_exponential_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.sys07_complex_eigen_real_solution",
+      "target_node_id": "math.ode.sys07_complex_eigen_real_solution",
+      "route_kind": "deductive",
+      "title": "複素固有値に対する実基本解の構成",
+      "premise_node_ids": [
+        "math.ode.sys04_homogeneous_ivp_matrix_exp",
+        "math.ode.sys06_matrix_exp_eigen_jordan",
+        "math.ode.m39_linear_ode_superposition"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity",
+        "math.calc.t07_maclaurin_exp",
+        "math.calc.t08_maclaurin_sin_cos"
+      ],
+      "assumptions": [
+        "A is a real n x n matrix",
+        "A w = (alpha + i beta) w with w = u + i v, u, v in R^n, and beta != 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A\\mathbf{w} = (\\alpha + i\\beta)\\mathbf{w},\\quad \\mathbf{w} = \\mathbf{u} + i\\mathbf{v}.",
+          "to_latex": "\\mathbf{x}_1(t) = e^{\\alpha t}(\\mathbf{u}\\cos\\beta t - \\mathbf{v}\\sin\\beta t),\\quad \\mathbf{x}_2(t) = e^{\\alpha t}(\\mathbf{v}\\cos\\beta t + \\mathbf{u}\\sin\\beta t).",
+          "operation_label": "Expand complex exponential solution via Euler formula and take real/imaginary parts",
+          "explanation": "複素解 z(t) = exp((alpha + i beta)t) w をオイラーの公式で展開し、A が実行列であることから実部と虚部がそれぞれ実解となることを示す。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.calc.t07_maclaurin_exp",
+            "math.calc.t08_maclaurin_sin_cos",
+            "math.ode.sys06_matrix_exp_eigen_jordan"
+          ],
+          "sympy_check_hint": "Verify d/dt (exp(alpha*t)*(u*cos(beta*t)-v*sin(beta*t))) == A*x1(t) when A*u=alpha*u-beta*v and A*v=beta*u+alpha*v"
+        },
+        {
+          "step_id": "s2_euler_expansion",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{z}(t) := e^{At}\\mathbf{w} = e^{(\\alpha + i\\beta)t}(\\mathbf{u} + i\\mathbf{v}).",
+          "to_latex": "\\mathbf{z}(t) = e^{\\alpha t}(\\cos\\beta t + i\\sin\\beta t)(\\mathbf{u} + i\\mathbf{v}) = e^{\\alpha t}(\\mathbf{u}\\cos\\beta t - \\mathbf{v}\\sin\\beta t) + i\\,e^{\\alpha t}(\\mathbf{v}\\cos\\beta t + \\mathbf{u}\\sin\\beta t).",
+          "operation_label": "Apply Euler formula exp(i beta t) = cos(beta t) + i sin(beta t) and expand",
+          "explanation": "exp(x) と sin, cos のマクローリン級数から従うオイラーの公式を用いて指数関数を展開し、実部 x_1(t) と虚部 x_2(t) に整理する。",
+          "used_node_ids": [
+            "math.calc.t07_maclaurin_exp",
+            "math.calc.t08_maclaurin_sin_cos",
+            "math.ode.sys06_matrix_exp_eigen_jordan"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_separate_real_imag",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{z}}(t) = A\\mathbf{z}(t),\\quad \\mathbf{z}(t) = \\mathbf{x}_1(t) + i\\mathbf{x}_2(t),\\quad A\\in\\mathbb{R}^{n\\times n}.",
+          "to_latex": "\\dot{\\mathbf{x}}_1(t) + i\\dot{\\mathbf{x}}_2(t) = A\\mathbf{x}_1(t) + i A\\mathbf{x}_2(t) \\implies \\dot{\\mathbf{x}}_1 = A\\mathbf{x}_1 \\land \\dot{\\mathbf{x}}_2 = A\\mathbf{x}_2.",
+          "operation_label": "Equate real and imaginary parts of linear ODE",
+          "explanation": "A が実行列であるため A(x_1 + i x_2) = A x_1 + i A x_2 となり、微分の線形性より実部・虚部を比較することで x_1(t) と x_2(t) がともに実解であることが従う。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.ode.m39_linear_ode_superposition",
+            "math.ode.sys04_homogeneous_ivp_matrix_exp"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.sys08_2d_phase_plane_trace_det",
+      "target_node_id": "math.ode.sys08_2d_phase_plane_trace_det",
+      "route_kind": "deductive",
+      "title": "2次正方行列の特性方程式のトレース＝行列式表示と固有値公式の導出",
+      "premise_node_ids": [
+        "math.linalg.eig02_characteristic_polynomial"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.det02_leibniz_formula"
+      ],
+      "assumptions": [
+        "A is a 2 x 2 real matrix"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_A(\\lambda) = \\det(\\lambda I_2 - A) = 0.",
+          "to_latex": "\\lambda^2 - \\tau\\lambda + \\Delta = 0 \\implies \\lambda_{1,2} = \\frac{\\tau \\pm \\sqrt{\\tau^2 - 4\\Delta}}{2}\\quad (\\tau = \\operatorname{tr}A,\\; \\Delta = \\det A).",
+          "operation_label": "Expand 2x2 characteristic determinant and apply quadratic formula",
+          "explanation": "2x2行列の特性多項式を成分で展開してトレースと行列式で書き換え、2次方程式の解の公式を適用する。",
+          "used_node_ids": [
+            "math.linalg.det02_leibniz_formula",
+            "math.linalg.eig02_characteristic_polynomial"
+          ],
+          "sympy_check_hint": "Verify det(lam*eye(2) - Matrix([[a,b],[c,d]])) == lam**2 - (a+d)*lam + (a*d-b*c)"
+        },
+        {
+          "step_id": "s2_expand_2x2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A = \\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix},\\quad p_A(\\lambda) = \\det\\begin{pmatrix} \\lambda - a & -b \\\\ -c & \\lambda - d \\end{pmatrix}.",
+          "to_latex": "p_A(\\lambda) = (\\lambda - a)(\\lambda - d) - bc = \\lambda^2 - (a + d)\\lambda + (ad - bc) = \\lambda^2 - \\tau\\lambda + \\Delta.",
+          "operation_label": "Compute 2x2 determinant and substitute trace and determinant",
+          "explanation": "2次行列式を展開して整理し、対角和 tau = a + d と行列式 Delta = ad - bc を代入する。",
+          "used_node_ids": [
+            "math.linalg.det02_leibniz_formula",
+            "math.linalg.eig02_characteristic_polynomial"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_quadratic_roots",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lambda^2 - \\tau\\lambda + \\Delta = 0.",
+          "to_latex": "\\lambda_{1,2} = \\frac{\\tau \\pm \\sqrt{\\tau^2 - 4\\Delta}}{2}.",
+          "operation_label": "Apply quadratic formula",
+          "explanation": "平方完成または2次方程式の解の公式より、固有値の表現を得る。",
+          "used_node_ids": [
+            "math.linalg.eig02_characteristic_polynomial"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ode.sys09_equilibrium_stability_classification",
+      "target_node_id": "math.ode.sys09_equilibrium_stability_classification",
+      "route_kind": "deductive",
+      "title": "2次元線形平衡点のトレース＝行列式平面による安定性・位相構造分類の導出",
+      "premise_node_ids": [
+        "math.ode.sys06_matrix_exp_eigen_jordan",
+        "math.ode.sys07_complex_eigen_real_solution",
+        "math.ode.sys08_2d_phase_plane_trace_det"
+      ],
+      "required_math_node_ids": [
+        "math.ode.sys04_homogeneous_ivp_matrix_exp"
+      ],
+      "assumptions": [
+        "dx/dt = Ax with A in R^{2x2} and Delta = det A != 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\lambda_{1,2} = \\frac{\\tau \\pm \\sqrt{\\tau^2 - 4\\Delta}}{2},\\quad \\mathbf{x}(t) = e^{At}\\mathbf{x}_0.",
+          "to_latex": "\\Delta < 0 \\implies \\text{saddle};\\quad \\Delta > 0 \\land \\tau < 0 \\implies \\text{stable};\\quad \\Delta > 0 \\land \\tau > 0 \\implies \\text{unstable};\\quad \\Delta > 0 \\land \\tau = 0 \\implies \\text{center}.",
+          "operation_label": "Classify asymptotic behavior of exp(At)x_0 by signs of Delta, tau, and tau^2 - 4*Delta",
+          "explanation": "固有値の実部・虚部の符号をトレースと行列式で判定し、各モードの時間発展から平衡点の安定性と位相軌道形状を分類する。",
+          "used_node_ids": [
+            "math.ode.sys04_homogeneous_ivp_matrix_exp",
+            "math.ode.sys06_matrix_exp_eigen_jordan",
+            "math.ode.sys07_complex_eigen_real_solution",
+            "math.ode.sys08_2d_phase_plane_trace_det"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_saddle_point",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta < 0 \\implies \\tau^2 - 4\\Delta > \\tau^2.",
+          "to_latex": "\\lambda_1 = \\frac{\\tau + \\sqrt{\\tau^2 - 4\\Delta}}{2} > 0 > \\lambda_2 = \\frac{\\tau - \\sqrt{\\tau^2 - 4\\Delta}}{2} \\implies \\mathbf{x}(t) = c_1 e^{\\lambda_1 t}\\mathbf{v}_1 + c_2 e^{\\lambda_2 t}\\mathbf{v}_2\\;(\\text{saddle}).",
+          "operation_label": "Deduce opposite-sign real eigenvalues for Delta < 0",
+          "explanation": "Delta < 0 では異なる符号の2つの実固有値が生じ、一方の固有空間方向に指数発散、他方に指数減衰するため鞍点（不安定）となる。",
+          "used_node_ids": [
+            "math.ode.sys06_matrix_exp_eigen_jordan",
+            "math.ode.sys08_2d_phase_plane_trace_det"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_nodes_real_eigen",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta > 0,\\quad \\tau^2 - 4\\Delta \\ge 0.",
+          "to_latex": "\\operatorname{sgn}(\\lambda_1) = \\operatorname{sgn}(\\lambda_2) = \\operatorname{sgn}(\\tau) \\implies \\begin{cases} \\tau < 0 & \\lim_{t\\to\\infty}\\mathbf{x}(t) = \\mathbf{0}\\;(\\text{asymptotically stable node}), \\\\ \\tau > 0 & \\lim_{t\\to\\infty}\\|\\mathbf{x}(t)\\| = \\infty\\;(\\text{unstable node}). \\end{cases} ",
+          "operation_label": "Evaluate growth/decay of real modes (including t exp(lambda t) when repeated) for Delta > 0",
+          "explanation": "判別式非負かつ Delta > 0 のときは両固有値が tau と同符号の実数となり、重複根の t exp(lambda t) 項も含め tau < 0 で零へ収束し、tau > 0 で発散する。",
+          "used_node_ids": [
+            "math.ode.sys06_matrix_exp_eigen_jordan",
+            "math.ode.sys08_2d_phase_plane_trace_det"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_spirals_and_center",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta > 0,\\quad \\tau^2 - 4\\Delta < 0 \\implies \\lambda_{1,2} = \\frac{\\tau}{2} \\pm i\\beta\\;\\left(\\beta = \\frac{\\sqrt{4\\Delta - \\tau^2}}{2} > 0\\right).",
+          "to_latex": "\\mathbf{x}(t) = e^{\\tau t / 2}\\big(\\mathbf{c}_1\\cos\\beta t + \\mathbf{c}_2\\sin\\beta t\\big) \\implies \\begin{cases} \\tau < 0 & \\text{stable spiral}, \\\\ \\tau > 0 & \\text{unstable spiral}, \\\\ \\tau = 0 & \\text{center (periodic ellipses, Lyapunov stable)}. \\end{cases} ",
+          "operation_label": "Determine amplitude factor exp(tau t / 2) of oscillatory real solutions",
+          "explanation": "複素共役固有値の実解は周波数 beta の回転・楕円振動に振幅因子 exp(tau t / 2) が掛かった形となり、tau < 0 で渦状沈点、tau > 0 で渦状湧点、tau = 0 で周期軌道を描く渦心となる。",
+          "used_node_ids": [
+            "math.ode.sys07_complex_eigen_real_solution",
+            "math.ode.sys08_2d_phase_plane_trace_det"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

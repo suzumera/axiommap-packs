@@ -1,0 +1,664 @@
+{
+  "pack_meta": {
+    "pack_id": "math.linalg.svd_pseudoinverse",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "線形代数：特異値分解（SVD）とムーア＝ペンローズ擬似逆行列・最小二乗法",
+    "language": "ja",
+    "description": "A^T A の固有分解から特異値分解、最小二乗法の正規方程式、擬似逆行列、低ランク近似を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.linalg.svd01_gram_matrix_psd",
+      "short_code": "SVD01",
+      "kind": "theorem_formula",
+      "title": "グラム行列 A^T A の半正定値性と核・階数の一致",
+      "summary": "任意の実長方行列 A に対してグラム行列 A^T A は実対称半正定値であり、その核と階数は元の行列 A の核と階数に一致する。",
+      "canonical_latex": "(A^\\top A)^\\top = A^\\top A,\\quad \\forall \\mathbf{x}\\in\\mathbb{R}^n,\\; \\mathbf{x}^\\top(A^\\top A)\\mathbf{x}=\\|A\\mathbf{x}\\|_2^2\\ge 0,\\quad \\ker(A^\\top A)=\\ker(A),\\quad \\operatorname{rank}(A^\\top A)=\\operatorname{rank}(A) ",
+      "aliases_latex": [
+        "\\ker(A^\\top A) = \\ker(A) \\land \\operatorname{rank}(A^\\top A) = \\operatorname{rank}(A)"
+      ],
+      "keywords": [
+        "グラム行列",
+        "半正定値",
+        "核",
+        "階数",
+        "Gram matrix",
+        "positive semidefinite"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.svd02_singular_value_def",
+      "short_code": "SVD02",
+      "kind": "definition",
+      "title": "特異値・右特異ベクトル・左特異ベクトルの定義",
+      "summary": "A^T A の非負固有値の平方根を特異値、その単位固有ベクトルを右特異ベクトル、正の特異値に対する Av_i の正規化を左特異ベクトルと定義する。",
+      "canonical_latex": "\\sigma_i := \\sqrt{\\lambda_i(A^\\top A)}\\ge 0,\\quad A^\\top A\\mathbf{v}_i = \\sigma_i^2\\mathbf{v}_i\\ (\\|\\mathbf{v}_i\\|_2=1),\\quad \\mathbf{u}_i := \\frac{1}{\\sigma_i}A\\mathbf{v}_i\\ (\\sigma_i > 0) ",
+      "aliases_latex": [
+        "A\\mathbf{v}_i = \\sigma_i\\mathbf{u}_i,\\quad A^\\top\\mathbf{u}_i = \\sigma_i\\mathbf{v}_i"
+      ],
+      "keywords": [
+        "特異値",
+        "右特異ベクトル",
+        "左特異ベクトル",
+        "singular value",
+        "singular vector"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.svd03_singular_value_decomposition",
+      "short_code": "SVD03",
+      "kind": "theorem_formula",
+      "title": "特異値分解（SVD）定理（完全分解と簡約分解）",
+      "summary": "任意の実行列 A ∈ R^{m×n} は直交行列 U, V と非負対角行列 Σ を用いて A = U Σ V^T に分解でき、階数 r の外積和として表現できる。",
+      "canonical_latex": "A = U\\Sigma V^\\top = \\sum_{i=1}^{r}\\sigma_i\\mathbf{u}_i\\mathbf{v}_i^\\top,\\quad U^\\top U = I_m,\\; V^\\top V = I_n,\\; \\sigma_1\\ge\\cdots\\ge\\sigma_r > 0 = \\sigma_{r+1}=\\cdots=\\sigma_{\\min(m,n)}",
+      "aliases_latex": [
+        "A = U_r\\Sigma_r V_r^\\top"
+      ],
+      "keywords": [
+        "特異値分解",
+        "SVD",
+        "直交行列",
+        "外積展開",
+        "singular value decomposition"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.svd04_four_fundamental_subspaces",
+      "short_code": "SVD04",
+      "kind": "theorem_formula",
+      "title": "SVDによる4つの基本部分空間の正規直交基底と直交分解",
+      "summary": "SVD の左右特異ベクトルは A の像・左零空間・行空間・零空間の正規直交基底を与え、領域と値域の直交補空間分解を構成する。",
+      "canonical_latex": "\\operatorname{Im}(A)=\\operatorname{span}(\\mathbf{u}_1,\\dots,\\mathbf{u}_r),\\; \\ker(A^\\top)=\\operatorname{span}(\\mathbf{u}_{r+1},\\dots,\\mathbf{u}_m),\\; \\operatorname{Im}(A^\\top)=\\operatorname{span}(\\mathbf{v}_1,\\dots,\\mathbf{v}_r),\\; \\ker(A)=\\operatorname{span}(\\mathbf{v}_{r+1},\\dots,\\mathbf{v}_n) ",
+      "aliases_latex": [
+        "\\mathbb{R}^m = \\operatorname{Im}(A)\\oplus\\ker(A^\\top),\\quad \\mathbb{R}^n = \\operatorname{Im}(A^\\top)\\oplus\\ker(A)"
+      ],
+      "keywords": [
+        "4つの基本部分空間",
+        "正規直交基底",
+        "直交補空間",
+        "four fundamental subspaces"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.svd05_least_squares_normal_eq",
+      "short_code": "SVD05",
+      "kind": "theorem_formula",
+      "title": "線形最小二乗問題と正規方程式（Normal Equations）",
+      "summary": "ユークリッド残差ノルム ||Ax - b||_2^2 を最小化する最小二乗解は正規方程式 A^T A x = A^T b の解と一致し、列フルランク時に一意となる。",
+      "canonical_latex": "\\hat{\\mathbf{x}}\\in\\arg\\min_{\\mathbf{x}\\in\\mathbb{R}^n}\\|A\\mathbf{x}-\\mathbf{b}\\|_2^2 \\iff A^\\top A\\hat{\\mathbf{x}} = A^\\top\\mathbf{b},\\quad \\operatorname{rank}(A)=n \\implies \\hat{\\mathbf{x}}=(A^\\top A)^{-1}A^\\top\\mathbf{b} ",
+      "aliases_latex": [
+        "A^\\top A\\hat{\\mathbf{x}} = A^\\top\\mathbf{b}"
+      ],
+      "keywords": [
+        "最小二乗法",
+        "正規方程式",
+        "射影",
+        "least squares",
+        "normal equations"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.linalg.svd06_moore_penrose_axioms",
+      "short_code": "SVD06",
+      "kind": "definition",
+      "title": "ムーア＝ペンローズ一般化逆行列（擬似逆行列）の公理的定義",
+      "summary": "任意の長方行列 A に対して 4 つのムーア＝ペンローズ条件を満たす行列 A^+ を擬似逆行列と定義する。",
+      "canonical_latex": "A A^+ A = A,\\quad A^+ A A^+ = A^+,\\quad (A A^+)^\\top = A A^+,\\quad (A^+ A)^\\top = A^+ A",
+      "aliases_latex": [
+        "A^+ \\text{ satisfies Moore-Penrose conditions}"
+      ],
+      "keywords": [
+        "ムーア＝ペンローズ",
+        "擬似逆行列",
+        "一般化逆行列",
+        "Moore-Penrose pseudoinverse"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.svd07_pseudoinverse_svd_formula",
+      "short_code": "SVD07",
+      "kind": "theorem_formula",
+      "title": "SVDによる擬似逆行列の明示公式と最小ノルム最小二乗解",
+      "summary": "SVD を用いて A^+ = V Σ^+ U^T を構成でき、x^+ = A^+ b はあらゆる最小二乗解の中でユークリッドノルム ||x||_2 が最小の一意解を与える。",
+      "canonical_latex": "A^+ = V\\Sigma^+ U^\\top = \\sum_{i=1}^{r}\\frac{1}{\\sigma_i}\\mathbf{v}_i\\mathbf{u}_i^\\top,\\quad \\mathbf{x}^+ := A^+\\mathbf{b} = \\arg\\min_{\\mathbf{x}\\in\\arg\\min\\|A\\mathbf{x}-\\mathbf{b}\\|_2}\\|\\mathbf{x}\\|_2",
+      "aliases_latex": [
+        "A^+ = V_r\\Sigma_r^{-1}U_r^\\top"
+      ],
+      "keywords": [
+        "擬似逆行列",
+        "最小ノルム解",
+        "最小二乗法",
+        "SVD",
+        "minimum-norm least squares"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.linalg.svd08_matrix_norms_def",
+      "short_code": "SVD08",
+      "kind": "definition",
+      "title": "行列のフロベニウスノルムとスペクトルノルムの定義",
+      "summary": "行列の成分二乗和の平方根をフロベニウスノルム、単位球の像の最大ユークリッドノルムをスペクトルノルムと定義する。",
+      "canonical_latex": "\\|A\\|_F := \\sqrt{\\sum_{i=1}^{m}\\sum_{j=1}^{n} A_{ij}^2} = \\sqrt{\\operatorname{tr}(A^\\top A)},\\quad \\|A\\|_2 := \\max_{\\|\\mathbf{x}\\|_2=1}\\|A\\mathbf{x}\\|_2",
+      "aliases_latex": [
+        "\\|A\\|_F = \\sqrt{\\operatorname{tr}(A^\\top A)},\\quad \\|A\\|_2 = \\sigma_1(A)"
+      ],
+      "keywords": [
+        "フロベニウスノルム",
+        "スペクトルノルム",
+        "Frobenius norm",
+        "spectral norm"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.svd09_eckart_young_mirsky",
+      "short_code": "SVD09",
+      "kind": "theorem_formula",
+      "title": "エッカルト＝ヤング＝ミルスキーの定理（最適低ランク近似）",
+      "summary": "上位 k 個の特異値成分のみを残した打ち切り SVD 行列 A_k は、スペクトルノルムおよびフロベニウスノルムの両方においてランク k 以下の最良近似を与える。",
+      "canonical_latex": "A_k := \\sum_{i=1}^{k}\\sigma_i\\mathbf{u}_i\\mathbf{v}_i^\\top \\implies \\min_{\\operatorname{rank}(B)\\le k}\\|A-B\\|_2 = \\|A-A_k\\|_2 = \\sigma_{k+1},\\quad \\min_{\\operatorname{rank}(B)\\le k}\\|A-B\\|_F = \\|A-A_k\\|_F = \\sqrt{\\sum_{i=k+1}^{r}\\sigma_i^2} ",
+      "aliases_latex": [
+        "A_k = \\arg\\min_{\\operatorname{rank}(B)\\le k}\\|A-B\\|_{2,F}"
+      ],
+      "keywords": [
+        "低ランク近似",
+        "エッカルト＝ヤング＝ミルスキー",
+        "打ち切りSVD",
+        "low-rank approximation",
+        "Eckart-Young-Mirsky"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra",
+        "optimization"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_svd01_gram_matrix_psd",
+      "target_node_id": "math.linalg.svd01_gram_matrix_psd",
+      "route_kind": "deductive",
+      "title": "内積と次元定理によるグラム行列 A^T A の半正定値性・核・階数の導出",
+      "premise_node_ids": [
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+        "math.linalg.vs07_linear_map_ker_im_def",
+        "math.linalg.vs10_rank_nullity_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "A ∈ R^{m×n} は実長方行列である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A\\in\\mathbb{R}^{m\\times n},\\quad G := A^\\top A",
+          "to_latex": "(A^\\top A)^\\top = A^\\top A,\\; \\mathbf{x}^\\top(A^\\top A)\\mathbf{x} = \\|A\\mathbf{x}\\|_2^2 \\ge 0,\\; \\ker(A^\\top A)=\\ker(A),\\; \\operatorname{rank}(A^\\top A)=\\operatorname{rank}(A) ",
+          "operation_label": "グラム行列の対称半正定値性と核・階数一致の導出",
+          "explanation": "転置法則と標準内積の正定値性から A^T A の対称性・半正定値性および ker(A^T A)=ker(A) を示し、次元定理により rank(A^T A)=rank(A) を得る。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.vs07_linear_map_ker_im_def",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": "A = Matrix(m, n, ...); (A.T * A).is_symmetric()"
+        },
+        {
+          "step_id": "s2_symmetry_psd",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(A^\\top A)^\\top,\\quad \\mathbf{x}^\\top(A^\\top A)\\mathbf{x} ",
+          "to_latex": "(A^\\top A)^\\top = A^\\top(A^\\top)^\\top = A^\\top A,\\quad \\mathbf{x}^\\top(A^\\top A)\\mathbf{x} = \\langle A\\mathbf{x}, A\\mathbf{x}\\rangle = \\|A\\mathbf{x}\\|_2^2 \\ge 0",
+          "operation_label": "対称性と二次形式の非負性の検証",
+          "explanation": "行列積の転置則と内積の定義 ⟨Ax, Ax⟩ = ||Ax||_2^2 ≥ 0 から対称半正定値性が従う。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_kernel_equality",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A^\\top A\\mathbf{x} = \\mathbf{0} ",
+          "to_latex": "\\|A\\mathbf{x}\\|_2^2 = \\mathbf{x}^\\top A^\\top A\\mathbf{x} = 0 \\iff A\\mathbf{x} = \\mathbf{0} \\iff \\mathbf{x}\\in\\ker(A) ",
+          "operation_label": "核の一致の証明",
+          "explanation": "ker(A) ⊆ ker(A^T A) は明らか。逆に A^T Ax = 0 なら ||Ax||_2^2 = x^T A^T Ax = 0 より Ax = 0 となるため ker(A^T A) = ker(A) が成り立つ。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_rank_equality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ker(A^\\top A) = \\ker(A) ",
+          "to_latex": "\\operatorname{rank}(A^\\top A) = n - \\dim\\ker(A^\\top A) = n - \\dim\\ker(A) = \\operatorname{rank}(A) ",
+          "operation_label": "次元定理による階数一致の導出",
+          "explanation": "A^T A と A はともに定義域 R^n を持つ線形写像であるため、次元定理より階数も一致する。",
+          "used_node_ids": [
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_svd03_singular_value_decomposition",
+      "target_node_id": "math.linalg.svd03_singular_value_decomposition",
+      "route_kind": "deductive",
+      "title": "A^T A のスペクトル分解からの特異値分解（SVD）の構成的証明",
+      "premise_node_ids": [
+        "math.linalg.svd01_gram_matrix_psd",
+        "math.linalg.svd02_singular_value_def",
+        "math.linalg.eig07_spectral_theorem",
+        "math.linalg.vs04_basis_and_dimension"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+        "math.linalg.eig06_hermitian_eigen_properties"
+      ],
+      "assumptions": [
+        "A ∈ R^{m×n}、rank(A) = r ≥ 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A^\\top A = V\\Lambda V^\\top,\\quad \\Lambda = \\operatorname{diag}(\\sigma_1^2,\\dots,\\sigma_r^2,0,\\dots,0) ",
+          "to_latex": "A = U\\Sigma V^\\top = \\sum_{i=1}^{r}\\sigma_i\\mathbf{u}_i\\mathbf{v}_i^\\top",
+          "operation_label": "A^T A の固有分解からの SVD 構成",
+          "explanation": "A^T A の正規直交固有基底 V と正の特異値に対応する左特異ベクトル u_i = σ_i^{-1} A v_i を R^m の正規直交基底 U へ拡張し、AV = U Σ から A = U Σ V^T を得る。",
+          "used_node_ids": [
+            "math.linalg.eig07_spectral_theorem",
+            "math.linalg.svd01_gram_matrix_psd",
+            "math.linalg.svd02_singular_value_def",
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": "U, S, V = A.singular_value_decomposition()"
+        },
+        {
+          "step_id": "s2_spectral_ata",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A^\\top A\\text{ is real symmetric PSD} ",
+          "to_latex": "\\exists V\\in O(n):\\; A^\\top A\\mathbf{v}_i = \\sigma_i^2\\mathbf{v}_i,\\quad \\sigma_1\\ge\\cdots\\ge\\sigma_r > 0 = \\sigma_{r+1}=\\cdots=\\sigma_n",
+          "operation_label": "A^T A の直交対角化と非負固有値の整列",
+          "explanation": "SVD01 とスペクトル定理により A^T A は直交行列 V で対角化でき、固有値は非負かつ非零固有値の個数は rank(A^T A) = r に等しい。",
+          "used_node_ids": [
+            "math.linalg.eig07_spectral_theorem",
+            "math.linalg.svd01_gram_matrix_psd",
+            "math.linalg.svd02_singular_value_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_left_singular_orthonormal",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{u}_i := \\frac{1}{\\sigma_i}A\\mathbf{v}_i\\quad (1\\le i\\le r) ",
+          "to_latex": "\\mathbf{u}_i^\\top\\mathbf{u}_j = \\frac{1}{\\sigma_i\\sigma_j}\\mathbf{v}_i^\\top A^\\top A\\mathbf{v}_j = \\frac{\\sigma_j}{\\sigma_i}\\mathbf{v}_i^\\top\\mathbf{v}_j = \\delta_{ij} ",
+          "operation_label": "左特異ベクトルの正規直交性と基底拡張",
+          "explanation": "u_1,...,u_r は R^m の正規直交系を成すため、不足分 u_{r+1},...,u_m を補って R^m の正規直交基底（直交行列 U）を構成できる。",
+          "used_node_ids": [
+            "math.linalg.svd02_singular_value_def",
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_matrix_factorization",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A\\mathbf{v}_i = \\sigma_i\\mathbf{u}_i\\ (i\\le r),\\quad \\|A\\mathbf{v}_i\\|_2^2 = \\sigma_i^2 = 0\\ (i>r) ",
+          "to_latex": "AV = U\\Sigma \\implies A = U\\Sigma V^\\top = \\sum_{i=1}^{r}\\sigma_i\\mathbf{u}_i\\mathbf{v}_i^\\top ",
+          "operation_label": "行列積 AV = U Σ からの分解式の確定",
+          "explanation": "i > r に対して Av_i = 0 であることから AV = U Σ が成立し、V の直交性 V V^T = I_n を用いて A = U Σ V^T と外積和表現を得る。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.svd02_singular_value_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_svd04_four_fundamental_subspaces",
+      "target_node_id": "math.linalg.svd04_four_fundamental_subspaces",
+      "route_kind": "deductive",
+      "title": "特異値分解からの4つの基本部分空間の基底と直交補空間の導出",
+      "premise_node_ids": [
+        "math.linalg.svd03_singular_value_decomposition",
+        "math.linalg.vs03_linear_independence_span",
+        "math.linalg.vs07_linear_map_ker_im_def",
+        "math.linalg.vs10_rank_nullity_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "A = U Σ V^T は階数 r の SVD とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A = \\sum_{i=1}^{r}\\sigma_i\\mathbf{u}_i\\mathbf{v}_i^\\top,\\quad A^\\top = \\sum_{i=1}^{r}\\sigma_i\\mathbf{v}_i\\mathbf{u}_i^\\top",
+          "to_latex": "\\operatorname{Im}(A)=\\operatorname{span}(\\mathbf{u}_{1..r}),\\; \\ker(A^\\top)=\\operatorname{span}(\\mathbf{u}_{r+1..m}),\\; \\operatorname{Im}(A^\\top)=\\operatorname{span}(\\mathbf{v}_{1..r}),\\; \\ker(A)=\\operatorname{span}(\\mathbf{v}_{r+1..n}) ",
+          "operation_label": "外積和展開からの像と核の基底決定",
+          "explanation": "Ax と A^T y の外積展開表示から、4つの基本部分空間の正規直交基底を特異ベクトルで直接特定する。",
+          "used_node_ids": [
+            "math.linalg.svd03_singular_value_decomposition",
+            "math.linalg.vs03_linear_independence_span",
+            "math.linalg.vs07_linear_map_ker_im_def",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_im_a_ker_at",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A\\mathbf{x} = \\sum_{i=1}^{r}\\sigma_i(\\mathbf{v}_i^\\top\\mathbf{x})\\mathbf{u}_i,\\quad A^\\top\\mathbf{y} = \\sum_{i=1}^{r}\\sigma_i(\\mathbf{u}_i^\\top\\mathbf{y})\\mathbf{v}_i ",
+          "to_latex": "\\operatorname{Im}(A) = \\operatorname{span}(\\mathbf{u}_1,\\dots,\\mathbf{u}_r),\\quad \\ker(A^\\top) = \\operatorname{span}(\\mathbf{u}_{r+1},\\dots,\\mathbf{u}_m) ",
+          "operation_label": "Im(A) と ker(A^T) の基底の決定",
+          "explanation": "v_i の線形独立性より v_i^T x は任意値をとれるため Im(A)=span(u_1,...,u_r)。また A^T y = 0 ⇔ u_i^T y = 0 (i≤r) より ker(A^T)=span(u_{r+1},...,u_m)。",
+          "used_node_ids": [
+            "math.linalg.svd03_singular_value_decomposition",
+            "math.linalg.vs03_linear_independence_span",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_im_at_ker_a",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A^\\top = V\\Sigma^\\top U^\\top,\\quad A\\mathbf{x} = \\mathbf{0} ",
+          "to_latex": "\\operatorname{Im}(A^\\top) = \\operatorname{span}(\\mathbf{v}_1,\\dots,\\mathbf{v}_r),\\quad \\ker(A) = \\operatorname{span}(\\mathbf{v}_{r+1},\\dots,\\mathbf{v}_n) ",
+          "operation_label": "Im(A^T) と ker(A) の基底の決定",
+          "explanation": "A^T に対称な議論を適用し Im(A^T)=span(v_1,...,v_r) を得て、Ax=0 ⇔ v_i^T x=0 (i≤r) より ker(A)=span(v_{r+1},...,v_n) を得る。",
+          "used_node_ids": [
+            "math.linalg.svd03_singular_value_decomposition",
+            "math.linalg.vs07_linear_map_ker_im_def",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_svd05_least_squares_normal_eq",
+      "target_node_id": "math.linalg.svd05_least_squares_normal_eq",
+      "route_kind": "deductive",
+      "title": "2次目的関数の極値条件とグラム行列の定値性による正規方程式の導出",
+      "premise_node_ids": [
+        "math.linalg.svd01_gram_matrix_psd",
+        "math.calc.e01_hessian_matrix_def",
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.e05_hessian_extremum_test"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "assumptions": [
+        "A ∈ R^{m×n}、b ∈ R^m とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J(\\mathbf{x}) := \\|A\\mathbf{x}-\\mathbf{b}\\|_2^2 ",
+          "to_latex": "\\hat{\\mathbf{x}}\\in\\arg\\min_{\\mathbf{x}} J(\\mathbf{x}) \\iff A^\\top A\\hat{\\mathbf{x}} = A^\\top\\mathbf{b} ",
+          "operation_label": "残差二乗和の最小化からの正規方程式の導出",
+          "explanation": "残差二乗和 J(x) の勾配を零とおくことで正規方程式 A^T A x = A^T b を得て、A^T A ≥ 0 の半正定値性から大域的最小性を保証する。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e05_hessian_extremum_test",
+            "math.linalg.svd01_gram_matrix_psd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_objective_gradient",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J(\\mathbf{x}) = \\mathbf{x}^\\top A^\\top A\\mathbf{x} - 2\\mathbf{b}^\\top A\\mathbf{x} + \\mathbf{b}^\\top\\mathbf{b} ",
+          "to_latex": "\\nabla J(\\mathbf{x}) = 2(A^\\top A\\mathbf{x} - A^\\top\\mathbf{b}),\\quad H_J(\\mathbf{x}) = 2A^\\top A",
+          "operation_label": "2次形式の勾配とヘッセ行列の計算",
+          "explanation": "J(x) を成分ごとに偏微分して勾配ベクトル 2(A^T A x - A^T b) と定数ヘッセ行列 2 A^T A を計算する。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_stationarity_convexity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J(\\hat{\\mathbf{x}}+\\mathbf{h}) - J(\\hat{\\mathbf{x}}) = \\|A\\mathbf{h}\\|_2^2 + 2\\mathbf{h}^\\top(A^\\top A\\hat{\\mathbf{x}} - A^\\top\\mathbf{b}) ",
+          "to_latex": "\\hat{\\mathbf{x}}\\text{ minimizes }J \\iff A^\\top A\\hat{\\mathbf{x}}=A^\\top\\mathbf{b},\\quad \\operatorname{rank}(A)=n \\implies \\hat{\\mathbf{x}}=(A^\\top A)^{-1}A^\\top\\mathbf{b} ",
+          "operation_label": "1階必要条件と2次凸性による十分性・一意性判定",
+          "explanation": "停留点条件 ∇J=0 より正規方程式が得られ、||Ah||_2^2 ≥ 0 より任意の停留点が大域最小点となる。列フルランクなら A^T A ≻ 0 で正則となり一意解を得る。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e04_quadratic_form_definiteness",
+            "math.calc.e05_hessian_extremum_test",
+            "math.linalg.svd01_gram_matrix_psd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_svd07_pseudoinverse_svd_formula",
+      "target_node_id": "math.linalg.svd07_pseudoinverse_svd_formula",
+      "route_kind": "deductive",
+      "title": "SVDによる擬似逆行列の公理検証と最小ノルム最小二乗解の導出",
+      "premise_node_ids": [
+        "math.linalg.svd03_singular_value_decomposition",
+        "math.linalg.svd04_four_fundamental_subspaces",
+        "math.linalg.svd05_least_squares_normal_eq",
+        "math.linalg.svd06_moore_penrose_axioms"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+      ],
+      "assumptions": [
+        "A = U Σ V^T ∈ R^{m×n} の階数を r とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A = U\\Sigma V^\\top,\\quad \\Sigma^+ := \\operatorname{diag}(\\sigma_1^{-1},\\dots,\\sigma_r^{-1},0,\\dots,0)\\in\\mathbb{R}^{n\\times m} ",
+          "to_latex": "A^+ = V\\Sigma^+ U^\\top,\\quad \\mathbf{x}^+ = A^+\\mathbf{b} = \\arg\\min_{\\mathbf{x}\\in\\arg\\min\\|A\\mathbf{x}-\\mathbf{b}\\|_2}\\|\\mathbf{x}\\|_2",
+          "operation_label": "SVD からの A^+ 構成と最小ノルム最小二乗解の証明",
+          "explanation": "V Σ^+ U^T がムーア＝ペンローズの4条件を満たすことを示し、直交変換による残差・ノルム保存から x^+ = A^+ b が最小ノルム最小二乗解であることを証明する。",
+          "used_node_ids": [
+            "math.linalg.svd03_singular_value_decomposition",
+            "math.linalg.svd04_four_fundamental_subspaces",
+            "math.linalg.svd05_least_squares_normal_eq",
+            "math.linalg.svd06_moore_penrose_axioms"
+          ],
+          "sympy_check_hint": "A.pinv()"
+        },
+        {
+          "step_id": "s2_verify_mp_axioms",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A^+ := V\\Sigma^+ U^\\top = \\sum_{i=1}^{r}\\sigma_i^{-1}\\mathbf{v}_i\\mathbf{u}_i^\\top",
+          "to_latex": "A A^+ A = U(\\Sigma\\Sigma^+\\Sigma)V^\\top = A,\\; A^+ A A^+ = A^+,\\; (A A^+)^\\top = A A^+,\\; (A^+ A)^\\top = A^+ A ",
+          "operation_label": "ムーア＝ペンローズ4条件の検証",
+          "explanation": "Σ Σ^+ = diag(I_r, 0) および Σ^+ Σ = diag(I_r, 0) が対称べき等であることから、A A^+ = U_r U_r^T、A^+ A = V_r V_r^T となり4条件すべてが成立する。",
+          "used_node_ids": [
+            "math.linalg.svd03_singular_value_decomposition",
+            "math.linalg.svd06_moore_penrose_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_orthogonal_ls_min_norm",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{z} := V^\\top\\mathbf{x},\\; \\mathbf{c} := U^\\top\\mathbf{b} \\implies \\|A\\mathbf{x}-\\mathbf{b}\\|_2^2 = \\sum_{i=1}^{r}(\\sigma_i z_i - c_i)^2 + \\sum_{i=r+1}^{m}c_i^2",
+          "to_latex": "z_i = \\frac{c_i}{\\sigma_i}\\ (i\\le r),\\; z_i = 0\\ (i>r) \\implies \\mathbf{x}^+ = V\\Sigma^+ U^\\top\\mathbf{b} = A^+\\mathbf{b} ",
+          "operation_label": "直交不変性による最小ノルム最小二乗解の決定",
+          "explanation": "||Ax - b||_2 は z_i = c_i/σ_i (i ≤ r) で最小化され、この制約下で ||x||_2^2 = ∑ z_i^2 を最小化するには零空間成分 z_i = 0 (i > r) とすればよく、一意解 x^+ = A^+ b を得る。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.svd03_singular_value_decomposition",
+            "math.linalg.svd04_four_fundamental_subspaces",
+            "math.linalg.svd05_least_squares_normal_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_svd09_eckart_young_mirsky",
+      "target_node_id": "math.linalg.svd09_eckart_young_mirsky",
+      "route_kind": "deductive",
+      "title": "直交不変性と部分空間の次元交差によるエッカルト＝ヤング＝ミルスキーの定理の証明",
+      "premise_node_ids": [
+        "math.linalg.svd03_singular_value_decomposition",
+        "math.linalg.svd08_matrix_norms_def",
+        "math.linalg.eig09_rayleigh_quotient_extremum",
+        "math.linalg.vs10_rank_nullity_theorem"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+        "math.linalg.eig07_spectral_theorem"
+      ],
+      "assumptions": [
+        "A ∈ R^{m×n} の階数を r とし、0 ≤ k < r とする（k ≥ r のときは A_k = A で誤差 0）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A_k = \\sum_{i=1}^{k}\\sigma_i\\mathbf{u}_i\\mathbf{v}_i^\\top,\\quad \\operatorname{rank}(B)\\le k ",
+          "to_latex": "\\|A-B\\|_2 \\ge \\|A-A_k\\|_2 = \\sigma_{k+1},\\quad \\|A-B\\|_F \\ge \\|A-A_k\\|_F = \\sqrt{\\sum_{i=k+1}^{r}\\sigma_i^2} ",
+          "operation_label": "低ランク近似の下界評価と A_k による達成の証明",
+          "explanation": "ノルムの直交不変性から A_k の誤差を特異値で評価し、スペクトルノルムは ker(B) と上位 k+1 個の右特異空間の交差、フロベニウスノルムは Im(B) への直交射影評価で下界を示す。",
+          "used_node_ids": [
+            "math.linalg.eig09_rayleigh_quotient_extremum",
+            "math.linalg.svd03_singular_value_decomposition",
+            "math.linalg.svd08_matrix_norms_def",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_norm_svd_invariance",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A - A_k = \\sum_{i=k+1}^{r}\\sigma_i\\mathbf{u}_i\\mathbf{v}_i^\\top = U\\operatorname{diag}(0,\\dots,0,\\sigma_{k+1},\\dots,\\sigma_r,0,\\dots,0)V^\\top ",
+          "to_latex": "\\|A-A_k\\|_2 = \\sigma_{k+1},\\quad \\|A-A_k\\|_F = \\sqrt{\\sum_{i=k+1}^{r}\\sigma_i^2} ",
+          "operation_label": "A - A_k のスペクトル・フロベニウスノルム評価",
+          "explanation": "直交変換はベクトルのユークリッドノルムとトレースを不変に保つため、||U^T M V||_2 = ||M||_2 および ||U^T M V||_F = ||M||_F が成り立ち、レイリー商最大値と対角二乗和から誤差式を得る。",
+          "used_node_ids": [
+            "math.linalg.eig09_rayleigh_quotient_extremum",
+            "math.linalg.svd03_singular_value_decomposition",
+            "math.linalg.svd08_matrix_norms_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_spectral_lower_bound",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{rank}(B)\\le k \\implies \\dim\\ker(B)\\ge n-k,\\quad \\dim\\operatorname{span}(\\mathbf{v}_1,\\dots,\\mathbf{v}_{k+1})=k+1 ",
+          "to_latex": "\\exists \\mathbf{w}\\in\\ker(B)\\cap\\operatorname{span}(\\mathbf{v}_1,\\dots,\\mathbf{v}_{k+1})\\ (\\|\\mathbf{w}\\|_2=1):\\; \\|A-B\\|_2 \\ge \\|A\\mathbf{w}\\|_2 \\ge \\sigma_{k+1} ",
+          "operation_label": "スペクトルノルムにおける下界の導出",
+          "explanation": "次元和が n+1 以上となるため ker(B) と span(v_1,...,v_{k+1}) は非自明に交差する。その単位元 w に対して Bw = 0 かつ ||Aw||_2^2 = ∑_{i=1}^{k+1} σ_i^2 (v_i^T w)^2 ≥ σ_{k+1}^2 を得る。",
+          "used_node_ids": [
+            "math.linalg.svd03_singular_value_decomposition",
+            "math.linalg.svd08_matrix_norms_def",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_frobenius_lower_bound",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_B\\text{ orthogonal proj. onto }\\operatorname{Im}(B)\\ (\\operatorname{rank}(P_B)\\le k),\\; Q\\in\\mathbb{R}^{m\\times k}\\ (Q^\\top Q=I_k,\\; P_B \\preceq QQ^\\top) ",
+          "to_latex": "\\|A-B\\|_F^2 \\ge \\|(I_m-P_B)A\\|_F^2 = \\|A\\|_F^2 - \\|P_B A\\|_F^2 \\ge \\|A\\|_F^2 - \\operatorname{tr}(Q^\\top AA^\\top Q) \\ge \\sum_{i=k+1}^{r}\\sigma_i^2 ",
+          "operation_label": "フロベニウスノルムにおける下界の導出",
+          "explanation": "P_B A と B は列空間 Im(B) 内にあり (I - P_B)A と直交するため ||A-B||_F^2 ≥ ||A||_F^2 - ||P_B A||_F^2。Im(B) を含む k 次元部分空間の基底 Q に対して w_i = ||Q^T u_i||_2^2 ∈ [0,1] (∑ w_i = k) より tr(Q^T A A^T Q) = ∑ σ_i^2 w_i ≤ ∑_{i=1}^k σ_i^2 となり下界が従う。",
+          "used_node_ids": [
+            "math.linalg.eig07_spectral_theorem",
+            "math.linalg.svd03_singular_value_decomposition",
+            "math.linalg.svd08_matrix_norms_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
