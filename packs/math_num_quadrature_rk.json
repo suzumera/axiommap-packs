@@ -803,6 +803,243 @@
           "sympy_check_hint": "(1 + (z/6)*(1 + 2*(1+z/2) + 2*(1+z/2+z**2/4) + (1+z+z**2/2+z**3/4))).expand() == 1 + z + z**2/2 + z**3/6 + z**4/24"
         }
       ]
+    },
+    {
+      "id": "drv.link_qr01",
+      "target_node_id": "math.num.qr01_interpolatory_quadrature_def",
+      "route_kind": "deductive",
+      "title": "ラグランジュ補間多項式の積分による補間型求積法と精度次数の導入",
+      "premise_node_ids": [
+        "math.num.ni04_polynomial_interpolation_existence",
+        "math.num.ni05_lagrange_interpolation_formula",
+        "math.calc.m16_integral_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "節点 x_0, x_1, ..., x_n は区間 [a, b] 上の互いに異なる n+1 個の点である。",
+        "重み関数 w(x) と被積分関数 f(x) の積および w(x)l_i(x) は [a, b] 上で可積分である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_w[f] := \\int_{a}^{b} w(x)f(x)\\,dx,\\quad P_n(x) = \\sum_{i=0}^{n} f(x_i)\\ell_i(x)",
+          "to_latex": "I_w[f] \\approx Q_n[f] := \\sum_{i=0}^{n} w_i f(x_i),\\quad w_i := \\int_{a}^{b} w(x)\\ell_i(x)\\,dx,\\quad \\text{deg. exactness } d \\iff \\forall p \\in \\mathcal{P}_d,\\; Q_n[p] = I_w[p]",
+          "operation_label": "補間多項式の重み付き積分による求積公式と精度次数の定式化",
+          "explanation": "関数 f を相異なる節点上のラグランジュ補間多項式で置き換えて定積分の線形性を適用することで重み w_i を持つ補間型求積公式を導入し、n 次以下の多項式を厳密に積分する性質を一般化して精度次数 d を定義する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.num.ni04_polynomial_interpolation_existence",
+            "math.num.ni05_lagrange_interpolation_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_lagrange_approx",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_w[f] = \\int_{a}^{b} w(x)f(x)\\,dx,\\quad x_i \\neq x_j\\;(i \\neq j)",
+          "to_latex": "I_w[f] \\approx \\int_{a}^{b} w(x)P_n(x)\\,dx = \\int_{a}^{b} w(x)\\left(\\sum_{i=0}^{n} f(x_i)\\ell_i(x)\\right)dx",
+          "operation_label": "ラグランジュ補間多項式による被積分関数の近似",
+          "explanation": "相異なる n+1 個の節点に対して次数 n 以下の補間多項式 P_n が一意に存在するため、被積分関数 f(x) をラグランジュ基底多項式 l_i(x) を用いた補間多項式 P_n(x) で近似して積分に代入する。",
+          "used_node_ids": [
+            "math.num.ni04_polynomial_interpolation_existence",
+            "math.num.ni05_lagrange_interpolation_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_weight_linearity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{a}^{b} w(x)\\left(\\sum_{i=0}^{n} f(x_i)\\ell_i(x)\\right)dx",
+          "to_latex": "Q_n[f] := \\sum_{i=0}^{n} w_i f(x_i),\\quad w_i := \\int_{a}^{b} w(x)\\ell_i(x)\\,dx",
+          "operation_label": "定積分の線形性による求積重みの抽出",
+          "explanation": "関数値 f(x_i) は積分変数 x に依存しない定数であるため、定積分の線形性を適用して和と定数倍を積分の外へ出し、f に依存しない求積重み w_i を基底多項式の重み付き積分として定義する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_exactness_def",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall p \\in \\mathcal{P}_n,\\; P_n(x) = p(x) \\implies Q_n[p] = I_w[p]",
+          "to_latex": "\\text{deg. exactness } d \\iff \\forall p \\in \\mathcal{P}_d,\\; Q_n[p] = I_w[p]\\quad (d \\ge n)",
+          "operation_label": "補間の一意性に基づく厳密積分性質と精度次数の定義",
+          "explanation": "f が n 次以下の多項式 p であるとき、補間多項式の一意性より P_n(x) は p(x) 自身と一致するため Q_n[p] = I_w[p] が厳密に成り立つ。この厳密性が成立する最大の多項式次数を一般化して精度次数 d を定義する。",
+          "used_node_ids": [
+            "math.num.ni04_polynomial_interpolation_existence"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_qr06",
+      "target_node_id": "math.num.qr06_ode_one_step_method_def",
+      "route_kind": "deductive",
+      "title": "1階ODE初期値問題と差分商・漸近近似からの1段階法および誤差次数の導入",
+      "premise_node_ids": [
+        "math.ode.fo01_first_order_ode_def",
+        "math.calc.m20_derivative_definition",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "初期値問題 y'(t) = f(t, y(t)), y(t_0) = y_0 は対象区間上で一意かつ十分滑らかな厳密解 y(t) を持つ",
+        "格子点 t_n = t_0 + nh に対して刻み幅 h > 0 は十分小さいものとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dy}{dt} = f(t, y),\\quad y(t_0) = y_0",
+          "to_latex": "y_{n+1} = y_n + h\\Phi(t_n, y_n; h),\\quad \\tau_{n+1}(h) := \\frac{y(t_{n+1}) - y(t_n)}{h} - \\Phi\\big(t_n, y(t_n); h\\big) = \\mathcal{O}(h^p),\\quad e_n := y(t_n) - y_n",
+          "operation_label": "1段階離散化スキームと局所・大域誤差の定式化",
+          "explanation": "1階常微分方程式の初期値問題に対し、導関数の差分商による離散化から増分関数を用いた陽的1段階法を構成し、厳密解の代入残差として局所打切り誤差と次数、ならびに数値解との差として大域誤差を定義する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.t10_taylor_asymptotic_approx",
+            "math.ode.fo01_first_order_ode_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_scheme_formulation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dy}{dt}(t_n) = \\lim_{h \\to 0} \\frac{y(t_n + h) - y(t_n)}{h} = f\\big(t_n, y(t_n)\\big)",
+          "to_latex": "y_{n+1} = y_n + h\\Phi(t_n, y_n; h)\\quad (t_{n+1} = t_n + h)",
+          "operation_label": "差分商による1段階漸化式の構成",
+          "explanation": "初期値問題の厳密解に対する導関数の定義（前進差分商）において極限を外し、現在の時刻と数値解の組のみに依存する増分関数 \\Phi(t_n, y_n; h) で平均傾きを近似することで陽的1段階法の更新式を導入する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.ode.fo01_first_order_ode_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_lte_consistency",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{y(t_{n+1}) - y(t_n)}{h} - \\Phi\\big(t_n, y(t_n); h\\big)",
+          "to_latex": "\\tau_{n+1}(h) := \\frac{y(t_{n+1}) - y(t_n)}{h} - \\Phi\\big(t_n, y(t_n); h\\big),\\quad \\tau_{n+1}(h) = \\mathcal{O}(h^p)\\;(\\text{order } p)",
+          "operation_label": "局所打切り誤差と整合性・打切り次数の定義",
+          "explanation": "漸化式に厳密解 y(t) を代入したときの1ステップあたりの残差を局所打切り誤差 \\tau_{n+1}(h) と定義し、テイラー展開による漸近評価（ランダウ記号）を用いて \\tau_{n+1}(h) \\to 0\\,(h \\to 0) となる整合性および次数 p を定める。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_global_error_def",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y(t_n),\\; y_n",
+          "to_latex": "e_n := y(t_n) - y_n,\\quad \\max_{0 \\le n \\le N} |e_n| = \\mathcal{O}(h^p)",
+          "operation_label": "大域誤差と収束次数の定義",
+          "explanation": "各格子点 t_n における厳密解と1段階法による数値解の差を大域誤差 e_n と定義し、積算された大域誤差がステップ幅 h に対して \\mathcal{O}(h^p) で零に収束するとき、その解法は p 次収束すると定義する。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "math.ode.fo01_first_order_ode_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_qr08",
+      "target_node_id": "math.num.qr08_rk_general_butcher_def",
+      "route_kind": "deductive",
+      "title": "1段階法と多変数テイラー展開による陽的ルンゲ＝クッタ法（ブッチャー配列）および2次RK法の導出",
+      "premise_node_ids": [
+        "math.num.qr06_ode_one_step_method_def",
+        "math.num.qr07_explicit_euler_method",
+        "math.calc.t10_taylor_asymptotic_approx",
+        "math.calc.e02_multivariable_taylor_2nd"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "常微分方程式 y' = f(t, y) の右辺 f(t, y) は考えている領域で十分に滑らか（少なくとも C^2 級以上）である。",
+        "刻み幅 h > 0 は局所打切り誤差の漸近評価が成り立つ程度に十分小さい。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "y_{n+1} = y_n + h\\Phi(t_n, y_n; h),\\quad y'(t) = f(t, y(t))",
+          "to_latex": "y_{n+1} = y_n + h\\sum_{i=1}^{s} b_i k_i,\\quad k_i = f\\!\\left(t_n + c_i h,\\; y_n + h\\sum_{j=1}^{i-1} a_{ij} k_j\\right),\\quad c_i = \\sum_{j=1}^{i-1} a_{ij},\\quad \\sum_{i=1}^{s} b_i = 1",
+          "operation_label": "多段増分関数の構成と次数条件によるブッチャー配列の導出",
+          "explanation": "1段階法の増分関数を増強するため、陽的オイラー法の単一点評価を s 段の逐次評価 k_i の重み付き平均へと一般化し、厳密解と数値解のテイラー展開を比較することで整合性条件および2次ルンゲ＝クッタ法の具体的なパラメータ条件を導く。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.t10_taylor_asymptotic_approx",
+            "math.num.qr06_ode_one_step_method_def",
+            "math.num.qr07_explicit_euler_method"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_stages",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y_{n+1} = y_n + h\\Phi(t_n, y_n; h),\\quad \\Phi_{\\mathrm{Euler}}(t_n, y_n; h) = f(t_n, y_n)\\quad (s=1,\\; b_1=1,\\; c_1=0,\\; a_{ij}=0\\text{ for }j\\ge i)\\quad ",
+          "to_latex": "\\Phi_{\\mathrm{RK}}(t_n, y_n; h) = \\sum_{i=1}^{s} b_i k_i,\\quad k_i = f\\!\\left(t_n + c_i h,\\; y_n + h\\sum_{j=1}^{i-1} a_{ij} k_j\\right)\\quad (i = 1, \\dots, s)\\quad ",
+          "operation_label": "陽的オイラー法の s 段一般化とブッチャー配列の定義",
+          "explanation": "1段1次法である陽的オイラー法は区間左端での傾き f(t_n, y_n) のみを用いる。高次精度を達成するため、区間 [t_n, t_n + h] 内の複数点 t_n + c_i h において既に求まった傾き k_1, ..., k_{i-1} の線形結合で状態を予測して次の傾き k_i を順次評価し、その重み付き和を1段階法の増分関数とする。係数 (a_{ij}, b_i, c_i) をまとめたものがブッチャー配列である。",
+          "used_node_ids": [
+            "math.num.qr06_ode_one_step_method_def",
+            "math.num.qr07_explicit_euler_method"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_consistency",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y(t_n + h) = y(t_n) + h f(t_n, y_n) + \\frac{h^2}{2}\\big(f_t + f_y f\\big)(t_n, y_n) + \\mathcal{O}(h^3)\\quad (y_n = y(t_n))",
+          "to_latex": "k_i = f + h\\left(c_i f_t + \\sum_{j=1}^{i-1} a_{ij} f_y f\\right) + \\mathcal{O}(h^2),\\quad \\sum_{i=1}^{s} b_i = 1,\\quad c_i = \\sum_{j=1}^{i-1} a_{ij}\\quad ",
+          "operation_label": "テイラー展開比較による整合性条件と行和条件の導出",
+          "explanation": "厳密解 y(t_n + h) を h に関してテイラー展開すると、1次の項は h f(t_n, y_n) となる。数値解の増分 h \\sum b_i k_i に対して、各段 k_i を多変数テイラー展開して h^0 の項を比較すると整合性条件 \\sum_{i=1}^s b_i = 1 が得られる。さらに各段 k_i 自体が時刻 t_n + c_i h での解の傾きを1次精度で近似する（自律系・非自律系での整合性を保つ）要請から、行和条件 c_i = \\sum_{j=1}^{i-1} a_{ij} が与えられる。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": "sum(b) - 1"
+        },
+        {
+          "step_id": "s4_rk2_examples",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y_n + h(b_1 k_1 + b_2 k_2) = y_n + h(b_1 + b_2)f + h^2 b_2 c_2 (f_t + f_y f) + \\mathcal{O}(h^3)\\quad (a_{21}=c_2,\\; c_1=0)\\quad ",
+          "to_latex": "b_1 + b_2 = 1,\\quad b_2 c_2 = \\frac{1}{2},\\quad a_{21} = c_2 \\implies \\text{Heun: } c_2=1, b_1=b_2=\\frac{1}{2};\\quad \\text{Midpoint: } c_2=\\frac{1}{2}, b_1=0, b_2=1",
+          "operation_label": "2段法の2次次数条件とホイン法・中点法の構成",
+          "explanation": "s=2 の場合、c_1=0, a_{21}=c_2 とおいて y_{n+1} を h^2 の項まで展開し、厳密解のテイラー展開の h^2 係数 (1/2)(f_t + f_y f) と比較することで2次精度の局所打切り誤差 \\tau_{n+1}(h) = \\mathcal{O}(h^2) を与える代数条件 b_1 + b_2 = 1, b_2 c_2 = 1/2 を得る。この1パラメータ族から c_2 = 1 を選べばホイン法（改良オイラー法）、c_2 = 1/2 を選べば中点法が定まる。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.t10_taylor_asymptotic_approx",
+            "math.num.qr06_ode_one_step_method_def"
+          ],
+          "sympy_check_hint": "b1 + b2 - 1, b2*c2 - Rational(1, 2)"
+        }
+      ]
     }
   ]
 }

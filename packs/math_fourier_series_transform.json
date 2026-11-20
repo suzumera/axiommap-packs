@@ -726,6 +726,85 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_ft07",
+      "target_node_id": "math.fourier.ft07_convolution_def",
+      "route_kind": "deductive",
+      "title": "畳み込み積分の定義と変数置換による対称性の導出",
+      "premise_node_ids": [
+        "math.fourier.ft05_fourier_transform_def",
+        "math.fourier.ft06_fourier_basic_properties",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "f, g \\in L^1(\\mathbb{R})",
+        "x \\in \\mathbb{R}"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f, g \\in L^1(\\mathbb{R})",
+          "to_latex": "(f * g)(x) := \\int_{-\\infty}^{\\infty} f(y)g(x - y)\\,dy = \\int_{-\\infty}^{\\infty} f(x - y)g(y)\\,dy",
+          "operation_label": "畳み込み積分の定義と交換対称性",
+          "explanation": "実数直線上の可積分関数 f, g に対し、一方を反転・平行移動して積を全空間で積分する二項演算として畳み込み積分を定義し、置換積分によりその対称な表現を導く。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution",
+            "math.fourier.ft05_fourier_transform_def",
+            "math.fourier.ft06_fourier_basic_properties"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_define_kernel",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{F}[f](\\omega) = \\int_{-\\infty}^{\\infty} f(x)e^{-i\\omega x}\\,dx,\\quad g(x - y),\\quad f, g \\in L^1(\\mathbb{R})",
+          "to_latex": "(f * g)(x) := \\int_{-\\infty}^{\\infty} f(y)g(x - y)\\,dy",
+          "operation_label": "反転・平行移動積による積分演算の定義",
+          "explanation": "フーリエ変換およびその平行移動則を背景として、y について関数 g を反転し x だけ平行移動した g(x - y) と f(y) との積を実軸全体で積分する二項演算 (f * g)(x) を定義する。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def",
+            "math.fourier.ft06_fourier_basic_properties"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_substitution_symmetry",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{-\\infty}^{\\infty} f(y)g(x - y)\\,dy",
+          "to_latex": "\\int_{\\infty}^{-\\infty} f(x - u)g(u)(-du) = \\int_{-\\infty}^{\\infty} f(x - u)g(u)\\,du",
+          "operation_label": "変数置換 u = x - y の適用",
+          "explanation": "x を固定して変数変換 u = x - y を施すと y = x - u, dy = -du となり、積分区間が (\\infty, -\\infty) に反転するため負号と相殺して積分の上下端が元の (-\\infty, \\infty) に戻る。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_relabel_dummy",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{-\\infty}^{\\infty} f(x - u)g(u)\\,du",
+          "to_latex": "(f * g)(x) = \\int_{-\\infty}^{\\infty} f(y)g(x - y)\\,dy = \\int_{-\\infty}^{\\infty} f(x - y)g(y)\\,dy",
+          "operation_label": "積分変数の書き換えと対称表示の確立",
+          "explanation": "ダミー変数 u を再び y と書き換えることで、f * g = g * f の交換法則に対応する畳み込み積分の2通りの同値な積分表示が得られる。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }

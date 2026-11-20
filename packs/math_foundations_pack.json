@@ -4007,6 +4007,2261 @@
           "sympy_check_hint": "import sympy as sp; a = sp.Matrix(sp.symbols('a1:4')); b = sp.Matrix(sp.symbols('b1:4')); c = sp.Matrix([sum(sp.LeviCivita(i,j,k)*a[j]*b[k] for j in range(3) for k in range(3)) for i in range(3)]); sp.simplify(c - a.cross(b))"
         }
       ]
+    },
+    {
+      "id": "drv.link_m30_polar_basis",
+      "target_node_id": "math.geom.m30_polar_coordinates_basis_def",
+      "route_kind": "deductive",
+      "title": "デカルト座標基底と単位円表示からの2次元極座標および局所正規直交基底の導入",
+      "premise_node_ids": [
+        "math.linalg.vs04_basis_and_dimension",
+        "math.geom.m38_unit_circle_angle_existence",
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "2次元ユークリッド平面上に固定された正規直交基底 (e_x, e_y) が与えられている",
+        "原点以外の点 (r > 0) を対象とし、偏角 θ は e_x 軸から反時計回りを正とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r} = x\\mathbf{e}_x + y\\mathbf{e}_y,\\quad r = \\sqrt{x^2 + y^2} > 0",
+          "to_latex": "\\mathbf{r} = r\\cos\\theta\\,\\mathbf{e}_x + r\\sin\\theta\\,\\mathbf{e}_y = r\\mathbf{e}_r,\\quad \\mathbf{e}_r = \\cos\\theta\\,\\mathbf{e}_x + \\sin\\theta\\,\\mathbf{e}_y,\\quad \\mathbf{e}_\\theta = -\\sin\\theta\\,\\mathbf{e}_x + \\cos\\theta\\,\\mathbf{e}_y",
+          "operation_label": "極座標表示と局所正規直交基底の定義",
+          "explanation": "固定正規直交基底 (e_x, e_y) による位置ベクトル r の成分を単位円上の位相角 θ で変数変換し、動径方向の単位ベクトル e_r とそれに直交する偏角方向の単位ベクトル e_θ を導入して局所正規直交基底を定義する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.geom.m38_unit_circle_angle_existence",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": "sp.simplify((sp.cos(theta)**2 + sp.sin(theta)**2) - 1) == 0"
+        },
+        {
+          "step_id": "s2_1_polar_coord",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r} = x\\mathbf{e}_x + y\\mathbf{e}_y,\\quad \\left(\\frac{x}{r}\\right)^2 + \\left(\\frac{y}{r}\\right)^2 = 1",
+          "to_latex": "\\mathbf{r} = r\\cos\\theta\\,\\mathbf{e}_x + r\\sin\\theta\\,\\mathbf{e}_y = r\\mathbf{e}_r,\\quad \\mathbf{e}_r := \\cos\\theta\\,\\mathbf{e}_x + \\sin\\theta\\,\\mathbf{e}_y",
+          "operation_label": "単位円パラメータ化による極座標と動径基底の定義",
+          "explanation": "基底 (e_x, e_y) による座標表示 r = x e_x + y e_y に対し、動径距離 r = sqrt(x^2 + y^2) で正規化した点 (x/r, y/r) は単位円上にあるため、位相角の存在定理 (M38) より x/r = cos θ, y/r = sin θ となる偏角 θ が存在する。これより位置ベクトル r = r e_r および動径単位ベクトル e_r が定義される。",
+          "used_node_ids": [
+            "math.geom.m38_unit_circle_angle_existence",
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_orthonormal_basis",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{e}_r = \\cos\\theta\\,\\mathbf{e}_x + \\sin\\theta\\,\\mathbf{e}_y,\\quad \\mathbf{e}_\\theta := -\\sin\\theta\\,\\mathbf{e}_x + \\cos\\theta\\,\\mathbf{e}_y",
+          "to_latex": "\\mathbf{e}_r \\cdot \\mathbf{e}_r = \\mathbf{e}_\\theta \\cdot \\mathbf{e}_\\theta = \\cos^2\\theta + \\sin^2\\theta = 1,\\quad \\mathbf{e}_r \\cdot \\mathbf{e}_\\theta = 0",
+          "operation_label": "直交基底ベクトル e_θ の導入と正規直交性の確認",
+          "explanation": "偏角 θ の増加方向に直交単位ベクトル e_θ = -sin θ e_x + cos θ e_y を定義する。内積の成分定義 (M28) とピタゴラス恒等式 (M37) より ||e_r||^2 = ||e_θ||^2 = cos^2 θ + sin^2 θ = 1 および e_r · e_θ = -sin θ cos θ + sin θ cos θ = 0 が成り立つため、(e_r, e_θ) は任意の点 (r > 0) における2次元平面の局所正規直交基底をなす。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": "er = sp.Matrix([sp.cos(theta), sp.sin(theta)]); et = sp.Matrix([-sp.sin(theta), sp.cos(theta)]); assert sp.simplify(er.dot(er)) == 1 and sp.simplify(et.dot(et)) == 1 and sp.simplify(er.dot(et)) == 0"
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m32",
+      "target_node_id": "math.vec.m32_scalar_vector_product_rule",
+      "route_kind": "deductive",
+      "title": "成分展開と1変数関数の微分法則によるスカラー・ベクトル積の微分および線形性の導出",
+      "premise_node_ids": [
+        "math.vec.m27_vector_component_differentiation",
+        "math.calc.m15_product_rule",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "固定された正規直交基底 {e_1, e_2, e_3} を用いる（基底ベクトルは時間 t に依存しない定ベクトル）。",
+        "スカラー関数 f(t) およびベクトル値関数 a(t), b(t) の各成分 a_i(t), b_i(t) は時間 t に関して微分可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{a}(t) = \\sum_{i=1}^{3} a_i(t)\\mathbf{e}_i,\\; \\mathbf{b}(t) = \\sum_{i=1}^{3} b_i(t)\\mathbf{e}_i",
+          "to_latex": "\\frac{d}{dt}\\big(f(t)\\mathbf{a}(t)\\big) = \\dot{f}(t)\\mathbf{a}(t) + f(t)\\dot{\\mathbf{a}}(t),\\quad \\frac{d}{dt}\\big(\\mathbf{a}(t) + \\mathbf{b}(t)\\big) = \\dot{\\mathbf{a}}(t) + \\dot{\\mathbf{b}}(t)",
+          "operation_label": "成分表示への帰着と積の微分法則・線形性の適用",
+          "explanation": "ベクトル値関数を定基底の成分表示に帰着させ、各成分に対して1変数実関数の積の微分法（ライプニッツ則）および微分の線形性を適用して再構成することで、積の微分法則と和の線形性を得る。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.calc.m36_derivative_linearity",
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(t)\\mathbf{a}(t) = \\sum_{i=1}^{3} \\big(f(t)a_i(t)\\big)\\mathbf{e}_i",
+          "to_latex": "\\frac{d}{dt}\\big(f(t)\\mathbf{a}(t)\\big) = \\sum_{i=1}^{3} \\frac{d}{dt}\\big(f(t)a_i(t)\\big)\\mathbf{e}_i",
+          "operation_label": "スカラー倍ベクトルの成分別時間微分",
+          "explanation": "ベクトル値関数の成分表示と時間微分の定義（M27）により、スカラー関数とベクトルの積の時間微分を各成分関数の時間微分の線形結合として表す。",
+          "used_node_ids": [
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{3} \\frac{d}{dt}\\big(f(t)a_i(t)\\big)\\mathbf{e}_i",
+          "to_latex": "\\sum_{i=1}^{3} \\big(\\dot{f}(t)a_i(t) + f(t)\\dot{a}_i(t)\\big)\\mathbf{e}_i = \\dot{f}(t)\\mathbf{a}(t) + f(t)\\dot{\\mathbf{a}}(t)",
+          "operation_label": "各成分への積の微分法（ライプニッツ則）の適用",
+          "explanation": "各成分の積 f(t)a_i(t) に1変数の積の微分法（M15）を適用し、M27 により再びベクトル形式にまとめることで積の微分公式を得る。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": "diff(f(t)*a_i(t), t) - (diff(f(t), t)*a_i(t) + f(t)*diff(a_i(t), t))"
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\big(\\mathbf{a}(t) + \\mathbf{b}(t)\\big) = \\sum_{i=1}^{3} \\frac{d}{dt}\\big(a_i(t) + b_i(t)\\big)\\mathbf{e}_i",
+          "to_latex": "\\sum_{i=1}^{3} \\big(\\dot{a}_i(t) + \\dot{b}_i(t)\\big)\\mathbf{e}_i = \\dot{\\mathbf{a}}(t) + \\dot{\\mathbf{b}}(t)",
+          "operation_label": "各成分への微分線形性の適用とベクトル和の微分",
+          "explanation": "ベクトル和の各成分 a_i(t) + b_i(t) に対して微分作用素の線形性（M36）を適用し、M27 を用いてベクトル和の微分の線形性を導く。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": "diff(a_i(t) + b_i(t), t) - (diff(a_i(t), t) + diff(b_i(t), t))"
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m33",
+      "target_node_id": "math.vec.m33_gradient_definition",
+      "route_kind": "deductive",
+      "title": "偏微分・全微分と内積の成分表現からの勾配ベクトルの導入",
+      "premise_node_ids": [
+        "math.calc.m44_partial_derivative_def",
+        "math.calc.m08_partial_total_diff",
+        "math.linalg.vs04_basis_and_dimension",
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "スカラー場 U は3次元ユークリッド空間の開領域上で各直交座標成分に関して偏微分可能（さらには全微分可能）である。",
+        "空間の基底として3次元標準正規直交基底 (e_1, e_2, e_3) をとり、座標成分を (x_1, x_2, x_3) = (x, y, z) と表記する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dU = \\sum_{i=1}^{3} \\frac{\\partial U}{\\partial x_i}\\,dx_i",
+          "to_latex": "\\nabla U(\\mathbf{r}) = \\sum_{i=1}^{3} \\frac{\\partial U}{\\partial x_i}\\,\\mathbf{e}_i = \\left(\\frac{\\partial U}{\\partial x}, \\frac{\\partial U}{\\partial y}, \\frac{\\partial U}{\\partial z}\\right)^\\top",
+          "operation_label": "全微分と内積構造に基づく勾配ベクトルの定義",
+          "explanation": "スカラー場 U の各座標方向の偏導関数から全微分 dU を構成し、無限小変位ベクトル dr との内積 dU = ∇U・dr を与えるベクトル場として勾配 ∇U を基底 (e_1, e_2, e_3) の成分表示で定義する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m44_partial_derivative_def",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_partial_and_diff",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial U}{\\partial x_i}(\\mathbf{r}) = \\lim_{h \\to 0} \\frac{U(\\mathbf{r} + h\\mathbf{e}_i) - U(\\mathbf{r})}{h}",
+          "to_latex": "dU = \\sum_{i=1}^{3} \\frac{\\partial U}{\\partial x_i}\\,dx_i",
+          "operation_label": "偏導関数による全微分の構成",
+          "explanation": "各軸方向 e_i に沿った偏微分係数を並べ、変位 dx_i に対するスカラー場 U の1次変化分を全微分 dU として表す。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_dot_product_identification",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = \\sum_{i=1}^{3} \\frac{\\partial U}{\\partial x_i}\\,dx_i,\\quad d\\mathbf{r} = \\sum_{i=1}^{3} dx_i\\,\\mathbf{e}_i",
+          "to_latex": "dU = \\nabla U(\\mathbf{r}) \\cdot d\\mathbf{r} = \\sum_{i=1}^{3} (\\nabla U)_i\\,dx_i",
+          "operation_label": "内積の成分公式による勾配成分の同定",
+          "explanation": "内積の成分定義 a・b = Σ a_i b_i と比較することで、全微分 dU を変位ベクトル dr との内積 ∇U・dr として表すベクトル ∇U の各成分が ∂U/∂x_i に一致することを見出す。",
+          "used_node_ids": [
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_basis_component_form",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\nabla U)_i = \\frac{\\partial U}{\\partial x_i},\\quad \\mathcal{B} = (\\mathbf{e}_1, \\mathbf{e}_2, \\mathbf{e}_3)",
+          "to_latex": "\\nabla U(\\mathbf{r}) = \\sum_{i=1}^{3} \\frac{\\partial U}{\\partial x_i}\\,\\mathbf{e}_i = \\left(\\frac{\\partial U}{\\partial x}, \\frac{\\partial U}{\\partial y}, \\frac{\\partial U}{\\partial z}\\right)^\\top",
+          "operation_label": "標準基底によるベクトル展開と列ベクトル表示",
+          "explanation": "3次元空間の標準正規直交基底 (e_1, e_2, e_3) を用いて線形結合および座標ベクトル表示を行うことで、勾配 ∇U(r) の定義式を得る。",
+          "used_node_ids": [
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m34",
+      "target_node_id": "math.vec.m34_vector_line_integral_def",
+      "route_kind": "deductive",
+      "title": "パラメータ表示と成分内積・区間加法性によるベクトル場線積分の導入",
+      "premise_node_ids": [
+        "math.vec.m27_vector_component_differentiation",
+        "math.vec.m28_dot_product_component_def",
+        "math.calc.m52_continuous_function_integrability",
+        "math.calc.m24_integral_interval_additivity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "曲線 C はパラメータ区間 [t_1, t_2] 上で区分的に C^1 級のベクトル値関数 r(t) によりパラメータ表示され、r(t_1) = r_1、r(t_2) = r_2 を満たす。",
+        "ベクトル場 F(r) は曲線 C の像上で連続である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}(t),\\; \\mathbf{F}(\\mathbf{r}),\\; t \\in [t_1, t_2]",
+          "to_latex": "\\int_{C} \\mathbf{F} \\cdot d\\mathbf{r} = \\int_{t_1}^{t_2} \\mathbf{F}(\\mathbf{r}(t)) \\cdot \\dot{\\mathbf{r}}(t)\\,dt,\\quad \\mathbf{r}(t_1) = \\mathbf{r}_1,\\; \\mathbf{r}(t_2) = \\mathbf{r}_2",
+          "operation_label": "区分的に滑らかな曲線に沿う線積分の構成",
+          "explanation": "区分的に滑らかなパラメータ曲線 r(t) の接線ベクトル dr/dt を成分微分で定め、ベクトル場 F(r(t)) との内積によってスカラー被積分関数を構成し、各滑らかな部分区間上のリーマン定積分の和として曲線 C に沿う線積分を定義する。",
+          "used_node_ids": [
+            "math.calc.m24_integral_interval_additivity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.vec.m27_vector_component_differentiation",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_tangent_element",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}(t) = \\sum_{i=1}^{3} x_i(t)\\mathbf{e}_i,\\quad \\mathbf{r}(t_1) = \\mathbf{r}_1,\\; \\mathbf{r}(t_2) = \\mathbf{r}_2",
+          "to_latex": "\\dot{\\mathbf{r}}(t) = \\sum_{i=1}^{3} \\dot{x}_i(t)\\mathbf{e}_i,\\quad d\\mathbf{r} = \\dot{\\mathbf{r}}(t)\\,dt",
+          "operation_label": "曲線のパラメータ微分と微小変位ベクトルの構成",
+          "explanation": "曲線 C の各滑らかな部分区間上で位置ベクトル r(t) を成分ごとに微分し、接線ベクトル dr/dt および線素変位ベクトル dr = (dr/dt)dt を定義する。",
+          "used_node_ids": [
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_inner_product_integrand",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F}(\\mathbf{r}(t)) = \\sum_{i=1}^{3} F_i(\\mathbf{r}(t))\\mathbf{e}_i,\\quad d\\mathbf{r} = \\dot{\\mathbf{r}}(t)\\,dt",
+          "to_latex": "\\mathbf{F}(\\mathbf{r}(t)) \\cdot d\\mathbf{r} = \\left(\\sum_{i=1}^{3} F_i(\\mathbf{r}(t))\\dot{x}_i(t)\\right)dt = \\mathbf{F}(\\mathbf{r}(t)) \\cdot \\dot{\\mathbf{r}}(t)\\,dt",
+          "operation_label": "接線成分の内積によるスカラー被積分関数の生成",
+          "explanation": "内積の成分定義を用いて曲線上のベクトル場 F(r(t)) と微小変位 dr のスカラー積を取り、t に関する1変数スカラー関数 F(r(t))・r_dot(t) を得る。",
+          "used_node_ids": [
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_piecewise_definite_integral",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k=1}^{m} \\int_{\\tau_{k-1}}^{\\tau_k} \\mathbf{F}(\\mathbf{r}(t)) \\cdot \\dot{\\mathbf{r}}(t)\\,dt\\quad (t_1 = \\tau_0 < \\tau_1 < \\dots < \\tau_m = t_2,\\; \\mathbf{r}(\\tau_0)=\\mathbf{r}_1,\\; \\mathbf{r}(\\tau_m)=\\mathbf{r}_2)\\quad",
+          "to_latex": "\\int_{C} \\mathbf{F} \\cdot d\\mathbf{r} = \\int_{t_1}^{t_2} \\mathbf{F}(\\mathbf{r}(t)) \\cdot \\dot{\\mathbf{r}}(t)\\,dt,\\quad \\mathbf{r}(t_1) = \\mathbf{r}_1,\\; \\mathbf{r}(t_2) = \\mathbf{r}_2",
+          "operation_label": "部分区間での可積分性と区間加法性による定積分の定義",
+          "explanation": "各滑らかな閉部分区間 [tau_{k-1}, tau_k] 上で連続関数 F(r(t))・r_dot(t) がリーマン可積分であることを用い、定積分の区間加法性によって区間 [t_1, t_2] 全体の定積分として線積分を定義する。",
+          "used_node_ids": [
+            "math.calc.m24_integral_interval_additivity",
+            "math.calc.m52_continuous_function_integrability"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m35",
+      "target_node_id": "math.calc.m35_multivariable_chain_rule",
+      "route_kind": "deductive",
+      "title": "全微分可能性と差分商の極限による多変数関数の合成微分法則の導出",
+      "premise_node_ids": [
+        "math.calc.m45_total_differentiability_def",
+        "math.calc.m20_derivative_definition",
+        "math.vec.m27_vector_component_differentiation",
+        "math.vec.m33_gradient_definition"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m23_limit_algebra",
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "assumptions": [
+        "UはC1級（全微分可能）のスカラー場である",
+        "r(t)=(x1(t),x2(t),x3(t))は時刻tにおいて微分可能な空間曲線である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "U(\\mathbf{r}(t)),\\quad \\mathbf{r}(t) = (x_1(t), x_2(t), x_3(t))",
+          "to_latex": "\\frac{d}{dt} U\\big(\\mathbf{r}(t)\\big) = \\sum_{i=1}^{3} \\frac{\\partial U}{\\partial x_i}\\big(\\mathbf{r}(t)\\big)\\,\\dot{x}_i(t) = \\nabla U(\\mathbf{r}(t)) \\cdot \\dot{\\mathbf{r}}(t) + 0",
+          "operation_label": "曲線に沿う多変数関数の合成微分",
+          "explanation": "合成関数U(r(t))の時間増分を全微分可能性により1次近似し、差分商の極限をとることで各偏導関数と座標成分の時間微分の積和を導き、勾配ベクトルと速度ベクトルの内積として表す。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m45_total_differentiability_def",
+            "math.vec.m27_vector_component_differentiation",
+            "math.vec.m33_gradient_definition"
+          ],
+          "sympy_check_hint": "diff(U(x1(t), x2(t), x3(t)), t)"
+        },
+        {
+          "step_id": "s2_difference_quotient",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{U\\big(\\mathbf{r}(t+h)\\big) - U\\big(\\mathbf{r}(t)\\big)}{h},\\quad \\Delta\\mathbf{r}(h) := \\mathbf{r}(t+h) - \\mathbf{r}(t) = \\big(\\Delta x_1(h), \\Delta x_2(h), \\Delta x_3(h)\\big)^\\top",
+          "to_latex": "\\sum_{i=1}^{3} \\frac{\\partial U}{\\partial x_i}\\big(\\mathbf{r}(t)\\big)\\frac{\\Delta x_i(h)}{h} + \\varepsilon\\big(\\Delta\\mathbf{r}(h)\\big)\\frac{\\|\\Delta\\mathbf{r}(h)\\|}{h}\\quad \\big(\\lim_{\\Delta\\mathbf{r}\\to\\mathbf{0}}\\varepsilon(\\Delta\\mathbf{r})=0\\big);",
+          "operation_label": "全微分可能性による増分の1次近似と差分商の展開",
+          "explanation": "UはC1級であるため点r(t)で全微分可能であり、増分U(r(t)+Δr(h))-U(r(t))を偏導関数による線形近似項と高次微小誤差項ε(Δr(h))‖Δr(h)‖の和に展開し、時間刻みhで割る。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m45_total_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_limit_to_sum",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{h \\to 0} \\left[ \\sum_{i=1}^{3} \\frac{\\partial U}{\\partial x_i}\\big(\\mathbf{r}(t)\\big)\\frac{\\Delta x_i(h)}{h} + \\varepsilon\\big(\\Delta\\mathbf{r}(h)\\big)\\frac{\\|\\Delta\\mathbf{r}(h)\\|}{h} \\right]",
+          "to_latex": "\\frac{d}{dt} U\\big(\\mathbf{r}(t)\\big) = \\sum_{i=1}^{3} \\frac{\\partial U}{\\partial x_i}\\big(\\mathbf{r}(t)\\big)\\,\\dot{x}_i(t);",
+          "operation_label": "h→0の極限操作と成分導関数の代入",
+          "explanation": "r(t)が微分可能であるためh→0でΔr(h)→0となりε(Δr(h))→0が従い、かつ‖Δr(h)‖/|h|→‖r'(t)‖と有界であるため剰余項は0に収束する。極限の線形性と各成分x_i(t)の導関数の定義から偏導関数と時間微分の積和が得られる。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m23_limit_algebra",
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": "sum(Derivative(U(x1,x2,x3), xi)*diff(xi(t), t))"
+        },
+        {
+          "step_id": "s4_gradient_dot_product",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{3} \\frac{\\partial U}{\\partial x_i}\\big(\\mathbf{r}(t)\\big)\\,\\dot{x}_i(t);",
+          "to_latex": "\\nabla U(\\mathbf{r}(t)) \\cdot \\dot{\\mathbf{r}}(t) + 0",
+          "operation_label": "勾配ベクトルと速度ベクトルの内積表現への書き換え",
+          "explanation": "偏導関数の組を勾配∇U(r(t))の成分、座標時間微分の組を速度ベクトルr'(t)の成分として同一視し、ベクトルの内積の成分定義を適用して幾何学的な内積形式にまとめる。",
+          "used_node_ids": [
+            "math.vec.m27_vector_component_differentiation",
+            "math.vec.m28_dot_product_component_def",
+            "math.vec.m33_gradient_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m36",
+      "target_node_id": "math.calc.m36_derivative_linearity",
+      "route_kind": "deductive",
+      "title": "導関数の定義と極限の演算則による微分作用素の線形性の導出",
+      "premise_node_ids": [
+        "math.calc.m20_derivative_definition",
+        "math.calc.m23_limit_algebra"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "関数 f(t) および g(t) は対象区間で微分可能（高階については2階微分可能）である。",
+        "係数 \\alpha, \\beta は t に依存しない定数である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F(t) = \\alpha f(t) + \\beta g(t) \\quad (\\alpha, \\beta \\text{ const.})",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t),\\quad \\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f''(t) + \\beta g''(t),",
+          "operation_label": "導関数の定義への適用と極限の線形性および反復微分",
+          "explanation": "線形結合 F(t) = \\alpha f(t) + \\beta g(t) の差分商を各項の差分商の線形結合へ整理し、極限の四則演算を用いて1階導関数の線形性を導いた上で、2階微分にも同様に適用する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": "simplify(diff(alpha*f(t) + beta*g(t), t) - (alpha*diff(f(t), t) + beta*diff(g(t), t)))"
+        },
+        {
+          "step_id": "s2_diff_quotient",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\frac{\\big(\\alpha f(t+h) + \\beta g(t+h)\\big) - \\big(\\alpha f(t) + \\beta g(t)\\big)}{h},",
+          "to_latex": "\\lim_{h \\to 0} \\left(\\alpha \\frac{f(t+h) - f(t)}{h} + \\beta \\frac{g(t+h) - g(t)}{h}\\right),",
+          "operation_label": "導関数の定義による差分商の展開と線形結合への整理",
+          "explanation": "導関数の定義に従い F(t) = \\alpha f(t) + \\beta g(t) の差分商を立て、分子を f と g の増分にそれぞれ括り出して各項の差分商の和として表す。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_limit_linearity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{h \\to 0} \\left(\\alpha \\frac{f(t+h) - f(t)}{h} + \\beta \\frac{g(t+h) - g(t)}{h}\\right),",
+          "to_latex": "\\alpha \\lim_{h \\to 0}\\frac{f(t+h) - f(t)}{h} + \\beta \\lim_{h \\to 0}\\frac{g(t+h) - g(t)}{h} = \\alpha f'(t) + \\beta g'(t),",
+          "operation_label": "極限の四則演算による極限の分配と導関数の定義の再適用",
+          "explanation": "f(t) と g(t) の微分可能性により各項の差分商の極限が収束するため、極限の和と定数倍の法則を適用して1階導関数の線形性を得る。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_higher_order",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\frac{d}{dt}\\big(\\alpha f'(t) + \\beta g'(t)\\big),",
+          "to_latex": "\\alpha \\frac{d}{dt}f'(t) + \\beta \\frac{d}{dt}g'(t) = \\alpha f''(t) + \\beta g''(t),",
+          "operation_label": "1階線形性の反復適用による2階導関数の線形性導出",
+          "explanation": "f'(t) および g'(t) が微分可能であるとき、導出された1階微分作用素の線形性を再び \\alpha f'(t) + \\beta g'(t) に適用することで2階導関数の線形性が従う。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": "simplify(diff(alpha*f(t) + beta*g(t), t, 2) - (alpha*diff(f(t), t, 2) + beta*diff(g(t), t, 2)))"
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m37",
+      "target_node_id": "math.calc.m37_trig_pythagorean_addition",
+      "route_kind": "deductive",
+      "title": "三角関数の導関数と定数性補題によるピタゴラス恒等式および加法定理の導出",
+      "premise_node_ids": [
+        "math.calc.m31_trig_derivatives",
+        "math.calc.m01_chain_rule",
+        "math.calc.m15_product_rule",
+        "math.calc.m26_zero_derivative_constant_lemma"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "\\cos\\theta と \\sin\\theta は実数全体で微分可能であり、\\cos 0 = 1、\\sin 0 = 0 を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d}{d\\theta}(\\cos\\theta)=-\\sin\\theta,\\; \\frac{d}{d\\theta}(\\sin\\theta)=\\cos\\theta,\\; \\cos 0=1,\\; \\sin 0=0",
+          "to_latex": "\\cos^2\\theta + \\sin^2\\theta = 1,\\quad \\cos(\\alpha + \\beta) = \\cos\\alpha\\cos\\beta - \\sin\\alpha\\sin\\beta",
+          "operation_label": "微積分学による恒等式導出の全体像",
+          "explanation": "正弦・余弦関数の導関数公式、積の微分法、連鎖律を用いて補助関数の導関数が恒等的に零となることを示し、定数性補題と初期値評価によってピタゴラス恒等式および余弦の加法定理を導出する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule",
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": "simplify(cos(theta)**2 + sin(theta)**2 - 1) == 0 and simplify(cos(alpha + beta) - (cos(alpha)*cos(beta) - sin(alpha)*sin(beta))) == 0"
+        },
+        {
+          "step_id": "s2_pythagorean",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\theta) := \\cos^2\\theta + \\sin^2\\theta",
+          "to_latex": "f'(\\theta) = 2\\cos\\theta(-\\sin\\theta) + 2\\sin\\theta\\cos\\theta = 0 \\implies \\cos^2\\theta + \\sin^2\\theta = f(0) = 1",
+          "operation_label": "連鎖律と定数性補題によるピタゴラス恒等式の導出",
+          "explanation": "関数 f(\\theta)=\\cos^2\\theta+\\sin^2\\theta を定義し、連鎖律と三角関数の導関数を用いて微分すると f'(\\theta)=0 となる。導関数が恒等的に零の関数は定数であるため、\\theta=0 での値 f(0)=1^2+0^2=1 と一致する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": "diff(cos(theta)**2 + sin(theta)**2, theta) == 0"
+        },
+        {
+          "step_id": "s2_rotation_invariants",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(\\theta) := \\cos(\\theta+\\beta)\\cos\\theta + \\sin(\\theta+\\beta)\\sin\\theta,\\quad v(\\theta) := \\sin(\\theta+\\beta)\\cos\\theta - \\cos(\\theta+\\beta)\\sin\\theta",
+          "to_latex": "u'(\\theta) = 0,\\; v'(\\theta) = 0 \\implies u(\\theta) = u(0) = \\cos\\beta,\\; v(\\theta) = v(0) = \\sin\\beta",
+          "operation_label": "補助関数の微分による回転不変量の評価",
+          "explanation": "任意の定数 \\beta に対して補助関数 u(\\theta), v(\\theta) を定義し、積の微分法、連鎖律、三角関数の導関数を適用すると u'(\\theta)=0 かつ v'(\\theta)=0 が得られる。定数性補題により \\theta=0 での値 \\cos\\beta, \\sin\\beta に等しい。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule",
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": "simplify(diff(cos(theta+beta)*cos(theta) + sin(theta+beta)*sin(theta), theta)) == 0 and simplify(diff(sin(theta+beta)*cos(theta) - cos(theta+beta)*sin(theta), theta)) == 0"
+        },
+        {
+          "step_id": "s2_solve_addition",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(\\alpha)\\cos\\alpha - v(\\alpha)\\sin\\alpha = \\cos\\beta\\cos\\alpha - \\sin\\beta\\sin\\alpha",
+          "to_latex": "(\\cos^2\\alpha + \\sin^2\\alpha)\\cos(\\alpha+\\beta) = \\cos(\\alpha+\\beta) = \\cos\\alpha\\cos\\beta - \\sin\\alpha\\sin\\beta",
+          "operation_label": "連立消去とピタゴラス恒等式による加法定理の確定",
+          "explanation": "\\theta=\\alpha として u(\\alpha)\\cos\\alpha - v(\\alpha)\\sin\\alpha を計算し、すでに導いた \\cos^2\\alpha+\\sin^2\\alpha=1 を適用することで、余弦の加法定理 \\cos(\\alpha+\\beta)=\\cos\\alpha\\cos\\beta-\\sin\\alpha\\sin\\beta が得られる。",
+          "used_node_ids": [
+            "math.calc.m26_zero_derivative_constant_lemma"
+          ],
+          "sympy_check_hint": "expand_trig(cos(alpha + beta))"
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m38_unit_circle_angle_existence",
+      "target_node_id": "math.geom.m38_unit_circle_angle_existence",
+      "route_kind": "deductive",
+      "title": "三角関数の連続性・単調性とピタゴラス恒等式による位相角の存在証明",
+      "premise_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.calc.m31_trig_derivatives",
+        "math.calc.m22_differentiability_implies_continuity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "実数の連続性（中間値の定理）および三角関数の値域 [-1, 1] の基本性質（cos 0 = 1, cos π = -1）を用いる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "a^2 + b^2 = 1",
+          "to_latex": "\\exists \\phi \\in [0, 2\\pi)\\text{ s.t. } \\cos\\phi = a,\\; \\sin\\phi = b",
+          "operation_label": "余弦の単調性・連続性と符号選択による位相角の構成",
+          "explanation": "a^2 + b^2 = 1 より |a| <= 1 となるため、区間 [0, π] 上で連続かつ狭義単調減少である cos θ を用いて cos θ_0 = a を満たす θ_0 を定め、ピタゴラス恒等式と b の符号に応じて θ_0 または 2π - θ_0 を選ぶことで所望の φ を構成する。",
+          "used_node_ids": [
+            "math.calc.m22_differentiability_implies_continuity",
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_cos_existence",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a^2 + b^2 = 1 \\implies -1 \\le a \\le 1",
+          "to_latex": "\\exists!\\, \\theta_0 \\in [0, \\pi]\\text{ s.t. } \\cos\\theta_0 = a",
+          "operation_label": "導関数による連続性・単調性と中間値の定理の適用",
+          "explanation": "a^2 = 1 - b^2 <= 1 より -1 <= a <= 1 である。三角関数の導関数 (cos θ)' = -sin θ の存在（M31）と微分可能性が連続性を導く定理（M22）により cos θ は [0, π] 上で連続である。また (0, π) で sin θ > 0 ゆえ -sin θ < 0 となり cos θ は狭義単調減少で、cos 0 = 1, cos π = -1 を取るため、cos θ_0 = a を満たす θ_0 ∈ [0, π] が一意に存在する。",
+          "used_node_ids": [
+            "math.calc.m22_differentiability_implies_continuity",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_sin_sign_selection",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\cos\\theta_0 = a,\\; \\cos^2\\theta_0 + \\sin^2\\theta_0 = 1,\\; a^2 + b^2 = 1",
+          "to_latex": "\\phi = \\begin{cases} \\theta_0 & (b \\ge 0) \\\\ 2\\pi - \\theta_0 & (b < 0) \\end{cases} \\implies \\phi \\in [0, 2\\pi),\\; \\cos\\phi = a,\\; \\sin\\phi = b",
+          "operation_label": "ピタゴラス恒等式と加法定理による符号の一致",
+          "explanation": "ピタゴラス恒等式（M37）より sin^2 θ_0 = 1 - cos^2 θ_0 = 1 - a^2 = b^2 である。θ_0 ∈ [0, π] では sin θ_0 >= 0 なので、sin θ_0 = |b| が成り立つ。b >= 0 のとき φ = θ_0 ∈ [0, π] とすれば cos φ = a, sin φ = b となる。b < 0 のときは θ_0 ∈ (0, π) であり、φ = 2π - θ_0 ∈ (π, 2π) と置くと、加法定理（M37）より cos(2π - θ_0) = cos θ_0 = a、sin(2π - θ_0) = -sin θ_0 = -|b| = b となる。以上より φ ∈ [0, 2π) が一意に存在する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "simplify(cos(2*pi - theta) - cos(theta)); simplify(sin(2*pi - theta) + sin(theta))"
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m39",
+      "target_node_id": "math.ode.m39_linear_ode_superposition",
+      "route_kind": "deductive",
+      "title": "微分作用素の線形性による2階同次線形常微分方程式の重ね合わせの原理の導出",
+      "premise_node_ids": [
+        "math.calc.m36_derivative_linearity",
+        "math.linalg.vs07_linear_map_ker_im_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "x_1(t), x_2(t) は区間 I 上で2回微分可能であり L[x_1] = 0, L[x_2] = 0 を満たす",
+        "C_1, C_2 は任意の定数である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L[x] = \\ddot{x} + p(t)\\dot{x} + q(t)x,\\quad L[x_1] = 0,\\; L[x_2] = 0",
+          "to_latex": "L[C_1 x_1 + C_2 x_2] = C_1 L[x_1] + C_2 L[x_2] = 0",
+          "operation_label": "線形微分作用素の線形性と解空間の閉じ性",
+          "explanation": "1階および2階微分作用素の線形性から微分作用素 L が線形写像であることを示し、同次方程式の解が L の核に属することを用いて任意の定数線形結合も再び解となることを導く。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_operator_linearity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L[C_1 x_1 + C_2 x_2] = \\frac{d^2}{dt^2}(C_1 x_1 + C_2 x_2) + p(t)\\frac{d}{dt}(C_1 x_1 + C_2 x_2) + q(t)(C_1 x_1 + C_2 x_2) + 0",
+          "to_latex": "L[C_1 x_1 + C_2 x_2] = C_1(\\ddot{x}_1 + p(t)\\dot{x}_1 + q(t)x_1) + C_2(\\ddot{x}_2 + p(t)\\dot{x}_2 + q(t)x_2) = C_1 L[x_1] + C_2 L[x_2]",
+          "operation_label": "微分の線形性による作用素の展開",
+          "explanation": "微分作用素の線形性を用いて1階導関数と2階導関数を線形結合に分配し、係数 C_1 と C_2 で各項を整理することで L[C_1 x_1 + C_2 x_2] = C_1 L[x_1] + C_2 L[x_2] を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_kernel_closure",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L[C_1 x_1 + C_2 x_2] = C_1 L[x_1] + C_2 L[x_2],\\quad x_1, x_2 \\in \\ker L",
+          "to_latex": "L[C_1 x_1 + C_2 x_2] = C_1 \\cdot 0 + C_2 \\cdot 0 = 0",
+          "operation_label": "線形写像の核への解の代入",
+          "explanation": "L が線形写像であることから同次方程式 L[x] = 0 の解は核 ker L の元であり、L[x_1] = 0 かつ L[x_2] = 0 を代入すると C_1 x_1 + C_2 x_2 も L[C_1 x_1 + C_2 x_2] = 0 を満たすことが示される。",
+          "used_node_ids": [
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m40",
+      "target_node_id": "math.geom.m40_conic_focus_directrix_def",
+      "route_kind": "deductive",
+      "title": "2次元直交座標・極座標の距離定義からの2次曲線（焦点・準線定義）の導入",
+      "premise_node_ids": [
+        "math.geom.m30_polar_coordinates_basis_def",
+        "math.vec.m28_dot_product_component_def",
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "2次元ユークリッド平面に直交座標(x, y)を導入し、2次曲線の焦点を原点O(0, 0)に配置する。",
+        "半通径 l > 0 および離心率 e >= 0 とし、e > 0 の主枝では準線 x = x_D に対して x_D - x > 0 の領域を考える。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r} = x\\mathbf{e}_x + y\\mathbf{e}_y = r(\\cos\\theta\\,\\mathbf{e}_x + \\sin\\theta\\,\\mathbf{e}_y)",
+          "to_latex": "r = e\\,d,\\quad r = \\sqrt{x^2 + y^2},\\quad d = x_D - x,\\quad x_D = \\frac{\\ell}{e}\\ (e > 0),\\quad r = \\ell\\ (e = 0)\\quad (\\ell > 0,\\ e \\ge 0)",
+          "operation_label": "焦点距離・準線距離と離心率比による2次曲線の定義導入",
+          "explanation": "平面上の点の位置ベクトルと内積から原点（焦点）までの距離rを定め、準線x = x_Dからの距離dとの比が離心率eで一定となる軌跡として2次曲線を定義する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.geom.m30_polar_coordinates_basis_def",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_focus_distance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r} = r\\cos\\theta\\,\\mathbf{e}_x + r\\sin\\theta\\,\\mathbf{e}_y,\\quad x = r\\cos\\theta,\\quad y = r\\sin\\theta",
+          "to_latex": "r = \\sqrt{\\mathbf{r}\\cdot\\mathbf{r}} = \\sqrt{x^2 + y^2}",
+          "operation_label": "内積と三角関数恒等式による焦点距離rの表現",
+          "explanation": "極座標表示された位置ベクトルの自身との内積をとり、ピタゴラス恒等式を適用することで、原点（焦点）からのユークリッド距離rを直交座標成分で表す。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.geom.m30_polar_coordinates_basis_def",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": "sqrt((r*cos(theta))**2 + (r*sin(theta))**2) == r for r >= 0"
+        },
+        {
+          "step_id": "s3_directrix_ratio",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r = \\sqrt{x^2 + y^2},\\quad x_D \\in \\mathbb{R}_{>0},\\quad e \\ge 0",
+          "to_latex": "d = x_D - x > 0,\\quad r = e\\,d",
+          "operation_label": "準線からの距離dと離心率条件r = edの設定",
+          "explanation": "y軸に平行な直線x = x_Dを準線として設定し、主枝の点(x, y)から準線までの水平距離d = x_D - xを定義した上で、焦点距離と準線距離の比r/d = eを軌跡条件とする。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_latus_rectum_limit",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r = e(x_D - x),\\quad r|_{x=0} = \\ell > 0",
+          "to_latex": "x_D = \\frac{\\ell}{e}\\ (e > 0),\\quad r = \\ell\\ (e = 0)",
+          "operation_label": "半通径による準線位置の規格化と円極限",
+          "explanation": "焦点を通り準線に平行な直線x = 0上の距離（半通径）がr = lとなるように規格化すると、e > 0でx_D = l/eが得られ、r = l - exとなるためe = 0の極限で半径lの円r = lに帰着する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "Eq(e*(l/e - x), l - e*x)"
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m41",
+      "target_node_id": "math.geom.m41_ellipse_cartesian_def",
+      "route_kind": "deductive",
+      "title": "焦点・準線定義からの楕円直交座標標準形の導出",
+      "premise_node_ids": [
+        "math.geom.m40_conic_focus_directrix_def",
+        "math.geom.m30_polar_coordinates_basis_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "離心率は 0 <= e < 1 を満たす",
+        "半通径は ell > 0 を満たす",
+        "直交座標系の平行移動により楕円の中心を (x_0, y_0) に配置する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r = e(x_D - x),\\quad r = \\sqrt{x^2 + y^2},\\quad x_D = \\frac{\\ell}{e}\\ (0 < e < 1),\\quad r = \\ell\\ (e = 0) \\implies \\text{conic equation in }(x,y).",
+          "to_latex": "\\frac{(x - x_0)^2}{a^2} + \\frac{(y - y_0)^2}{b^2} = 1\\quad (a \\ge b > 0) \\implies \\text{standard ellipse equation}.",
+          "operation_label": "焦点・準線定義から楕円標準形への導入",
+          "explanation": "離心率 0 <= e < 1 の2次曲線の焦点・準線定義を平面直交座標 (x, y) で展開して平方完成し、長半径 a と短半径 b の定義および中心 (x_0, y_0) への平行移動を行うことで楕円の標準方程式を導入する。",
+          "used_node_ids": [
+            "math.geom.m30_polar_coordinates_basis_def",
+            "math.geom.m40_conic_focus_directrix_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_focus_directrix_eq",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sqrt{x^2 + y^2} = \\ell - e x\\quad (0 \\le e < 1,\\ \\ell > 0) \\implies x^2 + y^2 = (\\ell - e x)^2.",
+          "to_latex": "(1 - e^2)x^2 + 2\\ell e x + y^2 = \\ell^2 \\implies \\text{quadratic form in }(x,y).",
+          "operation_label": "焦点・準線関係の直交座標展開",
+          "explanation": "2次曲線の焦点・準線定義 r = e(x_D - x) に平面直交座標での距離 r = sqrt(x^2 + y^2) と準線 x_D = ell / e を代入し（e = 0 のときは r = ell）、両辺を2乗して整理する。",
+          "used_node_ids": [
+            "math.geom.m30_polar_coordinates_basis_def",
+            "math.geom.m40_conic_focus_directrix_def"
+          ],
+          "sympy_check_hint": "sp.expand((ell - e*x)**2 - (x**2 + y**2))"
+        },
+        {
+          "step_id": "s3_complete_square_axes",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(1 - e^2)x^2 + 2\\ell e x + y^2 = \\ell^2 \\implies (1 - e^2)\\left(x + \\frac{\\ell e}{1 - e^2}\\right)^2 + y^2 = \\frac{\\ell^2}{1 - e^2}.",
+          "to_latex": "\\frac{(x + a e)^2}{a^2} + \\frac{y^2}{b^2} = 1,\\quad a := \\frac{\\ell}{1 - e^2},\\quad b := \\frac{\\ell}{\\sqrt{1 - e^2}} = a\\sqrt{1 - e^2}\\ (a \\ge b > 0).",
+          "operation_label": "平方完成と長半径・短半径の定義",
+          "explanation": "1 - e^2 > 0 を用いて x について平方完成し、右辺で両辺を割る。ここで長半径 a := ell / (1 - e^2) と短半径 b := ell / sqrt(1 - e^2) = a sqrt(1 - e^2) を定義すると、0 <= e < 1 より a >= b > 0 が成り立つ。",
+          "used_node_ids": [
+            "math.geom.m40_conic_focus_directrix_def"
+          ],
+          "sympy_check_hint": "sp.simplify((1 - e**2)*(x + a*e)**2 + y**2 - a**2*(1 - e**2))"
+        },
+        {
+          "step_id": "s4_center_translation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{(x + a e)^2}{a^2} + \\frac{y^2}{b^2} = 1\\quad (a \\ge b > 0) \\implies \\text{shift center }(-a e, 0) \\mapsto (x_0, y_0).",
+          "to_latex": "\\frac{(x - x_0)^2}{a^2} + \\frac{(y - y_0)^2}{b^2} = 1\\quad (a \\ge b > 0).",
+          "operation_label": "中心の平行移動による標準形の確定",
+          "explanation": "直交座標系の原点を平行移動し、楕円の中心 (-a e, 0) を一般の点 (x_0, y_0) に移すことで、中心 (x_0, y_0)、長半径 a、短半径 b を持つ楕円の直交座標標準形を得る。",
+          "used_node_ids": [
+            "math.geom.m30_polar_coordinates_basis_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m42_planar_area_integral_def",
+      "target_node_id": "math.calc.m42_planar_area_integral_def",
+      "route_kind": "deductive",
+      "title": "連続関数の可積分性と線形性に基づく平面図形の面積の定積分定義の導入",
+      "premise_node_ids": [
+        "math.calc.m53_continuous_algebra_closure",
+        "math.calc.m52_continuous_function_integrability",
+        "math.calc.m24_integral_interval_additivity",
+        "math.calc.m16_integral_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "閉区間 [x_1, x_2] 上で関数 y_upper(x) および y_lower(x) は連続である。",
+        "閉区間 [x_1, x_2] のすべての x に対して y_lower(x) <= y_upper(x) が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "y_{\\text{upper}}, y_{\\text{lower}} \\in C([x_1, x_2]),\\quad y_{\\text{lower}}(x) \\le y_{\\text{upper}}(x)",
+          "to_latex": "A = \\int_{x_1}^{x_2} \\big(y_{\\text{upper}}(x) - y_{\\text{lower}}(x)\\big)\\,dx",
+          "operation_label": "面積の定積分定義の構成",
+          "explanation": "2つの連続曲線の差が連続かつリーマン可積分であることから、微小短冊の面積和の極限および上下曲線の定積分の差として平面領域の面積を定積分で定義する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m24_integral_interval_additivity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.m53_continuous_algebra_closure"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integrability",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y_{\\text{upper}}, y_{\\text{lower}} \\in C([x_1, x_2])",
+          "to_latex": "h(x) := y_{\\text{upper}}(x) - y_{\\text{lower}}(x) \\in C([x_1, x_2]) \\subset \\mathcal{R}([x_1, x_2])",
+          "operation_label": "被積分関数の連続性と可積分性の保証",
+          "explanation": "連続関数の線形結合の閉性により差関数 h(x) は閉区間 [x_1, x_2] 上で連続となり、閉区間上の連続関数の可積分性から h(x) の定積分が確定値として存在する。",
+          "used_node_ids": [
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.m53_continuous_algebra_closure"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_strip_additivity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta A_k \\approx h(\\xi_k)\\,\\Delta x_k = \\int_{x_{k-1}}^{x_k} h(\\xi_k)\\,dx",
+          "to_latex": "A = \\sum_{k=1}^{N} \\Delta A_k = \\int_{x_1}^{x_2} h(x)\\,dx = \\int_{x_1}^{x_2} \\big(y_{\\text{upper}}(x) - y_{\\text{lower}}(x)\\big)\\,dx",
+          "operation_label": "定数の積分・区間加法性による面積和の定積分表現",
+          "explanation": "各小区間での幅と高さの積による長方形面積が定数関数の定積分で表され、区間加法性により全区間の面積が差関数 h(x) の定積分で与えられる。",
+          "used_node_ids": [
+            "math.calc.m24_integral_interval_additivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_linearity_interpretation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A = \\int_{x_1}^{x_2} \\big(y_{\\text{upper}}(x) - y_{\\text{lower}}(x)\\big)\\,dx",
+          "to_latex": "A = \\int_{x_1}^{x_2} y_{\\text{upper}}(x)\\,dx - \\int_{x_1}^{x_2} y_{\\text{lower}}(x)\\,dx",
+          "operation_label": "定積分の線形性による上下曲線の符号付き面積の差としての整合化",
+          "explanation": "定積分の線形性により、2曲線間の面積は上側曲線の下の符号付き面積と下側曲線の下の符号付き面積の差と一致し、面積の定積分定義が幾何学的直観と整合する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": "integrate(y_upper(x) - y_lower(x), (x, x_1, x_2)) - (integrate(y_upper(x), (x, x_1, x_2)) - integrate(y_lower(x), (x, x_1, x_2)))"
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m44",
+      "target_node_id": "math.calc.m44_partial_derivative_def",
+      "route_kind": "deductive",
+      "title": "1変数微分係数の定義と座標基底からの偏微分の導入",
+      "premise_node_ids": [
+        "math.calc.m20_derivative_definition",
+        "math.linalg.vs04_basis_and_dimension"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f is a real-valued function defined on an open neighborhood of x in R^n",
+        "e_1, ..., e_n is the standard orthonormal basis of R^n"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "g'(t) = \\lim_{h \\to 0} \\frac{g(t+h) - g(t)}{h},\\quad \\mathbf{x} = \\sum_{j=1}^{n} x_j\\mathbf{e}_j",
+          "to_latex": "\\frac{\\partial f}{\\partial x_i}(\\mathbf{x}) = \\lim_{h \\to 0} \\frac{f(\\mathbf{x} + h\\mathbf{e}_i) - f(\\mathbf{x})}{h} (i=1,\\dots,n;\\ \\mathbf{x} \\in D \\subseteq \\mathbb{R}^n) ",
+          "operation_label": "restrict_to_coordinate_axis_and_differentiate",
+          "explanation": "多変数関数 f(x) において第 i 座標基底 e_i 方向以外の変数をすべて固定して 1 変数関数へ制限し、1 変数関数の微分係数の定義（差分商の極限）を適用することで偏微分係数および偏導関数を定義する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_fix_other_vars",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x} = \\sum_{j=1}^{n} x_j\\mathbf{e}_j,\\quad f: D \\subseteq \\mathbb{R}^n \\to \\mathbb{R} (\\mathcal{B}=(\\mathbf{e}_1,\\dots,\\mathbf{e}_n))",
+          "to_latex": "g_i(t) := f(\\mathbf{x} + t\\mathbf{e}_i) = f(x_1,\\dots,x_i + t,\\dots,x_n) (t \\in (-\\delta,\\delta))",
+          "operation_label": "define_1d_slice_along_basis_vector",
+          "explanation": "座標ベクトル空間 R^n の標準基底 (e_1, ..., e_n) を用い、着目する第 i 成分のみをパラメータ t だけ変化させ、他の n-1 個の座標成分を固定した 1 変数関数 g_i(t) を構成する。",
+          "used_node_ids": [
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_apply_1d_derivative",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_i'(0) = \\lim_{h \\to 0} \\frac{g_i(0 + h) - g_i(0)}{h} (\\text{1D derivative at } t=0) ",
+          "to_latex": "\\frac{\\partial f}{\\partial x_i}(\\mathbf{x}) := g_i'(0) = \\lim_{h \\to 0} \\frac{f(\\mathbf{x} + h\\mathbf{e}_i) - f(\\mathbf{x})}{h} (\\text{when the limit exists})",
+          "operation_label": "apply_1d_derivative_definition",
+          "explanation": "1 変数関数 g_i(t) の t = 0 における微分係数 g_i'(0) に 1 変数導関数の定義を適用すると、f(x + h e_i) と f(x) の差分商の極限が得られ、この極限値として点 x における第 i 変数に関する偏微分係数（およびその対応としての偏導関数）が定義される。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": "sp.diff(f(x1, x2), x1) == sp.limit((f(x1 + h, x2) - f(x1, x2))/h, h, 0)"
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m45",
+      "target_node_id": "math.calc.m45_total_differentiability_def",
+      "route_kind": "reformulation",
+      "title": "1変数1次近似と線形写像・ベクトルノルムからの多変数全微分可能性の定義の導入",
+      "premise_node_ids": [
+        "math.calc.m21_linear_approximation_lemma",
+        "math.linalg.vs07_linear_map_ker_im_def",
+        "math.vec.m28_dot_product_component_def",
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "関数 f はユークリッド空間 R^n の開領域上の点 x の近傍で定義された実数値関数とする。",
+        "微小変位ベクトル h の大きさは内積に基づくユークリッドノルム ||h|| = sqrt(h . h) で測る。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f(u+k) - f(u) = f'(u)k + \\varepsilon(k)k,\\quad \\lim_{k \\to 0}\\varepsilon(k) = 0",
+          "to_latex": "f(\\mathbf{x}+\\mathbf{h}) - f(\\mathbf{x}) = L_{\\mathbf{x}}(\\mathbf{h}) + \\varepsilon(\\mathbf{h})\\|\\mathbf{h}\\|,\\quad \\lim_{\\mathbf{h}\\to\\mathbf{0}} \\varepsilon(\\mathbf{h}) = 0,\\quad df_{\\mathbf{x}}(\\mathbf{h}) = L_{\\mathbf{x}}(\\mathbf{h})",
+          "operation_label": "1変数1次近似の多変数線形写像への一般化",
+          "explanation": "1変数関数の微分可能性の1次近似表現（増分＝線形主要部＋高位の無限小）を、変位ベクトル h に対する線形写像 L_x(h) とノルム ||h|| を用いて多変数へ拡張し、全微分 df_x を定義する。",
+          "used_node_ids": [
+            "math.calc.m21_linear_approximation_lemma",
+            "math.calc.m44_partial_derivative_def",
+            "math.linalg.vs07_linear_map_ker_im_def",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_linear_map",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k \\mapsto f'(u)k,\\quad T(\\alpha\\mathbf{u}+\\beta\\mathbf{v}) = \\alpha T(\\mathbf{u})+\\beta T(\\mathbf{v})",
+          "to_latex": "\\mathbf{h} \\mapsto L_{\\mathbf{x}}(\\mathbf{h}),\\quad L_{\\mathbf{x}}(\\alpha\\mathbf{h}_1 + \\beta\\mathbf{h}_2) = \\alpha L_{\\mathbf{x}}(\\mathbf{h}_1) + \\beta L_{\\mathbf{x}}(\\mathbf{h}_2)\\quad (L_{\\mathbf{x}} : \\mathbb{R}^n \\to \\mathbb{R})",
+          "operation_label": "スカラー倍から線形写像への拡張",
+          "explanation": "1変数で増分の1次主要部を与えていたスカラー乗算 k -> f'(u)k を、R^n 上の変位ベクトル h に対する線形写像 L_x(h) へと置き換える。",
+          "used_node_ids": [
+            "math.calc.m21_linear_approximation_lemma",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_remainder_norm",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varepsilon(k)k\\;\\left(\\lim_{k \\to 0}\\varepsilon(k)=0\\right),\\quad \\|\\mathbf{h}\\| = \\sqrt{\\mathbf{h}\\cdot\\mathbf{h}}",
+          "to_latex": "f(\\mathbf{x}+\\mathbf{h}) - f(\\mathbf{x}) = L_{\\mathbf{x}}(\\mathbf{h}) + \\varepsilon(\\mathbf{h})\\|\\mathbf{h}\\|,\\quad \\lim_{\\mathbf{h}\\to\\mathbf{0}} \\varepsilon(\\mathbf{h}) = 0",
+          "operation_label": "ノルムによる高位の無限小誤差の評価",
+          "explanation": "多変数ではスカラー k による割り算ができないため、内積から定まる変位ベクトルのノルム ||h|| を基準として近似誤差を epsilon(h)||h|| と表し、h -> 0 で epsilon(h) -> 0 となることを全微分可能性と定義する。",
+          "used_node_ids": [
+            "math.calc.m21_linear_approximation_lemma",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_total_diff",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\mathbf{x}+\\mathbf{h}) - f(\\mathbf{x}) = L_{\\mathbf{x}}(\\mathbf{h}) + \\varepsilon(\\mathbf{h})\\|\\mathbf{h}\\|,\\quad \\frac{\\partial f}{\\partial x_i}(\\mathbf{x}) = \\lim_{h \\to 0} \\frac{f(\\mathbf{x} + h\\mathbf{e}_i) - f(\\mathbf{x})}{h} = L_{\\mathbf{x}}(\\mathbf{e}_i)\\cdot 1",
+          "to_latex": "df_{\\mathbf{x}}(\\mathbf{h}) = L_{\\mathbf{x}}(\\mathbf{h})",
+          "operation_label": "全微分の定義と偏微分係数による一意性",
+          "explanation": "座標軸方向 h = t e_i に制限することで線形写像 L_x の基底での像が偏微分係数と一致し L_x が一意に定まることから、この線形主要部 L_x(h) を点 x における全微分 df_x(h) として定義する。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m46",
+      "target_node_id": "math.calc.m46_coordinate_differential_basis",
+      "route_kind": "deductive",
+      "title": "座標射影関数の線形性と全微分による座標微分形式の導出",
+      "premise_node_ids": [
+        "math.linalg.vs05_unique_coord_steinitz",
+        "math.linalg.vs07_linear_map_ker_im_def",
+        "math.calc.m45_total_differentiability_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "n次元ユークリッド空間 R^n 上で標準基底 (e_1, ..., e_n) が与えられているものとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x} = \\sum_{i=1}^{n} x_i\\mathbf{e}_i,\\quad df_{\\mathbf{x}}(\\mathbf{h}) = L_{\\mathbf{x}}(\\mathbf{h})",
+          "to_latex": "\\pi_i(\\mathbf{x}) = x_i,\\quad dx_i(\\mathbf{h}) = d\\pi_i(\\mathbf{h}) = h_i\\quad \\left(\\mathbf{h} = \\sum_{i=1}^{n} h_i\\mathbf{e}_i\\right)",
+          "operation_label": "coordinate_differential_construction",
+          "explanation": "座標表示の一意性により第i座標を取り出す線形な座標射影関数 pi_i を定め、その全微分を dx_i と定義することで増分ベクトル h の第i成分を取り出す座標微分形式を得る。",
+          "used_node_ids": [
+            "math.calc.m45_total_differentiability_def",
+            "math.linalg.vs05_unique_coord_steinitz",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_projection_linearity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x} = \\sum_{i=1}^{n} x_i\\mathbf{e}_i,\\quad [\\mathbf{x}]_{\\mathcal{B}} = (x_1,\\dots,x_n)^\\top",
+          "to_latex": "\\pi_i(\\mathbf{x}) := x_i,\\quad \\pi_i(\\alpha\\mathbf{x} + \\beta\\mathbf{y}) = \\alpha\\pi_i(\\mathbf{x}) + \\beta\\pi_i(\\mathbf{y})",
+          "operation_label": "define_linear_coordinate_projection",
+          "explanation": "標準基底に関する座標表示の一意性より各ベクトル x に対して第i成分 x_i が一意に定まるため、射影写像 pi_i(x) = x_i が定義でき、座標の線形性から pi_i は線形写像（線形汎関数）となる。",
+          "used_node_ids": [
+            "math.linalg.vs05_unique_coord_steinitz",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_total_differential_of_projection",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\pi_i(\\mathbf{x}+\\mathbf{h}) - \\pi_i(\\mathbf{x}) = \\pi_i(\\mathbf{h}) + 0\\cdot\\|\\mathbf{h}\\|",
+          "to_latex": "d\\pi_i(\\mathbf{h}) = \\pi_i(\\mathbf{h}) = h_i",
+          "operation_label": "apply_total_differential_def",
+          "explanation": "pi_i の線形性より差分 pi_i(x+h) - pi_i(x) は誤差項ゼロで pi_i(h) に厳密一致するため、全微分の定義における線形近似写像 L_x は pi_i 自身となり、d(pi_i)(h) = h_i が従う。",
+          "used_node_ids": [
+            "math.calc.m45_total_differentiability_def",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_dual_basis_notation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dx_i := d\\pi_i,\\quad d\\pi_i(\\mathbf{h}) = h_i",
+          "to_latex": "\\pi_i(\\mathbf{x}) = x_i,\\quad dx_i(\\mathbf{h}) = d\\pi_i(\\mathbf{h}) = h_i\\quad \\left(\\mathbf{h} = \\sum_{i=1}^{n} h_i\\mathbf{e}_i\\right)",
+          "operation_label": "define_coordinate_differential_basis",
+          "explanation": "射影関数の全微分 d(pi_i) を記号 dx_i で表すことにより、特に基底ベクトルに対して dx_i(e_j) = delta_{ij} を満たす余接空間の双対基底としての座標微分形式 dx_i が定義される。",
+          "used_node_ids": [
+            "math.calc.m45_total_differentiability_def",
+            "math.linalg.vs05_unique_coord_steinitz"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m47",
+      "target_node_id": "math.calc.m47_lagrange_mean_value_theorem",
+      "route_kind": "deductive",
+      "title": "ロルの定理からのラグランジュの平均値の定理の導出",
+      "premise_node_ids": [
+        "math.calc.t01_rolle_theorem",
+        "math.calc.m36_derivative_linearity",
+        "math.calc.m53_continuous_algebra_closure"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "a < b であり、g は閉区間 [a, b] で連続、開区間 (a, b) で微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f \\in C([a,b]) \\cap D((a,b)) \\land f(a) = f(b) \\implies \\exists c \\in (a,b)\\text{ s.t. } f'(c) = 0",
+          "to_latex": "g \\in C([a,b]) \\cap D((a,b)) \\implies \\exists c \\in (a,b)\\text{ s.t. } g(b) - g(a) = g'(c)(b-a) ",
+          "operation_label": "補助関数によるロルの定理の適用",
+          "explanation": "両端点を結ぶ割線の傾きを引いた補助関数を構成し、両端での値が一致することからロルの定理を適用して微分係数が平均変化率に一致する内点 c を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.calc.m53_continuous_algebra_closure",
+            "math.calc.t01_rolle_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_aux_function",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g \\in C([a,b]) \\cap D((a,b))",
+          "to_latex": "\\phi(x) := g(x) - g(a) - \\frac{g(b) - g(a)}{b - a}(x - a),\\quad \\phi(a) = \\phi(b) = 0",
+          "operation_label": "補助関数の構成と正則性確認",
+          "explanation": "g(x) から両端点を結ぶ1次関数を引いた補助関数 phi(x) を定義する。連続関数と1次関数の線形結合および微分の線形性より、phi は [a,b] で連続かつ (a,b) で微分可能であり、両端で phi(a) = phi(b) = 0 を満たす。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.calc.m53_continuous_algebra_closure"
+          ],
+          "sympy_check_hint": "simplify(phi.subs(x, a)) == 0 and simplify(phi.subs(x, b)) == 0"
+        },
+        {
+          "step_id": "s3_rolle_application",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\phi \\in C([a,b]) \\cap D((a,b)) \\land \\phi(a) = \\phi(b) = 0",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } \\phi'(c) = 0",
+          "operation_label": "ロルの定理の適用",
+          "explanation": "補助関数 phi(x) がロルの定理の仮定をすべて満たすため、導関数が零となる内点 c が開区間 (a,b) 内に少なくとも1つ存在する。",
+          "used_node_ids": [
+            "math.calc.t01_rolle_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_derivative_conclusion",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\phi'(c) = 0,\\quad \\phi'(x) = g'(x) - \\frac{g(b) - g(a)}{b - a} ",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } g(b) - g(a) = g'(c)(b-a) ",
+          "operation_label": "微分の線形性による導出",
+          "explanation": "微分の線形性を用いて phi'(x) を計算し、x = c を代入して phi'(c) = 0 とおくと、g'(c) = (g(b) - g(a)) / (b - a) すなわち平均値の定理の等式が得られる。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": "solve(Eq(diff(phi, x).subs(x, c), 0), g(b) - g(a))"
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m48",
+      "target_node_id": "math.calc.m48_continuity_sign_preservation",
+      "route_kind": "deductive",
+      "title": "連続性と極限の性質からの局所保号性および内点への波及の導出",
+      "premise_node_ids": [
+        "math.calc.m23_limit_algebra",
+        "math.calc.m53_continuous_algebra_closure"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "g \\in C([t_1, t_2])",
+        "\\tau \\in [t_1, t_2]",
+        "g(\\tau) \\neq 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "g \\in C([t_1, t_2]) \\land g(\\tau) \\neq 0",
+          "to_latex": "\\exists t_0 \\in (t_1, t_2),\\ \\exists \\delta > 0:\\ [t_0-\\delta, t_0+\\delta] \\subset (t_1, t_2) \\land \\forall t \\in [t_0-\\delta, t_0+\\delta],\\ \\operatorname{sgn}(g(t)) = \\operatorname{sgn}(g(\\tau)) \\land |g(t)| > \\frac{1}{2}|g(t_0)| > 0",
+          "operation_label": "連続性による内点への保号性と正の下界の導出",
+          "explanation": "閉区間上の連続性により端点を含む点での非零性を開区間内の内点へ波及させ、その内点の近傍上で同符号かつ正の下界を持つ閉部分区間を構成する。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.calc.m53_continuous_algebra_closure"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_interior_point",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{t \\to \\tau} g(t) = g(\\tau) \\neq 0 \\quad (\\tau \\in [t_1, t_2])",
+          "to_latex": "\\exists t_0 \\in (t_1, t_2)\\text{ s.t. } |g(t_0) - g(\\tau)| < \\frac{1}{2}|g(\\tau)| \\implies \\operatorname{sgn}(g(t_0)) = \\operatorname{sgn}(g(\\tau)) \\land g(t_0) \\neq 0",
+          "operation_label": "連続性を用いた内点での同符号・非零性の確保",
+          "explanation": "点が区間端点であっても片側極限としての連続性が成り立つため、十分近い開区間内の内点を選べば関数値は元の点と同符号かつ非零となる。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_neighborhood_bound",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{t \\to t_0} g(t) = g(t_0) \\neq 0,\\quad \\varepsilon := \\frac{1}{2}|g(t_0)| > 0",
+          "to_latex": "\\exists \\delta > 0:\\ [t_0-\\delta, t_0+\\delta] \\subset (t_1, t_2) \\land \\forall t \\in [t_0-\\delta, t_0+\\delta],\\ |g(t) - g(t_0)| < \\frac{1}{2}|g(t_0)|",
+          "operation_label": "内点における連続性からの閉近傍の切り出し",
+          "explanation": "内点の周りでは差の連続性と極限の性質より、誤差を関数値絶対値の半分未満に抑えつつ開区間内部に収まる閉部分区間を取ることができる。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.calc.m53_continuous_algebra_closure"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_sign_preservation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall t \\in [t_0-\\delta, t_0+\\delta],\\ |g(t) - g(t_0)| < \\frac{1}{2}|g(t_0)|",
+          "to_latex": "\\forall t \\in [t_0-\\delta, t_0+\\delta],\\ \\operatorname{sgn}(g(t)) = \\operatorname{sgn}(g(\\tau)) \\land |g(t)| > \\frac{1}{2}|g(t_0)| > 0",
+          "operation_label": "三角不等式による符号保存と下界の評価",
+          "explanation": "絶対値不等式を展開すると、正負いずれの場合も元の値と同符号を保ちながら絶対値が半分より大きい下界を持つことが従う。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m49",
+      "target_node_id": "math.calc.m49_c1_bump_test_function",
+      "route_kind": "deductive",
+      "title": "閉部分区間上のC1級多項式バンプ試験関数の構成と正則性導出",
+      "premise_node_ids": [
+        "math.calc.m20_derivative_definition",
+        "math.calc.m15_product_rule",
+        "math.calc.m01_chain_rule",
+        "math.calc.m53_continuous_algebra_closure"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "t_1 < a < b < t_2",
+        "t \\in [t_1, t_2]"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "[a, b] \\subset (t_1, t_2),\\quad \\eta(t) = \\begin{cases} (t-a)^2(b-t)^2 & (t \\in [a,b]) \\\\ 0 & (t \\notin [a,b]) \\end{cases} ",
+          "to_latex": "\\eta \\in C^1([t_1,t_2]),\\; \\eta(t_1)=\\eta(t_2)=0,\\; \\forall t \\in (a,b),\\ \\eta(t) > 0",
+          "operation_label": "4次多項式の接続によるC1級バンプ試験関数の構成",
+          "explanation": "閉部分区間 [a,b] 上で4次多項式 (t-a)^2(b-t)^2 を定め、その外側で0とすることで、連続性と境界接続点 t=a, b での1階導関数の零一致を確認し、C1級の試験関数を構成する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule",
+            "math.calc.m20_derivative_definition",
+            "math.calc.m53_continuous_algebra_closure"
+          ],
+          "sympy_check_hint": "diff((t - a)**2 * (b - t)**2, t)"
+        },
+        {
+          "step_id": "s2_piecewise_continuity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[a, b] \\subset (t_1, t_2),\\quad \\eta(t) = \\begin{cases} (t-a)^2(b-t)^2 & (t \\in [a,b]) \\\\ 0 & (t \\notin [a,b]) \\end{cases} ",
+          "to_latex": "\\eta(t_1) = \\eta(t_2) = 0,\\quad \\forall t \\in (a,b),\\ \\eta(t) > 0,\\quad \\eta \\in C([t_1,t_2])",
+          "operation_label": "正値性・端点零条件および連続性の確認",
+          "explanation": "t_1 < a < b < t_2 より端点 t_1, t_2 は [a,b] の外部にあるため eta(t_1)=eta(t_2)=0 となる。また t \\in (a,b) では (t-a)^2 > 0 かつ (b-t)^2 > 0 より eta(t) > 0 である。多項式は連続関数の積として連続であり、接続点 t=a, b で両側の極限が共に0に一致するため、eta は [t_1, t_2] 上で連続となる。",
+          "used_node_ids": [
+            "math.calc.m53_continuous_algebra_closure"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_interior_derivative",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\eta(t) = (t-a)^2(b-t)^2\\quad (t \\in (a,b))",
+          "to_latex": "\\eta'(t) = 2(t-a)(b-t)^2 - 2(t-a)^2(b-t) = 2(t-a)(b-t)(a+b-2t)\\quad (t \\in (a,b))",
+          "operation_label": "積の微分法と連鎖律による内点での導関数計算",
+          "explanation": "開区間 (a,b) 上で積の微分法則および合成関数の微分（連鎖律）を適用すると、d/dt[(t-a)^2(b-t)^2] = 2(t-a)(b-t)^2 + (t-a)^2(-2(b-t)) = 2(t-a)(b-t)(a+b-2t) が得られる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": "factor(diff((t - a)**2 * (b - t)**2, t))"
+        },
+        {
+          "step_id": "s4_boundary_c1",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\eta(a)=\\eta(b)=0,\\quad \\eta'(t) = \\begin{cases} 2(t-a)(b-t)(a+b-2t) & (t \\in (a,b)) \\\\ 0 & (t \\notin [a,b]) \\end{cases} ",
+          "to_latex": "\\lim_{h \\to 0^+} \\frac{\\eta(a+h)-\\eta(a)}{h} = 0 = \\lim_{h \\to 0^-} \\frac{\\eta(a+h)-\\eta(a)}{h},\\quad \\eta'(a)=\\eta'(b)=0 \\implies \\eta \\in C^1([t_1,t_2])",
+          "operation_label": "接続点での微分可能性と導関数の連続性の証明",
+          "explanation": "導関数の定義に従い t=a における右側差分商 h^2(b-a-h)^2/h = h(b-a-h)^2 の極限をとると0になり、左側差分商の極限0と一致して eta'(a)=0 を得る。同様に t=b でも片側極限が共に0となり eta'(b)=0 である。さらに (a,b) 上の導関数式 2(t-a)(b-t)(a+b-2t) も t \\to a^+, b^- で0へ連続に収束するため、eta' \\in C([t_1,t_2]) すなわち eta \\in C^1([t_1,t_2]) が示される。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m53_continuous_algebra_closure"
+          ],
+          "sympy_check_hint": "limit(((a+h)-a)**2*(b-(a+h))**2 / h, h, 0)"
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m50",
+      "target_node_id": "math.calc.m50_positive_continuous_integral",
+      "route_kind": "deductive",
+      "title": "局所保号性と積分の区間加法性・単調性による非負連続関数の定積分正値性の導出",
+      "premise_node_ids": [
+        "math.calc.m48_continuity_sign_preservation",
+        "math.calc.m52_continuous_function_integrability",
+        "math.calc.m24_integral_interval_additivity",
+        "math.calc.m25_integral_monotonicity_squeeze"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "h \\in C([a,b])",
+        "\\forall t \\in [a,b],\\; h(t) \\ge 0",
+        "\\exists t_0 \\in (a,b),\\; h(t_0) > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "h \\in C([a,b]) \\land \\big(\\forall t \\in [a,b],\\; h(t) \\ge 0\\big) \\land \\big(\\exists t_0 \\in (a,b),\\; h(t_0) > 0\\big)",
+          "to_latex": "\\int_{a}^{b} h(t)\\,dt > 0",
+          "operation_label": "局所保号性と積分の区間分解・下界評価による導出概観",
+          "explanation": "連続関数の可積分性を確認した上で、正値点 t_0 の近傍で局所保号性により一様な正の下界を取り、定積分の区間加法性と単調性を用いて全体の積分が正であることを示す。",
+          "used_node_ids": [
+            "math.calc.m24_integral_interval_additivity",
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.calc.m48_continuity_sign_preservation",
+            "math.calc.m52_continuous_function_integrability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_local_positivity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "h \\in C([a,b]) \\land h(t_0) > 0\\;(t_0 \\in (a,b))",
+          "to_latex": "h \\in \\mathcal{R}([a,b]) \\land \\exists \\delta > 0:\\; [t_0-\\delta, t_0+\\delta] \\subset (a,b) \\land \\forall t \\in [t_0-\\delta, t_0+\\delta],\\; h(t) > \\frac{1}{2}h(t_0) > 0",
+          "operation_label": "可積分性の確認と局所保号性の適用",
+          "explanation": "閉区間上の連続関数のリーマン可積分性により h は [a,b] 上で可積分である。さらに連続関数の局所保号性により、h(t_0) > 0 となる内点 t_0 の周囲に閉部分区間 [t_0-\\delta, t_0+\\delta] \\subset (a,b) が存在し、その上で h(t) > h(t_0)/2 が成り立つ。",
+          "used_node_ids": [
+            "math.calc.m48_continuity_sign_preservation",
+            "math.calc.m52_continuous_function_integrability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_interval_split",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{a}^{b} h(t)\\,dt",
+          "to_latex": "\\int_{a}^{t_0-\\delta} h(t)\\,dt + \\int_{t_0-\\delta}^{t_0+\\delta} h(t)\\,dt + \\int_{t_0+\\delta}^{b} h(t)\\,dt",
+          "operation_label": "定積分の区間加法性による積分区間の分割",
+          "explanation": "定積分の区間加法性を用いて、[a,b] 上の定積分を [a, t_0-\\delta]、[t_0-\\delta, t_0+\\delta]、[t_0+\\delta, b] の3つの小区間上の定積分の和に分解する。",
+          "used_node_ids": [
+            "math.calc.m24_integral_interval_additivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_lower_bound",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{a}^{t_0-\\delta} h(t)\\,dt + \\int_{t_0-\\delta}^{t_0+\\delta} h(t)\\,dt + \\int_{t_0+\\delta}^{b} h(t)\\,dt",
+          "to_latex": "\\int_{a}^{b} h(t)\\,dt \\ge 0 + \\int_{t_0-\\delta}^{t_0+\\delta} \\frac{1}{2}h(t_0)\\,dt + 0 = \\delta\\,h(t_0) > 0",
+          "operation_label": "定積分の単調性と定数積分による狭義正値性の導出",
+          "explanation": "両端の区間では h(t) \\ge 0 であるため定積分の単調性から積分値は非負となる。中央の区間では h(t) > h(t_0)/2 が成り立つため、定積分の単調性と定数の積分により中央の積分は \\delta h(t_0) 以上となる。よって全体の定積分は厳密に正となる。",
+          "used_node_ids": [
+            "math.calc.m24_integral_interval_additivity",
+            "math.calc.m25_integral_monotonicity_squeeze"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m52",
+      "target_node_id": "math.calc.m52_continuous_function_integrability",
+      "route_kind": "deductive",
+      "title": "有界閉区間上の連続関数の有界性・一様連続性とリーマン可積分性の導出",
+      "premise_node_ids": [
+        "math.logic.m51_proof_by_contradiction",
+        "math.calc.m23_limit_algebra",
+        "math.calc.m24_integral_interval_additivity",
+        "math.calc.m25_integral_monotonicity_squeeze"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f は有界閉区間 [t_1, t_2] 上で定義された実数値連続関数である",
+        "有界閉区間 [t_1, t_2] は点列コンパクト性（ボルツァーノ＝ワイエルシュトラスの定理）を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f \\in C([t_1, t_2])",
+          "to_latex": "f \\in \\mathcal{R}([t_1, t_2])",
+          "operation_label": "有界性・一様連続性とダルブー和の挟み撃ちによる可積分性の証明",
+          "explanation": "有界閉区間上の連続関数は背理法と極限の性質により有界かつ一様連続となるため、区間の細分割に対して各小区間上の振幅が任意に小さくなり、過剰和と不足和の差が0に収束してはさみうちの原理よりリーマン可積分となる。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.calc.m24_integral_interval_additivity",
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_uniform_continuity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f \\in C([t_1, t_2])",
+          "to_latex": "\\sup_{t \\in [t_1, t_2]} |f(t)| < \\infty \\land \\forall \\varepsilon > 0,\\; \\exists \\delta > 0 \\text{ s.t. } |x - y| < \\delta \\implies |f(x) - f(y)| < \\varepsilon",
+          "operation_label": "背理法と極限演算による有界性・一様連続性の導出",
+          "explanation": "f が有界または一様連続でないと仮定すると、点列コンパクト性より収束部分列が取れるが、連続性と極限の四則演算によって極限値での連続性に矛盾が生じるため、背理法により有界性と一様連続性が従う。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_darboux_oscillation_bound",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta: t_1 = x_0 < x_1 < \\dots < x_N = t_2,\\; \\|\\Delta\\| < \\delta",
+          "to_latex": "U(f, \\Delta) - L(f, \\Delta) = \\sum_{k=1}^{N} (M_k - m_k)\\,(x_k - x_{k-1}) \\le \\varepsilon \\sum_{k=1}^{N} (x_k - x_{k-1}) = \\varepsilon(t_2 - t_1)",
+          "operation_label": "区間分割と定数積分・単調性による振幅和の上界評価",
+          "explanation": "一様連続性から幅が δ 未満の分割 Δ の各小区間上で最大値 M_k と最小値 m_k の差が ε 以下となり、積分の区間加法性と定数関数の積分の考え方により、過剰和と不足和の差を区間長 (t_2 - t_1) と ε の積で上から抑える。",
+          "used_node_ids": [
+            "math.calc.m24_integral_interval_additivity",
+            "math.calc.m25_integral_monotonicity_squeeze"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_squeeze_integrability",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 \\le U(f, \\Delta) - L(f, \\Delta) \\le \\varepsilon(t_2 - t_1)",
+          "to_latex": "\\lim_{\\|\\Delta\\| \\to 0} \\big(U(f, \\Delta) - L(f, \\Delta)\\big) = 0 \\implies f \\in \\mathcal{R}([t_1, t_2])",
+          "operation_label": "はさみうちの原理によるリーマン可積分性の結論",
+          "explanation": "ε > 0 は任意であるため、はさみうちの原理より分割の幅を 0 に近づけたとき過剰和と不足和（および任意のリーマン和）の差は 0 に収束し、閉区間 [t_1, t_2] 上のリーマン可積分性が示される。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m53",
+      "target_node_id": "math.calc.m53_continuous_algebra_closure",
+      "route_kind": "deductive",
+      "title": "極限の四則演算と微分可能性から導く連続関数環の閉性とC1級関数の性質",
+      "premise_node_ids": [
+        "math.calc.m23_limit_algebra",
+        "math.calc.m22_differentiability_implies_continuity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "関数 f, g は閉区間 [t_1, t_2] 上で連続である（端点では片側極限をとる）",
+        "関数 u, v は閉区間 [t_1, t_2] 上で C^1 級（1回微分可能かつ導関数が連続）である",
+        "スカラー係数 \\alpha, \\beta \\in \\mathbb{R} は定数である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f, g \\in C([t_1, t_2]),\\; u, v \\in C^1([t_1, t_2])",
+          "to_latex": "\\alpha f + \\beta g \\in C([t_1, t_2]) \\land fg, uv, u\\dot{v}, \\dot{u}v \\in C([t_1, t_2])",
+          "operation_label": "極限の演算則と微分可能関数の連続性の適用",
+          "explanation": "極限の線形性と積の法則により連続関数の線形結合および積が連続となることを示し、さらに微分可能関数の連続性を用いて C^1 級関数とその導関数の積が連続であることを導く。",
+          "used_node_ids": [
+            "math.calc.m22_differentiability_implies_continuity",
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_limit_algebra",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{h\\to 0}f(t+h)=f(t),\\; \\lim_{h\\to 0}g(t+h)=g(t)\\quad (\\forall t\\in[t_1,t_2])",
+          "to_latex": "\\lim_{h\\to 0}(\\alpha f+\\beta g)(t+h)=(\\alpha f+\\beta g)(t),\\; \\lim_{h\\to 0}(fg)(t+h)=(fg)(t)\\implies \\alpha f+\\beta g,\\, fg \\in C([t_1, t_2])",
+          "operation_label": "極限の四則演算による線形結合と積の連続性の導出",
+          "explanation": "各点 t \\in [t_1, t_2] における連続性の定義に対し、極限の四則演算（定数倍・和・積と極限の交換）を適用すると、\\alpha f + \\beta g および fg の極限値と関数値が一致し、連続関数空間 C([t_1, t_2]) が線形結合と積について閉じていることが従う。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_c1_product_continuity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u, v \\in C^1([t_1, t_2]) \\implies u, v, \\dot{u}, \\dot{v} \\in C([t_1, t_2])",
+          "to_latex": "uv, u\\dot{v}, \\dot{u}v \\in C([t_1, t_2])",
+          "operation_label": "C1級関数への連続関数積の閉性の適用",
+          "explanation": "u, v が C^1([t_1, t_2]) に属するとき、微分可能性から u, v 自身が連続であり、C^1 級の定義から導関数 \\dot{u}, \\dot{v} も連続である。したがってステップ s2 で示した積の連続性により、uv、u\\dot{v}、\\dot{u}v も [t_1, t_2] 上で連続となる。",
+          "used_node_ids": [
+            "math.calc.m22_differentiability_implies_continuity",
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m54",
+      "target_node_id": "math.calc.m54_integral_equality_preservation",
+      "route_kind": "deductive",
+      "title": "定積分の線形性・零積分と微積分学の基本定理からの等号保存則および評価記号の導入",
+      "premise_node_ids": [
+        "math.calc.m16_integral_linearity",
+        "math.calc.m24_integral_interval_additivity",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f, g \\in \\mathcal{R}([t_1, t_2])"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\big(\\forall t \\in [t_1, t_2],\\; f(t) = g(t)\\big) \\land \\big(F(t_2) - F(t_1)\\big) = \\int_{t_1}^{t_2} F'(t)\\,dt",
+          "to_latex": "\\int_{t_1}^{t_2} f(t)\\,dt = \\int_{t_1}^{t_2} g(t)\\,dt,\\quad \\Big[F(t)\\Big]_{t_1}^{t_2} := F(t_2) - F(t_1)\\quad (f, g \\in \\mathcal{R}([t_1, t_2]))",
+          "operation_label": "等号保存則の導出と評価記号の定義",
+          "explanation": "定積分の線形性と定数0の積分から区間上で等しい関数の定積分の等号保存を導き、微積分学の基本定理に現れる境界値の差に対して角括弧の評価記号を定義する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m16_integral_linearity",
+            "math.calc.m24_integral_interval_additivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_zero_diff",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall t \\in [t_1, t_2],\\; f(t) = g(t)\\quad (f, g \\in \\mathcal{R}([t_1, t_2]))",
+          "to_latex": "\\forall t \\in [t_1, t_2],\\; f(t) - g(t) = 0",
+          "operation_label": "差関数の零化",
+          "explanation": "閉区間 [t_1, t_2] 上で恒等的に f(t) = g(t) が成り立つことから、両関数の差 f(t) - g(t) は区間全体で定数関数 0 に等しい。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_integral_equality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{t_1}^{t_2} f(t)\\,dt - \\int_{t_1}^{t_2} g(t)\\,dt = \\int_{t_1}^{t_2} \\big(f(t) - g(t)\\big)\\,dt",
+          "to_latex": "\\int_{t_1}^{t_2} f(t)\\,dt - \\int_{t_1}^{t_2} g(t)\\,dt = \\int_{t_1}^{t_2} 0\\,dt = 0 \\implies \\int_{t_1}^{t_2} f(t)\\,dt = \\int_{t_1}^{t_2} g(t)\\,dt",
+          "operation_label": "定積分の線形性と零定数の積分",
+          "explanation": "可積分関数 f, g に定積分の線形性（M16）を適用して差の定積分にまとめ、定数関数 c = 0 の定積分が 0 になること（M24）より両辺の定積分の等号が保存される。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m24_integral_interval_additivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_bracket_notation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{t_1}^{t_2} F'(t)\\,dt = F(t_2) - F(t_1)\n",
+          "to_latex": "\\Big[F(t)\\Big]_{t_1}^{t_2} := F(t_2) - F(t_1)\\quad \\left(\\int_{t_1}^{t_2} F'(t)\\,dt = \\Big[F(t)\\Big]_{t_1}^{t_2}\\right)\n",
+          "operation_label": "境界値差の評価記号定義",
+          "explanation": "微積分学の基本定理（M02）等に現れる積分区間端での原始関数の差 F(t_2) - F(t_1) を簡潔かつ明示的に表すため、角括弧による評価記号 [F(t)]_{t_1}^{t_2} を定義する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m55",
+      "target_node_id": "math.calc.m55_legendre_fenchel_def",
+      "route_kind": "reformulation",
+      "title": "凸関数のエピグラフと支持超平面によるルジャンドル＝フェンシェル変換の導入",
+      "premise_node_ids": [
+        "math.opt.opt02_convex_function_def",
+        "math.opt.opt05_hyperplane_separation",
+        "math.opt.opt03_convex_diff_criteria"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "I は実数直線上の空でない開区間とする",
+        "f: I \\to \\mathbb{R} は区間 I 上の実数値関数とする",
+        "双対変数 p \\in \\mathbb{R} は傾きを表すパラメータとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f: I \\to \\mathbb{R},\\quad \\operatorname{epi}(f) = \\{(x, y) \\in I \\times \\mathbb{R} \\mid y \\ge f(x)\\}",
+          "to_latex": "f^*(p) := \\sup_{x \\in I} \\big(px - f(x)\\big)",
+          "operation_label": "エピグラフの支持直線族による双対関数の定義",
+          "explanation": "関数 f(x) のエピグラフを下から支える傾き p の直線族を考え、各傾き p に対してグラフとの差 px - f(x) の上限をとることで、古典的なルジャンドル変換を一般化したルジャンドル＝フェンシェル変換（凸共役関数）f*(p) を定義する。",
+          "used_node_ids": [
+            "math.opt.opt02_convex_function_def",
+            "math.opt.opt03_convex_diff_criteria",
+            "math.opt.opt05_hyperplane_separation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_epigraph_support",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y \\ge px - c \\quad (\\forall (x,y) \\in \\operatorname{epi}(f))",
+          "to_latex": "px - f(x) \\le c \\quad (\\forall x \\in I)",
+          "operation_label": "エピグラフに対するアフィン下界条件の書き換え",
+          "explanation": "凸関数のエピグラフに対して支持超平面（支持直線）y = px - c を考えると、すべての (x, y) ∈ epi(f) が直線の上側にある条件 f(x) ≥ px - c は、切片パラメータ c がすべての x ∈ I について px - f(x) の上界になることと同値である。",
+          "used_node_ids": [
+            "math.opt.opt02_convex_function_def",
+            "math.opt.opt05_hyperplane_separation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_affine_minorant",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(x) \\ge f(x_0) + p(x - x_0) \\quad (p = f'(x_0))",
+          "to_latex": "px - f(x) \\le px_0 - f(x_0) \\quad (\\forall x \\in I)",
+          "operation_label": "微分可能な凸関数における接線条件との対応",
+          "explanation": "f が微分可能な凸関数であるとき、1階凸性条件より点 x_0 での接線（傾き p = f'(x_0)）が最もタイトな支持直線となり、px - f(x) は x = x_0 で大域的最大値 px_0 - f(x_0) を達成する。",
+          "used_node_ids": [
+            "math.opt.opt03_convex_diff_criteria"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_supremum_def",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_{\\min}(p) = \\inf \\{ c \\in \\mathbb{R} \\mid \\forall x \\in I,\\; px - f(x) \\le c \\}",
+          "to_latex": "f^*(p) := \\sup_{x \\in I} \\big(px - f(x)\\big)",
+          "operation_label": "最小上界（上限）としての凸共役関数の一般化定義",
+          "explanation": "微分可能性や狭義凸性を仮定しない一般の関数 f(x) に対しても、傾き p の支持直線が取り得る最小の切片（最小上界）を与えるため、最大値の代わりに上限 sup を用いて f*(p) := sup_{x ∈ I} (px - f(x)) と定義する。",
+          "used_node_ids": [
+            "math.opt.opt02_convex_function_def",
+            "math.opt.opt05_hyperplane_separation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m56",
+      "target_node_id": "math.calc.m56_strict_concave_unique_max",
+      "route_kind": "deductive",
+      "title": "2次テイラー展開（ラグランジュ剰余項）による狭義凹関数の停留点と一意大域最大値定理の導出",
+      "premise_node_ids": [
+        "math.calc.t04_taylor_lagrange_remainder"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "I は実数直線上の開区間である",
+        "g は I 上で C^2 級であり、すべての x \\in I に対して g''(x) < 0 を満たす",
+        "g'(x^*) = 0 を満たす停留点 x^* \\in I が存在する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "g \\in C^2(I) \\land g''(x) < 0 \\land g'(x^*) = 0",
+          "to_latex": "x^* = \\arg\\max_{x \\in I} g(x)\\text{ (unique)}",
+          "operation_label": "テイラー展開と2階導関数符号による大域最大性の一意導出",
+          "explanation": "停留点 x^* 周りの1次テイラー展開にラグランジュの2次剰余項を適用すると、1次の項が停留点条件により消滅し、残る2次の剰余項が狭義凹性 g''(c) < 0 により任意の x \\neq x^* で厳密に負となるため、x^* が区間 I 全体における一意の大域的最大点であることが従う。",
+          "used_node_ids": [
+            "math.calc.t04_taylor_lagrange_remainder"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_taylor_expansion",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g \\in C^2(I),\\quad x, x^* \\in I\\;(x \\neq x^*)",
+          "to_latex": "g(x) = g(x^*) + g'(x^*)(x - x^*) + \\frac{1}{2}g''(c)(x - x^*)^2\\quad (c \\text{ strictly between } x^* \\text{ and } x)",
+          "operation_label": "ラグランジュ剰余項付きテイラーの定理（n=1）の適用",
+          "explanation": "任意の点 x \\in I \\setminus \\{x^*\\} を取り、x^* と x を端点とする閉区間（開区間 I の部分集合）上で g \\in C^2(I) に対して n=1 のテイラーの定理（ラグランジュの剰余項）を適用する。これにより、x^* と x の間に中間点 c \\in I が存在する。",
+          "used_node_ids": [
+            "math.calc.t04_taylor_lagrange_remainder"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_remainder_sign",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g(x) - g(x^*) = g'(x^*)(x - x^*) + \\frac{1}{2}g''(c)(x - x^*)^2,\\quad g'(x^*) = 0,\\quad g''(c) < 0",
+          "to_latex": "\\forall x \\in I \\setminus \\{x^*\\},\\; g(x) - g(x^*) = \\frac{1}{2}g''(c)(x - x^*)^2 < 0",
+          "operation_label": "停留点条件と狭義凹性条件の代入による不等式評価",
+          "explanation": "停留点条件 g'(x^*) = 0 より1次の項は 0 となる。また x \\neq x^* より (x - x^*)^2 > 0 であり、c \\in I において g''(c) < 0 が成り立つため、差 g(x) - g(x^*) は厳密に負となる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_unique_max_conclusion",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall x \\in I \\setminus \\{x^*\\},\\; g(x) < g(x^*)",
+          "to_latex": "x^* = \\arg\\max_{x \\in I} g(x)\\text{ (unique)}",
+          "operation_label": "狭義大域最大値および一意性の確定",
+          "explanation": "x^* 以外のすべての点 x \\in I に対して厳密な不等式 g(x) < g(x^*) が成り立つため、x^* は区間 I 全体における唯一の大域的最大点となる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m57",
+      "target_node_id": "math.calc.m57_differential_form_invariance",
+      "route_kind": "deductive",
+      "title": "連鎖律と1階全微分の定義による座標変換不変性の導出",
+      "premise_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m45_total_differentiability_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "x = \\phi(p) は変数 p に関して微分可能である",
+        "f(x) は変数 x に関して微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "x = \\phi(p),\\; df(x) = f'(x)\\,dx",
+          "to_latex": "d\\big(f(\\phi(p))\\big) = f'(\\phi(p))\\phi'(p)\\,dp = f'(x)\\,dx",
+          "operation_label": "合成関数の全微分への連鎖律の適用",
+          "explanation": "1変数関数における全微分の定義と合成関数の微分法（連鎖律）を組み合わせ、変数変換前後で1階微分形式の表式が保たれることを示す。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m45_total_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_composite_diff",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g(p) := f(\\phi(p))",
+          "to_latex": "d\\big(f(\\phi(p))\\big) = \\frac{d}{dp}\\big(f(\\phi(p))\\big)\\,dp",
+          "operation_label": "1変数合成関数の全微分の定義",
+          "explanation": "全微分の定義を独立変数 p の関数 g(p) = f(\\phi(p)) に適用し、その1階微分形式を導関数と dp の積として表す。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m45_total_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_chain_rule",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\big(f(\\phi(p))\\big) = \\frac{d}{dp}\\big(f(\\phi(p))\\big)\\,dp",
+          "to_latex": "d\\big(f(\\phi(p))\\big) = f'(\\phi(p))\\phi'(p)\\,dp",
+          "operation_label": "連鎖律による合成導関数の展開",
+          "explanation": "合成関数の微分法則（連鎖律）を適用して p に関する導関数を f'(\\phi(p))\\phi'(p) に展開する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": "diff(f(phi(p)), p) - Derivative(f(phi(p)), phi(p))*diff(phi(p), p)"
+        },
+        {
+          "step_id": "s2_invariance",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\big(f(\\phi(p))\\big) = f'(\\phi(p))\\phi'(p)\\,dp",
+          "to_latex": "d\\big(f(\\phi(p))\\big) = f'(x)\\,dx\\quad (x = \\phi(p),\\; dx = \\phi'(p)\\,dp)",
+          "operation_label": "座標変換の微分形式による置換",
+          "explanation": "座標変換 x = \\phi(p) の全微分 dx = \\phi'(p)\\,dp を代入してまとめることで、変数変換の前後で形式が不変な1階微分形式 f'(x)\\,dx が得られる。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m45_total_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m58",
+      "target_node_id": "math.calc.m58_inverse_derivative_c2_convex",
+      "route_kind": "deductive",
+      "title": "狭義単調性と逆関数定理による C2 級狭義凸関数の勾配逆写像の C1 正則性の導出",
+      "premise_node_ids": [
+        "math.calc.m18_strict_convexity_monotonicity",
+        "math.calc.m17_inverse_function_theorem",
+        "math.calc.m22_differentiability_implies_continuity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f \\in C^2(I)",
+        "\\forall x \\in I,\\; f''(x) > 0",
+        "J = f'(I)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f \\in C^2(I) \\land f''(x) > 0",
+          "to_latex": "\\exists \\phi = (f')^{-1} \\in C^1(J),\\quad \\phi'(p) = \\frac{1}{f''(\\phi(p))}\\quad (J = f'(I))",
+          "operation_label": "大域可逆性と逆関数定理の適用",
+          "explanation": "2階導関数が正であることから導関数 f' の狭義単調増加性と大域的逆写像の存在を示し、f' に逆関数定理を適用して逆写像の導関数公式と C1 級正則性を導く。",
+          "used_node_ids": [
+            "math.calc.m17_inverse_function_theorem",
+            "math.calc.m18_strict_convexity_monotonicity",
+            "math.calc.m22_differentiability_implies_continuity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_global_inverse",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f \\in C^2(I) \\land f''(x) > 0",
+          "to_latex": "f' \\text{ is strictly increasing on } I \\implies \\exists \\phi = (f')^{-1} : J \\to I\\quad (J = f'(I))",
+          "operation_label": "導関数の狭義単調性と大域逆写像の存在",
+          "explanation": "f''(x) > 0 より狭義凸関数の導関数の単調性定理を用いると、p = f'(x) は区間 I 上で狭義単調増加となる。したがって像区間 J = f'(I) 上に大域的な逆写像 x = phi(p) = (f')^{-1}(p) が一意に存在する。",
+          "used_node_ids": [
+            "math.calc.m18_strict_convexity_monotonicity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_inverse_derivative",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p = f'(x),\\quad f''(x) > 0,\\quad x = \\phi(p)",
+          "to_latex": "\\phi'(p) = \\frac{1}{f''(\\phi(p))}\\quad (\\forall p \\in J)",
+          "operation_label": "導関数 f' への逆関数定理の適用",
+          "explanation": "f \\in C^2(I) より g := f' は C1 級であり、各点 x = phi(p) において g'(x) = f''(x) > 0 \\neq 0 を満たす。よって逆関数定理により phi = g^{-1} は J 上で微分可能であり、導関数は \\phi'(p) = 1 / g'(\\phi(p)) = 1 / f''(\\phi(p)) で与えられる。",
+          "used_node_ids": [
+            "math.calc.m17_inverse_function_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_c1_regularity",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\phi'(p) = \\frac{1}{f''(\\phi(p))},\\quad f'' \\in C(I),\\; f'' > 0",
+          "to_latex": "\\phi \\in C(J) \\implies \\phi' \\in C(J) \\implies \\phi \\in C^1(J)",
+          "operation_label": "導関数の連続性から C1 級正則性を結論",
+          "explanation": "phi は J 上で微分可能であるため連続である。さらに f \\in C^2(I) より f'' は I 上で連続かつ正値であるため、合成および商として表される導関数 \\phi'(p) = 1 / f''(\\phi(p)) も J 上で連続となり、\\phi \\in C^1(J) が従う。",
+          "used_node_ids": [
+            "math.calc.m22_differentiability_implies_continuity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m59",
+      "target_node_id": "math.geom.m59_holonomic_constraint_manifold",
+      "route_kind": "deductive",
+      "title": "陰関数定理と次元定理によるホロノーム拘束多様体と一般化座標の導入",
+      "premise_node_ids": [
+        "math.calc.m44_partial_derivative_def",
+        "math.linalg.vs10_rank_nullity_theorem",
+        "math.calc.m60_implicit_function_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "拘束関数 f_alpha(r_1,...,r_N,t) は C^1 級である",
+        "拘束の数 k は配位空間の次元 3N 未満 (k < 3N) であり、各時刻 t でヤコビ行列の階数は最大階数 rank(df/dr) = k を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f_{\\alpha}(\\mathbf{r}_1,\\dots,\\mathbf{r}_N,t) = 0\\ (\\alpha=1,\\dots,k),\\quad \\operatorname{rank}\\!\\left(\\frac{\\partial \\mathbf{f}}{\\partial \\mathbf{r}}\\right) = k",
+          "to_latex": "f_{\\alpha}(\\mathbf{r}_1,\\dots,\\mathbf{r}_N,t) = 0\\ (\\alpha=1,\\dots,k),\\quad \\operatorname{rank}\\!\\left(\\frac{\\partial \\mathbf{f}}{\\partial \\mathbf{r}}\\right) = k \\implies n = 3N - k,\\; \\mathbf{r}_i = \\mathbf{r}_i(q_1,\\dots,q_n,t))",
+          "operation_label": "陰関数定理と次元定理による配位多様体のパラメータ化",
+          "explanation": "3N次元ユークリッド空間におけるk個の独立なホロノーム拘束に対し、次元定理から接空間（自由度）の次元がn=3N-kと定まり、陰関数定理によりk個の従属座標を残りn個の独立な一般化座標と時刻tの関数として局所的に解くことで、時刻依存の配位多様体と座標表示が導入される。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def",
+            "math.calc.m60_implicit_function_theorem",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_jacobian_rank",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r} = (\\mathbf{r}_1,\\dots,\\mathbf{r}_N) \\in \\mathbb{R}^{3N},\\quad \\mathbf{f}(\\mathbf{r},t) = \\mathbf{0},\\quad \\operatorname{rank}\\!\\left(\\frac{\\partial \\mathbf{f}}{\\partial \\mathbf{r}}\\right) = k",
+          "to_latex": "\\dim \\ker\\!\\left(\\frac{\\partial \\mathbf{f}}{\\partial \\mathbf{r}}\\right) = 3N - \\operatorname{rank}\\!\\left(\\frac{\\partial \\mathbf{f}}{\\partial \\mathbf{r}}\\right) = 3N - k =: n",
+          "operation_label": "偏微分ヤコビ行列と次元定理による自由度の決定",
+          "explanation": "偏微分の定義により時刻tを固定したヤコビ行列 df/dr (k×3N行列) を構成する。拘束が独立で階数がkであるとき、線形写像に対する次元定理から核空間の次元（許容される無限小変位の空間の次元）が n = 3N - k と決定される。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_implicit_param",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{rank}\\!\\left(\\frac{\\partial \\mathbf{f}}{\\partial \\mathbf{r}}\\right) = k \\implies \\exists\\text{ invertible } k\\times k\\text{ submatrix } \\frac{\\partial \\mathbf{f}}{\\partial \\mathbf{r}_{\\mathrm{dep}}}",
+          "to_latex": "\\mathbf{r}_{\\mathrm{dep}} = \\boldsymbol{\\psi}(\\mathbf{r}_{\\mathrm{indep}}, t),\\quad \\mathbf{r}_{\\mathrm{indep}} = (q_1,\\dots,q_n) \\in \\mathbb{R}^{n}\\ (n = 3N - k))",
+          "operation_label": "陰関数定理による従属座標の消去",
+          "explanation": "階数kの条件から、3N個の直交座標成分のうち行列式が非零となるk個の従属変数組 r_dep と残りn=3N-k個の独立変数組 r_indep に分割できる。多変数陰関数定理を f(r_indep, r_dep, t) = 0 に適用すると、局所的に r_dep = psi(r_indep, t) と一意に解ける。",
+          "used_node_ids": [
+            "math.calc.m60_implicit_function_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_generalized_coords",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_{\\mathrm{dep}} = \\boldsymbol{\\psi}(q_1,\\dots,q_n,t),\\quad \\mathbf{r}_{\\mathrm{indep}} = (q_1,\\dots,q_n))",
+          "to_latex": "f_{\\alpha}(\\mathbf{r}_1,\\dots,\\mathbf{r}_N,t) = 0\\ (\\alpha=1,\\dots,k),\\quad \\operatorname{rank}\\!\\left(\\frac{\\partial \\mathbf{f}}{\\partial \\mathbf{r}}\\right) = k \\implies n = 3N - k,\\; \\mathbf{r}_i = \\mathbf{r}_i(q_1,\\dots,q_n,t))",
+          "operation_label": "一般化座標による局所パラメータ表示の定義",
+          "explanation": "独立変数組あるいはそれに滑らかな座標変換を施したn個の独立パラメータを一般化座標 q_1,...,q_n とおけば、各質点の位置ベクトルは自動的に拘束式 f_alpha = 0 を恒等的に満たす局所座標表示 r_i = r_i(q_1,...,q_n,t) として定義される。",
+          "used_node_ids": [
+            "math.calc.m60_implicit_function_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m60",
+      "target_node_id": "math.calc.m60_implicit_function_theorem",
+      "route_kind": "deductive",
+      "title": "逆関数定理と連鎖律による多変数陰関数定理の導出",
+      "premise_node_ids": [
+        "math.calc.m17_inverse_function_theorem",
+        "math.calc.mi03_jacobian_matrix_determinant",
+        "math.linalg.det04_product_multiplicativity",
+        "math.calc.m35_multivariable_chain_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "F is of class C1 on an open neighborhood of (x0, y0) in R^n x R^m",
+        "F(x0, y0) = 0",
+        "det(partial F / partial y (x0, y0)) != 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{F}(\\mathbf{x}_0,\\mathbf{y}_0)=\\mathbf{0},\\; \\mathbf{F}\\in C^1,\\; \\det\\!\\left(\\frac{\\partial \\mathbf{F}}{\\partial \\mathbf{y}}(\\mathbf{x}_0,\\mathbf{y}_0)\\right)\\neq 0",
+          "to_latex": "\\exists \\boldsymbol{\\psi}\\in C^1:\\; \\mathbf{y}=\\boldsymbol{\\psi}(\\mathbf{x}),\\; \\frac{\\partial \\boldsymbol{\\psi}}{\\partial \\mathbf{x}}=-\\left(\\frac{\\partial \\mathbf{F}}{\\partial \\mathbf{y}}\\right)^{-1}\\frac{\\partial \\mathbf{F}}{\\partial \\mathbf{x}}",
+          "operation_label": "陰関数定理の構成概要",
+          "explanation": "補助写像 G(x,y)=(x,F(x,y)) を導入し、そのヤコビ行列の正則性から逆関数定理を適用して局所的な C1 級陰関数 y=ψ(x) の一意存在を示し、さらに合成微分法則により陰関数のヤコビ行列公式を導く。",
+          "used_node_ids": [
+            "math.calc.m17_inverse_function_theorem",
+            "math.calc.m35_multivariable_chain_rule",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.linalg.det04_product_multiplicativity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_auxiliary_map",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{G}(\\mathbf{x},\\mathbf{y}):=(\\mathbf{x},\\mathbf{F}(\\mathbf{x},\\mathbf{y}))",
+          "to_latex": "J_{\\mathbf{G}}(\\mathbf{x}_0,\\mathbf{y}_0)=\\begin{pmatrix} I_n & O \\\\ \\frac{\\partial \\mathbf{F}}{\\partial \\mathbf{x}} & \\frac{\\partial \\mathbf{F}}{\\partial \\mathbf{y}} \\end{pmatrix},\\; \\det J_{\\mathbf{G}}(\\mathbf{x}_0,\\mathbf{y}_0)=\\det\\!\\left(\\frac{\\partial \\mathbf{F}}{\\partial \\mathbf{y}}(\\mathbf{x}_0,\\mathbf{y}_0)\\right)\\neq 0",
+          "operation_label": "拡大写像とヤコビ行列のブロック構成",
+          "explanation": "独立変数 x をそのまま保つ拡大写像 G(x,y)=(x,F(x,y)) を定義すると、ブロック三角構造により G のヤコビアンは ∂F/∂y の行列式に一致し、仮定より 0 でないため正則となる。",
+          "used_node_ids": [
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.linalg.det04_product_multiplicativity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_inverse_function_apply",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det J_{\\mathbf{G}}(\\mathbf{x}_0,\\mathbf{y}_0)\\neq 0,\\; \\mathbf{G}(\\mathbf{x}_0,\\mathbf{y}_0)=(\\mathbf{x}_0,\\mathbf{0})",
+          "to_latex": "\\exists \\mathbf{G}^{-1}(\\mathbf{x},\\mathbf{z})=(\\mathbf{x},\\mathbf{h}(\\mathbf{x},\\mathbf{z}))\\in C^1\\implies \\boldsymbol{\\psi}(\\mathbf{x}):=\\mathbf{h}(\\mathbf{x},\\mathbf{0}),\\; \\mathbf{F}(\\mathbf{x},\\boldsymbol{\\psi}(\\mathbf{x}))=\\mathbf{0}",
+          "operation_label": "逆関数定理の適用による局所一意解の構成",
+          "explanation": "ヤコビ行列が正則であるため逆関数定理により (x0,0) の近傍で C1 級の逆写像 G^{-1}(x,z)=(x,h(x,z)) が一意に存在する。z=0 に制限した ψ(x):=h(x,0) が求める C1 級陰関数となる。",
+          "used_node_ids": [
+            "math.calc.m17_inverse_function_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_implicit_derivative",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F}(\\mathbf{x},\\boldsymbol{\\psi}(\\mathbf{x}))=\\mathbf{0}",
+          "to_latex": "\\frac{\\partial \\mathbf{F}}{\\partial \\mathbf{x}}+\\frac{\\partial \\mathbf{F}}{\\partial \\mathbf{y}}\\frac{\\partial \\boldsymbol{\\psi}}{\\partial \\mathbf{x}}=\\mathbf{0}\\implies \\frac{\\partial \\boldsymbol{\\psi}}{\\partial \\mathbf{x}}=-\\left(\\frac{\\partial \\mathbf{F}}{\\partial \\mathbf{y}}\\right)^{-1}\\frac{\\partial \\mathbf{F}}{\\partial \\mathbf{x}}",
+          "operation_label": "連鎖律と逆行列による陰関数の微分公式導出",
+          "explanation": "恒等式 F(x,ψ(x))=0 の両辺を多変数関数の合成微分法則（連鎖律）により x で微分し、正則性が保証された ∂F/∂y の逆行列を左から掛けることで陰関数のヤコビ行列公式を得る。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "math.linalg.det04_product_multiplicativity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m61",
+      "target_node_id": "math.geom.m61_virtual_displacement_def",
+      "route_kind": "deductive",
+      "title": "ホロノーム拘束多様体と時刻固定曲線微分による仮想変位の導入",
+      "premise_node_ids": [
+        "math.geom.m59_holonomic_constraint_manifold",
+        "math.vec.m62_vector_valued_total_diff",
+        "math.calc.m35_multivariable_chain_rule",
+        "math.vec.m33_gradient_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ホロノーム拘束関数 f_alpha および座標変換 r_i(q,t) は C^1 級である。",
+        "配位族 q(epsilon) は epsilon=0 近傍で滑らかであり、固定された時刻 t において拘束条件を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f_{\\alpha}(\\mathbf{r}_1,\\dots,\\mathbf{r}_N,t) = 0,\\quad \\mathbf{r}_i = \\mathbf{r}_i(q_1,\\dots,q_n,t)\\;(\\alpha=1,\\dots,k,\\; i=1,\\dots,N)",
+          "to_latex": "\\delta\\mathbf{r}_i := \\left.\\frac{d}{d\\epsilon}\\mathbf{r}_i(\\mathbf{q}(\\epsilon),t)\\right|_{\\epsilon=0},\\quad \\delta t = 0,\\quad \\delta q_j := \\left.\\frac{dq_j}{d\\epsilon}\\right|_{\\epsilon=0},\\quad \\sum_{i=1}^{N} \\nabla_{\\mathbf{r}_i} f_{\\alpha} \\cdot \\delta\\mathbf{r}_i = 0",
+          "operation_label": "時刻固定配位族の微分による仮想変位と接空間拘束条件の定義",
+          "explanation": "ホロノーム拘束多様体上の一般化座標表示に対し、時刻 t を固定したまま配位をパラメータ epsilon で摂動させ、epsilon=0 における接ベクトルとして仮想変位 delta r_i と delta q_j、およびそれらが満たす拘束面の接空間条件を導入する。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "math.geom.m59_holonomic_constraint_manifold",
+            "math.vec.m33_gradient_definition",
+            "math.vec.m62_vector_valued_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_fixed_time_family",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_i = \\mathbf{r}_i(q_1,\\dots,q_n,t),\\quad d\\mathbf{r}_i = \\sum_{j=1}^{n} \\frac{\\partial \\mathbf{r}_i}{\\partial q_j}\\,dq_j + \\frac{\\partial \\mathbf{r}_i}{\\partial t}\\,dt",
+          "to_latex": "\\delta t = 0,\\quad \\delta q_j := \\left.\\frac{dq_j}{d\\epsilon}\\right|_{\\epsilon=0},\\quad \\delta\\mathbf{r}_i := \\left.\\frac{d}{d\\epsilon}\\mathbf{r}_i(\\mathbf{q}(\\epsilon),t)\\right|_{\\epsilon=0} = \\sum_{j=1}^{n} \\frac{\\partial \\mathbf{r}_i}{\\partial q_j}\\delta q_j",
+          "operation_label": "時刻固定曲線族 q(epsilon) に沿う接ベクトルとしての仮想変位の定義",
+          "explanation": "ホロノーム拘束で定まる一般化座標表示に対して時刻 t を固定（delta t = 0）し、epsilon=0 で元の配位を通る滑らかな配位曲線 q(epsilon) を考えることで、全微分と連鎖律により仮想変位 delta q_j および delta r_i を定義する。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "math.geom.m59_holonomic_constraint_manifold",
+            "math.vec.m62_vector_valued_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_constraint_tangent",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f_{\\alpha}\\big(\\mathbf{r}_1(\\mathbf{q}(\\epsilon),t),\\dots,\\mathbf{r}_N(\\mathbf{q}(\\epsilon),t),t\\big) = 0\\quad (\\alpha=1,\\dots,k)",
+          "to_latex": "\\left.\\frac{d}{d\\epsilon}f_{\\alpha}\\big(\\mathbf{r}_1(\\mathbf{q}(\\epsilon),t),\\dots,\\mathbf{r}_N(\\mathbf{q}(\\epsilon),t),t\\big)\\right|_{\\epsilon=0} = \\sum_{i=1}^{N} \\nabla_{\\mathbf{r}_i} f_{\\alpha} \\cdot \\delta\\mathbf{r}_i = 0",
+          "operation_label": "拘束条件式の epsilon 微分による接空間直交条件の導出",
+          "explanation": "固定時刻 t において配位族が全ての epsilon で拘束条件 f_alpha = 0 を満たすことから、両辺を epsilon で微分して epsilon=0 で評価し、多変数関数の連鎖律と勾配の定義を適用すると、時間微分項なしに接空間上の直交条件が得られる。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "math.geom.m59_holonomic_constraint_manifold",
+            "math.vec.m33_gradient_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m62",
+      "target_node_id": "math.vec.m62_vector_valued_total_diff",
+      "route_kind": "deductive",
+      "title": "成分表示とスカラー全微分からのベクトル値多変数関数の全微分導出",
+      "premise_node_ids": [
+        "math.vec.m27_vector_component_differentiation",
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m19_differential_linearity_leibniz"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m44_partial_derivative_def",
+        "math.calc.m45_total_differentiability_def"
+      ],
+      "assumptions": [
+        "各直交成分 r_a(q_1, ..., q_n, t) (a = 1, 2, 3) は変数 (q_1, ..., q_n, t) に関して全微分可能である。",
+        "直交基底ベクトル e_a (a = 1, 2, 3) は空間に固定された定ベクトルであり de_a = 0 を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}(q_1,\\dots,q_n,t) = \\sum_{a=1}^{3} r_a(q_1,\\dots,q_n,t)\\mathbf{e}_a",
+          "to_latex": "d\\mathbf{r} = \\sum_{j=1}^{n} \\frac{\\partial \\mathbf{r}}{\\partial q_j}\\,dq_j + \\frac{\\partial \\mathbf{r}}{\\partial t}\\,dt",
+          "operation_label": "component_total_diff_expansion",
+          "explanation": "固定された直交基底による成分展開に全微分の線形性と各スカラー成分の全微分公式を適用し、和の順序を入れ替えて偏微分ベクトルの線形結合へまとめる。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m19_differential_linearity_leibniz",
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_component_diff",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}(q_1,\\dots,q_n,t) = \\sum_{a=1}^{3} r_a(q_1,\\dots,q_n,t)\\mathbf{e}_a",
+          "to_latex": "d\\mathbf{r} = \\sum_{a=1}^{3} dr_a(q_1,\\dots,q_n,t)\\,\\mathbf{e}_a",
+          "operation_label": "differential_linearity_fixed_basis",
+          "explanation": "固定基底ベクトル e_a が定数であるため de_a = 0 となり、微分作用素の線形性と成分微分の規則からベクトル値関数の全微分が各スカラー成分の全微分の基底和に帰着する。",
+          "used_node_ids": [
+            "math.calc.m19_differential_linearity_leibniz",
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_scalar_total_diff",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\mathbf{r} = \\sum_{a=1}^{3} dr_a(q_1,\\dots,q_n,t)\\,\\mathbf{e}_a",
+          "to_latex": "d\\mathbf{r} = \\sum_{a=1}^{3} \\left(\\sum_{j=1}^{n} \\frac{\\partial r_a}{\\partial q_j}\\,dq_j + \\frac{\\partial r_a}{\\partial t}\\,dt\\right)\\mathbf{e}_a",
+          "operation_label": "apply_scalar_total_differential",
+          "explanation": "各スカラー成分 r_a(q_1, ..., q_n, t) に対して多変数関数の全微分公式を適用し、座標微分 dq_j と時間微分 dt の線形結合に展開する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_recombine_partials",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\mathbf{r} = \\sum_{a=1}^{3} \\left(\\sum_{j=1}^{n} \\frac{\\partial r_a}{\\partial q_j}\\,dq_j + \\frac{\\partial r_a}{\\partial t}\\,dt\\right)\\mathbf{e}_a",
+          "to_latex": "d\\mathbf{r} = \\sum_{j=1}^{n} \\frac{\\partial \\mathbf{r}}{\\partial q_j}\\,dq_j + \\frac{\\partial \\mathbf{r}}{\\partial t}\\,dt",
+          "operation_label": "swap_sums_and_identify_vector_partials",
+          "explanation": "有限和の順序を交換して基底 e_a の和を各偏微分係数ごとにまとめ、成分別偏微分の定義から偏微分ベクトル ∂r/∂q_j と ∂r/∂t に書き換える。",
+          "used_node_ids": [
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }

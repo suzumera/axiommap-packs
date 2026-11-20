@@ -701,6 +701,162 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_eig01",
+      "target_node_id": "math.linalg.eig01_eigenvalue_eigenvector_def",
+      "route_kind": "deductive",
+      "title": "線形変換の表現行列と核を用いた固有値・固有ベクトルおよび固有空間の導入",
+      "premise_node_ids": [
+        "math.linalg.vs07_linear_map_ker_im_def",
+        "math.linalg.vs08_ker_im_subspace_injectivity",
+        "math.linalg.vs09_matrix_representation_similarity"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "nは正の整数とし、Aは体F上のn次正方行列（n次元線形空間上の線形変換の表現行列）とする。",
+        "I_nはn次単位行列を表す。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T(\\mathbf{v}) = A\\mathbf{v}\\quad (A\\in\\mathbb{F}^{n\\times n},\\; \\mathbf{v}\\in\\mathbb{F}^n),\\qquad \\ker T := \\{\\mathbf{v}\\in V \\mid T(\\mathbf{v})=\\mathbf{0}\\} \\le V",
+          "to_latex": "A\\mathbf{v} = \\lambda\\mathbf{v}\\quad (\\mathbf{v}\\in\\mathbb{F}^n,\\; \\mathbf{v}\\neq\\mathbf{0},\\; \\lambda\\in\\mathbb{F}),\\qquad E_\\lambda(A) := \\ker(\\lambda I_n - A) = \\{\\mathbf{v}\\in\\mathbb{F}^n \\mid A\\mathbf{v}=\\lambda\\mathbf{v}\\} \\le \\mathbb{F}^n",
+          "operation_label": "固有値・固有空間の定義の導入",
+          "explanation": "線形空間上の線形変換とその表現行列Aの作用に対し、方向を保ってスカラー倍される非零ベクトルとして固有ベクトルと固有値を定め、作用素λI_n - Aの核として固有空間が部分空間となることを導く。",
+          "used_node_ids": [
+            "math.linalg.vs07_linear_map_ker_im_def",
+            "math.linalg.vs08_ker_im_subspace_injectivity",
+            "math.linalg.vs09_matrix_representation_similarity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_linear_operator_scaling",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[T(\\mathbf{v})]_{\\mathcal{B}} = A[\\mathbf{v}]_{\\mathcal{B}}",
+          "to_latex": "A\\mathbf{v} = \\lambda\\mathbf{v}\\quad (\\mathbf{v}\\in\\mathbb{F}^n,\\; \\mathbf{v}\\neq\\mathbf{0},\\; \\lambda\\in\\mathbb{F})",
+          "operation_label": "不変方向（スカラー倍作用）の定式化",
+          "explanation": "ベクトル空間上の線形変換Tの表現行列Aによる像Avが元のベクトルvのスカラー倍λvに一致する条件を考え、零ベクトルは任意のスカラーに対して自明に成り立つためv≠0の解に限定して固有値λと固有ベクトルvを定義する。",
+          "used_node_ids": [
+            "math.linalg.vs09_matrix_representation_similarity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_eigenspace_as_kernel",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A\\mathbf{v} = \\lambda\\mathbf{v} \\iff \\lambda I_n\\mathbf{v} - A\\mathbf{v} = \\mathbf{0} \\iff (\\lambda I_n - A)\\mathbf{v} = \\mathbf{0} \\quad (\\mathbf{v}\\neq\\mathbf{0})",
+          "to_latex": "E_\\lambda(A) := \\ker(\\lambda I_n - A) = \\{\\mathbf{v}\\in\\mathbb{F}^n \\mid A\\mathbf{v}=\\lambda\\mathbf{v}\\},\\qquad \\lambda\\text{ is an eigenvalue} \\iff \\ker(\\lambda I_n - A) \\neq \\{\\mathbf{0}\\} \\iff \\lambda I_n - A\\text{ is not injective.}",
+          "operation_label": "線形写像の核としての固有空間の定式化",
+          "explanation": "等式Av = λvを同次線形方程式(λI_n - A)v = 0に書き換えると、λに対する固有ベクトル全体（および零ベクトル）は線形写像x ↦ (λI_n - A)xの核ker(λI_n - A)に一致する。また非自明解の存在は、この写像が単射でないことと同値である。",
+          "used_node_ids": [
+            "math.linalg.vs07_linear_map_ker_im_def",
+            "math.linalg.vs08_ker_im_subspace_injectivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_subspace_property",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ker T \\le V \\quad (T(\\mathbf{v}) = (\\lambda I_n - A)\\mathbf{v})",
+          "to_latex": "E_\\lambda(A) = \\ker(\\lambda I_n - A) \\le \\mathbb{F}^n",
+          "operation_label": "固有空間の部分空間性の確認",
+          "explanation": "線形写像の核が元のベクトル空間の部分空間をなすという定理を線形作用素λI_n - Aに適用することで、E_λ(A)がF^nの部分空間（固有空間）であることが保証される。",
+          "used_node_ids": [
+            "math.linalg.vs08_ker_im_subspace_injectivity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_eig05",
+      "target_node_id": "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+      "route_kind": "deductive",
+      "title": "ベクトル空間と実内積からの標準内積・随伴・エルミート・ユニタリ行列の導入",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms",
+        "math.linalg.vs09_matrix_representation_similarity",
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "体 F は複素数体 C または実数体 R とし、n は正の整数とする。",
+        "行列の共役転置 A^* は成分の複素共役と転置をとった行列 (A^*)_{ij} = \\overline{A_{ji}} とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{a}\\cdot\\mathbf{b} = \\sum_{i} a_i b_i,\\quad \\mathbf{u},\\mathbf{v}\\in\\mathbb{F}^n,\\quad A\\in\\mathbb{F}^{n\\times n}",
+          "to_latex": "\\langle \\mathbf{u},\\mathbf{v}\\rangle := \\mathbf{u}^*\\mathbf{v} = \\sum_{i=1}^{n}\\overline{u_i}v_i,\\quad \\langle A\\mathbf{u},\\mathbf{v}\\rangle = \\langle \\mathbf{u},A^*\\mathbf{v}\\rangle,\\quad A^*=A,\\quad U^*U=I_n",
+          "operation_label": "内積と行列作用による構造の体系的定義",
+          "explanation": "実ベクトルの成分内積とベクトル空間・表現行列の枠組みを複素数体 C 上の n 次元空間 C^n（および R^n）へ拡張し、正定値性を保つ標準内積、内積の移項を担う随伴行列 A^*、自己随伴なエルミート/対称行列、および内積を保存するユニタリ/直交行列を一連の整合的な定義として導入する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.linalg.vs09_matrix_representation_similarity",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_inner_product",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{a}\\cdot\\mathbf{b} = \\sum_{i=1}^{3} a_i b_i,\\quad \\mathbf{u},\\mathbf{v}\\in\\mathbb{C}^n",
+          "to_latex": "\\langle \\mathbf{u},\\mathbf{v}\\rangle := \\mathbf{u}^*\\mathbf{v} = \\sum_{i=1}^{n}\\overline{u_i}v_i",
+          "operation_label": "標準内積の複素n次元への拡張",
+          "explanation": "実数ベクトル空間のドット積を一般の n 次元ベクトル空間へ拡張する際、複素数体 C 上では \\langle \\mathbf{v},\\mathbf{v}\\rangle = \\sum |v_i|^2 \\ge 0 の正定値性を確保するため第1引数に複素共役をとり、共役転置 \\mathbf{u}^* を用いて標準内積を定義する（R^n では \\overline{u_i}=u_i より実ドット積に一致する）。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_adjoint_hermitian",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle A\\mathbf{u},\\mathbf{v}\\rangle = (A\\mathbf{u})^*\\mathbf{v} = \\mathbf{u}^* A^* \\mathbf{v}",
+          "to_latex": "\\langle A\\mathbf{u},\\mathbf{v}\\rangle = \\langle \\mathbf{u},A^*\\mathbf{v}\\rangle,\\quad A^* = A",
+          "operation_label": "随伴行列とエルミート/対称行列の定義",
+          "explanation": "行列 A による線形変換と共役転置の性質 (A\\mathbf{u})^* = \\mathbf{u}^* A^* を標準内積に適用すると、\\langle A\\mathbf{u},\\mathbf{v}\\rangle = \\langle \\mathbf{u},A^*\\mathbf{v}\\rangle が得られ、随伴行列 A^* が内積の反対側へ移る作用素として特徴付けられる。特に A^* = A を満たす行列をエルミート行列（実行列では対称行列 A^\\top = A）と定義する。",
+          "used_node_ids": [
+            "math.linalg.vs09_matrix_representation_similarity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_unitary_orthogonal",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle U\\mathbf{u},U\\mathbf{v}\\rangle = \\langle \\mathbf{u},U^*U\\mathbf{v}\\rangle = \\langle \\mathbf{u},\\mathbf{v}\\rangle\\quad (\\forall \\mathbf{u},\\mathbf{v}\\in\\mathbb{F}^n)",
+          "to_latex": "U^* U = I_n",
+          "operation_label": "内積保存条件からのユニタリ/直交行列の定義",
+          "explanation": "任意のベクトル対に対して標準内積を不変に保つ線形変換 U を考える。随伴行列の関係式から \\langle \\mathbf{u}, (U^*U - I_n)\\mathbf{v}\\rangle = 0 が全ての \\mathbf{u},\\mathbf{v} で成立する必要があるため、内積の非退縮性より U^* U = I_n が導かれる。これを満たす正方行列をユニタリ行列（実行列では直交行列 U^\\top U = I_n）と定義する。",
+          "used_node_ids": [
+            "math.linalg.vs09_matrix_representation_similarity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }

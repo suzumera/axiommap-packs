@@ -659,6 +659,246 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_svd02",
+      "target_node_id": "math.linalg.svd02_singular_value_def",
+      "route_kind": "deductive",
+      "title": "グラム行列のスペクトル分解からの特異値・特異ベクトルの構成",
+      "premise_node_ids": [
+        "math.linalg.svd01_gram_matrix_psd",
+        "math.linalg.eig07_spectral_theorem",
+        "math.linalg.eig01_eigenvalue_eigenvector_def",
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "A \\in \\mathbb{R}^{m \\times n}"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(A^\\top A)^\\top = A^\\top A,\\quad \\mathbf{x}^\\top (A^\\top A)\\mathbf{x} = \\|A\\mathbf{x}\\|_2^2 \\ge 0",
+          "to_latex": "\\sigma_i := \\sqrt{\\lambda_i(A^\\top A)}\\ge 0,\\quad A^\\top A\\mathbf{v}_i = \\sigma_i^2\\mathbf{v}_i\\ (\\|\\mathbf{v}_i\\|_2=1),\\quad \\mathbf{u}_i := \\frac{1}{\\sigma_i}A\\mathbf{v}_i\\ (\\sigma_i > 0)\n",
+          "operation_label": "グラム行列の固有値分解による特異値と特異ベクトルの定義",
+          "explanation": "実対称半正定値行列であるグラム行列 A^T A にスペクトル定理を適用し、非負固有値の平方根を特異値、その正規直交固有ベクトルを右特異ベクトル、さらに正の特異値に対応する Av_i の正規化を左特異ベクトルとして整合的に定義する。",
+          "used_node_ids": [
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig07_spectral_theorem",
+            "math.linalg.svd01_gram_matrix_psd"
+          ],
+          "sympy_check_hint": "Verify that for a real matrix A, eigenvalues of A.T * A are non-negative and orthonormal eigenvectors v_i give orthonormal u_i = (A * v_i) / sqrt(lambda_i) for lambda_i > 0."
+        },
+        {
+          "step_id": "s2_gram_eigen",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(A^\\top A)^\\top = A^\\top A,\\quad \\mathbf{x}^\\top (A^\\top A)\\mathbf{x} = \\|A\\mathbf{x}\\|_2^2 \\ge 0",
+          "to_latex": "\\lambda_i(A^\\top A) \\ge 0,\\quad A^\\top A\\mathbf{v}_i = \\lambda_i(A^\\top A)\\mathbf{v}_i,\\quad \\langle\\mathbf{v}_i,\\mathbf{v}_j\\rangle = \\delta_{ij}\n",
+          "operation_label": "A^T A へのスペクトル定理の適用と固有値の非負性",
+          "explanation": "A^T A は実対称行列であるためスペクトル定理により実固有値と正規直交固有ベクトル基底 v_i を持つ。さらに半正定値性から各固有値に対して lambda_i(A^T A) = ||A v_i||_2^2 >= 0 が保証される。",
+          "used_node_ids": [
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig07_spectral_theorem",
+            "math.linalg.svd01_gram_matrix_psd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_singular_value_right_vec",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lambda_i(A^\\top A) \\ge 0,\\quad A^\\top A\\mathbf{v}_i = \\lambda_i(A^\\top A)\\mathbf{v}_i,\\quad \\|\\mathbf{v}_i\\|_2 = 1",
+          "to_latex": "\\sigma_i := \\sqrt{\\lambda_i(A^\\top A)} \\ge 0,\\quad A^\\top A\\mathbf{v}_i = \\sigma_i^2\\mathbf{v}_i,\\quad \\|A\\mathbf{v}_i\\|_2 = \\sqrt{\\mathbf{v}_i^\\top A^\\top A\\mathbf{v}_i} = \\sigma_i",
+          "operation_label": "特異値と右特異ベクトルの定義",
+          "explanation": "非負固有値の非負平方根として特異値 sigma_i を定義し、対応する単位固有ベクトル v_i を右特異ベクトルと名付ける。これにより A v_i のユークリッドノルムが sigma_i に一致することが導かれる。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.svd01_gram_matrix_psd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_left_singular_vec",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\|A\\mathbf{v}_i\\|_2 = \\sigma_i > 0,\\quad \\langle A\\mathbf{v}_i, A\\mathbf{v}_j\\rangle = \\mathbf{v}_i^\\top A^\\top A\\mathbf{v}_j = \\sigma_j^2 \\delta_{ij}\n",
+          "to_latex": "\\mathbf{u}_i := \\frac{1}{\\sigma_i}A\\mathbf{v}_i\\ (\\sigma_i > 0),\\quad \\langle\\mathbf{u}_i,\\mathbf{u}_j\\rangle = \\delta_{ij}\n",
+          "operation_label": "左特異ベクトルの定義と正規直交性の確認",
+          "explanation": "sigma_i > 0 のとき A v_i は零ベクトルでなく互いに直交するため、長さ sigma_i で割って正規化した u_i := (1 / sigma_i) A v_i を左特異ベクトルとして定義でき、これらが R^m 内で正規直交系をなす。",
+          "used_node_ids": [
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_svd06",
+      "target_node_id": "math.linalg.svd06_moore_penrose_axioms",
+      "route_kind": "reformulation",
+      "title": "正規方程式の左逆行列と基本部分空間への直交射影からのムーア＝ペンローズ公理系の導入",
+      "premise_node_ids": [
+        "math.linalg.svd05_least_squares_normal_eq",
+        "math.linalg.svd04_four_fundamental_subspaces",
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "A は m 行 n 列の実長方行列とする。",
+        "列フルランク時の正規方程式による最小二乗逆行列と、4つの基本部分空間への直交射影条件を任意ランクの長方行列へ公理的に一般化する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A \\in \\mathbb{R}^{m \\times n},\\quad \\hat{\\mathbf{x}} = (A^\\top A)^{-1}A^\\top \\mathbf{b}\\ (\\operatorname{rank}(A)=n),\\quad \\mathbb{R}^m = \\operatorname{Im}(A) \\oplus \\ker(A^\\top),\\quad \\mathbb{R}^n = \\operatorname{Im}(A^\\top) \\oplus \\ker(A))",
+          "to_latex": "A A^+ A = A,\\quad A^+ A A^+ = A^+,\\quad (A A^+)^\\top = A A^+,\\quad (A^+ A)^\\top = A^+ A",
+          "operation_label": "一般化逆行列と直交射影の公理化",
+          "explanation": "列フルランクの線形最小二乗法で現れる左逆行列と、SVDが与える基本部分空間への直交射影の性質を抽出し、任意の長方行列に対するムーア＝ペンローズの4公理として定式化する。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.svd04_four_fundamental_subspaces",
+            "math.linalg.svd05_least_squares_normal_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_full_rank_motivation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{x}} = (A^\\top A)^{-1}A^\\top \\mathbf{b} \\implies B := (A^\\top A)^{-1}A^\\top",
+          "to_latex": "A B A = A,\\quad B A B = B,\\quad (A B)^\\top = A B,\\quad (B A)^\\top = B A",
+          "operation_label": "フルランク時の最小二乗解からの性質抽出",
+          "explanation": "列フルランクの場合の正規方程式の解作用素 B=(A^T A)^{-1}A^T は、BA=I_n および AB=A(A^T A)^{-1}A^T を満たし、4つの代数的条件（反射的一般化逆行列性と積の対称性）を自然に成立させる。",
+          "used_node_ids": [
+            "math.linalg.svd05_least_squares_normal_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_orthogonal_projection",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{R}^m = \\operatorname{Im}(A) \\oplus \\ker(A^\\top),\\quad \\mathbb{R}^n = \\operatorname{Im}(A^\\top) \\oplus \\ker(A))",
+          "to_latex": "P_{\\operatorname{Im}(A)} = A A^+,\\; P_{\\operatorname{Im}(A)}^\\top = P_{\\operatorname{Im}(A)};\\quad P_{\\operatorname{Im}(A^\\top)} = A^+ A,\\; P_{\\operatorname{Im}(A^\\top)}^\\top = P_{\\operatorname{Im}(A^\\top)}",
+          "operation_label": "基本部分空間への対称直交射影の要請",
+          "explanation": "ランク落ちを含む一般の行列 A では (A^T A)^{-1} が存在しないため、4つの基本部分空間の直交分解に基づき、A A^+ が Im(A) への、A^+ A が Im(A^T) への直交射影となるよう冪等性と対称性を要請する。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.svd04_four_fundamental_subspaces"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_axiomatic_definition",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\operatorname{Im}(A)} = A A^+,\\quad P_{\\operatorname{Im}(A^\\top)} = A^+ A,\\quad A A^+ A = A,\\quad A^+ A A^+ = A^+",
+          "to_latex": "A A^+ A = A,\\quad A^+ A A^+ = A^+,\\quad (A A^+)^\\top = A A^+,\\quad (A^+ A)^\\top = A^+ A",
+          "operation_label": "ムーア＝ペンローズの4条件による定義の確立",
+          "explanation": "一般化逆行列としての2条件（A A^+ A = A, A^+ A A^+ = A^+）と直交射影の対称性を表す2条件（(A A^+)^T = A A^+, (A^+ A)^T = A^+ A）を統合し、任意の行列 A に対する擬似逆行列 A^+ の公理的定義を得る。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.svd04_four_fundamental_subspaces"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_svd08",
+      "target_node_id": "math.linalg.svd08_matrix_norms_def",
+      "route_kind": "deductive",
+      "title": "標準内積とグラム行列によるフロベニウスノルムとスペクトルノルムの導入",
+      "premise_node_ids": [
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+        "math.linalg.svd01_gram_matrix_psd",
+        "math.linalg.eig09_rayleigh_quotient_extremum"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "A \\in \\mathbb{R}^{m \\times n} \\text{ (実 } m \\times n \\text{ 行列)}",
+        "\\mathbb{R}^n, \\mathbb{R}^m \\text{ に標準ユークリッド内積と2ノルム } \\|\\mathbf{x}\\|_2 = \\sqrt{\\langle\\mathbf{x},\\mathbf{x}\\rangle} \\text{ を備える}"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\langle \\mathbf{u}, \\mathbf{v}\\rangle = \\mathbf{u}^\\top \\mathbf{v},\\quad \\mathbf{x}^\\top(A^\\top A)\\mathbf{x} = \\|A\\mathbf{x}\\|_2^2",
+          "to_latex": "\\|A\\|_F := \\sqrt{\\sum_{i=1}^{m}\\sum_{j=1}^{n} A_{ij}^2} = \\sqrt{\\operatorname{tr}(A^\\top A)},\\quad \\|A\\|_2 := \\max_{\\|\\mathbf{x}\\|_2=1}\\|A\\mathbf{x}\\|_2",
+          "operation_label": "行列ノルム2種の導入概要",
+          "explanation": "標準内積から定まるユークリッドノルムとグラム行列 A^T A の性質および単位球上の変分特徴付けに基づき、成分二乗和としてのフロベニウスノルムと作用素ノルムとしてのスペクトルノルムを定式化する。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig09_rayleigh_quotient_extremum",
+            "math.linalg.svd01_gram_matrix_psd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_frobenius",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{m}\\sum_{j=1}^{n} A_{ij}^2 = \\sum_{j=1}^{n} \\left(\\sum_{i=1}^{m} A_{ij}^2\\right) = \\sum_{j=1}^{n} (A^\\top A)_{jj} = \\operatorname{tr}(A^\\top A)",
+          "to_latex": "\\|A\\|_F := \\sqrt{\\sum_{i=1}^{m}\\sum_{j=1}^{n} A_{ij}^2} = \\sqrt{\\operatorname{tr}(A^\\top A)}",
+          "operation_label": "フロベニウスノルムとトレース表示の導出",
+          "explanation": "行列 A の各列ベクトルの標準ユークリッドノルムの二乗和はグラム行列 A^T A の対角成分の和（トレース）に一致することから、その平方根としてフロベニウスノルムを定義する。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.svd01_gram_matrix_psd"
+          ],
+          "sympy_check_hint": "(A.T * A).trace() - sum(A[i,j]**2) == 0"
+        },
+        {
+          "step_id": "s3_spectral",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\|A\\mathbf{x}\\|_2^2 = \\mathbf{x}^\\top(A^\\top A)\\mathbf{x},\\quad \\max_{\\|\\mathbf{x}\\|_2=1}\\mathbf{x}^\\top(A^\\top A)\\mathbf{x} = \\lambda_{\\max}(A^\\top A)",
+          "to_latex": "\\|A\\|_2 := \\max_{\\|\\mathbf{x}\\|_2=1}\\|A\\mathbf{x}\\|_2",
+          "operation_label": "単位球上の最大値としてのスペクトルノルムの定義",
+          "explanation": "グラム行列 A^T A は実対称半正定値であり、単位球上の二次形式の最大値が最大固有値として存在すること（レイリー商の最大値定理）を背景に、写像 A による単位球の像の最大ユークリッドノルムとしてスペクトルノルムを定義する。",
+          "used_node_ids": [
+            "math.linalg.eig09_rayleigh_quotient_extremum",
+            "math.linalg.svd01_gram_matrix_psd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_combine",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\|A\\|_F = \\sqrt{\\operatorname{tr}(A^\\top A)},\\quad \\|A\\|_2 = \\max_{\\|\\mathbf{x}\\|_2=1}\\|A\\mathbf{x}\\|_2",
+          "to_latex": "\\|A\\|_F := \\sqrt{\\sum_{i=1}^{m}\\sum_{j=1}^{n} A_{ij}^2} = \\sqrt{\\operatorname{tr}(A^\\top A)},\\quad \\|A\\|_2 := \\max_{\\|\\mathbf{x}\\|_2=1}\\|A\\mathbf{x}\\|_2",
+          "operation_label": "2つの行列ノルムの統合定義",
+          "explanation": "成分空間のL2ノルムに相当するフロベニウスノルムと、線形作用素の最大伸張率を表すスペクトルノルムを並置して最終的な定義式を得る。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.eig09_rayleigh_quotient_extremum",
+            "math.linalg.svd01_gram_matrix_psd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }

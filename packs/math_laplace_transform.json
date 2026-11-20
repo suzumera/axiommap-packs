@@ -813,6 +813,86 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_lt01",
+      "target_node_id": "math.laplace.lt01_laplace_transform_def",
+      "route_kind": "reformulation",
+      "title": "減衰フーリエ変換と指数位数評価による片側ラプラス変換の導入",
+      "premise_node_ids": [
+        "math.fourier.ft05_fourier_transform_def",
+        "math.calc.m25_integral_monotonicity_squeeze",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f(t)は区間[0,∞)上で区分的に連続であり、t<0では0とみなす因果関数である。",
+        "ある定数M>0および実数σ_0が存在し、すべてのt>=0に対して指数位数条件|f(t)|<=M*exp(σ_0*t)を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{g}(\\omega) = \\int_{-\\infty}^{\\infty} g(t) e^{-i\\omega t}\\,dt",
+          "to_latex": "F(s) = \\mathcal{L}[f](s) := \\int_{0^-}^{\\infty} f(t) e^{-st}\\,dt \\quad (\\operatorname{Re}(s) > \\sigma_c),\\qquad |f(t)| \\le M e^{\\sigma_0 t}\\;(t \\ge 0) \\implies \\sigma_c \\le \\sigma_0",
+          "operation_label": "減衰因果関数のフーリエ変換からの複素周波数拡張と収束評価",
+          "explanation": "因果関数f(t)に指数減衰因子exp(-σt)を掛けてフーリエ変換を適用し、複素変数s=σ+iωへ置き換えることで片側ラプラス変換を定義するとともに、指数位数の上界から絶対収束領域Re(s)>σ_cの存在を導く。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.calc.t06_exp_power_derivatives",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_damped_fourier",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{g}(\\omega) = \\int_{-\\infty}^{\\infty} g(t) e^{-i\\omega t}\\,dt,\\quad g(t) = \\begin{cases} f(t)e^{-\\sigma t} & (t \\ge 0^-) \\\\ 0 & (t < 0^-) \\end{cases} ",
+          "to_latex": "\\mathcal{F}[g](\\omega) = \\int_{0^-}^{\\infty} f(t) e^{-(\\sigma + i\\omega)t}\\,dt",
+          "operation_label": "因果化と指数減衰因子の導入",
+          "explanation": "そのままでは無限区間で絶対可積分でない関数f(t)に対し、t<0を0としたうえで減衰因子exp(-σt)を掛けた関数g(t)のフーリエ変換を構成すると、積分区間が[0^-,∞)に制限される。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_complex_freq",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{0^-}^{\\infty} f(t) e^{-(\\sigma + i\\omega)t}\\,dt,\\quad s := \\sigma + i\\omega",
+          "to_latex": "F(s) = \\mathcal{L}[f](s) := \\int_{0^-}^{\\infty} f(t) e^{-st}\\,dt",
+          "operation_label": "複素周波数変数の導入（片側ラプラス変換の定義）",
+          "explanation": "実部の減衰率σと虚部の角周波数ωを単一の複素数s=σ+iωにまとめることで、片側ラプラス変換F(s)=L[f](s)が定義される。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_convergence_bound",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left|\\int_{0^-}^{\\infty} f(t)e^{-st}\\,dt\\right| \\le \\int_{0^-}^{\\infty} |f(t)| e^{-\\sigma t}\\,dt \\le M \\int_{0}^{\\infty} e^{-(\\sigma - \\sigma_0)t}\\,dt",
+          "to_latex": "M \\left[ -\\frac{e^{-(\\sigma - \\sigma_0)t}}{\\sigma - \\sigma_0} \\right]_{0}^{\\infty} = \\frac{M}{\\sigma - \\sigma_0} < \\infty \\quad (\\sigma = \\operatorname{Re}(s) > \\sigma_0) \\implies \\sigma_c \\le \\sigma_0",
+          "operation_label": "指数位数による絶対収束座標軸の評価",
+          "explanation": "積分の三角不等式（単調性）と指数位数条件|f(t)|<=M*exp(σ_0*t)を用い、指数関数の原始関数と微積分学の基本定理により積分を評価すると、Re(s)=σ>σ_0で絶対収束することが示され、収束座標軸σ_c<=σ_0が得られる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": "integrate(M * exp(-(sigma - sigma0) * t), (t, 0, oo))"
+        }
+      ]
     }
   ]
 }

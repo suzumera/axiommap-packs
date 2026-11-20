@@ -735,6 +735,160 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_ni01",
+      "target_node_id": "math.num.ni01_fixed_point_convergence_def",
+      "route_kind": "deductive",
+      "title": "極限演算・平均値の定理・テイラー漸近展開による収束次数と漸近誤差定数の定義の導入",
+      "premise_node_ids": [
+        "math.calc.m23_limit_algebra",
+        "math.calc.m47_lagrange_mean_value_theorem",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "点列 x_k は極限 x* に収束する（lim_{k->infty} ||x_k - x*|| = 0）",
+        "十分大きい k に対して誤差 e_k := x_k - x* は非零とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "x_{k+1} = g(x_k),\\quad \\lim_{k\\to\\infty} x_k = x^*",
+          "to_latex": "e_k := x_k - x^*,\\quad \\lim_{k\\to\\infty}\\frac{\\|e_{k+1}\\|}{\\|e_k\\|^p} = C \\in (0, \\infty)\\quad (p \\ge 1)",
+          "operation_label": "誤差列の漸近挙動からの収束次数定義の定式化",
+          "explanation": "不動点反復の誤差減少則を平均値の定理およびテイラー展開の漸近評価で特徴付け、その極限比として収束次数 p と漸近誤差定数 C の定義を導入する。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.calc.m47_lagrange_mean_value_theorem",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_error_def",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e_k := x_k - x^*,\\quad e_{k+1} = g(x_k) - g(x^*) = g'(c_k)(x_k - x^*)",
+          "to_latex": "\\frac{|e_{k+1}|}{|e_k|} = |g'(c_k)| \\xrightarrow{k\\to\\infty} |g'(x^*)|",
+          "operation_label": "平均値の定理と極限演算による1次誤差比の評価",
+          "explanation": "誤差 e_k := x_k - x* を導入し、反復写像 g に対してラグランジュの平均値の定理を適用して誤差比を取り、c_k -> x* の極限をとることで1次収束（p=1, C=|g'(x*)|）の典型構造を得る。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.calc.m47_lagrange_mean_value_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_taylor_order",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g(x^* + e_k) - g(x^*) = \\sum_{m=1}^{p-1}\\frac{g^{(m)}(x^*)}{m!}e_k^m + \\frac{g^{(p)}(x^*)}{p!}e_k^p + o(|e_k|^p)",
+          "to_latex": "g'(x^*)=\\dots=g^{(p-1)}(x^*)=0 \\implies \\frac{|e_{k+1}|}{|e_k|^p} = \\frac{|g^{(p)}(x^*)|}{p!} + o(1)",
+          "operation_label": "テイラー漸近展開による高次誤差スケーリングの抽出",
+          "explanation": "ペアノ剰余項付きのテイラー漸近展開を用いると、p-1 階までの導関数が x* で零となるとき次世代の誤差が |e_k|^p に比例し、比 |e_{k+1}|/|e_k|^p が有限非零定数に漸近することがわかる。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_limit_def",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{k\\to\\infty}\\frac{|e_{k+1}|}{|e_k|^p} = \\frac{|g^{(p)}(x^*)|}{p!} \\in (0, \\infty)",
+          "to_latex": "e_k := x_k - x^*,\\quad \\lim_{k\\to\\infty}\\frac{\\|e_{k+1}\\|}{\\|e_k\\|^p} = C \\in (0, \\infty)\\quad (p \\ge 1)",
+          "operation_label": "一般ノルム空間の点列に対する収束次数・漸近誤差定数の定義",
+          "explanation": "1次元で得られた極限比の構造を多次元や一般の反復列にも適用できるようノルム ||e_k|| に一般化し、lim_{k->infty} ||e_{k+1}|| / ||e_k||^p = C in (0, infty) を満たす p >= 1 と C をそれぞれ収束次数・漸近誤差定数と定義する。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_ni07",
+      "target_node_id": "math.num.ni07_chebyshev_polynomials_nodes",
+      "route_kind": "deductive",
+      "title": "第1種チェビシェフ多項式とチェビシェフ節点の定義の導入",
+      "premise_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.fourier.ft01_trig_orthogonality",
+        "math.num.ni06_interpolation_error_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "|x| <= 1, x = cos(theta) (0 <= theta <= pi) とする。",
+        "n は非負整数 (n >= 0) とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\cos(\\alpha\\pm\\beta)=\\cos\\alpha\\cos\\beta\\mp\\sin\\alpha\\sin\\beta,\\quad \\omega_{n+1}(x)=\\prod_{k=0}^{n}(x-x_k),\\quad \\int_{-L}^{L}\\cos\\frac{m\\pi x}{L}\\cos\\frac{n\\pi x}{L}\\,dx=L\\delta_{mn}",
+          "to_latex": "T_n(x) := \\cos(n\\arccos x)\\;(|x|\\le 1),\\qquad x_k = \\cos\\!\\left(\\frac{2k+1}{2(n+1)}\\pi\\right)\\quad (k=0,\\dots,n)",
+          "operation_label": "チェビシェフ多項式とチェビシェフ節点の定義",
+          "explanation": "三角関数の加法定理と直交性から多項式列 T_n(x) の性質と直交関係を構成し、多項式補間の誤差を抑える節点として T_{n+1}(x) の零点であるチェビシェフ節点を導入する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.fourier.ft01_trig_orthogonality",
+            "math.num.ni06_interpolation_error_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_trig_recurrence",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_n(\\cos\\theta) := \\cos(n\\theta),\\quad \\cos\\big((n\\pm 1)\\theta\\big) = \\cos\\theta\\cos(n\\theta) \\mp \\sin\\theta\\sin(n\\theta)",
+          "to_latex": "T_{n+1}(x) = 2xT_n(x) - T_{n-1}(x),\\quad T_0(x)=1,\\; T_1(x)=x \\implies T_n(x)\\in\\mathcal{P}_n",
+          "operation_label": "加法定理による3項間漸化式と多項式性の導出",
+          "explanation": "x = cos(theta) とおき、加法定理の和 cos((n+1)theta) + cos((n-1)theta) = 2 cos(theta) cos(n*theta) を用いると3項間漸化式が得られ、T_0(x)=1, T_1(x)=x から帰納的に T_n(x) が n 次多項式であることが確認される。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "simplify(cos((n+1)*theta) + cos((n-1)*theta) - 2*cos(theta)*cos(n*theta))"
+        },
+        {
+          "step_id": "s3_orthogonality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{0}^{\\pi} \\cos(m\\theta)\\cos(n\\theta)\\,d\\theta = \\frac{\\pi}{2}\\delta_{mn}\\;(m,n\\ge 1)",
+          "to_latex": "\\int_{-1}^{1} \\frac{T_m(x)T_n(x)}{\\sqrt{1-x^2}}\\,dx = \\begin{cases} \\pi & (m=n=0), \\\\ \\frac{\\pi}{2}\\delta_{mn} & (\\text{otherwise}) \\end{cases}",
+          "operation_label": "三角関数の直交性による重み付き直交関係の導出",
+          "explanation": "変数変換 x = cos(theta) により dx / sqrt(1 - x^2) = -d(theta) となることを用いると、三角関数系の直交関係から T_n(x) が [-1, 1] 上で重み (1 - x^2)^(-1/2) に関する直交多項式系をなすことが従う。",
+          "used_node_ids": [
+            "math.fourier.ft01_trig_orthogonality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_chebyshev_nodes",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\omega_{n+1}(x) = \\prod_{k=0}^{n}(x - x_k),\\quad T_{n+1}(\\cos\\theta) = \\cos\\big((n+1)\\theta\\big) = 0",
+          "to_latex": "(n+1)\\theta_k = \\frac{2k+1}{2}\\pi \\implies x_k = \\cos\\!\\left(\\frac{2k+1}{2(n+1)}\\pi\\right)\\quad (k=0,\\dots,n)",
+          "operation_label": "T_{n+1}(x) の零点としてのチェビシェフ節点の定義",
+          "explanation": "補間誤差定理に現れる節点多項式 omega_{n+1}(x) の最大振幅を抑える節点配置として、T_{n+1}(x) = 0 を theta in (0, pi) の範囲で解くことにより、[-1, 1] 内の相異なる n+1 個のチェビシェフ節点 x_k を定義する。",
+          "used_node_ids": [
+            "math.num.ni06_interpolation_error_theorem"
+          ],
+          "sympy_check_hint": "simplify(cos((n+1)*((2*k+1)*pi/(2*(n+1)))))"
+        }
+      ]
     }
   ]
 }
