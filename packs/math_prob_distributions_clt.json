@@ -691,6 +691,86 @@
           "sympy_check_hint": "limit((1 - t**2/(2*n))**n, n, oo) - exp(-t**2/2)"
         }
       ]
+    },
+    {
+      "id": "drv.link_pr03",
+      "target_node_id": "math.prob.pr03_random_variable_expectation",
+      "route_kind": "deductive",
+      "title": "確率空間と積分の性質からの確率変数・期待値・分散・独立性の導入",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms",
+        "math.prob.pr02_conditional_bayes_theorem",
+        "math.calc.m16_integral_linearity",
+        "math.calc.mi02_fubini_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "確率空間 (\\Omega, \\mathcal{F}, P) 上の可測写像 X: \\Omega \\to \\mathbb{R} が連続型確率密度関数 f_X(x) を持つ",
+        "期待値および分散の定義積分が絶対収束する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(\\Omega, \\mathcal{F}, P),\\; P(A \\cap B) = P(A)P(B),\\; \\int (\\alpha f + \\beta g)\\,dx",
+          "to_latex": "\\mathbb{E}[g(X)] := \\int_{-\\infty}^{\\infty} g(x)\\,f_X(x)\\,dx,\\quad \\operatorname{Var}(X) = \\mathbb{E}[X^2] - (\\mathbb{E}[X])^2",
+          "operation_label": "確率変数・期待値・分散・独立性の構成的導入",
+          "explanation": "コルモゴロフの確率空間上に確率変数と確率密度関数を導入して期待値を積分で定義し、積分の線形性から期待値の線形性と分散の展開公式を導き、条件付き確率の積の法則とフビニの定理から独立な確率変数の積の期待値分解と分散の加法性を導出する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.mi02_fubini_theorem",
+            "math.prob.pr01_kolmogorov_axioms",
+            "math.prob.pr02_conditional_bayes_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_rv_expectation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\Omega, \\mathcal{F}, P),\\quad X: \\Omega \\to \\mathbb{R},\\quad \\int_{-\\infty}^{\\infty} f_X(x)\\,dx = 1",
+          "to_latex": "\\mathbb{E}[g(X)] := \\int_{-\\infty}^{\\infty} g(x)\\,f_X(x)\\,dx,\\quad \\mu := \\mathbb{E}[X]",
+          "operation_label": "確率変数と期待値（1次モーメント）の定義",
+          "explanation": "確率空間上の実数値可測関数として確率変数 X を定め、確率公理 P(\\Omega)=1, P(A)\\ge 0 を満たす確率密度関数 f_X(x) による重み付き積分として関数 g(X) の期待値 \\mathbb{E}[g(X)] および平均 \\mu := \\mathbb{E}[X] を定義する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_variance_linearity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Var}(X) := \\mathbb{E}\\big[(X - \\mu)^2\\big] = \\int_{-\\infty}^{\\infty} (x^2 - 2\\mu x + \\mu^2)\\,f_X(x)\\,dx",
+          "to_latex": "\\mathbb{E}[aX + bY] = a\\mathbb{E}[X] + b\\mathbb{E}[Y],\\quad \\operatorname{Var}(X) = \\mathbb{E}[X^2] - (\\mathbb{E}[X])^2",
+          "operation_label": "積分の線形性による期待値の線形性と分散公式の導出",
+          "explanation": "定積分の線形性を期待値積分へ適用して線形性 \\mathbb{E}[aX+bY]=a\\mathbb{E}[X]+b\\mathbb{E}[Y] を得るとともに、2次中心モーメント \\mathbb{E}[(X-\\mu)^2] を展開して \\mathbb{E}[X^2] - 2\\mu\\mathbb{E}[X] + \\mu^2 = \\mathbb{E}[X^2] - (\\mathbb{E}[X])^2 を導く。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": "expand((x - mu)**2) -> x**2 - 2*mu*x + mu**2"
+        },
+        {
+          "step_id": "s2_independence_additivity",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P(X \\in A, Y \\in B) = P(X \\in A)P(Y \\in B) \\implies f_{X,Y}(x,y) = f_X(x)f_Y(y)",
+          "to_latex": "\\mathbb{E}[XY] = \\mathbb{E}[X]\\mathbb{E}[Y],\\quad \\operatorname{Var}(X + Y) = \\operatorname{Var}(X) + \\operatorname{Var}(Y)",
+          "operation_label": "事象の独立性とフビニの定理による分散の加法性",
+          "explanation": "条件付き確率 P(A\\mid B)=P(A) すなわち事象の独立性 P(A\\cap B)=P(A)P(B) を確率変数へ拡張して同時密度の積分解 f_{X,Y}(x,y)=f_X(x)f_Y(y) を定義し、フビニの定理により重積分を累次積分の積へ分解することで \\mathbb{E}[XY]=\\mathbb{E}[X]\\mathbb{E}[Y] および無相関性から分散の加法性を導く。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.mi02_fubini_theorem",
+            "math.prob.pr02_conditional_bayes_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }
