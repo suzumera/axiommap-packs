@@ -517,6 +517,83 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_gm01",
+      "target_node_id": "astro.orbit.gm01_d_matrix_constants",
+      "route_kind": "deductive",
+      "title": "観測幾何関係と共面条件からのD行列・スカラー三重積定数の導入",
+      "premise_node_ids": [
+        "phys.orbit.g02_topocentric_geometry",
+        "phys.orbit.g03_coplanarity_condition",
+        "math.vec.m14_scalar_triple_product"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "3時刻の視線単位ベクトルが一次独立であること（D0 ≠ 0）",
+        "3時刻の地心位置ベクトルが同一軌道面上に存在すること"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}_i = \\mathbf{R}_i + \\rho_i\\hat{\\boldsymbol{\\rho}}_i,\\quad c_1\\mathbf{r}_1 - \\mathbf{r}_2 + c_3\\mathbf{r}_3 = \\mathbf{0} \\quad (i=1,2,3)",
+          "to_latex": "D_0 = \\hat{\\boldsymbol{\\rho}}_1 \\cdot (\\hat{\\boldsymbol{\\rho}}_2 \\times \\hat{\\boldsymbol{\\rho}}_3),\\quad D_{ij} = (\\mathbf{R}_i \\times \\hat{\\boldsymbol{\\rho}}_2)\\cdot\\hat{\\boldsymbol{\\rho}}_3 \\text{ etc.}",
+          "operation_label": "共面ベクトル方程式の視線距離に関する線形系化と三重積定数の定義",
+          "explanation": "観測局・視線幾何関係と共面条件を結合して未知の視線距離に関する3次元線形方程式を立て、スカラー三重積およびクラメルの公式を適用するために必要な幾何定数 D0 と D_ij を導入する。",
+          "used_node_ids": [
+            "math.vec.m14_scalar_triple_product",
+            "phys.orbit.g02_topocentric_geometry",
+            "phys.orbit.g03_coplanarity_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_geometry",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1\\mathbf{r}_1 - \\mathbf{r}_2 + c_3\\mathbf{r}_3 = \\mathbf{0},\\quad \\mathbf{r}_i = \\mathbf{R}_i + \\rho_i\\hat{\\boldsymbol{\\rho}}_i",
+          "to_latex": "c_1\\rho_1\\hat{\\boldsymbol{\\rho}}_1 - \\rho_2\\hat{\\boldsymbol{\\rho}}_2 + c_3\\rho_3\\hat{\\boldsymbol{\\rho}}_3 = -c_1\\mathbf{R}_1 + \\mathbf{R}_2 - c_3\\mathbf{R}_3",
+          "operation_label": "共面条件への観測幾何関係の代入と未知量・既知量の分離",
+          "explanation": "各時刻の地心位置ベクトルを観測局位置ベクトルと視線ベクトルで表して共面条件式に代入し、未知の視線距離を含む項を左辺に、既知の観測局位置ベクトルを含む項を右辺に整理する。",
+          "used_node_ids": [
+            "phys.orbit.g02_topocentric_geometry",
+            "phys.orbit.g03_coplanarity_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_cramer_triple_product",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1\\rho_1\\hat{\\boldsymbol{\\rho}}_1 - \\rho_2\\hat{\\boldsymbol{\\rho}}_2 + c_3\\rho_3\\hat{\\boldsymbol{\\rho}}_3 = -c_1\\mathbf{R}_1 + \\mathbf{R}_2 - c_3\\mathbf{R}_3",
+          "to_latex": "c_1\\rho_1\\big[\\hat{\\boldsymbol{\\rho}}_1\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3)\\big] = -c_1\\big[\\mathbf{R}_1\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3)\\big] + \\big[\\mathbf{R}_2\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3)\\big] - c_3\\big[\\mathbf{R}_3\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3)\\big]",
+          "operation_label": "外積ベクトルとの内積（スカラー三重積・クラメル解法）による視線距離の分離",
+          "explanation": "スカラー三重積の性質 a·(a×c)=0 を用いて、2つの視線ベクトルの外積（例：ρ2_hat × ρ3_hat）を両辺に内積することで他の未知視線距離を消去し、3次元線形方程式をスカラー三重積の比として解く形に導く。",
+          "used_node_ids": [
+            "math.vec.m14_scalar_triple_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_define_d_constants",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\boldsymbol{\\rho}}_1\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3),\\quad \\mathbf{R}_i\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3)\\text{ etc.}",
+          "to_latex": "D_0 = \\hat{\\boldsymbol{\\rho}}_1 \\cdot (\\hat{\\boldsymbol{\\rho}}_2 \\times \\hat{\\boldsymbol{\\rho}}_3),\\quad D_{ij} = (\\mathbf{R}_i \\times \\hat{\\boldsymbol{\\rho}}_2)\\cdot\\hat{\\boldsymbol{\\rho}}_3 \\text{ etc.}",
+          "operation_label": "観測データのみから定まる幾何定数 D0 および D_ij の定義",
+          "explanation": "左辺に現れる3時刻の視線単位ベクトルのスカラー三重積を D0、右辺に現れる観測局位置ベクトルと2つの視線単位ベクトルのスカラー三重積（巡回置換により (R_i × ρ2_hat)·ρ3_hat 等と表される）を幾何定数 D_ij として定義する。",
+          "used_node_ids": [
+            "math.vec.m14_scalar_triple_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }
