@@ -823,6 +823,85 @@
           "sympy_check_hint": "trigsimp((r*sin(theta)*cos(phi))**2 + (r*sin(theta)*sin(phi))**2 + (r*cos(theta))**2)"
         }
       ]
+    },
+    {
+      "id": "drv.link_mi03",
+      "target_node_id": "math.calc.mi03_jacobian_matrix_determinant",
+      "route_kind": "deductive",
+      "title": "C1級写像の全微分と線形近似からのヤコビ行列・ヤコビアンの導入",
+      "premise_node_ids": [
+        "math.calc.m44_partial_derivative_def",
+        "math.calc.m45_total_differentiability_def",
+        "math.vec.m62_vector_valued_total_diff",
+        "math.linalg.det01_alternating_multilinear_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "座標変換写像 \\mathbf{\\Phi}: \\Omega \\subseteq \\mathbb{R}^n \\to \\mathbb{R}^n は開集合 \\Omega 上で C1 級（各成分の 1 階偏導関数がすべて存在し連続）であるとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x} = \\mathbf{\\Phi}(\\mathbf{u}) = (x_1(\\mathbf{u}), \\dots, x_n(\\mathbf{u}))^\\top \\in C^1",
+          "to_latex": "J_{\\mathbf{\\Phi}}(\\mathbf{u}) := \\left(\\frac{\\partial x_i}{\\partial u_j}(\\mathbf{u})\\right)_{1\\le i,j\\le n},\\quad \\frac{\\partial(x_1,\\dots,x_n)}{\\partial(u_1,\\dots,u_n)} := \\det J_{\\mathbf{\\Phi}}(\\mathbf{u})",
+          "operation_label": "C1級写像の線形近似表現と行列式の定義",
+          "explanation": "C1級座標変換の全微分を表す線形写像の表現行列としてヤコビ行列を定義し、さらにその体積拡大率・向きを測る行列式としてヤコビアンを定義する。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def",
+            "math.calc.m45_total_differentiability_def",
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.vec.m62_vector_valued_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_partial_diff",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{\\Phi}(\\mathbf{u} + \\mathbf{h}) - \\mathbf{\\Phi}(\\mathbf{u}) = L_{\\mathbf{u}}(\\mathbf{h}) + \\boldsymbol{\\varepsilon}(\\mathbf{h})\\|\\mathbf{h}\\|",
+          "to_latex": "d\\mathbf{x} = \\sum_{j=1}^{n} \\frac{\\partial \\mathbf{\\Phi}}{\\partial u_j}(\\mathbf{u})\\,du_j,\\quad dx_i = \\sum_{j=1}^{n} \\frac{\\partial x_i}{\\partial u_j}(\\mathbf{u})\\,du_j",
+          "operation_label": "全微分の偏微分係数による成分展開",
+          "explanation": "各成分関数 x_i(\\mathbf{u}) が C1 級であるため全微分可能であり、偏微分の定義とベクトル値関数の全微分の関係式から、線形近似 L_{\\mathbf{u}}（全微分 d\\mathbf{x}）は 1 階偏導関数を係数とする線形結合で表される。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def",
+            "math.calc.m45_total_differentiability_def",
+            "math.vec.m62_vector_valued_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_jacobian_matrix",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dx_i = \\sum_{j=1}^{n} \\frac{\\partial x_i}{\\partial u_j}(\\mathbf{u})\\,du_j\\quad (i=1,\\dots,n) ",
+          "to_latex": "d\\mathbf{x} = J_{\\mathbf{\\Phi}}(\\mathbf{u})\\,d\\mathbf{u},\\quad J_{\\mathbf{\\Phi}}(\\mathbf{u}) := \\left(\\frac{\\partial x_i}{\\partial u_j}(\\mathbf{u})\\right)_{1\\le i,j\\le n} ",
+          "operation_label": "全微分の行列表現（ヤコビ行列の定義）",
+          "explanation": "各成分の全微分 dx_i を列ベクトル d\\mathbf{x} = (dx_1,\\dots,dx_n)^\\top にまとめ、微小変位ベクトル d\\mathbf{u} = (du_1,\\dots,du_n)^\\top に対する線形写像の表現行列を抜き出してヤコビ行列 J_{\\mathbf{\\Phi}}(\\mathbf{u}) と定義する。",
+          "used_node_ids": [
+            "math.vec.m62_vector_valued_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_jacobian_det",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{\\mathbf{\\Phi}}(\\mathbf{u}) := \\left(\\frac{\\partial x_i}{\\partial u_j}(\\mathbf{u})\\right)_{1\\le i,j\\le n} ",
+          "to_latex": "\\frac{\\partial(x_1,\\dots,x_n)}{\\partial(u_1,\\dots,u_n)} := \\det J_{\\mathbf{\\Phi}}(\\mathbf{u}) ",
+          "operation_label": "交代多重線形形式によるヤコビアンの定義",
+          "explanation": "ヤコビ行列の列ベクトル（接空間の基底像 \\partial\\mathbf{\\Phi}/\\partial u_j）が張る符号付き微小体積倍率を評価するため、行列式 \\det を適用した量をヤコビアン（ヤコビ行列式）として定義する。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }

@@ -684,6 +684,143 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_lr02",
+      "target_node_id": "math.complex.lr02_isolated_singularity_classification",
+      "route_kind": "deductive",
+      "title": "孤立特異点のローラン展開主要部による分類の導入",
+      "premise_node_ids": [
+        "math.complex.lr01_laurent_series_expansion",
+        "math.complex.ca01_complex_differentiability_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "関数 f(z) は点 z_0 の穴あき近傍 0 < |z - z_0| < R で正則である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f \\text{ holomorphic on } 0 < |z - z_0| < R",
+          "to_latex": "f(z) = \\sum_{n=-\\infty}^{\\infty} a_n (z - z_0)^n \\implies \\text{classification by } \\{a_n\\}_{n<0} (\\text{removable, pole of order } m, \\text{ essential})",
+          "operation_label": "ローラン展開の主要部による孤立特異点の分類",
+          "explanation": "点 z_0 の穴あき近傍で正則な関数に対し、円環領域 0 < |z - z_0| < R でのローラン展開を求め、負べき項（主要部）の非零係数の個数によって除去可能特異点・m位の極・真性特異点の3種類に分類する。",
+          "used_node_ids": [
+            "math.complex.ca01_complex_differentiability_def",
+            "math.complex.lr01_laurent_series_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_laurent_decomposition",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f \\text{ holomorphic on } 0 < |z - z_0| < R",
+          "to_latex": "f(z) = \\sum_{n=0}^{\\infty} a_n (z - z_0)^n + \\sum_{n=-\\infty}^{-1} a_n (z - z_0)^n",
+          "operation_label": "穴あき円板上のローラン展開と正則部・主要部への分解",
+          "explanation": "正則関数の定義より f(z) は内半径 r = 0 の円環領域 0 < |z - z_0| < R で正則であるため、ローラン展開の定理を適用できる。展開式を非負べきの正則部（n >= 0）と負べきの主要部（n < 0）に分離する。",
+          "used_node_ids": [
+            "math.complex.ca01_complex_differentiability_def",
+            "math.complex.lr01_laurent_series_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_principal_part_classification",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{Principal part: } \\sum_{n=-\\infty}^{-1} a_n (z - z_0)^n",
+          "to_latex": "f(z) = \\sum_{n=-\\infty}^{\\infty} a_n (z - z_0)^n \\implies \\begin{cases} \\forall n < 0,\\; a_n = 0 & (\\text{removable}) \\\\ a_{-m} \\neq 0 \\land \\forall n < -m,\\; a_n = 0 & (\\text{pole of order } m) \\\\ \\#\\{n < 0 \\mid a_n \\neq 0\\} = \\infty & (\\text{essential}) \\end{cases} (m \\ge 1).",
+          "operation_label": "主要部係数の非零個数による3分類の定義",
+          "explanation": "主要部に現れる非零係数 a_n (n < 0) の個数で場合分けする。すべて零なら z_0 に正則に拡張できる除去可能特異点、有限個で最低次が -m (m >= 1) なら m位の極、無限個なら真性特異点と定義する。",
+          "used_node_ids": [
+            "math.complex.lr01_laurent_series_expansion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_lr03",
+      "target_node_id": "math.complex.lr03_residue_definition",
+      "route_kind": "deductive",
+      "title": "孤立特異点におけるローラン展開の -1 次係数からの留数の定義と周回積分表示の導入",
+      "premise_node_ids": [
+        "math.complex.lr01_laurent_series_expansion",
+        "math.complex.lr02_isolated_singularity_classification",
+        "math.complex.ca07_contour_deformation_annulus"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "関数 f(z) は z_0 を孤立特異点として持ち、穴あき円板 0 < |z - z_0| < R で正則である。",
+        "閉曲線 C_{z_0} は 0 < |z - z_0| < R 内に含まれ、z_0 のみを内部に正の向き（反時計回り）で囲む単純閉曲線である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f(z) = \\sum_{n=-\\infty}^{\\infty} a_n (z - z_0)^n,\\quad a_n = \\frac{1}{2\\pi i}\\oint_{C} \\frac{f(\\zeta)}{(\\zeta - z_0)^{n+1}}\\,d\\zeta",
+          "to_latex": "\\operatorname{Res}(f, z_0) := a_{-1} = \\frac{1}{2\\pi i}\\oint_{C_{z_0}} f(z)\\,dz",
+          "operation_label": "ローラン展開の係数 a_{-1} による留数の定義と積分表示の確立",
+          "explanation": "孤立特異点 z_0 の周りの穴あき円板におけるローラン展開の係数公式で n = -1 とおくことで、係数 a_{-1} が z_0 を囲む周回積分と直結することを示し、積分の道変更の原理で閉曲線の取り方に依らない量として留数 Res(f, z_0) を定義する。",
+          "used_node_ids": [
+            "math.complex.ca07_contour_deformation_annulus",
+            "math.complex.lr01_laurent_series_expansion",
+            "math.complex.lr02_isolated_singularity_classification"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_laurent_at_isolated_singularity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f \\text{ holomorphic on } 0 < |z - z_0| < R",
+          "to_latex": "f(z) = \\sum_{n=-\\infty}^{\\infty} a_n (z - z_0)^n,\\quad a_n = \\frac{1}{2\\pi i}\\oint_{C_{z_0}} \\frac{f(z)}{(z - z_0)^{n+1}}\\,dz",
+          "operation_label": "孤立特異点の穴あき近傍へのローラン展開の適用",
+          "explanation": "孤立特異点の定義と分類に基づき、z_0 の穴あき近傍 0 < |z - z_0| < R は内半径 r = 0 の円環領域となるため、ローラン展開定理を適用して両側べき級数と係数 a_n の積分表示を得る。",
+          "used_node_ids": [
+            "math.complex.lr01_laurent_series_expansion",
+            "math.complex.lr02_isolated_singularity_classification"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_extract_a_minus_1_integral",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a_n = \\frac{1}{2\\pi i}\\oint_{C_{z_0}} \\frac{f(z)}{(z - z_0)^{n+1}}\\,dz",
+          "to_latex": "a_{-1} = \\frac{1}{2\\pi i}\\oint_{C_{z_0}} f(z)\\,dz",
+          "operation_label": "n = -1 の代入による主要部 -1 次係数の抽出",
+          "explanation": "ローラン展開の係数公式において n = -1 を代入すると、(z - z_0)^{n+1} = (z - z_0)^0 = 1 となり、係数 a_{-1} のみが被積分関数 f(z) そのものの周回積分で表される。",
+          "used_node_ids": [
+            "math.complex.lr01_laurent_series_expansion"
+          ],
+          "sympy_check_hint": "series(f, z, z0).coeff((z - z0)**(-1))"
+        },
+        {
+          "step_id": "s4_define_residue_contour_invariance",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a_{-1} = \\frac{1}{2\\pi i}\\oint_{C_{z_0}} f(z)\\,dz",
+          "to_latex": "\\operatorname{Res}(f, z_0) := a_{-1} = \\frac{1}{2\\pi i}\\oint_{C_{z_0}} f(z)\\,dz",
+          "operation_label": "道変更の不変性に基づく留数 Res(f, z_0) の定義",
+          "explanation": "積分の道変更の原理により、z_0 のみを囲む 0 < |z - z_0| < R 内の任意の正の向きの単純閉曲線 C_{z_0} に対して周回積分の値は不変であるため、この共通値である a_{-1} を z_0 における f の留数 Res(f, z_0) と定義する。",
+          "used_node_ids": [
+            "math.complex.ca07_contour_deformation_annulus"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }
