@@ -1,0 +1,731 @@
+{
+  "pack_meta": {
+    "pack_id": "math.complex.holomorphic_cauchy",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "複素解析：コーシー＝リーマン方程式とコーシーの積分定理",
+    "language": "ja",
+    "description": "複素微分可能性からコーシー＝リーマン関係式、調和関数、コーシーの積分定理とコーシーの積分公式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.complex.ca01_complex_differentiability_def",
+      "short_code": "CA01",
+      "kind": "definition",
+      "title": "複素微分可能性と正則関数の定義",
+      "summary": "複素平面上の開集合上で定義された複素数値関数に対する複素微分係数と正則（holomorphic）の定義。",
+      "canonical_latex": "f'(z_0) := \\lim_{\\Delta z \\to 0} \\frac{f(z_0 + \\Delta z) - f(z_0)}{\\Delta z},\\quad f \\text{ holomorphic on } D \\iff \\forall z_0 \\in D,\\; f'(z_0) \\text{ exists}",
+      "aliases_latex": [
+        "\\frac{df}{dz}(z_0) = \\lim_{z \\to z_0} \\frac{f(z) - f(z_0)}{z - z_0}"
+      ],
+      "keywords": [
+        "複素微分",
+        "正則関数",
+        "holomorphic",
+        "analytic function",
+        "complex derivative"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.ca02_cauchy_riemann_equations",
+      "short_code": "CA02",
+      "kind": "theorem_formula",
+      "title": "コーシー＝リーマンの方程式（CR関係式）",
+      "summary": "複素関数 f = u + iv が点 z_0 で複素微分可能であるための必要条件として、実部 u と虚部 v の偏導関数が満たす連立偏微分方程式。",
+      "canonical_latex": "f(x+iy)=u(x,y)+iv(x,y)\\text{ is complex differentiable at }z_0 \\implies \\frac{\\partial u}{\\partial x} = \\frac{\\partial v}{\\partial y},\\quad \\frac{\\partial u}{\\partial y} = -\\frac{\\partial v}{\\partial x},\\quad f'(z_0) = u_x + iv_x = v_y - iu_y",
+      "aliases_latex": [
+        "u_x = v_y,\\; u_y = -v_x",
+        "\\frac{\\partial f}{\\partial \\bar{z}} = 0"
+      ],
+      "keywords": [
+        "コーシー・リーマン方程式",
+        "Cauchy-Riemann equations",
+        "必要条件",
+        "正則性"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.ca03_holomorphic_iff_c1_cr",
+      "short_code": "CA03",
+      "kind": "theorem_formula",
+      "title": "実全微分可能性とCR方程式による複素微分可能性の十分条件",
+      "summary": "実部 u と虚部 v が実2変数関数として全微分可能であり、かつコーシー＝リーマン方程式を満たすならば、f = u + iv は複素微分可能となる。",
+      "canonical_latex": "u, v \\text{ are real-differentiable at }(x_0,y_0) \\land u_x = v_y \\land u_y = -v_x \\implies f = u + iv \\text{ is complex differentiable at } z_0 = x_0 + iy_0",
+      "aliases_latex": [
+        "u, v \\in C^1(D) \\land u_x = v_y,\\; u_y = -v_x \\implies f \\text{ holomorphic on } D"
+      ],
+      "keywords": [
+        "複素微分可能性の十分条件",
+        "全微分可能",
+        "コーシー・リーマン関係式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.ca04_harmonic_conjugate_laplace",
+      "short_code": "CA04",
+      "kind": "theorem_formula",
+      "title": "正則関数の実部・虚部の調和性と共役調和関数",
+      "summary": "C^2級の実部・虚部をもつ正則関数の実部 u と虚部 v はともに2次元ラプラス方程式を満たす調和関数であり、互いに共役調和関数をなす。",
+      "canonical_latex": "f = u + iv \\text{ holomorphic on } D \\land u,v \\in C^2(D) \\implies \\nabla^2 u = \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} = 0,\\quad \\nabla^2 v = \\frac{\\partial^2 v}{\\partial x^2} + \\frac{\\partial^2 v}{\\partial y^2} = 0",
+      "aliases_latex": [
+        "\\Delta u = u_{xx} + u_{yy} = 0,\\quad \\Delta v = v_{xx} + v_{yy} = 0"
+      ],
+      "keywords": [
+        "調和関数",
+        "共役調和関数",
+        "ラプラス方程式",
+        "harmonic function",
+        "harmonic conjugate"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.ca05_complex_line_integral_def",
+      "short_code": "CA05",
+      "kind": "definition",
+      "title": "複素線積分の定義とML不等式（積分評価定理）",
+      "summary": "区分的に滑らかな曲線に沿う複素関数の線積分の定義と、被積分関数の上限Mおよび曲線長Lによる絶対値の上界評価（ML不等式）。",
+      "canonical_latex": "\\int_{\\gamma} f(z)\\,dz := \\int_{a}^{b} f(\\gamma(t))\\gamma'(t)\\,dt,\\qquad \\left|\\int_{\\gamma} f(z)\\,dz\\right| \\le M L,\\quad M := \\sup_{z\\in\\gamma}|f(z)|,\\quad L := \\int_{a}^{b} |\\gamma'(t)|\\,dt",
+      "aliases_latex": [
+        "\\int_C f(z)\\,dz = \\int_C (u\\,dx - v\\,dy) + i\\int_C (v\\,dx + u\\,dy)"
+      ],
+      "keywords": [
+        "複素線積分",
+        "ML不等式",
+        "Darboux inequality",
+        "contour integral"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.ca06_cauchy_integral_theorem",
+      "short_code": "CA06",
+      "kind": "theorem_formula",
+      "title": "コーシーの積分定理（単連結領域）",
+      "summary": "単連結領域D上で正則（かつ導関数連続）な関数fの、D内の任意の単純閉曲線Cに沿う周回複素線積分は零となる。",
+      "canonical_latex": "D \\text{ simply connected},\\; f \\text{ holomorphic on } D\\;(f'\\in C(D)),\\; C \\subset D \\text{ closed} \\implies \\oint_{C} f(z)\\,dz = 0",
+      "aliases_latex": [
+        "\\int_{\\partial \\Omega} f(z)\\,dz = 0"
+      ],
+      "keywords": [
+        "コーシーの積分定理",
+        "Cauchy integral theorem",
+        "単連結領域",
+        "周回積分"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.ca07_contour_deformation_annulus",
+      "short_code": "CA07",
+      "kind": "theorem_formula",
+      "title": "積分の道変更の原理（多重連結領域・円環領域の補題）",
+      "summary": "内部の有限個の穴（特異点領域）を除いて正則な関数について、外側の閉曲線に沿う周回積分は各内部閉曲線に沿う周回積分の和に等しい。",
+      "canonical_latex": "f \\text{ holomorphic in } D \\text{ bounded by } C_{\\text{outer}} \\text{ and } C_1,\\dots,C_m \\implies \\oint_{C_{\\text{outer}}} f(z)\\,dz = \\sum_{k=1}^{m} \\oint_{C_k} f(z)\\,dz",
+      "aliases_latex": [
+        "\\oint_{C_1} f(z)\\,dz = \\oint_{C_2} f(z)\\,dz"
+      ],
+      "keywords": [
+        "道変更の原理",
+        "多重連結領域",
+        "Cauchy theorem multi-connected",
+        "deformation of contours"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.ca08_cauchy_integral_formula",
+      "short_code": "CA08",
+      "kind": "theorem_formula",
+      "title": "コーシーの積分公式",
+      "summary": "閉曲線C上およびその内部で正則な関数fについて、C内部の任意の点z_0における関数値f(z_0)がC上の境界値による複素線積分で完全に決定される公式。",
+      "canonical_latex": "f \\text{ holomorphic inside and on } C,\\; z_0 \\in \\operatorname{int}(C) \\implies f(z_0) = \\frac{1}{2\\pi i}\\oint_{C} \\frac{f(z)}{z - z_0}\\,dz",
+      "aliases_latex": [
+        "\\oint_C \\frac{f(z)}{z - z_0}\\,dz = 2\\pi i\\,f(z_0)"
+      ],
+      "keywords": [
+        "コーシーの積分公式",
+        "Cauchy integral formula",
+        "境界値決定性"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.ca09_cauchy_goursat_derivatives",
+      "short_code": "CA09",
+      "kind": "theorem_formula",
+      "title": "コーシーの微積分公式（高階導関数の積分表示と無限回微分可能性）",
+      "summary": "正則関数は領域内で無限回複素微分可能であり、そのn階導関数の値は閉曲線に沿う積分表示で与えられる。",
+      "canonical_latex": "f \\text{ holomorphic inside and on } C,\\; z_0 \\in \\operatorname{int}(C) \\implies f^{(n)}(z_0) = \\frac{n!}{2\\pi i}\\oint_{C} \\frac{f(z)}{(z - z_0)^{n+1}}\\,dz\\quad (n \\in \\mathbb{Z}_{\\ge 0})",
+      "aliases_latex": [
+        "f'(z_0) = \\frac{1}{2\\pi i}\\oint_{C} \\frac{f(z)}{(z - z_0)^2}\\,dz"
+      ],
+      "keywords": [
+        "高階導関数の積分表示",
+        "コーシーの微積分公式",
+        "無限回微分可能性",
+        "Cauchy differentiation formula"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.complex.ca02_from_ca01",
+      "target_node_id": "math.complex.ca02_cauchy_riemann_equations",
+      "route_kind": "deductive",
+      "title": "複素微分の実軸方向・虚軸方向極限の一致によるコーシー＝リーマン方程式の導出",
+      "premise_node_ids": [
+        "math.complex.ca01_complex_differentiability_def",
+        "math.calc.m44_partial_derivative_def",
+        "math.calc.m23_limit_algebra"
+      ],
+      "required_math_node_ids": [
+        "math.complex.ca02_cauchy_riemann_equations"
+      ],
+      "assumptions": [
+        "f(z) = u(x,y) + iv(x,y) は z_0 = x_0 + iy_0 で複素微分可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f'(z_0) = \\lim_{\\Delta z \\to 0} \\frac{f(z_0 + \\Delta z) - f(z_0)}{\\Delta z}",
+          "to_latex": "\\frac{\\partial u}{\\partial x} = \\frac{\\partial v}{\\partial y},\\quad \\frac{\\partial u}{\\partial y} = -\\frac{\\partial v}{\\partial x}",
+          "operation_label": "実軸・虚軸方向の極限比較",
+          "explanation": "複素微分の極限は増分 Δz の近づき方に依存しないため、実軸方向 Δz = Δx と虚軸方向 Δz = iΔy の極限を等置することでコーシー＝リーマン方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def",
+            "math.complex.ca01_complex_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_real_axis",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f'(z_0) = \\lim_{\\Delta x \\to 0} \\frac{u(x_0+\\Delta x, y_0) - u(x_0, y_0) + i\\big(v(x_0+\\Delta x, y_0) - v(x_0, y_0)\\big)}{\\Delta x}",
+          "to_latex": "f'(z_0) = \\frac{\\partial u}{\\partial x}(x_0, y_0) + i\\frac{\\partial v}{\\partial x}(x_0, y_0)",
+          "operation_label": "実軸方向 Δz = Δx の極限計算",
+          "explanation": "Δz = Δx ∈ R として極限を実部と虚部に分離し、偏導関数の定義を適用する。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.calc.m44_partial_derivative_def",
+            "math.complex.ca01_complex_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_imag_axis",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f'(z_0) = \\lim_{\\Delta y \\to 0} \\frac{u(x_0, y_0+\\Delta y) - u(x_0, y_0) + i\\big(v(x_0, y_0+\\Delta y) - v(x_0, y_0)\\big)}{i\\Delta y}",
+          "to_latex": "f'(z_0) = \\frac{\\partial v}{\\partial y}(x_0, y_0) - i\\frac{\\partial u}{\\partial y}(x_0, y_0)",
+          "operation_label": "虚軸方向 Δz = iΔy の極限計算",
+          "explanation": "Δz = iΔy として 1/i = -i を用いて整理し、y 方向の偏導関数の定義を適用する。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.calc.m44_partial_derivative_def",
+            "math.complex.ca01_complex_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_equate_parts",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_x + i v_x = v_y - i u_y",
+          "to_latex": "u_x = v_y,\\quad u_y = -v_x,\\quad f'(z_0) = u_x + iv_x = v_y - iu_y",
+          "operation_label": "実部と虚部の比較",
+          "explanation": "複素数の一致より実部同士・虚部同士が等しくなり、コーシー＝リーマンの方程式が導かれる。",
+          "used_node_ids": [
+            "math.complex.ca02_cauchy_riemann_equations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.complex.ca03_from_total_diff",
+      "target_node_id": "math.complex.ca03_holomorphic_iff_c1_cr",
+      "route_kind": "deductive",
+      "title": "実全微分可能性とCR方程式からの複素微分可能性の証明",
+      "premise_node_ids": [
+        "math.complex.ca01_complex_differentiability_def",
+        "math.complex.ca02_cauchy_riemann_equations",
+        "math.calc.m45_total_differentiability_def",
+        "math.calc.m23_limit_algebra"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "u, v は点 (x_0, y_0) で実全微分可能であり、u_x = v_y, u_y = -v_x を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta f = \\Delta u + i\\Delta v,\\quad u_x = v_y,\\quad u_y = -v_x",
+          "to_latex": "\\lim_{\\Delta z \\to 0}\\frac{f(z_0 + \\Delta z) - f(z_0)}{\\Delta z} = u_x + iv_x",
+          "operation_label": "1次近似展開とCR関係式の代入",
+          "explanation": "実部・虚部の全微分による1次線形近似にコーシー＝リーマン方程式を代入すると、1次項が Δz = Δx + iΔy で括れ、剰余項が極限で消滅することを示す。",
+          "used_node_ids": [
+            "math.calc.m45_total_differentiability_def",
+            "math.complex.ca01_complex_differentiability_def",
+            "math.complex.ca02_cauchy_riemann_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_total_diff",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta f = \\Delta u + i\\Delta v",
+          "to_latex": "\\Delta f = (u_x \\Delta x + u_y \\Delta y) + i(v_x \\Delta x + v_y \\Delta y) + (\\varepsilon_u + i\\varepsilon_v)|\\Delta z|",
+          "operation_label": "u, v の全微分展開",
+          "explanation": "u, v の全微分可能性より、増分 Δu, Δv を偏導関数の線形結合と誤差項 ε_u|Δz|, ε_v|Δz| (ε_u, ε_v → 0) で展開する。",
+          "used_node_ids": [
+            "math.calc.m45_total_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_apply_cr",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta f = (u_x \\Delta x + u_y \\Delta y) + i(v_x \\Delta x + v_y \\Delta y) + (\\varepsilon_u + i\\varepsilon_v)|\\Delta z|",
+          "to_latex": "\\Delta f = (u_x + i v_x)(\\Delta x + i\\Delta y) + (\\varepsilon_u + i\\varepsilon_v)|\\Delta z| = (u_x + i v_x)\\Delta z + (\\varepsilon_u + i\\varepsilon_v)|\\Delta z|",
+          "operation_label": "CR方程式の代入と Δz での因数分解",
+          "explanation": "v_y = u_x および u_y = -v_x を代入すると、1次部分が (u_x + iv_x)(Δx + iΔy) = (u_x + iv_x)Δz と完全に因数分解される。",
+          "used_node_ids": [
+            "math.complex.ca02_cauchy_riemann_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_limit_zero",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\Delta f}{\\Delta z} = (u_x + i v_x) + (\\varepsilon_u + i\\varepsilon_v)\\frac{|\\Delta z|}{\\Delta z}",
+          "to_latex": "\\lim_{\\Delta z \\to 0}\\frac{\\Delta f}{\\Delta z} = u_x + iv_x",
+          "operation_label": "差分商の極限評価",
+          "explanation": "||Δz|/Δz| = 1 かつ lim(ε_u + iε_v) = 0 であるため、誤差項は Δz → 0 で 0 に収束し、複素微分可能性が証明される。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.complex.ca01_complex_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.complex.ca04_from_cr_schwarz",
+      "target_node_id": "math.complex.ca04_harmonic_conjugate_laplace",
+      "route_kind": "deductive",
+      "title": "CR方程式とシュワルツの定理によるラプラス方程式の導出",
+      "premise_node_ids": [
+        "math.complex.ca02_cauchy_riemann_equations",
+        "math.calc.e01_hessian_matrix_def",
+        "math.pde.pde03_classical_pde_definitions"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f = u + iv は領域 D で正則であり、u, v ∈ C^2(D) とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u_x = v_y,\\quad u_y = -v_x",
+          "to_latex": "\\nabla^2 u = u_{xx} + u_{yy} = 0,\\quad \\nabla^2 v = v_{xx} + v_{yy} = 0",
+          "operation_label": "CR方程式の再偏微分と混合偏微分の対称性",
+          "explanation": "コーシー＝リーマン方程式をそれぞれ x, y でさらに偏微分して足し合わせ、C^2級の対称性（シュワルツの定理）を用いることでラプラス方程式を得る。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.complex.ca02_cauchy_riemann_equations",
+            "math.pde.pde03_classical_pde_definitions"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_second_partials",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_x = v_y,\\quad u_y = -v_x",
+          "to_latex": "u_{xx} = v_{yx},\\quad u_{yy} = -v_{xy};\\qquad v_{xx} = -u_{yx},\\quad v_{yy} = u_{xy}",
+          "operation_label": "CR方程式の2階偏微分",
+          "explanation": "第1式を x で、第2式を y で偏微分して u_{xx}, u_{yy} を v の混合2階偏導関数で表す（v についても同様）。",
+          "used_node_ids": [
+            "math.complex.ca02_cauchy_riemann_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_schwarz_sum",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_{xx} + u_{yy} = v_{yx} - v_{xy},\\quad v_{xx} + v_{yy} = -u_{yx} + u_{xy}",
+          "to_latex": "\\nabla^2 u = 0,\\quad \\nabla^2 v = 0",
+          "operation_label": "シュワルツの対称性の適用",
+          "explanation": "u, v ∈ C^2(D) より混合2階偏導関数の順序交換（v_{yx} = v_{xy}, u_{yx} = u_{xy}）が成り立つため、和が 0 となり両者が調和関数であることが示される。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.pde.pde03_classical_pde_definitions"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.complex.ca06_from_green_cr",
+      "target_node_id": "math.complex.ca06_cauchy_integral_theorem",
+      "route_kind": "deductive",
+      "title": "グリーンの定理とCR方程式によるコーシーの積分定理の導出",
+      "premise_node_ids": [
+        "math.complex.ca02_cauchy_riemann_equations",
+        "math.complex.ca05_complex_line_integral_def",
+        "math.vec.vc04_greens_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f = u + iv は単連結領域 D で正則かつ f' ∈ C(D)（すなわち u, v ∈ C^1(D)）であり、C = ∂Ω は D 内の区分的に滑らかな単純閉曲線とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\oint_{C} f(z)\\,dz = \\oint_{C} (u + iv)(dx + i\\,dy)",
+          "to_latex": "\\oint_{C} f(z)\\,dz = 0",
+          "operation_label": "実2変数線積分への分解とグリーンの定理・CR関係式の適用",
+          "explanation": "複素線積分を実部と虚部の線積分に分解し、グリーンの定理で重積分に書き換えた後、コーシー＝リーマン方程式により被積分関数が恒等的に零になることを示す。",
+          "used_node_ids": [
+            "math.complex.ca02_cauchy_riemann_equations",
+            "math.complex.ca05_complex_line_integral_def",
+            "math.vec.vc04_greens_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_split_real_imag",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{C} f(z)\\,dz",
+          "to_latex": "\\oint_{C} (u\\,dx - v\\,dy) + i\\oint_{C} (v\\,dx + u\\,dy)",
+          "operation_label": "実部と虚部の線積分への展開",
+          "explanation": "f = u + iv と dz = dx + idy の積を展開し、複素線積分を2つの実ベクトル場線積分に分解する。",
+          "used_node_ids": [
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_apply_green",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{C} (u\\,dx - v\\,dy) + i\\oint_{C} (v\\,dx + u\\,dy)",
+          "to_latex": "\\iint_{\\Omega} \\left(-\\frac{\\partial v}{\\partial x} - \\frac{\\partial u}{\\partial y}\\right) dx\\,dy + i\\iint_{\\Omega} \\left(\\frac{\\partial u}{\\partial x} - \\frac{\\partial v}{\\partial y}\\right) dx\\,dy",
+          "operation_label": "グリーンの定理の適用",
+          "explanation": "単連結領域内の閉曲線 C = ∂Ω の囲む領域 Ω に対し、実部 (P=u, Q=-v) および虚部 (P=v, Q=u) の両方にグリーンの定理を適用する。",
+          "used_node_ids": [
+            "math.vec.vc04_greens_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_apply_cr",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iint_{\\Omega} (-v_x - u_y)\\,dx\\,dy + i\\iint_{\\Omega} (u_x - v_y)\\,dx\\,dy",
+          "to_latex": "\\oint_{C} f(z)\\,dz = 0",
+          "operation_label": "コーシー＝リーマン方程式の代入",
+          "explanation": "正則性によるCR方程式 u_y = -v_x および u_x = v_y から両重積分の被積分関数が恒等的に 0 となり、積分値 0 が従う。",
+          "used_node_ids": [
+            "math.complex.ca02_cauchy_riemann_equations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.complex.ca07_from_ca06_cuts",
+      "target_node_id": "math.complex.ca07_contour_deformation_annulus",
+      "route_kind": "deductive",
+      "title": "切り込み（横断線）とコーシーの積分定理による多重連結領域の道変更原理",
+      "premise_node_ids": [
+        "math.complex.ca05_complex_line_integral_def",
+        "math.complex.ca06_cauchy_integral_theorem",
+        "math.calc.m16_integral_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "外周 C_outer と内部閉曲線 C_1, ..., C_m はともに正の向き（反時計回り）にパラメータ付けされている。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Gamma = C_{\\text{outer}} \\cup \\bigcup_{k=1}^{m}(-C_k)",
+          "to_latex": "\\oint_{C_{\\text{outer}}} f(z)\\,dz = \\sum_{k=1}^{m} \\oint_{C_k} f(z)\\,dz",
+          "operation_label": "横断線による単連結領域化と積分定理の適用",
+          "explanation": "外周と各内部閉曲線を補助線（横断線）で結んで領域を単連結領域に分割し、コーシーの積分定理を適用した後、往復の横断線積分が相殺することを用いる。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.complex.ca06_cauchy_integral_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_crosscuts",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D \\setminus \\bigcup_{k=1}^{m} \\operatorname{int}(C_k)",
+          "to_latex": "\\partial \\widetilde{D}_j \\text{ is a simple closed curve in } D",
+          "operation_label": "補助線（横断線）の導入",
+          "explanation": "C_outer と各 C_k を互いに交わらない補助線 L_k で結び、境界が互いに反対向きに L_k を2回通る単連結部分領域を構成する。",
+          "used_node_ids": [
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_apply_cauchy",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{\\partial \\widetilde{D}_j} f(z)\\,dz",
+          "to_latex": "\\oint_{C_{\\text{outer}}} f(z)\\,dz - \\sum_{k=1}^{m}\\oint_{C_k} f(z)\\,dz + \\sum_{k=1}^{m}\\left(\\int_{L_k} f(z)\\,dz + \\int_{-L_k} f(z)\\,dz\\right) = 0",
+          "operation_label": "単連結部分領域へのコーシーの積分定理の適用",
+          "explanation": "構成した各単連結部分領域上で f は正則であるため、コーシーの積分定理により境界全体の積分が 0 となる。",
+          "used_node_ids": [
+            "math.complex.ca06_cauchy_integral_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_cancel_cuts",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{L_k} f(z)\\,dz + \\int_{-L_k} f(z)\\,dz = 0",
+          "to_latex": "\\oint_{C_{\\text{outer}}} f(z)\\,dz = \\sum_{k=1}^{m} \\oint_{C_k} f(z)\\,dz",
+          "operation_label": "横断線積分の相殺と移項",
+          "explanation": "線積分の線形性により互いに逆向きの横断線積分が相殺され、外周積分と内部閉曲線積分の和が等しいことが導かれる。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.complex.ca08_from_ca07_ml",
+      "target_node_id": "math.complex.ca08_cauchy_integral_formula",
+      "route_kind": "deductive",
+      "title": "道変更原理とML不等式によるコーシーの積分公式の導出",
+      "premise_node_ids": [
+        "math.complex.ca01_complex_differentiability_def",
+        "math.complex.ca05_complex_line_integral_def",
+        "math.complex.ca07_contour_deformation_annulus",
+        "math.calc.m25_integral_monotonicity_squeeze",
+        "math.calc.m22_differentiability_implies_continuity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f は閉曲線 C およびその内部で正則であり、z_0 ∈ int(C) である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\oint_{C} \\frac{f(z)}{z - z_0}\\,dz",
+          "to_latex": "f(z_0) = \\frac{1}{2\\pi i}\\oint_{C} \\frac{f(z)}{z - z_0}\\,dz",
+          "operation_label": "微小円への経路変形と極限評価",
+          "explanation": "道変更の原理で積分経路を z_0 中心の小円 C_r に縮小し、f(z) = f(z_0) + (f(z)-f(z_0)) と分解して主要項 2πi f(z_0) と r → 0 で消滅する剰余項を評価する。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.complex.ca05_complex_line_integral_def",
+            "math.complex.ca07_contour_deformation_annulus"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_deform_circle",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{C} \\frac{f(z)}{z - z_0}\\,dz",
+          "to_latex": "\\oint_{C_r} \\frac{f(z)}{z - z_0}\\,dz,\\quad C_r: z(\\theta) = z_0 + r e^{i\\theta}\\;(0\\le\\theta\\le 2\\pi)",
+          "operation_label": "小円 C_r への積分経路の変形",
+          "explanation": "g(z) = f(z)/(z - z_0) は z_0 を除いて正則であるため、道変更の原理により積分経路を C から内部の十分小さい円 C_r に移せる。",
+          "used_node_ids": [
+            "math.complex.ca07_contour_deformation_annulus"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_split_f0",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{C_r} \\frac{f(z)}{z - z_0}\\,dz = f(z_0)\\oint_{C_r}\\frac{dz}{z - z_0} + \\oint_{C_r}\\frac{f(z) - f(z_0)}{z - z_0}\\,dz",
+          "to_latex": "\\oint_{C_r} \\frac{f(z)}{z - z_0}\\,dz = 2\\pi i\\,f(z_0) + \\oint_{C_r}\\frac{f(z) - f(z_0)}{z - z_0}\\,dz",
+          "operation_label": "定数項 f(z_0) の分離と 1/(z-z_0) の周回積分計算",
+          "explanation": "z = z_0 + r e^{iθ} において dz = i r e^{iθ} dθ より ∮_{C_r} dz/(z-z_0) = ∫_0^{2π} i dθ = 2πi となる。",
+          "used_node_ids": [
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_bound_remainder",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left|\\oint_{C_r}\\frac{f(z) - f(z_0)}{z - z_0}\\,dz\\right| \\le \\sup_{|z-z_0|=r}\\frac{|f(z)-f(z_0)|}{r} \\cdot 2\\pi r = 2\\pi \\sup_{|z-z_0|=r}|f(z)-f(z_0)|",
+          "to_latex": "\\lim_{r\\to 0^+}\\oint_{C_r}\\frac{f(z)-f(z_0)}{z-z_0}\\,dz = 0 \\implies f(z_0) = \\frac{1}{2\\pi i}\\oint_{C}\\frac{f(z)}{z-z_0}\\,dz",
+          "operation_label": "ML不等式と連続性による極限評価",
+          "explanation": "f の z_0 における連続性より r → 0 で sup|f(z)-f(z_0)| → 0 となるため、はさみうちの原理から剰余積分は 0 となり、公式が得られる。",
+          "used_node_ids": [
+            "math.calc.m22_differentiability_implies_continuity",
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.complex.ca09_from_ca08_diff",
+      "target_node_id": "math.complex.ca09_cauchy_goursat_derivatives",
+      "route_kind": "deductive",
+      "title": "コーシーの積分公式の差分商極限と帰納法による高階導関数表示の導出",
+      "premise_node_ids": [
+        "math.complex.ca01_complex_differentiability_def",
+        "math.complex.ca05_complex_line_integral_def",
+        "math.complex.ca08_cauchy_integral_formula",
+        "math.calc.m25_integral_monotonicity_squeeze"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f は閉曲線 C およびその内部で正則であり、z_0 ∈ int(C) と C の間の距離 d = dist(z_0, C) > 0 が存在する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f(z_0) = \\frac{1}{2\\pi i}\\oint_{C} \\frac{f(z)}{z - z_0}\\,dz",
+          "to_latex": "f^{(n)}(z_0) = \\frac{n!}{2\\pi i}\\oint_{C} \\frac{f(z)}{(z - z_0)^{n+1}}\\,dz",
+          "operation_label": "積分表示の差分商極限と数学的帰納法",
+          "explanation": "積分公式の差分商 (f(z_0+h)-f(z_0))/h を計算して h → 0 の極限が積分記号下の微分と一致することをML不等式で示し、帰納法で n 階に拡張する。",
+          "used_node_ids": [
+            "math.complex.ca01_complex_differentiability_def",
+            "math.complex.ca05_complex_line_integral_def",
+            "math.complex.ca08_cauchy_integral_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_diff_quotient",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{f(z_0 + h) - f(z_0)}{h}",
+          "to_latex": "\\frac{1}{2\\pi i}\\oint_{C} \\frac{f(z)}{(z - z_0 - h)(z - z_0)}\\,dz",
+          "operation_label": "差分商へのコーシー積分公式の適用",
+          "explanation": "十分小さい |h| < d に対し z_0 + h ∈ int(C) なので、ca08 を適用して 1/(z-z_0-h) - 1/(z-z_0) = h/((z-z_0-h)(z-z_0)) を通分する。",
+          "used_node_ids": [
+            "math.complex.ca08_cauchy_integral_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_limit_first_deriv",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{f(z_0 + h) - f(z_0)}{h} - \\frac{1}{2\\pi i}\\oint_{C}\\frac{f(z)}{(z - z_0)^2}\\,dz = \\frac{h}{2\\pi i}\\oint_{C}\\frac{f(z)}{(z - z_0 - h)(z - z_0)^2}\\,dz",
+          "to_latex": "f'(z_0) = \\frac{1}{2\\pi i}\\oint_{C}\\frac{f(z)}{(z - z_0)^2}\\,dz",
+          "operation_label": "ML不等式による h → 0 の極限評価",
+          "explanation": "|h| ≤ d/2 のとき |z-z_0-h| ≥ d/2 かつ |z-z_0| ≥ d なので、ML不等式により誤差項は O(|h|) となり h → 0 で 0 に収束し、n=1 の式が示される。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.complex.ca01_complex_differentiability_def",
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_induction_n",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f^{(k)}(z_0) = \\frac{k!}{2\\pi i}\\oint_{C}\\frac{f(z)}{(z - z_0)^{k+1}}\\,dz",
+          "to_latex": "f^{(k+1)}(z_0) = \\frac{(k+1)!}{2\\pi i}\\oint_{C}\\frac{f(z)}{(z - z_0)^{k+2}}\\,dz",
+          "operation_label": "数学的帰納法による一般階数 n への拡張",
+          "explanation": "k 階の式に対して同様に差分商をとり、多項式展開とML不等式を用いて h → 0 の極限を取ることで k+1 階の公式が導かれる。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

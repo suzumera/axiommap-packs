@@ -1,0 +1,818 @@
+{
+  "pack_meta": {
+    "pack_id": "math.laplace.transform",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "ラプラス変換と逆変換・微分方程式の代数解法",
+    "language": "ja",
+    "description": "片側ラプラス変換の定義、微分・積分法則、畳み込み定理、初期値・最終値定理、ブロムウィッチ積分を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.laplace.lt01_laplace_transform_def",
+      "short_code": "LT01",
+      "kind": "definition",
+      "title": "片側ラプラス変換の定義と収束座標軸（指数位数）",
+      "summary": "因果関数 f(t) (t >= 0) に対する片側ラプラス変換 F(s) = L[f](s) と、絶対収束を保証する指数位数・収束座標軸 Re(s) > sigma_c を定義する。",
+      "canonical_latex": "F(s) = \\mathcal{L}[f](s) := \\int_{0^-}^{\\infty} f(t) e^{-st}\\,dt \\quad (\\operatorname{Re}(s) > \\sigma_c),\\qquad |f(t)| \\le M e^{\\sigma_0 t}\\;(t \\ge 0) \\implies \\sigma_c \\le \\sigma_0",
+      "aliases_latex": [
+        "F(s) = \\int_{0}^{\\infty} f(t)e^{-st}\\,dt"
+      ],
+      "keywords": [
+        "Laplace transform",
+        "unilateral",
+        "abscissa of convergence",
+        "exponential order",
+        "片側ラプラス変換",
+        "収束座標軸"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "laplace_transform",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.laplace.lt02_linearity_and_shifting",
+      "short_code": "LT02",
+      "kind": "theorem_formula",
+      "title": "ラプラス変換の線形性と移動法則（s領域・時間領域）",
+      "summary": "ラプラス変換の線形性、指数関数乗算による s 領域平行移動（第1移動定理）、および単位ステップ関数を伴う時間遅延（第2移動定理）を与える。",
+      "canonical_latex": "\\mathcal{L}[\\alpha f + \\beta g](s) = \\alpha F(s) + \\beta G(s),\\quad \\mathcal{L}[e^{at}f(t)](s) = F(s-a),\\quad \\mathcal{L}[f(t-a)u(t-a)](s) = e^{-as}F(s)\\;(a>0),\\quad \\mathcal{L}[f(ct)](s) = \\frac{1}{c}F\\!\\left(\\frac{s}{c}\\right)\\;(c>0) ",
+      "aliases_latex": [
+        "\\mathcal{L}[e^{at}f(t)](s)=F(s-a)"
+      ],
+      "keywords": [
+        "linearity",
+        "frequency shifting",
+        "time shifting",
+        "Heaviside step",
+        "線形性",
+        "移動定理"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "laplace_transform"
+      ]
+    },
+    {
+      "id": "math.laplace.lt03_elementary_transforms",
+      "short_code": "LT03",
+      "kind": "theorem_formula",
+      "title": "基本関数のラプラス変換公式",
+      "summary": "べき関数 t^n、指数関数 e^{at}、および三角関数 cos(omega t), sin(omega t) のラプラス変換の標準公式をまとめる。",
+      "canonical_latex": "\\mathcal{L}[1](s) = \\frac{1}{s},\\quad \\mathcal{L}[t^n](s) = \\frac{n!}{s^{n+1}},\\quad \\mathcal{L}[e^{at}](s) = \\frac{1}{s-a},\\quad \\mathcal{L}[\\cos\\omega t](s) = \\frac{s}{s^2+\\omega^2},\\quad \\mathcal{L}[\\sin\\omega t](s) = \\frac{\\omega}{s^2+\\omega^2} ",
+      "aliases_latex": [
+        "\\mathcal{L}[t^n](s)=\\Gamma(n+1)/s^{n+1}"
+      ],
+      "keywords": [
+        "elementary Laplace transforms",
+        "power",
+        "exponential",
+        "trigonometric",
+        "基本関数"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "laplace_transform"
+      ]
+    },
+    {
+      "id": "math.laplace.lt04_derivative_integral_rules",
+      "short_code": "LT04",
+      "kind": "theorem_formula",
+      "title": "ラプラス変換の微分法則と積分法則",
+      "summary": "時間領域の高階微分を s の多項式と初期値に変換する微分法則、時間領域積分を 1/s 倍に対応させる積分法則、および s 領域微分法則を与える。",
+      "canonical_latex": "\\mathcal{L}[f^{(n)}](s) = s^n F(s) - \\sum_{k=0}^{n-1} s^{n-1-k} f^{(k)}(0^-),\\quad \\mathcal{L}\\!\\left[\\int_{0^-}^{t} f(\\tau)\\,d\\tau\\right](s) = \\frac{F(s)}{s},\\quad \\mathcal{L}[t^n f(t)](s) = (-1)^n \\frac{d^n F}{ds^n}(s) ",
+      "aliases_latex": [
+        "\\mathcal{L}[f'(t)](s) = sF(s) - f(0^-)"
+      ],
+      "keywords": [
+        "derivative rule",
+        "integral rule",
+        "frequency differentiation",
+        "微分法則",
+        "積分法則"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "laplace_transform"
+      ]
+    },
+    {
+      "id": "math.laplace.lt05_causal_convolution_theorem",
+      "short_code": "LT05",
+      "kind": "theorem_formula",
+      "title": "片側畳み込み積分とラプラス変換の畳み込み定理",
+      "summary": "因果関数に対する片側畳み込み積分 (f*g)(t) を定義し、そのラプラス変換が各変換の積 F(s)G(s) に一致することを示す。",
+      "canonical_latex": "(f * g)(t) := \\int_{0}^{t} f(\\tau)g(t - \\tau)\\,d\\tau \\implies \\mathcal{L}[f * g](s) = F(s)G(s)\\quad (\\operatorname{Re}(s) > \\max(\\sigma_f, \\sigma_g)) ",
+      "aliases_latex": [
+        "\\mathcal{L}\\!\\left[\\int_0^t f(\\tau)g(t-\\tau)\\,d\\tau\\right] = \\mathcal{L}[f]\\mathcal{L}[g]"
+      ],
+      "keywords": [
+        "convolution theorem",
+        "causal convolution",
+        "Duhamel",
+        "畳み込み定理"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "laplace_transform"
+      ]
+    },
+    {
+      "id": "math.laplace.lt06_initial_value_theorem",
+      "short_code": "LT06",
+      "kind": "theorem_formula",
+      "title": "ラプラス変換の初期値定理",
+      "summary": "時間領域における t -> 0^+ の極限値 f(0^+) を、s 領域の s -> infinity における sF(s) の極限として求める初期値定理を与える。",
+      "canonical_latex": "\\lim_{t \\to 0^+} f(t) = \\lim_{s \\to \\infty} s F(s) \\quad (f,\\, f' \\text{ piecewise continuous and of exponential order})",
+      "aliases_latex": [
+        "f(0^+) = \\lim_{s\\to\\infty} sF(s)"
+      ],
+      "keywords": [
+        "initial value theorem",
+        "IVT",
+        "asymptotic",
+        "初期値定理"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "laplace_transform"
+      ]
+    },
+    {
+      "id": "math.laplace.lt07_final_value_theorem",
+      "short_code": "LT07",
+      "kind": "theorem_formula",
+      "title": "ラプラス変換の最終値定理",
+      "summary": "sF(s) のすべての極が複素左半平面 Re(s) < 0 に存在するとき、t -> infinity での定常値 f(infinity) が s -> 0 での sF(s) の極限に等しいことを示す。",
+      "canonical_latex": "\\lim_{t \\to \\infty} f(t) = \\lim_{s \\to 0} s F(s) \\quad (\\text{all poles of } sF(s) \\text{ lie in } \\operatorname{Re}(s) < 0) ",
+      "aliases_latex": [
+        "f(\\infty) = \\lim_{s\\to 0} sF(s)"
+      ],
+      "keywords": [
+        "final value theorem",
+        "FVT",
+        "steady state",
+        "最終値定理"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "laplace_transform"
+      ]
+    },
+    {
+      "id": "math.laplace.lt08_bromwich_inversion_integral",
+      "short_code": "LT08",
+      "kind": "theorem_formula",
+      "title": "ブロムウィッチ積分（ラプラス逆変換公式）と留数評価",
+      "summary": "フーリエ逆変換の複素化により導かれるブロムウィッチ線積分公式と、ジョルダンの補題・留数定理を用いた複素平面左半平面の極による逆変換評価を与える。",
+      "canonical_latex": "f(t) = \\mathcal{L}^{-1}[F](t) = \\frac{1}{2\\pi i}\\lim_{T \\to \\infty}\\int_{\\gamma - iT}^{\\gamma + iT} F(s) e^{st}\\,ds = \\sum_{\\operatorname{Re}(s_k) < \\gamma} \\operatorname{Res}\\!\\big(F(s)e^{st},\\, s_k\\big)\\quad (t > 0,\\; \\gamma > \\sigma_c) ",
+      "aliases_latex": [
+        "f(t) = \\frac{1}{2\\pi i}\\int_{\\gamma-i\\infty}^{\\gamma+i\\infty} F(s)e^{st}\\,ds"
+      ],
+      "keywords": [
+        "Bromwich integral",
+        "inverse Laplace transform",
+        "Mellin inversion",
+        "residue",
+        "ブロムウィッチ積分",
+        "ラプラス逆変換"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "laplace_transform",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.laplace.lt09_algebraic_ode_method",
+      "short_code": "LT09",
+      "kind": "theorem_formula",
+      "title": "ラプラス変換による定数係数線形常微分方程式の代数解法",
+      "summary": "初期値問題を伴う定数係数線形常微分方程式を s 領域の代数方程式（特性多項式と初期値多項式）へ変換し、逆変換によって一意解を得る手法を与える。",
+      "canonical_latex": "\\sum_{k=0}^{n} a_k y^{(k)}(t) = g(t) \\implies P(s)Y(s) = G(s) + I_0(s),\\quad Y(s) = \\frac{G(s) + I_0(s)}{P(s)} \\implies y(t) = \\mathcal{L}^{-1}[Y](t) ",
+      "aliases_latex": [
+        "P(s)Y(s) = G(s) + I_0(s)"
+      ],
+      "keywords": [
+        "linear ODE",
+        "initial value problem",
+        "transfer function",
+        "algebraic method",
+        "微分方程式の代数解法"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "laplace_transform",
+        "ode"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_lt02_linearity_shifting",
+      "target_node_id": "math.laplace.lt02_linearity_and_shifting",
+      "route_kind": "deductive",
+      "title": "片側ラプラス変換の定義からの線形性および移動・スケーリング法則の導出",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "assumptions": [
+        "f(t), g(t) は t >= 0 で区分的に連続かつ指数位数を持ち、Re(s) > max(sigma_f, sigma_g, sigma_f + Re(a)) とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F(s) = \\int_{0^-}^{\\infty} f(t) e^{-st}\\,dt",
+          "to_latex": "\\mathcal{L}[\\alpha f + \\beta g](s) = \\alpha F(s) + \\beta G(s),\\; \\mathcal{L}[e^{at}f](s) = F(s-a),\\; \\mathcal{L}[f(t-a)u(t-a)](s) = e^{-as}F(s),\\; \\mathcal{L}[f(ct)](s) = \\frac{1}{c}F(s/c) ",
+          "operation_label": "apply_linearity_and_integral_substitution",
+          "explanation": "定義積分の線形性と指数関数の指数法則および積分変数の平行移動・定数倍置換を用いて各法則を導く。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m43_definite_integral_substitution",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": "integrate(exp(-s*t)*exp(a*t)*f(t), (t, 0, oo))"
+        },
+        {
+          "step_id": "s2_linearity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}[\\alpha f + \\beta g](s) = \\int_{0^-}^{\\infty} (\\alpha f(t) + \\beta g(t))e^{-st}\\,dt",
+          "to_latex": "\\alpha \\int_{0^-}^{\\infty} f(t)e^{-st}\\,dt + \\beta \\int_{0^-}^{\\infty} g(t)e^{-st}\\,dt = \\alpha F(s) + \\beta G(s) ",
+          "operation_label": "apply_integral_linearity",
+          "explanation": "広義積分の収束域の共通部分において定積分の線形性を適用する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_freq_shift",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}[e^{at}f(t)](s) = \\int_{0^-}^{\\infty} e^{at} f(t) e^{-st}\\,dt",
+          "to_latex": "\\int_{0^-}^{\\infty} f(t) e^{-(s-a)t}\\,dt = F(s - a) ",
+          "operation_label": "combine_exponentials",
+          "explanation": "被積分関数の指数因子 e^{at} e^{-st} を e^{-(s-a)t} にまとめると、s を s-a に置き換えた定義式に一致する。",
+          "used_node_ids": [
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_time_shift_scale",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{a}^{\\infty} f(t-a)e^{-st}\\,dt,\\quad \\int_{0^-}^{\\infty} f(ct)e^{-st}\\,dt",
+          "to_latex": "e^{-as}\\int_{0^-}^{\\infty} f(\\tau)e^{-s\\tau}\\,d\\tau = e^{-as}F(s),\\quad \\frac{1}{c}\\int_{0^-}^{\\infty} f(u)e^{-(s/c)u}\\,du = \\frac{1}{c}F\\!\\left(\\frac{s}{c}\\right) ",
+          "operation_label": "substitute_integration_variables",
+          "explanation": "時間移動では tau = t - a、スケーリングでは u = ct と変数置換することで第2移動定理とスケーリング法則が得られる。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lt03_elementary_transforms",
+      "target_node_id": "math.laplace.lt03_elementary_transforms",
+      "route_kind": "deductive",
+      "title": "直接積分と部分積分・移動定理による基本関数のラプラス変換の導出",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def",
+        "math.laplace.lt02_linearity_and_shifting"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m10_integration_by_parts",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "Re(s) > 0（指数関数 e^{at} については Re(s) > Re(a)）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F(s) = \\int_{0^-}^{\\infty} f(t)e^{-st}\\,dt",
+          "to_latex": "\\mathcal{L}[1](s) = \\frac{1}{s},\\; \\mathcal{L}[t^n](s) = \\frac{n!}{s^{n+1}},\\; \\mathcal{L}[e^{at}](s) = \\frac{1}{s-a},\\; \\mathcal{L}[\\cos\\omega t](s) = \\frac{s}{s^2+\\omega^2},\\; \\mathcal{L}[\\sin\\omega t](s) = \\frac{\\omega}{s^2+\\omega^2} ",
+          "operation_label": "evaluate_elementary_laplace_integrals",
+          "explanation": "定義式の直接積分、帰納的部分積分、および線形性と複素指数表示を組み合わせて基本関数の変換公式を導出する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m10_integration_by_parts",
+            "math.calc.t06_exp_power_derivatives",
+            "math.laplace.lt01_laplace_transform_def",
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": "laplace_transform(t**n, t, s)"
+        },
+        {
+          "step_id": "s2_const_and_exp",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}[1](s) = \\int_{0}^{\\infty} e^{-st}\\,dt",
+          "to_latex": "\\left[-\\frac{e^{-st}}{s}\\right]_{0}^{\\infty} = \\frac{1}{s},\\qquad \\mathcal{L}[e^{at}](s) = \\frac{1}{s-a} ",
+          "operation_label": "direct_integration_and_shifting",
+          "explanation": "微積分学の基本定理により L[1](s) = 1/s を求め、s 領域移動法則を f(t) = 1 に適用して L[e^{at}](s) = 1/(s-a) を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.t06_exp_power_derivatives",
+            "math.laplace.lt01_laplace_transform_def",
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_power_function",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}[t^n](s) = \\int_{0}^{\\infty} t^n e^{-st}\\,dt",
+          "to_latex": "\\left[-\\frac{t^n e^{-st}}{s}\\right]_{0}^{\\infty} + \\frac{n}{s}\\int_{0}^{\\infty} t^{n-1}e^{-st}\\,dt = \\frac{n}{s}\\mathcal{L}[t^{n-1}](s) = \\frac{n!}{s^{n+1}} ",
+          "operation_label": "apply_integration_by_parts_inductively",
+          "explanation": "部分積分を適用すると境界項が消え、漸化式 L[t^n] = (n/s)L[t^{n-1}] が得られる。帰納的に L[1] = 1/s から n!/s^{n+1} が従う。",
+          "used_node_ids": [
+            "math.calc.m10_integration_by_parts",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_trig_functions",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}[e^{i\\omega t}](s) = \\frac{1}{s - i\\omega} = \\frac{s + i\\omega}{s^2 + \\omega^2} ",
+          "to_latex": "\\mathcal{L}[\\cos\\omega t](s) = \\frac{s}{s^2 + \\omega^2},\\qquad \\mathcal{L}[\\sin\\omega t](s) = \\frac{\\omega}{s^2 + \\omega^2} ",
+          "operation_label": "separate_real_and_imaginary_parts",
+          "explanation": "オイラーの公式 e^{i\\omega t} = cos(\\omega t) + i sin(\\omega t) と変換の線形性を用い、1/(s - i\\omega) の実部と虚部を分離する。",
+          "used_node_ids": [
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lt04_derivative_integral_rules",
+      "target_node_id": "math.laplace.lt04_derivative_integral_rules",
+      "route_kind": "deductive",
+      "title": "部分積分と積分の順序交換による微分法則・積分法則の導出",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m10_integration_by_parts",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "f は [0, infinity) 上で連続（n階微分法則では C^{n-1} 級かつ f^{(n)} が区分的連続）で、すべての導関数が指数位数 sigma_0 を持ち Re(s) > sigma_0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{L}[f'](s) = \\int_{0^-}^{\\infty} f'(t)e^{-st}\\,dt,\\quad \\mathcal{L}\\!\\left[\\int_{0^-}^{t} f(\\tau)\\,d\\tau\\right](s),\\quad \\frac{d^n F}{ds^n}(s) ",
+          "to_latex": "\\mathcal{L}[f^{(n)}](s) = s^n F(s) - \\sum_{k=0}^{n-1} s^{n-1-k} f^{(k)}(0^-),\\quad \\mathcal{L}\\!\\left[\\int_{0^-}^{t} f(\\tau)\\,d\\tau\\right](s) = \\frac{F(s)}{s},\\quad \\mathcal{L}[t^n f(t)](s) = (-1)^n F^{(n)}(s) ",
+          "operation_label": "derive_operational_derivative_and_integral_rules",
+          "explanation": "部分積分による時間微分の代数化、原始関数への1階微分法則の適用、および積分記号下の s 微分により3法則を導出する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m10_integration_by_parts",
+            "math.calc.t06_exp_power_derivatives",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_first_and_nth_derivative",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}[f'](s) = \\int_{0^-}^{\\infty} f'(t)e^{-st}\\,dt",
+          "to_latex": "\\Big[f(t)e^{-st}\\Big]_{0^-}^{\\infty} + s\\int_{0^-}^{\\infty} f(t)e^{-st}\\,dt = sF(s) - f(0^-) \\implies \\mathcal{L}[f^{(n)}](s) = s^n F(s) - \\sum_{k=0}^{n-1} s^{n-1-k} f^{(k)}(0^-) ",
+          "operation_label": "apply_integration_by_parts_recursively",
+          "explanation": "部分積分と Re(s) > sigma_0 における lim_{t->oo} f(t)e^{-st} = 0 を用いて1階微分法則を得て、これを n 回帰納適用して n 階公式を得る。",
+          "used_node_ids": [
+            "math.calc.m10_integration_by_parts",
+            "math.calc.t06_exp_power_derivatives",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integral_rule",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g(t) := \\int_{0^-}^{t} f(\\tau)\\,d\\tau,\\quad g(0^-) = 0,\\quad g'(t) = f(t) ",
+          "to_latex": "F(s) = \\mathcal{L}[g'](s) = s\\mathcal{L}[g](s) - g(0^-) = s\\mathcal{L}[g](s) \\implies \\mathcal{L}\\!\\left[\\int_{0^-}^{t} f(\\tau)\\,d\\tau\\right](s) = \\frac{F(s)}{s} ",
+          "operation_label": "apply_first_derivative_rule_to_antiderivative",
+          "explanation": "微積分学の基本定理により g'(t) = f(t) と g(0^-) = 0 が成り立つため、1階微分法則から直ちに積分法則 F(s)/s が従う。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_freq_differentiation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^n}{ds^n} F(s) = \\frac{d^n}{ds^n} \\int_{0^-}^{\\infty} f(t)e^{-st}\\,dt ",
+          "to_latex": "\\int_{0^-}^{\\infty} f(t) \\frac{\\partial^n}{\\partial s^n}(e^{-st})\\,dt = (-1)^n \\int_{0^-}^{\\infty} t^n f(t)e^{-st}\\,dt = (-1)^n \\mathcal{L}[t^n f(t)](s) ",
+          "operation_label": "differentiate_under_integral_sign",
+          "explanation": "一様収束域 Re(s) > sigma_c における積分と s 微分の交換により (-t)^n 因子が現れ、s 領域微分法則が導かれる。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lt05_convolution_theorem",
+      "target_node_id": "math.laplace.lt05_causal_convolution_theorem",
+      "route_kind": "deductive",
+      "title": "フビニの定理と変数変換による片側畳み込み定理の導出",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def",
+        "math.fourier.ft07_convolution_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m43_definite_integral_substitution",
+        "math.calc.mi02_fubini_theorem"
+      ],
+      "assumptions": [
+        "f, g は因果関数（t < 0 で零）であり、Re(s) > max(sigma_f, sigma_g) で両積分が絶対収束するとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F(s)G(s) = \\left(\\int_{0}^{\\infty} f(\\tau)e^{-s\\tau}\\,d\\tau\\right)\\left(\\int_{0}^{\\infty} g(u)e^{-su}\\,du\\right) ",
+          "to_latex": "\\int_{0}^{\\infty} \\left(\\int_{0}^{t} f(\\tau)g(t - \\tau)\\,d\\tau\\right) e^{-st}\\,dt = \\mathcal{L}[f * g](s) ",
+          "operation_label": "transform_product_into_causal_convolution",
+          "explanation": "積の2重積分に変数変換 t = tau + u を施し、フビニの定理で積分順序を交換して片側畳み込みのラプラス変換を導く。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution",
+            "math.calc.mi02_fubini_theorem",
+            "math.fourier.ft07_convolution_def",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_product_to_double_integral",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F(s)G(s) = \\int_{0}^{\\infty} \\int_{0}^{\\infty} f(\\tau)g(u)e^{-s(\\tau + u)}\\,du\\,d\\tau ",
+          "to_latex": "\\int_{0}^{\\infty} \\left(\\int_{\\tau}^{\\infty} f(\\tau)g(t - \\tau)e^{-st}\\,dt\\right) d\\tau ",
+          "operation_label": "substitute_t_equals_tau_plus_u",
+          "explanation": "内側積分で t = tau + u (u = t - tau, du = dt) と置換すると、積分領域は 0 <= tau <= t < infinity の三角領域となる。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_fubini_swap_order",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{0}^{\\infty} \\int_{\\tau}^{\\infty} f(\\tau)g(t - \\tau)e^{-st}\\,dt\\,d\\tau ",
+          "to_latex": "\\int_{0}^{\\infty} \\left(\\int_{0}^{t} f(\\tau)g(t - \\tau)\\,d\\tau\\right) e^{-st}\\,dt = \\mathcal{L}[f * g](s) ",
+          "operation_label": "apply_fubini_theorem",
+          "explanation": "絶対収束のもとでフビニの定理により積分順序を (t, tau) から (tau, t) へ交換すると、内側積分が片側畳み込み (f*g)(t) となる。",
+          "used_node_ids": [
+            "math.calc.mi02_fubini_theorem",
+            "math.fourier.ft07_convolution_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lt06_initial_value_theorem",
+      "target_node_id": "math.laplace.lt06_initial_value_theorem",
+      "route_kind": "deductive",
+      "title": "微分法則と無限遠極限による初期値定理の導出",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def",
+        "math.laplace.lt04_derivative_integral_rules"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m23_limit_algebra"
+      ],
+      "assumptions": [
+        "f(t) と f'(t) は [0, infinity) で区分的に連続（原点の極限 f(0^+) が存在し、t=0 でデルタ関数成分を含まない）かつ指数位数を持つとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "s F(s) - f(0^+) = \\int_{0^+}^{\\infty} f'(t) e^{-st}\\,dt ",
+          "to_latex": "\\lim_{s \\to \\infty} s F(s) = f(0^+) = \\lim_{t \\to 0^+} f(t) ",
+          "operation_label": "take_limit_s_to_infinity",
+          "explanation": "1階微分法則の右辺積分において s -> infinity の極限をとると指数減衰因子により積分が 0 に収束し、初期値定理が得られる。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.laplace.lt01_laplace_transform_def",
+            "math.laplace.lt04_derivative_integral_rules"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_split_integral_at_zero",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}[f'](s) = s F(s) - f(0^-) = \\int_{0^-}^{0^+} f'(t)e^{-st}\\,dt + \\int_{0^+}^{\\infty} f'(t)e^{-st}\\,dt ",
+          "to_latex": "s F(s) - f(0^-) = \\big(f(0^+) - f(0^-)\\big) + \\int_{0^+}^{\\infty} f'(t)e^{-st}\\,dt \\implies s F(s) - f(0^+) = \\int_{0^+}^{\\infty} f'(t)e^{-st}\\,dt ",
+          "operation_label": "isolate_jump_at_origin",
+          "explanation": "t = 0 における不連続跳躍寄与 (f(0^+) - f(0^-)) を分離することで、左辺が sF(s) - f(0^+) に整理される。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.laplace.lt04_derivative_integral_rules"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_vanishing_integral_limit",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{s \\to \\infty} \\big(s F(s) - f(0^+)\\big) = \\lim_{s \\to \\infty} \\int_{0^+}^{\\infty} f'(t) e^{-st}\\,dt = 0 ",
+          "to_latex": "\\lim_{s \\to \\infty} s F(s) = f(0^+) = \\lim_{t \\to 0^+} f(t) ",
+          "operation_label": "evaluate_limit_under_integral",
+          "explanation": "f'(t) の指数位数と一様有界評価により s -> infinity で広義積分が 0 に収束し、f(0^+) = lim_{s -> infinity} sF(s) が従う。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lt07_final_value_theorem",
+      "target_node_id": "math.laplace.lt07_final_value_theorem",
+      "route_kind": "deductive",
+      "title": "微分法則と s->0 極限・微積分学の基本定理による最終値定理の導出",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def",
+        "math.laplace.lt04_derivative_integral_rules"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m23_limit_algebra"
+      ],
+      "assumptions": [
+        "sF(s) のすべての極が厳密に複素左半平面 Re(s) < 0 に存在し、F(s) が Re(s) >= 0 (s != 0) で解析的かつ f'(t) が [0, infinity) で可積分であるとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "s F(s) - f(0^-) = \\int_{0^-}^{\\infty} f'(t)e^{-st}\\,dt ",
+          "to_latex": "\\lim_{s \\to 0} s F(s) = \\lim_{t \\to \\infty} f(t) ",
+          "operation_label": "take_limit_s_to_zero",
+          "explanation": "1階微分法則の定義積分において s -> 0 の極限をとり、微積分学の基本定理により右辺を lim_{t->oo} f(t) - f(0^-) と評価して最終値定理を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m23_limit_algebra",
+            "math.laplace.lt01_laplace_transform_def",
+            "math.laplace.lt04_derivative_integral_rules"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_limit_s_zero",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{s \\to 0} \\big(s F(s) - f(0^-)\\big) = \\lim_{s \\to 0} \\int_{0^-}^{\\infty} f'(t) e^{-st}\\,dt ",
+          "to_latex": "\\int_{0^-}^{\\infty} f'(t)\\,dt = \\lim_{T \\to \\infty} \\int_{0^-}^{T} f'(t)\\,dt ",
+          "operation_label": "pass_limit_inside_convergent_integral",
+          "explanation": "sF(s) の極がすべて Re(s) < 0 にある条件のもとで積分の広義極限と s -> 0 極限が交換でき、e^{-st} -> 1 となる。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.laplace.lt04_derivative_integral_rules"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_evaluate_ftc_final",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{s \\to 0} s F(s) - f(0^-) = \\lim_{T \\to \\infty} \\big(f(T) - f(0^-)\\big) ",
+          "to_latex": "\\lim_{s \\to 0} s F(s) = \\lim_{T \\to \\infty} f(T) = \\lim_{t \\to \\infty} f(t) ",
+          "operation_label": "apply_fundamental_theorem_and_cancel",
+          "explanation": "微積分学の基本定理で定積分を評価し、両辺の -f(0^-) を相殺すると最終値定理が得られる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lt08_bromwich_inversion",
+      "target_node_id": "math.laplace.lt08_bromwich_inversion_integral",
+      "route_kind": "deductive",
+      "title": "フーリエ逆変換と複素留数定理によるブロムウィッチ逆変換積分の導出",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def",
+        "math.fourier.ft05_fourier_transform_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m43_definite_integral_substitution",
+        "math.complex.lr05_cauchy_residue_theorem",
+        "math.complex.lr07_jordans_lemma"
+      ],
+      "assumptions": [
+        "f(t) は t < 0 で 0、t >= 0 で区分的に滑らかかつ指数位数 sigma_0 を持ち、gamma > max(0, sigma_0) とする。F(s) は有理型で |s| -> infinity で一様に 0 へ収束する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F(\\gamma + i\\omega) = \\int_{0}^{\\infty} \\big(f(t)e^{-\\gamma t}\\big) e^{-i\\omega t}\\,dt ",
+          "to_latex": "f(t) = \\frac{1}{2\\pi i}\\lim_{T \\to \\infty}\\int_{\\gamma - iT}^{\\gamma + iT} F(s) e^{st}\\,ds = \\sum_{\\operatorname{Re}(s_k) < \\gamma} \\operatorname{Res}\\!\\big(F(s)e^{st},\\, s_k\\big)\\quad (t > 0) ",
+          "operation_label": "invert_damped_fourier_and_close_contour",
+          "explanation": "減衰関数 g(t) = f(t)e^{-gamma t} にフーリエ逆変換を適用して s = gamma + i*omega へ変数変換し、ブロムウィッチ積分と留数和を導く。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution",
+            "math.complex.lr05_cauchy_residue_theorem",
+            "math.complex.lr07_jordans_lemma",
+            "math.fourier.ft05_fourier_transform_def",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_damped_fourier_transform",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g(t) := u(t) f(t) e^{-\\gamma t} \\in L^1(\\mathbb{R}) ",
+          "to_latex": "\\hat{g}(\\omega) = \\int_{-\\infty}^{\\infty} g(t) e^{-i\\omega t}\\,dt = \\int_{0}^{\\infty} f(t) e^{-(\\gamma + i\\omega)t}\\,dt = F(\\gamma + i\\omega) ",
+          "operation_label": "identify_laplace_with_damped_fourier",
+          "explanation": "gamma > sigma_0 を選ぶと g(t) は絶対可積分となり、そのフーリエ変換は s = gamma + i*omega におけるラプラス変換 F(s) に一致する。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_bromwich_variable_change",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(t)e^{-\\gamma t} = \\frac{1}{2\\pi} \\int_{-\\infty}^{\\infty} F(\\gamma + i\\omega) e^{i\\omega t}\\,d\\omega ",
+          "to_latex": "f(t) = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} F(\\gamma + i\\omega) e^{(\\gamma + i\\omega)t}\\,d\\omega = \\frac{1}{2\\pi i}\\lim_{T \\to \\infty}\\int_{\\gamma - iT}^{\\gamma + iT} F(s) e^{st}\\,ds ",
+          "operation_label": "substitute_s_equals_gamma_plus_i_omega",
+          "explanation": "フーリエ逆変換公式の両辺に e^{gamma t} を掛けて s = gamma + i*omega (ds = i d*omega) と置換するとブロムウィッチ積分が得られる。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_bromwich_residue_closure",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{C_R} F(s) e^{st}\\,ds = \\int_{\\gamma - iT}^{\\gamma + iT} F(s)e^{st}\\,ds + \\int_{\\Gamma_R} F(s)e^{st}\\,ds ",
+          "to_latex": "f(t) = \\sum_{\\operatorname{Re}(s_k) < \\gamma} \\operatorname{Res}\\!\\big(F(s)e^{st},\\, s_k\\big)\\quad (t > 0) ",
+          "operation_label": "apply_jordans_lemma_and_residue_theorem",
+          "explanation": "t > 0 のとき Re(s) <= gamma 側の左半円弧 Gamma_R 上で e^{st} が減衰しジョルダンの補題により円弧積分が消えるため、留数定理から極の留数和に等しい。",
+          "used_node_ids": [
+            "math.complex.lr05_cauchy_residue_theorem",
+            "math.complex.lr07_jordans_lemma"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lt09_algebraic_ode_method",
+      "target_node_id": "math.laplace.lt09_algebraic_ode_method",
+      "route_kind": "deductive",
+      "title": "微分法則とブロムウィッチ逆変換による定数係数線形ODE初期値問題の代数解法",
+      "premise_node_ids": [
+        "math.laplace.lt02_linearity_and_shifting",
+        "math.laplace.lt04_derivative_integral_rules",
+        "math.laplace.lt08_bromwich_inversion_integral",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "外力 g(t) と解 y(t) およびその n 階までの導関数は指数位数を持つとし、初期値 y^{(k)}(0^-) (k=0,...,n-1) が与えられているとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum_{k=0}^{n} a_k y^{(k)}(t) = g(t),\\quad y^{(k)}(0^-) = y_k ",
+          "to_latex": "Y(s) = \\frac{G(s) + I_0(s)}{P(s)} \\implies y(t) = \\mathcal{L}^{-1}[Y](t) ",
+          "operation_label": "reduce_ode_to_algebraic_equation_and_invert",
+          "explanation": "両辺をラプラス変換して微分作用素を特性多項式 P(s) と初期値項 I_0(s) に分解し、Y(s) を代数的に解いて逆変換する。",
+          "used_node_ids": [
+            "math.laplace.lt02_linearity_and_shifting",
+            "math.laplace.lt04_derivative_integral_rules",
+            "math.laplace.lt08_bromwich_inversion_integral",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_transform_ode",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}\\!\\left[\\sum_{k=0}^{n} a_k y^{(k)}(t)\\right](s) = \\mathcal{L}[g](s) ",
+          "to_latex": "\\left(\\sum_{k=0}^{n} a_k s^k\\right) Y(s) - \\sum_{k=1}^{n} a_k \\sum_{j=0}^{k-1} s^{k-1-j} y^{(j)}(0^-) = G(s) ",
+          "operation_label": "apply_linearity_and_derivative_rules",
+          "explanation": "線形性と n 階微分法則を各項に適用し、Y(s) に掛かる特性多項式 P(s) = sum a_k s^k と初期値多項式 I_0(s) を分離する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.laplace.lt02_linearity_and_shifting",
+            "math.laplace.lt04_derivative_integral_rules"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_solve_algebraic_ys",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P(s)Y(s) - I_0(s) = G(s) ",
+          "to_latex": "Y(s) = \\frac{G(s) + I_0(s)}{P(s)} = \\frac{I_0(s)}{P(s)} + \\frac{G(s)}{P(s)} ",
+          "operation_label": "solve_for_Y_of_s",
+          "explanation": "特性多項式 P(s) != 0 の領域で割り算を行い、ゼロ入力応答 I_0(s)/P(s) とゼロ状態応答 G(s)/P(s) の和として Y(s) を得る。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_invert_to_time_domain",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y(s) = \\frac{G(s) + I_0(s)}{P(s)} ",
+          "to_latex": "y(t) = \\mathcal{L}^{-1}\\!\\left[\\frac{G(s) + I_0(s)}{P(s)}\\right](t) ",
+          "operation_label": "apply_inverse_laplace_transform",
+          "explanation": "部分分数展開と基本変換表またはブロムウィッチ積分・留数計算により Y(s) を時間領域へ逆変換し、初期値問題の厳密解を得る。",
+          "used_node_ids": [
+            "math.laplace.lt08_bromwich_inversion_integral"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

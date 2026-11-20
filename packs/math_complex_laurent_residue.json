@@ -1,0 +1,689 @@
+{
+  "pack_meta": {
+    "pack_id": "math.complex.laurent_residue",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "複素解析：ローラン展開・留数定理と実定積分への応用",
+    "language": "ja",
+    "description": "特異点分類、ローラン級数、留数定理、ジョルダンの補題を用いた広義実積分の評価を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.complex.lr01_laurent_series_expansion",
+      "short_code": "LR01",
+      "kind": "theorem_formula",
+      "title": "ローラン展開（円環領域における両側べき級数展開）",
+      "summary": "円環領域上で正則な関数は、正べき部（解析部）と負べき部（主要部）からなる一意なローラン級数に展開でき、各係数は周回積分で与えられる。",
+      "canonical_latex": "f(z) = \\sum_{n=-\\infty}^{\\infty} a_n (z - z_0)^n,\\quad a_n = \\frac{1}{2\\pi i}\\oint_{C} \\frac{f(\\zeta)}{(\\zeta - z_0)^{n+1}}\\,d\\zeta\\quad (r < |z - z_0| < R)",
+      "aliases_latex": [
+        "f(z) = \\sum_{n=0}^{\\infty} a_n(z-z_0)^n + \\sum_{k=1}^{\\infty} a_{-k}(z-z_0)^{-k}"
+      ],
+      "keywords": [
+        "ローラン展開",
+        "ローラン級数",
+        "円環領域",
+        "主要部",
+        "Laurent series"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.lr02_isolated_singularity_classification",
+      "short_code": "LR02",
+      "kind": "definition",
+      "title": "孤立特異点の分類（除去可能特異点・m位の極・真性特異点）",
+      "summary": "点 z0 の穴あき近傍で正則な関数に対し、ローラン展開の主要部（負べき項）の個数によって除去可能特異点・m位の極・真性特異点に分類する。",
+      "canonical_latex": "f(z) = \\sum_{n=-\\infty}^{\\infty} a_n (z - z_0)^n \\implies \\begin{cases} \\forall n < 0,\\; a_n = 0 & (\\text{removable}) \\\\ a_{-m} \\neq 0 \\land \\forall n < -m,\\; a_n = 0 & (\\text{pole of order } m) \\\\ \\#\\{n < 0 \\mid a_n \\neq 0\\} = \\infty & (\\text{essential}) \\end{cases}",
+      "aliases_latex": [
+        "\\lim_{z\\to z_0}(z-z_0)^m f(z) = a_{-m} \\neq 0"
+      ],
+      "keywords": [
+        "孤立特異点",
+        "除去可能特異点",
+        "極",
+        "真性特異点",
+        "isolated singularity",
+        "pole"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.lr03_residue_definition",
+      "short_code": "LR03",
+      "kind": "definition",
+      "title": "留数（Residue）の定義",
+      "summary": "孤立特異点 z0 におけるローラン展開の (z - z0)^{-1} の係数 a_{-1} を留数と定義し、周回積分と直結する量として定める。",
+      "canonical_latex": "\\operatorname{Res}(f, z_0) := a_{-1} = \\frac{1}{2\\pi i}\\oint_{C_{z_0}} f(z)\\,dz",
+      "aliases_latex": [
+        "\\operatorname{Res}_{z=z_0} f(z) = a_{-1}"
+      ],
+      "keywords": [
+        "留数",
+        "residue",
+        "a_{-1}"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.lr04_residue_pole_formulas",
+      "short_code": "LR04",
+      "kind": "theorem_formula",
+      "title": "極における留数の計算公式（1位の極・m位の極・商型関数）",
+      "summary": "m位の極における留数は (z - z0)^m f(z) の (m-1) 階微分極限で与えられ、特に1位の極および正則関数の商 p(z)/q(z) に対して簡明な計算公式が得られる。",
+      "canonical_latex": "\\operatorname{Res}(f, z_0) = \\frac{1}{(m-1)!}\\lim_{z \\to z_0}\\frac{d^{m-1}}{dz^{m-1}}\\Big[(z - z_0)^m f(z)\\Big],\\quad m=1\\text{ and }f=\\frac{p}{q}\\;(q(z_0)=0\\neq q'(z_0)) \\implies \\operatorname{Res}(f, z_0) = \\frac{p(z_0)}{q'(z_0)}",
+      "aliases_latex": [
+        "\\operatorname{Res}(f, z_0) = \\lim_{z \\to z_0}(z - z_0)f(z)\\quad (m=1)"
+      ],
+      "keywords": [
+        "留数公式",
+        "1位の極",
+        "m位の極",
+        "residue at a pole"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.lr05_cauchy_residue_theorem",
+      "short_code": "LR05",
+      "kind": "theorem_formula",
+      "title": "コーシーの留数定理",
+      "summary": "単純閉曲線 C の内部に有限個の孤立特異点のみを持つ正則関数について、C 上の周回積分は内部の特異点の留数和に 2πi を乗じた値に等しい。",
+      "canonical_latex": "\\oint_{C} f(z)\\,dz = 2\\pi i \\sum_{k=1}^{N} \\operatorname{Res}(f, z_k)\\quad (z_1,\\dots,z_N \\in \\operatorname{int}(C))",
+      "aliases_latex": [
+        "\\frac{1}{2\\pi i}\\oint_{C} f(z)\\,dz = \\sum_{z_k \\in \\operatorname{int}(C)} \\operatorname{Res}(f, z_k)"
+      ],
+      "keywords": [
+        "留数定理",
+        "コーシーの留数定理",
+        "residue theorem"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.lr06_semicircle_vanishing_lemma",
+      "short_code": "LR06",
+      "kind": "theorem_formula",
+      "title": "大円弧積分の消滅補題（有理減衰評価）",
+      "summary": "上半平面の大半円弧 CR 上で |z f(z)| が R → ∞ で 0 に一様収束するとき、CR に沿う複素線積分は 0 に収束する。",
+      "canonical_latex": "\\lim_{R \\to \\infty} \\sup_{\\theta \\in [0,\\pi]} \\left| R e^{i\\theta} f(R e^{i\\theta}) \\right| = 0 \\implies \\lim_{R \\to \\infty} \\int_{C_R} f(z)\\,dz = 0\\quad (C_R: z = R e^{i\\theta},\\; 0 \\le \\theta \\le \\pi)",
+      "aliases_latex": [
+        "|f(z)| \\le \\frac{M}{R^\\alpha}\\;(\\alpha > 1) \\implies \\lim_{R\\to\\infty}\\int_{C_R} f(z)\\,dz = 0"
+      ],
+      "keywords": [
+        "半円弧積分",
+        "ML不等式",
+        "広義積分",
+        "semicircular contour"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.lr07_jordans_lemma",
+      "short_code": "LR07",
+      "kind": "theorem_formula",
+      "title": "ジョルダンの補題（Jordan's Lemma）",
+      "summary": "上半平面の大半円弧 CR 上で f(z) が R → ∞ で一様かつ 0 に収束するとき、振動指数因子 exp(i a z) (a > 0) を乗じた線積分は R → ∞ で 0 に収束する。",
+      "canonical_latex": "\\lim_{R \\to \\infty} \\sup_{\\theta \\in [0,\\pi]} |f(R e^{i\\theta})| = 0 \\land a > 0 \\implies \\lim_{R \\to \\infty} \\int_{C_R} f(z) e^{i a z}\\,dz = 0",
+      "aliases_latex": [
+        "\\left|\\int_{C_R} f(z) e^{i a z}\\,dz\\right| \\le \\frac{\\pi}{a} M_R \\to 0\\quad (R \\to \\infty)"
+      ],
+      "keywords": [
+        "ジョルダンの補題",
+        "Jordan's lemma",
+        "フーリエ積分"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.lr08_improper_rational_integral",
+      "short_code": "LR08",
+      "kind": "theorem_formula",
+      "title": "実軸上の広義有理積分の留数評価公式",
+      "summary": "実軸上に極を持たず遠方で O(|z|^{-2}) 以上に減衰する有理関数（または正則関数）の (-∞, ∞) 上の広義積分を、上半平面の留数和として評価する。",
+      "canonical_latex": "\\int_{-\\infty}^{\\infty} \\frac{P(x)}{Q(x)}\\,dx = 2\\pi i \\sum_{\\operatorname{Im}(z_k) > 0} \\operatorname{Res}\\!\\left(\\frac{P}{Q}, z_k\\right)\\quad (\\deg Q \\ge \\deg P + 2,\\; Q(x)\\neq 0\\;\\forall x\\in\\mathbb{R})",
+      "aliases_latex": [
+        "\\int_{-\\infty}^{\\infty} f(x)\\,dx = 2\\pi i \\sum_{\\operatorname{Im}(z_k) > 0} \\operatorname{Res}(f, z_k)"
+      ],
+      "keywords": [
+        "広義積分",
+        "実定積分",
+        "有理関数",
+        "留数計算"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "math.complex.lr09_fourier_improper_integral",
+      "short_code": "LR09",
+      "kind": "theorem_formula",
+      "title": "フーリエ型広義積分のジョルダン・留数評価公式",
+      "summary": "実軸上に極を持たず遠方で 0 に収束する f(z) に対し、ジョルダンの補題と留数定理により exp(i a x) を含む広義積分および cos(ax), sin(ax) 積分を評価する。",
+      "canonical_latex": "\\int_{-\\infty}^{\\infty} f(x) e^{i a x}\\,dx = 2\\pi i \\sum_{\\operatorname{Im}(z_k) > 0} \\operatorname{Res}\\!\\left(f(z)e^{i a z}, z_k\\right)\\quad (a > 0,\\; \\lim_{|z|\\to\\infty,\\operatorname{Im}z\\ge 0} f(z) = 0)",
+      "aliases_latex": [
+        "\\int_{-\\infty}^{\\infty} f(x)\\cos(ax)\\,dx = \\operatorname{Re}\\!\\left(2\\pi i \\sum_{\\operatorname{Im}(z_k)>0} \\operatorname{Res}(f(z)e^{iaz}, z_k)\\right)"
+      ],
+      "keywords": [
+        "フーリエ変換積分",
+        "三角関数広義積分",
+        "ジョルダンの補題",
+        "Fourier integral"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "complex_analysis"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_lr01_laurent_series",
+      "target_node_id": "math.complex.lr01_laurent_series_expansion",
+      "route_kind": "deductive",
+      "title": "円環領域におけるコーシー積分公式と等比級数展開によるローラン展開の導出",
+      "premise_node_ids": [
+        "math.complex.ca07_contour_deformation_annulus",
+        "math.complex.ca08_cauchy_integral_formula",
+        "math.complex.ca05_complex_line_integral_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f is holomorphic on the annulus r < |z - z_0| < R",
+        "r < r_1 < |z - z_0| < r_2 < R with positively oriented circles C_1 (radius r_1) and C_2 (radius r_2)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f \\text{ holomorphic on } r < |z - z_0| < R",
+          "to_latex": "f(z) = \\sum_{n=-\\infty}^{\\infty} a_n (z - z_0)^n,\\quad a_n = \\frac{1}{2\\pi i}\\oint_{C} \\frac{f(\\zeta)}{(\\zeta - z_0)^{n+1}}\\,d\\zeta",
+          "operation_label": "円環コーシー表示の等比級数展開",
+          "explanation": "円環領域内の点 z に対するコーシーの積分公式を内外2円の周回積分差で表し、各積分核を等比級数展開して項別積分することでローラン級数と係数公式を得る。",
+          "used_node_ids": [
+            "math.complex.ca05_complex_line_integral_def",
+            "math.complex.ca07_contour_deformation_annulus",
+            "math.complex.ca08_cauchy_integral_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_annulus_cauchy",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f \\text{ holomorphic on } r < |z - z_0| < R",
+          "to_latex": "f(z) = \\frac{1}{2\\pi i}\\oint_{C_2} \\frac{f(\\zeta)}{\\zeta - z}\\,d\\zeta - \\frac{1}{2\\pi i}\\oint_{C_1} \\frac{f(\\zeta)}{\\zeta - z}\\,d\\zeta",
+          "operation_label": "円環領域へのコーシー積分公式の適用",
+          "explanation": "z を囲む小円と内外2円 C2, C1 で囲まれた多重連結領域に道変更の原理とコーシーの積分公式を適用し、f(z) を C2 上と C1 上の積分の差で表す。",
+          "used_node_ids": [
+            "math.complex.ca07_contour_deformation_annulus",
+            "math.complex.ca08_cauchy_integral_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_geometric_kernels",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{\\zeta - z}\\;(\\zeta \\in C_2)\\text{ and }\\frac{-1}{\\zeta - z}\\;(\\zeta \\in C_1)",
+          "to_latex": "\\frac{1}{\\zeta - z} = \\sum_{n=0}^{\\infty} \\frac{(z - z_0)^n}{(\\zeta - z_0)^{n+1}}\\;(\\zeta \\in C_2),\\quad -\\frac{1}{\\zeta - z} = \\sum_{k=1}^{\\infty} \\frac{(\\zeta - z_0)^{k-1}}{(z - z_0)^k}\\;(\\zeta \\in C_1)",
+          "operation_label": "積分核の一様収束等比級数展開",
+          "explanation": "C2 上では |z - z0| / |ζ - z0| < 1、C1 上では |ζ - z0| / |z - z0| < 1 が一様に成り立つため、それぞれの積分核を無限等比級数に展開する。",
+          "used_node_ids": [
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_termwise_integration",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(z) = \\frac{1}{2\\pi i}\\oint_{C_2} f(\\zeta)\\sum_{n=0}^{\\infty}\\frac{(z-z_0)^n}{(\\zeta-z_0)^{n+1}}d\\zeta + \\frac{1}{2\\pi i}\\oint_{C_1} f(\\zeta)\\sum_{k=1}^{\\infty}\\frac{(\\zeta-z_0)^{k-1}}{(z-z_0)^k}d\\zeta",
+          "to_latex": "f(z) = \\sum_{n=-\\infty}^{\\infty} a_n(z - z_0)^n,\\quad a_n = \\frac{1}{2\\pi i}\\oint_{C} \\frac{f(\\zeta)}{(\\zeta - z_0)^{n+1}}\\,d\\zeta",
+          "operation_label": "一様収束による項別積分と道変更による積分路統一",
+          "explanation": "一様収束級数に対して積分と和を交換し、道変更の原理により積分路 C1, C2 を共通の円 C (r < |ζ - z0| < R) にまとめることでローラン展開を得る。",
+          "used_node_ids": [
+            "math.complex.ca05_complex_line_integral_def",
+            "math.complex.ca07_contour_deformation_annulus"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lr04_residue_pole_formulas",
+      "target_node_id": "math.complex.lr04_residue_pole_formulas",
+      "route_kind": "deductive",
+      "title": "ローラン展開の主要部打ち切りによるm位の極・商型関数の留数公式の導出",
+      "premise_node_ids": [
+        "math.complex.lr01_laurent_series_expansion",
+        "math.complex.lr02_isolated_singularity_classification",
+        "math.complex.lr03_residue_definition",
+        "math.complex.ca09_cauchy_goursat_derivatives"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m23_limit_algebra",
+        "math.complex.ca01_complex_differentiability_def"
+      ],
+      "assumptions": [
+        "z_0 is a pole of order m >= 1 of f(z)",
+        "For the quotient formula, p(z) and q(z) are holomorphic at z_0 with p(z_0) != 0, q(z_0) = 0, q'(z_0) != 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f(z) = \\sum_{n=-m}^{\\infty} a_n (z - z_0)^n\\quad (a_{-m} \\neq 0)",
+          "to_latex": "\\operatorname{Res}(f, z_0) = \\frac{1}{(m-1)!}\\lim_{z\\to z_0}\\frac{d^{m-1}}{dz^{m-1}}\\Big[(z - z_0)^m f(z)\\Big],\\quad \\operatorname{Res}\\!\\left(\\frac{p}{q}, z_0\\right) = \\frac{p(z_0)}{q'(z_0)}",
+          "operation_label": "正則化関数 g(z) = (z-z0)^m f(z) のテイラー係数抽出",
+          "explanation": "m位の極のローラン展開に (z - z0)^m を乗じて正則関数 g(z) を構成し、その (m-1) 次テイラー係数から留数公式を導く。",
+          "used_node_ids": [
+            "math.complex.ca09_cauchy_goursat_derivatives",
+            "math.complex.lr01_laurent_series_expansion",
+            "math.complex.lr02_isolated_singularity_classification",
+            "math.complex.lr03_residue_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_regularize_pole",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(z) = \\sum_{k=0}^{\\infty} a_{k-m} (z - z_0)^{k-m}",
+          "to_latex": "g(z) := (z - z_0)^m f(z) = \\sum_{k=0}^{\\infty} a_{k-m}(z - z_0)^k\\quad (g \\text{ holomorphic at } z_0)",
+          "operation_label": "(z - z0)^m の乗算による正則関数の構成",
+          "explanation": "m位の極の定義よりローラン展開は n = -m から始まるため、(z - z0)^m を掛けると負べき項が消滅し z0 で除去可能特異点（延長により正則）となる。",
+          "used_node_ids": [
+            "math.complex.lr01_laurent_series_expansion",
+            "math.complex.lr02_isolated_singularity_classification"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_differentiate_m_minus_1",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g(z) = \\sum_{k=0}^{\\infty} a_{k-m}(z - z_0)^k",
+          "to_latex": "\\operatorname{Res}(f, z_0) = a_{-1} = \\frac{g^{(m-1)}(z_0)}{(m-1)!} = \\frac{1}{(m-1)!}\\lim_{z\\to z_0}\\frac{d^{m-1}}{dz^{m-1}}\\Big[(z - z_0)^m f(z)\\Big]",
+          "operation_label": "(m-1)階導関数による a_{-1} の抽出",
+          "explanation": "g(z) は z0 で正則で無限回微分可能であり、k = m - 1 の項の係数 a_{-1} は g^{(m-1)}(z0)/(m-1)! に等しく、連続性より z → z0 の極限と一致する。",
+          "used_node_ids": [
+            "math.complex.ca09_cauchy_goursat_derivatives",
+            "math.complex.lr03_residue_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_quotient_simple_pole",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Res}\\!\\left(\\frac{p}{q}, z_0\\right) = \\lim_{z\\to z_0} (z - z_0)\\frac{p(z)}{q(z) - q(z_0)}",
+          "to_latex": "\\operatorname{Res}\\!\\left(\\frac{p}{q}, z_0\\right) = \\lim_{z\\to z_0} \\frac{p(z)}{(q(z) - q(z_0))/(z - z_0)} = \\frac{p(z_0)}{q'(z_0)}",
+          "operation_label": "1位の極における差分商の極限適用",
+          "explanation": "m=1 のとき q(z0)=0 を用いて (z - z0)/(q(z) - q(z0)) を導関数の逆数の極限として評価し、p(z0)/q'(z0) を得る。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.complex.ca01_complex_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lr05_cauchy_residue_theorem",
+      "target_node_id": "math.complex.lr05_cauchy_residue_theorem",
+      "route_kind": "deductive",
+      "title": "道変更の原理と留数定義によるコーシーの留数定理の導出",
+      "premise_node_ids": [
+        "math.complex.ca07_contour_deformation_annulus",
+        "math.complex.lr01_laurent_series_expansion",
+        "math.complex.lr03_residue_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "C is a positively oriented simple closed piecewise smooth curve",
+        "f is holomorphic inside and on C except at finitely many isolated singularities z_1, ..., z_N in int(C)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\oint_{C} f(z)\\,dz,\\quad \\{z_1,\\dots,z_N\\} \\subset \\operatorname{int}(C)",
+          "to_latex": "\\oint_{C} f(z)\\,dz = 2\\pi i \\sum_{k=1}^{N} \\operatorname{Res}(f, z_k)",
+          "operation_label": "多重連結領域への道変更と小円積分の留数評価",
+          "explanation": "各特異点周りに互いに交わらない小円を取り、道変更の原理で全体の積分を各小円上の積分の和に分解し、留数の定義を適用する。",
+          "used_node_ids": [
+            "math.complex.ca07_contour_deformation_annulus",
+            "math.complex.lr03_residue_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_contour_decomposition",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{C} f(z)\\,dz",
+          "to_latex": "\\oint_{C} f(z)\\,dz = \\sum_{k=1}^{N} \\oint_{C_k} f(z)\\,dz",
+          "operation_label": "各特異点周りの小円への道変更",
+          "explanation": "各特異点 z_k を中心とする十分小さい互いに素な正の向きの円 C_k を C の内部に取り、穴あき領域上の正則性に道変更の原理を適用する。",
+          "used_node_ids": [
+            "math.complex.ca07_contour_deformation_annulus"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sum_residues",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k=1}^{N} \\oint_{C_k} f(z)\\,dz",
+          "to_latex": "2\\pi i \\sum_{k=1}^{N} \\operatorname{Res}(f, z_k)",
+          "operation_label": "ローラン係数 a_{-1}（留数）の代入",
+          "explanation": "各 C_k 上の周回積分は留数の定義により 2πi Res(f, z_k) に等しいため、総和を取ることで留数定理を得る。",
+          "used_node_ids": [
+            "math.complex.lr01_laurent_series_expansion",
+            "math.complex.lr03_residue_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lr06_semicircle_vanishing",
+      "target_node_id": "math.complex.lr06_semicircle_vanishing_lemma",
+      "route_kind": "deductive",
+      "title": "ML不等式による大円弧積分の消滅補題の導出",
+      "premise_node_ids": [
+        "math.complex.ca05_complex_line_integral_def",
+        "math.calc.m25_integral_monotonicity_squeeze"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "C_R is the upper semicircular arc z(theta) = R exp(i theta) for 0 <= theta <= pi",
+        "M_R := sup_{theta in [0,pi]} |R exp(i theta) f(R exp(i theta))| -> 0 as R -> infinity"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\lim_{R\\to\\infty} \\sup_{\\theta\\in[0,\\pi]} |R e^{i\\theta} f(R e^{i\\theta})| = 0",
+          "to_latex": "\\lim_{R\\to\\infty} \\int_{C_R} f(z)\\,dz = 0",
+          "operation_label": "弧長 Rπ と sup|f| の積に対する ML 評価",
+          "explanation": "半円弧の長さ L = πR と被積分関数の上限評価を ML 不等式に代入し、はさみうちの原理で極限 0 を示す。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_ml_estimate",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left|\\int_{C_R} f(z)\\,dz\\right|",
+          "to_latex": "\\left|\\int_{C_R} f(z)\\,dz\\right| \\le \\left(\\sup_{z\\in C_R}|f(z)|\\right) \\cdot \\pi R = \\pi \\sup_{\\theta\\in[0,\\pi]}\\left|R e^{i\\theta} f(R e^{i\\theta})\\right|",
+          "operation_label": "ML不等式と半円弧長 πR の適用",
+          "explanation": "C_R の弧長が L = πR であることから ML 不等式を適用し、R を上限の中に取り込む。",
+          "used_node_ids": [
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_squeeze_limit",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 \\le \\left|\\int_{C_R} f(z)\\,dz\\right| \\le \\pi M_R",
+          "to_latex": "\\lim_{R\\to\\infty} \\int_{C_R} f(z)\\,dz = 0",
+          "operation_label": "はさみうちの原理の適用",
+          "explanation": "仮定より R → ∞ で M_R → 0 となるため、はさみうちの原理から積分値も 0 に収束する。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lr07_jordans_lemma",
+      "target_node_id": "math.complex.lr07_jordans_lemma",
+      "route_kind": "deductive",
+      "title": "ジョルダンの不等式と指数減衰評価によるジョルダンの補題の導出",
+      "premise_node_ids": [
+        "math.complex.ca05_complex_line_integral_def",
+        "math.calc.m25_integral_monotonicity_squeeze"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "C_R: z = R exp(i theta) for theta in [0, pi]",
+        "a > 0 and M_R := sup_{theta in [0,pi]} |f(R exp(i theta))| -> 0 as R -> infinity",
+        "Jordan's inequality: sin(theta) >= (2/pi)*theta for theta in [0, pi/2]"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\int_{C_R} f(z) e^{i a z}\\,dz\\quad (a > 0,\\; M_R \\to 0)",
+          "to_latex": "\\lim_{R\\to\\infty} \\int_{C_R} f(z) e^{i a z}\\,dz = 0",
+          "operation_label": "ジョルダン不等式による指数減衰積分評価",
+          "explanation": "極座標表示における |exp(i a R e^{iθ})| = exp(-a R sinθ) にジョルダンの不等式 sinθ >= 2θ/π を用いて絶対値上界 (π/a) M_R を導き、R → ∞ の極限を取る。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.calc.t06_exp_power_derivatives",
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_parameterize_abs",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left|\\int_{C_R} f(z) e^{i a z}\\,dz\\right| = \\left|\\int_{0}^{\\pi} f(R e^{i\\theta}) e^{i a R(\\cos\\theta + i\\sin\\theta)} i R e^{i\\theta}\\,d\\theta\\right|",
+          "to_latex": "\\left|\\int_{C_R} f(z) e^{i a z}\\,dz\\right| \\le R M_R \\int_{0}^{\\pi} e^{-a R \\sin\\theta}\\,d\\theta = 2 R M_R \\int_{0}^{\\pi/2} e^{-a R \\sin\\theta}\\,d\\theta",
+          "operation_label": "線積分のパラメータ表示と対称区間半減",
+          "explanation": "z = R e^{iθ} を代入し三角不等式で絶対値を中に入れ、|e^{i a R cosθ}| = 1 と sin(π-θ)=sinθ の対称性を用いて [0, π/2] 上の積分の2倍で上からおさえる。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_jordan_inequality_eval",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "2 R M_R \\int_{0}^{\\pi/2} e^{-a R \\sin\\theta}\\,d\\theta",
+          "to_latex": "\\left|\\int_{C_R} f(z) e^{i a z}\\,dz\\right| \\le 2 R M_R \\int_{0}^{\\pi/2} e^{-2 a R \\theta / \\pi}\\,d\\theta = \\frac{\\pi M_R}{a}\\left(1 - e^{-a R}\\right) \\le \\frac{\\pi M_R}{a}",
+          "operation_label": "ジョルダンの不等式と指数関数の定積分",
+          "explanation": "[0, π/2] で sinθ >= 2θ/π が成り立つため exp(-aR sinθ) <= exp(-2aRθ/π) となり、直接積分して (π M_R / a)(1 - e^{-aR}) を得る。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_limit_zero",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 \\le \\left|\\int_{C_R} f(z) e^{i a z}\\,dz\\right| \\le \\frac{\\pi M_R}{a}",
+          "to_latex": "\\lim_{R\\to\\infty} \\int_{C_R} f(z) e^{i a z}\\,dz = 0",
+          "operation_label": "はさみうちの原理による極限 0",
+          "explanation": "M_R → 0 (R → ∞) より、はさみうちの原理から半円弧上の積分が 0 に収束する。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lr08_improper_rational_integral",
+      "target_node_id": "math.complex.lr08_improper_rational_integral",
+      "route_kind": "deductive",
+      "title": "大半円閉路・留数定理・大円弧消滅補題による広義有理積分の導出",
+      "premise_node_ids": [
+        "math.complex.lr05_cauchy_residue_theorem",
+        "math.complex.lr06_semicircle_vanishing_lemma"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "P, Q are polynomials with deg(Q) >= deg(P) + 2",
+        "Q(x) != 0 for all x in R"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\int_{-\\infty}^{\\infty} \\frac{P(x)}{Q(x)}\\,dx",
+          "to_latex": "\\int_{-\\infty}^{\\infty} \\frac{P(x)}{Q(x)}\\,dx = 2\\pi i \\sum_{\\operatorname{Im}(z_k) > 0} \\operatorname{Res}\\!\\left(\\frac{P}{Q}, z_k\\right)",
+          "operation_label": "上半平面半円閉路に対する留数定理と R → ∞ 極限",
+          "explanation": "[-R, R] と上半円弧 C_R からなる閉曲線 Γ_R に留数定理を適用し、次数条件から C_R 上の積分が消滅することを用いて極限を取る。",
+          "used_node_ids": [
+            "math.complex.lr05_cauchy_residue_theorem",
+            "math.complex.lr06_semicircle_vanishing_lemma"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_closed_contour_residue",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{\\Gamma_R} \\frac{P(z)}{Q(z)}\\,dz = \\int_{-R}^{R} \\frac{P(x)}{Q(x)}\\,dx + \\int_{C_R} \\frac{P(z)}{Q(z)}\\,dz",
+          "to_latex": "\\int_{-R}^{R} \\frac{P(x)}{Q(x)}\\,dx + \\int_{C_R} \\frac{P(z)}{Q(z)}\\,dz = 2\\pi i \\sum_{\\operatorname{Im}(z_k) > 0} \\operatorname{Res}\\!\\left(\\frac{P}{Q}, z_k\\right)\\quad (R \\text{ sufficiently large})",
+          "operation_label": "閉曲線 Γ_R への留数定理の適用",
+          "explanation": "上半平面内の全極を囲む十分大きな R を取り、閉曲線 Γ_R = [-R, R] + C_R にコーシーの留数定理を適用する。",
+          "used_node_ids": [
+            "math.complex.lr05_cauchy_residue_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_limit_vanishing_arc",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\deg Q - \\deg P \\ge 2 \\implies |z P(z)/Q(z)| = \\mathcal{O}(R^{-1}) \\to 0",
+          "to_latex": "\\int_{-\\infty}^{\\infty} \\frac{P(x)}{Q(x)}\\,dx = 2\\pi i \\sum_{\\operatorname{Im}(z_k) > 0} \\operatorname{Res}\\!\\left(\\frac{P}{Q}, z_k\\right)",
+          "operation_label": "大円弧積分の消滅と広義積分の確定",
+          "explanation": "次数差 2 以上より大円弧積分の消滅補題の条件が満たされ C_R 上の積分が 0 に収束するため、R → ∞ の極限として実広義積分の公式を得る。",
+          "used_node_ids": [
+            "math.complex.lr06_semicircle_vanishing_lemma"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_lr09_fourier_improper_integral",
+      "target_node_id": "math.complex.lr09_fourier_improper_integral",
+      "route_kind": "deductive",
+      "title": "留数定理とジョルダンの補題によるフーリエ型広義積分の導出",
+      "premise_node_ids": [
+        "math.complex.lr05_cauchy_residue_theorem",
+        "math.complex.lr07_jordans_lemma"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "a > 0",
+        "f is meromorphic on Im(z) >= 0 with finitely many poles all in Im(z) > 0 (none on R)",
+        "sup_{theta in [0,pi]} |f(R exp(i theta))| -> 0 as R -> infinity"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\int_{-\\infty}^{\\infty} f(x) e^{i a x}\\,dx",
+          "to_latex": "\\int_{-\\infty}^{\\infty} f(x) e^{i a x}\\,dx = 2\\pi i \\sum_{\\operatorname{Im}(z_k) > 0} \\operatorname{Res}\\!\\left(f(z)e^{i a z}, z_k\\right)",
+          "operation_label": "半円閉路上の留数定理とジョルダンの補題の適用",
+          "explanation": "[-R, R] と上半円弧 C_R の閉路上で f(z)e^{iaz} に留数定理を適用し、C_R 上の積分をジョルダンの補題で消去する。",
+          "used_node_ids": [
+            "math.complex.lr05_cauchy_residue_theorem",
+            "math.complex.lr07_jordans_lemma"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_semicircle_residue",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{\\Gamma_R} f(z) e^{i a z}\\,dz",
+          "to_latex": "\\int_{-R}^{R} f(x) e^{i a x}\\,dx + \\int_{C_R} f(z) e^{i a z}\\,dz = 2\\pi i \\sum_{\\operatorname{Im}(z_k) > 0} \\operatorname{Res}\\!\\left(f(z)e^{i a z}, z_k\\right)",
+          "operation_label": "閉曲線 Γ_R に対する留数定理の適用",
+          "explanation": "十分大きな R を選んで上半平面の全ての極 z_k を Γ_R 内に含め、留数定理によって周回積分を留数和で表す。",
+          "used_node_ids": [
+            "math.complex.lr05_cauchy_residue_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_apply_jordan",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{R\\to\\infty} \\int_{C_R} f(z) e^{i a z}\\,dz = 0",
+          "to_latex": "\\int_{-\\infty}^{\\infty} f(x) e^{i a x}\\,dx = 2\\pi i \\sum_{\\operatorname{Im}(z_k) > 0} \\operatorname{Res}\\!\\left(f(z)e^{i a z}, z_k\\right)",
+          "operation_label": "ジョルダンの補題による R → ∞ 極限評価",
+          "explanation": "a > 0 かつ |f(z)| → 0 よりジョルダンの補題が成り立つため C_R 上の積分が 0 に収束し、フーリエ型広義積分の公式が導かれる。",
+          "used_node_ids": [
+            "math.complex.lr07_jordans_lemma"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

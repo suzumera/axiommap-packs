@@ -1,0 +1,696 @@
+{
+  "pack_meta": {
+    "pack_id": "math.prob.distributions_clt",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "確率論：確率変数・期待値・大数の法則・中心極限定理",
+    "language": "ja",
+    "description": "公理的確率、条件付き確率とベイズの定理、特性関数、チェビシェフの不等式、大数の弱法則、中心極限定理を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.prob.pr01_kolmogorov_axioms",
+      "short_code": "PR01",
+      "kind": "axiom",
+      "title": "コルモゴロフの確率公理系（確率空間の定義）",
+      "summary": "標本空間、事象族（完全加法族）、および非負性・正規化・可算加法性の3公理を満たす確率測度からなる確率空間の公理的定義。",
+      "canonical_latex": "(\\Omega, \\mathcal{F}, P),\\quad P(A) \\ge 0,\\quad P(\\Omega) = 1,\\quad A_i \\cap A_j = \\emptyset\\,(i \\neq j) \\implies P\\!\\left(\\bigcup_{i=1}^{\\infty} A_i\\right) = \\sum_{i=1}^{\\infty} P(A_i)|",
+      "aliases_latex": [
+        "P(A^c) = 1 - P(A),\\quad P(A \\cup B) = P(A) + P(B) - P(A \\cap B)"
+      ],
+      "keywords": [
+        "Kolmogorov axioms",
+        "probability space",
+        "sigma-algebra",
+        "countable additivity",
+        "コルモゴロフの公理",
+        "確率空間"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "probability"
+      ]
+    },
+    {
+      "id": "math.prob.pr02_conditional_bayes_theorem",
+      "short_code": "PR02",
+      "kind": "theorem_formula",
+      "title": "条件付き確率・全確率の法則・ベイズの定理",
+      "summary": "事象 B の生起を条件とする事象 A の条件付き確率の定義と、標本空間の分割に基づく全確率の法則および事後確率を求めるベイズの定理。",
+      "canonical_latex": "P(A \\mid B) := \\frac{P(A \\cap B)}{P(B)}\\,(P(B)>0),\\quad P(A_i \\mid B) = \\frac{P(B \\mid A_i)P(A_i)}{\\sum_{j} P(B \\mid A_j)P(A_j)}",
+      "aliases_latex": [
+        "P(A \\cap B) = P(B \\mid A)P(A) = P(A \\mid B)P(B)"
+      ],
+      "keywords": [
+        "conditional probability",
+        "Bayes theorem",
+        "law of total probability",
+        "条件付き確率",
+        "ベイズの定理",
+        "全確率の法則"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "probability"
+      ]
+    },
+    {
+      "id": "math.prob.pr03_random_variable_expectation",
+      "short_code": "PR03",
+      "kind": "definition",
+      "title": "確率変数・期待値・分散・独立性の定義",
+      "summary": "確率変数とその分布に対する期待値（1次モーメント）および分散（2次中心モーメント）の定義、ならびに確率変数の独立性と線形性・分散の加法性。",
+      "canonical_latex": "\\mathbb{E}[g(X)] := \\int_{-\\infty}^{\\infty} g(x)\\,f_X(x)\\,dx,\\quad \\mu := \\mathbb{E}[X],\\quad \\operatorname{Var}(X) := \\mathbb{E}\\big[(X - \\mu)^2\\big] = \\mathbb{E}[X^2] - (\\mathbb{E}[X])^2",
+      "aliases_latex": [
+        "\\mathbb{E}[aX+bY] = a\\mathbb{E}[X]+b\\mathbb{E}[Y],\\quad X \\perp Y \\implies \\operatorname{Var}(X+Y)=\\operatorname{Var}(X)+\\operatorname{Var}(Y)"
+      ],
+      "keywords": [
+        "random variable",
+        "expectation",
+        "variance",
+        "independence",
+        "確率変数",
+        "期待値",
+        "分散"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "probability"
+      ]
+    },
+    {
+      "id": "math.prob.pr04_markov_inequality",
+      "short_code": "PR04",
+      "kind": "theorem_formula",
+      "title": "マルコフの不等式",
+      "summary": "非負の確率変数 X が正の閾値 a 以上となる上側裾確率を、その期待値 E[X] と a の比によって上から抑える基本的不等式。",
+      "canonical_latex": "X \\ge 0 \\land a > 0 \\implies P(X \\ge a) \\le \\frac{\\mathbb{E}[X]}{a}|",
+      "aliases_latex": [
+        "P(X \\ge a) \\le a^{-1}\\mathbb{E}[X]"
+      ],
+      "keywords": [
+        "Markov inequality",
+        "tail bound",
+        "nonnegative random variable",
+        "マルコフの不等式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "probability"
+      ]
+    },
+    {
+      "id": "math.prob.pr05_chebyshev_inequality",
+      "short_code": "PR05",
+      "kind": "theorem_formula",
+      "title": "チェビシェフの不等式",
+      "summary": "有限の分散を持つ確率変数が平均から ε 以上離れる確率を、分散と ε の2乗の比によって評価する集中不等式。",
+      "canonical_latex": "\\operatorname{Var}(X) = \\sigma^2 < \\infty \\land \\varepsilon > 0 \\implies P(|X - \\mu| \\ge \\varepsilon) \\le \\frac{\\sigma^2}{\\varepsilon^2}|",
+      "aliases_latex": [
+        "P(|X - \\mu| \\ge k\\sigma) \\le \\frac{1}{k^2}"
+      ],
+      "keywords": [
+        "Chebyshev inequality",
+        "concentration inequality",
+        "variance",
+        "チェビシェフの不等式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "probability"
+      ]
+    },
+    {
+      "id": "math.prob.pr06_weak_law_large_numbers",
+      "short_code": "PR06",
+      "kind": "theorem_formula",
+      "title": "大数の弱法則（WLLN）",
+      "summary": "独立同分布（i.i.d.）で有限平均・有限分散を持つ確率変数列の標本平均が、サンプル数の増大とともに母平均へ確率収束することを保証する定理。",
+      "canonical_latex": "\\bar{X}_n := \\frac{1}{n}\\sum_{i=1}^{n} X_i,\\quad \\forall \\varepsilon > 0,\\; \\lim_{n \\to \\infty} P(|\\bar{X}_n - \\mu| \\ge \\varepsilon) = 0\\quad (\\bar{X}_n \\xrightarrow{P} \\mu)|",
+      "aliases_latex": [
+        "\\lim_{n \\to \\infty} P\\!\\left(\\left|\\frac{1}{n}\\sum_{i=1}^{n}X_i - \\mu\\right| \\ge \\varepsilon\\right) = 0"
+      ],
+      "keywords": [
+        "weak law of large numbers",
+        "convergence in probability",
+        "sample mean",
+        "大数の弱法則",
+        "確率収束"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "probability"
+      ]
+    },
+    {
+      "id": "math.prob.pr07_characteristic_function_def",
+      "short_code": "PR07",
+      "kind": "definition",
+      "title": "特性関数の定義と基本性質（独立和・モーメント）",
+      "summary": "実数値確率変数 X に対して定義される複素指数関数の期待値（符号反転フーリエ変換）。常に存在し、独立和の特性関数が積になり、原点での微分がモーメントを与える。",
+      "canonical_latex": "\\varphi_X(t) := \\mathbb{E}[e^{i t X}] = \\int_{-\\infty}^{\\infty} e^{i t x}\\,f_X(x)\\,dx,\\quad \\varphi_{X+Y}(t) = \\varphi_X(t)\\varphi_Y(t)\\;(X \\perp Y),\\quad \\varphi_X^{(k)}(0) = i^k \\mathbb{E}[X^k]|",
+      "aliases_latex": [
+        "\\varphi_{aX+b}(t) = e^{i b t}\\varphi_X(at)"
+      ],
+      "keywords": [
+        "characteristic function",
+        "Fourier transform",
+        "moments",
+        "convolution",
+        "特性関数"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "probability"
+      ]
+    },
+    {
+      "id": "math.prob.pr08_normal_characteristic_function",
+      "short_code": "PR08",
+      "kind": "theorem_formula",
+      "title": "標準正規分布の確率密度と特性関数",
+      "summary": "標準正規分布 N(0,1) の正規化条件（ガウス積分）と、平方完成および複素積分・フーリエ変換による特性関数 exp(-t^2/2) の導出結果。",
+      "canonical_latex": "f_Z(x) = \\frac{1}{\\sqrt{2\\pi}} e^{-x^2 / 2} \\implies \\int_{-\\infty}^{\\infty} f_Z(x)\\,dx = 1,\\quad \\varphi_Z(t) = \\mathbb{E}[e^{i t Z}] = e^{-t^2 / 2}|",
+      "aliases_latex": [
+        "Z \\sim \\mathcal{N}(0, 1) \\implies \\varphi_Z(t) = \\exp\\!\\left(-\\frac{t^2}{2}\\right)"
+      ],
+      "keywords": [
+        "normal distribution",
+        "Gaussian integral",
+        "characteristic function",
+        "正規分布",
+        "ガウス積分"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "probability"
+      ]
+    },
+    {
+      "id": "math.prob.pr09_levy_continuity_theorem",
+      "short_code": "PR09",
+      "kind": "math_boundary",
+      "title": "レヴィの連続性定理（特性関数の収束と分布収束）",
+      "summary": "確率変数列の特性関数が t=0 で連続なある関数へ各点収束することと、その極限関数を特性関数に持つ確率変数への分布収束（弱収束）との等価性を与える解析的境界定理。",
+      "canonical_latex": "\\forall t \\in \\mathbb{R},\\; \\lim_{n \\to \\infty} \\varphi_{X_n}(t) = \\varphi_X(t)\\;(\\text{continuous at } t=0) \\iff X_n \\xrightarrow{d} X",
+      "aliases_latex": [
+        "\\varphi_{X_n}(t) \\to \\varphi_X(t) \\implies F_{X_n}(x) \\to F_X(x)\\text{ at continuity points}"
+      ],
+      "keywords": [
+        "Levy continuity theorem",
+        "convergence in distribution",
+        "weak convergence",
+        "レヴィの連続性定理",
+        "分布収束"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "probability"
+      ]
+    },
+    {
+      "id": "math.prob.pr10_central_limit_theorem",
+      "short_code": "PR10",
+      "kind": "theorem_formula",
+      "title": "リンデベルグ＝レヴィの中心極限定理（CLT）",
+      "summary": "有限の平均 μ と有限の正分散 σ^2 を持つ独立同分布（i.i.d.）確率変数列の標準化された和が、サンプル数の極限で標準正規分布 N(0,1) へ分布収束することを示す基本定理。",
+      "canonical_latex": "Z_n := \\frac{\\sum_{i=1}^{n} X_i - n\\mu}{\\sigma\\sqrt{n}} = \\frac{\\sqrt{n}(\\bar{X}_n - \\mu)}{\\sigma} \\xrightarrow{d} \\mathcal{N}(0, 1)\\quad \\left(\\lim_{n \\to \\infty} P(Z_n \\le z) = \\int_{-\\infty}^{z} \\frac{1}{\\sqrt{2\\pi}}e^{-x^2/2}\\,dx\\right)|",
+      "aliases_latex": [
+        "\\frac{\\bar{X}_n - \\mu}{\\sigma / \\sqrt{n}} \\xrightarrow{d} \\mathcal{N}(0, 1)"
+      ],
+      "keywords": [
+        "central limit theorem",
+        "normal approximation",
+        "i.i.d.",
+        "Lindeberg-Levy",
+        "中心極限定理"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "probability"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_pr02_bayes_from_axioms",
+      "target_node_id": "math.prob.pr02_conditional_bayes_theorem",
+      "route_kind": "deductive",
+      "title": "確率公理と標本空間分割からの全確率の法則・ベイズの定理の導出",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "math.prob.pr02_conditional_bayes_theorem"
+      ],
+      "assumptions": [
+        "P(B) > 0",
+        "{A_i} は標本空間 Ω の互いに素な可算分割であり、P(A_i) > 0 を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(\\Omega, \\mathcal{F}, P),\\quad \\Omega = \\bigsqcup_j A_j",
+          "to_latex": "P(A_i \\mid B) = \\frac{P(B \\mid A_i)P(A_i)}{\\sum_{j} P(B \\mid A_j)P(A_j)}",
+          "operation_label": "条件付き確率の対称性と可算加法性の適用",
+          "explanation": "条件付き確率の定義から乗法定理を得て、事象 B を互いに素な分割 {A_j} との共通部分に分解し可算加法性を適用することでベイズの定理を導く。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_cond_def_joint",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P(A_i \\mid B) = \\frac{P(A_i \\cap B)}{P(B)},\\quad P(B \\mid A_i) = \\frac{P(B \\cap A_i)}{P(A_i)}",
+          "to_latex": "P(A_i \\mid B) = \\frac{P(B \\mid A_i)P(A_i)}{P(B)}",
+          "operation_label": "乗法定理による分子の書き換え",
+          "explanation": "共通部分 A_i ∩ B = B ∩ A_i の確率を P(B | A_i)P(A_i) と表し、条件付き確率の定義式へ代入する。",
+          "used_node_ids": [
+            "math.prob.pr02_conditional_bayes_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_law_total_prob",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "B = B \\cap \\Omega = \\bigsqcup_{j} (B \\cap A_j),\\quad (B \\cap A_j) \\cap (B \\cap A_k) = \\emptyset\\,(j \\neq k)|",
+          "to_latex": "P(B) = \\sum_{j} P(B \\cap A_j) = \\sum_{j} P(B \\mid A_j)P(A_j)|",
+          "operation_label": "確率公理（可算加法性）による全確率の展開",
+          "explanation": "互いに素な分割 {A_j} により B を互いに素な事象族に分解し、コルモゴロフの可算加法性と乗法定理を用いて P(B) を展開する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_bayes_inversion",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P(A_i \\mid B) = \\frac{P(B \\mid A_i)P(A_i)}{P(B)},\\quad P(B) = \\sum_{j} P(B \\mid A_j)P(A_j)|",
+          "to_latex": "P(A_i \\mid B) = \\frac{P(B \\mid A_i)P(A_i)}{\\sum_{j} P(B \\mid A_j)P(A_j)}",
+          "operation_label": "分母への全確率の代入",
+          "explanation": "全確率の法則で展開した P(B) を分母に代入し、事後確率を求めるベイズの定理を得る。",
+          "used_node_ids": [
+            "math.prob.pr02_conditional_bayes_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_pr04_markov_from_expectation",
+      "target_node_id": "math.prob.pr04_markov_inequality",
+      "route_kind": "deductive",
+      "title": "期待値の積分区間分割と単調性によるマルコフの不等式の導出",
+      "premise_node_ids": [
+        "math.prob.pr03_random_variable_expectation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity",
+        "math.calc.m25_integral_monotonicity_squeeze",
+        "math.prob.pr04_markov_inequality"
+      ],
+      "assumptions": [
+        "X は非負の確率変数（x < 0 で密度 f_X(x) = 0）であり、E[X] < ∞ かつ a > 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbb{E}[X] = \\int_{0}^{\\infty} x\\,f_X(x)\\,dx",
+          "to_latex": "P(X \\ge a) \\le \\frac{\\mathbb{E}[X]}{a}|",
+          "operation_label": "積分領域の分割と下からの定数評価",
+          "explanation": "非負確率変数の期待値を [0, a) と [a, ∞) に分割し、非負積分を落とした上で残りの領域で x >= a を適用してマルコフの不等式を導く。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.prob.pr03_random_variable_expectation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_split_expectation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[X] = \\int_{0}^{\\infty} x\\,f_X(x)\\,dx",
+          "to_latex": "\\mathbb{E}[X] = \\int_{0}^{a} x\\,f_X(x)\\,dx + \\int_{a}^{\\infty} x\\,f_X(x)\\,dx \\ge \\int_{a}^{\\infty} x\\,f_X(x)\\,dx",
+          "operation_label": "積分領域の分割と非負項の削除",
+          "explanation": "x >= 0 かつ f_X(x) >= 0 より [0, a) 上の積分は非負であるため、それを除くことで [a, ∞) 上の積分による下界を得る。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.prob.pr03_random_variable_expectation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_lower_bound_tail",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[X] \\ge \\int_{a}^{\\infty} x\\,f_X(x)\\,dx",
+          "to_latex": "\\mathbb{E}[X] \\ge \\int_{a}^{\\infty} a\\,f_X(x)\\,dx = a\\,P(X \\ge a)|",
+          "operation_label": "積分の単調性（x >= a）の適用",
+          "explanation": "積分領域 x >= a 上で被積分関数 x を定数 a で下から抑え、確率の定義を用いて a P(X >= a) へ書き換える。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m25_integral_monotonicity_squeeze"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_divide_by_a",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[X] \\ge a\\,P(X \\ge a),\\quad a > 0",
+          "to_latex": "P(X \\ge a) \\le \\frac{\\mathbb{E}[X]}{a}|",
+          "operation_label": "正数 a による除算",
+          "explanation": "両辺を正数 a で割ることでマルコフの不等式を得る。",
+          "used_node_ids": [
+            "math.prob.pr04_markov_inequality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_pr05_chebyshev_from_markov",
+      "target_node_id": "math.prob.pr05_chebyshev_inequality",
+      "route_kind": "deductive",
+      "title": "2乗誤差へのマルコフの不等式適用によるチェビシェフの不等式の導出",
+      "premise_node_ids": [
+        "math.prob.pr03_random_variable_expectation",
+        "math.prob.pr04_markov_inequality"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "E[X] = μ、Var(X) = σ^2 < ∞、ε > 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Y := (X - \\mu)^2 \\ge 0,\\quad \\mathbb{E}[Y] = \\operatorname{Var}(X) = \\sigma^2",
+          "to_latex": "P(|X - \\mu| \\ge \\varepsilon) \\le \\frac{\\sigma^2}{\\varepsilon^2}|",
+          "operation_label": "非負変数 (X-μ)^2 へのマルコフの不等式の適用",
+          "explanation": "事象 |X - μ| >= ε が (X - μ)^2 >= ε^2 と同値であることを用い、非負確率変数 (X - μ)^2 にマルコフの不等式を適用する。",
+          "used_node_ids": [
+            "math.prob.pr03_random_variable_expectation",
+            "math.prob.pr04_markov_inequality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_event_equivalence",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|X - \\mu| \\ge \\varepsilon\\quad (\\varepsilon > 0)|",
+          "to_latex": "P(|X - \\mu| \\ge \\varepsilon) = P\\big((X - \\mu)^2 \\ge \\varepsilon^2\\big)|",
+          "operation_label": "両辺の2乗による事象の同値変形",
+          "explanation": "両辺が非負であるため、絶対値不等式 |X - μ| >= ε は 2乗した不等式 (X - μ)^2 >= ε^2 と同一の事象を表す。",
+          "used_node_ids": [
+            "math.prob.pr03_random_variable_expectation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_apply_markov_sq",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P\\big((X - \\mu)^2 \\ge \\varepsilon^2\\big),\\quad Y = (X - \\mu)^2 \\ge 0",
+          "to_latex": "P(|X - \\mu| \\ge \\varepsilon) \\le \\frac{\\mathbb{E}[(X - \\mu)^2]}{\\varepsilon^2} = \\frac{\\sigma^2}{\\varepsilon^2}|",
+          "operation_label": "マルコフの不等式と分散定義の代入",
+          "explanation": "非負確率変数 Y = (X - μ)^2 と閾値 a = ε^2 > 0 に対してマルコフの不等式を適用し、E[(X - μ)^2] = σ^2 を代入する。",
+          "used_node_ids": [
+            "math.prob.pr03_random_variable_expectation",
+            "math.prob.pr04_markov_inequality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_pr06_wlln_from_chebyshev",
+      "target_node_id": "math.prob.pr06_weak_law_large_numbers",
+      "route_kind": "deductive",
+      "title": "チェビシェフの不等式とはさみうちの原理による大数の弱法則の導出",
+      "premise_node_ids": [
+        "math.prob.pr03_random_variable_expectation",
+        "math.prob.pr05_chebyshev_inequality"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m25_integral_monotonicity_squeeze",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "assumptions": [
+        "X_1, ..., X_n は互いに独立で同一分布（i.i.d.）に従い、E[X_i] = μ、Var(X_i) = σ^2 < ∞ とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\bar{X}_n = \\frac{1}{n}\\sum_{i=1}^{n} X_i",
+          "to_latex": "\\lim_{n \\to \\infty} P(|\\bar{X}_n - \\mu| \\ge \\varepsilon) = 0",
+          "operation_label": "標本平均の分散評価とチェビシェフの不等式の適用",
+          "explanation": "標本平均の期待値 μ と分散 σ^2/n を計算し、チェビシェフの不等式と n → ∞ の極限からはさみうちの原理により確率収束を示す。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.prob.pr03_random_variable_expectation",
+            "math.prob.pr05_chebyshev_inequality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sample_mean_moments",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\bar{X}_n = \\frac{1}{n}\\sum_{i=1}^{n} X_i",
+          "to_latex": "\\mathbb{E}[\\bar{X}_n] = \\mu,\\quad \\operatorname{Var}(\\bar{X}_n) = \\frac{1}{n^2}\\sum_{i=1}^{n} \\operatorname{Var}(X_i) = \\frac{\\sigma^2}{n}|",
+          "operation_label": "期待値の線形性と独立和の分散公式",
+          "explanation": "期待値の線形性から E[X̄_n] = μ を得て、独立性による分散の加法性および定数倍の性質 Var(aX) = a^2 Var(X) から Var(X̄_n) = σ^2/n を計算する。",
+          "used_node_ids": [
+            "math.prob.pr03_random_variable_expectation"
+          ],
+          "sympy_check_hint": "simplify(sum(sigma**2, (i, 1, n)) / n**2) - sigma**2 / n"
+        },
+        {
+          "step_id": "s3_chebyshev_bound_mean",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[\\bar{X}_n] = \\mu,\\quad \\operatorname{Var}(\\bar{X}_n) = \\frac{\\sigma^2}{n}|",
+          "to_latex": "0 \\le P(|\\bar{X}_n - \\mu| \\ge \\varepsilon) \\le \\frac{\\sigma^2}{n\\varepsilon^2}|",
+          "operation_label": "チェビシェフの不等式の適用",
+          "explanation": "標本平均 X̄_n にチェビシェフの不等式を適用し、確率の非負性と合わせて上界 σ^2/(nε^2) を得る。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms",
+            "math.prob.pr05_chebyshev_inequality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_limit_squeeze",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 \\le P(|\\bar{X}_n - \\mu| \\ge \\varepsilon) \\le \\frac{\\sigma^2}{n\\varepsilon^2},\\quad \\lim_{n \\to \\infty} \\frac{\\sigma^2}{n\\varepsilon^2} = 0",
+          "to_latex": "\\lim_{n \\to \\infty} P(|\\bar{X}_n - \\mu| \\ge \\varepsilon) = 0",
+          "operation_label": "はさみうちの原理の適用",
+          "explanation": "固定された任意の ε > 0 に対して n → ∞ の極限で上界が 0 へ収束するため、はさみうちの原理により大数の弱法則が成立する。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_pr08_normal_char_func",
+      "target_node_id": "math.prob.pr08_normal_characteristic_function",
+      "route_kind": "deductive",
+      "title": "極座標ガウス積分と平方完成による標準正規分布の特性関数の導出",
+      "premise_node_ids": [
+        "math.prob.pr07_characteristic_function_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m43_definite_integral_substitution",
+        "math.calc.mi02_fubini_theorem",
+        "math.calc.mi05_polar_2d_area_element",
+        "math.complex.ca06_cauchy_integral_theorem",
+        "math.fourier.ft05_fourier_transform_def"
+      ],
+      "assumptions": [
+        "Z ~ N(0, 1) は実数直線上に密度関数 f_Z(x) = (2π)^{-1/2} exp(-x^2/2) を持つ連続確率変数とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\varphi_Z(t) = \\frac{1}{\\sqrt{2\\pi}}\\int_{-\\infty}^{\\infty} e^{i t x - x^2/2}\\,dx",
+          "to_latex": "\\varphi_Z(t) = e^{-t^2/2}|",
+          "operation_label": "極座標ガウス積分と指数の平方完成",
+          "explanation": "2次元極座標変換でガウス積分 √(2π) を評価して正規化を確認したのち、指数の平方完成と変数平行移動により特性関数 exp(-t^2/2) を導く。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution",
+            "math.calc.mi02_fubini_theorem",
+            "math.calc.mi05_polar_2d_area_element",
+            "math.prob.pr07_characteristic_function_def"
+          ],
+          "sympy_check_hint": "integrate(exp(I*t*x - x**2/2)/sqrt(2*pi), (x, -oo, oo)) - exp(-t**2/2)"
+        },
+        {
+          "step_id": "s2_gaussian_norm_polar",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I := \\int_{-\\infty}^{\\infty} e^{-x^2/2}\\,dx,\\quad I^2 = \\iint_{\\mathbb{R}^2} e^{-(x^2+y^2)/2}\\,dx\\,dy",
+          "to_latex": "I^2 = \\int_{0}^{2\\pi}\\int_{0}^{\\infty} e^{-r^2/2}\\,r\\,dr\\,d\\theta = 2\\pi \\implies I = \\sqrt{2\\pi}|",
+          "operation_label": "フビニの定理と2次元極座標変換によるガウス積分",
+          "explanation": "1次元積分の2乗を2重積分としてフビニの定理を適用し、極座標 (r, θ) のヤコビアン r を用いて積分を実行することで正規化定数 √(2π) を得る。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution",
+            "math.calc.mi02_fubini_theorem",
+            "math.calc.mi05_polar_2d_area_element"
+          ],
+          "sympy_check_hint": "integrate(exp(-x**2/2), (x, -oo, oo)) - sqrt(2*pi)"
+        },
+        {
+          "step_id": "s3_complete_the_square",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varphi_Z(t) = \\frac{1}{\\sqrt{2\\pi}}\\int_{-\\infty}^{\\infty} \\exp\\!\\left(-\\frac{x^2}{2} + i t x\\right) dx",
+          "to_latex": "\\varphi_Z(t) = e^{-t^2/2}\\cdot \\frac{1}{\\sqrt{2\\pi}}\\int_{-\\infty}^{\\infty} \\exp\\!\\left(-\\frac{(x - i t)^2}{2}\\right) dx",
+          "operation_label": "指数部の平方完成",
+          "explanation": "指数部 -x^2/2 + itx を -(x - it)^2/2 - t^2/2 へ平方完成し、x に依存しない因子 exp(-t^2/2) を積分外へ括り出す。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def",
+            "math.prob.pr07_characteristic_function_def"
+          ],
+          "sympy_check_hint": "expand(-(x - I*t)**2/2 - t**2/2) - (-x**2/2 + I*t*x)"
+        },
+        {
+          "step_id": "s4_contour_shift_eval",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varphi_Z(t) = e^{-t^2/2}\\cdot \\frac{1}{\\sqrt{2\\pi}}\\int_{-\\infty}^{\\infty} \\exp\\!\\left(-\\frac{(x - i t)^2}{2}\\right) dx",
+          "to_latex": "\\varphi_Z(t) = e^{-t^2/2}\\cdot \\frac{1}{\\sqrt{2\\pi}}\\int_{-\\infty}^{\\infty} e^{-u^2/2}\\,du = e^{-t^2/2}|",
+          "operation_label": "複素平行移動（コーシーの積分定理）とガウス積分の代入",
+          "explanation": "被積分関数が整関数であり無限遠方で指数的に減衰するため、矩形閉路に対するコーシーの積分定理により u = x - it の実軸積分へ帰着し、I = √(2π) を代入する。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution",
+            "math.complex.ca06_cauchy_integral_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_pr10_clt_via_char_func",
+      "target_node_id": "math.prob.pr10_central_limit_theorem",
+      "route_kind": "deductive",
+      "title": "特性関数の2次テイラー展開とレヴィの連続性定理による中心極限定理の導出",
+      "premise_node_ids": [
+        "math.prob.pr03_random_variable_expectation",
+        "math.prob.pr07_characteristic_function_def",
+        "math.prob.pr08_normal_characteristic_function",
+        "math.prob.pr09_levy_continuity_theorem"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m23_limit_algebra",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "assumptions": [
+        "X_1, ..., X_n は i.i.d. であり、E[X_i] = μ、Var(X_i) = σ^2 ∈ (0, ∞) とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Z_n = \\frac{1}{\\sqrt{n}}\\sum_{i=1}^{n} Y_i,\\quad Y_i := \\frac{X_i - \\mu}{\\sigma}|",
+          "to_latex": "\\lim_{n \\to \\infty} \\varphi_{Z_n}(t) = e^{-t^2/2} \\implies Z_n \\xrightarrow{d} \\mathcal{N}(0, 1)|",
+          "operation_label": "特性関数のべき乗表示・漸近展開・連続性定理",
+          "explanation": "標準化変数 Y_i の特性関数を原点まわりで2次までテイラー展開し、独立和の特性関数が [φ_Y(t/√n)]^n となることから極限 exp(-t^2/2) を得て、レヴィの連続性定理により中心極限定理を導く。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "math.prob.pr07_characteristic_function_def",
+            "math.prob.pr08_normal_characteristic_function",
+            "math.prob.pr09_levy_continuity_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_standardize_product_cf",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y_i := \\frac{X_i - \\mu}{\\sigma},\\quad \\mathbb{E}[Y_i]=0,\\quad \\mathbb{E}[Y_i^2]=1,\\quad Z_n = \\sum_{i=1}^{n}\\frac{Y_i}{\\sqrt{n}}|",
+          "to_latex": "\\varphi_{Z_n}(t) = \\prod_{i=1}^{n} \\varphi_{Y_i}\\!\\left(\\frac{t}{\\sqrt{n}}\\right) = \\left[\\varphi_Y\\!\\left(\\frac{t}{\\sqrt{n}}\\right)\\right]^n",
+          "operation_label": "標準化変数の独立性による特性関数の積分解",
+          "explanation": "期待値 0、分散 1 に標準化された i.i.d. 変数 Y_i の和に対して、独立和の特性関数の乗法性とスケーリング則を適用する。",
+          "used_node_ids": [
+            "math.prob.pr03_random_variable_expectation",
+            "math.prob.pr07_characteristic_function_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_taylor_expand_cf",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varphi_Y(0) = 1,\\quad \\varphi'_Y(0) = i\\mathbb{E}[Y] = 0,\\quad \\varphi''_Y(0) = i^2\\mathbb{E}[Y^2] = -1",
+          "to_latex": "\\varphi_Y\\!\\left(\\frac{t}{\\sqrt{n}}\\right) = 1 - \\frac{t^2}{2n} + o\\!\\left(\\frac{t^2}{n}\\right)\\quad (n \\to \\infty)|",
+          "operation_label": "原点での2次テイラー展開（ペアノ剰余項）",
+          "explanation": "2次モーメントの存在により φ_Y は C^2 級であるため、原点での2次テイラー漸近展開を u = t/√n に適用して 1 - t^2/(2n) + o(1/n) を得る。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "math.prob.pr07_characteristic_function_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_exp_limit_and_levy",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varphi_{Z_n}(t) = \\left[1 - \\frac{t^2}{2n} + o\\!\\left(\\frac{1}{n}\\right)\\right]^n",
+          "to_latex": "\\lim_{n \\to \\infty} \\varphi_{Z_n}(t) = e^{-t^2/2} = \\varphi_Z(t) \\implies Z_n \\xrightarrow{d} \\mathcal{N}(0, 1)|",
+          "operation_label": "指数関数の極限とレヴィの連続性定理の適用",
+          "explanation": "(1 + c/n + o(1/n))^n → e^c の極限から特性関数が標準正規分布の特性関数 exp(-t^2/2) へ各点収束し、レヴィの連続性定理より中心極限定理が成立する。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra",
+            "math.prob.pr08_normal_characteristic_function",
+            "math.prob.pr09_levy_continuity_theorem"
+          ],
+          "sympy_check_hint": "limit((1 - t**2/(2*n))**n, n, oo) - exp(-t**2/2)"
+        }
+      ]
+    }
+  ]
+}

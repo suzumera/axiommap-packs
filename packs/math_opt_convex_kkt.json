@@ -1,0 +1,674 @@
+{
+  "pack_meta": {
+    "pack_id": "math.opt.convex_kkt",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "数理最適化：凸最適化・双対問題とKKT条件",
+    "language": "ja",
+    "description": "凸集合と凸関数、スレーター条件、ラグランジュ双対性、不等式制約付き最適化のカルーシュ＝クーン＝タッカー(KKT)条件を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.opt.opt01_convex_set_def",
+      "short_code": "OPT01",
+      "kind": "definition",
+      "title": "凸集合と凸結合の定義",
+      "summary": "任意の2点を結ぶ線分が常に集合内に含まれる集合として凸集合を定義し、有限個の点の非負重み付き平均である凸結合を定義する。",
+      "canonical_latex": "C \\subseteq \\mathbb{R}^n \\text{ is convex} \\iff \\forall \\mathbf{x},\\mathbf{y} \\in C,\\; \\forall \\theta \\in [0,1],\\; \\theta\\mathbf{x} + (1-\\theta)\\mathbf{y} \\in C",
+      "aliases_latex": [
+        "\\sum_{i=1}^{k} \\theta_i \\mathbf{x}_i \\in C\\;\\left(\\theta_i \\ge 0,\\; \\sum_{i=1}^{k} \\theta_i = 1\\right)",
+        "\\operatorname{conv}(S) := \\left\\{\\sum_{i=1}^{k}\\theta_i\\mathbf{x}_i \\;\\middle|\\; \\mathbf{x}_i\\in S,\\; \\theta_i\\ge 0,\\; \\sum_{i=1}^{k}\\theta_i=1\\right\\}"
+      ],
+      "keywords": [
+        "凸集合",
+        "凸結合",
+        "凸包",
+        "convex set",
+        "convex combination"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.opt.opt02_convex_function_def",
+      "short_code": "OPT02",
+      "kind": "definition",
+      "title": "凸関数・狭義凸関数とエピグラフの定義",
+      "summary": "凸集合上で定義され、弦が関数のグラフの上側にある性質（イェンセンの不等式）により凸関数・狭義凸関数・凹関数を定義し、エピグラフの凸性による特徴付けを与える。",
+      "canonical_latex": "f: D \\to \\mathbb{R}\\;(D\\text{ convex})\\text{ is convex} \\iff \\forall \\mathbf{x},\\mathbf{y}\\in D,\\; \\forall \\theta\\in[0,1],\\; f\\big(\\theta\\mathbf{x}+(1-\\theta)\\mathbf{y}\\big) \\le \\theta f(\\mathbf{x}) + (1-\\theta)f(\\mathbf{y})",
+      "aliases_latex": [
+        "\\operatorname{epi}(f) := \\{(\\mathbf{x}, t) \\in D \\times \\mathbb{R} \\mid f(\\mathbf{x}) \\le t\\}\\text{ is convex}",
+        "f\\text{ concave} \\iff -f\\text{ convex}"
+      ],
+      "keywords": [
+        "凸関数",
+        "狭義凸関数",
+        "凹関数",
+        "エピグラフ",
+        "イェンセンの不等式",
+        "convex function",
+        "epigraph"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.opt.opt03_convex_diff_criteria",
+      "short_code": "OPT03",
+      "kind": "theorem_formula",
+      "title": "微分可能凸関数の1階・2階判定条件",
+      "summary": "1回微分可能関数が凸であるための接超平面下界条件（1階条件）と、2回微分可能関数が凸であるためのヘッセ行列の半正定値性（2階条件）を与える。",
+      "canonical_latex": "f \\in C^1(D)\\text{ convex} \\iff \\forall \\mathbf{x},\\mathbf{y}\\in D,\\; f(\\mathbf{y}) \\ge f(\\mathbf{x}) + \\nabla f(\\mathbf{x})\\cdot(\\mathbf{y}-\\mathbf{x});\\quad f \\in C^2(D)\\text{ convex} \\iff \\forall \\mathbf{x}\\in D,\\; H_f(\\mathbf{x}) \\succeq 0",
+      "aliases_latex": [
+        "\\big(\\nabla f(\\mathbf{y}) - \\nabla f(\\mathbf{x})\\big)\\cdot(\\mathbf{y}-\\mathbf{x}) \\ge 0",
+        "\\forall \\mathbf{h}\\in\\mathbb{R}^n,\\; \\mathbf{h}^\\top H_f(\\mathbf{x})\\mathbf{h} \\ge 0"
+      ],
+      "keywords": [
+        "1階凸性条件",
+        "2階凸性条件",
+        "半正定値",
+        "ヘッセ行列",
+        "first-order condition",
+        "second-order condition"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.opt.opt04_convex_global_optimality",
+      "short_code": "OPT04",
+      "kind": "theorem_formula",
+      "title": "凸最適化問題における大域最適性と1階最適性条件",
+      "summary": "凸集合上の凸関数最小化問題では任意の局所最適解が大域最適解となり、微分可能な場合には変分不等式型の1階最適性条件が必要十分となることを示す。",
+      "canonical_latex": "\\min_{\\mathbf{x}\\in D} f(\\mathbf{x})\\;(D, f\\text{ convex}):\\; \\mathbf{x}^*\\text{ local min} \\implies \\mathbf{x}^*\\text{ global min};\\quad f\\in C^1 \\implies \\big(\\mathbf{x}^*\\text{ optimal} \\iff \\forall \\mathbf{y}\\in D,\\; \\nabla f(\\mathbf{x}^*)\\cdot(\\mathbf{y}-\\mathbf{x}^*) \\ge 0\\big)",
+      "aliases_latex": [
+        "D=\\mathbb{R}^n \\implies \\nabla f(\\mathbf{x}^*) = \\mathbf{0}",
+        "f\\text{ strictly convex} \\implies \\mathbf{x}^*\\text{ is unique}"
+      ],
+      "keywords": [
+        "凸最適化",
+        "大域最適解",
+        "局所最適解",
+        "1階最適性条件",
+        "変分不等式",
+        "global optimality"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.opt.opt05_hyperplane_separation",
+      "short_code": "OPT05",
+      "kind": "math_boundary",
+      "title": "凸集合の分離超平面定理と支持超平面定理",
+      "summary": "互いに素な2つの非空凸集合を分離する超平面が存在するという凸解析の基本定理であり、スレーター条件のもとでの強双対性の証明の基盤となる。",
+      "canonical_latex": "C_1, C_2 \\subset \\mathbb{R}^n\\text{ non-empty convex},\\; C_1 \\cap C_2 = \\emptyset \\implies \\exists \\mathbf{a} \\neq \\mathbf{0},\\; \\exists b\\in\\mathbb{R}\\text{ s.t. } \\forall \\mathbf{x}\\in C_1,\\; \\mathbf{a}\\cdot\\mathbf{x} \\le b \\land \\forall \\mathbf{y}\\in C_2,\\; \\mathbf{a}\\cdot\\mathbf{y} \\ge b",
+      "aliases_latex": [
+        "\\mathbf{x}_0 \\in \\partial C \\implies \\exists \\mathbf{a}\\neq\\mathbf{0}\\text{ s.t. } \\forall \\mathbf{x}\\in C,\\; \\mathbf{a}\\cdot\\mathbf{x} \\le \\mathbf{a}\\cdot\\mathbf{x}_0"
+      ],
+      "keywords": [
+        "分離超平面定理",
+        "支持超平面定理",
+        "凸解析",
+        "separating hyperplane theorem",
+        "supporting hyperplane"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.opt.opt06_lagrange_dual_def",
+      "short_code": "OPT06",
+      "kind": "definition",
+      "title": "不等式・等式制約付き問題のラグランジアンと双対問題の定義",
+      "summary": "不等式制約と等式制約を持つ主問題に対し、非負制約付きおよび自由な双対変数を用いたラグランジアン、ラグランジュ双対関数、および双対最大化問題を定義する。",
+      "canonical_latex": "\\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) := f_0(\\mathbf{x}) + \\sum_{i=1}^{m}\\lambda_i f_i(\\mathbf{x}) + \\sum_{j=1}^{p}\\nu_j h_j(\\mathbf{x}),\\quad g(\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) := \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda},\\boldsymbol{\\nu}),\\quad d^* := \\sup_{\\boldsymbol{\\lambda}\\ge\\mathbf{0},\\boldsymbol{\\nu}} g(\\boldsymbol{\\lambda},\\boldsymbol{\\nu})",
+      "aliases_latex": [
+        "p^* := \\inf\\{f_0(\\mathbf{x}) \\mid \\mathbf{x}\\in\\mathcal{D},\\; f_i(\\mathbf{x})\\le 0,\\; h_j(\\mathbf{x})=0\\}",
+        "h_j(\\mathbf{x}) = (A\\mathbf{x}-\\mathbf{b})_j"
+      ],
+      "keywords": [
+        "ラグランジアン",
+        "ラグランジュ双対関数",
+        "双対問題",
+        "主問題",
+        "双対変数",
+        "Lagrangian dual"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.opt.opt07_weak_duality",
+      "short_code": "OPT07",
+      "kind": "theorem_formula",
+      "title": "弱双対性定理と双対関数の凹性",
+      "summary": "主問題の凸性の有無にかかわらず、ラグランジュ双対関数は常に凹関数であり、双対最適値は主最適値の下界を与える（非負の双対ギャップ）ことを示す。",
+      "canonical_latex": "\\forall \\boldsymbol{\\lambda} \\ge \\mathbf{0},\\; \\forall \\boldsymbol{\\nu},\\; g(\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) \\le p^* \\implies d^* \\le p^*\\quad (p^* - d^* \\ge 0);\\quad g\\text{ is concave on } \\mathbb{R}^m_{\\ge 0}\\times\\mathbb{R}^p",
+      "aliases_latex": [
+        "\\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) \\le f_0(\\mathbf{x})\\;(\\mathbf{x}\\text{ feasible},\\; \\boldsymbol{\\lambda}\\ge\\mathbf{0})"
+      ],
+      "keywords": [
+        "弱双対性",
+        "双対ギャップ",
+        "凹関数",
+        "下界",
+        "weak duality",
+        "duality gap"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.opt.opt08_slater_strong_duality",
+      "short_code": "OPT08",
+      "kind": "theorem_formula",
+      "title": "スレーター条件（Slater's Condition）と強双対性定理",
+      "summary": "凸最適化問題においてすべての非線形不等式制約を厳密に満たす実行可能点が存在する（スレーター条件）とき、双対ギャップが零となり双対最適解が達成されることを示す。",
+      "canonical_latex": "\\big(\\exists \\tilde{\\mathbf{x}}\\in\\operatorname{relint}(\\mathcal{D}):\\; f_i(\\tilde{\\mathbf{x}}) < 0\\;(i=1,\\dots,m),\\; A\\tilde{\\mathbf{x}} = \\mathbf{b}\\big) \\implies p^* = d^* = g(\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)\\;(\\boldsymbol{\\lambda}^*\\ge\\mathbf{0})",
+      "aliases_latex": [
+        "p^* - d^* = 0\\text{ (strong duality)}",
+        "\\text{affine } f_i\\text{ allows } f_i(\\tilde{\\mathbf{x}}) \\le 0"
+      ],
+      "keywords": [
+        "スレーター条件",
+        "強双対性",
+        "制約想定",
+        "双対ギャップ零",
+        "Slater condition",
+        "strong duality"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.opt.opt09_kkt_optimality_conditions",
+      "short_code": "OPT09",
+      "kind": "theorem_formula",
+      "title": "カルーシュ＝クーン＝タッカー（KKT）条件",
+      "summary": "不等式・等式制約付き最適化の最適性条件（主実行可能性・双対実行可能性・相補性条件・停留条件）を強双対性から必要条件として導き、凸問題では大域最適の十分条件となることを示す。",
+      "canonical_latex": "f_i(\\mathbf{x}^*)\\le 0,\\; h_j(\\mathbf{x}^*)=0,\\; \\lambda_i^* \\ge 0,\\; \\lambda_i^* f_i(\\mathbf{x}^*) = 0,\\; \\nabla f_0(\\mathbf{x}^*) + \\sum_{i=1}^{m}\\lambda_i^*\\nabla f_i(\\mathbf{x}^*) + \\sum_{j=1}^{p}\\nu_j^*\\nabla h_j(\\mathbf{x}^*) = \\mathbf{0}",
+      "aliases_latex": [
+        "\\nabla_{\\mathbf{x}}\\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) = \\mathbf{0}",
+        "\\lambda_i^* f_i(\\mathbf{x}^*) = 0\\text{ (complementary slackness)}"
+      ],
+      "keywords": [
+        "KKT条件",
+        "カルーシュ・クーン・タッカー条件",
+        "相補性条件",
+        "不等式制約",
+        "最適性条件",
+        "Karush-Kuhn-Tucker"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.opt.opt10_lagrangian_saddle_point",
+      "short_code": "OPT10",
+      "kind": "theorem_formula",
+      "title": "ラグランジアンの鞍点定理と強双対性の等価性",
+      "summary": "主問題・双対問題の最適解の組がラグランジアンの大域的鞍点を形成することを示し、微分可能性を仮定しない強双対性と鞍点条件の必要十分性を与える。",
+      "canonical_latex": "\\forall \\mathbf{x}\\in\\mathcal{D},\\; \\forall \\boldsymbol{\\lambda}\\ge\\mathbf{0},\\; \\forall \\boldsymbol{\\nu},\\; \\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) \\le \\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) \\le \\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) \\iff \\mathbf{x}^*\\text{ primal opt},\\; (\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)\\text{ dual opt},\\; p^*=d^*",
+      "aliases_latex": [
+        "\\sup_{\\boldsymbol{\\lambda}\\ge\\mathbf{0},\\boldsymbol{\\nu}} \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) = \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\sup_{\\boldsymbol{\\lambda}\\ge\\mathbf{0},\\boldsymbol{\\nu}} \\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda},\\boldsymbol{\\nu})"
+      ],
+      "keywords": [
+        "鞍点定理",
+        "ミニマックス定理",
+        "強双対性",
+        "ラグランジアン",
+        "saddle point theorem"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "optimization"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "math.opt.deriv_opt03_convex_diff_criteria",
+      "target_node_id": "math.opt.opt03_convex_diff_criteria",
+      "route_kind": "equivalence",
+      "title": "微分可能凸関数の1階・2階判定条件の導出",
+      "premise_node_ids": [
+        "math.opt.opt02_convex_function_def",
+        "math.calc.e01_hessian_matrix_def",
+        "math.calc.e02_multivariable_taylor_2nd",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m35_multivariable_chain_rule",
+        "math.calc.m47_lagrange_mean_value_theorem"
+      ],
+      "assumptions": [
+        "D is an open convex subset of R^n",
+        "f is C^1(D) for the first-order condition and C^2(D) for the second-order condition"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f\\big(\\theta\\mathbf{y}+(1-\\theta)\\mathbf{x}\\big) \\le \\theta f(\\mathbf{y}) + (1-\\theta)f(\\mathbf{x})",
+          "to_latex": "\\big(f(\\mathbf{y}) \\ge f(\\mathbf{x}) + \\nabla f(\\mathbf{x})\\cdot(\\mathbf{y}-\\mathbf{x})\\big) \\iff \\big(H_f(\\mathbf{x}) \\succeq 0\\big)",
+          "operation_label": "1階線形近似下界と2階ヘッセ行列半正定値性の導出",
+          "explanation": "凸関数の定義不等式から方向微分の極限によって1階接超平面条件を導き、さらに2次テイラー展開を用いてヘッセ行列の半正定値性との同値性を示す。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.e04_quadratic_form_definiteness",
+            "math.opt.opt02_convex_function_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_first_order_condition",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{f\\big(\\mathbf{x}+\\theta(\\mathbf{y}-\\mathbf{x})\\big)-f(\\mathbf{x})}{\\theta} \\le f(\\mathbf{y})-f(\\mathbf{x})",
+          "to_latex": "f(\\mathbf{y}) \\ge f(\\mathbf{x}) + \\nabla f(\\mathbf{x})\\cdot(\\mathbf{y}-\\mathbf{x})",
+          "operation_label": "差商の極限および凸結合評価による1階同値性の証明",
+          "explanation": "凸性不等式を変形して theta -> 0+ の極限をとれば連鎖律より1階不等式が得られる。逆に任意の2点と中間点 z = theta x + (1-theta) y に対して1階不等式を適用し重み付き和をとると凸性不等式が復元される。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "math.opt.opt02_convex_function_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_second_order_condition",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\mathbf{x}+t\\mathbf{h}) = f(\\mathbf{x}) + t\\nabla f(\\mathbf{x})\\cdot\\mathbf{h} + \\frac{t^2}{2}\\mathbf{h}^\\top H_f(\\mathbf{x}+\\vartheta t\\mathbf{h})\\mathbf{h}",
+          "to_latex": "\\forall \\mathbf{x}\\in D,\\; \\forall \\mathbf{h}\\in\\mathbb{R}^n,\\; \\mathbf{h}^\\top H_f(\\mathbf{x})\\mathbf{h} \\ge 0 \\iff H_f(\\mathbf{x}) \\succeq 0",
+          "operation_label": "2次テイラー展開によるヘッセ行列半正定値性との同値性証明",
+          "explanation": "2次テイラー展開において1階条件より2次剰余項の符号が非負となるため t -> 0 の極限で h^T H_f(x) h >= 0 が必要となる。逆にすべての点で H_f >= 0 ならばラグランジュ剰余項が常に非負となり1階条件が従う。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.e04_quadratic_form_definiteness",
+            "math.calc.m47_lagrange_mean_value_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "math.opt.deriv_opt04_convex_global_optimality",
+      "target_node_id": "math.opt.opt04_convex_global_optimality",
+      "route_kind": "deductive",
+      "title": "凸最適化問題の大域最適性と変分不等式条件の導出",
+      "premise_node_ids": [
+        "math.opt.opt01_convex_set_def",
+        "math.opt.opt02_convex_function_def",
+        "math.opt.opt03_convex_diff_criteria"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "assumptions": [
+        "D is a non-empty convex subset of R^n",
+        "f is convex on D (and C^1 on an open set containing D for the gradient condition)",
+        "x^* belongs to D"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}^*\\in D\\text{ local min of convex } f",
+          "to_latex": "\\mathbf{x}^*\\text{ global min} \\land \\big(f\\in C^1 \\implies (\\mathbf{x}^*\\text{ optimal} \\iff \\forall \\mathbf{y}\\in D,\\; \\nabla f(\\mathbf{x}^*)\\cdot(\\mathbf{y}-\\mathbf{x}^*)\\ge 0)\\big)",
+          "operation_label": "局所最適性の大域化と1階最適性条件の導出",
+          "explanation": "実行可能集合と目的関数の凸性から局所最適解が大域最適解になることを背理法で示し、1階凸性不等式と組み合わせて変分不等式型の最適性条件を導く。",
+          "used_node_ids": [
+            "math.opt.opt01_convex_set_def",
+            "math.opt.opt02_convex_function_def",
+            "math.opt.opt03_convex_diff_criteria"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_local_to_global",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists \\mathbf{y}\\in D:\\; f(\\mathbf{y}) < f(\\mathbf{x}^*)",
+          "to_latex": "\\forall \\theta\\in(0,1],\\; \\mathbf{z}(\\theta)=\\mathbf{x}^*+\\theta(\\mathbf{y}-\\mathbf{x}^*)\\in D \\land f(\\mathbf{z}(\\theta)) < f(\\mathbf{x}^*)",
+          "operation_label": "線分上の点を用いた背理法による大域最適性の証明",
+          "explanation": "より小さい関数値を与える点 y の存在を仮定すると、D の凸性より線分上の点 z(theta) はすべて実行可能であり、f の凸性より x^* の任意の近傍に f(z(theta)) < f(x^*) となる点が存在して局所最小性に矛盾する。",
+          "used_node_ids": [
+            "math.logic.m51_proof_by_contradiction",
+            "math.opt.opt01_convex_set_def",
+            "math.opt.opt02_convex_function_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_variational_inequality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}^*\\text{ global min on } D",
+          "to_latex": "\\forall \\mathbf{y}\\in D,\\; \\nabla f(\\mathbf{x}^*)\\cdot(\\mathbf{y}-\\mathbf{x}^*) \\ge 0",
+          "operation_label": "方向微分条件と1階凸性条件による必要十分性の証明",
+          "explanation": "x^* が最小解ならば任意の y in D への移動方向で関数値が減少しないため方向微分が非負となり変分不等式が必要となる（内点では停留点条件 grad f = 0 に帰着）。逆に変分不等式と1階凸性不等式を組み合わせれば f(y) >= f(x^*) がすべての y in D で成立する。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.opt.opt03_convex_diff_criteria"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "math.opt.deriv_opt07_weak_duality",
+      "target_node_id": "math.opt.opt07_weak_duality",
+      "route_kind": "deductive",
+      "title": "弱双対性定理と双対関数の凹性の導出",
+      "premise_node_ids": [
+        "math.opt.opt06_lagrange_dual_def",
+        "math.opt.opt02_convex_function_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Primal problem domain D is non-empty",
+        "Dual multipliers satisfy lambda >= 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "g(\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) = \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda},\\boldsymbol{\\nu})",
+          "to_latex": "d^* = \\sup_{\\boldsymbol{\\lambda}\\ge\\mathbf{0},\\boldsymbol{\\nu}} g(\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) \\le p^* \\land g\\text{ is concave}",
+          "operation_label": "実行可能点におけるラグランジアン評価とアフィン関数の下限の凹性",
+          "explanation": "任意の主実行可能点におけるラグランジアンの上界評価から弱双対性 d^* <= p^* を導き、同時に固定された x に関するアフィン性の下限として双対関数の凹性を示す。",
+          "used_node_ids": [
+            "math.opt.opt02_convex_function_def",
+            "math.opt.opt06_lagrange_dual_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_lower_bound_proof",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{\\mathbf{x}}\\text{ feasible}\\;(f_i(\\tilde{\\mathbf{x}})\\le 0,\\; h_j(\\tilde{\\mathbf{x}})=0),\\; \\boldsymbol{\\lambda}\\ge\\mathbf{0}",
+          "to_latex": "g(\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) \\le \\mathcal{L}(\\tilde{\\mathbf{x}},\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) \\le f_0(\\tilde{\\mathbf{x}}) \\implies d^* \\le p^*",
+          "operation_label": "実行可能点に対する非正項評価と下限・上限操作",
+          "explanation": "lambda_i >= 0 と f_i(x) <= 0, h_j(x) = 0 よりペナルティ和は非正となるため、すべての実行可能点 x で g <= L <= f_0 が成り立つ。x について下限、双対変数について上限をとることで d^* <= p^* が得られる。",
+          "used_node_ids": [
+            "math.opt.opt06_lagrange_dual_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_dual_concavity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}\\big(\\mathbf{x},\\theta(\\boldsymbol{\\lambda}_1,\\boldsymbol{\\nu}_1)+(1-\\theta)(\\boldsymbol{\\lambda}_2,\\boldsymbol{\\nu}_2)\\big) = \\theta\\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda}_1,\\boldsymbol{\\nu}_1)+(1-\\theta)\\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda}_2,\\boldsymbol{\\nu}_2)",
+          "to_latex": "g\\big(\\theta(\\boldsymbol{\\lambda}_1,\\boldsymbol{\\nu}_1)+(1-\\theta)(\\boldsymbol{\\lambda}_2,\\boldsymbol{\\nu}_2)\\big) \\ge \\theta g(\\boldsymbol{\\lambda}_1,\\boldsymbol{\\nu}_1) + (1-\\theta)g(\\boldsymbol{\\lambda}_2,\\boldsymbol{\\nu}_2)",
+          "operation_label": "アフィン関数族の点ごとの下限による凹性の証明",
+          "explanation": "x を固定するとラグランジアンは (lambda, nu) に関してアフィン関数であり、その点ごとの下限の和は和の下限以上になるという性質から双対関数 g の凹性が導かれる。",
+          "used_node_ids": [
+            "math.opt.opt02_convex_function_def",
+            "math.opt.opt06_lagrange_dual_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "math.opt.deriv_opt08_slater_strong_duality",
+      "target_node_id": "math.opt.opt08_slater_strong_duality",
+      "route_kind": "deductive",
+      "title": "スレーター条件と分離超平面定理による強双対性の導出",
+      "premise_node_ids": [
+        "math.opt.opt01_convex_set_def",
+        "math.opt.opt02_convex_function_def",
+        "math.opt.opt06_lagrange_dual_def",
+        "math.opt.opt07_weak_duality"
+      ],
+      "required_math_node_ids": [
+        "math.logic.m51_proof_by_contradiction",
+        "math.opt.opt05_hyperplane_separation"
+      ],
+      "assumptions": [
+        "D is convex and f_0, f_1, ..., f_m are convex functions on D",
+        "Equality constraints are affine: h(x) = Ax - b",
+        "p^* is finite and Slater point exists in relint(D) with f_i(x_tilde) < 0 and A x_tilde = b"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\exists \\tilde{\\mathbf{x}}\\in\\operatorname{relint}(\\mathcal{D}):\\; f_i(\\tilde{\\mathbf{x}})<0,\\; A\\tilde{\\mathbf{x}}=\\mathbf{b}",
+          "to_latex": "p^* = d^* = g(\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)\\;(\\boldsymbol{\\lambda}^*\\ge\\mathbf{0})",
+          "operation_label": "制約・目的値エピグラフ集合の超平面分離による双対最適解の構成",
+          "explanation": "凸問題の制約値・目的値からなる凸集合と最適値未満の半直線を分離超平面定理で分離し、スレーター点の厳密実行可能性から分離法線の目的成分が正であることを保証して強双対性を示す。",
+          "used_node_ids": [
+            "math.opt.opt01_convex_set_def",
+            "math.opt.opt02_convex_function_def",
+            "math.opt.opt05_hyperplane_separation",
+            "math.opt.opt06_lagrange_dual_def",
+            "math.opt.opt07_weak_duality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_epigraph_separation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{A} := \\{(\\mathbf{u},\\mathbf{v},t)\\mid \\exists \\mathbf{x}\\in\\mathcal{D}:\\; f_i(\\mathbf{x})\\le u_i,\\; A\\mathbf{x}-\\mathbf{b}=\\mathbf{v},\\; f_0(\\mathbf{x})\\le t\\},\\quad \\mathcal{B} := \\{(\\mathbf{0},\\mathbf{0},s)\\mid s < p^*\\}",
+          "to_latex": "\\exists (\\tilde{\\boldsymbol{\\lambda}},\\tilde{\\boldsymbol{\\nu}},\\mu)\\neq\\mathbf{0}\\;(\\tilde{\\boldsymbol{\\lambda}}\\ge\\mathbf{0},\\; \\mu\\ge 0):\\; \\tilde{\\boldsymbol{\\lambda}}\\cdot\\mathbf{f}(\\mathbf{x})+\\tilde{\\boldsymbol{\\nu}}\\cdot(A\\mathbf{x}-\\mathbf{b})+\\mu f_0(\\mathbf{x}) \\ge \\mu p^*\\;(\\forall \\mathbf{x}\\in\\mathcal{D})",
+          "operation_label": "交わらない2つの凸集合に対する分離超平面定理の適用",
+          "explanation": "f_i と f_0 の凸性および等式制約のアフィン性より集合 A は凸集合となり、最適値 p^* の定義より A と半直線 B は交わらない。分離超平面定理を適用すると非負の重み lambda_tilde, mu を持つ分離不等式が得られる。",
+          "used_node_ids": [
+            "math.opt.opt01_convex_set_def",
+            "math.opt.opt02_convex_function_def",
+            "math.opt.opt05_hyperplane_separation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_slater_positive_mu",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu = 0 \\implies \\sum_{i=1}^{m}\\tilde{\\lambda}_i f_i(\\tilde{\\mathbf{x}}) \\ge 0",
+          "to_latex": "\\mu > 0 \\implies \\boldsymbol{\\lambda}^* := \\frac{\\tilde{\\boldsymbol{\\lambda}}}{\\mu}\\ge\\mathbf{0},\\; \\boldsymbol{\\nu}^* := \\frac{\\tilde{\\boldsymbol{\\nu}}}{\\mu},\\; g(\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) \\ge p^* \\implies p^* = d^*",
+          "operation_label": "スレーター点による mu > 0 の保証と弱双対性との結合",
+          "explanation": "もし mu = 0 とするとスレーター点 x_tilde で f_i(x_tilde) < 0, A x_tilde - b = 0 を代入して非負係数 lambda_tilde = 0 が導かれ、さらに relint(D) の性質より nu_tilde = 0 となって非零法線に矛盾する。よって mu > 0 であり、mu で割った双対変数が g >= p^* を満たすため弱双対性と合わせて p^* = d^* が成立する。",
+          "used_node_ids": [
+            "math.logic.m51_proof_by_contradiction",
+            "math.opt.opt06_lagrange_dual_def",
+            "math.opt.opt07_weak_duality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "math.opt.deriv_opt09_kkt_conditions",
+      "target_node_id": "math.opt.opt09_kkt_optimality_conditions",
+      "route_kind": "deductive",
+      "title": "強双対性と凸性からのKKT条件（必要性と十分性）の導出",
+      "premise_node_ids": [
+        "math.opt.opt03_convex_diff_criteria",
+        "math.opt.opt04_convex_global_optimality",
+        "math.opt.opt06_lagrange_dual_def",
+        "math.opt.opt07_weak_duality",
+        "math.opt.opt08_slater_strong_duality",
+        "math.calc.e07_lagrange_multiplier_theorem"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition"
+      ],
+      "assumptions": [
+        "Objective f_0 and constraint functions f_i, h_j are differentiable on an open domain D",
+        "For necessity: primal optimal x^* and dual optimal (lambda^*, nu^*) exist with strong duality p^* = d^*",
+        "For sufficiency: f_0, f_i are convex and h_j are affine"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f_0(\\mathbf{x}^*) = p^* = d^* = g(\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)",
+          "to_latex": "f_i(\\mathbf{x}^*)\\le 0,\\; h_j(\\mathbf{x}^*)=0,\\; \\lambda_i^* \\ge 0,\\; \\lambda_i^* f_i(\\mathbf{x}^*)=0,\\; \\nabla_{\\mathbf{x}}\\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)=\\mathbf{0}",
+          "operation_label": "強双対性からの相補性・停留条件の導出および凸問題での十分性証明",
+          "explanation": "強双対性の等式鎖から相補性条件とラグランジアンの無制約最小化（停留条件）を導出してKKT条件の必要性を示し、凸最適化では逆にKKT条件が強双対性と大域最適性を保証することを示す。",
+          "used_node_ids": [
+            "math.calc.e07_lagrange_multiplier_theorem",
+            "math.opt.opt03_convex_diff_criteria",
+            "math.opt.opt04_convex_global_optimality",
+            "math.opt.opt06_lagrange_dual_def",
+            "math.opt.opt07_weak_duality",
+            "math.opt.opt08_slater_strong_duality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_complementary_slackness",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f_0(\\mathbf{x}^*) = g(\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) \\le \\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) = f_0(\\mathbf{x}^*) + \\sum_{i=1}^{m}\\lambda_i^* f_i(\\mathbf{x}^*) + \\sum_{j=1}^{p}\\nu_j^* h_j(\\mathbf{x}^*) \\le f_0(\\mathbf{x}^*)",
+          "to_latex": "\\sum_{i=1}^{m}\\lambda_i^* f_i(\\mathbf{x}^*) = 0 \\implies \\forall i,\\; \\lambda_i^* f_i(\\mathbf{x}^*) = 0",
+          "operation_label": "強双対性サンドイッチ不等式による相補性条件の導出",
+          "explanation": "主実行可能性と双対実行可能性より各積 lambda_i^* f_i(x^*) は非正であり等式制約項は零となる。強双対性により両端が f_0(x^*) で一致するため、非正項の和が零となり各項ごとに相補性条件 lambda_i^* f_i(x^*) = 0 が強制される。",
+          "used_node_ids": [
+            "math.opt.opt06_lagrange_dual_def",
+            "math.opt.opt08_slater_strong_duality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_stationarity_necessity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) = \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)",
+          "to_latex": "\\nabla_{\\mathbf{x}}\\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) = \\nabla f_0(\\mathbf{x}^*) + \\sum_{i=1}^{m}\\lambda_i^*\\nabla f_i(\\mathbf{x}^*) + \\sum_{j=1}^{p}\\nu_j^*\\nabla h_j(\\mathbf{x}^*) = \\mathbf{0}",
+          "operation_label": "ラグランジアンの最小化点に対する停留点条件の適用",
+          "explanation": "上の等式鎖から x^* は双対最適変数のもとでラグランジアン L(x, lambda^*, nu^*) を最小化する点であるため、内点における極値の1階必要条件（等式制約のラグランジュ乗数法を一般化した停留条件）より x に関する勾配が零となる。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_convex_sufficiency",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{KKT holds at } (\\mathbf{x}^*,\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)\\;\\land\\; (f_0,f_i\\text{ convex},\\; h_j\\text{ affine})",
+          "to_latex": "g(\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) = \\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) = f_0(\\mathbf{x}^*) \\implies \\mathbf{x}^*\\text{ primal optimal},\\; (\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)\\text{ dual optimal}",
+          "operation_label": "凸問題におけるKKT点の大域最適性（十分性）の証明",
+          "explanation": "凸関数に非負重み付きの凸不等式制約とアフィン等式制約を加えた L(x, lambda^*, nu^*) は x の凸関数である。よって停留条件は x^* が L の大域最小点であることを保証し、相補性条件と合わせて g(lambda^*, nu^*) = f_0(x^*) となるため弱双対性より x^* の大域最適性が従う。",
+          "used_node_ids": [
+            "math.opt.opt03_convex_diff_criteria",
+            "math.opt.opt04_convex_global_optimality",
+            "math.opt.opt07_weak_duality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "math.opt.deriv_opt10_saddle_point_equivalence",
+      "target_node_id": "math.opt.opt10_lagrangian_saddle_point",
+      "route_kind": "equivalence",
+      "title": "ラグランジアンの鞍点条件と強双対性の等価性の導出",
+      "premise_node_ids": [
+        "math.opt.opt06_lagrange_dual_def",
+        "math.opt.opt07_weak_duality"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "x^* belongs to D, lambda^* >= 0, and nu^* in R^p"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\forall \\mathbf{x}\\in\\mathcal{D},\\; \\boldsymbol{\\lambda}\\ge\\mathbf{0},\\; \\boldsymbol{\\nu}:\\; \\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) \\le \\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) \\le \\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)",
+          "to_latex": "\\mathbf{x}^*\\text{ primal opt},\\; (\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)\\text{ dual opt},\\; p^*=d^*",
+          "operation_label": "鞍点不等式と強双対最適解の双方向等価性の証明",
+          "explanation": "鞍点の左不等式から主実行可能性と相補性を導き、右不等式と弱双対性を合わせて強双対性と最適性を示す。逆も強双対性のサンドイッチ等式から直ちに導かれる。",
+          "used_node_ids": [
+            "math.opt.opt06_lagrange_dual_def",
+            "math.opt.opt07_weak_duality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_saddle_to_strong_duality",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sup_{\\boldsymbol{\\lambda}\\ge\\mathbf{0},\\boldsymbol{\\nu}} \\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) \\le \\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) \\le \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)",
+          "to_latex": "f_i(\\mathbf{x}^*)\\le 0,\\; h_j(\\mathbf{x}^*)=0,\\; \\lambda_i^* f_i(\\mathbf{x}^*)=0,\\; g(\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) = f_0(\\mathbf{x}^*) = p^* = d^*",
+          "operation_label": "鞍点不等式からの実行可能性・相補性・強双対性の導出",
+          "explanation": "左不等式より L(x^*, lambda, nu) がすべての lambda >= 0, nu に対して有界であるため f_i(x^*) <= 0 と h_j(x^*) = 0 が必須となり、lambda = 0 を代入して sum lambda_i^* f_i(x^*) = 0 を得る。よって L(x^*, lambda^*, nu^*) = f_0(x^*) であり、右不等式より g(lambda^*, nu^*) = f_0(x^*) となるため弱双対性から主・双対最適性と p^* = d^* が従う。",
+          "used_node_ids": [
+            "math.opt.opt06_lagrange_dual_def",
+            "math.opt.opt07_weak_duality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_strong_duality_to_saddle",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f_0(\\mathbf{x}^*) = p^* = d^* = g(\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)",
+          "to_latex": "\\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda},\\boldsymbol{\\nu}) \\le f_0(\\mathbf{x}^*) = \\mathcal{L}(\\mathbf{x}^*,\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) = g(\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*) \\le \\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda}^*,\\boldsymbol{\\nu}^*)",
+          "operation_label": "強双対性および主・双対最適性からの鞍点不等式の構成",
+          "explanation": "強双対性と x^*, (lambda^*, nu^*) の最適性から g(lambda^*, nu^*) = L(x^*, lambda^*, nu^*) = f_0(x^*) が成立する。双対関数の定義より右不等式が成り立ち、x^* の主実行可能性と lambda >= 0 より L(x^*, lambda, nu) <= f_0(x^*) となって左不等式も従う。",
+          "used_node_ids": [
+            "math.opt.opt06_lagrange_dual_def",
+            "math.opt.opt07_weak_duality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

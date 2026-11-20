@@ -1,0 +1,740 @@
+{
+  "pack_meta": {
+    "pack_id": "math.num.root_interpolation",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "数値解析：ニュートン＝ラフソン法・ラグランジュ補間・スプライン",
+    "language": "ja",
+    "description": "テイラー展開からニュートン法の2次収束証明、ラグランジュ補間、チェビシェフ節点、3次スプライン補間を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.num.ni01_fixed_point_convergence_def",
+      "short_code": "NI01",
+      "kind": "definition",
+      "title": "反復法の収束次数と漸近誤差定数の定義",
+      "summary": "点列 x_k が極限 x* に収束するとき、誤差 e_k = x_k - x* の減少速度を収束次数 p と漸近誤差定数 C で特徴付ける。p=1 (0<C<1) を1次収束、p=2 を2次収束と呼ぶ。",
+      "canonical_latex": "e_k := x_k - x^*,\\quad \\lim_{k\\to\\infty}\\frac{\\|e_{k+1}\\|}{\\|e_k\\|^p} = C \\in (0, \\infty)\\quad (p \\ge 1)",
+      "aliases_latex": [
+        "\\|x_{k+1} - x^*\\| \\le C\\|x_k - x^*\\|^p"
+      ],
+      "keywords": [
+        "収束次数",
+        "2次収束",
+        "漸近誤差定数",
+        "反復法"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "numerical_analysis"
+      ]
+    },
+    {
+      "id": "math.num.ni02_newton_raphson_method",
+      "short_code": "NI02",
+      "kind": "theorem_formula",
+      "title": "ニュートン＝ラフソン法の反復公式（1変数・多変数）",
+      "summary": "非線形方程式 f(x)=0 に対し、現在点 x_k における1次テイラー展開（接線・接超平面近似）の零点を次点 x_{k+1} とする反復解法。多変数ではヤコビ行列の連立1次方程式を解く。",
+      "canonical_latex": "x_{k+1} = x_k - \\frac{f(x_k)}{f'(x_k)},\\qquad \\mathbf{x}_{k+1} = \\mathbf{x}_k - J_{\\mathbf{F}}(\\mathbf{x}_k)^{-1}\\mathbf{F}(\\mathbf{x}_k)",
+      "aliases_latex": [
+        "J_{\\mathbf{F}}(\\mathbf{x}_k)\\Delta\\mathbf{x}_k = -\\mathbf{F}(\\mathbf{x}_k)"
+      ],
+      "keywords": [
+        "ニュートン法",
+        "ニュートン＝ラフソン法",
+        "求根アルゴリズム",
+        "ヤコビ行列"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "numerical_analysis"
+      ]
+    },
+    {
+      "id": "math.num.ni03_newton_quadratic_convergence",
+      "short_code": "NI03",
+      "kind": "theorem_formula",
+      "title": "ニュートン法の2次収束定理と誤差評価",
+      "summary": "単根 x* (f'(x*) != 0) の十分近傍で f が C^2 級のとき、ニュートン法の誤差は2次で減少し、漸近誤差定数は |f''(x*)| / (2|f'(x*)|) で与えられる。",
+      "canonical_latex": "f(x^*)=0 \\land f'(x^*)\\neq 0 \\land f\\in C^2 \\implies \\lim_{k\\to\\infty}\\frac{|e_{k+1}|}{|e_k|^2} = \\frac{|f''(x^*)|}{2|f'(x^*)|}",
+      "aliases_latex": [
+        "e_{k+1} = \\frac{f''(\\xi_k)}{2f'(x_k)}e_k^2"
+      ],
+      "keywords": [
+        "2次収束",
+        "ニュートン法",
+        "単根",
+        "誤差評価"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "numerical_analysis"
+      ]
+    },
+    {
+      "id": "math.num.ni04_polynomial_interpolation_existence",
+      "short_code": "NI04",
+      "kind": "theorem_formula",
+      "title": "多項式補間の存在と一意性（ファンデルモンド行列式）",
+      "summary": "相異なる n+1 個の節点 x_0, ..., x_n と任意の値 y_0, ..., y_n に対し、すべての節点で P(x_i) = y_i を満たす n 次以下の多項式 P(x) はただ1つ存在する。",
+      "canonical_latex": "x_i\\neq x_j\\,(i\\neq j) \\implies \\det V = \\prod_{0\\le j < i\\le n}(x_i - x_j)\\neq 0 \\implies \\exists!\\, P\\in\\mathcal{P}_n\\text{ s.t. } P(x_i)=y_i\\;(i=0,\\dots,n)",
+      "aliases_latex": [
+        "V\\mathbf{a} = \\mathbf{y},\\quad V_{ij} = x_i^j"
+      ],
+      "keywords": [
+        "多項式補間",
+        "一意性",
+        "ファンデルモンド行列式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "numerical_analysis"
+      ]
+    },
+    {
+      "id": "math.num.ni05_lagrange_interpolation_formula",
+      "short_code": "NI05",
+      "kind": "theorem_formula",
+      "title": "ラグランジュ補間多項式とラグランジュ基底多項式",
+      "summary": "各節点でのみ 1、他の節点で 0 となる n 次基底多項式 l_j(x) の線形結合により、一意な n 次補間多項式を陽的に構成する公式。",
+      "canonical_latex": "P_n(x) = \\sum_{j=0}^{n} y_j\\ell_j(x),\\qquad \\ell_j(x) := \\prod_{\\substack{m=0\\\\m\\neq j}}^{n}\\frac{x - x_m}{x_j - x_m}",
+      "aliases_latex": [
+        "\\ell_j(x_i) = \\delta_{ij}"
+      ],
+      "keywords": [
+        "ラグランジュ補間",
+        "ラグランジュ基底",
+        "多項式補間"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "numerical_analysis"
+      ]
+    },
+    {
+      "id": "math.num.ni06_interpolation_error_theorem",
+      "short_code": "NI06",
+      "kind": "theorem_formula",
+      "title": "多項式補間の誤差定理（剰余項公式）",
+      "summary": "f が C^{n+1} 級のとき、n 次補間多項式 P_n(x) の補間誤差は n+1 階導関数と節点多項式 omega_{n+1}(x) の積に比例する。",
+      "canonical_latex": "f(x) - P_n(x) = \\frac{f^{(n+1)}(\\xi)}{(n+1)!}\\omega_{n+1}(x),\\qquad \\omega_{n+1}(x) := \\prod_{i=0}^{n}(x - x_i)\\quad (\\xi\\in I)",
+      "aliases_latex": [
+        "|f(x) - P_n(x)| \\le \\frac{\\|f^{(n+1)}\\|_\\infty}{(n+1)!}|\\omega_{n+1}(x)|"
+      ],
+      "keywords": [
+        "補間誤差",
+        "節点多項式",
+        "剰余項"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "numerical_analysis"
+      ]
+    },
+    {
+      "id": "math.num.ni07_chebyshev_polynomials_nodes",
+      "short_code": "NI07",
+      "kind": "definition",
+      "title": "第1種チェビシェフ多項式とチェビシェフ節点の定義",
+      "summary": "T_n(cos theta) = cos(n theta) で定義される直交多項式 T_n(x) と、T_{n+1}(x) の零点として [-1, 1] 上に配置されるチェビシェフ節点。",
+      "canonical_latex": "T_n(x) := \\cos(n\\arccos x)\\;(|x|\\le 1),\\qquad x_k = \\cos\\!\\left(\\frac{2k+1}{2(n+1)}\\pi\\right)\\quad (k=0,\\dots,n)",
+      "aliases_latex": [
+        "T_{n+1}(x) = 2xT_n(x) - T_{n-1}(x)"
+      ],
+      "keywords": [
+        "チェビシェフ多項式",
+        "チェビシェフ節点",
+        "直交多項式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "numerical_analysis"
+      ]
+    },
+    {
+      "id": "math.num.ni08_chebyshev_minimax_optimality",
+      "short_code": "NI08",
+      "kind": "theorem_formula",
+      "title": "チェビシェフ節点による節点多項式の最小最大最適性",
+      "summary": "区間 [-1, 1] 上のすべての最高次係数 1 の (n+1) 次多項式の中で、最大ノルムを最小にするのはモニック・チェビシェフ多項式 2^{-n} T_{n+1}(x) であり、等間隔節点のルンゲ現象を抑制する。",
+      "canonical_latex": "\\min_{x_0,\\dots,x_n\\in[-1,1]}\\max_{x\\in[-1,1]}\\left|\\prod_{i=0}^{n}(x - x_i)\\right| = \\max_{x\\in[-1,1]}\\left|\\frac{T_{n+1}(x)}{2^n}\\right| = \\frac{1}{2^n}",
+      "aliases_latex": [
+        "\\|\\tilde{T}_{n+1}\\|_\\infty = 2^{-n}"
+      ],
+      "keywords": [
+        "チェビシェフ補間",
+        "最小最大性",
+        "ルンゲ現象"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "numerical_analysis"
+      ]
+    },
+    {
+      "id": "math.num.ni09_cubic_spline_definition",
+      "short_code": "NI09",
+      "kind": "definition",
+      "title": "3次スプライン補間と境界条件の定義",
+      "summary": "各小区間 [x_j, x_{j+1}] 上で3次多項式となり、全区間 [x_0, x_n] で C^2 級かつ節点補間条件を満たす区分多項式 S(x) と、一意化のための自然・固定境界条件。",
+      "canonical_latex": "S|_{[x_j,x_{j+1}]} = S_j \\in \\mathcal{P}_3,\\quad S\\in C^2([x_0,x_n]),\\quad S(x_j)=y_j,\\quad S''(x_0)=S''(x_n)=0\\text{ (natural)}",
+      "aliases_latex": [
+        "S'(x_0)=f'(x_0),\\; S'(x_n)=f'(x_n)\\text{ (clamped)}"
+      ],
+      "keywords": [
+        "3次スプライン",
+        "区分多項式",
+        "自然スプライン"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "numerical_analysis"
+      ]
+    },
+    {
+      "id": "math.num.ni10_cubic_spline_tridiagonal_system",
+      "short_code": "NI10",
+      "kind": "theorem_formula",
+      "title": "3次スプライン補間のモーメント法と3重対角方程式系",
+      "summary": "節点での2階導関数値（モーメント）M_j = S''(x_j) を未知数にとり、S_j''(x) の線形補間を2回積分して1階導関数の連続性を課すことで得られる狭義優対角な3重対角線形系。",
+      "canonical_latex": "h_{j-1}M_{j-1} + 2(h_{j-1}+h_j)M_j + h_j M_{j+1} = 6\\left(\\frac{y_{j+1}-y_j}{h_j} - \\frac{y_j-y_{j-1}}{h_{j-1}}\\right)\\quad (h_j := x_{j+1}-x_j)",
+      "aliases_latex": [
+        "S_j(x) = \\frac{M_j(x_{j+1}-x)^3 + M_{j+1}(x-x_j)^3}{6h_j} + \\left(\\frac{y_j}{h_j}-\\frac{M_j h_j}{6}\\right)(x_{j+1}-x) + \\left(\\frac{y_{j+1}}{h_j}-\\frac{M_{j+1}h_j}{6}\\right)(x-x_j)"
+      ],
+      "keywords": [
+        "3重対角行列",
+        "スプライン補間",
+        "モーメント法"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "numerical_analysis"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_ni02_newton_raphson",
+      "target_node_id": "math.num.ni02_newton_raphson_method",
+      "route_kind": "deductive",
+      "title": "テイラー展開の1次近似によるニュートン＝ラフソン法の導出",
+      "premise_node_ids": [
+        "math.calc.t10_taylor_asymptotic_approx",
+        "math.calc.m20_derivative_definition",
+        "math.calc.mi03_jacobian_matrix_determinant"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f は解の近傍で連続微分可能であり f'(x_k) != 0（多変数ではヤコビ行列 J_F(x_k) が正則）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f(x) = 0,\\quad \\mathbf{F}(\\mathbf{x}) = \\mathbf{0}",
+          "to_latex": "x_{k+1} = x_k - \\frac{f(x_k)}{f'(x_k)},\\quad \\mathbf{x}_{k+1} = \\mathbf{x}_k - J_{\\mathbf{F}}(\\mathbf{x}_k)^{-1}\\mathbf{F}(\\mathbf{x}_k)",
+          "operation_label": "1次テイラー線形化と零点更新式の導出",
+          "explanation": "現在点での1次テイラー近似を0とおいて更新幅を解くことで、1変数および多変数のニュートン法反復式を得る。",
+          "used_node_ids": [
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1d_linearization",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(x_k + \\Delta x) = f(x_k) + f'(x_k)\\Delta x + \\mathcal{O}(\\Delta x^2) = 0",
+          "to_latex": "\\Delta x = -\\frac{f(x_k)}{f'(x_k)} \\implies x_{k+1} = x_k - \\frac{f(x_k)}{f'(x_k)}",
+          "operation_label": "1変数関数の1次近似と接線零点",
+          "explanation": "1次テイラー展開で2次以上の剰余項を無視し、接線が x 軸と交わる点を次反復点 x_{k+1} = x_k + \\Delta x とする。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_multivar_jacobian",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F}(\\mathbf{x}_k + \\Delta\\mathbf{x}) = \\mathbf{F}(\\mathbf{x}_k) + J_{\\mathbf{F}}(\\mathbf{x}_k)\\Delta\\mathbf{x} + o(\\|\\Delta\\mathbf{x}\\|) = \\mathbf{0}",
+          "to_latex": "J_{\\mathbf{F}}(\\mathbf{x}_k)\\Delta\\mathbf{x} = -\\mathbf{F}(\\mathbf{x}_k)",
+          "operation_label": "多変数ベクトル値関数のヤコビ行列による線形化",
+          "explanation": "多変数では導関数の代わりにヤコビ行列 J_F(\\mathbf{x}_k) を用いて線形近似を行い、補正量 \\Delta\\mathbf{x} に関する連立1次方程式を立てる。",
+          "used_node_ids": [
+            "math.calc.mi03_jacobian_matrix_determinant"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_multivar_update",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{\\mathbf{F}}(\\mathbf{x}_k)\\Delta\\mathbf{x} = -\\mathbf{F}(\\mathbf{x}_k),\\quad \\det J_{\\mathbf{F}}(\\mathbf{x}_k) \\neq 0",
+          "to_latex": "\\mathbf{x}_{k+1} = \\mathbf{x}_k - J_{\\mathbf{F}}(\\mathbf{x}_k)^{-1}\\mathbf{F}(\\mathbf{x}_k)",
+          "operation_label": "ヤコビ行列の正則性による反復更新式",
+          "explanation": "ヤコビ行列が正則であれば \\Delta\\mathbf{x} が一意に求まり、多変数ニュートン法の更新式が得られる。",
+          "used_node_ids": [
+            "math.calc.mi03_jacobian_matrix_determinant"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ni03_newton_quadratic",
+      "target_node_id": "math.num.ni03_newton_quadratic_convergence",
+      "route_kind": "deductive",
+      "title": "ラグランジュ剰余項付きテイラー展開によるニュートン法の2次収束証明",
+      "premise_node_ids": [
+        "math.num.ni01_fixed_point_convergence_def",
+        "math.num.ni02_newton_raphson_method",
+        "math.calc.t04_taylor_lagrange_remainder"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f は単根 x* の閉近傍上で C^2 級であり、f'(x*) != 0 かつ初期値 x_0 が x* に十分近いとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "e_k = x_k - x^*,\\quad x_{k+1} = x_k - \\frac{f(x_k)}{f'(x_k)}",
+          "to_latex": "\\lim_{k\\to\\infty}\\frac{|e_{k+1}|}{|e_k|^2} = \\frac{|f''(x^*)|}{2|f'(x^*)|}",
+          "operation_label": "誤差 e_k の2次漸化式の導出と極限評価",
+          "explanation": "x_k 周りで f(x*) = 0 を2次テイラー展開してニュートン法の反復式へ代入することで、誤差が2乗に比例して減少することを示す。",
+          "used_node_ids": [
+            "math.calc.t04_taylor_lagrange_remainder",
+            "math.num.ni01_fixed_point_convergence_def",
+            "math.num.ni02_newton_raphson_method"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_taylor_at_root",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(x^*) = 0,\\quad x^* - x_k = -e_k",
+          "to_latex": "0 = f(x_k) - f'(x_k)e_k + \\frac{1}{2}f''(\\xi_k)e_k^2\\quad (\\xi_k\\text{ between }x_k\\text{ and }x^*)",
+          "operation_label": "真の解における2次テイラー展開（ラグランジュ剰余項）",
+          "explanation": "テイラーの定理（n=1）を x_k を中心に x* に対して適用し、f(x*)=0 と x*-x_k = -e_k を代入する。",
+          "used_node_ids": [
+            "math.calc.t04_taylor_lagrange_remainder"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_error_recursion",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e_{k+1} = x_{k+1} - x^* = e_k - \\frac{f(x_k)}{f'(x_k)},\\quad \\frac{f(x_k)}{f'(x_k)} = e_k - \\frac{f''(\\xi_k)}{2f'(x_k)}e_k^2",
+          "to_latex": "e_{k+1} = \\frac{f''(\\xi_k)}{2f'(x_k)}e_k^2",
+          "operation_label": "反復式への代入による誤差漸化式の導出",
+          "explanation": "先の展開式を f'(x_k) で割り e_{k+1} の式に代入すると1次の誤差項が相殺し、e_k^2 の項のみが残る。",
+          "used_node_ids": [
+            "math.num.ni02_newton_raphson_method"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_quadratic_limit",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{|e_{k+1}|}{|e_k|^2} = \\frac{|f''(\\xi_k)|}{2|f'(x_k)|},\\quad x_k \\to x^* \\implies \\xi_k \\to x^*",
+          "to_latex": "\\lim_{k\\to\\infty}\\frac{|e_{k+1}|}{|e_k|^2} = \\frac{|f''(x^*)|}{2|f'(x^*)|}",
+          "operation_label": "連続性と単根条件による2次収束の確定",
+          "explanation": "x_k -> x* に伴いはさみうちにより \\xi_k -> x* となり、f', f'' の連続性と f'(x*) != 0 より2次収束次数と漸近誤差定数が確定する。",
+          "used_node_ids": [
+            "math.num.ni01_fixed_point_convergence_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ni04_interp_uniqueness",
+      "target_node_id": "math.num.ni04_polynomial_interpolation_existence",
+      "route_kind": "deductive",
+      "title": "評価写像の単射性とファンデルモンド行列式による補間多項式の一意存在証明",
+      "premise_node_ids": [
+        "math.linalg.vs08_ker_im_subspace_injectivity",
+        "math.linalg.det04_product_multiplicativity",
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "節点 x_0, x_1, ..., x_n はすべて相異なる実数（または複素数）である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "x_0,\\dots,x_n\\text{ distinct},\\quad P(x)=\\sum_{j=0}^{n}a_j x^j",
+          "to_latex": "\\det V \\neq 0 \\implies \\exists!\\, P\\in\\mathcal{P}_n:\\; P(x_i)=y_i",
+          "operation_label": "線形写像の核の自明性による存在と一意性の同時証明",
+          "explanation": "補間条件をファンデルモンド行列による有限次元同次元空間の線形写像とみなし、単射性（核が零）から全単射性と一意存在を示す。",
+          "used_node_ids": [
+            "math.linalg.det04_product_multiplicativity",
+            "math.linalg.vs08_ker_im_subspace_injectivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_linear_map_vandermonde",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P(x_i) = \\sum_{j=0}^{n} a_j x_i^j = y_i\\quad (i=0,\\dots,n)",
+          "to_latex": "V\\mathbf{a} = \\mathbf{y},\\quad V = (x_i^j)_{0\\le i,j\\le n} \\in \\mathbb{R}^{(n+1)\\times(n+1)}",
+          "operation_label": "ファンデルモンド線形系の定式化",
+          "explanation": "n次以下の多項式空間 P_n から R^{n+1} への評価写像の表現行列として、ファンデルモンド行列 V を構成する。",
+          "used_node_ids": [
+            "math.linalg.vs08_ker_im_subspace_injectivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_kernel_triviality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V\\mathbf{a} = \\mathbf{0} \\iff P(x_0)=\\cdots=P(x_n)=0,\\quad \\deg P\\le n",
+          "to_latex": "P(x)\\text{ has } n+1\\text{ distinct roots} \\implies P(x)\\equiv 0 \\implies \\mathbf{a}=\\mathbf{0}",
+          "operation_label": "代数学の基本定理（因数定理）による核の零性",
+          "explanation": "零でない n 次以下の多項式は高々 n 個の根しか持たないため（背理法）、n+1 個の相異なる零点を持つ P は恒等的に 0 となる。",
+          "used_node_ids": [
+            "math.linalg.vs08_ker_im_subspace_injectivity",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_bijection_vandermonde",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ker V = \\{\\mathbf{0}\\},\\quad \\det V = \\prod_{0\\le j < i\\le n}(x_i - x_j)",
+          "to_latex": "\\det V \\neq 0 \\implies \\forall\\mathbf{y}\\in\\mathbb{R}^{n+1},\\; \\exists!\\,\\mathbf{a}=V^{-1}\\mathbf{y}",
+          "operation_label": "正則性と一意存在の結論",
+          "explanation": "正方行列 V の核が自明であることから V は正則（行列式が非零）となり、任意の y に対し係数ベクトル a が一意に存在する。",
+          "used_node_ids": [
+            "math.linalg.det04_product_multiplicativity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ni05_lagrange_interpolation",
+      "target_node_id": "math.num.ni05_lagrange_interpolation_formula",
+      "route_kind": "deductive",
+      "title": "クロネッカーのデルタ基底の構成によるラグランジュ補間公式の導出",
+      "premise_node_ids": [
+        "math.num.ni04_polynomial_interpolation_existence",
+        "math.linalg.vs04_basis_and_dimension"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "節点 x_0, ..., x_n は相異なるとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_n\\in\\mathcal{P}_n,\\quad P_n(x_i)=y_i",
+          "to_latex": "P_n(x) = \\sum_{j=0}^{n} y_j\\ell_j(x),\\quad \\ell_j(x)=\\prod_{m\\neq j}\\frac{x-x_m}{x_j-x_m}",
+          "operation_label": "双対基底的性質を持つ補間基底の構成と重ね合わせ",
+          "explanation": "各節点のみに反応する n 次基底多項式 l_j(x) を因数分解形で構成し、補間の一意性より所望の補間多項式を得る。",
+          "used_node_ids": [
+            "math.linalg.vs04_basis_and_dimension",
+            "math.num.ni04_polynomial_interpolation_existence"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_basis_construction",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ell_j(x_m)=0\\;(\\forall m\\neq j),\\quad \\ell_j(x_j)=1",
+          "to_latex": "\\ell_j(x) := \\prod_{\\substack{m=0\\\\m\\neq j}}^{n}\\frac{x - x_m}{x_j - x_m} \\in \\mathcal{P}_n",
+          "operation_label": "n次基底多項式の因数積による構成",
+          "explanation": "x_j 以外の n 個の節点を根に持つ1次式の積を作り、x = x_j での値で正規化することで n 次多項式 l_j(x) を定義する。",
+          "used_node_ids": [
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_kronecker_delta",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x = x_i\\quad (i\\in\\{0,\\dots,n\\})",
+          "to_latex": "\\ell_j(x_i) = \\delta_{ij} = \\begin{cases} 1 & (i=j) \\\\ 0 & (i\\neq j) \\end{cases}",
+          "operation_label": "節点上でのクロネッカーのデルタ性の確認",
+          "explanation": "i != j なら分子に (x_i - x_i) = 0 が含まれて零となり、i = j ならすべての因子が 1 となることを確認する。",
+          "used_node_ids": [
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_linear_combination",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_n(x) := \\sum_{j=0}^{n} y_j\\ell_j(x) \\in \\mathcal{P}_n",
+          "to_latex": "P_n(x_i) = \\sum_{j=0}^{n} y_j\\delta_{ij} = y_i\\quad (\\text{unique})",
+          "operation_label": "線形結合による補間条件と一意性の確定",
+          "explanation": "y_j を係数とする線形結合 P_n(x) は n 次以下であり全節点で y_i に一致するため、補間の一意性定理よりこれが求める多項式である。",
+          "used_node_ids": [
+            "math.num.ni04_polynomial_interpolation_existence"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ni06_interpolation_error",
+      "target_node_id": "math.num.ni06_interpolation_error_theorem",
+      "route_kind": "deductive",
+      "title": "ロルの定理の反復適用による多項式補間誤差定理の証明",
+      "premise_node_ids": [
+        "math.num.ni05_lagrange_interpolation_formula",
+        "math.calc.t01_rolle_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f は節点と評価点 x を含む閉区間 I 上で C^n 級かつ開区間内部で (n+1) 回微分可能であるとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "R_n(x) = f(x) - P_n(x),\\quad \\omega_{n+1}(x)=\\prod_{i=0}^{n}(x-x_i)",
+          "to_latex": "f(x) - P_n(x) = \\frac{f^{(n+1)}(\\xi)}{(n+1)!}\\omega_{n+1}(x)",
+          "operation_label": "補助関数へのロルの定理の(n+1)回反復適用",
+          "explanation": "x_0,...,x_n と任意点 x の計 n+2 点で 0 となる補助関数を構成し、ロルの定理を n+1 回繰り返して (n+1) 階導関数の零点から誤差式を得る。",
+          "used_node_ids": [
+            "math.calc.t01_rolle_theorem",
+            "math.num.ni05_lagrange_interpolation_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_aux_function",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x \\notin \\{x_0,\\dots,x_n\\},\\quad K := \\frac{f(x) - P_n(x)}{\\omega_{n+1}(x)}",
+          "to_latex": "g(t) := f(t) - P_n(t) - K\\omega_{n+1}(t) \\implies g(x_0)=\\cdots=g(x_n)=g(x)=0",
+          "operation_label": "(n+2)個の零点を持つ補助関数 g(t) の構成",
+          "explanation": "x が節点に一致するときは両辺0で自明。そうでないとき定数 K を定めた補助関数 g(t) は I 内に少なくとも n+2 個の相異なる零点を持つ。",
+          "used_node_ids": [
+            "math.num.ni05_lagrange_interpolation_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_repeated_rolle",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g\\text{ has } n+2\\text{ distinct roots in }I",
+          "to_latex": "\\exists\\xi\\in\\operatorname{int}(I)\\text{ s.t. } g^{(n+1)}(\\xi) = 0",
+          "operation_label": "ロルの定理の帰納的適用",
+          "explanation": "ロルの定理により g' は少なくとも n+1 個、g'' は n 個の零点を持ち、これを n+1 回繰り返すと g^{(n+1)}(\\xi) = 0 なる \\xi が存在する。",
+          "used_node_ids": [
+            "math.calc.t01_rolle_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_remainder_formula",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_n^{(n+1)}(t) \\equiv 0,\\quad \\omega_{n+1}^{(n+1)}(t) \\equiv (n+1)!",
+          "to_latex": "g^{(n+1)}(\\xi) = f^{(n+1)}(\\xi) - K(n+1)! = 0 \\implies f(x) - P_n(x) = \\frac{f^{(n+1)}(\\xi)}{(n+1)!}\\omega_{n+1}(x)",
+          "operation_label": "高階導関数の計算と K の解法",
+          "explanation": "n 次多項式 P_n の (n+1) 階微分は 0、最高次係数 1 の (n+1) 次多項式 omega_{n+1} の (n+1) 階微分は (n+1)! であることから誤差公式が導かれる。",
+          "used_node_ids": [
+            "math.calc.t01_rolle_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ni08_chebyshev_minimax",
+      "target_node_id": "math.num.ni08_chebyshev_minimax_optimality",
+      "route_kind": "deductive",
+      "title": "チェビシェフ多項式の等振動性による節点多項式の最小最大性証明",
+      "premise_node_ids": [
+        "math.num.ni07_chebyshev_polynomials_nodes",
+        "math.num.ni06_interpolation_error_theorem",
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "比較対象は区間 [-1, 1] 上のすべての最高次係数 1（モニック）の (n+1) 次多項式 q(x) とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\tilde{T}_{n+1}(x) = 2^{-n}T_{n+1}(x),\\quad \\deg q = n+1\\text{ (monic)}",
+          "to_latex": "\\min_{q\\text{ monic}}\\|q\\|_{\\infty,[-1,1]} = \\|\\tilde{T}_{n+1}\\|_{\\infty,[-1,1]} = 2^{-n}",
+          "operation_label": "等振動極値点での符号交代を用いた背理法",
+          "explanation": "モニック・チェビシェフ多項式が n+2 個の極値点で符号交代しつつ絶対値 2^{-n} をとることを用い、より小さい最大ノルムを持つモニック多項式の非存在を示す。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.logic.m51_proof_by_contradiction",
+            "math.num.ni07_chebyshev_polynomials_nodes"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_monic_chebyshev_bound",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{n+1}(\\cos\\theta)=\\cos((n+1)\\theta),\\quad \\theta_k = \\frac{k\\pi}{n+1}\\;(k=0,\\dots,n+1)",
+          "to_latex": "\\tilde{T}_{n+1}(x) = \\frac{T_{n+1}(x)}{2^n}\\text{ is monic},\\quad \\tilde{T}_{n+1}(\\cos\\theta_k) = (-1)^k 2^{-n}",
+          "operation_label": "モニック性と n+2 個の等振動極値の導出",
+          "explanation": "三角関数の加法定理から帰納的に T_{n+1}(x) の最高次係数は 2^n であり、x_k* = cos(k pi/(n+1)) で符号が交互に (-1)^k 2^{-n} となる。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.num.ni07_chebyshev_polynomials_nodes"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_contradiction_setup",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists q\\text{ monic of deg }(n+1)\\text{ s.t. }\\|q\\|_\\infty < 2^{-n},\\quad h(x) := \\tilde{T}_{n+1}(x) - q(x)",
+          "to_latex": "(-1)^k h(\\cos\\theta_k) = 2^{-n} - (-1)^k q(\\cos\\theta_k) > 0\\quad (k=0,\\dots,n+1)",
+          "operation_label": "差多項式 h(x) の符号交代",
+          "explanation": "もし ||q||_inf < 2^{-n} なるモニック多項式 q が存在すると仮定すると、差 h = \\tilde{T}_{n+1} - q は n+2 個の点 cos theta_k で正負を交互にとる。",
+          "used_node_ids": [
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_degree_contradiction",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "h\\text{ has at least } n+1\\text{ roots in }(-1,1),\\quad \\deg h \\le n",
+          "to_latex": "h\\equiv 0 \\implies q = \\tilde{T}_{n+1}\\text{ (contradiction)} \\implies \\min_{x_i}\\|\\omega_{n+1}\\|_\\infty = 2^{-n}",
+          "operation_label": "次数との矛盾による最小最大性の証明",
+          "explanation": "最高次項が相殺して h は n 次以下であるのに中間値の定理により n+1 個以上の零点を持つため h=0 となり矛盾する。よってチェビシェフ節点が最小最大最適となる。",
+          "used_node_ids": [
+            "math.logic.m51_proof_by_contradiction",
+            "math.num.ni06_interpolation_error_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ni10_cubic_spline_system",
+      "target_node_id": "math.num.ni10_cubic_spline_tridiagonal_system",
+      "route_kind": "deductive",
+      "title": "モーメントの線形補間と2回積分・C1連続性による3次スプライン3重対角系の導出",
+      "premise_node_ids": [
+        "math.num.ni09_cubic_spline_definition",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "節点列は単調増加 x_0 < x_1 < ... < x_n とし、自然境界条件 M_0 = M_n = 0 を課す。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S_j\\in\\mathcal{P}_3,\\quad S\\in C^2([x_0,x_n]),\\quad M_j := S''(x_j)",
+          "to_latex": "h_{j-1}M_{j-1} + 2(h_{j-1}+h_j)M_j + h_j M_{j+1} = 6\\left(\\frac{y_{j+1}-y_j}{h_j} - \\frac{y_j-y_{j-1}}{h_{j-1}}\\right)",
+          "operation_label": "2階導関数の線形補間・積分・1階連続性の連結",
+          "explanation": "各小区間で1次式となる S_j''(x) をモーメント M_j で表し、2回積分と補間条件で S_j(x) を確定した上で内点での S'(x) の連続性から3重対角系を導く。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.num.ni09_cubic_spline_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_linear_second_deriv",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_j\\in\\mathcal{P}_3,\\quad S_j''(x_j)=M_j,\\quad S_j''(x_{j+1})=M_{j+1}",
+          "to_latex": "S_j''(x) = M_j\\frac{x_{j+1}-x}{h_j} + M_{j+1}\\frac{x-x_j}{h_j}\\quad (h_j := x_{j+1}-x_j)",
+          "operation_label": "小区間上の2階導関数の線形表示",
+          "explanation": "3次多項式の2階導関数は1次多項式であり、両端点での値 M_j, M_{j+1} によるラグランジュ1次補間で一意に表される。",
+          "used_node_ids": [
+            "math.num.ni09_cubic_spline_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integrate_piecewise",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_j(x_j)=y_j,\\quad S_j(x_{j+1})=y_{j+1}",
+          "to_latex": "S_j(x) = \\frac{M_j(x_{j+1}-x)^3 + M_{j+1}(x-x_j)^3}{6h_j} + \\left(\\frac{y_j}{h_j} - \\frac{M_j h_j}{6}\\right)(x_{j+1}-x) + \\left(\\frac{y_{j+1}}{h_j} - \\frac{M_{j+1}h_j}{6}\\right)(x-x_j)",
+          "operation_label": "2回積分と端点補間条件による積分定数の決定",
+          "explanation": "S_j''(x) を2回積分すると2つの積分定数が現れ、両端点での補間条件 S_j(x_j)=y_j, S_j(x_{j+1})=y_{j+1} から定数が決まる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_first_deriv_continuity",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_{j-1}'(x_j^-) = \\frac{y_j - y_{j-1}}{h_{j-1}} + \\frac{h_{j-1}}{6}(M_{j-1} + 2M_j),\\quad S_j'(x_j^+) = \\frac{y_{j+1} - y_j}{h_j} - \\frac{h_j}{6}(2M_j + M_{j+1})",
+          "to_latex": "h_{j-1}M_{j-1} + 2(h_{j-1}+h_j)M_j + h_j M_{j+1} = 6\\left(\\frac{y_{j+1}-y_j}{h_j} - \\frac{y_j-y_{j-1}}{h_{j-1}}\\right)",
+          "operation_label": "1階導関数の連続条件による3重対角漸化式",
+          "explanation": "内点 x_j (j=1,...,n-1) で左右の1階導関数を等置し整理すると、隣接する3つのモーメントのみを結ぶ3重対角連立方程式が得られる。",
+          "used_node_ids": [
+            "math.num.ni09_cubic_spline_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

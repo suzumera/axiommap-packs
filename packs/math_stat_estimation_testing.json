@@ -1,0 +1,625 @@
+{
+  "pack_meta": {
+    "pack_id": "math.stat.estimation_testing",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "数理統計学：最尤推定・クラメール＝ラオ下限・仮説検定",
+    "language": "ja",
+    "description": "十分統計量、最尤推定量、フィッシャー情報量、クラメール＝ラオ不等式、ネイマン＝ピアソンの補題を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.stat.st01_likelihood_def",
+      "short_code": "ST01",
+      "kind": "definition",
+      "title": "パラメトリック統計モデルと尤度関数・対数尤度関数の定義",
+      "summary": "未知母数 θ に依存する同時確率密度（または質量）関数をパラメータの関数とみなした尤度関数および対数尤度関数を定義する。",
+      "canonical_latex": "L(\\theta;\\mathbf{x}) := f(\\mathbf{x};\\theta) = \\prod_{i=1}^{n} f(x_i;\\theta),\\quad \\ell(\\theta;\\mathbf{x}) := \\ln L(\\theta;\\mathbf{x}) = \\sum_{i=1}^{n} \\ln f(x_i;\\theta)\\quad (\\theta\\in\\Theta\\subseteq\\mathbb{R}^p,\\; X_1,\\dots,X_n\\stackrel{\\text{i.i.d.}}{\\sim} f(\\cdot;\\theta))",
+      "aliases_latex": [
+        "L(\\theta)=\\prod_{i=1}^{n}f(x_i;\\theta),\\; \\ell(\\theta)=\\sum_{i=1}^{n}\\ln f(x_i;\\theta)"
+      ],
+      "keywords": [
+        "尤度関数",
+        "対数尤度",
+        "統計モデル",
+        "パラメトリック",
+        "i.i.d."
+      ],
+      "domain_tags": [
+        "mathematics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "math.stat.st02_sufficient_statistic_def",
+      "short_code": "ST02",
+      "kind": "definition",
+      "title": "十分統計量の定義",
+      "summary": "統計量 T(X) が与えられたもとでの標本 X の条件付き分布が未知母数 θ に依存しないとき、T(X) を θ に対する十分統計量と定義する。",
+      "canonical_latex": "T(\\mathbf{X})\\text{ is sufficient for }\\theta \\iff P_{\\theta}(\\mathbf{X}=\\mathbf{x}\\mid T(\\mathbf{X})=t)\\text{ does not depend on }\\theta\\quad(\\forall \\theta\\in\\Theta,\\; P_{\\theta}(T(\\mathbf{X})=t)>0\\text{ or a.e.})",
+      "aliases_latex": [
+        "f(\\mathbf{x}\\mid T(\\mathbf{x})=t;\\theta)=h(\\mathbf{x})"
+      ],
+      "keywords": [
+        "十分統計量",
+        "条件付き分布",
+        "情報縮約"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "math.stat.st03_factorization_theorem",
+      "short_code": "ST03",
+      "kind": "theorem_formula",
+      "title": "フィッシャー＝ネイマンの分解定理",
+      "summary": "統計量 T(X) が θ の十分統計量であるための必要十分条件は、同時確率関数が T(x) と θ のみに依存する因子と x のみに依存する因子の積に分解できることである。",
+      "canonical_latex": "T(\\mathbf{X})\\text{ is sufficient for }\\theta \\iff \\exists g(\\cdot;\\theta)\\ge 0,\\; \\exists h(\\cdot)\\ge 0\\text{ s.t. } f(\\mathbf{x};\\theta) = g(T(\\mathbf{x});\\theta)\\,h(\\mathbf{x})",
+      "aliases_latex": [
+        "f(\\mathbf{x};\\theta)=g(T(\\mathbf{x}),\\theta)h(\\mathbf{x})"
+      ],
+      "keywords": [
+        "分解定理",
+        "十分統計量",
+        "フィッシャー",
+        "ネイマン"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "math.stat.st04_mle_score_def",
+      "short_code": "ST04",
+      "kind": "definition",
+      "title": "最尤推定量（MLE）とスコア関数の定義",
+      "summary": "尤度関数（または対数尤度関数）を最大化するパラメータ値を最尤推定量、対数尤度関数のパラメータに関する勾配をスコア関数と定義する。",
+      "canonical_latex": "\\hat{\\theta}_{\\mathrm{MLE}}(\\mathbf{x}) \\in \\arg\\max_{\\theta\\in\\Theta} L(\\theta;\\mathbf{x}) = \\arg\\max_{\\theta\\in\\Theta} \\ell(\\theta;\\mathbf{x}),\\quad \\mathbf{s}(\\theta;\\mathbf{x}) := \\nabla_{\\theta}\\ell(\\theta;\\mathbf{x}) = \\frac{\\nabla_{\\theta}f(\\mathbf{x};\\theta)}{f(\\mathbf{x};\\theta)}",
+      "aliases_latex": [
+        "s(\\theta;\\mathbf{X})=\\frac{\\partial}{\\partial\\theta}\\ln f(\\mathbf{X};\\theta)"
+      ],
+      "keywords": [
+        "最尤推定量",
+        "MLE",
+        "スコア関数",
+        "対数尤度"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "math.stat.st05_mle_score_equation",
+      "short_code": "ST05",
+      "kind": "theorem_formula",
+      "title": "尤度方程式（1階最適性条件）とスコア期待値零の性質",
+      "summary": "正則条件のもとで、内点における最尤推定量はスコア関数が零となる尤度方程式を満たし、真のパラメータにおけるスコア関数の期待値は零になる。",
+      "canonical_latex": "\\hat{\\theta}_{\\mathrm{MLE}}\\in\\operatorname{int}(\\Theta) \\implies \\mathbf{s}(\\hat{\\theta}_{\\mathrm{MLE}};\\mathbf{x})=\\nabla_{\\theta}\\ell(\\hat{\\theta}_{\\mathrm{MLE}};\\mathbf{x})=\\mathbf{0},\\qquad \\mathbb{E}_{\\theta}[\\mathbf{s}(\\theta;\\mathbf{X})] = \\mathbf{0}\\quad(\\text{regularity conditions})",
+      "aliases_latex": [
+        "\\frac{\\partial \\ell}{\\partial \\theta}\\Big|_{\\theta=\\hat{\\theta}}=0,\\quad \\mathbb{E}_{\\theta}\\left[\\frac{\\partial \\ln f(\\mathbf{X};\\theta)}{\\partial\\theta}\\right]=0"
+      ],
+      "keywords": [
+        "尤度方程式",
+        "スコア期待値",
+        "停留点",
+        "最尤推定"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "math.stat.st06_fisher_information",
+      "short_code": "ST06",
+      "kind": "theorem_formula",
+      "title": "フィッシャー情報量とバートレットの2次恒等式",
+      "summary": "スコア関数の分散（2次モーメント）として定義されるフィッシャー情報量は、正則条件のもとで対数尤度の2階微分の期待値に負号をつけたものに等しい。",
+      "canonical_latex": "I(\\theta) := \\mathbb{E}_{\\theta}\\!\\left[\\left(\\frac{\\partial \\ell(\\theta;\\mathbf{X})}{\\partial \\theta}\\right)^2\\right] = \\operatorname{Var}_{\\theta}\\!\\left(\\frac{\\partial \\ell}{\\partial \\theta}\\right) = -\\mathbb{E}_{\\theta}\\!\\left[\\frac{\\partial^2 \\ell(\\theta;\\mathbf{X})}{\\partial \\theta^2}\\right],\\quad I_n(\\theta)=n\\,I_1(\\theta)\\text{ (i.i.d.)}",
+      "aliases_latex": [
+        "[I(\\theta)]_{jk} = \\mathbb{E}_{\\theta}[s_j s_k] = -\\mathbb{E}_{\\theta}\\left[\\frac{\\partial^2 \\ell}{\\partial\\theta_j\\partial\\theta_k}\\right]"
+      ],
+      "keywords": [
+        "フィッシャー情報量",
+        "バートレット恒等式",
+        "情報行列",
+        "分散"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "math.stat.st07_cramer_rao_inequality",
+      "short_code": "ST07",
+      "kind": "theorem_formula",
+      "title": "クラメール＝ラオの不等式（情報不等式）",
+      "summary": "正則条件のもとで、期待値が ψ(θ) である任意の推定量 T(X) の分散は (ψ'(θ))^2 / I(θ) 以上であり、特に不偏推定量の分散はフィッシャー情報量の逆数で下から抑えられる。",
+      "canonical_latex": "\\mathbb{E}_{\\theta}[T(\\mathbf{X})]=\\psi(\\theta) \\implies \\operatorname{Var}_{\\theta}(T(\\mathbf{X})) \\ge \\frac{\\big(\\psi'(\\theta)\\big)^2}{I(\\theta)};\\quad \\psi(\\theta)=\\theta \\implies \\operatorname{Var}_{\\theta}(T(\\mathbf{X})) \\ge \\frac{1}{I(\\theta)}",
+      "aliases_latex": [
+        "\\operatorname{Var}_{\\theta}(\\hat{\\theta})\\ge \\frac{1}{n I_1(\\theta)}"
+      ],
+      "keywords": [
+        "クラメール＝ラオ下限",
+        "情報不等式",
+        "有効推定量",
+        "不偏推定量"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "math.stat.st08_hypothesis_test_def",
+      "short_code": "ST08",
+      "kind": "definition",
+      "title": "統計的仮説検定・過誤確率・検出力関数の定義",
+      "summary": "帰無仮説 H0 と対立仮説 H1 に対する（確率化を含む）検定関数 φ(x)、有意水準（第1種の過誤確率の上限 α）、第2種の過誤確率、および検出力を定義する。",
+      "canonical_latex": "\\phi:\\mathcal{X}\\to[0,1],\\quad \\alpha(\\phi):=\\mathbb{E}_{\\theta_0}[\\phi(\\mathbf{X})]=P_{\\theta_0}(\\text{reject }H_0)\\le\\alpha,\\quad \\beta(\\phi):=\\mathbb{E}_{\\theta_1}[\\phi(\\mathbf{X})]=1-P_{\\theta_1}(\\text{accept }H_0\\mid H_1\\text{ true})",
+      "aliases_latex": [
+        "P_{\\theta_0}(\\mathbf{X}\\in R)\\le\\alpha,\\quad \\text{Power}=P_{\\theta_1}(\\mathbf{X}\\in R)"
+      ],
+      "keywords": [
+        "仮説検定",
+        "有意水準",
+        "第1種の過誤",
+        "第2種の過誤",
+        "検出力"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "math.stat.st09_neyman_pearson_lemma",
+      "short_code": "ST09",
+      "kind": "theorem_formula",
+      "title": "ネイマン＝ピアソンの基本補題（最強力検定）",
+      "summary": "単純帰無仮説 H0: θ=θ0 と単純対立仮説 H1: θ=θ1 の検定において、尤度比 f(x;θ1)/f(x;θ0) に基づく閾値検定は同じ有意水準 α 以下のあらゆる検定の中で検出力を最大化する。",
+      "canonical_latex": "\\phi^*(\\mathbf{x})=\\begin{cases}1 & f_1(\\mathbf{x})>k f_0(\\mathbf{x})\\\\\\gamma(\\mathbf{x}) & f_1(\\mathbf{x})=k f_0(\\mathbf{x})\\\\0 & f_1(\\mathbf{x})<k f_0(\\mathbf{x})\\end{cases},\\; \\mathbb{E}_{\\theta_0}[\\phi^*]=\\alpha \\implies \\forall\\phi\\;\\big(\\mathbb{E}_{\\theta_0}[\\phi]\\le\\alpha\\implies \\mathbb{E}_{\\theta_1}[\\phi^*]\\ge\\mathbb{E}_{\\theta_1}[\\phi]\\big)\\quad(k\\ge 0,\\; f_j=f(\\cdot;\\theta_j))",
+      "aliases_latex": [
+        "\\Lambda(\\mathbf{x})=\\frac{f(\\mathbf{x};\\theta_1)}{f(\\mathbf{x};\\theta_0)}>k"
+      ],
+      "keywords": [
+        "ネイマン＝ピアソンの補題",
+        "最強力検定",
+        "尤度比検定",
+        "仮説検定"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "statistics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_st03_factorization_theorem",
+      "target_node_id": "math.stat.st03_factorization_theorem",
+      "route_kind": "equivalence",
+      "title": "フィッシャー＝ネイマンの分解定理の証明",
+      "premise_node_ids": [
+        "math.prob.pr02_conditional_bayes_theorem",
+        "math.stat.st01_likelihood_def",
+        "math.stat.st02_sufficient_statistic_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity",
+        "math.calc.mi01_multiple_integral_def"
+      ],
+      "assumptions": [
+        "説明を簡潔にするため離散確率空間（連続分布の場合は支配測度と条件付き密度のラドン＝ニコディム微分）を想定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T(\\mathbf{X})\\text{ is sufficient for }\\theta \\text{ (by ST02)}",
+          "to_latex": "f(\\mathbf{x};\\theta) = g(T(\\mathbf{x});\\theta)\\,h(\\mathbf{x}) \\quad (g,h\\ge 0) \\iff T(\\mathbf{X})\\text{ is sufficient for }\\theta",
+          "operation_label": "条件付き確率の乗法定理と周辺和による双方向同値性",
+          "explanation": "十分統計量の定義と条件付き確率の積の公式を用いて十分性から分解表示を導き、逆に分解表示からTの周辺分布で割ることで条件付き分布のθ独立性を示す。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.prob.pr02_conditional_bayes_theorem",
+            "math.stat.st01_likelihood_def",
+            "math.stat.st02_sufficient_statistic_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sufficiency_to_factorization",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\theta}(\\mathbf{X}=\\mathbf{x}) = P_{\\theta}(\\mathbf{X}=\\mathbf{x},\\; T(\\mathbf{X})=T(\\mathbf{x}))",
+          "to_latex": "f(\\mathbf{x};\\theta) = P_{\\theta}(T(\\mathbf{X})=T(\\mathbf{x}))\\,P_{\\theta}(\\mathbf{X}=\\mathbf{x}\\mid T(\\mathbf{X})=T(\\mathbf{x})) = g(T(\\mathbf{x});\\theta)\\,h(\\mathbf{x})",
+          "operation_label": "十分性の定義と条件付き確率の積法則の適用",
+          "explanation": "事象 {X=x} は {X=x, T(X)=T(x)} と一致するため、乗法定理より周辺確率 P_θ(T(X)=T(x)) と条件付き確率 P_θ(X=x|T(X)=T(x)) の積に分解される。十分性より後者は θ に依存しないため h(x) とおけ、前者を g(T(x);θ) とおけば分解が得られる。",
+          "used_node_ids": [
+            "math.prob.pr02_conditional_bayes_theorem",
+            "math.stat.st01_likelihood_def",
+            "math.stat.st02_sufficient_statistic_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_factorization_to_marginal",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\mathbf{x};\\theta) = g(T(\\mathbf{x});\\theta)\\,h(\\mathbf{x})",
+          "to_latex": "P_{\\theta}(T(\\mathbf{X})=t) = \\sum_{\\{\\mathbf{y}:T(\\mathbf{y})=t\\}} g(t;\\theta)\\,h(\\mathbf{y}) = g(t;\\theta)\\sum_{\\{\\mathbf{y}:T(\\mathbf{y})=t\\}} h(\\mathbf{y})",
+          "operation_label": "等値集合 T(y)=t 上での周辺和（積分線形性）",
+          "explanation": "逆に分解表示が成り立つと仮定し、T(y)=t を満たす全ての標本点 y にわたって和（連続なら積分）をとると、g(t;θ) は和の外にくくり出せる。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_factorization_to_sufficiency",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\theta}(\\mathbf{X}=\\mathbf{x}\\mid T(\\mathbf{X})=t) = \\frac{f(\\mathbf{x};\\theta)}{P_{\\theta}(T(\\mathbf{X})=t)}",
+          "to_latex": "P_{\\theta}(\\mathbf{X}=\\mathbf{x}\\mid T(\\mathbf{X})=t) = \\frac{h(\\mathbf{x})}{\\sum_{\\{\\mathbf{y}:T(\\mathbf{y})=t\\}} h(\\mathbf{y})}\\text{ (for }T(\\mathbf{x})=t\\text{), independent of }\\theta",
+          "operation_label": "共通因子 g(t;θ) の約分による θ 独立性の確認",
+          "explanation": "T(x)=t かつ P_θ(T(X)=t)>0 のとき、条件付き確率の比をとると g(t;θ) が約分されて消去される（T(x)≠t なら確率 0）。したがって条件付き分布は θ に依存せず、T(X) は十分統計量である。",
+          "used_node_ids": [
+            "math.prob.pr02_conditional_bayes_theorem",
+            "math.stat.st02_sufficient_statistic_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_st05_mle_score_equation",
+      "target_node_id": "math.stat.st05_mle_score_equation",
+      "route_kind": "deductive",
+      "title": "最尤推定量の尤度方程式とスコア期待値零の導出",
+      "premise_node_ids": [
+        "math.stat.st01_likelihood_def",
+        "math.stat.st04_mle_score_def",
+        "math.prob.pr01_kolmogorov_axioms",
+        "math.prob.pr03_random_variable_expectation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.m01_chain_rule",
+        "math.calc.m36_derivative_linearity",
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "assumptions": [
+        "f(x;θ) は θ について微分可能であり、積分記号下での微分交換が可能であり、台 {x: f(x;θ)>0} は θ に依存しない（正則条件）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{\\theta}_{\\mathrm{MLE}}\\in\\arg\\max_{\\theta\\in\\Theta}\\ell(\\theta;\\mathbf{x}),\\quad \\int f(\\mathbf{x};\\theta)\\,d\\mathbf{x}=1",
+          "to_latex": "\\nabla_{\\theta}\\ell(\\hat{\\theta}_{\\mathrm{MLE}};\\mathbf{x})=\\mathbf{0},\\quad \\mathbb{E}_{\\theta}[\\mathbf{s}(\\theta;\\mathbf{X})]=\\mathbf{0}",
+          "operation_label": "1階最適性条件と規格化条件のパラメータ微分",
+          "explanation": "対数尤度の最大点に対する停留点条件から尤度方程式を導き、確率密度の全積分が恒等的に 1 であることからパラメータ微分と積分交換によりスコア期待値が零であることを示す。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m01_chain_rule",
+            "math.prob.pr01_kolmogorov_axioms",
+            "math.prob.pr03_random_variable_expectation",
+            "math.stat.st04_mle_score_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_mle_stationary_condition",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\theta}_{\\mathrm{MLE}}\\in\\operatorname{int}(\\Theta)\\cap\\arg\\max_{\\theta\\in\\Theta}\\ell(\\theta;\\mathbf{x})",
+          "to_latex": "\\mathbf{s}(\\hat{\\theta}_{\\mathrm{MLE}};\\mathbf{x}) = \\nabla_{\\theta}\\ell(\\hat{\\theta}_{\\mathrm{MLE}};\\mathbf{x}) = \\mathbf{0}",
+          "operation_label": "多変数極値の1階必要条件の適用",
+          "explanation": "最尤推定量がパラメータ空間の内点にあり、対数尤度関数 ℓ(θ;x) が微分可能であるとき、極大値における停留点条件より勾配（スコア関数）が零ベクトルとなる。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m44_partial_derivative_def",
+            "math.stat.st04_mle_score_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_normalization_differentiation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int f(\\mathbf{x};\\theta)\\,d\\mathbf{x} = 1\\quad(\\forall \\theta\\in\\Theta)",
+          "to_latex": "\\int \\nabla_{\\theta}f(\\mathbf{x};\\theta)\\,d\\mathbf{x} = \\nabla_{\\theta}\\!\\int f(\\mathbf{x};\\theta)\\,d\\mathbf{x} = \\mathbf{0}",
+          "operation_label": "確率規格化条件の θ 微分と積分交換",
+          "explanation": "全確率公理より同時密度の全空間積分は θ によらず常に 1 である。正則条件のもとで両辺を θ で微分し、微分と積分を交換すると、密度の勾配の積分は零となる。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.calc.m44_partial_derivative_def",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_score_expectation_zero",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\theta}f(\\mathbf{x};\\theta) = \\big(\\nabla_{\\theta}\\ln f(\\mathbf{x};\\theta)\\big)f(\\mathbf{x};\\theta) = \\mathbf{s}(\\theta;\\mathbf{x})f(\\mathbf{x};\\theta)",
+          "to_latex": "\\mathbb{E}_{\\theta}[\\mathbf{s}(\\theta;\\mathbf{X})] = \\int \\mathbf{s}(\\theta;\\mathbf{x})f(\\mathbf{x};\\theta)\\,d\\mathbf{x} = \\mathbf{0}",
+          "operation_label": "対数微分の連鎖律による期待値表現への書き換え",
+          "explanation": "合成関数の微分法則より ∇_θ ln f = (∇_θ f)/f であるため ∇_θ f = s(θ;x)f が成り立つ。これを前ステップの積分式に代入すると期待値定義より E_θ[s(θ;X)]=0 を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.prob.pr03_random_variable_expectation",
+            "math.stat.st04_mle_score_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_st06_fisher_information",
+      "target_node_id": "math.stat.st06_fisher_information",
+      "route_kind": "deductive",
+      "title": "フィッシャー情報量とバートレット2次恒等式の導出",
+      "premise_node_ids": [
+        "math.stat.st04_mle_score_def",
+        "math.stat.st05_mle_score_equation",
+        "math.prob.pr03_random_variable_expectation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m15_product_rule",
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "θ は1次元スカラーパラメータ（多次元の場合は各成分の積で同様に成り立つ）とし、2階までの積分記号下微分交換が可能とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I(\\theta) := \\mathbb{E}_{\\theta}\\!\\left[\\left(\\frac{\\partial\\ell}{\\partial\\theta}\\right)^2\\right],\\quad \\mathbb{E}_{\\theta}\\!\\left[\\frac{\\partial\\ell}{\\partial\\theta}\\right]=0",
+          "to_latex": "I(\\theta) = \\operatorname{Var}_{\\theta}\\!\\left(\\frac{\\partial\\ell}{\\partial\\theta}\\right) = -\\mathbb{E}_{\\theta}\\!\\left[\\frac{\\partial^2\\ell}{\\partial\\theta^2}\\right]",
+          "operation_label": "分散定義とスコア期待値恒等式のもう1回の θ 微分",
+          "explanation": "スコア期待値が零であることから2次モーメントが分散に等しいことを示し、E_θ[∂ℓ/∂θ]=0 の両辺をさらに θ で微分して積の微分法則を適用することで2階導関数表示を導く。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule",
+            "math.prob.pr03_random_variable_expectation",
+            "math.stat.st05_mle_score_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_variance_equals_second_moment",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Var}_{\\theta}(s(\\theta;\\mathbf{X})) = \\mathbb{E}_{\\theta}[s^2] - \\big(\\mathbb{E}_{\\theta}[s]\\big)^2",
+          "to_latex": "I(\\theta) = \\mathbb{E}_{\\theta}\\!\\left[\\left(\\frac{\\partial\\ell}{\\partial\\theta}\\right)^2\\right] = \\operatorname{Var}_{\\theta}\\!\\left(\\frac{\\partial\\ell}{\\partial\\theta}\\right)",
+          "operation_label": "分散公式へのスコア期待値零の代入",
+          "explanation": "分散の定義 Var(Y)=E[Y^2]-(E[Y])^2 に ST05 の結果 E_θ[s]=0 を代入すると、フィッシャー情報量 I(θ) はスコア関数の分散に一致する。",
+          "used_node_ids": [
+            "math.prob.pr03_random_variable_expectation",
+            "math.stat.st05_mle_score_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_differentiate_score_identity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{d\\theta}\\int \\frac{\\partial\\ell(\\theta;\\mathbf{x})}{\\partial\\theta}\\,f(\\mathbf{x};\\theta)\\,d\\mathbf{x} = 0",
+          "to_latex": "\\int \\left(\\frac{\\partial^2\\ell}{\\partial\\theta^2}f(\\mathbf{x};\\theta) + \\frac{\\partial\\ell}{\\partial\\theta}\\frac{\\partial f(\\mathbf{x};\\theta)}{\\partial\\theta}\\right)d\\mathbf{x} = 0",
+          "operation_label": "積分下微分と積の微分法則（ライプニッツ則）の適用",
+          "explanation": "ST05 で示した恒等式 ∫(∂ℓ/∂θ)f dx = 0 の両辺を θ で微分し、積分との順序交換および積の微分法則を適用して2項の和に展開する。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.stat.st05_mle_score_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_bartlett_identity",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial f(\\mathbf{x};\\theta)}{\\partial\\theta} = \\frac{\\partial\\ell(\\theta;\\mathbf{x})}{\\partial\\theta}f(\\mathbf{x};\\theta)",
+          "to_latex": "\\mathbb{E}_{\\theta}\\!\\left[\\frac{\\partial^2\\ell}{\\partial\\theta^2}\\right] + \\mathbb{E}_{\\theta}\\!\\left[\\left(\\frac{\\partial\\ell}{\\partial\\theta}\\right)^2\\right] = 0 \\implies I(\\theta) = -\\mathbb{E}_{\\theta}\\!\\left[\\frac{\\partial^2\\ell}{\\partial\\theta^2}\\right]",
+          "operation_label": "対数微分関係式の代入と積分の線形性による整理",
+          "explanation": "∂f/∂θ = (∂ℓ/∂θ)f を前ステップの式に代入し、積分の線形性で期待値表記にまとめると E_θ[∂²ℓ/∂θ²] + I(θ) = 0、すなわち I(θ) = -E_θ[∂²ℓ/∂θ²] が得られる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m16_integral_linearity",
+            "math.prob.pr03_random_variable_expectation"
+          ],
+          "sympy_check_hint": "sp.diff(sp.log(f), theta, 2) + (sp.diff(sp.log(f), theta))**2 - sp.diff(f, theta, 2)/f"
+        }
+      ]
+    },
+    {
+      "id": "drv_st07_cramer_rao_inequality",
+      "target_node_id": "math.stat.st07_cramer_rao_inequality",
+      "route_kind": "deductive",
+      "title": "クラメール＝ラオの不等式の導出",
+      "premise_node_ids": [
+        "math.stat.st04_mle_score_def",
+        "math.stat.st05_mle_score_equation",
+        "math.stat.st06_fisher_information",
+        "math.prob.pr03_random_variable_expectation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "推定量 T(X) は 2次モーメント有限であり、∫T(x)f(x;θ)dx の θ に関する積分下微分交換が可能かつ I(θ)>0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\psi(\\theta) = \\mathbb{E}_{\\theta}[T(\\mathbf{X})] = \\int T(\\mathbf{x})f(\\mathbf{x};\\theta)\\,d\\mathbf{x}",
+          "to_latex": "\\operatorname{Var}_{\\theta}(T(\\mathbf{X})) \\ge \\frac{\\big(\\psi'(\\theta)\\big)^2}{I(\\theta)}",
+          "operation_label": "推定量期待値の微分とコーシー＝シュワルツ不等式の適用",
+          "explanation": "ψ(θ) の定義を θ で微分して T とスコア関数 s の共分散として表し、偏差 (T-ψ(θ)) と s の2乗期待値に関する2次形式の非負性（コーシー＝シュワルツ不等式）から分散の下限を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.prob.pr03_random_variable_expectation",
+            "math.stat.st05_mle_score_equation",
+            "math.stat.st06_fisher_information"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_differentiate_estimator_expectation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\psi'(\\theta) = \\frac{d}{d\\theta}\\int T(\\mathbf{x})f(\\mathbf{x};\\theta)\\,d\\mathbf{x}",
+          "to_latex": "\\psi'(\\theta) = \\int T(\\mathbf{x})\\frac{\\partial f(\\mathbf{x};\\theta)}{\\partial\\theta}\\,d\\mathbf{x} = \\int T(\\mathbf{x})s(\\theta;\\mathbf{x})f(\\mathbf{x};\\theta)\\,d\\mathbf{x} = \\mathbb{E}_{\\theta}[T(\\mathbf{X})s(\\theta;\\mathbf{X})]",
+          "operation_label": "積分下微分と対数微分関係式の代入",
+          "explanation": "T(x) は θ に依存しないため、積分と微分の交換後に ∂f/∂θ = s(θ;x)f(x;θ) を用いることで ψ'(θ) = E_θ[T(X)s(θ;X)] を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.prob.pr03_random_variable_expectation",
+            "math.stat.st04_mle_score_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_covariance_representation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}_{\\theta}[T(\\mathbf{X})s(\\theta;\\mathbf{X})] = \\psi'(\\theta),\\quad \\mathbb{E}_{\\theta}[s(\\theta;\\mathbf{X})]=0",
+          "to_latex": "\\operatorname{Cov}_{\\theta}(T(\\mathbf{X}),s(\\theta;\\mathbf{X})) = \\mathbb{E}_{\\theta}\\big[(T(\\mathbf{X})-\\psi(\\theta))s(\\theta;\\mathbf{X})\\big] = \\psi'(\\theta)",
+          "operation_label": "スコア期待値零を用いた共分散への変換",
+          "explanation": "E_θ[s]=0（ST05）より ψ(θ)E_θ[s]=0 であるため、期待値の線形性より E_θ[Ts] は中心化された積の期待値すなわち共分散 Cov_θ(T, s) に等しい。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.prob.pr03_random_variable_expectation",
+            "math.stat.st05_mle_score_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_cauchy_schwarz_bound",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall c\\in\\mathbb{R},\\; \\mathbb{E}_{\\theta}\\!\\left[\\big((T-\\psi(\\theta)) - c\\,s\\big)^2\\right] = \\operatorname{Var}_{\\theta}(T) - 2c\\,\\psi'(\\theta) + c^2 I(\\theta) \\ge 0",
+          "to_latex": "\\big(\\psi'(\\theta)\\big)^2 \\le \\operatorname{Var}_{\\theta}(T)\\,I(\\theta) \\implies \\operatorname{Var}_{\\theta}(T(\\mathbf{X})) \\ge \\frac{\\big(\\psi'(\\theta)\\big)^2}{I(\\theta)}",
+          "operation_label": "2次式の判別式条件（コーシー＝シュワルツ不等式）の適用",
+          "explanation": "実数 c に関する非負2次式において、c = ψ'(θ)/I(θ) とおく（または判別式 Δ/4 = (ψ'(θ))² - Var_θ(T)I(θ) ≤ 0 を使う）ことで、クラメール＝ラオの不等式が導かれる。",
+          "used_node_ids": [
+            "math.prob.pr03_random_variable_expectation",
+            "math.stat.st06_fisher_information"
+          ],
+          "sympy_check_hint": "var_T - 2*c*dpsi + c**2*I_theta"
+        }
+      ]
+    },
+    {
+      "id": "drv_st09_neyman_pearson_lemma",
+      "target_node_id": "math.stat.st09_neyman_pearson_lemma",
+      "route_kind": "deductive",
+      "title": "ネイマン＝ピアソンの基本補題（最強力性）の証明",
+      "premise_node_ids": [
+        "math.stat.st08_hypothesis_test_def",
+        "math.prob.pr03_random_variable_expectation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity",
+        "math.calc.m54_integral_equality_preservation"
+      ],
+      "assumptions": [
+        "有意水準 α ∈ (0,1) に対して E_{θ0}[φ*]=α となる閾値 k ≥ 0 および境界確率化関数 γ(x)∈[0,1] が存在することを前提とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbb{E}_{\\theta_0}[\\phi^*]=\\alpha,\\quad \\mathbb{E}_{\\theta_0}[\\phi]\\le\\alpha\\;(0\\le\\phi\\le 1)",
+          "to_latex": "\\mathbb{E}_{\\theta_1}[\\phi^*(\\mathbf{X})] \\ge \\mathbb{E}_{\\theta_1}[\\phi(\\mathbf{X})]",
+          "operation_label": "点ごとの符号評価不等式の空間積分と水準制約の適用",
+          "explanation": "検定関数 φ* と任意の検定関数 φ の差に (f1 - k f0) を掛けた式が全ての標本点 x で非負になることを示し、全空間で積分して有意水準の制約を用いることで検出力の最大性を証明する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.prob.pr03_random_variable_expectation",
+            "math.stat.st08_hypothesis_test_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_pointwise_sign_inequality",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0\\le\\phi(\\mathbf{x})\\le 1,\\quad \\phi^*(\\mathbf{x})=\\begin{cases}1 & f_1>k f_0\\\\\\gamma(\\mathbf{x}) & f_1=k f_0\\\\0 & f_1<k f_0\\end{cases}",
+          "to_latex": "\\forall \\mathbf{x}\\in\\mathcal{X},\\quad \\big(\\phi^*(\\mathbf{x})-\\phi(\\mathbf{x})\\big)\\big(f_1(\\mathbf{x})-k\\,f_0(\\mathbf{x})\\big)\\ge 0",
+          "operation_label": "尤度比領域ごとの符号同値性の検証",
+          "explanation": "f1 > k f0 のとき φ*=1 ≥ φ ゆえ両因子は非負；f1 < k f0 のとき φ*=0 ≤ φ ゆえ両因子は非正；f1 = k f0 のとき第2因子が 0 である。よって全領域で積は 0 以上となる。",
+          "used_node_ids": [
+            "math.stat.st08_hypothesis_test_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_integrate_over_sample_space",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{\\mathcal{X}} \\big(\\phi^*(\\mathbf{x})-\\phi(\\mathbf{x})\\big)\\big(f_1(\\mathbf{x})-k\\,f_0(\\mathbf{x})\\big)\\,d\\mathbf{x} \\ge 0",
+          "to_latex": "\\big(\\mathbb{E}_{\\theta_1}[\\phi^*]-\\mathbb{E}_{\\theta_1}[\\phi]\\big) - k\\big(\\mathbb{E}_{\\theta_0}[\\phi^*]-\\mathbb{E}_{\\theta_0}[\\phi]\\big) \\ge 0",
+          "operation_label": "非負被積分関数の積分と線形性による期待値展開",
+          "explanation": "点ごとの非負不等式を標本空間全体で積分し、定積分の線形性と期待値の定義を用いて H1 および H0 の下での期待値の差の線形結合に書き換える。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m54_integral_equality_preservation",
+            "math.prob.pr03_random_variable_expectation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_level_constraint_optimality",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}_{\\theta_1}[\\phi^*]-\\mathbb{E}_{\\theta_1}[\\phi] \\ge k\\big(\\alpha - \\mathbb{E}_{\\theta_0}[\\phi]\\big),\\quad k\\ge 0,\\; \\mathbb{E}_{\\theta_0}[\\phi]\\le\\alpha",
+          "to_latex": "\\mathbb{E}_{\\theta_1}[\\phi^*(\\mathbf{X})] \\ge \\mathbb{E}_{\\theta_1}[\\phi(\\mathbf{X})]",
+          "operation_label": "有意水準制約と k ≥ 0 の適用による結論",
+          "explanation": "E_{θ0}[φ*] = α および任意の検定の条件 E_{θ0}[φ] ≤ α より α - E_{θ0}[φ] ≥ 0 であり、さらに k ≥ 0 であるため右辺は非負となる。したがって φ* は任意の有意水準 α 以下の検定に対して最大の検出力を持つ。",
+          "used_node_ids": [
+            "math.stat.st08_hypothesis_test_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,711 @@
+{
+  "pack_meta": {
+    "pack_id": "math.pde.separation_variables",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "偏微分方程式：波動・熱伝導・ラプラス方程式と変数分離法",
+    "language": "ja",
+    "description": "2階線形PDEの分類（楕円・放物・双曲型）、ダランベールの解、変数分離法とスツルム＝リウヴィル問題を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.pde.pde01_second_order_linear_pde_def",
+      "short_code": "PDE01",
+      "kind": "definition",
+      "title": "2階線形偏微分方程式の一般形と判別式による分類",
+      "summary": "2変数2階線形偏微分方程式の主部係数に基づく判別式から、双曲型・放物型・楕円型の3種に分類する定義。",
+      "canonical_latex": "A u_{xx} + 2B u_{xy} + C u_{yy} + D u_x + E u_y + F u = G,\\quad \\Delta := B^2 - AC \\begin{cases} > 0 & (\\text{hyperbolic}), \\\\ = 0 & (\\text{parabolic}), \\\\ < 0 & (\\text{elliptic}) \\end{cases}",
+      "aliases_latex": [
+        "a_{11}u_{xx} + 2a_{12}u_{xy} + a_{22}u_{yy} + \\cdots = 0"
+      ],
+      "keywords": [
+        "偏微分方程式",
+        "2階線形PDE",
+        "楕円型",
+        "放物型",
+        "双曲型",
+        "判別式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "pde"
+      ]
+    },
+    {
+      "id": "math.pde.pde02_canonical_pde_types",
+      "short_code": "PDE02",
+      "kind": "theorem_formula",
+      "title": "特性曲線による2階線形PDEの標準形への変換",
+      "summary": "特性方程式の解を用いた変数変換により、2階線形PDEの主部を双曲型・放物型・楕円型の標準形へ簡約する定理。",
+      "canonical_latex": "\\frac{dy}{dx} = \\frac{B \\pm \\sqrt{B^2 - AC}}{A} \\implies \\begin{cases} u_{\\xi\\eta} = \\Phi_1(\\xi,\\eta,u,u_\\xi,u_\\eta) & (\\Delta > 0), \\\\ u_{\\eta\\eta} = \\Phi_2(\\xi,\\eta,u,u_\\xi,u_\\eta) & (\\Delta = 0), \\\\ u_{\\alpha\\alpha} + u_{\\beta\\beta} = \\Phi_3(\\alpha,\\beta,u,u_\\alpha,u_\\beta) & (\\Delta < 0) \\end{cases}",
+      "aliases_latex": [
+        "u_{\\xi\\eta} = 0,\\quad u_{\\eta\\eta} = u_\\xi,\\quad u_{\\alpha\\alpha} + u_{\\beta\\beta} = 0"
+      ],
+      "keywords": [
+        "特性曲線",
+        "特性方程式",
+        "標準形",
+        "変数変換"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "pde"
+      ]
+    },
+    {
+      "id": "math.pde.pde03_classical_pde_definitions",
+      "short_code": "PDE03",
+      "kind": "definition",
+      "title": "三大古典偏微分方程式（波動・熱伝導・ラプラス方程式）",
+      "summary": "物理現象を記述する代表的な2階線形PDEである波動方程式（双曲型）、熱伝導方程式（放物型）、ラプラス方程式（楕円型）の定義。",
+      "canonical_latex": "u_{tt} = c^2 \\nabla^2 u \\text{ (Wave)},\\quad u_t = \\kappa \\nabla^2 u \\text{ (Heat)},\\quad \\nabla^2 u = 0 \\text{ (Laplace)}",
+      "aliases_latex": [
+        "\\frac{\\partial^2 u}{\\partial t^2} = c^2 \\frac{\\partial^2 u}{\\partial x^2},\\quad \\frac{\\partial u}{\\partial t} = \\kappa \\frac{\\partial^2 u}{\\partial x^2},\\quad \\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} = 0"
+      ],
+      "keywords": [
+        "波動方程式",
+        "熱伝導方程式",
+        "拡散方程式",
+        "ラプラス方程式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "pde"
+      ]
+    },
+    {
+      "id": "math.pde.pde04_dalembert_formula",
+      "short_code": "PDE04",
+      "kind": "theorem_formula",
+      "title": "1次元波動方程式のダランベールの一般解と初期値問題の解公式",
+      "summary": "特性座標変換によって1次元波動方程式の一般解を左右進行波の和として表し、初期変位・初期速度からコーシー問題の厳密解を導く公式。",
+      "canonical_latex": "u_{tt} = c^2 u_{xx} \\implies u(x,t) = F(x - ct) + G(x + ct),\\quad u(x,t) = \\frac{1}{2}\\big[\\varphi(x - ct) + \\varphi(x + ct)\\big] + \\frac{1}{2c}\\int_{x-ct}^{x+ct} \\psi(s)\\,ds",
+      "aliases_latex": [
+        "u(x,t) = \\frac{\\varphi(x-ct)+\\varphi(x+ct)}{2} + \\frac{1}{2c}\\int_{x-ct}^{x+ct}\\psi(\\xi)\\,d\\xi"
+      ],
+      "keywords": [
+        "ダランベールの解",
+        "波動方程式",
+        "進行波",
+        "初期値問題",
+        "依存領域"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "pde"
+      ]
+    },
+    {
+      "id": "math.pde.pde05_separation_of_variables_ansatz",
+      "short_code": "PDE05",
+      "kind": "definition",
+      "title": "変数分離法の仮設と分離定数による常微分方程式への分解",
+      "summary": "解を各独立変数の1変数関数の積として仮定し、両辺が独立変数に依らないことから分離定数を導入して常微分方程式系へ帰着させる手法。",
+      "canonical_latex": "u(x,t) = X(x)T(t) \\implies \\frac{T''(t)}{c^2 T(t)} = \\frac{X''(x)}{X(x)} = -\\lambda \\text{ (Wave)};\\quad \\frac{T'(t)}{\\kappa T(t)} = \\frac{X''(x)}{X(x)} = -\\lambda \\text{ (Heat)}",
+      "aliases_latex": [
+        "u(x,y) = X(x)Y(y) \\implies \\frac{X''(x)}{X(x)} = -\\frac{Y''(y)}{Y(y)} = -\\lambda"
+      ],
+      "keywords": [
+        "変数分離法",
+        "分離定数",
+        "積型解",
+        "固有値パラメータ"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "pde"
+      ]
+    },
+    {
+      "id": "math.pde.pde06_sturm_liouville_pde_reduction",
+      "short_code": "PDE06",
+      "kind": "theorem_formula",
+      "title": "有界領域境界値問題の変数分離によるスツルム＝リウヴィル固有値問題への帰着",
+      "summary": "空間座標に関する自己共役2階常微分方程式と同次境界条件が正則スツルム＝リウヴィル問題を構成し、離散固有値と重み付き直交固有関数系を与える定理。",
+      "canonical_latex": "\\frac{d}{dx}\\!\\left[p(x)\\frac{dX}{dx}\\right] + \\big[q(x) + \\lambda w(x)\\big]X = 0,\\quad \\alpha_1 X(a) + \\alpha_2 X'(a) = 0,\\; \\beta_1 X(b) + \\beta_2 X'(b) = 0",
+      "aliases_latex": [
+        "-(pX')' - qX = \\lambda w X"
+      ],
+      "keywords": [
+        "スツルム＝リウヴィル問題",
+        "固有値問題",
+        "直交固有関数系",
+        "境界値問題"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "pde"
+      ]
+    },
+    {
+      "id": "math.pde.pde07_fourier_dirichlet_wave_solution",
+      "short_code": "PDE07",
+      "kind": "theorem_formula",
+      "title": "両端固定弦の波動方程式のフーリエ級数解（定在波の重ね合わせ）",
+      "summary": "有限区間でのディリクレ同次境界条件のもとで波動方程式を変数分離し、固有モードの重ね合わせとフーリエ正弦係数により初期値境界値問題を解く公式。",
+      "canonical_latex": "u(x,t) = \\sum_{n=1}^{\\infty} \\left(A_n \\cos\\frac{n\\pi c t}{L} + B_n \\sin\\frac{n\\pi c t}{L}\\right)\\sin\\frac{n\\pi x}{L},\\quad A_n = \\frac{2}{L}\\int_{0}^{L} \\varphi(x)\\sin\\frac{n\\pi x}{L}\\,dx,\\quad B_n = \\frac{2}{n\\pi c}\\int_{0}^{L} \\psi(x)\\sin\\frac{n\\pi x}{L}\\,dx",
+      "aliases_latex": [
+        "u(x,t) = \\sum_{n=1}^{\\infty} T_n(t)\\sin\\frac{n\\pi x}{L}"
+      ],
+      "keywords": [
+        "波動方程式",
+        "両端固定弦",
+        "定在波",
+        "フーリエ正弦級数"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "pde"
+      ]
+    },
+    {
+      "id": "math.pde.pde08_fourier_dirichlet_heat_solution",
+      "short_code": "PDE08",
+      "kind": "theorem_formula",
+      "title": "1次元熱伝導方程式のディリクレ境界値問題の級数解",
+      "summary": "両端温度零の境界条件における1次元熱伝導方程式を変数分離し、指数減衰するフーリエ正弦級数として温度分布の時間発展を表す公式。",
+      "canonical_latex": "u(x,t) = \\sum_{n=1}^{\\infty} b_n \\exp\\!\\left(-\\kappa\\frac{n^2\\pi^2}{L^2}t\\right)\\sin\\frac{n\\pi x}{L},\\quad b_n = \\frac{2}{L}\\int_{0}^{L} \\varphi(x)\\sin\\frac{n\\pi x}{L}\\,dx",
+      "aliases_latex": [
+        "u(x,t) = \\sum_{n=1}^{\\infty} b_n e^{-\\kappa (n\\pi/L)^2 t}\\sin\\frac{n\\pi x}{L}"
+      ],
+      "keywords": [
+        "熱伝導方程式",
+        "ディリクレ境界条件",
+        "指数減衰",
+        "フーリエ級数解"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "pde"
+      ]
+    },
+    {
+      "id": "math.pde.pde09_laplace_rectangle_solution",
+      "short_code": "PDE09",
+      "kind": "theorem_formula",
+      "title": "長方形領域におけるラプラス方程式の変数分離級数解",
+      "summary": "3辺が零で1辺に非同次境界値を持つ長方形領域上のラプラス方程式を、正弦固有関数と双曲線正弦関数の積の重ね合わせとして解く公式。",
+      "canonical_latex": "u_{xx} + u_{yy} = 0,\\; u(0,y)=u(a,y)=u(x,0)=0,\\; u(x,b)=f(x) \\implies u(x,y) = \\sum_{n=1}^{\\infty} C_n \\sinh\\!\\left(\\frac{n\\pi y}{a}\\right)\\sin\\!\\left(\\frac{n\\pi x}{a}\\right),\\; C_n = \\frac{2}{a\\sinh(n\\pi b/a)}\\int_{0}^{a} f(x)\\sin\\frac{n\\pi x}{a}\\,dx",
+      "aliases_latex": [
+        "u(x,y) = \\sum_{n=1}^{\\infty} A_n \\frac{\\sinh(n\\pi y/a)}{\\sinh(n\\pi b/a)}\\sin\\frac{n\\pi x}{a}"
+      ],
+      "keywords": [
+        "ラプラス方程式",
+        "調和関数",
+        "長方形領域",
+        "ディリクレ問題",
+        "双曲線関数"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "pde"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_pde02_canonical_pde_types",
+      "target_node_id": "math.pde.pde02_canonical_pde_types",
+      "route_kind": "deductive",
+      "title": "特性座標変換による2階線形PDEの標準形導出",
+      "premise_node_ids": [
+        "math.pde.pde01_second_order_linear_pde_def",
+        "math.calc.m35_multivariable_chain_rule",
+        "math.calc.e01_hessian_matrix_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "assumptions": [
+        "解 u および係数 A, B, C は領域上で C^2 級であり、A \\neq 0 とする（A=0 の場合は座標の入れ替えや直接標準化を用いる）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A u_{xx} + 2B u_{xy} + C u_{yy} + D u_x + E u_y + F u = G",
+          "to_latex": "\\frac{dy}{dx} = \\frac{B \\pm \\sqrt{B^2 - AC}}{A} \\implies \\begin{cases} u_{\\xi\\eta} = \\Phi_1 & (\\Delta > 0), \\\\ u_{\\eta\\eta} = \\Phi_2 & (\\Delta = 0), \\\\ u_{\\alpha\\alpha} + u_{\\beta\\beta} = \\Phi_3 & (\\Delta < 0) \\end{cases}",
+          "operation_label": "特性方程式による変数変換と主部対角化",
+          "explanation": "2変数の可逆座標変換 (x,y) -> (xi,eta) に対して連鎖律を適用し、新座標での2階偏導関数の係数が特性2次方程式を満たすよう座標を選ぶことで、判別式 Delta = B^2 - AC の符号に応じた3種の標準形を得る。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.m35_multivariable_chain_rule",
+            "math.pde.pde01_second_order_linear_pde_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_chain_rule_2nd",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(x,y) = \\tilde{u}(\\xi(x,y), \\eta(x,y))",
+          "to_latex": "\\tilde{A} \\tilde{u}_{\\xi\\xi} + 2\\tilde{B} \\tilde{u}_{\\xi\\eta} + \\tilde{C} \\tilde{u}_{\\eta\\eta} + \\cdots = G,\\quad \\tilde{A} = A\\xi_x^2 + 2B\\xi_x\\xi_y + C\\xi_y^2,\\; \\tilde{C} = A\\eta_x^2 + 2B\\eta_x\\eta_y + C\\eta_y^2",
+          "operation_label": "多変数連鎖律による2階導関数の変換",
+          "explanation": "シュワルツの対称性 u_{xy} = u_{yx} を用いて2変数合成関数の連鎖律を2回適用すると、新座標における2階主部係数 (A~, B~, C~) が1階偏導関数の2次形式で与えられる。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.m35_multivariable_chain_rule",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_characteristic_ode",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A\\zeta_x^2 + 2B\\zeta_x\\zeta_y + C\\zeta_y^2 = 0,\\quad \\left.\\frac{dy}{dx}\\right|_{\\zeta=\\text{const.}} = -\\frac{\\zeta_x}{\\zeta_y}",
+          "to_latex": "A\\left(\\frac{dy}{dx}\\right)^2 - 2B\\frac{dy}{dx} + C = 0 \\implies \\frac{dy}{dx} = \\frac{B \\pm \\sqrt{B^2 - AC}}{A}",
+          "operation_label": "特性常微分方程式の導出",
+          "explanation": "変換後の u_{\\xi\\xi} や u_{\\eta\\eta} の係数を消去する条件から、等値線 \\zeta(x,y)=const. の傾き dy/dx = -\\zeta_x/\\zeta_y が2次方程式を満たすことが導かれる。",
+          "used_node_ids": [
+            "math.pde.pde01_second_order_linear_pde_def"
+          ],
+          "sympy_check_hint": "solve(A*m**2 - 2*B*m + C, m)"
+        },
+        {
+          "step_id": "s2_3_three_canonical_cases",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta = B^2 - AC \\; (\\Delta > 0,\\; \\Delta = 0,\\; \\Delta < 0)",
+          "to_latex": "\\begin{cases} \\tilde{A}=\\tilde{C}=0 \\implies u_{\\xi\\eta} = \\Phi_1 & (\\Delta > 0), \\\\ \\tilde{A}=\\tilde{B}=0 \\implies u_{\\eta\\eta} = \\Phi_2 & (\\Delta = 0), \\\\ \\alpha = \\operatorname{Re}\\xi,\\; \\beta = \\operatorname{Im}\\xi \\implies u_{\\alpha\\alpha} + u_{\\beta\\beta} = \\Phi_3 & (\\Delta < 0) \\end{cases}",
+          "operation_label": "判別式の符号による3標準形への簡約",
+          "explanation": "Delta > 0 では相異なる2実特性族で u_{\\xi\\xi}, u_{\\eta\\eta} を消し、Delta = 0 では1重根の特性族を \\xi にとり任意独立変数 \\eta を組にして u_{\\eta\\eta} のみを残し、Delta < 0 では複素共役特性座標の実部・虚部 (\\alpha,\\beta) によりラプラシアン形へ帰着させる。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "math.pde.pde01_second_order_linear_pde_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_pde04_dalembert_formula",
+      "target_node_id": "math.pde.pde04_dalembert_formula",
+      "route_kind": "deductive",
+      "title": "特性変数変換と積分によるダランベールの解公式の導出",
+      "premise_node_ids": [
+        "math.pde.pde03_classical_pde_definitions",
+        "math.pde.pde02_canonical_pde_types",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m35_multivariable_chain_rule"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m26_zero_derivative_constant_lemma"
+      ],
+      "assumptions": [
+        "初期変位 \\varphi \\in C^2(\\mathbb{R})、初期速度 \\psi \\in C^1(\\mathbb{R}) とし、空間領域は無限直線 (-\\infty, \\infty) とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u_{tt} = c^2 u_{xx},\\quad u(x,0) = \\varphi(x),\\quad u_t(x,0) = \\psi(x)",
+          "to_latex": "u(x,t) = F(x - ct) + G(x + ct) = \\frac{1}{2}\\big[\\varphi(x - ct) + \\varphi(x + ct)\\big] + \\frac{1}{2c}\\int_{x-ct}^{x+ct} \\psi(s)\\,ds",
+          "operation_label": "特性座標による一般解導出と初期条件の代入",
+          "explanation": "1次元波動方程式を特性座標 \\xi = x - ct, \\eta = x + ct へ変換して u_{\\xi\\eta} = 0 を積分し、一般解 F(x-ct) + G(x+ct) に初期条件を適用してダランベールの解公式を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m35_multivariable_chain_rule",
+            "math.pde.pde02_canonical_pde_types",
+            "math.pde.pde03_classical_pde_definitions"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_characteristic_transform",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_{tt} - c^2 u_{xx} = 0,\\quad \\xi := x - ct,\\; \\eta := x + ct",
+          "to_latex": "-4c^2 \\frac{\\partial^2 u}{\\partial\\xi\\partial\\eta} = 0 \\implies \\frac{\\partial^2 u}{\\partial\\xi\\partial\\eta} = 0",
+          "operation_label": "特性変数への座標変換",
+          "explanation": "連鎖律より \\partial_x = \\partial_\\xi + \\partial_\\eta, \\partial_t = c(-\\partial_\\xi + \\partial_\\eta) となり、波動作用素が -4c^2 \\partial_\\xi \\partial_\\eta に因数分解される。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "math.pde.pde02_canonical_pde_types",
+            "math.pde.pde03_classical_pde_definitions"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_integrate_general_sol",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial}{\\partial\\xi}\\left(\\frac{\\partial u}{\\partial\\eta}\\right) = 0",
+          "to_latex": "\\frac{\\partial u}{\\partial\\eta} = g(\\eta) \\implies u(\\xi,\\eta) = F(\\xi) + G(\\eta) = F(x - ct) + G(x + ct)",
+          "operation_label": "逐次積分による一般解の導出",
+          "explanation": "\\xi に関して偏導関数が零であることから u_\\eta は \\eta のみの関数 g(\\eta) となり、さらに \\eta で積分することで任意関数 F, G の和として一般解が得られる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m26_zero_derivative_constant_lemma"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_apply_initial_conditions",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F(x) + G(x) = \\varphi(x),\\quad -c F'(x) + c G'(x) = \\psi(x)",
+          "to_latex": "F(s) = \\frac{1}{2}\\varphi(s) - \\frac{1}{2c}\\int_{x_0}^{s}\\psi(\\tau)\\,d\\tau - C,\\quad G(s) = \\frac{1}{2}\\varphi(s) + \\frac{1}{2c}\\int_{x_0}^{s}\\psi(\\tau)\\,d\\tau + C \\implies u(x,t) = \\frac{\\varphi(x-ct)+\\varphi(x+ct)}{2} + \\frac{1}{2c}\\int_{x-ct}^{x+ct}\\psi(s)\\,ds",
+          "operation_label": "初期条件の連立による F, G の決定",
+          "explanation": "第2式を積分して F(x) - G(x) を求め、第1式と加減することで F と G を確定し、s = x - ct, x + ct を代入して定数 C を相殺すればダランベールの公式が得られる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_pde06_sturm_liouville_pde_reduction",
+      "target_node_id": "math.pde.pde06_sturm_liouville_pde_reduction",
+      "route_kind": "deductive",
+      "title": "変数分離による空間境界値問題のスツルム＝リウヴィル問題への帰着",
+      "premise_node_ids": [
+        "math.pde.pde05_separation_of_variables_ansatz",
+        "math.ode.sf10_sturm_liouville_orthogonality",
+        "math.calc.m10_integration_by_parts"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m26_zero_derivative_constant_lemma"
+      ],
+      "assumptions": [
+        "p \\in C^1([a,b]), p(x) > 0, w(x) > 0, q \\in C([a,b]) とし、空間境界条件は同次ロビン型（ディリクレ・ノイマンを含む）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "w(x)\\,\\mathcal{T}[u] = \\frac{\\partial}{\\partial x}\\!\\left(p(x)\\frac{\\partial u}{\\partial x}\\right) + q(x)u,\\quad u(x,t) = X(x)T(t)",
+          "to_latex": "\\frac{d}{dx}\\!\\left[p(x)\\frac{dX}{dx}\\right] + \\big[q(x) + \\lambda w(x)\\big]X = 0,\\quad \\alpha_1 X(a) + \\alpha_2 X'(a) = 0,\\; \\beta_1 X(b) + \\beta_2 X'(b) = 0",
+          "operation_label": "時間・空間変数の分離と空間固有値問題の抽出",
+          "explanation": "一般の2階線形発展PDEに積型仮設 u(x,t) = X(x)T(t) を代入して変数を分離すると、空間関数 X(x) と同次境界条件はスツルム＝リウヴィル型の固有値問題を構成し、異なる固有値に対する固有関数は重み w(x) で直交する。",
+          "used_node_ids": [
+            "math.calc.m10_integration_by_parts",
+            "math.ode.sf10_sturm_liouville_orthogonality",
+            "math.pde.pde05_separation_of_variables_ansatz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_separate_variables",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "w(x)X(x)\\mathcal{T}[T](t) = \\Big(\\big[p(x)X'(x)\\big]' + q(x)X(x)\\Big)T(t)",
+          "to_latex": "\\frac{\\mathcal{T}[T](t)}{T(t)} = \\frac{(pX')' + qX}{wX} = -\\lambda \\implies (pX')' + (q + \\lambda w)X = 0",
+          "operation_label": "変数分離定数 -lambda の導入",
+          "explanation": "両辺を w(x)X(x)T(t) で割ると左辺は t のみ、右辺は x のみに依存するため共通の定数 -\\lambda に等しくなり、空間側の自己共役2階ODEが分離される。",
+          "used_node_ids": [
+            "math.pde.pde05_separation_of_variables_ansatz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_boundary_conditions",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\alpha_1 u(a,t) + \\alpha_2 u_x(a,t) = 0,\\quad \\beta_1 u(b,t) + \\beta_2 u_x(b,t) = 0,\\quad T(t) \\not\\equiv 0",
+          "to_latex": "\\alpha_1 X(a) + \\alpha_2 X'(a) = 0,\\quad \\beta_1 X(b) + \\beta_2 X'(b) = 0",
+          "operation_label": "同次境界条件の X(x) への継承",
+          "explanation": "自明でない解 T(t) \\not\\equiv 0 を要求することで、元のPDEの同次境界条件がそのまま X(x) の線形同次2点境界条件として課される。",
+          "used_node_ids": [
+            "math.pde.pde05_separation_of_variables_ansatz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_sl_orthogonality",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(p X_m')' + (q + \\lambda_m w)X_m = 0,\\quad (p X_n')' + (q + \\lambda_n w)X_n = 0",
+          "to_latex": "(\\lambda_m - \\lambda_n)\\int_{a}^{b} w(x)X_m(x)X_n(x)\\,dx = \\Big[p(x)\\big(X_m X_n' - X_n X_m'\\big)\\Big]_{a}^{b} = 0",
+          "operation_label": "ラグランジュ恒等式と部分積分による直交性の確認",
+          "explanation": "2つの固有方程式に他方の固有関数を掛けて差し引き、区間 [a,b] で部分積分すると、分離同次境界条件により境界項が消えて SF10 の重み付き直交関係が得られる。",
+          "used_node_ids": [
+            "math.calc.m10_integration_by_parts",
+            "math.ode.sf10_sturm_liouville_orthogonality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_pde07_fourier_dirichlet_wave_solution",
+      "target_node_id": "math.pde.pde07_fourier_dirichlet_wave_solution",
+      "route_kind": "deductive",
+      "title": "変数分離法による両端固定弦の波動方程式の級数解導出",
+      "premise_node_ids": [
+        "math.pde.pde03_classical_pde_definitions",
+        "math.pde.pde05_separation_of_variables_ansatz",
+        "math.pde.pde06_sturm_liouville_pde_reduction",
+        "math.ode.m06_linear_ode_2nd",
+        "math.ode.m39_linear_ode_superposition",
+        "math.ode.sf10_sturm_liouville_orthogonality"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m31_trig_derivatives",
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "区間 [0, L] で u(0,t) = u(L,t) = 0 とし、初期関数 \\varphi, \\psi は区分的に滑らかでフーリエ正弦級数展開可能とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u_{tt} = c^2 u_{xx},\\; u(0,t)=u(L,t)=0,\\; u(x,0)=\\varphi(x),\\; u_t(x,0)=\\psi(x)",
+          "to_latex": "u(x,t) = \\sum_{n=1}^{\\infty} \\left(A_n \\cos\\frac{n\\pi c t}{L} + B_n \\sin\\frac{n\\pi c t}{L}\\right)\\sin\\frac{n\\pi x}{L}",
+          "operation_label": "変数分離・固有モード展開とフーリエ係数の決定",
+          "explanation": "変数分離により空間側の固有値 \\lambda_n = (n\\pi/L)^2 と固有関数 \\sin(n\\pi x/L)、時間側の調和振動解を求め、重ね合わせと三角関数の直交性から係数 A_n, B_n を決定する。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd",
+            "math.ode.m39_linear_ode_superposition",
+            "math.ode.sf10_sturm_liouville_orthogonality",
+            "math.pde.pde03_classical_pde_definitions",
+            "math.pde.pde05_separation_of_variables_ansatz",
+            "math.pde.pde06_sturm_liouville_pde_reduction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_spatial_eigenproblem",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X''(x) + \\lambda X(x) = 0,\\quad X(0) = X(L) = 0",
+          "to_latex": "\\lambda_n = \\left(\\frac{n\\pi}{L}\\right)^2,\\quad X_n(x) = \\sin\\left(\\frac{n\\pi x}{L}\\right)\\quad (n=1,2,3,\\dots)",
+          "operation_label": "空間固有値問題の解（正弦モード）",
+          "explanation": "\\lambda \\le 0 では境界条件を満たす非自明解が存在せず、\\lambda > 0 の一般解 C_1\\cos(\\sqrt{\\lambda}x) + C_2\\sin(\\sqrt{\\lambda}x) に X(0)=X(L)=0 を課すと \\sqrt{\\lambda}L = n\\pi となる。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd",
+            "math.pde.pde06_sturm_liouville_pde_reduction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_temporal_ode_superposition",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_n''(t) + \\left(\\frac{n\\pi c}{L}\\right)^2 T_n(t) = 0",
+          "to_latex": "u(x,t) = \\sum_{n=1}^{\\infty} \\left(A_n \\cos\\frac{n\\pi c t}{L} + B_n \\sin\\frac{n\\pi c t}{L}\\right)\\sin\\frac{n\\pi x}{L}",
+          "operation_label": "時間ODEの求解と線形重ね合わせ",
+          "explanation": "各固有値に対応する時間方程式は角振動数 \\omega_n = n\\pi c/L の単振動方程式となり、同次線形PDEの重ね合わせの原理から無限級数解を得る。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd",
+            "math.ode.m39_linear_ode_superposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_fourier_sine_coefficients",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{n=1}^{\\infty} A_n \\sin\\frac{n\\pi x}{L} = \\varphi(x),\\quad \\sum_{n=1}^{\\infty} \\frac{n\\pi c}{L} B_n \\sin\\frac{n\\pi x}{L} = \\psi(x)",
+          "to_latex": "A_n = \\frac{2}{L}\\int_{0}^{L} \\varphi(x)\\sin\\frac{n\\pi x}{L}\\,dx,\\quad B_n = \\frac{2}{n\\pi c}\\int_{0}^{L} \\psi(x)\\sin\\frac{n\\pi x}{L}\\,dx",
+          "operation_label": "固有関数の直交性によるフーリエ係数の射影",
+          "explanation": "固有関数系 \\{\\sin(n\\pi x/L)\\} の L^2([0,L]) 直交関係（内積が (L/2)\\delta_{mn}）を用いて両辺に \\sin(m\\pi x/L) を掛けて積分し、A_n, B_n を決定する。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.ode.sf10_sturm_liouville_orthogonality"
+          ],
+          "sympy_check_hint": "integrate(sin(m*pi*x/L)*sin(n*pi*x/L), (x, 0, L))"
+        }
+      ]
+    },
+    {
+      "id": "deriv_pde08_fourier_dirichlet_heat_solution",
+      "target_node_id": "math.pde.pde08_fourier_dirichlet_heat_solution",
+      "route_kind": "deductive",
+      "title": "変数分離法による1次元熱伝導方程式の級数解導出",
+      "premise_node_ids": [
+        "math.pde.pde03_classical_pde_definitions",
+        "math.pde.pde05_separation_of_variables_ansatz",
+        "math.pde.pde06_sturm_liouville_pde_reduction",
+        "math.ode.fo02_separable_ode",
+        "math.ode.m06_linear_ode_2nd",
+        "math.ode.m39_linear_ode_superposition",
+        "math.ode.sf10_sturm_liouville_orthogonality"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "区間 [0, L] で u(0,t) = u(L,t) = 0, t > 0 とし、初期温度分布 \\varphi(x) は区間 [0,L] で区分的連続とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u_t = \\kappa u_{xx},\\; u(0,t)=u(L,t)=0,\\; u(x,0)=\\varphi(x)",
+          "to_latex": "u(x,t) = \\sum_{n=1}^{\\infty} b_n \\exp\\!\\left(-\\kappa\\frac{n^2\\pi^2}{L^2}t\\right)\\sin\\frac{n\\pi x}{L},\\quad b_n = \\frac{2}{L}\\int_{0}^{L} \\varphi(x)\\sin\\frac{n\\pi x}{L}\\,dx",
+          "operation_label": "変数分離と指数減衰時間モードの重ね合わせ",
+          "explanation": "熱伝導方程式を変数分離して空間固有モード \\sin(n\\pi x/L) と1階時間減衰解 \\exp(-\\kappa (n\\pi/L)^2 t) を求め、重ね合わせと初期温度のフーリエ正弦展開により級数解を導出する。",
+          "used_node_ids": [
+            "math.ode.fo02_separable_ode",
+            "math.ode.m06_linear_ode_2nd",
+            "math.ode.m39_linear_ode_superposition",
+            "math.ode.sf10_sturm_liouville_orthogonality",
+            "math.pde.pde03_classical_pde_definitions",
+            "math.pde.pde05_separation_of_variables_ansatz",
+            "math.pde.pde06_sturm_liouville_pde_reduction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_separate_heat_eq",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X(x)T'(t) = \\kappa X''(x)T(t),\\quad X(0) = X(L) = 0",
+          "to_latex": "\\frac{T'(t)}{\\kappa T(t)} = \\frac{X''(x)}{X(x)} = -\\lambda_n = -\\left(\\frac{n\\pi}{L}\\right)^2,\\quad X_n(x) = \\sin\\frac{n\\pi x}{L}",
+          "operation_label": "変数分離と空間固有関数の決定",
+          "explanation": "ディリクレ同次境界条件のもとで空間側のスツルム＝リウヴィル固有値問題を解くと、固有値 \\lambda_n = (n\\pi/L)^2 と固有関数 \\sin(n\\pi x/L) が定まる。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd",
+            "math.pde.pde05_separation_of_variables_ansatz",
+            "math.pde.pde06_sturm_liouville_pde_reduction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_solve_temporal_decay",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_n'(t) = -\\kappa\\left(\\frac{n\\pi}{L}\\right)^2 T_n(t)",
+          "to_latex": "T_n(t) = b_n \\exp\\!\\left(-\\kappa\\frac{n^2\\pi^2}{L^2}t\\right)",
+          "operation_label": "1階変数分離形ODEによる時間減衰因子の導出",
+          "explanation": "時間に関する1階変数分離形ODEを積分すると、高周波モードほど速く減衰する指数関数解が得られる。",
+          "used_node_ids": [
+            "math.ode.fo02_separable_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_superposition_initial_fit",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(x,0) = \\sum_{n=1}^{\\infty} b_n \\sin\\frac{n\\pi x}{L} = \\varphi(x)",
+          "to_latex": "u(x,t) = \\sum_{n=1}^{\\infty} b_n \\exp\\!\\left(-\\kappa\\frac{n^2\\pi^2}{L^2}t\\right)\\sin\\frac{n\\pi x}{L},\\quad b_n = \\frac{2}{L}\\int_{0}^{L}\\varphi(x)\\sin\\frac{n\\pi x}{L}\\,dx",
+          "operation_label": "重ね合わせと初期温度分布のフーリエ展開",
+          "explanation": "全モードの線形結合をとり t=0 で初期分布 \\varphi(x) と一致させ、正弦固有関数の直交性から係数 b_n を求める。",
+          "used_node_ids": [
+            "math.ode.m39_linear_ode_superposition",
+            "math.ode.sf10_sturm_liouville_orthogonality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_pde09_laplace_rectangle_solution",
+      "target_node_id": "math.pde.pde09_laplace_rectangle_solution",
+      "route_kind": "deductive",
+      "title": "長方形領域におけるラプラス方程式のディリクレ問題級数解の導出",
+      "premise_node_ids": [
+        "math.pde.pde03_classical_pde_definitions",
+        "math.pde.pde05_separation_of_variables_ansatz",
+        "math.pde.pde06_sturm_liouville_pde_reduction",
+        "math.ode.m06_linear_ode_2nd",
+        "math.ode.m39_linear_ode_superposition",
+        "math.ode.sf10_sturm_liouville_orthogonality"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "長方形領域 (0,a)\\times(0,b) 上で u_{xx}+u_{yy}=0 を満たし、3辺が零、上辺 y=b で境界値 f(x) をとる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u_{xx} + u_{yy} = 0,\\; u(0,y)=u(a,y)=u(x,0)=0,\\; u(x,b)=f(x)",
+          "to_latex": "u(x,y) = \\sum_{n=1}^{\\infty} C_n \\sinh\\!\\left(\\frac{n\\pi y}{a}\\right)\\sin\\!\\left(\\frac{n\\pi x}{a}\\right),\\; C_n = \\frac{2}{a\\sinh(n\\pi b/a)}\\int_{0}^{a} f(x)\\sin\\frac{n\\pi x}{a}\\,dx",
+          "operation_label": "同次境界方向の固有関数展開と双曲線正弦モードによる級数解",
+          "explanation": "両端が同次境界条件を満たす x 方向に正弦固有関数をとり、y 方向の常微分方程式から y=0 で消える双曲線正弦関数 \\sinh(n\\pi y/a) を導き、y=b の境界条件をフーリエ展開で整合させる。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd",
+            "math.ode.m39_linear_ode_superposition",
+            "math.ode.sf10_sturm_liouville_orthogonality",
+            "math.pde.pde03_classical_pde_definitions",
+            "math.pde.pde05_separation_of_variables_ansatz",
+            "math.pde.pde06_sturm_liouville_pde_reduction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_x_eigenvalue_problem",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(x,y)=X(x)Y(y) \\implies \\frac{X''(x)}{X(x)} = -\\frac{Y''(y)}{Y(y)} = -\\lambda,\\quad X(0)=X(a)=0",
+          "to_latex": "\\lambda_n = \\left(\\frac{n\\pi}{a}\\right)^2,\\quad X_n(x) = \\sin\\left(\\frac{n\\pi x}{a}\\right)\\quad (n=1,2,3,\\dots)",
+          "operation_label": "同次境界辺に沿う x 方向の固有値問題",
+          "explanation": "同次境界条件 X(0)=X(a)=0 が課される x 方向の ODE X'' + \\lambda X = 0 をスツルム＝リウヴィル固有値問題として解き、振動固有モードを確定する。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd",
+            "math.pde.pde05_separation_of_variables_ansatz",
+            "math.pde.pde06_sturm_liouville_pde_reduction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_y_hyperbolic_ode",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y_n''(y) - \\left(\\frac{n\\pi}{a}\\right)^2 Y_n(y) = 0,\\quad Y_n(0) = 0",
+          "to_latex": "Y_n(y) = c_n \\cosh\\frac{n\\pi y}{a} + d_n \\sinh\\frac{n\\pi y}{a},\\; Y_n(0)=0 \\implies Y_n(y) = C_n \\sinh\\!\\left(\\frac{n\\pi y}{a}\\right)",
+          "operation_label": "y 方向ODEの双曲線関数解と底辺境界条件の適用",
+          "explanation": "特性根が実数 \\pm n\\pi/a となる2階線形ODEの一般解を \\cosh, \\sinh で表し、底辺条件 Y_n(0)=0 より \\cosh 項が消去される。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.m39_linear_ode_superposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_top_boundary_fourier",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(x,b) = \\sum_{n=1}^{\\infty} C_n \\sinh\\!\\left(\\frac{n\\pi b}{a}\\right)\\sin\\!\\left(\\frac{n\\pi x}{a}\\right) = f(x)",
+          "to_latex": "C_n = \\frac{2}{a\\sinh(n\\pi b/a)}\\int_{0}^{a} f(x)\\sin\\frac{n\\pi x}{a}\\,dx",
+          "operation_label": "上辺非同次境界条件のフーリエ正弦展開",
+          "explanation": "重ね合わせた級数解に y=b を代入し、正弦固有関数の直交性を用いて f(x) のフーリエ正弦係数から C_n を一意に決定する。",
+          "used_node_ids": [
+            "math.ode.m39_linear_ode_superposition",
+            "math.ode.sf10_sturm_liouville_orthogonality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
