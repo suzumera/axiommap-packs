@@ -1,0 +1,852 @@
+{
+  "pack_meta": {
+    "pack_id": "astro.orbit.lambert_problem",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "orbital_mechanics",
+    "title": "軌道力学：ランベルト問題（2位置・飛行時間からの軌道決定）と普遍変数法",
+    "language": "ja",
+    "description": "ラグランジュのf,g関数、スタンプフ関数を用いた普遍変数定式化、2点間の飛行時間方程式（ランベルトの定理）と反復解法を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "astro.orbit.lm01_sundman_universal_anomaly_def",
+      "short_code": "LM01",
+      "kind": "definition",
+      "title": "スンドマン変換と普遍近点離角（ユニバーサル変数）の定義",
+      "summary": "軌道種別（楕円・放物線・双曲線）に依存せず2体運動方程式を正則化するため、軌道長半径の逆数 α=1/a と動径距離に比例する時間変換 dt/dχ=r/√μ によって普遍近点離角 χ を定義する。",
+      "canonical_latex": "\\frac{dt}{d\\chi} := \\frac{r}{\\sqrt{\\mu}},\\quad \\alpha := \\frac{1}{a} = \\frac{2}{r_0} - \\frac{v_0^2}{\\mu},\\quad r''(\\chi) + \\alpha r(\\chi) = 1",
+      "aliases_latex": [
+        "\\chi = \\sqrt{a}\\,\\Delta E\\;(\\alpha > 0),\\quad \\chi = \\sqrt{-a}\\,\\Delta H\\;(\\alpha < 0)"
+      ],
+      "keywords": [
+        "universal anomaly",
+        "Sundman transformation",
+        "regularization",
+        "reciprocal semimajor axis"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "celestial_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.lm02_stumpff_functions_def",
+      "short_code": "LM02",
+      "kind": "definition",
+      "title": "スタンプフ関数 C(z), S(z) の級数定義と閉形式表現",
+      "summary": "正則化調和振動子方程式の解に現れる α→0（放物線軌道）の除去可能特異点を解消するため、無次元引数 z=αχ^2 のべき級数として定義されるスタンプフ関数 C(z), S(z) を導入する。",
+      "canonical_latex": "C(z) := \\sum_{k=0}^{\\infty}\\frac{(-z)^k}{(2k+2)!},\\quad S(z) := \\sum_{k=0}^{\\infty}\\frac{(-z)^k}{(2k+3)!}\\quad (z = \\alpha\\chi^2 \\in \\mathbb{R})",
+      "aliases_latex": [
+        "C(z)=\\begin{cases}\\frac{1-\\cos\\sqrt{z}}{z}&(z>0)\\\\\\frac{\\cosh\\sqrt{-z}-1}{-z}&(z<0)\\\\\\frac{1}{2}&(z=0)\\end{cases},\\quad S(z)=\\begin{cases}\\frac{\\sqrt{z}-\\sin\\sqrt{z}}{(\\sqrt{z})^3}&(z>0)\\\\\\frac{\\sinh\\sqrt{-z}-\\sqrt{-z}}{(\\sqrt{-z})^3}&(z<0)\\\\\\frac{1}{6}&(z=0)\\end{cases}"
+      ],
+      "keywords": [
+        "Stumpff functions",
+        "universal variables",
+        "power series",
+        "conic sections"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "special_functions"
+      ]
+    },
+    {
+      "id": "astro.orbit.lm03_universal_kepler_equation",
+      "short_code": "LM03",
+      "kind": "theorem_formula",
+      "title": "普遍ケプラー方程式（全円錐曲線軌道に対する飛行時間式）",
+      "summary": "スンドマン変換による動径距離の解 r(χ) を χ に関して積分することで得られる、楕円・放物線・双曲線の全軌道に統一的に適用可能な飛行時間と普遍近点離角 χ の関係式。",
+      "canonical_latex": "\\sqrt{\\mu}\\,\\Delta t = \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\chi^2 C(\\alpha\\chi^2) + (1 - \\alpha r_0)\\chi^3 S(\\alpha\\chi^2) + r_0\\chi",
+      "aliases_latex": [
+        "\\sqrt{\\mu}(t - t_0) = r_0\\chi + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\chi^2 C(z) + (1 - \\alpha r_0)\\chi^3 S(z)"
+      ],
+      "keywords": [
+        "universal Kepler equation",
+        "time of flight",
+        "universal anomaly",
+        "Stumpff functions"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "celestial_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.lm04_exact_lagrange_fg_universal",
+      "short_code": "LM04",
+      "kind": "theorem_formula",
+      "title": "普遍変数とスタンプフ関数による厳密ラグランジュ f, g 関数",
+      "summary": "初期状態 (r0, v0) から任意の飛行時間 Δt 後の状態 (r, v) を線形結合 r=fr0+gv0, v=fdot r0+gdot v0 で表す厳密な係数 f, g, fdot, gdot の普遍変数表示と面積速度保存恒等式。",
+      "canonical_latex": "f = 1 - \\frac{\\chi^2}{r_0}C(z),\\quad g = \\Delta t - \\frac{\\chi^3}{\\sqrt{\\mu}}S(z),\\quad \\dot{f} = \\frac{\\sqrt{\\mu}}{r r_0}\\chi\\big(z S(z) - 1\\big),\\quad \\dot{g} = 1 - \\frac{\\chi^2}{r}C(z),\\quad f\\dot{g} - \\dot{f}g = 1",
+      "aliases_latex": [
+        "\\mathbf{r} = f\\mathbf{r}_0 + g\\mathbf{v}_0,\\quad \\mathbf{v} = \\dot{f}\\mathbf{r}_0 + \\dot{g}\\mathbf{v}_0"
+      ],
+      "keywords": [
+        "Lagrange f and g functions",
+        "universal variables",
+        "state propagation",
+        "angular momentum conservation"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "celestial_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.lm05_lambert_problem_boundary_setup",
+      "short_code": "LM05",
+      "kind": "definition",
+      "title": "ランベルト問題の2点境界幾何設定と幾何パラメータ A",
+      "summary": "2つの位置ベクトル r1, r2 と飛行時間 Δt および転送角 Δν が与えられた軌道決定境界値問題において、弦長 c、半周長 s、およびラグランジュ係数 g と角運動量を結ぶ幾何定数 A を定義する。",
+      "canonical_latex": "c = \\|\\mathbf{r}_2 - \\mathbf{r}_1\\|,\\quad s = \\frac{r_1 + r_2 + c}{2},\\quad A = \\sin\\Delta\\nu\\sqrt{\\frac{r_1 r_2}{1 - \\cos\\Delta\\nu}}",
+      "aliases_latex": [
+        "A = \\pm\\sqrt{r_1 r_2(1 + \\cos\\Delta\\nu)},\\quad g h = r_1 r_2\\sin\\Delta\\nu"
+      ],
+      "keywords": [
+        "Lambert problem",
+        "boundary value problem",
+        "transfer angle",
+        "chord length",
+        "semiperimeter"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "orbit_determination"
+      ]
+    },
+    {
+      "id": "astro.orbit.lm06_universal_lambert_tof_equation",
+      "short_code": "LM06",
+      "kind": "theorem_formula",
+      "title": "普遍ランベルト飛行時間方程式（補助変数 y(z) 定式化）",
+      "summary": "補助変数 y(z)=χ^2 C(z) を導入して未知の初速度依存項 r1·v1 を消去し、無次元軌道パラメータ z=αχ^2 のみで表されるランベルト問題の非線形飛行時間方程式。",
+      "canonical_latex": "y(z) = r_1 + r_2 + A\\frac{z S(z) - 1}{\\sqrt{C(z)}},\\quad \\chi = \\sqrt{\\frac{y(z)}{C(z)}},\\quad \\sqrt{\\mu}\\,\\Delta t = \\chi^3 S(z) + A\\sqrt{y(z)}",
+      "aliases_latex": [
+        "F(z) := \\left(\\frac{y(z)}{C(z)}\\right)^{3/2} S(z) + A\\sqrt{y(z)} = \\sqrt{\\mu}\\,\\Delta t"
+      ],
+      "keywords": [
+        "Lambert time-of-flight equation",
+        "universal formulation",
+        "auxiliary variable y",
+        "orbit determination"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "orbit_determination"
+      ]
+    },
+    {
+      "id": "astro.orbit.lm07_lambert_theorem_tof_invariant",
+      "short_code": "LM07",
+      "kind": "theorem_formula",
+      "title": "ランベルトの定理（飛行時間の半長径・和距離・弦長不変性）",
+      "summary": "2点間の2体軌道における飛行時間 Δt は軌道離心率 e に直接依存せず、軌道長半径 a、2点動径距離の和 r1+r2、および2点間の弦長 c のみに依存することを表す古典定理。",
+      "canonical_latex": "\\sqrt{\\mu}\\,\\Delta t = a^{3/2}\\Big[(\\alpha_L - \\sin\\alpha_L) - (\\beta_L - \\sin\\beta_L)\\Big],\\quad \\sin^2\\frac{\\alpha_L}{2} = \\frac{s}{2a},\\quad \\sin^2\\frac{\\beta_L}{2} = \\frac{s - c}{2a}\\quad (a > 0,\\; \\Delta\\nu < \\pi\\text{ branch})",
+      "aliases_latex": [
+        "\\Delta t = \\Delta t(a,\\; r_1 + r_2,\\; c)"
+      ],
+      "keywords": [
+        "Lambert theorem",
+        "time of flight invariant",
+        "chord",
+        "semiperimeter",
+        "Lagrange form"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "celestial_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.lm08_lambert_newton_iteration_velocity",
+      "short_code": "LM08",
+      "kind": "theorem_formula",
+      "title": "ランベルト方程式のニュートン反復解法と終端速度ベクトル再構成",
+      "summary": "普遍ランベルト飛行時間方程式 F(z)=√μ Δt の導関数 F'(z) を用いたニュートン・ラプソン反復により解 z* を求め、f, g, gdot を介して両端の速度ベクトル v1, v2 を確定する公式。",
+      "canonical_latex": "z_{k+1} = z_k - \\frac{F(z_k) - \\sqrt{\\mu}\\,\\Delta t}{F'(z_k)},\\quad f = 1 - \\frac{y}{r_1},\\quad g = A\\sqrt{\\frac{y}{\\mu}},\\quad \\dot{g} = 1 - \\frac{y}{r_2},\\quad \\mathbf{v}_1 = \\frac{\\mathbf{r}_2 - f\\mathbf{r}_1}{g},\\quad \\mathbf{v}_2 = \\frac{\\dot{g}\\mathbf{r}_2 - \\mathbf{r}_1}{g}\\quad (z=z^*)",
+      "aliases_latex": [
+        "F'(z) = \\left(\\frac{y}{C}\\right)^{3/2}\\left[\\frac{1}{2z}\\left(C - \\frac{3S}{2C}\\right) + \\frac{3S^2}{4C}\\right] + \\frac{A}{8}\\left(3\\frac{S}{C}\\sqrt{y} + A\\sqrt{\\frac{C}{y}}\\right)\\;(z\\neq 0)"
+      ],
+      "keywords": [
+        "Newton-Raphson iteration",
+        "Lambert solver",
+        "terminal velocity vectors",
+        "Stumpff derivatives"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "numerical_methods"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_lm01_sundman_universal_anomaly",
+      "target_node_id": "astro.orbit.lm01_sundman_universal_anomaly_def",
+      "route_kind": "reformulation",
+      "title": "2体運動方程式のエネルギー積分とスンドマン変換による正則化",
+      "premise_node_ids": [
+        "phys.orbit.g01_two_body_eom",
+        "astro.orbit.ka02_vis_viva_equation",
+        "astro.orbit.ka03_eccentric_anomaly_def"
+      ],
+      "required_math_node_ids": [
+        "astro.orbit.lm01_sundman_universal_anomaly_def",
+        "math.calc.m01_chain_rule",
+        "math.calc.m15_product_rule",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "中心天体の重力定数 μ>0 による純粋な2体ケプラー運動を仮定する",
+        "初期位置 r0≠0 と初速度 v0 が与えられているものとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r},\\quad \\frac{v^2}{2} - \\frac{\\mu}{r} = -\\frac{\\mu}{2a} = \\text{const.}",
+          "to_latex": "\\frac{dt}{d\\chi} := \\frac{r}{\\sqrt{\\mu}},\\quad \\alpha := \\frac{1}{a} = \\frac{2}{r_0} - \\frac{v_0^2}{\\mu},\\quad r''(\\chi) + \\alpha r(\\chi) = 1",
+          "operation_label": "スンドマン正則化",
+          "explanation": "vis-viva方程式により軌道種別を一括表現する逆長半径 α=1/a を導入し、時間変数 t を dt/dχ=r/√μ で変換することで動径方程式を特異点のない線形調和振動子型方程式へ帰着させる。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation",
+            "astro.orbit.ka03_eccentric_anomaly_def",
+            "math.calc.m01_chain_rule",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_alpha_definition",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r},\\quad \\frac{v^2}{2} - \\frac{\\mu}{r} = -\\frac{\\mu}{2a} = \\text{const.}",
+          "to_latex": "\\alpha := \\frac{1}{a} = \\frac{2}{r_0} - \\frac{v_0^2}{\\mu},\\quad \\frac{d}{dt}(r\\dot{r}) = \\dot{r}^2 + r\\ddot{r} = v^2 - \\frac{\\mu}{r} = \\frac{\\mu}{r} - \\mu\\alpha",
+          "operation_label": "動径積の時間微分と vis-viva 適用",
+          "explanation": "r^2 = r·r の2階時間微分と運動方程式 rddot = -(μ/r^3)r およびエネルギー保存式 v^2 = μ(2/r - α) を用いて d(r rdot)/dt を評価する。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation",
+            "math.calc.m15_product_rule",
+            "math.vec.m03_dot_cross_product",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": "v**2 - mu/r - (mu/r - mu*alpha) == 0 with v**2 == mu*(2/r - alpha)"
+        },
+        {
+          "step_id": "s3_sundman_time_scale",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\alpha := \\frac{1}{a} = \\frac{2}{r_0} - \\frac{v_0^2}{\\mu},\\quad \\frac{d}{dt}(r\\dot{r}) = \\dot{r}^2 + r\\ddot{r} = v^2 - \\frac{\\mu}{r} = \\frac{\\mu}{r} - \\mu\\alpha",
+          "to_latex": "\\frac{dt}{d\\chi} := \\frac{r}{\\sqrt{\\mu}} \\implies \\frac{d}{d\\chi} = \\frac{r}{\\sqrt{\\mu}}\\frac{d}{dt},\\quad r\\dot{r} = \\sqrt{\\mu}\\,r'(\\chi)\\quad \\left(\\Delta\\chi = \\sqrt{a}\\,\\Delta E\\text{ for }\\alpha>0\\right),\\quad \\frac{d}{d\\chi}(r\\dot{r}) = \\frac{r}{\\sqrt{\\mu}}\\left(\\frac{\\mu}{r} - \\mu\\alpha\\right) = \\sqrt{\\mu}(1 - \\alpha r(\\chi))",
+          "operation_label": "連鎖律による時間微分変換",
+          "explanation": "楕円軌道の離心近点角関係 r dt = a^{3/2}(1-e cos E) dE/√μ = r d(√a E)/√μ を全軌道に一般化する形で dt/dχ = r/√μ を定義し、連鎖律を適用する。",
+          "used_node_ids": [
+            "astro.orbit.ka03_eccentric_anomaly_def",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_radial_regularized_ode",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dt}{d\\chi} := \\frac{r}{\\sqrt{\\mu}} \\implies \\frac{d}{d\\chi} = \\frac{r}{\\sqrt{\\mu}}\\frac{d}{dt},\\quad r\\dot{r} = \\sqrt{\\mu}\\,r'(\\chi)\\quad \\left(\\Delta\\chi = \\sqrt{a}\\,\\Delta E\\text{ for }\\alpha>0\\right),\\quad \\frac{d}{d\\chi}(r\\dot{r}) = \\frac{r}{\\sqrt{\\mu}}\\left(\\frac{\\mu}{r} - \\mu\\alpha\\right) = \\sqrt{\\mu}(1 - \\alpha r(\\chi))",
+          "to_latex": "\\frac{dt}{d\\chi} := \\frac{r}{\\sqrt{\\mu}},\\quad \\alpha := \\frac{1}{a} = \\frac{2}{r_0} - \\frac{v_0^2}{\\mu},\\quad r''(\\chi) + \\alpha r(\\chi) = 1",
+          "operation_label": "定数 √μ の消去と整理",
+          "explanation": "d(r rdot)/dχ = √μ r''(χ) と右辺 √μ(1 - α r) の両辺を √μ で割ることで正則化された動径微分方程式を得る。",
+          "used_node_ids": [
+            "astro.orbit.lm01_sundman_universal_anomaly_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_lm02_stumpff_functions",
+      "target_node_id": "astro.orbit.lm02_stumpff_functions_def",
+      "route_kind": "deductive",
+      "title": "正則化動径方程式の解の級数展開とスタンプフ関数の構成",
+      "premise_node_ids": [
+        "astro.orbit.lm01_sundman_universal_anomaly_def"
+      ],
+      "required_math_node_ids": [
+        "astro.orbit.lm02_stumpff_functions_def",
+        "math.calc.m36_derivative_linearity",
+        "math.calc.t08_maclaurin_sin_cos",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "初期時刻 t0 (χ=0) において r(0)=r0, r'(0)=(r0·v0)/√μ とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r''(\\chi) + \\alpha r(\\chi) = 1,\\quad r(0) = r_0,\\quad r'(0) = \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}",
+          "to_latex": "C(z) := \\sum_{k=0}^{\\infty}\\frac{(-z)^k}{(2k+2)!},\\quad S(z) := \\sum_{k=0}^{\\infty}\\frac{(-z)^k}{(2k+3)!}\\quad (z = \\alpha\\chi^2 \\in \\mathbb{R})",
+          "operation_label": "解の普遍級数表現",
+          "explanation": "線形常微分方程式 r''+αr=1 の一般解における α→0 の不定形をマクローリン展開によって除去し、全実数 z=αχ^2 で収束するスタンプフ関数 C(z), S(z) を定義する。",
+          "used_node_ids": [
+            "astro.orbit.lm01_sundman_universal_anomaly_def",
+            "math.calc.t08_maclaurin_sin_cos",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_trig_case",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r''(\\chi) + \\alpha r(\\chi) = 1,\\quad r(0) = r_0,\\quad r'(0) = \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}",
+          "to_latex": "r(\\chi) = r_0\\cos(\\sqrt{\\alpha}\\chi) + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu\\alpha}}\\sin(\\sqrt{\\alpha}\\chi) + \\frac{1 - \\cos(\\sqrt{\\alpha}\\chi)}{\\alpha}\\quad (\\alpha > 0, z = \\alpha\\chi^2 > 0)\\implies r(\\chi) = r_0 + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\chi\\left(1 - z\\frac{\\sqrt{z}-\\sin\\sqrt{z}}{(\\sqrt{z})^3}\\right) + (1 - \\alpha r_0)\\chi^2\\frac{1-\\cos\\sqrt{z}}{z} \\text{ where } \\frac{\\sin\\sqrt{z}}{\\sqrt{z}} = 1 - z\\frac{\\sqrt{z}-\\sin\\sqrt{z}}{(\\sqrt{z})^3},\\quad \\frac{1-\\cos\\sqrt{z}}{z} = \\frac{1 - \\cos(\\sqrt{\\alpha}\\chi)}{\\alpha\\chi^2}\\quad (z = \\alpha\\chi^2 > 0) \\text{ hold} ",
+          "operation_label": "2階線形ODEの初期値解法",
+          "explanation": "α>0 の場合に定数係数2階線形ODEを解き、z=αχ^2 を導入して (1-cos√z)/z と (√z-sin√z)/z^(3/2) の形で整理する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": "diff(r0*cos(sqrt(alpha)*chi) + rp0/sqrt(alpha)*sin(sqrt(alpha)*chi) + (1-cos(sqrt(alpha)*chi))/alpha, chi, 2) + alpha*(r0*cos(sqrt(alpha)*chi) + rp0/sqrt(alpha)*sin(sqrt(alpha)*chi) + (1-cos(sqrt(alpha)*chi))/alpha) - 1 == 0"
+        },
+        {
+          "step_id": "s3_maclaurin_regularization",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r(\\chi) = r_0\\cos(\\sqrt{\\alpha}\\chi) + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu\\alpha}}\\sin(\\sqrt{\\alpha}\\chi) + \\frac{1 - \\cos(\\sqrt{\\alpha}\\chi)}{\\alpha}\\quad (\\alpha > 0, z = \\alpha\\chi^2 > 0)\\implies r(\\chi) = r_0 + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\chi\\left(1 - z\\frac{\\sqrt{z}-\\sin\\sqrt{z}}{(\\sqrt{z})^3}\\right) + (1 - \\alpha r_0)\\chi^2\\frac{1-\\cos\\sqrt{z}}{z} \\text{ where } \\frac{\\sin\\sqrt{z}}{\\sqrt{z}} = 1 - z\\frac{\\sqrt{z}-\\sin\\sqrt{z}}{(\\sqrt{z})^3},\\quad \\frac{1-\\cos\\sqrt{z}}{z} = \\frac{1 - \\cos(\\sqrt{\\alpha}\\chi)}{\\alpha\\chi^2}\\quad (z = \\alpha\\chi^2 > 0) \\text{ hold} ",
+          "to_latex": "\\frac{1 - \\cos\\sqrt{z}}{z} = \\sum_{k=0}^{\\infty}\\frac{(-z)^k}{(2k+2)!},\\quad \\frac{\\sqrt{z} - \\sin\\sqrt{z}}{(\\sqrt{z})^3} = \\sum_{k=0}^{\\infty}\\frac{(-z)^k}{(2k+3)!}\\quad (z = \\alpha\\chi^2 \\in \\mathbb{R})",
+          "operation_label": "マクローリン展開による特異点解消",
+          "explanation": "cos√z と sin√z のマクローリン級数を代入すると定数項と1次項が相殺し、z=0 および z<0（双曲線関数へ解析接続）を含む全実数で整級数収束する表示が得られる。",
+          "used_node_ids": [
+            "math.calc.t08_maclaurin_sin_cos"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_stumpff_def",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1 - \\cos\\sqrt{z}}{z} = \\sum_{k=0}^{\\infty}\\frac{(-z)^k}{(2k+2)!},\\quad \\frac{\\sqrt{z} - \\sin\\sqrt{z}}{(\\sqrt{z})^3} = \\sum_{k=0}^{\\infty}\\frac{(-z)^k}{(2k+3)!}\\quad (z = \\alpha\\chi^2 \\in \\mathbb{R})",
+          "to_latex": "C(z) := \\sum_{k=0}^{\\infty}\\frac{(-z)^k}{(2k+2)!},\\quad S(z) := \\sum_{k=0}^{\\infty}\\frac{(-z)^k}{(2k+3)!}\\quad (z = \\alpha\\chi^2 \\in \\mathbb{R})",
+          "operation_label": "スタンプフ関数の定義",
+          "explanation": "得られた整級数をそれぞれスタンプフ関数 C(z) および S(z) として定義する。",
+          "used_node_ids": [
+            "astro.orbit.lm02_stumpff_functions_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_lm03_universal_kepler_equation",
+      "target_node_id": "astro.orbit.lm03_universal_kepler_equation",
+      "route_kind": "deductive",
+      "title": "動径解 r(χ) の定積分による普遍ケプラー方程式の導出",
+      "premise_node_ids": [
+        "astro.orbit.lm01_sundman_universal_anomaly_def",
+        "astro.orbit.lm02_stumpff_functions_def",
+        "astro.orbit.ka06_kepler_equation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "Δt = t - t0 に対し χ(t0)=0 とし、r(χ) のべき級数は項別積分可能とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r(\\chi) = r_0 + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\chi\\big(1 - z S(z)\\big) + (1 - \\alpha r_0)\\chi^2 C(z),\\quad \\frac{dt}{d\\chi} = \\frac{r(\\chi)}{\\sqrt{\\mu}}",
+          "to_latex": "\\sqrt{\\mu}\\,\\Delta t = \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\chi^2 C(\\alpha\\chi^2) + (1 - \\alpha r_0)\\chi^3 S(\\alpha\\chi^2) + r_0\\chi",
+          "operation_label": "スンドマン関係式の積分",
+          "explanation": "スタンプフ関数で表された動径距離 r(χ) を 0 から χ まで積分することで、楕円軌道のケプラー方程式 M=E-e sin E を全円錐曲線に一般化した普遍ケプラー方程式を導出する。",
+          "used_node_ids": [
+            "astro.orbit.ka06_kepler_equation",
+            "astro.orbit.lm01_sundman_universal_anomaly_def",
+            "astro.orbit.lm02_stumpff_functions_def",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integral_setup",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r(\\chi) = r_0 + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\chi\\big(1 - z S(z)\\big) + (1 - \\alpha r_0)\\chi^2 C(z),\\quad \\frac{dt}{d\\chi} = \\frac{r(\\chi)}{\\sqrt{\\mu}}",
+          "to_latex": "\\sqrt{\\mu}\\,\\Delta t = \\int_{0}^{\\chi} r_0\\,d\\tilde{\\chi} + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\int_{0}^{\\chi}\\tilde{\\chi}\\big(1 - \\alpha\\tilde{\\chi}^2 S(\\alpha\\tilde{\\chi}^2)\\big)\\,d\\tilde{\\chi} + (1 - \\alpha r_0)\\int_{0}^{\\chi}\\tilde{\\chi}^2 C(\\alpha\\tilde{\\chi}^2)\\,d\\tilde{\\chi}`",
+          "operation_label": "定積分の線形分解",
+          "explanation": "微積分学の基本定理と定積分の線形性により、√μ Δt = ∫_0^χ r(χtilde) dχtilde を3つの項に分解する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_stumpff_integrals",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sqrt{\\mu}\\,\\Delta t = \\int_{0}^{\\chi} r_0\\,d\\tilde{\\chi} + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\int_{0}^{\\chi}\\tilde{\\chi}\\big(1 - \\alpha\\tilde{\\chi}^2 S(\\alpha\\tilde{\\chi}^2)\\big)\\,d\\tilde{\\chi} + (1 - \\alpha r_0)\\int_{0}^{\\chi}\\tilde{\\chi}^2 C(\\alpha\\tilde{\\chi}^2)\\,d\\tilde{\\chi}`",
+          "to_latex": "\\sqrt{\\mu}\\,\\Delta t = r_0\\chi + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\chi^2 C(\\alpha\\chi^2) + (1 - \\alpha r_0)\\chi^3 S(\\alpha\\chi^2)\\quad \\left(\\int_{0}^{\\chi}\\tilde{\\chi}(1-\\alpha\\tilde{\\chi}^2 S)\\,d\\tilde{\\chi} = \\chi^2 C(\\alpha\\chi^2),\\; \\int_{0}^{\\chi}\\tilde{\\chi}^2 C\\,d\\tilde{\\chi} = \\chi^3 S(\\alpha\\chi^2)\\right)`",
+          "operation_label": "スタンプフ級数の項別積分",
+          "explanation": "べき級数展開を項別積分すると ∫_0^χ χtilde(1 - αχtilde^2 S(αχtilde^2)) dχtilde = χ^2 C(αχ^2) および ∫_0^χ χtilde^2 C(αχtilde^2) dχtilde = χ^3 S(αχ^2) が得られる。",
+          "used_node_ids": [
+            "astro.orbit.lm02_stumpff_functions_def"
+          ],
+          "sympy_check_hint": "diff(chi**2 * sum((-alpha*chi**2)**k / factorial(2*k+2), (k, 0, 3)), chi) - chi*(1 - alpha*chi**2 * sum((-alpha*chi**2)**k / factorial(2*k+3), (k, 0, 2)))"
+        },
+        {
+          "step_id": "s4_universal_kepler",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sqrt{\\mu}\\,\\Delta t = r_0\\chi + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\chi^2 C(\\alpha\\chi^2) + (1 - \\alpha r_0)\\chi^3 S(\\alpha\\chi^2)\\quad \\left(\\int_{0}^{\\chi}\\tilde{\\chi}(1-\\alpha\\tilde{\\chi}^2 S)\\,d\\tilde{\\chi} = \\chi^2 C(\\alpha\\chi^2),\\; \\int_{0}^{\\chi}\\tilde{\\chi}^2 C\\,d\\tilde{\\chi} = \\chi^3 S(\\alpha\\chi^2)\\right)`",
+          "to_latex": "\\sqrt{\\mu}\\,\\Delta t = \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\sqrt{\\mu}}\\chi^2 C(\\alpha\\chi^2) + (1 - \\alpha r_0)\\chi^3 S(\\alpha\\chi^2) + r_0\\chi",
+          "operation_label": "標準形への整理",
+          "explanation": "項の順序を整えて普遍ケプラー方程式の標準表現を得る（α>0, e<1 かつ χ=√a(E-E0) のときケプラー方程式 M=E-e sin E に帰着する）。",
+          "used_node_ids": [
+            "astro.orbit.ka06_kepler_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_lm04_exact_lagrange_fg_universal",
+      "target_node_id": "astro.orbit.lm04_exact_lagrange_fg_universal",
+      "route_kind": "deductive",
+      "title": "正則化ベクトル運動方程式からの厳密ラグランジュ f, g 関数の導出",
+      "premise_node_ids": [
+        "phys.orbit.g01_two_body_eom",
+        "phys.orbit.g04_lagrange_fg_series",
+        "astro.orbit.ka01_angular_momentum_areal_velocity",
+        "astro.orbit.lm01_sundman_universal_anomaly_def",
+        "astro.orbit.lm02_stumpff_functions_def",
+        "astro.orbit.lm03_universal_kepler_equation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.ode.m06_linear_ode_2nd",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "角運動量ベクトル h = r0×v0 は保存される（h≠0 の非退化軌道、または極限として直進軌道も含む）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r},\\quad \\mathbf{r}(\\chi) = f(\\chi)\\mathbf{r}_0 + g(\\chi)\\mathbf{v}_0,\\quad \\mathbf{v}(\\chi) = \\dot{f}(\\chi)\\mathbf{r}_0 + \\dot{g}(\\chi)\\mathbf{v}_0",
+          "to_latex": "f = 1 - \\frac{\\chi^2}{r_0}C(z),\\quad g = \\Delta t - \\frac{\\chi^3}{\\sqrt{\\mu}}S(z),\\quad \\dot{f} = \\frac{\\sqrt{\\mu}}{r r_0}\\chi\\big(z S(z) - 1\\big),\\quad \\dot{g} = 1 - \\frac{\\chi^2}{r}C(z),\\quad f\\dot{g} - \\dot{f}g = 1",
+          "operation_label": "普遍変数による厳密 f, g 展開",
+          "explanation": "正則化された位置ベクトルの3階線形ODE r'''+αr'=0 を解き、普遍ケプラー方程式と面積速度保存則を組み合わせることで、級数展開の打ち切りでない厳密な f, g, fdot, gdot を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "astro.orbit.lm01_sundman_universal_anomaly_def",
+            "astro.orbit.lm02_stumpff_functions_def",
+            "astro.orbit.lm03_universal_kepler_equation",
+            "phys.orbit.g01_two_body_eom",
+            "phys.orbit.g04_lagrange_fg_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_vector_regularized_ode",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r},\\quad \\mathbf{r}(\\chi) = f(\\chi)\\mathbf{r}_0 + g(\\chi)\\mathbf{v}_0,\\quad \\mathbf{v}(\\chi) = \\dot{f}(\\chi)\\mathbf{r}_0 + \\dot{g}(\\chi)\\mathbf{v}_0",
+          "to_latex": "\\mathbf{r}'' + \\alpha\\mathbf{r} = -\\mathbf{e}\\implies \\mathbf{r}''' + \\alpha\\mathbf{r}' = \\mathbf{0},\\quad \\mathbf{r}'(0) = \\frac{r_0}{\\sqrt{\\mu}}\\mathbf{v}_0,\\quad \\mathbf{r}''(0) = \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\mu}\\mathbf{v}_0 - \\frac{\\mathbf{r}_0}{r_0}`",
+          "operation_label": "離心率ベクトル不変量による3階線形ODE化",
+          "explanation": "r'' = (r'/r)r' - r/r = (r'/√μ)v - r/r であり、不変な離心率ベクトル e = (1/r - α)r - (r'/√μ)v を用いて r''+αr = -e を得て、χ で微分することで定数係数線形ODE r'''+αr'=0 に帰着させる。",
+          "used_node_ids": [
+            "astro.orbit.lm01_sundman_universal_anomaly_def",
+            "math.calc.m01_chain_rule",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_solve_fg_stumpff",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}'' + \\alpha\\mathbf{r} = -\\mathbf{e}\\implies \\mathbf{r}''' + \\alpha\\mathbf{r}' = \\mathbf{0},\\quad \\mathbf{r}'(0) = \\frac{r_0}{\\sqrt{\\mu}}\\mathbf{v}_0,\\quad \\mathbf{r}''(0) = \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\mu}\\mathbf{v}_0 - \\frac{\\mathbf{r}_0}{r_0}`",
+          "to_latex": "\\mathbf{r}(\\chi) = \\left(1 - \\frac{\\chi^2}{r_0}C(z)\\right)\\mathbf{r}_0 + \\left(\\frac{r_0}{\\sqrt{\\mu}}\\chi(1 - z S(z)) + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\mu}\\chi^2 C(z)\\right)\\mathbf{v}_0,\\quad f = 1 - \\frac{\\chi^2}{r_0}C(z),\\quad g = \\Delta t - \\frac{\\chi^3}{\\sqrt{\\mu}}S(z)`",
+          "operation_label": "初期値解の構築と普遍ケプラー代入",
+          "explanation": "r'''+αr'=0 の解をスタンプフ関数で表し r0, v0 の係数を分離すると f が直接求まり、g の表示に対して普遍ケプラー方程式を代入して (r0·v0) 項を Δt に置き換える。",
+          "used_node_ids": [
+            "astro.orbit.lm02_stumpff_functions_def",
+            "astro.orbit.lm03_universal_kepler_equation",
+            "math.ode.m06_linear_ode_2nd",
+            "phys.orbit.g04_lagrange_fg_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_fdot_gdot_wronskian",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}(\\chi) = \\left(1 - \\frac{\\chi^2}{r_0}C(z)\\right)\\mathbf{r}_0 + \\left(\\frac{r_0}{\\sqrt{\\mu}}\\chi(1 - z S(z)) + \\frac{\\mathbf{r}_0\\cdot\\mathbf{v}_0}{\\mu}\\chi^2 C(z)\\right)\\mathbf{v}_0,\\quad f = 1 - \\frac{\\chi^2}{r_0}C(z),\\quad g = \\Delta t - \\frac{\\chi^3}{\\sqrt{\\mu}}S(z)`",
+          "to_latex": "f = 1 - \\frac{\\chi^2}{r_0}C(z),\\quad g = \\Delta t - \\frac{\\chi^3}{\\sqrt{\\mu}}S(z),\\quad \\dot{f} = \\frac{\\sqrt{\\mu}}{r r_0}\\chi\\big(z S(z) - 1\\big),\\quad \\dot{g} = 1 - \\frac{\\chi^2}{r}C(z),\\quad f\\dot{g} - \\dot{f}g = 1",
+          "operation_label": "時間微分と角運動量保存則",
+          "explanation": "d/dt = (√μ/r)d/dχ および d(χ^2 C(z))/dχ = χ(1-zS(z)) を用いて fdot を求め、時間反転対称性と角運動量保存 h = r×v = (f gdot - fdot g)(r0×v0) から f gdot - fdot g = 1 および gdot = 1 - (χ^2/r)C(z) を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "math.calc.m01_chain_rule",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_lm05_lambert_boundary_setup",
+      "target_node_id": "astro.orbit.lm05_lambert_problem_boundary_setup",
+      "route_kind": "reformulation",
+      "title": "2位置ベクトル間の境界条件とランベルト幾何定数 A の構成",
+      "premise_node_ids": [
+        "astro.orbit.ka01_angular_momentum_areal_velocity",
+        "astro.orbit.lm04_exact_lagrange_fg_universal"
+      ],
+      "required_math_node_ids": [
+        "astro.orbit.lm05_lambert_problem_boundary_setup",
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "2つの位置ベクトル r1, r2 は同一直線上に反平行でない（Δν≠π）か、極限として扱う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}_2 = f\\mathbf{r}_1 + g\\mathbf{v}_1,\\quad r_1 = \\|\\mathbf{r}_1\\|,\\quad r_2 = \\|\\mathbf{r}_2\\|,\\quad \\mathbf{r}_1\\cdot\\mathbf{r}_2 = r_1 r_2\\cos\\Delta\\nu",
+          "to_latex": "c = \\|\\mathbf{r}_2 - \\mathbf{r}_1\\|,\\quad s = \\frac{r_1 + r_2 + c}{2},\\quad A = \\sin\\Delta\\nu\\sqrt{\\frac{r_1 r_2}{1 - \\cos\\Delta\\nu}}",
+          "operation_label": "ランベルト幾何量の定義",
+          "explanation": "2位置 r1, r2 間の弦長 c と半周長 s、および転送角 Δν の符号（順行・逆行または短弧・長弧の別）を内包する幾何パラメータ A を定義する。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "astro.orbit.lm04_exact_lagrange_fg_universal",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_chord_semiperimeter",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_2 = f\\mathbf{r}_1 + g\\mathbf{v}_1,\\quad r_1 = \\|\\mathbf{r}_1\\|,\\quad r_2 = \\|\\mathbf{r}_2\\|,\\quad \\mathbf{r}_1\\cdot\\mathbf{r}_2 = r_1 r_2\\cos\\Delta\\nu",
+          "to_latex": "c = \\|\\mathbf{r}_2 - \\mathbf{r}_1\\| = \\sqrt{r_1^2 + r_2^2 - 2 r_1 r_2\\cos\\Delta\\nu},\\quad s = \\frac{r_1 + r_2 + c}{2},\\quad \\mathbf{r}_1\\times\\mathbf{r}_2 = r_1 r_2\\sin\\Delta\\nu\\,\\hat{\\mathbf{h}}",
+          "operation_label": "弦長と半周長および外積の幾何表示",
+          "explanation": "余弦定理により弦長 c と半周長 s を表し、角運動量単位ベクトル hhat に沿う外積 r1×r2 で転送角 Δν∈(0,2π) の正弦符号を規定する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_fg_cross_relation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c = \\|\\mathbf{r}_2 - \\mathbf{r}_1\\| = \\sqrt{r_1^2 + r_2^2 - 2 r_1 r_2\\cos\\Delta\\nu},\\quad s = \\frac{r_1 + r_2 + c}{2},\\quad \\mathbf{r}_1\\times\\mathbf{r}_2 = r_1 r_2\\sin\\Delta\\nu\\,\\hat{\\mathbf{h}}",
+          "to_latex": "\\mathbf{r}_1\\times\\mathbf{r}_2 = g(\\mathbf{r}_1\\times\\mathbf{v}_1) = g h\\hat{\\mathbf{h}} \\implies g h = r_1 r_2\\sin\\Delta\\nu\\implies \\operatorname{sgn}(g) = \\operatorname{sgn}(\\sin\\Delta\\nu)`,`",
+          "operation_label": "外積による g の符号決定",
+          "explanation": "r2 = f r1 + g v1 の左から r1 との外積をとることで g h = r1 r2 sin Δν を得て、g と sin Δν が同符号であることを確認する。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "astro.orbit.lm04_exact_lagrange_fg_universal",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_lambert_A_param",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_1\\times\\mathbf{r}_2 = g(\\mathbf{r}_1\\times\\mathbf{v}_1) = g h\\hat{\\mathbf{h}} \\implies g h = r_1 r_2\\sin\\Delta\\nu\\implies \\operatorname{sgn}(g) = \\operatorname{sgn}(\\sin\\Delta\\nu)`,`",
+          "to_latex": "c = \\|\\mathbf{r}_2 - \\mathbf{r}_1\\|,\\quad s = \\frac{r_1 + r_2 + c}{2},\\quad A = \\sin\\Delta\\nu\\sqrt{\\frac{r_1 r_2}{1 - \\cos\\Delta\\nu}}",
+          "operation_label": "幾何定数 A の定義",
+          "explanation": "後続の g = A√(y/μ) において符号を自動的に一致させるため、sin Δν の符号を保ったまま幾何定数 A を定義する。",
+          "used_node_ids": [
+            "astro.orbit.lm05_lambert_problem_boundary_setup"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_lm06_universal_lambert_tof_equation",
+      "target_node_id": "astro.orbit.lm06_universal_lambert_tof_equation",
+      "route_kind": "deductive",
+      "title": "補助変数 y(z) による普遍ランベルト飛行時間方程式の導出",
+      "premise_node_ids": [
+        "astro.orbit.lm03_universal_kepler_equation",
+        "astro.orbit.lm04_exact_lagrange_fg_universal",
+        "astro.orbit.lm05_lambert_problem_boundary_setup"
+      ],
+      "required_math_node_ids": [
+        "astro.orbit.ka02_vis_viva_equation",
+        "astro.orbit.lm06_universal_lambert_tof_equation",
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "単周回（0周回）転送とし、C(z)>0, y(z)≥0 の物理的領域を考える"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r_2 = r_1 + \\frac{\\mathbf{r}_1\\cdot\\mathbf{v}_1}{\\sqrt{\\mu}}\\chi(1-zS) + (1-\\alpha r_1)\\chi^2 C,\\quad f = 1 - \\frac{\\chi^2 C}{r_1},\\quad g = \\Delta t - \\frac{\\chi^3 S}{\\sqrt{\\mu}},\\quad \\mathbf{r}_2 = f\\mathbf{r}_1 + g\\mathbf{v}_1",
+          "to_latex": "y(z) = r_1 + r_2 + A\\frac{z S(z) - 1}{\\sqrt{C(z)}},\\quad \\chi = \\sqrt{\\frac{y(z)}{C(z)}},\\quad \\sqrt{\\mu}\\,\\Delta t = \\chi^3 S(z) + A\\sqrt{y(z)}",
+          "operation_label": "未知初速度の消去と飛行時間方程式化",
+          "explanation": "補助変数 y:=χ^2 C(z) を用いて r1·v1 と v1^2 を消去することで g = A√(y/μ) および y(z) の明示式を導き、z のみの1変数方程式 √μ Δt = χ^3 S(z) + A√y(z) に帰着させる。",
+          "used_node_ids": [
+            "astro.orbit.lm03_universal_kepler_equation",
+            "astro.orbit.lm04_exact_lagrange_fg_universal",
+            "astro.orbit.lm05_lambert_problem_boundary_setup",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_y_elimination_radial",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_2 = r_1 + \\frac{\\mathbf{r}_1\\cdot\\mathbf{v}_1}{\\sqrt{\\mu}}\\chi(1-zS) + (1-\\alpha r_1)\\chi^2 C,\\quad f = 1 - \\frac{\\chi^2 C}{r_1},\\quad g = \\Delta t - \\frac{\\chi^3 S}{\\sqrt{\\mu}},\\quad \\mathbf{r}_2 = f\\mathbf{r}_1 + g\\mathbf{v}_1",
+          "to_latex": "y := \\chi^2 C(z),\\quad \\sqrt{\\mu}\\,g\\,\\chi(1 - z S(z)) = y(r_1 + r_2 - y) \\implies \\mu g^2 (2 - z C(z)) = y(r_1 + r_2 - y)^2",
+          "operation_label": "動径関係からの r1·v1 消去",
+          "explanation": "g = r1 χ(1-zS)/√μ + (r1·v1/μ)y と動径解 r2 - r1(1-zC) - y = (r1·v1/√μ)χ(1-zS) から r1·v1 を消去し、恒等式 (1-zS)^2 = C(2-zC) を用いて μ g^2(2-zC)=y(r1+r2-y)^2 を得る。",
+          "used_node_ids": [
+            "astro.orbit.lm03_universal_kepler_equation",
+            "astro.orbit.lm04_exact_lagrange_fg_universal",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "((sin(psi)/psi)**2 - ((1-cos(psi))/psi**2)*(2 - (1-cos(psi)))) == 0"
+        },
+        {
+          "step_id": "s3_vis_viva_g_square",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y := \\chi^2 C(z),\\quad \\sqrt{\\mu}\\,g\\,\\chi(1 - z S(z)) = y(r_1 + r_2 - y) \\implies \\mu g^2 (2 - z C(z)) = y(r_1 + r_2 - y)^2",
+          "to_latex": "\\mu g^2\\left(\\frac{2y}{r_1} - z C(z)\\right) = y\\big[r_2^2 - 2(r_1-y)r_2\\cos\\Delta\\nu + (r_1-y)^2\\big] \\implies 2\\mu g^2\\left(1 - \\frac{y}{r_1}\\right) = 2 y r_1 r_2(1 + \\cos\\Delta\\nu)\\left(1 - \\frac{y}{r_1}\\right) \\implies g = A\\sqrt{\\frac{y}{\\mu}}",
+          "operation_label": "vis-viva式との連立による g の確定",
+          "explanation": "v1 = (r2 - f r1)/g のノルム2乗と vis-viva 方程式 v1^2/μ = 2/r1 - zC/y を連立して前式から差し引くと 1-y/r1 が共通因数として括れ、sgn(g)=sgn(A) より g=A√(y/μ) が確定する。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation",
+            "astro.orbit.lm05_lambert_problem_boundary_setup"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_universal_lambert_final",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu g^2\\left(\\frac{2y}{r_1} - z C(z)\\right) = y\\big[r_2^2 - 2(r_1-y)r_2\\cos\\Delta\\nu + (r_1-y)^2\\big] \\implies 2\\mu g^2\\left(1 - \\frac{y}{r_1}\\right) = 2 y r_1 r_2(1 + \\cos\\Delta\\nu)\\left(1 - \\frac{y}{r_1}\\right) \\implies g = A\\sqrt{\\frac{y}{\\mu}}",
+          "to_latex": "y(z) = r_1 + r_2 + A\\frac{z S(z) - 1}{\\sqrt{C(z)}},\\quad \\chi = \\sqrt{\\frac{y(z)}{C(z)}},\\quad \\sqrt{\\mu}\\,\\Delta t = \\chi^3 S(z) + A\\sqrt{y(z)}",
+          "operation_label": "y(z) と飛行時間方程式の完成",
+          "explanation": "g=A√(y/μ) と χ=√(y/C) を √μ g (1-zS)/√C = √y(r1+r2-y) に代入して y(z) を解き、g = Δt - χ^3 S(z)/√μ に代入して普遍ランベルト飛行時間方程式を得る。",
+          "used_node_ids": [
+            "astro.orbit.lm04_exact_lagrange_fg_universal",
+            "astro.orbit.lm06_universal_lambert_tof_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_lm07_lambert_theorem_tof_invariant",
+      "target_node_id": "astro.orbit.lm07_lambert_theorem_tof_invariant",
+      "route_kind": "deductive",
+      "title": "普遍ランベルト方程式からの古典的ランベルトの定理の導出",
+      "premise_node_ids": [
+        "astro.orbit.lm06_universal_lambert_tof_equation",
+        "astro.orbit.lm02_stumpff_functions_def"
+      ],
+      "required_math_node_ids": [
+        "astro.orbit.lm07_lambert_theorem_tof_invariant",
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "楕円転送軌道（z>0, a=1/α>0）かつ短弧枝（0<Δν<π, A>0）を考える"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "y(z) = r_1 + r_2 + A\\frac{z S(z) - 1}{\\sqrt{C(z)}},\\quad \\chi = \\sqrt{\\frac{y(z)}{C(z)}},\\quad \\sqrt{\\mu}\\,\\Delta t = \\chi^3 S(z) + A\\sqrt{y(z)}",
+          "to_latex": "\\sqrt{\\mu}\\,\\Delta t = a^{3/2}\\Big[(\\alpha_L - \\sin\\alpha_L) - (\\beta_L - \\sin\\beta_L)\\Big],\\quad \\sin^2\\frac{\\alpha_L}{2} = \\frac{s}{2a},\\quad \\sin^2\\frac{\\beta_L}{2} = \\frac{s - c}{2a}\\quad (a > 0,\\; \\Delta\\nu < \\pi\\text{ branch})",
+          "operation_label": "三角関数置換によるランベルトの定理",
+          "explanation": "z=ψ^2>0 (ψ=χ/√a) のもとでスタンプフ関数を三角関数に戻し、半周長パラメータ α_L, β_L を導入することで、飛行時間 Δt が (a, r1+r2, c) のみに依存することを証明する。",
+          "used_node_ids": [
+            "astro.orbit.lm02_stumpff_functions_def",
+            "astro.orbit.lm06_universal_lambert_tof_equation",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_trig_lambert_psi",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y(z) = r_1 + r_2 + A\\frac{z S(z) - 1}{\\sqrt{C(z)}},\\quad \\chi = \\sqrt{\\frac{y(z)}{C(z)}},\\quad \\sqrt{\\mu}\\,\\Delta t = \\chi^3 S(z) + A\\sqrt{y(z)}",
+          "to_latex": "\\psi := \\sqrt{z} = \\frac{\\chi}{\\sqrt{a}},\\quad y = 2a\\sin^2\\frac{\\psi}{2} = r_1 + r_2 - A\\sqrt{2}\\cos\\frac{\\psi}{2},\\quad \\sqrt{\\mu}\\,\\Delta t = a^{3/2}(\\psi - \\sin\\psi) + A\\sqrt{2a}\\sin\\frac{\\psi}{2}`",
+          "operation_label": "楕円分岐の三角関数表示",
+          "explanation": "C(ψ^2)=2 sin^2(ψ/2)/ψ^2, S(ψ^2)=(ψ-sin ψ)/ψ^3, (1-zS)/√C = √2 cos(ψ/2) を代入して ψ=ΔE の関数として表現する。",
+          "used_node_ids": [
+            "astro.orbit.lm02_stumpff_functions_def",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_alpha_beta_angles",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\psi := \\sqrt{z} = \\frac{\\chi}{\\sqrt{a}},\\quad y = 2a\\sin^2\\frac{\\psi}{2} = r_1 + r_2 - A\\sqrt{2}\\cos\\frac{\\psi}{2},\\quad \\sqrt{\\mu}\\,\\Delta t = a^{3/2}(\\psi - \\sin\\psi) + A\\sqrt{2a}\\sin\\frac{\\psi}{2}`",
+          "to_latex": "r_1 + r_2 = 2a\\left(\\sin^2\\frac{\\alpha_L}{2} + \\sin^2\\frac{\\beta_L}{2}\\right),\\quad A\\sqrt{2} = 4a\\sin\\frac{\\alpha_L}{2}\\sin\\frac{\\beta_L}{2}\\implies \\psi = \\alpha_L - \\beta_L\\quad \\left(\\sin^2\\frac{\\alpha_L}{2}=\\frac{s}{2a},\\;\\sin^2\\frac{\\beta_L}{2}=\\frac{s-c}{2a}\\right)`",
+          "operation_label": "角度 α_L, β_L の同定",
+          "explanation": "c^2 = (r1+r2)^2 - 2A^2 より A√2 = √((r1+r2)^2 - c^2) = 2√(s(s-c)) が成立するため、s/(2a)=sin^2(α_L/2), (s-c)/(2a)=sin^2(β_L/2) と置くと ψ=α_L-β_L が y の方程式を満たす。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "(1 - cos(aL - bL)) + 4*sin(aL/2)*sin(bL/2)*cos((aL-bL)/2) - (2 - cos(aL) - cos(bL))"
+        },
+        {
+          "step_id": "s4_lambert_theorem_collapse",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_1 + r_2 = 2a\\left(\\sin^2\\frac{\\alpha_L}{2} + \\sin^2\\frac{\\beta_L}{2}\\right),\\quad A\\sqrt{2} = 4a\\sin\\frac{\\alpha_L}{2}\\sin\\frac{\\beta_L}{2}\\implies \\psi = \\alpha_L - \\beta_L\\quad \\left(\\sin^2\\frac{\\alpha_L}{2}=\\frac{s}{2a},\\;\\sin^2\\frac{\\beta_L}{2}=\\frac{s-c}{2a}\\right)`",
+          "to_latex": "\\sqrt{\\mu}\\,\\Delta t = a^{3/2}\\Big[(\\alpha_L - \\sin\\alpha_L) - (\\beta_L - \\sin\\beta_L)\\Big],\\quad \\sin^2\\frac{\\alpha_L}{2} = \\frac{s}{2a},\\quad \\sin^2\\frac{\\beta_L}{2} = \\frac{s - c}{2a}\\quad (a > 0,\\; \\Delta\\nu < \\pi\\text{ branch})",
+          "operation_label": "交差三角項の相殺",
+          "explanation": "ψ=α_L-β_L を √μ Δt 式に代入し、4 sin(α_L/2)sin(β_L/2)sin((α_L-β_L)/2) = sin β_L - sin α_L + sin(α_L - β_L) を適用すると sin(α_L-β_L) が相殺してランベルトの定理が得られる。",
+          "used_node_ids": [
+            "astro.orbit.lm07_lambert_theorem_tof_invariant",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "4*sin(aL/2)*sin(bL/2)*sin((aL-bL)/2) - (sin(bL) - sin(aL) + sin(aL - bL))"
+        }
+      ]
+    },
+    {
+      "id": "deriv_lm08_lambert_newton_iteration_velocity",
+      "target_node_id": "astro.orbit.lm08_lambert_newton_iteration_velocity",
+      "route_kind": "deductive",
+      "title": "飛行時間関数の導関数 F'(z) に基づくニュートン法と速度ベクトル再構成",
+      "premise_node_ids": [
+        "astro.orbit.lm04_exact_lagrange_fg_universal",
+        "astro.orbit.lm06_universal_lambert_tof_equation",
+        "phys.orbit.g07_state_vector_to_elements"
+      ],
+      "required_math_node_ids": [
+        "astro.orbit.lm02_stumpff_functions_def",
+        "math.calc.m01_chain_rule",
+        "math.calc.m13_taylor_expansion",
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "F(z)=√μ Δt は正の実解 z* を持つ転送問題とし、初期推定値から y(z_k)>0 の領域で反復する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F(z) = \\left(\\frac{y(z)}{C(z)}\\right)^{3/2} S(z) + A\\sqrt{y(z)} = \\sqrt{\\mu}\\,\\Delta t,\\quad \\mathbf{r}_2 = f\\mathbf{r}_1 + g\\mathbf{v}_1,\\quad f\\dot{g} - \\dot{f}g = 1",
+          "to_latex": "z_{k+1} = z_k - \\frac{F(z_k) - \\sqrt{\\mu}\\,\\Delta t}{F'(z_k)},\\quad f = 1 - \\frac{y}{r_1},\\quad g = A\\sqrt{\\frac{y}{\\mu}},\\quad \\dot{g} = 1 - \\frac{y}{r_2},\\quad \\mathbf{v}_1 = \\frac{\\mathbf{r}_2 - f\\mathbf{r}_1}{g},\\quad \\mathbf{v}_2 = \\frac{\\dot{g}\\mathbf{r}_2 - \\mathbf{r}_1}{g}\\quad (z=z^*)",
+          "operation_label": "ニュートン反復と終端速度の決定",
+          "explanation": "スタンプフ関数の微分公式から解析的導関数 F'(z) を求めてニュートン法を構成し、収束解 z* に対応する y(z*) から f, g, gdot を介して v1, v2 を再構成する。",
+          "used_node_ids": [
+            "astro.orbit.lm04_exact_lagrange_fg_universal",
+            "astro.orbit.lm06_universal_lambert_tof_equation",
+            "math.calc.m01_chain_rule",
+            "phys.orbit.g07_state_vector_to_elements"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_stumpff_derivatives",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F(z) = \\left(\\frac{y(z)}{C(z)}\\right)^{3/2} S(z) + A\\sqrt{y(z)} = \\sqrt{\\mu}\\,\\Delta t,\\quad \\mathbf{r}_2 = f\\mathbf{r}_1 + g\\mathbf{v}_1,\\quad f\\dot{g} - \\dot{f}g = 1",
+          "to_latex": "C'(z) = \\frac{1 - z S(z) - 2 C(z)}{2z},\\quad S'(z) = \\frac{C(z) - 3 S(z)}{2z},\\quad y'(z) = \\frac{A}{4}\\sqrt{C(z)}\\quad (z \\neq 0)`",
+          "operation_label": "スタンプフ関数および y(z) の微分",
+          "explanation": "べき級数の項別微分により C'(z), S'(z) を導出し、連鎖律と (1-zS)^2 = C(2-zC) を用いて y'(z) = (A/4)√C(z) を得る。",
+          "used_node_ids": [
+            "astro.orbit.lm02_stumpff_functions_def",
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_F_prime_newton",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C'(z) = \\frac{1 - z S(z) - 2 C(z)}{2z},\\quad S'(z) = \\frac{C(z) - 3 S(z)}{2z},\\quad y'(z) = \\frac{A}{4}\\sqrt{C(z)}\\quad (z \\neq 0)`",
+          "to_latex": "F'(z) = \\left(\\frac{y}{C}\\right)^{3/2}\\left[\\frac{1}{2z}\\left(C - \\frac{3S}{2C}\\right) + \\frac{3S^2}{4C}\\right] + \\frac{A}{8}\\left(3\\frac{S}{C}\\sqrt{y} + A\\sqrt{\\frac{C}{y}}\\right),\\quad z_{k+1} = z_k - \\frac{F(z_k) - \\sqrt{\\mu}\\,\\Delta t}{F'(z_k)}",
+          "operation_label": "F'(z) の閉形式化と1次線形化反復",
+          "explanation": "積の微分法則を用いて F'(z) を展開し、1次テイラー展開に基づくニュートン・ラプソン更新式を構築する（z=0 では極限値 F'(0) を用いる）。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_velocity_reconstruction",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F'(z) = \\left(\\frac{y}{C}\\right)^{3/2}\\left[\\frac{1}{2z}\\left(C - \\frac{3S}{2C}\\right) + \\frac{3S^2}{4C}\\right] + \\frac{A}{8}\\left(3\\frac{S}{C}\\sqrt{y} + A\\sqrt{\\frac{C}{y}}\\right),\\quad z_{k+1} = z_k - \\frac{F(z_k) - \\sqrt{\\mu}\\,\\Delta t}{F'(z_k)}",
+          "to_latex": "z_{k+1} = z_k - \\frac{F(z_k) - \\sqrt{\\mu}\\,\\Delta t}{F'(z_k)},\\quad f = 1 - \\frac{y}{r_1},\\quad g = A\\sqrt{\\frac{y}{\\mu}},\\quad \\dot{g} = 1 - \\frac{y}{r_2},\\quad \\mathbf{v}_1 = \\frac{\\mathbf{r}_2 - f\\mathbf{r}_1}{g},\\quad \\mathbf{v}_2 = \\frac{\\dot{g}\\mathbf{r}_2 - \\mathbf{r}_1}{g}\\quad (z=z^*)",
+          "operation_label": "終端速度ベクトルの逆算",
+          "explanation": "収束した y=y(z*) から厳密係数 f, g, gdot を評価し、r2 = f r1 + g v1 および r1 = gdot r2 - g v2（f gdot - fdot g = 1 より）を速度について解くことで両端の軌道速度を得る。",
+          "used_node_ids": [
+            "astro.orbit.lm04_exact_lagrange_fg_universal",
+            "phys.orbit.g07_state_vector_to_elements"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,933 @@
+{
+  "pack_meta": {
+    "pack_id": "astro.orbit.kepler_time_anomaly",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "orbital_mechanics",
+    "title": "軌道力学：ケプラー方程式・離心近点角と状態ベクトル⇔軌道6要素変換",
+    "language": "ja",
+    "description": "真近点角・離心近点角・平均近点角の幾何関係からケプラー方程式 M = E - e sin E、vis-viva方程式、位置速度ベクトルと軌道6要素の相互変換を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "astro.orbit.ka01_angular_momentum_areal_velocity",
+      "short_code": "KA01",
+      "kind": "theorem_formula",
+      "title": "比角運動量保存と面積速度一定（ケプラー第2法則）",
+      "summary": "中心力場における2体問題の運動方程式から比角運動量ベクトル h = r × v が時間不変量であることを導き、極座標表示を用いて面積速度 dA/dt = h/2 が一定になること（ケプラーの第2法則）を示す。",
+      "canonical_latex": "\\mathbf{h} = \\mathbf{r}\\times\\dot{\\mathbf{r}} = \\text{const.},\\quad \\dot{A} = \\frac{1}{2}r^2\\dot{\\nu} = \\frac{h}{2} = \\text{const.}",
+      "aliases_latex": [
+        "\\mathbf{h} = \\mathbf{r}\\times\\mathbf{v},\\; \\dot{\\mathbf{h}} = \\mathbf{0},\\; \\frac{dA}{dt} = \\frac{1}{2}r^2\\dot{\\nu} = \\frac{h}{2}"
+      ],
+      "keywords": [
+        "比角運動量",
+        "面積速度",
+        "ケプラー第2法則",
+        "中心力場",
+        "2体問題"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "astrodynamics",
+        "classical_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.ka02_vis_viva_equation",
+      "short_code": "KA02",
+      "kind": "theorem_formula",
+      "title": "比力学的エネルギー保存と vis-viva 方程式",
+      "summary": "重力2体問題の運動方程式と速度の内積から比力学的エネルギー ε = v^2/2 - μ/r の保存を導き、近日点での比角運動量および半通径関係を用いて ε = -μ/(2a) と vis-viva 方程式 v^2 = μ(2/r - 1/a) を導出する。",
+      "canonical_latex": "\\varepsilon = \\frac{v^2}{2} - \\frac{\\mu}{r} = -\\frac{\\mu}{2a} \\implies v^2 = \\mu\\left(\\frac{2}{r} - \\frac{1}{a}\\right) = \\text{vis-viva equation}\\text{ (for }a\\neq 0\\text{)}",
+      "aliases_latex": [
+        "v^2 = \\mu\\left(\\frac{2}{r} - \\frac{1}{a}\\right),\\quad \\frac{1}{2}v^2 - \\frac{\\mu}{r} = -\\frac{\\mu}{2a}"
+      ],
+      "keywords": [
+        "vis-viva方程式",
+        "比力学的エネルギー",
+        "軌道長半径",
+        "エネルギー保存"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "astrodynamics",
+        "classical_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.ka03_eccentric_anomaly_def",
+      "short_code": "KA03",
+      "kind": "definition",
+      "title": "離心近点角 E と補助円に基づく楕円座標表示",
+      "summary": "楕円軌道の中心を原点とする補助円（半径 a）への射影角として離心近点角 E を定義し、焦点座標での楕円軌道上の位置 (x_orb, y_orb) および動径距離 r = a(1 - e cos E) を与える。",
+      "canonical_latex": "x_{\\text{orb}} = a(\\cos E - e),\\quad y_{\\text{orb}} = b\\sin E = a\\sqrt{1-e^2}\\sin E,\\quad r = a(1 - e\\cos E)\\quad (0 \\le e < 1,\\; E\\in[0,2\\pi))",
+      "aliases_latex": [
+        "r = a(1 - e\\cos E),\\quad x_{\\text{orb}} = a\\cos E - ae,\\quad y_{\\text{orb}} = a\\sqrt{1-e^2}\\sin E"
+      ],
+      "keywords": [
+        "離心近点角",
+        "補助円",
+        "楕円軌道",
+        "動径距離"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "astrodynamics",
+        "geometry"
+      ]
+    },
+    {
+      "id": "astro.orbit.ka04_true_eccentric_anomaly_relation",
+      "short_code": "KA04",
+      "kind": "theorem_formula",
+      "title": "真近点角 ν と離心近点角 E の相互変換関係",
+      "summary": "焦点中心極座標 (r cos ν, r sin ν) と離心近点角 E による直交表示を等置することで、cos ν, sin ν と E の関係および象限曖昧性のない半角公式 tan(ν/2) = sqrt((1+e)/(1-e)) tan(E/2) を導出する。",
+      "canonical_latex": "\\cos\\nu = \\frac{\\cos E - e}{1 - e\\cos E},\\quad \\sin\\nu = \\frac{\\sqrt{1-e^2}\\sin E}{1 - e\\cos E},\\quad \\tan\\frac{\\nu}{2} = \\sqrt{\\frac{1+e}{1-e}}\\tan\\frac{E}{2}\\quad (0 \\le e < 1, E \\neq \\pi\\text{ for }\\tan\\text{ form})",
+      "aliases_latex": [
+        "\\tan\\frac{\\nu}{2} = \\sqrt{\\frac{1+e}{1-e}}\\tan\\frac{E}{2},\\quad \\tan\\frac{E}{2} = \\sqrt{\\frac{1-e}{1+e}}\\tan\\frac{\\nu}{2}"
+      ],
+      "keywords": [
+        "真近点角",
+        "離心近点角",
+        "半角公式",
+        "軌道幾何"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "astrodynamics",
+        "trigonometry"
+      ]
+    },
+    {
+      "id": "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+      "short_code": "KA05",
+      "kind": "definition",
+      "title": "軌道周期・平均運動 n と平均近点角 M の定義（ケプラー第3法則）",
+      "summary": "楕円の全掃過面積 πab と一定の面積速度 h/2 から軌道周期 T = 2π sqrt(a^3/μ)（ケプラー第3法則）を導き、平均角速度である平均運動 n = sqrt(μ/a^3) と近日点通過時刻 t_p からの平均近点角 M = n(t - t_p) を定義する。",
+      "canonical_latex": "T = 2\\pi\\sqrt{\\frac{a^3}{\\mu}},\\quad n := \\frac{2\\pi}{T} = \\sqrt{\\frac{\\mu}{a^3}},\\quad M := n(t - t_p)\\quad (a > 0,\\; \\mu > 0,\\; 0 \\le e < 1\\text{ for }T\\text{ derivation})",
+      "aliases_latex": [
+        "T^2 = \\frac{4\\pi^2}{\\mu}a^3,\\quad M = M_0 + n(t - t_0),\\quad n = \\sqrt{\\mu/a^3}"
+      ],
+      "keywords": [
+        "平均運動",
+        "平均近点角",
+        "軌道周期",
+        "ケプラー第3法則"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "astrodynamics"
+      ]
+    },
+    {
+      "id": "astro.orbit.ka06_kepler_equation",
+      "short_code": "KA06",
+      "kind": "theorem_formula",
+      "title": "ケプラー方程式（平均近点角と離心近点角の関係）",
+      "summary": "面積速度一定の関係 r^2 dν/dt = h と真近点角・離心近点角の微分関係 dν/dE = a sqrt(1-e^2)/r を組み合わせて常微分方程式 (1 - e cos E) dE/dt = n を得て、近日点時刻 t_p から積分することでケプラー方程式 M = E - e sin E を導出する。",
+      "canonical_latex": "M = E - e\\sin E\\quad (0 \\le e < 1,\\; M = n(t - t_p))",
+      "aliases_latex": [
+        "n(t - t_p) = E - e\\sin E,\\quad E - e\\sin E - M = 0"
+      ],
+      "keywords": [
+        "ケプラー方程式",
+        "離心近点角",
+        "平均近点角",
+        "時間位置関係"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "astrodynamics",
+        "celestial_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.ka07_perifocal_frame_state_vectors",
+      "short_code": "KA07",
+      "kind": "theorem_formula",
+      "title": "近点座標系（PQW系）における位置・速度ベクトル表示",
+      "summary": "軌道面内の近点座標系（P軸を近日点方向、Q軸を進行方向90度、W軸を角運動量方向）における位置ベクトルを離心近点角 E および真近点角 ν で表し、ケプラー方程式の微分 dE/dt = na/r を用いて速度ベクトルを導出する。",
+      "canonical_latex": "\\mathbf{r}_{\\text{PQW}} = \\begin{pmatrix} a(\\cos E - e) \\\\ a\\sqrt{1-e^2}\\sin E \\\\ 0 \\end{pmatrix} = \\frac{\\ell}{1+e\\cos\\nu}\\begin{pmatrix}\\cos\\nu\\\\\\sin\\nu\\\\0\\end{pmatrix},\\quad \\mathbf{v}_{\\text{PQW}} = \\frac{\\sqrt{\\mu a}}{r}\\begin{pmatrix}-\\sin E\\\\\\sqrt{1-e^2}\\cos E\\\\0\\end{pmatrix} = \\sqrt{\\frac{\\mu}{\\ell}}\\begin{pmatrix}-\\sin\\nu\\\\e+\\cos\\nu\\\\0\\end{pmatrix}\\quad (\\ell=a(1-e^2))",
+      "aliases_latex": [
+        "\\mathbf{r}_{\\text{PQW}} = r\\cos\\nu\\,\\hat{\\mathbf{p}} + r\\sin\\nu\\,\\hat{\\mathbf{q}},\\quad \\mathbf{v}_{\\text{PQW}} = \\sqrt{\\frac{\\mu}{\\ell}}(-\\sin\\nu\\,\\hat{\\mathbf{p}} + (e+\\cos\\nu)\\,\\hat{\\mathbf{q}})"
+      ],
+      "keywords": [
+        "近点座標系",
+        "PQW座標系",
+        "状態ベクトル",
+        "位置速度ベクトル"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "astrodynamics",
+        "coordinate_systems"
+      ]
+    },
+    {
+      "id": "astro.orbit.ka08_pqw_to_eci_rotation",
+      "short_code": "KA08",
+      "kind": "theorem_formula",
+      "title": "軌道6要素 (a, e, i, Ω, ω, ν) から慣性座標系状態ベクトル (r, v) への変換",
+      "summary": "昇交点赤経 Ω、軌道傾斜角 i、近点引数 ω の3つのオイラー角による SO(3) 回転行列 Q_{PQW->ECI} = R(e_3, Ω) R(e_1, i) R(e_3, ω) を構成し、近点座標系の状態ベクトルを地心赤道慣性座標系（ECI）へ変換する。",
+      "canonical_latex": "\\mathbf{r}_{\\text{ECI}} = Q_{\\text{PQW}\\to\\text{ECI}}(\\Omega,i,\\omega)\\,\\mathbf{r}_{\\text{PQW}},\\quad \\mathbf{v}_{\\text{ECI}} = Q_{\\text{PQW}\\to\\text{ECI}}(\\Omega,i,\\omega)\\,\\mathbf{v}_{\\text{PQW}},\\quad Q_{\\text{PQW}\\to\\text{ECI}} = R(\\mathbf{e}_3,\\Omega)R(\\mathbf{e}_1,i)R(\\mathbf{e}_3,\\omega)\\in\\mathrm{SO}(3)\\quad (R(\\mathbf{e}_k,\\theta)=\\exp(\\theta J_k))",
+      "aliases_latex": [
+        "Q_{\\text{PQW}\\to\\text{ECI}} = R_3(-\\Omega)R_1(-i)R_3(-\\omega)\\text{ (passive convention)},\\quad \\mathbf{r}_{\\text{ECI}} = x_p\\hat{\\mathbf{p}} + y_p\\hat{\\mathbf{q}}"
+      ],
+      "keywords": [
+        "軌道6要素",
+        "状態ベクトル変換",
+        "オイラー角",
+        "PQWからECI",
+        "SO(3)"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "astrodynamics",
+        "rotation_groups"
+      ]
+    },
+    {
+      "id": "astro.orbit.ka09_eci_to_orbital_elements_inverse",
+      "short_code": "KA09",
+      "kind": "theorem_formula",
+      "title": "慣性系状態ベクトル (r, v) から軌道6要素 (a, e, i, Ω, ω, M) への逆変換",
+      "summary": "慣性系の位置・速度ベクトル (r, v) から比角運動量 h、昇交点ベクトル n = e_3 × h、離心率ベクトル e を構成し、軌道6要素 (a, e, i, Ω, ω, ν) を象限判定つきで抽出したのち、E およびケプラー方程式により平均近点角 M へ変換する。",
+      "canonical_latex": "a = \\left(\\frac{2}{r}-\\frac{v^2}{\\mu}\\right)^{-1},\\; e = \\|\\mathbf{e}\\|,\\; \\cos i = \\frac{h_z}{h},\\; \\cos\\Omega = \\frac{n_x}{n},\\; \\cos\\omega = \\frac{\\mathbf{n}\\cdot\\mathbf{e}}{ne},\\; \\cos\\nu = \\frac{\\mathbf{e}\\cdot\\mathbf{r}}{er},\\; M = E - e\\sin E\\quad (\\mathbf{h}=\\mathbf{r}\\times\\mathbf{v},\\; \\mathbf{n}=\\mathbf{e}_3\\times\\mathbf{h},\\; \\mathbf{e}=\\frac{\\mathbf{v}\\times\\mathbf{h}}{\\mu}-\\frac{\\mathbf{r}}{r})",
+      "aliases_latex": [
+        "(\\mathbf{r},\\mathbf{v}) \\mapsto (a, e, i, \\Omega, \\omega, \\nu) \\mapsto (a, e, i, \\Omega, \\omega, M)"
+      ],
+      "keywords": [
+        "軌道要素決定",
+        "状態ベクトル逆変換",
+        "離心率ベクトル",
+        "昇交点ベクトル",
+        "ケプラー要素"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "astrodynamics",
+        "orbit_determination"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_ka01_angular_momentum_areal",
+      "target_node_id": "astro.orbit.ka01_angular_momentum_areal_velocity",
+      "route_kind": "deductive",
+      "title": "2体問題運動方程式からの比角運動量保存と面積速度一定の導出",
+      "premise_node_ids": [
+        "phys.orbit.g01_two_body_eom"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m26_zero_derivative_constant_lemma",
+        "math.geom.m30_polar_coordinates_basis_def",
+        "math.vec.m03_dot_cross_product",
+        "math.vec.m04_polar_acceleration"
+      ],
+      "assumptions": [
+        "質点（または球対称質量分布）間の万有引力のみが作用する重力2体問題",
+        "慣性系における相対運動で外力・摂動力は零"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r},\\quad \\mathbf{h} := \\mathbf{r}\\times\\dot{\\mathbf{r}}",
+          "to_latex": "\\mathbf{h} = \\mathbf{r}\\times\\dot{\\mathbf{r}} = \\text{const.},\\quad \\dot{A} = \\frac{1}{2}r^2\\dot{\\nu} = \\frac{h}{2} = \\text{const.}",
+          "operation_label": "外積の時間微分と極座標表示による保存則・面積速度導出",
+          "explanation": "r × r_ddot = 0 より h_dot = 0 となって比角運動量ベクトルが保存し、軌道面内極座標での速度展開から面積速度 dA/dt = (1/2) r^2 ν_dot = h/2 が一定になる。",
+          "used_node_ids": [
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.geom.m30_polar_coordinates_basis_def",
+            "math.vec.m03_dot_cross_product",
+            "math.vec.m04_polar_acceleration",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": "Verify d/dt(r.cross(v)) = r.cross(-mu/r**3 * r) = 0 and r*e_r cross (r_dot*e_r + r*nu_dot*e_nu) = r**2*nu_dot*e_h"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r},\\quad \\mathbf{h} := \\mathbf{r}\\times\\dot{\\mathbf{r}}",
+          "to_latex": "\\dot{\\mathbf{h}} = \\dot{\\mathbf{r}}\\times\\dot{\\mathbf{r}} + \\mathbf{r}\\times\\ddot{\\mathbf{r}} = \\mathbf{0} - \\frac{\\mu}{r^3}(\\mathbf{r}\\times\\mathbf{r}) = \\mathbf{0}\\quad (\\text{const.})",
+          "operation_label": "比角運動量の時間微分と中心力条件の適用",
+          "explanation": "外積の積の微分法則を h = r × r_dot に適用し、中心力による加速度 r_ddot が r に平行であることから r × r = 0 を得る。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": "diff(r(t) x r'(t), t) == r'(t) x r'(t) + r(t) x r''(t) == 0"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{h}} = \\dot{\\mathbf{r}}\\times\\dot{\\mathbf{r}} + \\mathbf{r}\\times\\ddot{\\mathbf{r}} = \\mathbf{0} - \\frac{\\mu}{r^3}(\\mathbf{r}\\times\\mathbf{r}) = \\mathbf{0}\\quad (\\text{const.})",
+          "to_latex": "\\mathbf{h} = \\mathbf{r}\\times\\dot{\\mathbf{r}} = \\text{const.},\\quad \\mathbf{r} = r\\mathbf{e}_r,\\; \\dot{\\mathbf{r}} = \\dot{r}\\mathbf{e}_r + r\\dot{\\nu}\\mathbf{e}_\\nu",
+          "operation_label": "定数性補題と軌道面内極座標表示",
+          "explanation": "時間導関数が恒等的に零であることから h は定数ベクトルとなり、運動は h に直交する固定平面内に制限されるため、軌道面内の極座標 (r, ν) で位置と速度を展開する。",
+          "used_node_ids": [
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.geom.m30_polar_coordinates_basis_def",
+            "math.vec.m04_polar_acceleration"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{h} = \\mathbf{r}\\times\\dot{\\mathbf{r}} = \\text{const.},\\quad \\mathbf{r} = r\\mathbf{e}_r,\\; \\dot{\\mathbf{r}} = \\dot{r}\\mathbf{e}_r + r\\dot{\\nu}\\mathbf{e}_\\nu",
+          "to_latex": "\\mathbf{h} = \\mathbf{r}\\times\\dot{\\mathbf{r}} = \\text{const.},\\quad \\dot{A} = \\frac{1}{2}r^2\\dot{\\nu} = \\frac{h}{2} = \\text{const.}",
+          "operation_label": "極座標外積による面積速度の導出",
+          "explanation": "e_r × e_r = 0, e_r × e_ν = h/||h|| より h = r^2 ν_dot が得られ、微小扇形面積 dA = (1/2) r^2 dν の時間変化率 dA/dt = h/2 が一定とわかる。",
+          "used_node_ids": [
+            "math.geom.m30_polar_coordinates_basis_def",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": "(r*e_r) x (r_dot*e_r + r*nu_dot*e_nu) = r**2*nu_dot * e_z"
+        }
+      ]
+    },
+    {
+      "id": "deriv_ka02_vis_viva",
+      "target_node_id": "astro.orbit.ka02_vis_viva_equation",
+      "route_kind": "deductive",
+      "title": "2体問題におけるエネルギー保存と vis-viva 方程式の導出",
+      "premise_node_ids": [
+        "phys.orbit.g01_two_body_eom",
+        "astro.orbit.ka01_angular_momentum_areal_velocity"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m26_zero_derivative_constant_lemma",
+        "math.geom.m07_conic_polar",
+        "math.vec.m03_dot_cross_product",
+        "math.vec.m05_gradient_line_integral"
+      ],
+      "assumptions": [
+        "楕円・放物線・双曲線いずれの2次曲線軌道にもエネルギー保存が成立（ここでは楕円/非零の半長軸 a を仮定）",
+        "近日点では動径速度 r_dot = 0 であるため全速度が周方向成分 v_p = h/r_p に一致"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r},\\quad r = \\frac{\\ell}{1+e\\cos\\nu},\\quad \\ell = a(1-e^2)\\quad (a\\neq 0,\\; \\ell=h^2/\\mu)\\quad",
+          "to_latex": "\\varepsilon = \\frac{v^2}{2} - \\frac{\\mu}{r} = -\\frac{\\mu}{2a} \\implies v^2 = \\mu\\left(\\frac{2}{r} - \\frac{1}{a}\\right) = \\text{vis-viva equation}\\text{ (for }a\\neq 0\\text{)}",
+          "operation_label": "エネルギー積分の導出と近日点評価による vis-viva 方程式導出",
+          "explanation": "運動方程式に速度 v を内積して比エネルギー ε = v^2/2 - μ/r の保存を導き、近日点 ν=0 における v_p = h/r_p と h^2 = μ a(1-e^2) を代入して ε = -μ/(2a) を確定し vis-viva 方程式を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.geom.m07_conic_polar",
+            "math.vec.m03_dot_cross_product",
+            "math.vec.m05_gradient_line_integral",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": "simplify((mu*a*(1-e**2))/(2*(a*(1-e))**2) - mu/(a*(1-e))) == -mu/(2*a)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r},\\quad r = \\frac{\\ell}{1+e\\cos\\nu},\\quad \\ell = a(1-e^2)\\quad (a\\neq 0,\\; \\ell=h^2/\\mu)\\quad",
+          "to_latex": "\\dot{\\mathbf{r}}\\cdot\\ddot{\\mathbf{r}} + \\frac{\\mu}{r^3}\\mathbf{r}\\cdot\\dot{\\mathbf{r}} = \\frac{d}{dt}\\left(\\frac{1}{2}v^2 - \\frac{\\mu}{r}\\right) = 0",
+          "operation_label": "速度ベクトルとの内積による時間全微分の構成",
+          "explanation": "運動方程式の両辺に v = r_dot を内積し、v·v_dot = (1/2)d(v^2)/dt および r·r_dot/r^3 = -d(1/r)/dt を用いて全時間微分形にまとめる。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "math.vec.m05_gradient_line_integral",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": "v*dv/dt + mu/r**2 * dr/dt == d/dt(v**2/2 - mu/r)"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{r}}\\cdot\\ddot{\\mathbf{r}} + \\frac{\\mu}{r^3}\\mathbf{r}\\cdot\\dot{\\mathbf{r}} = \\frac{d}{dt}\\left(\\frac{1}{2}v^2 - \\frac{\\mu}{r}\\right) = 0",
+          "to_latex": "\\varepsilon = \\frac{v^2}{2} - \\frac{\\mu}{r} = \\frac{h^2}{2 r_p^2} - \\frac{\\mu}{r_p},\\quad r_p = a(1-e),\\; h^2 = \\mu\\ell = \\mu a(1-e^2)\\quad (a\\neq 0,\\; e\\neq 1)\\quad",
+          "operation_label": "比エネルギー定数の近日点での評価",
+          "explanation": "導関数が零より比エネルギー ε は保存量となる。近日点 ν=0 では動径速度 r_dot = 0 のため v_p = r_p ν_dot = h/r_p であり、r_p = a(1-e) と h^2 = μ a(1-e^2) で評価する。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": "h**2/(2*r_p**2) - mu/r_p with r_p=a*(1-e), h**2=mu*a*(1-e**2)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varepsilon = \\frac{v^2}{2} - \\frac{\\mu}{r} = \\frac{h^2}{2 r_p^2} - \\frac{\\mu}{r_p},\\quad r_p = a(1-e),\\; h^2 = \\mu\\ell = \\mu a(1-e^2)\\quad (a\\neq 0,\\; e\\neq 1)\\quad",
+          "to_latex": "\\varepsilon = \\frac{v^2}{2} - \\frac{\\mu}{r} = -\\frac{\\mu}{2a} \\implies v^2 = \\mu\\left(\\frac{2}{r} - \\frac{1}{a}\\right) = \\text{vis-viva equation}\\text{ (for }a\\neq 0\\text{)}",
+          "operation_label": "代数整理による vis-viva 方程式の確立",
+          "explanation": "(1-e^2)/(2(1-e)^2) - 1/(1-e) = (1+e - 2)/(2(1-e)) = -1/2 より ε = -μ/(2a) が導かれ、v^2 について解くことで vis-viva 方程式を得る。",
+          "used_node_ids": [
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": "simplify(mu*a*(1-e**2)/(2*a**2*(1-e)**2) - mu/(a*(1-e)) + mu/(2*a)) == 0"
+        }
+      ]
+    },
+    {
+      "id": "deriv_ka03_eccentric_anomaly",
+      "target_node_id": "astro.orbit.ka03_eccentric_anomaly_def",
+      "route_kind": "deductive",
+      "title": "楕円の直交標準形と極座標表示からの離心近点角座標の導出",
+      "premise_node_ids": [
+        "math.geom.m07_conic_polar",
+        "math.geom.m41_ellipse_cartesian_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "束縛楕円軌道 0 <= e < 1 であり、主星は焦点（楕円中心から距離 ae の位置）に存在する",
+        "x_orb 軸は焦点から近日点方向（長軸の正方向）にとる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{(x_{\\text{orb}}+ae)^2}{a^2} + \\frac{y_{\\text{orb}}^2}{b^2} = 1,\\quad b = a\\sqrt{1-e^2}\\quad (0\\le e < 1)\\quad",
+          "to_latex": "x_{\\text{orb}} = a(\\cos E - e),\\quad y_{\\text{orb}} = b\\sin E = a\\sqrt{1-e^2}\\sin E,\\quad r = a(1 - e\\cos E)\\quad (0 \\le e < 1,\\; E\\in[0,2\\pi))",
+          "operation_label": "補助円角 E の媒介変数導入と動径距離 r の導出",
+          "explanation": "楕円の標準方程式を三角恒等式 cos^2 E + sin^2 E = 1 で媒介変数表示して焦点基準の (x_orb, y_orb) を得て、r^2 = x_orb^2 + y_orb^2 を展開して r = a(1 - e cos E) を導く。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.geom.m07_conic_polar",
+            "math.geom.m41_ellipse_cartesian_def"
+          ],
+          "sympy_check_hint": "simplify((a*(cos(E)-e))**2 + (a*sqrt(1-e**2)*sin(E))**2 - (a*(1-e*cos(E)))**2) == 0"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{(x_{\\text{orb}}+ae)^2}{a^2} + \\frac{y_{\\text{orb}}^2}{b^2} = 1,\\quad b = a\\sqrt{1-e^2}\\quad (0\\le e < 1)\\quad",
+          "to_latex": "x_{\\text{orb}} + ae = a\\cos E,\\quad y_{\\text{orb}} = b\\sin E = a\\sqrt{1-e^2}\\sin E",
+          "operation_label": "補助円による離心近点角 E の媒介変数導入",
+          "explanation": "楕円中心の座標 (-ae, 0) を基準に (x_orb+ae)/a = cos E, y_orb/b = sin E とおくことで離心近点角 E を導入し、b = a sqrt(1-e^2) を代入する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.geom.m07_conic_polar",
+            "math.geom.m41_ellipse_cartesian_def"
+          ],
+          "sympy_check_hint": "simplify(((a*cos(E))/a)**2 + ((b*sin(E))/b)**2) == 1"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x_{\\text{orb}} + ae = a\\cos E,\\quad y_{\\text{orb}} = b\\sin E = a\\sqrt{1-e^2}\\sin E",
+          "to_latex": "r^2 = x_{\\text{orb}}^2 + y_{\\text{orb}}^2 = a^2(\\cos E - e)^2 + a^2(1-e^2)\\sin^2 E = a^2(1 - e\\cos E)^2",
+          "operation_label": "ピタゴラス恒等式を用いた動径距離2乗の展開",
+          "explanation": "x_orb^2 + y_orb^2 に代入して sin^2 E = 1 - cos^2 E で整理すると、e^2 cos^2 E - 2e cos E + 1 = (1 - e cos E)^2 の完全平方が現れる。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "factor(expand((cos(E)-e)**2 + (1-e**2)*(1-cos(E)**2))) == (1-e*cos(E))**2"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r^2 = x_{\\text{orb}}^2 + y_{\\text{orb}}^2 = a^2(\\cos E - e)^2 + a^2(1-e^2)\\sin^2 E = a^2(1 - e\\cos E)^2",
+          "to_latex": "x_{\\text{orb}} = a(\\cos E - e),\\quad y_{\\text{orb}} = b\\sin E = a\\sqrt{1-e^2}\\sin E,\\quad r = a(1 - e\\cos E)\\quad (0 \\le e < 1,\\; E\\in[0,2\\pi))",
+          "operation_label": "r > 0 および 1 - e cos E > 0 による平方根の確定",
+          "explanation": "0 <= e < 1 より常に 1 - e cos E > 0 かつ r > 0 であるため、正の平方根をとって r = a(1 - e cos E) が確定する。",
+          "used_node_ids": [
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ka04_true_eccentric_anomaly",
+      "target_node_id": "astro.orbit.ka04_true_eccentric_anomaly_relation",
+      "route_kind": "deductive",
+      "title": "真近点角 ν と離心近点角 E の変換関係・半角公式の導出",
+      "premise_node_ids": [
+        "astro.orbit.ka03_eccentric_anomaly_def",
+        "math.geom.m07_conic_polar"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "0 <= e < 1 の楕円軌道",
+        "ν と E は同符号の半平面（sin ν と sin E が同符号）をとる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "x_{\\text{orb}} = r\\cos\\nu = a(\\cos E - e),\\quad y_{\\text{orb}} = r\\sin\\nu = a\\sqrt{1-e^2}\\sin E,\\quad r = a(1-e\\cos E)\\quad (0\\le e < 1)\\quad",
+          "to_latex": "\\cos\\nu = \\frac{\\cos E - e}{1 - e\\cos E},\\quad \\sin\\nu = \\frac{\\sqrt{1-e^2}\\sin E}{1 - e\\cos E},\\quad \\tan\\frac{\\nu}{2} = \\sqrt{\\frac{1+e}{1-e}}\\tan\\frac{E}{2}\\quad (0 \\le e < 1, E \\neq \\pi\\text{ for }\\tan\\text{ form})",
+          "operation_label": "焦点座標成分の比較と半角正接公式への変形",
+          "explanation": "極座標成分 (r cos ν, r sin ν) を離心近点角表示と等置して r = a(1 - e cos E) で割り、さらに半角恒等式 tan^2(θ/2) = (1 - cos θ)/(1 + cos θ) により tan(ν/2) の関係式を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka03_eccentric_anomaly_def",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": "simplify((1 - (cos(E)-e)/(1-e*cos(E))) / (1 + (cos(E)-e)/(1-e*cos(E))) - ((1+e)/(1-e))*tan(E/2)**2) == 0"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x_{\\text{orb}} = r\\cos\\nu = a(\\cos E - e),\\quad y_{\\text{orb}} = r\\sin\\nu = a\\sqrt{1-e^2}\\sin E,\\quad r = a(1-e\\cos E)\\quad (0\\le e < 1)\\quad",
+          "to_latex": "\\cos\\nu = \\frac{\\cos E - e}{1 - e\\cos E},\\quad \\sin\\nu = \\frac{\\sqrt{1-e^2}\\sin E}{1 - e\\cos E}\\quad (0 \\le e < 1)\\quad",
+          "operation_label": "r = a(1 - e cos E) による除算",
+          "explanation": "両辺を r = a(1 - e cos E) > 0 で割ることで cos ν と sin ν の E 表示を直ちに得る。",
+          "used_node_ids": [
+            "astro.orbit.ka03_eccentric_anomaly_def",
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": "simplify(((cos(E)-e)/(1-e*cos(E)))**2 + (sqrt(1-e**2)*sin(E)/(1-e*cos(E)))**2) == 1"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\cos\\nu = \\frac{\\cos E - e}{1 - e\\cos E},\\quad \\sin\\nu = \\frac{\\sqrt{1-e^2}\\sin E}{1 - e\\cos E}\\quad (0 \\le e < 1)\\quad",
+          "to_latex": "\\tan^2\\frac{\\nu}{2} = \\frac{1 - \\cos\\nu}{1 + \\cos\\nu} = \\frac{(1+e)(1 - \\cos E)}{(1-e)(1 + \\cos E)} = \\frac{1+e}{1-e}\\tan^2\\frac{E}{2}\\quad (E\\neq\\pi)\\quad",
+          "operation_label": "半角公式 (1 - cos ν)/(1 + cos ν) への代入",
+          "explanation": "1 - cos ν = (1+e)(1 - cos E)/(1 - e cos E) と 1 + cos ν = (1-e)(1 + cos E)/(1 - e cos E) の比をとって半角の2乗関係式を得る。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "simplify((1 - (cos(E)-e)/(1-e*cos(E))) / (1 + (cos(E)-e)/(1-e*cos(E)))) == (1+e)*(1-cos(E))/((1-e)*(1+cos(E)))"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tan^2\\frac{\\nu}{2} = \\frac{1 - \\cos\\nu}{1 + \\cos\\nu} = \\frac{(1+e)(1 - \\cos E)}{(1-e)(1 + \\cos E)} = \\frac{1+e}{1-e}\\tan^2\\frac{E}{2}\\quad (E\\neq\\pi)\\quad",
+          "to_latex": "\\cos\\nu = \\frac{\\cos E - e}{1 - e\\cos E},\\quad \\sin\\nu = \\frac{\\sqrt{1-e^2}\\sin E}{1 - e\\cos E},\\quad \\tan\\frac{\\nu}{2} = \\sqrt{\\frac{1+e}{1-e}}\\tan\\frac{E}{2}\\quad (0 \\le e < 1, E \\neq \\pi\\text{ for }\\tan\\text{ form})",
+          "operation_label": "半角の符号一致による開平",
+          "explanation": "sin ν と sin E が同符号であるため ν/2 と E/2 は同じ象限符号をもち、正の平方根が確定して半角公式を得る。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ka05_mean_motion_anomaly",
+      "target_node_id": "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+      "route_kind": "deductive",
+      "title": "面積速度一定と楕円面積からの軌道周期（ケプラー第3法則）と平均近点角の導出",
+      "premise_node_ids": [
+        "astro.orbit.ka01_angular_momentum_areal_velocity",
+        "math.geom.m07_conic_polar"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "束縛楕円軌道 (a > 0, 0 <= e < 1) であり、1周期 T で楕円全面積 πab を掃過する",
+        "時刻 t_p は近日点通過時刻"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{A} = \\frac{h}{2},\\quad A_{\\text{ellipse}} = \\pi a b,\\quad b = a\\sqrt{1-e^2},\\quad h = \\sqrt{\\mu a(1-e^2)}\\quad (0\\le e < 1)\\quad",
+          "to_latex": "T = 2\\pi\\sqrt{\\frac{a^3}{\\mu}},\\quad n := \\frac{2\\pi}{T} = \\sqrt{\\frac{\\mu}{a^3}},\\quad M := n(t - t_p)\\quad (a > 0,\\; \\mu > 0,\\; 0 \\le e < 1\\text{ for }T\\text{ derivation})",
+          "operation_label": "全面積と一定面積速度の比による周期・平均運動・平均近点角の確立",
+          "explanation": "一定の面積速度 dA/dt = h/2 を1周期にわたり積分して T = 2πab/h = 2π sqrt(a^3/μ) を導き、平均角速度 n = 2π/T と時間線形角変数 M = n(t - t_p) を定義する。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": "simplify(2*pi*a*(a*sqrt(1-e**2))/sqrt(mu*a*(1-e**2))) == 2*pi*sqrt(a**3/mu)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{A} = \\frac{h}{2},\\quad A_{\\text{ellipse}} = \\pi a b,\\quad b = a\\sqrt{1-e^2},\\quad h = \\sqrt{\\mu a(1-e^2)}\\quad (0\\le e < 1)\\quad",
+          "to_latex": "T = \\frac{A_{\\text{ellipse}}}{\\dot{A}} = \\frac{2\\pi a b}{h} = \\frac{2\\pi a^2\\sqrt{1-e^2}}{\\sqrt{\\mu a(1-e^2)}} = 2\\pi\\sqrt{\\frac{a^3}{\\mu}}",
+          "operation_label": "面積速度の定積分とケプラー第3法則の導出",
+          "explanation": "微積分学の基本定理により A_ellipse = int_0^T (h/2) dt = (h/2)T となるため、b = a sqrt(1-e^2) と h = sqrt(μ a(1-e^2)) を代入して離心率 e を相殺し、T = 2π sqrt(a^3/μ) を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": "2*pi*a**2*sqrt(1-e**2)/sqrt(mu*a*(1-e**2)) == 2*pi*a**(3/2)/sqrt(mu)"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T = \\frac{A_{\\text{ellipse}}}{\\dot{A}} = \\frac{2\\pi a b}{h} = \\frac{2\\pi a^2\\sqrt{1-e^2}}{\\sqrt{\\mu a(1-e^2)}} = 2\\pi\\sqrt{\\frac{a^3}{\\mu}}",
+          "to_latex": "T = 2\\pi\\sqrt{\\frac{a^3}{\\mu}},\\quad n := \\frac{2\\pi}{T} = \\sqrt{\\frac{\\mu}{a^3}},\\quad M := n(t - t_p)\\quad (a > 0,\\; \\mu > 0,\\; 0 \\le e < 1\\text{ for }T\\text{ derivation})",
+          "operation_label": "平均運動 n と平均近点角 M の定義",
+          "explanation": "1周 2π rad を周期 T で割って平均運動 n = sqrt(μ/a^3) を定義し、近日点通過時刻 t_p からの経過時間に対する線形角として平均近点角 M = n(t - t_p) を定義する。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity"
+          ],
+          "sympy_check_hint": "simplify(2*pi/(2*pi*sqrt(a**3/mu))) == sqrt(mu/a**3)"
+        }
+      ]
+    },
+    {
+      "id": "deriv_ka06_kepler_equation",
+      "target_node_id": "astro.orbit.ka06_kepler_equation",
+      "route_kind": "deductive",
+      "title": "面積速度保存と離心近点角・真近点角関係からのケプラー方程式の導出",
+      "premise_node_ids": [
+        "astro.orbit.ka01_angular_momentum_areal_velocity",
+        "astro.orbit.ka03_eccentric_anomaly_def",
+        "astro.orbit.ka04_true_eccentric_anomaly_relation",
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m31_trig_derivatives",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "assumptions": [
+        "束縛楕円軌道 0 <= e < 1",
+        "時刻 t = t_p で近日点を通過し E(t_p) = 0 とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r^2\\dot{\\nu} = h = n a^2\\sqrt{1-e^2},\\quad r = a(1-e\\cos E),\\quad \\tan\\frac{\\nu}{2} = \\sqrt{\\frac{1+e}{1-e}}\\tan\\frac{E}{2}\\quad (0\\le e < 1)\\quad",
+          "to_latex": "M = E - e\\sin E\\quad (0 \\le e < 1,\\; M = n(t - t_p))",
+          "operation_label": "連鎖律 dν/dt = (dν/dE)(dE/dt) と定積分によるケプラー方程式導出",
+          "explanation": "半角公式を E で微分して dν/dE = a sqrt(1-e^2)/r を求め、面積速度一定式に代入して (1 - e cos E) dE/dt = n を得て、t_p から t まで積分することで M = E - e sin E を導出する。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "astro.orbit.ka03_eccentric_anomaly_def",
+            "astro.orbit.ka04_true_eccentric_anomaly_relation",
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "math.calc.m01_chain_rule",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": "diff(E - e*sin(E), E) == 1 - e*cos(E)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r^2\\dot{\\nu} = h = n a^2\\sqrt{1-e^2},\\quad r = a(1-e\\cos E),\\quad \\tan\\frac{\\nu}{2} = \\sqrt{\\frac{1+e}{1-e}}\\tan\\frac{E}{2}\\quad (0\\le e < 1)\\quad",
+          "to_latex": "\\frac{d\\nu}{dE} = \\frac{\\sqrt{1-e^2}}{1-e\\cos E} = \\frac{a\\sqrt{1-e^2}}{r}\\quad (0\\le e < 1)\\quad",
+          "operation_label": "真近点角と離心近点角の微分関係導出",
+          "explanation": "cos ν = (cos E - e)/(1 - e cos E) を E で微分し -sin ν (dν/dE) = -(1-e^2) sin E/(1 - e cos E)^2 を得て、sin ν = sqrt(1-e^2) sin E/(1 - e cos E) で割る（または半角公式の両辺を微分する）ことで dν/dE = a sqrt(1-e^2)/r を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka03_eccentric_anomaly_def",
+            "astro.orbit.ka04_true_eccentric_anomaly_relation",
+            "math.calc.m01_chain_rule",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": "simplify(diff((cos(E)-e)/(1-e*cos(E)), E) / (-sqrt(1-e**2)*sin(E)/(1-e*cos(E)))) == sqrt(1-e**2)/(1-e*cos(E))"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\nu}{dE} = \\frac{\\sqrt{1-e^2}}{1-e\\cos E} = \\frac{a\\sqrt{1-e^2}}{r}\\quad (0\\le e < 1)\\quad",
+          "to_latex": "(1 - e\\cos E)\\frac{dE}{dt} = n",
+          "operation_label": "面積速度式への連鎖律の代入",
+          "explanation": "ν_dot = (dν/dE)(dE/dt) を r^2 ν_dot = n a^2 sqrt(1-e^2) に代入すると r a sqrt(1-e^2) (dE/dt) = n a^2 sqrt(1-e^2) となり、r/a = 1 - e cos E を用いて (1 - e cos E) dE/dt = n を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": "simplify((a*(1-e*cos(E)))**2 * (sqrt(1-e**2)/(1-e*cos(E))) / (a**2*sqrt(1-e**2))) == 1 - e*cos(E)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(1 - e\\cos E)\\frac{dE}{dt} = n",
+          "to_latex": "M = E - e\\sin E\\quad (0 \\le e < 1,\\; M = n(t - t_p))",
+          "operation_label": "t_p から t への定積分と置換積分",
+          "explanation": "両辺を時刻 t_p (E=0) から t (E) まで積分し、置換積分により int_0^E (1 - e cos u) du = E - e sin E = n(t - t_p) = M を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": "integrate(1 - e*cos(u), (u, 0, E)) == E - e*sin(E)"
+        }
+      ]
+    },
+    {
+      "id": "deriv_ka07_perifocal_vectors",
+      "target_node_id": "astro.orbit.ka07_perifocal_frame_state_vectors",
+      "route_kind": "deductive",
+      "title": "近点座標系（PQW系）における位置・速度ベクトルの導出",
+      "premise_node_ids": [
+        "astro.orbit.ka03_eccentric_anomaly_def",
+        "astro.orbit.ka04_true_eccentric_anomaly_relation",
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+        "astro.orbit.ka06_kepler_equation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m31_trig_derivatives",
+        "math.geom.m07_conic_polar"
+      ],
+      "assumptions": [
+        "近点座標系 PQW は P 軸を近日点方向、Q 軸を離心率ベクトルに直交する軌道面内進行方向（ν=π/2 方向）、W 軸を比角運動量方向とする右手直交基底",
+        "楕円軌道 0 <= e < 1（真近点角表示は半通径 ℓ = a(1-e^2) により一般2次曲線にも共通）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}_{\\text{PQW}} = \\begin{pmatrix} a(\\cos E - e) \\\\ a\\sqrt{1-e^2}\\sin E \\\\ 0 \\end{pmatrix},\\quad \\dot{E} = \\frac{n a}{r},\\quad n = \\sqrt{\\frac{\\mu}{a^3}}",
+          "to_latex": "\\mathbf{r}_{\\text{PQW}} = \\frac{\\ell}{1+e\\cos\\nu}\\begin{pmatrix}\\cos\\nu\\\\\\sin\\nu\\\\0\\end{pmatrix},\\quad \\mathbf{v}_{\\text{PQW}} = \\frac{\\sqrt{\\mu a}}{r}\\begin{pmatrix}-\\sin E\\\\\\sqrt{1-e^2}\\cos E\\\\0\\end{pmatrix} = \\sqrt{\\frac{\\mu}{\\ell}}\\begin{pmatrix}-\\sin\\nu\\\\e+\\cos\\nu\\\\0\\end{pmatrix}\\quad (\\ell=a(1-e^2))",
+          "operation_label": "ケプラー方程式の時間微分 E_dot を用いた速度計算と真近点角への変換",
+          "explanation": "r_PQW を E に関する連鎖律とケプラー方程式から得られた E_dot = na/r を用いて時間微分し v_PQW(E) を求め、真近点角と離心近点角の変換式により (ν) 表示へ書き換える。",
+          "used_node_ids": [
+            "astro.orbit.ka03_eccentric_anomaly_def",
+            "astro.orbit.ka04_true_eccentric_anomaly_relation",
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.orbit.ka06_kepler_equation",
+            "math.calc.m01_chain_rule",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": "simplify(sqrt(mu*a)/(a*(1-e*cos(E))) * sqrt(1-e**2)*cos(E) - sqrt(mu/(a*(1-e**2)))*(e + (cos(E)-e)/(1-e*cos(E)))) == 0"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_{\\text{PQW}} = \\begin{pmatrix} a(\\cos E - e) \\\\ a\\sqrt{1-e^2}\\sin E \\\\ 0 \\end{pmatrix},\\quad \\dot{E} = \\frac{n a}{r},\\quad n = \\sqrt{\\frac{\\mu}{a^3}}",
+          "to_latex": "\\mathbf{v}_{\\text{PQW}} = \\frac{d\\mathbf{r}_{\\text{PQW}}}{dE}\\dot{E} = \\frac{n a^2}{r}\\begin{pmatrix}-\\sin E\\\\\\sqrt{1-e^2}\\cos E\\\\0\\end{pmatrix} = \\frac{\\sqrt{\\mu a}}{r}\\begin{pmatrix}-\\sin E\\\\\\sqrt{1-e^2}\\cos E\\\\0\\end{pmatrix}\\quad (\\ell = a(1-e^2))",
+          "operation_label": "連鎖律と n a^2 = sqrt(μ a) による E 表示速度の導出",
+          "explanation": "PQW 基底は慣性空間に対して固定されているため成分ごとに E で微分して E_dot = na/r を掛け、n a^2 = sqrt(μ/a^3) a^2 = sqrt(μ a) を用いて v_PQW(E) を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka03_eccentric_anomaly_def",
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.orbit.ka06_kepler_equation",
+            "math.calc.m01_chain_rule",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": "n*a**2 with n=sqrt(mu/a**3) == sqrt(mu*a)"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v}_{\\text{PQW}} = \\frac{d\\mathbf{r}_{\\text{PQW}}}{dE}\\dot{E} = \\frac{n a^2}{r}\\begin{pmatrix}-\\sin E\\\\\\sqrt{1-e^2}\\cos E\\\\0\\end{pmatrix} = \\frac{\\sqrt{\\mu a}}{r}\\begin{pmatrix}-\\sin E\\\\\\sqrt{1-e^2}\\cos E\\\\0\\end{pmatrix}\\quad (\\ell = a(1-e^2))",
+          "to_latex": "\\mathbf{r}_{\\text{PQW}} = \\frac{\\ell}{1+e\\cos\\nu}\\begin{pmatrix}\\cos\\nu\\\\\\sin\\nu\\\\0\\end{pmatrix},\\quad \\mathbf{v}_{\\text{PQW}} = \\frac{\\sqrt{\\mu a}}{r}\\begin{pmatrix}-\\sin E\\\\\\sqrt{1-e^2}\\cos E\\\\0\\end{pmatrix} = \\sqrt{\\frac{\\mu}{\\ell}}\\begin{pmatrix}-\\sin\\nu\\\\e+\\cos\\nu\\\\0\\end{pmatrix}\\quad (\\ell=a(1-e^2))",
+          "operation_label": "真近点角関係による (sin ν, e + cos ν) 形式への変換",
+          "explanation": "sin E/(1 - e cos E) = sin ν/sqrt(1-e^2) および (1-e^2) cos E/(1 - e cos E) = e + cos ν を代入し、sqrt(μ/a)/sqrt(1-e^2) = sqrt(μ/ℓ) を用いて真近点角表示を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka04_true_eccentric_anomaly_relation",
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": "simplify(e + (cos(E)-e)/(1-e*cos(E))) == (1-e**2)*cos(E)/(1-e*cos(E))"
+        }
+      ]
+    },
+    {
+      "id": "deriv_ka08_pqw_to_eci",
+      "target_node_id": "astro.orbit.ka08_pqw_to_eci_rotation",
+      "route_kind": "deductive",
+      "title": "オイラー角 (Ω, i, ω) による PQW から ECI への SO(3) 変換導出",
+      "premise_node_ids": [
+        "astro.orbit.ka07_perifocal_frame_state_vectors"
+      ],
+      "required_math_node_ids": [
+        "math.alg.gr04_so3_su2_matrix_groups_def",
+        "math.alg.gr07_rodrigues_rotation_exp_map"
+      ],
+      "assumptions": [
+        "ECI座標系は標準正規直交基底 (e_1, e_2, e_3) をなす",
+        "軌道傾斜角 i in [0, π], Ω, ω in [0, 2π)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}_{\\text{PQW}},\\; \\mathbf{v}_{\\text{PQW}},\\quad Q_{\\text{PQW}\\to\\text{ECI}} = [\\hat{\\mathbf{p}},\\hat{\\mathbf{q}},\\hat{\\mathbf{w}}]",
+          "to_latex": "\\mathbf{r}_{\\text{ECI}} = Q_{\\text{PQW}\\to\\text{ECI}}(\\Omega,i,\\omega)\\,\\mathbf{r}_{\\text{PQW}},\\quad \\mathbf{v}_{\\text{ECI}} = Q_{\\text{PQW}\\to\\text{ECI}}(\\Omega,i,\\omega)\\,\\mathbf{v}_{\\text{PQW}},\\quad Q_{\\text{PQW}\\to\\text{ECI}} = R(\\mathbf{e}_3,\\Omega)R(\\mathbf{e}_1,i)R(\\mathbf{e}_3,\\omega)\\in\\mathrm{SO}(3)\\quad (R(\\mathbf{e}_k,\\theta)=\\exp(\\theta J_k))",
+          "operation_label": "3-1-3 オイラー角回転の合成による基底変換行列の構成",
+          "explanation": "指数写像による基本回転行列 R(e_3, Ω), R(e_1, i), R(e_3, ω) の積として方向余弦行列 Q_{PQW->ECI} in SO(3) を構成し、PQW状態ベクトルに乗じて ECI 状態ベクトルを得る。",
+          "used_node_ids": [
+            "astro.orbit.ka07_perifocal_frame_state_vectors",
+            "math.alg.gr04_so3_su2_matrix_groups_def",
+            "math.alg.gr07_rodrigues_rotation_exp_map"
+          ],
+          "sympy_check_hint": "Verify det(R_z(Omega)*R_x(i)*R_z(omega)) == 1 and Q.T*Q == eye(3)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_{\\text{PQW}},\\; \\mathbf{v}_{\\text{PQW}},\\quad Q_{\\text{PQW}\\to\\text{ECI}} = [\\hat{\\mathbf{p}},\\hat{\\mathbf{q}},\\hat{\\mathbf{w}}]",
+          "to_latex": "Q_{\\text{PQW}\\to\\text{ECI}} = R(\\mathbf{e}_3,\\Omega)R(\\mathbf{e}_1,i)R(\\mathbf{e}_3,\\omega) \\in \\mathrm{SO}(3)\\quad (R(\\mathbf{e}_k,\\theta)=\\exp(\\theta J_k))",
+          "operation_label": "3段階の基本軸回転による基底変換行列の合成",
+          "explanation": "赤道面内 Z 軸回り Ω 回転で昇交点軸へ、昇交点軸 X' 回り i 回転で軌道面へ、軌道面法線 W 軸回り ω 回転で近日点方向へ移す能動回転の合成として Q_{PQW->ECI} in SO(3) を得る。",
+          "used_node_ids": [
+            "math.alg.gr04_so3_su2_matrix_groups_def",
+            "math.alg.gr07_rodrigues_rotation_exp_map"
+          ],
+          "sympy_check_hint": "R_z(Omega)*R_x(i)*R_z(omega)"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q_{\\text{PQW}\\to\\text{ECI}} = R(\\mathbf{e}_3,\\Omega)R(\\mathbf{e}_1,i)R(\\mathbf{e}_3,\\omega) \\in \\mathrm{SO}(3)\\quad (R(\\mathbf{e}_k,\\theta)=\\exp(\\theta J_k))",
+          "to_latex": "\\mathbf{r}_{\\text{ECI}} = Q_{\\text{PQW}\\to\\text{ECI}}(\\Omega,i,\\omega)\\,\\mathbf{r}_{\\text{PQW}},\\quad \\mathbf{v}_{\\text{ECI}} = Q_{\\text{PQW}\\to\\text{ECI}}(\\Omega,i,\\omega)\\,\\mathbf{v}_{\\text{PQW}},\\quad Q_{\\text{PQW}\\to\\text{ECI}} = R(\\mathbf{e}_3,\\Omega)R(\\mathbf{e}_1,i)R(\\mathbf{e}_3,\\omega)\\in\\mathrm{SO}(3)\\quad (R(\\mathbf{e}_k,\\theta)=\\exp(\\theta J_k))",
+          "operation_label": "PQW 状態ベクトルへの直交行列作用",
+          "explanation": "同じ直交行列 Q_{PQW->ECI} を r_PQW と v_PQW に左から掛けることで、ECI座標系での位置・速度ベクトルが求まる。",
+          "used_node_ids": [
+            "astro.orbit.ka07_perifocal_frame_state_vectors",
+            "math.alg.gr04_so3_su2_matrix_groups_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ka09_eci_to_elements",
+      "target_node_id": "astro.orbit.ka09_eci_to_orbital_elements_inverse",
+      "route_kind": "deductive",
+      "title": "状態ベクトル (r, v) から軌道6要素 (a, e, i, Ω, ω, M) への完全逆変換",
+      "premise_node_ids": [
+        "phys.orbit.g07_state_vector_to_elements",
+        "astro.orbit.ka02_vis_viva_equation",
+        "astro.orbit.ka04_true_eccentric_anomaly_relation",
+        "astro.orbit.ka06_kepler_equation",
+        "astro.orbit.ka08_pqw_to_eci_rotation"
+      ],
+      "required_math_node_ids": [
+        "math.alg.gr04_so3_su2_matrix_groups_def",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "非退化楕円軌道（e > 0, sin i > 0, 0 <= e < 1）；特異点（e=0 や i=0）では近点引数や昇交点赤経を慣例により零とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(\\mathbf{r},\\mathbf{v}) \\implies \\mathbf{h} = \\mathbf{r}\\times\\mathbf{v},\\; \\mathbf{n} = \\mathbf{e}_3\\times\\mathbf{h},\\; \\mathbf{e} = \\frac{\\mathbf{v}\\times\\mathbf{h}}{\\mu} - \\frac{\\mathbf{r}}{r}\\quad (e\\in(0,1),\\; \\sin i > 0)\\quad",
+          "to_latex": "a = \\left(\\frac{2}{r}-\\frac{v^2}{\\mu}\\right)^{-1},\\; e = \\|\\mathbf{e}\\|,\\; \\cos i = \\frac{h_z}{h},\\; \\cos\\Omega = \\frac{n_x}{n},\\; \\cos\\omega = \\frac{\\mathbf{n}\\cdot\\mathbf{e}}{ne},\\; \\cos\\nu = \\frac{\\mathbf{e}\\cdot\\mathbf{r}}{er},\\; M = E - e\\sin E\\quad (\\mathbf{h}=\\mathbf{r}\\times\\mathbf{v},\\; \\mathbf{n}=\\mathbf{e}_3\\times\\mathbf{h},\\; \\mathbf{e}=\\frac{\\mathbf{v}\\times\\mathbf{h}}{\\mu}-\\frac{\\mathbf{r}}{r})",
+          "operation_label": "不変ベクトル射影による軌道要素抽出とケプラー方程式による M の確定",
+          "explanation": "h, n, e の幾何ベクトルと vis-viva 方程式から (a, e, i, Ω, ω, ν) を象限判定とともに一意決定し、ν -> E -> M 変換により軌道6要素を完成する。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation",
+            "astro.orbit.ka04_true_eccentric_anomaly_relation",
+            "astro.orbit.ka06_kepler_equation",
+            "astro.orbit.ka08_pqw_to_eci_rotation",
+            "math.alg.gr04_so3_su2_matrix_groups_def",
+            "math.vec.m03_dot_cross_product",
+            "phys.orbit.g07_state_vector_to_elements"
+          ],
+          "sympy_check_hint": "Verify for PQW->ECI vectors that h = r x v, n = k x h, e = v x h/mu - r/r recover exact (a, e, i, Omega, omega, nu)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\mathbf{r},\\mathbf{v}) \\implies \\mathbf{h} = \\mathbf{r}\\times\\mathbf{v},\\; \\mathbf{n} = \\mathbf{e}_3\\times\\mathbf{h},\\; \\mathbf{e} = \\frac{\\mathbf{v}\\times\\mathbf{h}}{\\mu} - \\frac{\\mathbf{r}}{r}\\quad (e\\in(0,1),\\; \\sin i > 0)\\quad",
+          "to_latex": "a = \\left(\\frac{2}{r}-\\frac{v^2}{\\mu}\\right)^{-1},\\; e = \\|\\mathbf{e}\\|,\\; \\cos i = \\frac{h_z}{h},\\; \\cos\\Omega = \\frac{n_x}{n}\\;(n_y\\ge 0\\implies\\Omega\\in[0,\\pi])",
+          "operation_label": "a, e, i, Ω の抽出と昇交点象限判定",
+          "explanation": "vis-viva 方程式より a を、ラプラス＝ルンゲ＝レンツ型離心率ベクトルより e を、h の z 成分から傾斜角 i in [0,π] を、昇交点ベクトル n = (n_x, n_y, 0) の方向余弦と n_y の符号から Ω を決定する。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation",
+            "math.vec.m03_dot_cross_product",
+            "phys.orbit.g07_state_vector_to_elements"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a = \\left(\\frac{2}{r}-\\frac{v^2}{\\mu}\\right)^{-1},\\; e = \\|\\mathbf{e}\\|,\\; \\cos i = \\frac{h_z}{h},\\; \\cos\\Omega = \\frac{n_x}{n}\\;(n_y\\ge 0\\implies\\Omega\\in[0,\\pi])",
+          "to_latex": "\\cos\\omega = \\frac{\\mathbf{n}\\cdot\\mathbf{e}}{ne}\\;(e_z\\ge 0\\implies\\omega\\in[0,\\pi]),\\; \\cos\\nu = \\frac{\\mathbf{e}\\cdot\\mathbf{r}}{er}\\;(\\mathbf{r}\\cdot\\mathbf{v}\\ge 0\\implies\\nu\\in[0,\\pi])",
+          "operation_label": "内積射影と象限判定による ω と ν の決定",
+          "explanation": "Q_{PQW->ECI} の幾何構造より n·e/(ne) = cos ω（e_z の符号で象限確定）および e·r/(er) = cos ν（動径速度 r·v/r の符号で象限確定）が成り立つ。",
+          "used_node_ids": [
+            "astro.orbit.ka08_pqw_to_eci_rotation",
+            "math.alg.gr04_so3_su2_matrix_groups_def",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\cos\\omega = \\frac{\\mathbf{n}\\cdot\\mathbf{e}}{ne}\\;(e_z\\ge 0\\implies\\omega\\in[0,\\pi]),\\; \\cos\\nu = \\frac{\\mathbf{e}\\cdot\\mathbf{r}}{er}\\;(\\mathbf{r}\\cdot\\mathbf{v}\\ge 0\\implies\\nu\\in[0,\\pi])",
+          "to_latex": "a = \\left(\\frac{2}{r}-\\frac{v^2}{\\mu}\\right)^{-1},\\; e = \\|\\mathbf{e}\\|,\\; \\cos i = \\frac{h_z}{h},\\; \\cos\\Omega = \\frac{n_x}{n},\\; \\cos\\omega = \\frac{\\mathbf{n}\\cdot\\mathbf{e}}{ne},\\; \\cos\\nu = \\frac{\\mathbf{e}\\cdot\\mathbf{r}}{er},\\; M = E - e\\sin E\\quad (\\mathbf{h}=\\mathbf{r}\\times\\mathbf{v},\\; \\mathbf{n}=\\mathbf{e}_3\\times\\mathbf{h},\\; \\mathbf{e}=\\frac{\\mathbf{v}\\times\\mathbf{h}}{\\mu}-\\frac{\\mathbf{r}}{r})",
+          "operation_label": "ν -> E -> M による平均近点角の確定",
+          "explanation": "半角公式 tan(E/2) = sqrt((1-e)/(1+e)) tan(ν/2) から離心近点角 E を求め、ケプラー方程式 M = E - e sin E に代入して軌道6要素への完全変換を完了する。",
+          "used_node_ids": [
+            "astro.orbit.ka04_true_eccentric_anomaly_relation",
+            "astro.orbit.ka06_kepler_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

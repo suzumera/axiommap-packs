@@ -1,0 +1,719 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.thermo.laws_carnot",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "熱力学1：状態方程式・熱力学第1/第2法則・カルノーサイクルとエントロピー",
+    "language": "ja",
+    "description": "準静的仕事と内部エネルギー（第1法則）、カルノーの定理、クラウジウスの不等式、状態量としてのエントロピー定義を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.thermo.th01_zeroth_law_state_eq",
+      "short_code": "TH01",
+      "kind": "axiom",
+      "title": "熱力学第0法則・熱平衡状態と状態方程式",
+      "summary": "熱平衡の推移律（熱力学第0法則）により経験温度の存在が保証され、平衡状態は圧力・体積・温度を結ぶ状態方程式（特に理想気体の状態方程式）で特徴づけられる。",
+      "canonical_latex": "A \\sim B \\land B \\sim C \\implies A \\sim C,\\quad f(p,V,T)=0,\\quad pV = nRT",
+      "aliases_latex": [
+        "f(p,V,T)=0",
+        "pV = nRT = Nk_B T"
+      ],
+      "keywords": [
+        "熱力学第0法則",
+        "熱平衡",
+        "状態方程式",
+        "理想気体"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.th02_quasistatic_work",
+      "short_code": "TH02",
+      "kind": "definition",
+      "title": "準静的過程と圧力による仕事",
+      "summary": "系が常に平衡状態を保ちながらゆっくり変化する準静的過程において、等方圧力 p のもとで体積が変化するときに系が外部になす仕事（および外部からされる仕事）を定義する。",
+      "canonical_latex": "\\delta W_{\\mathrm{by}} = p\\,dV,\\quad W_{\\mathrm{by}} = \\int_{V_1}^{V_2} p\\,dV,\\quad \\delta W_{\\mathrm{on}} = -p\\,dV",
+      "aliases_latex": [
+        "d'W = p\\,dV",
+        "W = \\int_{V_1}^{V_2} p(V,T)\\,dV"
+      ],
+      "keywords": [
+        "準静的過程",
+        "仕事",
+        "体積仕事",
+        "圧力"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.th03_first_law_internal_energy",
+      "short_code": "TH03",
+      "kind": "axiom",
+      "title": "熱力学第1法則と状態量としての内部エネルギー",
+      "summary": "断熱過程における仕事が終始状態のみに依存することから状態量である内部エネルギー U が定まり、一般の過程では内部エネルギー変化が流入熱量と外部へなす仕事の差（エネルギー保存則）で与えられる。",
+      "canonical_latex": "\\Delta U = Q - W_{\\mathrm{by}} = Q + W_{\\mathrm{on}},\\qquad dU = \\delta Q - \\delta W_{\\mathrm{by}} = \\delta Q - p\\,dV\\;\\text{(quasi-static)}",
+      "aliases_latex": [
+        "dU = d'Q - p\\,dV",
+        "\\Delta U = Q - W"
+      ],
+      "keywords": [
+        "熱力学第1法則",
+        "内部エネルギー",
+        "エネルギー保存則",
+        "断熱仕事"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.th04_heat_capacities_mayer",
+      "short_code": "TH04",
+      "kind": "theorem_formula",
+      "title": "定積・定圧熱容量と理想気体のマイヤーの関係式",
+      "summary": "定積熱容量および定圧熱容量を定義し、内部エネルギーが温度のみの関数である理想気体に対して定圧モル比熱と定積モル比熱の差が気体定数に等しいこと（マイヤーの関係式）を示す。",
+      "canonical_latex": "C_V = \\left(\\frac{\\partial U}{\\partial T}\\right)_V,\\quad C_p = \\left(\\frac{\\partial H}{\\partial T}\\right)_p,\\quad C_p - C_V = nR\\;\\text{(ideal gas)},\\quad \\gamma := \\frac{C_p}{C_V},\\quad H := U + pV",
+      "aliases_latex": [
+        "c_p - c_V = R",
+        "dU = C_V\\,dT"
+      ],
+      "keywords": [
+        "熱容量",
+        "比熱",
+        "マイヤーの関係式",
+        "比熱比"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.th05_carnot_cycle_efficiency",
+      "short_code": "TH05",
+      "kind": "theorem_formula",
+      "title": "準静的断熱過程（ポアソンの式）と理想気体カルノーサイクルの効率",
+      "summary": "理想気体の準静的断熱過程におけるポアソンの法則を導出し、高温・低温熱源間の2つの等温過程と2つの断熱過程からなるカルノーサイクルの熱効率および熱量比を導く。",
+      "canonical_latex": "pV^\\gamma = \\text{const.},\\quad TV^{\\gamma-1} = \\text{const.},\\quad \\eta_C := \\frac{W_{\\mathrm{by}}}{Q_H} = 1 - \\frac{|Q_C|}{Q_H} = 1 - \\frac{T_C}{T_H},\\quad \\frac{Q_H}{T_H} + \\frac{Q_C}{T_C} = 0",
+      "aliases_latex": [
+        "\\eta_C = 1 - T_C/T_H",
+        "pV^\\gamma = \\mathrm{const.}"
+      ],
+      "keywords": [
+        "カルノーサイクル",
+        "熱効率",
+        "ポアソンの式",
+        "断熱過程",
+        "等温過程"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.th06_second_law_principles",
+      "short_code": "TH06",
+      "kind": "axiom",
+      "title": "熱力学第2法則（トムソン・クラウジウスの原理）",
+      "summary": "単一の熱源から熱を受け取りそれをすべて仕事に変えて他に変化を残さない循環過程は不可能である（トムソン／ケルビンの原理）および低温から高温へ自然に熱が移ることはない（クラウジウスの原理）を定める。",
+      "canonical_latex": "\\text{Kelvin-Planck: }\\neg\\exists\\,\\text{cycle s.t. }W_{\\mathrm{by}} = Q_H > 0\\text{ with single reservoir};\\quad \\text{Clausius: }\\neg\\exists\\,\\text{cycle transferring }Q>0\\text{ from }T_C\\text{ to }T_H\\,(T_C<T_H)\\text{ with }W=0",
+      "aliases_latex": [
+        "W_{\\mathrm{cycle}} \\le 0\\text{ (single reservoir)}"
+      ],
+      "keywords": [
+        "熱力学第2法則",
+        "トムソンの原理",
+        "ケルビンの原理",
+        "クラウジウスの原理",
+        "不可逆性"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.th07_carnot_theorem",
+      "short_code": "TH07",
+      "kind": "theorem_formula",
+      "title": "カルノーの定理と熱力学温度の普遍性",
+      "summary": "2つの熱源間で動作する任意の熱機関の効率は同温度間の可逆機関（カルノー機関）の効率を超えず、すべての可逆機関の効率は作業物質によらず両熱源の温度比のみで決まる。",
+      "canonical_latex": "\\eta \\le \\eta_{\\mathrm{rev}} = 1 - \\frac{T_C}{T_H},\\qquad \\frac{Q_H}{T_H} + \\frac{Q_C}{T_C} \\le 0\\;\\text{(equality iff reversible)}",
+      "aliases_latex": [
+        "\\eta_{\\mathrm{irrev}} < \\eta_{\\mathrm{rev}}",
+        "\\frac{|Q_C|}{Q_H} \\ge \\frac{T_C}{T_H}"
+      ],
+      "keywords": [
+        "カルノーの定理",
+        "可逆機関",
+        "最大効率",
+        "熱力学温度"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.th08_clausius_inequality",
+      "short_code": "TH08",
+      "kind": "theorem_formula",
+      "title": "クラウジウスの不等式",
+      "summary": "任意の循環過程において、微小熱量と熱源温度の比の周回積分は0以下であり、特に可逆サイクルに対して厳密に0となる。",
+      "canonical_latex": "\\oint \\frac{\\delta Q}{T_{\\mathrm{res}}} \\le 0,\\qquad \\oint_{\\mathrm{rev}} \\frac{\\delta Q_{\\mathrm{rev}}}{T} = 0",
+      "aliases_latex": [
+        "\\sum_i \\frac{Q_i}{T_i} \\le 0",
+        "\\oint \\frac{d'Q}{T} \\le 0"
+      ],
+      "keywords": [
+        "クラウジウスの不等式",
+        "循環過程",
+        "可逆サイクル",
+        "不可逆過程"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.th09_entropy_state_function",
+      "short_code": "TH09",
+      "kind": "definition",
+      "title": "状態量としてのエントロピーの定義と熱力学基本関係式",
+      "summary": "可逆サイクルでのクラウジウス等式により線積分の経路独立性が保証されるため状態量エントロピー S が定義され、任意の過程に対するエントロピー増大則と熱力学基本関係式が成立する。",
+      "canonical_latex": "dS := \\frac{\\delta Q_{\\mathrm{rev}}}{T},\\quad S(B) - S(A) = \\int_{A,\\,\\mathrm{rev}}^{B} \\frac{\\delta Q_{\\mathrm{rev}}}{T},\\quad dS \\ge \\frac{\\delta Q}{T_{\\mathrm{res}}},\\quad dU = T\\,dS - p\\,dV",
+      "aliases_latex": [
+        "\\Delta S \\ge \\int \\frac{\\delta Q}{T}",
+        "\\Delta S_{\\mathrm{isolated}} \\ge 0"
+      ],
+      "keywords": [
+        "エントロピー",
+        "状態量",
+        "エントロピー増大則",
+        "熱力学基本関係式"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_th02_quasistatic_work",
+      "target_node_id": "phys.thermo.th02_quasistatic_work",
+      "route_kind": "deductive",
+      "title": "完全流体圧力テンソルと準静的変位からの圧力仕事の導出",
+      "premise_node_ids": [
+        "phys.fluid.fl05_ideal_fluid_pressure_stress",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m46_coordinate_differential_basis"
+      ],
+      "assumptions": [
+        "過程は常に平衡状態を保つ準静的過程であり、摩擦や粘性散逸は存在しない。",
+        "境界面における応力は一様等方な静水圧 p で与えられる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{t}(\\mathbf{x},\\mathbf{n}) = -p\\,\\mathbf{n},\\quad \\delta W_{\\mathrm{by}} = \\iint_{\\partial V} (-\\mathbf{t})\\cdot \\delta\\mathbf{x}\\,dS",
+          "to_latex": "\\delta W_{\\mathrm{by}} = p\\,dV,\\quad W_{\\mathrm{by}} = \\int_{V_1}^{V_2} p\\,dV,\\quad \\delta W_{\\mathrm{on}} = -p\\,dV",
+          "operation_label": "準静的圧力仕事の定式化",
+          "explanation": "等方静水圧による表面力と境界の微小変位の内積を積分して体積変化 dV に帰着させ、準静的仕事を定義する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m46_coordinate_differential_basis",
+            "phys.fluid.fl05_ideal_fluid_pressure_stress",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_surface_force",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{t}(\\mathbf{x},\\mathbf{n}) = -p\\,\\mathbf{n},\\quad \\delta W_{\\mathrm{by}} = \\iint_{\\partial V} (-\\mathbf{t})\\cdot \\delta\\mathbf{x}\\,dS",
+          "to_latex": "\\delta W_{\\mathrm{by}} = \\iint_{\\partial V} p\\,(\\mathbf{n}\\cdot \\delta\\mathbf{x})\\,dS",
+          "operation_label": "等方応力ベクトルの代入",
+          "explanation": "系が外部に及ぼす力密度 -t = p n を表面積分に代入する。",
+          "used_node_ids": [
+            "phys.fluid.fl05_ideal_fluid_pressure_stress"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_volume_differential",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta W_{\\mathrm{by}} = \\iint_{\\partial V} p\\,(\\mathbf{n}\\cdot \\delta\\mathbf{x})\\,dS",
+          "to_latex": "\\delta W_{\\mathrm{by}} = p\\iint_{\\partial V} \\mathbf{n}\\cdot\\delta\\mathbf{x}\\,dS = p\\,dV",
+          "operation_label": "一様圧力と体積微分の同定",
+          "explanation": "平衡状態では圧力 p が空間的に一様であり、境界面の法線方向掃引面積分が体積の微小変分 dV に等しいことを用いる。",
+          "used_node_ids": [
+            "math.calc.m46_coordinate_differential_basis",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_path_integral",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta W_{\\mathrm{by}} = p\\,dV",
+          "to_latex": "\\delta W_{\\mathrm{by}} = p\\,dV,\\quad W_{\\mathrm{by}} = \\int_{V_1}^{V_2} p\\,dV,\\quad \\delta W_{\\mathrm{on}} = -p\\,dV",
+          "operation_label": "過程に沿う積分と符号規約の定義",
+          "explanation": "状態変化の経路に沿って微小仕事を積分して有限過程の仕事 W_by を得て、外部から系になされる仕事 δW_on を逆符号で定義する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_th04_heat_capacities_mayer",
+      "target_node_id": "phys.thermo.th04_heat_capacities_mayer",
+      "route_kind": "deductive",
+      "title": "第1法則と理想気体の状態方程式からの定積・定圧熱容量およびマイヤーの関係式の導出",
+      "premise_node_ids": [
+        "phys.thermo.th01_zeroth_law_state_eq",
+        "phys.thermo.th02_quasistatic_work",
+        "phys.thermo.th03_first_law_internal_energy"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m19_differential_linearity_leibniz"
+      ],
+      "assumptions": [
+        "理想気体の内部エネルギーは温度のみの関数 U = U(T) である（ジュールの法則）。",
+        "物質量 n は一定で、準静的過程を考える。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dU = \\delta Q - p\\,dV,\\quad pV = nRT,\\quad U = U(T)`",
+          "to_latex": "C_V = \\left(\\frac{\\partial U}{\\partial T}\\right)_V,\\quad C_p = \\left(\\frac{\\partial H}{\\partial T}\\right)_p,\\quad C_p - C_V = nR\\;\\text{(ideal gas)},\\quad \\gamma := \\frac{C_p}{C_V},\\quad H := U + pV",
+          "operation_label": "熱容量の定義とマイヤーの関係式の導出",
+          "explanation": "熱力学第1法則から定積・定圧熱容量を状態量の温度偏微分として表し、理想気体の状態方程式を微分してマイヤーの関係式を導く。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th02_quasistatic_work",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_isochoric_cv",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = \\delta Q - p\\,dV,\\quad pV = nRT,\\quad U = U(T)`",
+          "to_latex": "C_V := \\left(\\frac{\\delta Q}{dT}\\right)_V = \\left(\\frac{\\partial U}{\\partial T}\\right)_V,\\quad dU = C_V\\,dT",
+          "operation_label": "定積条件 dV = 0 の適用",
+          "explanation": "定積過程では dV = 0 なので δQ = dU となり、U = U(T) のとき任意の過程で dU = C_V dT と表される。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th02_quasistatic_work",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_enthalpy_cp",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_V := \\left(\\frac{\\delta Q}{dT}\\right)_V = \\left(\\frac{\\partial U}{\\partial T}\\right)_V,\\quad dU = C_V\\,dT",
+          "to_latex": "\\delta Q = dU + p\\,dV = d(U+pV) - V\\,dp \\implies C_p := \\left(\\frac{\\delta Q}{dT}\\right)_p = \\left(\\frac{\\partial H}{\\partial T}\\right)_p\\;(H := U + pV)`",
+          "operation_label": "ライプニッツ則によるエンタルピー表現",
+          "explanation": "積の微分法則 d(pV) = p dV + V dp を用いて第1法則を書き換え、定圧条件 dp = 0 における熱容量 C_p を得る。",
+          "used_node_ids": [
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_mayer_relation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta Q = dU + p\\,dV = d(U+pV) - V\\,dp \\implies C_p := \\left(\\frac{\\delta Q}{dT}\\right)_p = \\left(\\frac{\\partial H}{\\partial T}\\right)_p\\;(H := U + pV)`",
+          "to_latex": "C_V = \\left(\\frac{\\partial U}{\\partial T}\\right)_V,\\quad C_p = \\left(\\frac{\\partial H}{\\partial T}\\right)_p,\\quad C_p - C_V = nR\\;\\text{(ideal gas)},\\quad \\gamma := \\frac{C_p}{C_V},\\quad H := U + pV",
+          "operation_label": "理想気体の状態方程式の代入",
+          "explanation": "H = U(T) + nRT を温度 T で偏微分すると C_p = C_V + nR が得られ、比熱比 γ を定義する。",
+          "used_node_ids": [
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": "diff(U(T) + n*R*T, T) - diff(U(T), T)"
+        }
+      ]
+    },
+    {
+      "id": "drv_th05_carnot_cycle_efficiency",
+      "target_node_id": "phys.thermo.th05_carnot_cycle_efficiency",
+      "route_kind": "deductive",
+      "title": "ポアソンの式と理想気体カルノーサイクルの熱効率の導出",
+      "premise_node_ids": [
+        "phys.thermo.th01_zeroth_law_state_eq",
+        "phys.thermo.th02_quasistatic_work",
+        "phys.thermo.th03_first_law_internal_energy",
+        "phys.thermo.th04_heat_capacities_mayer"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "assumptions": [
+        "作業物質は定比熱 C_V, C_p をもつ理想気体である。",
+        "カルノーサイクルは温度 T_H での等温膨張、断熱膨張、温度 T_C での等温圧縮、断熱圧縮の4つの準静的過程から成る。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\delta Q = C_V\\,dT + p\\,dV = 0\\;\\text{(adiabatic)},\\quad pV = nRT",
+          "to_latex": "pV^\\gamma = \\text{const.},\\quad TV^{\\gamma-1} = \\text{const.},\\quad \\eta_C := \\frac{W_{\\mathrm{by}}}{Q_H} = 1 - \\frac{|Q_C|}{Q_H} = 1 - \\frac{T_C}{T_H},\\quad \\frac{Q_H}{T_H} + \\frac{Q_C}{T_C} = 0",
+          "operation_label": "理想気体カルノーサイクルの効率導出",
+          "explanation": "準静的断熱過程を積分してポアソンの式を得て、2つの等温過程の熱量と断熱条件からカルノー効率を求める。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m43_definite_integral_substitution",
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th02_quasistatic_work",
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th04_heat_capacities_mayer"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_poisson_adiabatic",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta Q = C_V\\,dT + p\\,dV = 0\\;\\text{(adiabatic)},\\quad pV = nRT",
+          "to_latex": "C_V\\frac{dT}{T} + nR\\frac{dV}{V} = 0 \\implies TV^{\\gamma - 1} = \\text{const.},\\quad pV^\\gamma = \\text{const.}",
+          "operation_label": "断熱微分方程式の変数分離積分",
+          "explanation": "p = nRT/V を代入して T で割り、マイヤーの関係式 nR/C_V = γ - 1 を用いて積分するとポアソンの式が得られる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th04_heat_capacities_mayer"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_isothermal_heats",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_V\\frac{dT}{T} + nR\\frac{dV}{V} = 0 \\implies TV^{\\gamma - 1} = \\text{const.},\\quad pV^\\gamma = \\text{const.}",
+          "to_latex": "Q_H = nRT_H\\ln\\frac{V_2}{V_1},\\quad Q_C = nRT_C\\ln\\frac{V_4}{V_3},\\quad \\frac{V_2}{V_1} = \\frac{V_3}{V_4}`",
+          "operation_label": "等温過程の熱量計算と断熱による体積比の一致",
+          "explanation": "等温過程では dU = 0 ゆえ Q = W_by = ∫(nRT/V)dV となり、さらに2つの断熱過程 T_H V_2^(γ-1) = T_C V_3^(γ-1) と T_H V_1^(γ-1) = T_C V_4^(γ-1) の比から体積比が一致する。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution",
+            "phys.thermo.th02_quasistatic_work",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": "integrate(n*R*T/V, (V, V1, V2))"
+        },
+        {
+          "step_id": "s2_3_carnot_efficiency",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q_H = nRT_H\\ln\\frac{V_2}{V_1},\\quad Q_C = nRT_C\\ln\\frac{V_4}{V_3},\\quad \\frac{V_2}{V_1} = \\frac{V_3}{V_4}`",
+          "to_latex": "pV^\\gamma = \\text{const.},\\quad TV^{\\gamma-1} = \\text{const.},\\quad \\eta_C := \\frac{W_{\\mathrm{by}}}{Q_H} = 1 - \\frac{|Q_C|}{Q_H} = 1 - \\frac{T_C}{T_H},\\quad \\frac{Q_H}{T_H} + \\frac{Q_C}{T_C} = 0",
+          "operation_label": "第1法則による効率と換算熱の和の算出",
+          "explanation": "サイクル全体で ΔU = 0 ゆえ W_by = Q_H + Q_C = Q_H - |Q_C| となり、体積比の相殺により熱効率 1 - T_C/T_H および Q_H/T_H + Q_C/T_C = 0 を得る。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_th07_carnot_theorem",
+      "target_node_id": "phys.thermo.th07_carnot_theorem",
+      "route_kind": "deductive",
+      "title": "熱力学第2法則と背理法によるカルノーの定理の導出",
+      "premise_node_ids": [
+        "phys.thermo.th03_first_law_internal_energy",
+        "phys.thermo.th05_carnot_cycle_efficiency",
+        "phys.thermo.th06_second_law_principles"
+      ],
+      "required_math_node_ids": [
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "assumptions": [
+        "任意の機関 E と理想気体カルノー機関（可逆機関）が同一の2つの熱源 T_H > T_C の間で動作する。",
+        "可逆機関は逆運転により冷凍機として動作させることができる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\eta_E = \\frac{W_E}{Q_H},\\quad \\eta_{\\mathrm{rev}} = 1 - \\frac{T_C}{T_H},\\quad \\text{Kelvin-Planck / Clausius principle}`",
+          "to_latex": "\\eta \\le \\eta_{\\mathrm{rev}} = 1 - \\frac{T_C}{T_H},\\qquad \\frac{Q_H}{T_H} + \\frac{Q_C}{T_C} \\le 0\\;\\text{(equality iff reversible)}",
+          "operation_label": "カルノーの定理の背理法による証明",
+          "explanation": "任意の機関を逆転させた可逆カルノー機関と結合して複合機関を構成し、第2法則に反しないことから最大効率と等号条件を導く。",
+          "used_node_ids": [
+            "math.logic.m51_proof_by_contradiction",
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th05_carnot_cycle_efficiency",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_composite_engine",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\eta_E = \\frac{W_E}{Q_H},\\quad \\eta_{\\mathrm{rev}} = 1 - \\frac{T_C}{T_H},\\quad \\text{Kelvin-Planck / Clausius principle}`",
+          "to_latex": "\\eta_E > \\eta_{\\mathrm{rev}} \\implies W_{\\mathrm{net}} = W_E - W_{\\mathrm{rev}} > 0,\\quad Q_{H,\\mathrm{net}} = 0,\\quad Q_{C,\\mathrm{net}} = W_{\\mathrm{net}} > 0",
+          "operation_label": "複合機関（E + 逆運転可逆機関）の構成",
+          "explanation": "高温熱源の正味熱交換が0になるよう両機関を結合すると、η_E > η_rev の仮定のもとで低温熱源のみから正味の仕事を取り出すことになる。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th05_carnot_cycle_efficiency"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_contradiction_second_law",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\eta_E > \\eta_{\\mathrm{rev}} \\implies W_{\\mathrm{net}} = W_E - W_{\\mathrm{rev}} > 0,\\quad Q_{H,\\mathrm{net}} = 0,\\quad Q_{C,\\mathrm{net}} = W_{\\mathrm{net}} > 0",
+          "to_latex": "\\eta \\le \\eta_{\\mathrm{rev}} = 1 - \\frac{T_C}{T_H}\\quad (\\eta_{\\mathrm{rev},1} = \\eta_{\\mathrm{rev},2}\\text{ for all reversible engines})",
+          "operation_label": "トムソンの原理との矛盾による背理法",
+          "explanation": "単一熱源 T_C から正の仕事を得る複合サイクルはトムソンの原理に反するため η_E <= η_rev が導かれ、両機関が可逆ならば逆向きの不等式も成り立ち等号を得る。",
+          "used_node_ids": [
+            "math.logic.m51_proof_by_contradiction",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_heat_ratio_inequality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\eta \\le \\eta_{\\mathrm{rev}} = 1 - \\frac{T_C}{T_H}\\quad (\\eta_{\\mathrm{rev},1} = \\eta_{\\mathrm{rev},2}\\text{ for all reversible engines})",
+          "to_latex": "\\eta \\le \\eta_{\\mathrm{rev}} = 1 - \\frac{T_C}{T_H},\\qquad \\frac{Q_H}{T_H} + \\frac{Q_C}{T_C} \\le 0\\;\\text{(equality iff reversible)}",
+          "operation_label": "熱量比表現への変形",
+          "explanation": "η = (Q_H + Q_C)/Q_H <= 1 - T_C/T_H（ただし Q_C <= 0）を整理して、2熱源サイクルの不等式を得る。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th05_carnot_cycle_efficiency"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_th08_clausius_inequality",
+      "target_node_id": "phys.thermo.th08_clausius_inequality",
+      "route_kind": "deductive",
+      "title": "補助カルノー機関群と第2法則によるクラウジウスの不等式の導出",
+      "premise_node_ids": [
+        "phys.thermo.th03_first_law_internal_energy",
+        "phys.thermo.th06_second_law_principles",
+        "phys.thermo.th07_carnot_theorem"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity",
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "assumptions": [
+        "任意の循環過程を N 個の熱源 T_i との熱交換に離散化し、共通の補助熱源 T_0 との間に可逆カルノー機関列を接続する。",
+        "連続極限 N -> infinity において和がリーマン積分に収束する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum_{i=1}^{N} Q_i - W = 0,\\quad \\frac{Q_i}{T_i} + \\frac{Q_{0,i}}{T_0} = 0\\;\\text{(auxiliary reversible Carnot cycles)}",
+          "to_latex": "\\oint \\frac{\\delta Q}{T_{\\mathrm{res}}} \\le 0,\\qquad \\oint_{\\mathrm{rev}} \\frac{\\delta Q_{\\mathrm{rev}}}{T} = 0",
+          "operation_label": "クラウジウスの不等式の導出",
+          "explanation": "補助可逆カルノー機関群と単一補助熱源を用いて複合サイクルを構成し、第2法則を適用して連続極限をとることでクラウジウスの不等式と可逆極限の等号を得る。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.logic.m51_proof_by_contradiction",
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th06_second_law_principles",
+            "phys.thermo.th07_carnot_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_auxiliary_carnot_network",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{N} Q_i - W = 0,\\quad \\frac{Q_i}{T_i} + \\frac{Q_{0,i}}{T_0} = 0\\;\\text{(auxiliary reversible Carnot cycles)}",
+          "to_latex": "W_{\\mathrm{tot}} = W + \\sum_{i=1}^{N} W_i = T_0 \\sum_{i=1}^{N} \\frac{Q_i}{T_i},\\quad Q_{0,\\mathrm{tot}} = -W_{\\mathrm{tot}}",
+          "operation_label": "複合サイクルの正味仕事の計算",
+          "explanation": "各熱源 T_i が元のサイクルと補助可逆機関の間で正味熱交換0となるように選ぶと、複合サイクル全体では補助熱源 T_0 のみと熱をやり取りし、総仕事 W_tot が T_0 Σ (Q_i/T_i) に等しくなる。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th07_carnot_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_apply_kelvin_planck",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W_{\\mathrm{tot}} = W + \\sum_{i=1}^{N} W_i = T_0 \\sum_{i=1}^{N} \\frac{Q_i}{T_i},\\quad Q_{0,\\mathrm{tot}} = -W_{\\mathrm{tot}}",
+          "to_latex": "W_{\\mathrm{tot}} \\le 0 \\implies \\sum_{i=1}^{N} \\frac{Q_i}{T_i} \\le 0",
+          "operation_label": "トムソンの原理の適用",
+          "explanation": "単一熱源 T_0 のみと接触する複合サイクルではトムソンの原理（および背理法）により W_tot <= 0 でなければならず、T_0 > 0 ゆえ離散和の不等式を得る。",
+          "used_node_ids": [
+            "math.logic.m51_proof_by_contradiction",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_continuum_reversible_limit",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W_{\\mathrm{tot}} \\le 0 \\implies \\sum_{i=1}^{N} \\frac{Q_i}{T_i} \\le 0",
+          "to_latex": "\\oint \\frac{\\delta Q}{T_{\\mathrm{res}}} \\le 0,\\qquad \\oint_{\\mathrm{rev}} \\frac{\\delta Q_{\\mathrm{rev}}}{T} = 0",
+          "operation_label": "連続極限と可逆過程への逆転適用",
+          "explanation": "N -> infinity の極限で周回積分不等式を得て、さらに可逆サイクルでは時間反転過程に対しても同じ不等式が符号反転して成り立つことから等号を得る。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "phys.thermo.th07_carnot_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_th09_entropy_state_function",
+      "target_node_id": "phys.thermo.th09_entropy_state_function",
+      "route_kind": "deductive",
+      "title": "クラウジウスの等式・不等式からの状態量エントロピーの定義と基本関係式の導出",
+      "premise_node_ids": [
+        "phys.thermo.th03_first_law_internal_energy",
+        "phys.thermo.th08_clausius_inequality"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m16_integral_linearity",
+        "math.vec.m05_gradient_line_integral"
+      ],
+      "assumptions": [
+        "任意の2つの平衡状態 A, B の間には少なくとも1つの可逆過程が存在する。",
+        "可逆過程では系の温度 T と熱源温度が一致する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\oint_{\\mathrm{rev}} \\frac{\\delta Q_{\\mathrm{rev}}}{T} = 0,\\quad \\oint \\frac{\\delta Q}{T_{\\mathrm{res}}} \\le 0,\\quad dU = \\delta Q_{\\mathrm{rev}} - p\\,dV",
+          "to_latex": "dS := \\frac{\\delta Q_{\\mathrm{rev}}}{T},\\quad S(B) - S(A) = \\int_{A,\\,\\mathrm{rev}}^{B} \\frac{\\delta Q_{\\mathrm{rev}}}{T},\\quad dS \\ge \\frac{\\delta Q}{T_{\\mathrm{res}}},\\quad dU = T\\,dS - p\\,dV",
+          "operation_label": "エントロピーの状態量性と熱力学基本関係式の導出",
+          "explanation": "可逆積分の経路独立性により状態量 S を定義し、不可逆サイクルへのクラウジウス不等式からエントロピー増大則を、第1法則との結合から基本関係式を導く。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m16_integral_linearity",
+            "math.vec.m05_gradient_line_integral",
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th08_clausius_inequality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_path_independence",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{\\mathrm{rev}} \\frac{\\delta Q_{\\mathrm{rev}}}{T} = 0,\\quad \\oint \\frac{\\delta Q}{T_{\\mathrm{res}}} \\le 0,\\quad dU = \\delta Q_{\\mathrm{rev}} - p\\,dV",
+          "to_latex": "\\int_{A,\\,C_1}^{B}\\frac{\\delta Q_{\\mathrm{rev}}}{T} - \\int_{A,\\,C_2}^{B}\\frac{\\delta Q_{\\mathrm{rev}}}{T} = \\oint_{C_1 - C_2} \\frac{\\delta Q_{\\mathrm{rev}}}{T} = 0 \\implies S(B) - S(A) := \\int_{A,\\,\\mathrm{rev}}^{B}\\frac{\\delta Q_{\\mathrm{rev}}}{T}`",
+          "operation_label": "線積分の経路独立性による状態量 S の定義",
+          "explanation": "A から B への任意の2つの可逆経路 C_1, C_2 で閉回路を構成するとクラウジウス等式より積分値が一致し、基準状態からの積分として一意な状態量 S が定義される。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.vec.m05_gradient_line_integral",
+            "phys.thermo.th08_clausius_inequality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_entropy_increase_law",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{A,\\,C_1}^{B}\\frac{\\delta Q_{\\mathrm{rev}}}{T} - \\int_{A,\\,C_2}^{B}\\frac{\\delta Q_{\\mathrm{rev}}}{T} = \\oint_{C_1 - C_2} \\frac{\\delta Q_{\\mathrm{rev}}}{T} = 0 \\implies S(B) - S(A) := \\int_{A,\\,\\mathrm{rev}}^{B}\\frac{\\delta Q_{\\mathrm{rev}}}{T}`",
+          "to_latex": "\\int_{A,\\,\\mathrm{irr}}^{B} \\frac{\\delta Q}{T_{\\mathrm{res}}} + \\int_{B,\\,\\mathrm{rev}}^{A} \\frac{\\delta Q_{\\mathrm{rev}}}{T} \\le 0 \\implies S(B) - S(A) \\ge \\int_{A}^{B} \\frac{\\delta Q}{T_{\\mathrm{res}}}\\;\\left(dS \\ge \\frac{\\delta Q}{T_{\\mathrm{res}}}\\right)`",
+          "operation_label": "一般過程に対するクラウジウス不等式の適用",
+          "explanation": "往路に任意の不可逆過程、復路に可逆過程を用いた閉サイクルにクラウジウスの不等式を適用し、エントロピー増大則を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.thermo.th08_clausius_inequality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_fundamental_thermodynamic_relation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{A,\\,\\mathrm{irr}}^{B} \\frac{\\delta Q}{T_{\\mathrm{res}}} + \\int_{B,\\,\\mathrm{rev}}^{A} \\frac{\\delta Q_{\\mathrm{rev}}}{T} \\le 0 \\implies S(B) - S(A) \\ge \\int_{A}^{B} \\frac{\\delta Q}{T_{\\mathrm{res}}}\\;\\left(dS \\ge \\frac{\\delta Q}{T_{\\mathrm{res}}}\\right)`",
+          "to_latex": "dS := \\frac{\\delta Q_{\\mathrm{rev}}}{T},\\quad S(B) - S(A) = \\int_{A,\\,\\mathrm{rev}}^{B} \\frac{\\delta Q_{\\mathrm{rev}}}{T},\\quad dS \\ge \\frac{\\delta Q}{T_{\\mathrm{res}}},\\quad dU = T\\,dS - p\\,dV",
+          "operation_label": "第1法則と可逆熱量の結合による基本関係式",
+          "explanation": "可逆過程における δQ_rev = T dS を熱力学第1法則 dU = δQ_rev - p dV に代入し、すべて状態量のみで表された熱力学基本関係式を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

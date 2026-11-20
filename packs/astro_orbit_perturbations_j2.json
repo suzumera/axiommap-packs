@@ -1,0 +1,803 @@
+{
+  "pack_meta": {
+    "pack_id": "astro.orbit.perturbations_j2",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "orbital_mechanics",
+    "title": "軌道摂動論：J2項（地球扁平性）による昇交点赤経・近地点引数の永年変化",
+    "language": "ja",
+    "description": "重力ポテンシャルの球面調和展開（J2項）、ラグランジュの惑星方程式・ガウスの摂動方程式、太陽同期軌道条件と凍結軌道条件を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "astro.orbit.pj01_perturbed_two_body_eom",
+      "short_code": "PJ01",
+      "kind": "definition",
+      "title": "摂動を受ける2体問題の運動方程式と擾乱関数（Disturbing Function）",
+      "summary": "中心天体の点質量重力に非球対称性などの摂動加速度を加えた運動方程式と、保存力摂動に対する擾乱関数 R および摂動ポテンシャル U_p の関係を定義する。",
+      "canonical_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r} + \\mathbf{a}_p,\\quad \\mathbf{a}_p = \\nabla R = -\\nabla U_p,\\quad U(\\mathbf{r}) = -\\frac{\\mu}{r} + U_p(\\mathbf{r})",
+      "aliases_latex": [
+        "\\ddot{\\mathbf{r}} + \\frac{\\mu}{r^3}\\mathbf{r} = \\nabla R",
+        "\\mathbf{a}_p = -\\nabla U_p(\\mathbf{r})"
+      ],
+      "keywords": [
+        "perturbed two-body problem",
+        "disturbing function",
+        "perturbation potential",
+        "osculating orbit"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.pj02_zonal_harmonics_j2_potential",
+      "short_code": "PJ02",
+      "kind": "theorem_formula",
+      "title": "重力ポテンシャルの球面調和展開と J2 項（地球扁平性）擾乱関数",
+      "summary": "軸対称な扁平地球の重力ポテンシャルをルジャンドル多項式による帯状調和項で展開し、主項である J2 擾乱関数を地心緯度および軌道要素で表す。",
+      "canonical_latex": "U(r,\\phi) = -\\frac{\\mu}{r}\\left[1 - \\sum_{n=2}^{\\infty} J_n\\left(\\frac{R_\\oplus}{r}\\right)^n P_n(\\sin\\phi)\\right],\\quad R_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{2r^3}(3\\sin^2\\phi - 1),\\quad \\sin\\phi = \\sin i\\sin(\\omega+\\nu)",
+      "aliases_latex": [
+        "R_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{2r^3}\\big(3\\sin^2 i\\sin^2(\\omega+\\nu)-1\\big)",
+        "U_{J_2} = \\frac{\\mu J_2 R_\\oplus^2}{2r^3}(3\\sin^2\\phi - 1)"
+      ],
+      "keywords": [
+        "geopotential",
+        "zonal harmonics",
+        "J2 oblateness",
+        "Legendre polynomials"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.pj03_gauss_variational_equations",
+      "short_code": "PJ03",
+      "kind": "theorem_formula",
+      "title": "ガウスの摂動方程式（RTN 座標系による接触軌道要素の変化率）",
+      "summary": "一般の摂動加速度を動径 (R)・軌道面内横方向 (T)・軌道面法線 (N) 成分に分解し、接触軌道要素 (a, e, i, Ω, ω) の時間微分を表す。",
+      "canonical_latex": "\\dot{a} = \\frac{2a^2}{h}\\left(e\\sin\\nu\\,a_R + \\frac{\\ell}{r}a_T\\right),\\quad \\dot{e} = \\frac{1}{h}\\left[\\ell\\sin\\nu\\,a_R + \\big((\\ell+r)\\cos\\nu + re\\big)a_T\\right],\\quad \\dot{i} = \\frac{r\\cos(\\omega+\\nu)}{h}a_N,\\quad \\dot{\\Omega} = \\frac{r\\sin(\\omega+\\nu)}{h\\sin i}a_N,\\quad \\dot{\\omega} = \\frac{1}{he}\\left[-\\ell\\cos\\nu\\,a_R + (\\ell+r)\\sin\\nu\\,a_T\\right] - \\dot{\\Omega}\\cos i",
+      "aliases_latex": [
+        "\\frac{da}{dt} = \\frac{2a^2}{h}\\left(e\\sin\\nu\\,a_R + \\frac{p}{r}a_T\\right)"
+      ],
+      "keywords": [
+        "Gauss variational equations",
+        "RTN frame",
+        "RSW frame",
+        "osculating elements"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.pj04_lagrange_planetary_equations",
+      "short_code": "PJ04",
+      "kind": "theorem_formula",
+      "title": "ラグランジュの惑星方程式（擾乱関数 R による軌道要素の時間発展）",
+      "summary": "保存力摂動（擾乱関数 R）に対し、ガウスの摂動方程式の加速度成分を軌道要素に関する偏微分へ変換してラグランジュの惑星方程式を得る。",
+      "canonical_latex": "\\dot{a} = \\frac{2}{na}\\frac{\\partial R}{\\partial M},\\quad \\dot{e} = \\frac{1-e^2}{na^2 e}\\frac{\\partial R}{\\partial M} - \\frac{\\sqrt{1-e^2}}{na^2 e}\\frac{\\partial R}{\\partial \\omega},\\quad \\dot{i} = \\frac{\\cos i}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial \\omega} - \\frac{1}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial \\Omega},\\quad \\dot{\\Omega} = \\frac{1}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial i},\\quad \\dot{\\omega} = -\\frac{\\cos i}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial i} + \\frac{\\sqrt{1-e^2}}{na^2 e}\\frac{\\partial R}{\\partial e}",
+      "aliases_latex": [
+        "\\dot{\\Omega} = \\frac{1}{h\\sin i}\\frac{\\partial R}{\\partial i}"
+      ],
+      "keywords": [
+        "Lagrange planetary equations",
+        "disturbing function",
+        "variation of parameters"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.pj05_j2_orbit_averaged_potential",
+      "short_code": "PJ05",
+      "kind": "theorem_formula",
+      "title": "J2 擾乱関数の1軌道平均（永年擾乱ポテンシャル）",
+      "summary": "J2 擾乱関数を平均近点角 M について1周期にわたり積分平均し、短周期振動成分を除いた永年擾乱関数を導出する。",
+      "canonical_latex": "\\bar{R}_{J_2} = \\frac{1}{2\\pi}\\int_{0}^{2\\pi} R_{J_2}\\,dM = \\frac{\\mu J_2 R_\\oplus^2}{4a^3(1-e^2)^{3/2}}\\left(2 - 3\\sin^2 i\\right)",
+      "aliases_latex": [
+        "\\bar{R}_{J_2} = \\frac{\\mu J_2 R_\\oplus^2}{4a^3(1-e^2)^{3/2}}(3\\cos^2 i - 1)"
+      ],
+      "keywords": [
+        "orbit averaging",
+        "secular disturbing function",
+        "mean anomaly average"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.pj06_j2_secular_rates",
+      "short_code": "PJ06",
+      "kind": "theorem_formula",
+      "title": "J2 項による昇交点赤経・近地点引数の永年変化率",
+      "summary": "1軌道平均した J2 擾乱関数をラグランジュの惑星方程式へ適用し、軌道長半径・離心率・傾斜角の永年変化が零となり、昇交点赤経と近地点引数が線形ドリフトすることを示す。",
+      "canonical_latex": "\\langle\\dot{a}\\rangle = \\langle\\dot{e}\\rangle = \\langle\\dot{i}\\rangle = 0,\\quad \\dot{\\Omega}_{J_2} = -\\frac{3}{2}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}\\cos i,\\quad \\dot{\\omega}_{J_2} = \\frac{3}{4}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}(5\\cos^2 i - 1)",
+      "aliases_latex": [
+        "\\dot{\\Omega}_{J_2} = -\\frac{3}{2} n J_2 \\left(\\frac{R_\\oplus}{\\ell}\\right)^2\\cos i",
+        "\\dot{\\omega}_{J_2} = \\frac{3}{4} n J_2 \\left(\\frac{R_\\oplus}{\\ell}\\right)^2(5\\cos^2 i - 1)"
+      ],
+      "keywords": [
+        "nodal precession",
+        "apsidal precession",
+        "secular perturbation",
+        "J2 drift"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.pj07_sun_synchronous_orbit_condition",
+      "short_code": "PJ07",
+      "kind": "theorem_formula",
+      "title": "太陽同期軌道（SSO）の永年歳差条件と軌道傾斜角",
+      "summary": "J2 による昇交点赤経の永年変化率を地球の太陽公転平均角速度に一致させることで、軌道面と太陽方向の幾何関係を維持する太陽同期軌道の条件式を導出する。",
+      "canonical_latex": "\\dot{\\Omega}_{J_2} = \\dot{\\Omega}_\\odot \\implies \\cos i_{\\mathrm{SSO}} = -\\frac{2\\dot{\\Omega}_\\odot a^{7/2}(1-e^2)^2}{3\\sqrt{\\mu}\\,J_2 R_\\oplus^2} < 0\\quad \\left(\\dot{\\Omega}_\\odot = \\frac{2\\pi}{T_{\\text{year}}} > 0,\\; i_{\\mathrm{SSO}} > 90^\\circ\\right)",
+      "aliases_latex": [
+        "\\cos i_{\\mathrm{SSO}} = -\\frac{2\\dot{\\Omega}_\\odot \\ell^2}{3 n J_2 R_\\oplus^2}"
+      ],
+      "keywords": [
+        "sun-synchronous orbit",
+        "SSO",
+        "retrograde orbit",
+        "nodal regression"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.pj08_critical_inclination_frozen_orbit",
+      "short_code": "PJ08",
+      "kind": "theorem_formula",
+      "title": "臨界傾斜角と J2+J3 による凍結軌道（Frozen Orbit）条件",
+      "summary": "J2 による近地点引数ドリフトが消滅する臨界傾斜角（約63.4度）と、J2 および J3 項の釣り合いにより離心率と近地点引数を同時固定する凍結軌道条件を導出する。",
+      "canonical_latex": "5\\cos^2 i_c - 1 = 0 \\implies i_c = \\arccos\\!\\left(\\pm\\frac{1}{\\sqrt{5}}\\right) \\approx 63.43^\\circ,\\; 116.57^\\circ;\\qquad \\langle\\dot{e}\\rangle_{J_2+J_3} = 0 \\land \\langle\\dot{\\omega}\\rangle_{J_2+J_3} = 0 \\implies \\omega_f = \\pm\\frac{\\pi}{2},\\quad e_f \\approx -\\frac{J_3 R_\\oplus \\sin i}{2 J_2 a \\sin\\omega_f}",
+      "aliases_latex": [
+        "\\cos^2 i_c = \\frac{1}{5}",
+        "e_f \\approx -\\frac{J_3 R_\\oplus \\sin i}{2 J_2 a}\\;\\left(\\omega_f = \\frac{\\pi}{2}\\right)"
+      ],
+      "keywords": [
+        "critical inclination",
+        "Molniya orbit",
+        "frozen orbit",
+        "J3 harmonic"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "astro.orbit.deriv_pj01",
+      "target_node_id": "astro.orbit.pj01_perturbed_two_body_eom",
+      "route_kind": "deductive",
+      "title": "ニュートンの運動方程式と2体問題からの摂動運動方程式および擾乱関数の導入",
+      "premise_node_ids": [
+        "phys.orbit.g01_two_body_eom",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m05_gradient_line_integral"
+      ],
+      "assumptions": [
+        "中心天体の質量が衛星質量に比べて十分大きい（μ = GM）",
+        "保存力摂動についてはスカラー摂動ポテンシャル U_p が存在する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\ddot{\\mathbf{r}} = -\\frac{GmM}{r^3}\\mathbf{r} + \\mathbf{F}_p",
+          "to_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r} + \\mathbf{a}_p,\\quad \\mathbf{a}_p = \\nabla R = -\\nabla U_p,\\quad U(\\mathbf{r}) = -\\frac{\\mu}{r} + U_p(\\mathbf{r})",
+          "operation_label": "摂動加速度と擾乱関数の定義",
+          "explanation": "質点系に作用する摂動力を質量で割り摂動加速度を導入し、保存力成分を擾乱関数 R = -U_p の勾配として表す。",
+          "used_node_ids": [
+            "math.vec.m05_gradient_line_integral",
+            "phys.mech.p02_newton_second_law",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_divide_mass",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\ddot{\\mathbf{r}} = -\\frac{GmM}{r^3}\\mathbf{r} + \\mathbf{F}_p",
+          "to_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r} + \\mathbf{a}_p\\quad \\left(\\mu = GM,\\;\\mathbf{a}_p = \\frac{\\mathbf{F}_p}{m}\\right)",
+          "operation_label": "比摂動加速度の定義",
+          "explanation": "運動方程式の両辺を衛星質量 m で割り、2体問題のケプラー項と摂動加速度 a_p に分離する。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_disturbing_potential",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r} + \\mathbf{a}_p\\quad \\left(\\mu = GM,\\;\\mathbf{a}_p = \\frac{\\mathbf{F}_p}{m}\\right)",
+          "to_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r} + \\mathbf{a}_p,\\quad \\mathbf{a}_p = \\nabla R = -\\nabla U_p,\\quad U(\\mathbf{r}) = -\\frac{\\mu}{r} + U_p(\\mathbf{r})",
+          "operation_label": "ポテンシャル分解と擾乱関数 R",
+          "explanation": "全重力ポテンシャル U から点質量項 -μ/r を除いた残差を U_p とし、軌道力学の慣例に従い符号を反転した R = -U_p を擾乱関数と定義する。",
+          "used_node_ids": [
+            "math.vec.m05_gradient_line_integral"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.orbit.deriv_pj02",
+      "target_node_id": "astro.orbit.pj02_zonal_harmonics_j2_potential",
+      "route_kind": "deductive",
+      "title": "軸対称地球重力ポテンシャルの多重極展開による J2 擾乱関数の導出",
+      "premise_node_ids": [
+        "astro.orbit.pj01_perturbed_two_body_eom",
+        "astro.orbit.ka08_pqw_to_eci_rotation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.mi08_spherical_coordinates_def",
+        "math.calc.t09_maclaurin_binomial"
+      ],
+      "assumptions": [
+        "地球の質量分布は自転軸に関して軸対称であり赤道対称面に質心が一致する",
+        "r > R_⊕ の外部領域で多重極展開が一様収束する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "U(\\mathbf{r}) = -G\\iiint_{V_\\oplus} \\frac{\\rho(\\mathbf{r}')}{\\|\\mathbf{r}-\\mathbf{r}'\\|}\\,dV'",
+          "to_latex": "U(r,\\phi) = -\\frac{\\mu}{r}\\left[1 - \\sum_{n=2}^{\\infty} J_n\\left(\\frac{R_\\oplus}{r}\\right)^n P_n(\\sin\\phi)\\right],\\quad R_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{2r^3}(3\\sin^2\\phi - 1),\\quad \\sin\\phi = \\sin i\\sin(\\omega+\\nu)",
+          "operation_label": "帯状調和展開と J2 項抽出",
+          "explanation": "体積積分の逆距離核をルジャンドル多項式で展開し、軸対称性と質心一致条件から n=2 の扁平性項 J2 を抽出し、軌道要素で表現する。",
+          "used_node_ids": [
+            "astro.orbit.ka08_pqw_to_eci_rotation",
+            "astro.orbit.pj01_perturbed_two_body_eom",
+            "math.calc.mi08_spherical_coordinates_def",
+            "math.calc.t09_maclaurin_binomial"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_legendre_expansion",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U(\\mathbf{r}) = -G\\iiint_{V_\\oplus} \\frac{\\rho(\\mathbf{r}')}{\\|\\mathbf{r}-\\mathbf{r}'\\|}\\,dV'",
+          "to_latex": "U(r,\\phi) = -\\frac{\\mu}{r}\\left[1 - \\sum_{n=2}^{\\infty} J_n\\left(\\frac{R_\\oplus}{r}\\right)^n P_n(\\sin\\phi)\\right]",
+          "operation_label": "逆距離の二項・ルジャンドル展開",
+          "explanation": "r'/r < 1 に対して一般二項展開からルジャンドル多項式 P_n による母関数展開を行い、軸対称性により経度依存項を落として帯状調和係数 J_n を定義する。",
+          "used_node_ids": [
+            "math.calc.mi08_spherical_coordinates_def",
+            "math.calc.t09_maclaurin_binomial"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_extract_j2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U(r,\\phi) = -\\frac{\\mu}{r}\\left[1 - \\sum_{n=2}^{\\infty} J_n\\left(\\frac{R_\\oplus}{r}\\right)^n P_n(\\sin\\phi)\\right]",
+          "to_latex": "U(r,\\phi) = -\\frac{\\mu}{r}\\left[1 - \\sum_{n=2}^{\\infty} J_n\\left(\\frac{R_\\oplus}{r}\\right)^n P_n(\\sin\\phi)\\right],\\quad R_{J_2} = -U_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{2r^3}(3\\sin^2\\phi - 1)",
+          "operation_label": "2次帯状調和項 J2 の抽出",
+          "explanation": "n=2 のルジャンドル多項式 P_2(x) = (3x^2 - 1)/2 を代入し、擾乱関数 R = -U_p の定義を用いて R_J2 を得る。",
+          "used_node_ids": [
+            "astro.orbit.pj01_perturbed_two_body_eom"
+          ],
+          "sympy_check_hint": "simplify(-mu*J2*R_e**2/r**3 * (3*sin(phi)**2 - 1)/2)"
+        },
+        {
+          "step_id": "s2_3_latitude_orbital_elements",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U(r,\\phi) = -\\frac{\\mu}{r}\\left[1 - \\sum_{n=2}^{\\infty} J_n\\left(\\frac{R_\\oplus}{r}\\right)^n P_n(\\sin\\phi)\\right],\\quad R_{J_2} = -U_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{2r^3}(3\\sin^2\\phi - 1)",
+          "to_latex": "U(r,\\phi) = -\\frac{\\mu}{r}\\left[1 - \\sum_{n=2}^{\\infty} J_n\\left(\\frac{R_\\oplus}{r}\\right)^n P_n(\\sin\\phi)\\right],\\quad R_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{2r^3}(3\\sin^2\\phi - 1),\\quad \\sin\\phi = \\sin i\\sin(\\omega+\\nu)",
+          "operation_label": "PQW→ECI回転による緯度角表示",
+          "explanation": "PQW座標系からECI座標系への回転行列 Q の第3行成分より z/r = sin i sin(ω+ν) が得られ、緯度 φ を軌道要素で表す。",
+          "used_node_ids": [
+            "astro.orbit.ka08_pqw_to_eci_rotation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.orbit.deriv_pj03",
+      "target_node_id": "astro.orbit.pj03_gauss_variational_equations",
+      "route_kind": "deductive",
+      "title": "定数変化法によるガウスの摂動方程式（RTN 成分表現）の導出",
+      "premise_node_ids": [
+        "astro.orbit.pj01_perturbed_two_body_eom",
+        "astro.orbit.ka01_angular_momentum_areal_velocity",
+        "astro.orbit.ka02_vis_viva_equation",
+        "astro.orbit.ka07_perifocal_frame_state_vectors",
+        "astro.orbit.ka09_eci_to_orbital_elements_inverse"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "各時刻の接触軌道は非退化楕円軌道（0 < e < 1, 0 < i < π）である",
+        "接触軌道要素の定義により r および v は2体問題と同じ関数形を保つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r} + \\mathbf{a}_p,\\quad \\mathbf{a}_p = a_R\\hat{\\mathbf{e}}_R + a_T\\hat{\\mathbf{e}}_T + a_N\\hat{\\mathbf{e}}_N",
+          "to_latex": "\\dot{a} = \\frac{2a^2}{h}\\left(e\\sin\\nu\\,a_R + \\frac{\\ell}{r}a_T\\right),\\quad \\dot{e} = \\frac{1}{h}\\left[\\ell\\sin\\nu\\,a_R + \\big((\\ell+r)\\cos\\nu + re\\big)a_T\\right],\\quad \\dot{i} = \\frac{r\\cos(\\omega+\\nu)}{h}a_N,\\quad \\dot{\\Omega} = \\frac{r\\sin(\\omega+\\nu)}{h\\sin i}a_N,\\quad \\dot{\\omega} = \\frac{1}{he}\\left[-\\ell\\cos\\nu\\,a_R + (\\ell+r)\\sin\\nu\\,a_T\\right] - \\dot{\\Omega}\\cos i",
+          "operation_label": "接触保存量の時間微分とRTN射影",
+          "explanation": "比エネルギー ε・比角運動量 h・ラプラス＝ルンゲ＝レンツベクトル e の時間微分を摂動加速度の RTN 成分で表現し、軌道要素の微分方程式を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "astro.orbit.ka02_vis_viva_equation",
+            "astro.orbit.ka07_perifocal_frame_state_vectors",
+            "astro.orbit.ka09_eci_to_orbital_elements_inverse",
+            "astro.orbit.pj01_perturbed_two_body_eom",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_energy_and_angular_momentum",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r} + \\mathbf{a}_p,\\quad \\mathbf{a}_p = a_R\\hat{\\mathbf{e}}_R + a_T\\hat{\\mathbf{e}}_T + a_N\\hat{\\mathbf{e}}_N",
+          "to_latex": "\\dot{\\varepsilon} = \\mathbf{v}\\cdot\\mathbf{a}_p \\implies \\dot{a} = \\frac{2a^2}{h}\\left(e\\sin\\nu\\,a_R + \\frac{\\ell}{r}a_T\\right),\\quad \\dot{\\mathbf{h}} = \\mathbf{r}\\times\\mathbf{a}_p = r a_T\\hat{\\mathbf{e}}_N - r a_N\\hat{\\mathbf{e}}_T",
+          "operation_label": "エネルギーと角運動量の摂動時間微分",
+          "explanation": "vis-viva 式の時間微分から a の変化率を求め、r × a_p から角運動量ベクトルの時間微分を RTN 基底で表す。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "astro.orbit.ka02_vis_viva_equation",
+            "astro.orbit.ka07_perifocal_frame_state_vectors",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_orbital_plane_elements",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\varepsilon} = \\mathbf{v}\\cdot\\mathbf{a}_p \\implies \\dot{a} = \\frac{2a^2}{h}\\left(e\\sin\\nu\\,a_R + \\frac{\\ell}{r}a_T\\right),\\quad \\dot{\\mathbf{h}} = \\mathbf{r}\\times\\mathbf{a}_p = r a_T\\hat{\\mathbf{e}}_N - r a_N\\hat{\\mathbf{e}}_T",
+          "to_latex": "\\dot{a} = \\frac{2a^2}{h}\\left(e\\sin\\nu\\,a_R + \\frac{\\ell}{r}a_T\\right),\\quad \\dot{h} = r a_T,\\quad \\dot{i} = \\frac{r\\cos(\\omega+\\nu)}{h}a_N,\\quad \\dot{\\Omega} = \\frac{r\\sin(\\omega+\\nu)}{h\\sin i}a_N",
+          "operation_label": "軌道面要素 i, Ω の変化率導出",
+          "explanation": "h ベクトルの z 成分 cos i = h_z/h および昇交点ベクトル n = e_3 × h の微分から i と Ω の時間変化率を求める。",
+          "used_node_ids": [
+            "astro.orbit.ka09_eci_to_orbital_elements_inverse",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_eccentricity_periapsis",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{a} = \\frac{2a^2}{h}\\left(e\\sin\\nu\\,a_R + \\frac{\\ell}{r}a_T\\right),\\quad \\dot{h} = r a_T,\\quad \\dot{i} = \\frac{r\\cos(\\omega+\\nu)}{h}a_N,\\quad \\dot{\\Omega} = \\frac{r\\sin(\\omega+\\nu)}{h\\sin i}a_N",
+          "to_latex": "\\dot{a} = \\frac{2a^2}{h}\\left(e\\sin\\nu\\,a_R + \\frac{\\ell}{r}a_T\\right),\\quad \\dot{e} = \\frac{1}{h}\\left[\\ell\\sin\\nu\\,a_R + \\big((\\ell+r)\\cos\\nu + re\\big)a_T\\right],\\quad \\dot{i} = \\frac{r\\cos(\\omega+\\nu)}{h}a_N,\\quad \\dot{\\Omega} = \\frac{r\\sin(\\omega+\\nu)}{h\\sin i}a_N,\\quad \\dot{\\omega} = \\frac{1}{he}\\left[-\\ell\\cos\\nu\\,a_R + (\\ell+r)\\sin\\nu\\,a_T\\right] - \\dot{\\Omega}\\cos i",
+          "operation_label": "離心率 e と近地点引数 ω の変化率導出",
+          "explanation": "ℓ = h^2/μ = a(1-e^2) の微分から e の変化率を導き、離心率ベクトル e の軌道面内回転と軌道面の歳差補正 -Ω̇ cos i から ω̇ を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka09_eci_to_orbital_elements_inverse",
+            "math.calc.m15_product_rule",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.orbit.deriv_pj04",
+      "target_node_id": "astro.orbit.pj04_lagrange_planetary_equations",
+      "route_kind": "deductive",
+      "title": "ガウスの摂動方程式と連鎖律によるラグランジュの惑星方程式の導出",
+      "premise_node_ids": [
+        "astro.orbit.pj01_perturbed_two_body_eom",
+        "astro.orbit.pj03_gauss_variational_equations",
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m35_multivariable_chain_rule"
+      ],
+      "assumptions": [
+        "摂動加速度は時間陽依存しない擾乱関数 R(r) の勾配 a_p = ∇R で与えられる",
+        "0 < e < 1 かつ 0 < i < π"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{a}_p = \\nabla R,\\quad \\frac{\\partial R}{\\partial \\alpha_k} = \\mathbf{a}_p \\cdot \\frac{\\partial \\mathbf{r}}{\\partial \\alpha_k}",
+          "to_latex": "\\dot{a} = \\frac{2}{na}\\frac{\\partial R}{\\partial M},\\quad \\dot{e} = \\frac{1-e^2}{na^2 e}\\frac{\\partial R}{\\partial M} - \\frac{\\sqrt{1-e^2}}{na^2 e}\\frac{\\partial R}{\\partial \\omega},\\quad \\dot{i} = \\frac{\\cos i}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial \\omega} - \\frac{1}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial \\Omega},\\quad \\dot{\\Omega} = \\frac{1}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial i},\\quad \\dot{\\omega} = -\\frac{\\cos i}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial i} + \\frac{\\sqrt{1-e^2}}{na^2 e}\\frac{\\partial R}{\\partial e}",
+          "operation_label": "擾乱関数の軌道要素偏微分への変換",
+          "explanation": "位置ベクトル r の軌道要素に関する偏微分と RTN 加速度成分の対応関係を連鎖律で結び、ガウスの摂動方程式をラグランジュの惑星方程式へ書き換える。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.orbit.pj01_perturbed_two_body_eom",
+            "astro.orbit.pj03_gauss_variational_equations",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_partial_derivatives_r",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{a}_p = \\nabla R,\\quad \\frac{\\partial R}{\\partial \\alpha_k} = \\mathbf{a}_p \\cdot \\frac{\\partial \\mathbf{r}}{\\partial \\alpha_k}",
+          "to_latex": "\\frac{\\partial R}{\\partial M} = \\frac{\\mathbf{v}\\cdot\\mathbf{a}_p}{n},\\quad \\frac{\\partial R}{\\partial \\omega} = r a_T,\\quad \\frac{\\partial R}{\\partial i} = r\\sin(\\omega+\\nu)\\,a_N,\\quad \\frac{\\partial R}{\\partial \\Omega} = r\\cos i\\,a_T - r\\sin i\\cos(\\omega+\\nu)\\,a_N",
+          "operation_label": "角度要素 (M, ω, i, Ω) に関する R の偏微分",
+          "explanation": "各角度要素の微小変化が生成する空間変位ベクトル（速度方向および各回転軸周りの無限小回転）と a_p の内積を計算する。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_substitute_a_i_omega_node",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial R}{\\partial M} = \\frac{\\mathbf{v}\\cdot\\mathbf{a}_p}{n},\\quad \\frac{\\partial R}{\\partial \\omega} = r a_T,\\quad \\frac{\\partial R}{\\partial i} = r\\sin(\\omega+\\nu)\\,a_N,\\quad \\frac{\\partial R}{\\partial \\Omega} = r\\cos i\\,a_T - r\\sin i\\cos(\\omega+\\nu)\\,a_N",
+          "to_latex": "\\dot{a} = \\frac{2}{na}\\frac{\\partial R}{\\partial M},\\quad \\dot{i} = \\frac{\\cos i}{h\\sin i}\\frac{\\partial R}{\\partial \\omega} - \\frac{1}{h\\sin i}\\frac{\\partial R}{\\partial \\Omega},\\quad \\dot{\\Omega} = \\frac{1}{h\\sin i}\\frac{\\partial R}{\\partial i},\\quad \\frac{\\partial R}{\\partial e} = \\frac{-\\ell\\cos\\nu\\,a_R + (\\ell+r)\\sin\\nu\\,a_T}{1-e^2}",
+          "operation_label": "a, i, Ω の式と ∂R/∂e の整理",
+          "explanation": "h = n a^2 √(1-e^2) および μ = n^2 a^3 を用いて ȧ, i̇, Ω̇ を偏微分で表し、同様に ∂r/∂e との内積から ∂R/∂e を求める。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.orbit.pj03_gauss_variational_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_complete_lagrange_eqs",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{a} = \\frac{2}{na}\\frac{\\partial R}{\\partial M},\\quad \\dot{i} = \\frac{\\cos i}{h\\sin i}\\frac{\\partial R}{\\partial \\omega} - \\frac{1}{h\\sin i}\\frac{\\partial R}{\\partial \\Omega},\\quad \\dot{\\Omega} = \\frac{1}{h\\sin i}\\frac{\\partial R}{\\partial i},\\quad \\frac{\\partial R}{\\partial e} = \\frac{-\\ell\\cos\\nu\\,a_R + (\\ell+r)\\sin\\nu\\,a_T}{1-e^2}",
+          "to_latex": "\\dot{a} = \\frac{2}{na}\\frac{\\partial R}{\\partial M},\\quad \\dot{e} = \\frac{1-e^2}{na^2 e}\\frac{\\partial R}{\\partial M} - \\frac{\\sqrt{1-e^2}}{na^2 e}\\frac{\\partial R}{\\partial \\omega},\\quad \\dot{i} = \\frac{\\cos i}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial \\omega} - \\frac{1}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial \\Omega},\\quad \\dot{\\Omega} = \\frac{1}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial i},\\quad \\dot{\\omega} = -\\frac{\\cos i}{na^2\\sqrt{1-e^2}\\sin i}\\frac{\\partial R}{\\partial i} + \\frac{\\sqrt{1-e^2}}{na^2 e}\\frac{\\partial R}{\\partial e}",
+          "operation_label": "ė と ω̇ の完成",
+          "explanation": "ガウスの ė, ω̇ 式における a_R, a_T の線形結合を ∂R/∂M, ∂R/∂ω, ∂R/∂e, ∂R/∂i で置き換え、ラグランジュの惑星方程式を完成させる。",
+          "used_node_ids": [
+            "astro.orbit.pj03_gauss_variational_equations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.orbit.deriv_pj05",
+      "target_node_id": "astro.orbit.pj05_j2_orbit_averaged_potential",
+      "route_kind": "deductive",
+      "title": "真近点角への変数変換による J2 擾乱関数の1軌道平均の導出",
+      "premise_node_ids": [
+        "astro.orbit.pj02_zonal_harmonics_j2_potential",
+        "astro.orbit.ka01_angular_momentum_areal_velocity",
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.calc.m43_definite_integral_substitution",
+        "math.geom.m07_conic_polar"
+      ],
+      "assumptions": [
+        "J2 による1軌道周期内の軌道要素の短周期変化は小さく、平均積分中は定数（平均要素）とみなす（1次摂動平均法）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\bar{R}_{J_2} = \\frac{1}{2\\pi}\\int_{0}^{2\\pi} R_{J_2}\\,dM,\\quad R_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{2r^3}\\big(3\\sin^2 i\\sin^2(\\omega+\\nu) - 1\\big)",
+          "to_latex": "\\bar{R}_{J_2} = \\frac{1}{2\\pi}\\int_{0}^{2\\pi} R_{J_2}\\,dM = \\frac{\\mu J_2 R_\\oplus^2}{4a^3(1-e^2)^{3/2}}\\left(2 - 3\\sin^2 i\\right)",
+          "operation_label": "面積速度一定を用いた dM→dν 積分評価",
+          "explanation": "dM = (r^2/(a^2√(1-e^2)))dν を用いて M に関する積分を ν の積分に置換し、三角関数の周期積分により永年擾乱関数を求める。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.orbit.pj02_zonal_harmonics_j2_potential",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.calc.m43_definite_integral_substitution",
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": "integrate((1+e*cos(nu))*(3*sin(i)**2*sin(omega+nu)**2 - 1), (nu, 0, 2*pi))"
+        },
+        {
+          "step_id": "s2_1_change_var_to_nu",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\bar{R}_{J_2} = \\frac{1}{2\\pi}\\int_{0}^{2\\pi} R_{J_2}\\,dM,\\quad R_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{2r^3}\\big(3\\sin^2 i\\sin^2(\\omega+\\nu) - 1\\big)",
+          "to_latex": "\\bar{R}_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{4\\pi a^2\\sqrt{1-e^2}}\\int_{0}^{2\\pi} \\frac{1}{r}\\big(3\\sin^2 i\\sin^2(\\omega+\\nu) - 1\\big)\\,d\\nu",
+          "operation_label": "平均近点角から真近点角への置換積分",
+          "explanation": "ケプラー第2法則 r^2 ν̇ = h = n a^2 √(1-e^2) と dM = n dt より dM = r^2 dν / (a^2 √(1-e^2)) を代入すると、r^-3 が r^-1 に次数が下がる。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_polar_conic_substitution",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\bar{R}_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{4\\pi a^2\\sqrt{1-e^2}}\\int_{0}^{2\\pi} \\frac{1}{r}\\big(3\\sin^2 i\\sin^2(\\omega+\\nu) - 1\\big)\\,d\\nu",
+          "to_latex": "\\bar{R}_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{4\\pi a^3(1-e^2)^{3/2}}\\int_{0}^{2\\pi} (1+e\\cos\\nu)\\left[\\frac{3}{2}\\sin^2 i\\big(1-\\cos(2\\omega+2\\nu)\\big) - 1\\right] d\\nu",
+          "operation_label": "極座標楕円式と倍角公式の代入",
+          "explanation": "1/r = (1+e cos ν)/[a(1-e^2)] および sin^2(ω+ν) = [1 - cos(2ω+2ν)]/2 を代入し、被積分関数を純粋な三角多項式にする。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_periodic_integration",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\bar{R}_{J_2} = -\\frac{\\mu J_2 R_\\oplus^2}{4\\pi a^3(1-e^2)^{3/2}}\\int_{0}^{2\\pi} (1+e\\cos\\nu)\\left[\\frac{3}{2}\\sin^2 i\\big(1-\\cos(2\\omega+2\\nu)\\big) - 1\\right] d\\nu",
+          "to_latex": "\\bar{R}_{J_2} = \\frac{1}{2\\pi}\\int_{0}^{2\\pi} R_{J_2}\\,dM = \\frac{\\mu J_2 R_\\oplus^2}{4a^3(1-e^2)^{3/2}}\\left(2 - 3\\sin^2 i\\right)",
+          "operation_label": "周期振動項の積分消去",
+          "explanation": "[0, 2π] 上で cos ν, cos(2ω+2ν), cos ν cos(2ω+2ν) の積分がすべて 0 となるため定数項のみが残り、2π(3/2 sin^2 i - 1) が得られる。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "simplify(-mu*J2*R_e**2/(4*pi*a**3*(1-e**2)**(3/2)) * 2*pi*(3*sin(i)**2/2 - 1))"
+        }
+      ]
+    },
+    {
+      "id": "astro.orbit.deriv_pj06",
+      "target_node_id": "astro.orbit.pj06_j2_secular_rates",
+      "route_kind": "deductive",
+      "title": "平均 J2 擾乱関数とラグランジュの惑星方程式による永年変化率の導出",
+      "premise_node_ids": [
+        "astro.orbit.pj04_lagrange_planetary_equations",
+        "astro.orbit.pj05_j2_orbit_averaged_potential",
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m31_trig_derivatives"
+      ],
+      "assumptions": [
+        "軌道長半径・離心率・傾斜角などの平均要素に対する永年変化のみを評価する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\bar{R}_{J_2} = \\frac{\\mu J_2 R_\\oplus^2}{4a^3(1-e^2)^{3/2}}\\left(3\\cos^2 i - 1\\right)",
+          "to_latex": "\\langle\\dot{a}\\rangle = \\langle\\dot{e}\\rangle = \\langle\\dot{i}\\rangle = 0,\\quad \\dot{\\Omega}_{J_2} = -\\frac{3}{2}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}\\cos i,\\quad \\dot{\\omega}_{J_2} = \\frac{3}{4}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}(5\\cos^2 i - 1)",
+          "operation_label": "平均擾乱関数の偏微分と惑星方程式への代入",
+          "explanation": "平均 J2 擾乱関数が M, ω, Ω に依存しないことから a, e, i の永年変化が零となり、i と e の偏微分から Ω̇ と ω̇ が得られる。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.orbit.pj04_lagrange_planetary_equations",
+            "astro.orbit.pj05_j2_orbit_averaged_potential",
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_zero_secular_aei",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\bar{R}_{J_2} = \\frac{\\mu J_2 R_\\oplus^2}{4a^3(1-e^2)^{3/2}}\\left(3\\cos^2 i - 1\\right)",
+          "to_latex": "\\frac{\\partial\\bar{R}_{J_2}}{\\partial M} = \\frac{\\partial\\bar{R}_{J_2}}{\\partial \\omega} = \\frac{\\partial\\bar{R}_{J_2}}{\\partial \\Omega} = 0 \\implies \\langle\\dot{a}\\rangle = \\langle\\dot{e}\\rangle = \\langle\\dot{i}\\rangle = 0",
+          "operation_label": "a, e, i の永年保存",
+          "explanation": "平均 J2 擾乱関数には M, ω, Ω が含まれないため、これらの変数に関する偏微分はすべて恒等的に 0 となり、a, e, i の永年変化率はゼロとなる。",
+          "used_node_ids": [
+            "astro.orbit.pj04_lagrange_planetary_equations",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_omega_node_and_de",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial\\bar{R}_{J_2}}{\\partial M} = \\frac{\\partial\\bar{R}_{J_2}}{\\partial \\omega} = \\frac{\\partial\\bar{R}_{J_2}}{\\partial \\Omega} = 0 \\implies \\langle\\dot{a}\\rangle = \\langle\\dot{e}\\rangle = \\langle\\dot{i}\\rangle = 0",
+          "to_latex": "\\langle\\dot{a}\\rangle = \\langle\\dot{e}\\rangle = \\langle\\dot{i}\\rangle = 0,\\quad \\dot{\\Omega}_{J_2} = -\\frac{3}{2}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}\\cos i,\\quad \\frac{\\partial\\bar{R}_{J_2}}{\\partial e} = \\frac{3\\mu J_2 R_\\oplus^2 e}{4a^3(1-e^2)^{5/2}}(3\\cos^2 i - 1)",
+          "operation_label": "昇交点赤経変化率と ∂R̄/∂e の計算",
+          "explanation": "∂R̄_J2/∂i = -(3μ J2 R_⊕^2)/(2 a^3(1-e^2)^{3/2}) cos i sin i および μ = n^2 a^3 を用いて Ω̇_J2 を求め、同時に e に関する偏微分を計算する。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.orbit.pj04_lagrange_planetary_equations",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": "diff(mu*J2*R_e**2/(4*a**3*(1-e**2)**(3/2))*(3*cos(i)**2-1), i)"
+        },
+        {
+          "step_id": "s2_3_argument_of_periapsis",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle\\dot{a}\\rangle = \\langle\\dot{e}\\rangle = \\langle\\dot{i}\\rangle = 0,\\quad \\dot{\\Omega}_{J_2} = -\\frac{3}{2}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}\\cos i,\\quad \\frac{\\partial\\bar{R}_{J_2}}{\\partial e} = \\frac{3\\mu J_2 R_\\oplus^2 e}{4a^3(1-e^2)^{5/2}}(3\\cos^2 i - 1)",
+          "to_latex": "\\langle\\dot{a}\\rangle = \\langle\\dot{e}\\rangle = \\langle\\dot{i}\\rangle = 0,\\quad \\dot{\\Omega}_{J_2} = -\\frac{3}{2}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}\\cos i,\\quad \\dot{\\omega}_{J_2} = \\frac{3}{4}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}(5\\cos^2 i - 1)",
+          "operation_label": "近地点引数永年変化率の合成",
+          "explanation": "ω̇ = -Ω̇ cos i + [√(1-e^2)/(n a^2 e)] (∂R̄/∂e) に両項を代入し、2 cos^2 i + (3 cos^2 i - 1) = 5 cos^2 i - 1 へと整理する。",
+          "used_node_ids": [
+            "astro.orbit.pj04_lagrange_planetary_equations"
+          ],
+          "sympy_check_hint": "simplify(Rational(3,2)*cos(i)**2 + Rational(3,4)*(3*cos(i)**2 - 1))"
+        }
+      ]
+    },
+    {
+      "id": "astro.orbit.deriv_pj07",
+      "target_node_id": "astro.orbit.pj07_sun_synchronous_orbit_condition",
+      "route_kind": "deductive",
+      "title": "J2 昇交点歳差式からの太陽同期軌道条件式の導出",
+      "premise_node_ids": [
+        "astro.orbit.pj06_j2_secular_rates",
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "地球の太陽周回軌道離心率による季節変動を平均化し、太陽の平均黄経角速度 Ω̇_☉ を定数とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\Omega}_{J_2} = -\\frac{3}{2}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}\\cos i = \\dot{\\Omega}_\\odot",
+          "to_latex": "\\dot{\\Omega}_{J_2} = \\dot{\\Omega}_\\odot \\implies \\cos i_{\\mathrm{SSO}} = -\\frac{2\\dot{\\Omega}_\\odot a^{7/2}(1-e^2)^2}{3\\sqrt{\\mu}\\,J_2 R_\\oplus^2} < 0\\quad \\left(\\dot{\\Omega}_\\odot = \\frac{2\\pi}{T_{\\text{year}}} > 0,\\; i_{\\mathrm{SSO}} > 90^\\circ\\right)",
+          "operation_label": "太陽年周角速度との同期条件",
+          "explanation": "J2 による昇交点赤経の永年変化率に平均運動 n = √(μ/a^3) を代入して太陽公転角速度と等置し、軌道傾斜角の条件を解く。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.orbit.pj06_j2_secular_rates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_substitute_mean_motion",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\Omega}_{J_2} = -\\frac{3}{2}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}\\cos i = \\dot{\\Omega}_\\odot",
+          "to_latex": "-\\frac{3\\sqrt{\\mu}\\,J_2 R_\\oplus^2}{2a^{7/2}(1-e^2)^2}\\cos i_{\\mathrm{SSO}} = \\dot{\\Omega}_\\odot",
+          "operation_label": "平均運動 n = √(μ/a^3) の代入",
+          "explanation": "ケプラー第3法則の平均運動を代入し、軌道長半径依存性を a^{7/2} にまとめる。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_solve_inclination",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{3\\sqrt{\\mu}\\,J_2 R_\\oplus^2}{2a^{7/2}(1-e^2)^2}\\cos i_{\\mathrm{SSO}} = \\dot{\\Omega}_\\odot",
+          "to_latex": "\\dot{\\Omega}_{J_2} = \\dot{\\Omega}_\\odot \\implies \\cos i_{\\mathrm{SSO}} = -\\frac{2\\dot{\\Omega}_\\odot a^{7/2}(1-e^2)^2}{3\\sqrt{\\mu}\\,J_2 R_\\oplus^2} < 0\\quad \\left(\\dot{\\Omega}_\\odot = \\frac{2\\pi}{T_{\\text{year}}} > 0,\\; i_{\\mathrm{SSO}} > 90^\\circ\\right)",
+          "operation_label": "cos i の解と逆行軌道条件",
+          "explanation": "J2 > 0 かつ Ω̇_☉ > 0 より cos i_SSO < 0 が必須となり、太陽同期軌道は必ず i > 90° の逆行軌道となることが導かれる。",
+          "used_node_ids": [
+            "astro.orbit.pj06_j2_secular_rates"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.orbit.deriv_pj08",
+      "target_node_id": "astro.orbit.pj08_critical_inclination_frozen_orbit",
+      "route_kind": "deductive",
+      "title": "臨界傾斜角および J2+J3 平衡点としての凍結軌道条件の導出",
+      "premise_node_ids": [
+        "astro.orbit.pj06_j2_secular_rates",
+        "astro.orbit.pj02_zonal_harmonics_j2_potential",
+        "astro.orbit.pj04_lagrange_planetary_equations"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.m31_trig_derivatives"
+      ],
+      "assumptions": [
+        "凍結軌道解析では離心率が小さい（e_f << 1）とし、J3 の高次項・他帯状調和項を省略した J2+J3 モデルを用いる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\bar{R}_{J_2+J_3} = \\frac{\\mu J_2 R_\\oplus^2}{4a^3(1-e^2)^{3/2}}(3\\cos^2 i - 1) - \\frac{3\\mu J_3 R_\\oplus^3 e\\sin i(1 - 5\\cos^2 i)\\sin\\omega}{8a^4(1-e^2)^{5/2}}",
+          "to_latex": "5\\cos^2 i_c - 1 = 0 \\implies i_c = \\arccos\\!\\left(\\pm\\frac{1}{\\sqrt{5}}\\right) \\approx 63.43^\\circ,\\; 116.57^\\circ;\\qquad \\langle\\dot{e}\\rangle_{J_2+J_3} = 0 \\land \\langle\\dot{\\omega}\\rangle_{J_2+J_3} = 0 \\implies \\omega_f = \\pm\\frac{\\pi}{2},\\quad e_f \\approx -\\frac{J_3 R_\\oplus \\sin i}{2 J_2 a \\sin\\omega_f}",
+          "operation_label": "臨界傾斜角と (e, ω) 平衡条件の解析",
+          "explanation": "J2 の ω̇ = 0 から臨界傾斜角 i_c を導き、さらに J3 平均擾乱項を加えたラグランジュ方程式の平衡点から凍結軌道の離心率と近地点引数を定める。",
+          "used_node_ids": [
+            "astro.orbit.pj02_zonal_harmonics_j2_potential",
+            "astro.orbit.pj04_lagrange_planetary_equations",
+            "astro.orbit.pj06_j2_secular_rates",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_critical_inclination",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\bar{R}_{J_2+J_3} = \\frac{\\mu J_2 R_\\oplus^2}{4a^3(1-e^2)^{3/2}}(3\\cos^2 i - 1) - \\frac{3\\mu J_3 R_\\oplus^3 e\\sin i(1 - 5\\cos^2 i)\\sin\\omega}{8a^4(1-e^2)^{5/2}}",
+          "to_latex": "\\dot{\\omega}_{J_2} = \\frac{3}{4}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}(5\\cos^2 i - 1) = 0 \\implies i_c = \\arccos\\!\\left(\\pm\\frac{1}{\\sqrt{5}}\\right) \\approx 63.43^\\circ,\\; 116.57^\\circ",
+          "operation_label": "J2 近地点歳差の零点（臨界傾斜角）",
+          "explanation": "J2 永年変化率 ω̇_J2 = 0 を解くことで、長楕円軌道でも近地点が回転しない臨界傾斜角 i_c ≈ 63.43°（および逆行 116.57°）を得る。",
+          "used_node_ids": [
+            "astro.orbit.pj06_j2_secular_rates"
+          ],
+          "sympy_check_hint": "solve(5*cos(i)**2 - 1, cos(i))"
+        },
+        {
+          "step_id": "s2_2_frozen_omega",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\omega}_{J_2} = \\frac{3}{4}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}(5\\cos^2 i - 1) = 0 \\implies i_c = \\arccos\\!\\left(\\pm\\frac{1}{\\sqrt{5}}\\right) \\approx 63.43^\\circ,\\; 116.57^\\circ",
+          "to_latex": "\\langle\\dot{e}\\rangle_{J_2+J_3} = \\frac{3}{8}\\frac{n J_3 R_\\oplus^3\\sin i(1 - 5\\cos^2 i)\\cos\\omega}{a^3(1-e^2)^2} = 0 \\implies \\omega_f = \\pm\\frac{\\pi}{2}",
+          "operation_label": "離心率平衡条件による ω_f の決定",
+          "explanation": "J3 平均擾乱項は ω 依存性 sin ω を持つため、ラグランジュの式 ė ∝ -∂R̄/∂ω = 0 より cos ω = 0 すなわち ω_f = ±π/2 が必要となる。",
+          "used_node_ids": [
+            "astro.orbit.pj04_lagrange_planetary_equations",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_frozen_eccentricity",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle\\dot{e}\\rangle_{J_2+J_3} = \\frac{3}{8}\\frac{n J_3 R_\\oplus^3\\sin i(1 - 5\\cos^2 i)\\cos\\omega}{a^3(1-e^2)^2} = 0 \\implies \\omega_f = \\pm\\frac{\\pi}{2}",
+          "to_latex": "5\\cos^2 i_c - 1 = 0 \\implies i_c = \\arccos\\!\\left(\\pm\\frac{1}{\\sqrt{5}}\\right) \\approx 63.43^\\circ,\\; 116.57^\\circ;\\qquad \\langle\\dot{e}\\rangle_{J_2+J_3} = 0 \\land \\langle\\dot{\\omega}\\rangle_{J_2+J_3} = 0 \\implies \\omega_f = \\pm\\frac{\\pi}{2},\\quad e_f \\approx -\\frac{J_3 R_\\oplus \\sin i}{2 J_2 a \\sin\\omega_f}",
+          "operation_label": "J2+J3 の ω̇ 釣り合いによる凍結離心率",
+          "explanation": "i ≠ i_c のもとで e << 1 として ω̇_{J2} + ω̇_{J3} = 0 を解くと因子 (1 - 5 cos^2 i) が約分され、地球（J2 > 0, J3 < 0）では ω_f = +π/2 かつ e_f > 0 の凍結軌道条件が得られる。",
+          "used_node_ids": [
+            "astro.orbit.pj04_lagrange_planetary_equations",
+            "astro.orbit.pj06_j2_secular_rates",
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": "solve(-Rational(3,4)*J2/a**2 - Rational(3,8)*J3*sin(i)*sin(omega)/(a**3*e), e)"
+        }
+      ]
+    }
+  ]
+}

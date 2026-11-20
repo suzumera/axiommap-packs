@@ -1,0 +1,869 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.qm.operator_uncertainty",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "量子力学2：ヒルベルト空間・エルミート演算子・交換関係・不確定性原理・調和振動子",
+    "language": "ja",
+    "description": "ディラックのブラケット記法、正準交換関係 [x,p]=iℏ、ロバートソン＝シュレーディンガー不確定性関係、生成消滅演算子による調和振動子を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.qm.op01_dirac_bra_ket_hilbert",
+      "short_code": "OP01",
+      "kind": "definition",
+      "title": "ヒルベルト空間とディラックのブラ・ケット記法",
+      "summary": "量子状態を表す複素ヒルベルト空間上の状態ベクトル（ケット）とその双対（ブラ）、内積および位置基底の完全性関係を定義する。",
+      "canonical_latex": "\\langle \\phi | \\psi \\rangle := \\iiint_{\\mathbb{R}^3} \\phi^*(\\mathbf{r})\\psi(\\mathbf{r})\\,dV,\\quad \\langle \\psi | \\psi \\rangle = 1,\\quad \\iiint_{\\mathbb{R}^3} |\\mathbf{r}\\rangle\\langle \\mathbf{r}|\\,dV = \\hat{I}",
+      "aliases_latex": [
+        "\\langle \\phi | \\psi \\rangle = \\langle \\psi | \\phi \\rangle^*",
+        "\\psi(\\mathbf{r}) = \\langle \\mathbf{r} | \\psi \\rangle"
+      ],
+      "keywords": [
+        "ヒルベルト空間",
+        "ブラケット記法",
+        "状態ベクトル",
+        "内積",
+        "完全性関係"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics"
+      ]
+    },
+    {
+      "id": "phys.qm.op02_hermitian_operator_observables",
+      "short_code": "OP02",
+      "kind": "definition",
+      "title": "エルミート演算子（自己共役演算子）と物理量の期待値",
+      "summary": "任意の状態で期待値が実数となる物理量を表すエルミート演算子の定義と期待値・標準偏差のブラケット表示を与える。",
+      "canonical_latex": "\\hat{A}^\\dagger = \\hat{A} \\iff \\langle \\phi | \\hat{A}\\psi \\rangle = \\langle \\hat{A}\\phi | \\psi \\rangle,\\quad \\langle \\hat{A} \\rangle := \\langle \\psi | \\hat{A} | \\psi \\rangle \\in \\mathbb{R}",
+      "aliases_latex": [
+        "\\langle \\phi | \\hat{A} | \\psi \\rangle = \\langle \\psi | \\hat{A} | \\phi \\rangle^*",
+        "\\sigma_A^2 := \\langle (\\hat{A} - \\langle \\hat{A} \\rangle)^2 \\rangle"
+      ],
+      "keywords": [
+        "エルミート演算子",
+        "自己共役",
+        "物理量",
+        "オブザーバブル",
+        "期待値"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics"
+      ]
+    },
+    {
+      "id": "phys.qm.op03_hermitian_spectral_theorem",
+      "short_code": "OP03",
+      "kind": "theorem_formula",
+      "title": "エルミート演算子の固有値実数性と固有状態の正規直交完全性",
+      "summary": "エルミート演算子の固有値はすべて実数であり、異なる固有値に属する固有状態は互いに直交し、固有状態全体が完全系をなす。",
+      "canonical_latex": "a_n \\in \\mathbb{R},\\quad a_m \\neq a_n \\implies \\langle a_m | a_n \\rangle = 0,\\quad \\sum_n |a_n\\rangle\\langle a_n| = \\hat{I}",
+      "aliases_latex": [
+        "\\hat{A}|a_n\\rangle = a_n|a_n\\rangle,\\quad \\langle a_m|a_n\\rangle = \\delta_{mn}",
+        "\\hat{A} = \\sum_n a_n |a_n\\rangle\\langle a_n|"
+      ],
+      "keywords": [
+        "スペクトル分解",
+        "固有値",
+        "直交性",
+        "完全性",
+        "エルミート演算子"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics"
+      ]
+    },
+    {
+      "id": "phys.qm.op04_canonical_commutation_relation",
+      "short_code": "OP04",
+      "kind": "theorem_formula",
+      "title": "位置・運動量演算子と正準交換関係",
+      "summary": "位置表示における位置演算子と運動量演算子の作用から、正準量子化の基本関係である正準交換関係 [x,p]=iℏ を導く。",
+      "canonical_latex": "[\\hat{x}, \\hat{p}] = i\\hbar,\\quad [\\hat{x}_j, \\hat{p}_k] = i\\hbar\\delta_{jk}",
+      "aliases_latex": [
+        "\\hat{x}\\hat{p} - \\hat{p}\\hat{x} = i\\hbar",
+        "[\\hat{x}_j, \\hat{x}_k] = 0,\\quad [\\hat{p}_j, \\hat{p}_k] = 0"
+      ],
+      "keywords": [
+        "正準交換関係",
+        "交換子",
+        "位置演算子",
+        "運動量演算子",
+        "正準量子化"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics"
+      ]
+    },
+    {
+      "id": "phys.qm.op05_ehrenfest_heisenberg_eom",
+      "short_code": "OP05",
+      "kind": "theorem_formula",
+      "title": "エーレンフェストの定理とハイゼンベルクの運動方程式",
+      "summary": "シュレーディンガー方程式から期待値の時間変化を与えるエーレンフェストの定理と、ハイゼンベルク描像における演算子の運動方程式を導く。",
+      "canonical_latex": "\\frac{d}{dt}\\langle \\hat{A} \\rangle = \\frac{1}{i\\hbar}\\langle [\\hat{A}, \\hat{H}] \\rangle + \\left\\langle \\frac{\\partial \\hat{A}}{\\partial t} \\right\\rangle,\\quad \\frac{d\\hat{A}_H}{dt} = \\frac{1}{i\\hbar}[\\hat{A}_H, \\hat{H}_H] + \\frac{\\partial \\hat{A}_H}{\\partial t}",
+      "aliases_latex": [
+        "\\frac{d}{dt}\\langle \\hat{x} \\rangle = \\frac{\\langle \\hat{p} \\rangle}{m},\\quad \\frac{d}{dt}\\langle \\hat{p} \\rangle = -\\langle \\nabla V(\\hat{\\mathbf{r}}) \\rangle"
+      ],
+      "keywords": [
+        "エーレンフェストの定理",
+        "ハイゼンベルク描像",
+        "ハイゼンベルク方程式",
+        "期待値の時間発展"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics"
+      ]
+    },
+    {
+      "id": "phys.qm.op06_robertson_schrodinger_uncertainty",
+      "short_code": "OP06",
+      "kind": "theorem_formula",
+      "title": "ロバートソン＝シュレーディンガーの不確定性関係とケナードの不等式",
+      "summary": "任意の2つのエルミート演算子の分散の積の下限を与えるロバートソン＝シュレーディンガー不等式と、位置・運動量に対するハイゼンベルク＝ケナードの不確定性関係を導く。",
+      "canonical_latex": "\\sigma_A^2\\sigma_B^2 \\ge \\left|\\frac{1}{2}\\langle \\{\\Delta\\hat{A}, \\Delta\\hat{B}\\} \\rangle\\right|^2 + \\left|\\frac{1}{2i}\\langle [\\hat{A}, \\hat{B}] \\rangle\\right|^2,\\quad \\sigma_x\\sigma_p \\ge \\frac{\\hbar}{2}",
+      "aliases_latex": [
+        "\\sigma_A \\sigma_B \\ge \\frac{1}{2}|\\langle [\\hat{A}, \\hat{B}] \\rangle|",
+        "\\Delta x\\,\\Delta p \\ge \\frac{\\hbar}{2}"
+      ],
+      "keywords": [
+        "不確定性原理",
+        "ロバートソン不等式",
+        "シュレーディンガー不等式",
+        "ケナードの不等式",
+        "非可換性"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics"
+      ]
+    },
+    {
+      "id": "phys.qm.op07_harmonic_oscillator_ladder_ops",
+      "short_code": "OP07",
+      "kind": "definition",
+      "title": "1次元量子調和振動子の生成・消滅演算子と数演算子",
+      "summary": "1次元調和振動子の位置と運動量演算子の線形結合として消滅演算子・生成演算子および数演算子を定義する。",
+      "canonical_latex": "\\hat{a} := \\sqrt{\\frac{m\\omega}{2\\hbar}}\\left(\\hat{x} + \\frac{i}{m\\omega}\\hat{p}\\right),\\quad \\hat{a}^\\dagger := \\sqrt{\\frac{m\\omega}{2\\hbar}}\\left(\\hat{x} - \\frac{i}{m\\omega}\\hat{p}\\right),\\quad \\hat{N} := \\hat{a}^\\dagger\\hat{a}",
+      "aliases_latex": [
+        "\\hat{x} = \\sqrt{\\frac{\\hbar}{2m\\omega}}(\\hat{a} + \\hat{a}^\\dagger),\\quad \\hat{p} = -i\\sqrt{\\frac{m\\hbar\\omega}{2}}(\\hat{a} - \\hat{a}^\\dagger)"
+      ],
+      "keywords": [
+        "生成演算子",
+        "消滅演算子",
+        "昇降演算子",
+        "数演算子",
+        "調和振動子"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics"
+      ]
+    },
+    {
+      "id": "phys.qm.op08_ladder_algebra_commutators",
+      "short_code": "OP08",
+      "kind": "theorem_formula",
+      "title": "生成・消滅演算子の交換代数とハミルトニアンの数演算子表示",
+      "summary": "正準交換関係から生成・消滅演算子の交換関係 [a,a†]=1 と、ハミルトニアン H=ℏω(N+1/2) および数演算子との交換関係を導く。",
+      "canonical_latex": "[\\hat{a}, \\hat{a}^\\dagger] = 1,\\quad \\hat{H} = \\hbar\\omega\\left(\\hat{N} + \\frac{1}{2}\\right),\\quad [\\hat{N}, \\hat{a}] = -\\hat{a},\\quad [\\hat{N}, \\hat{a}^\\dagger] = \\hat{a}^\\dagger",
+      "aliases_latex": [
+        "[\\hat{H}, \\hat{a}] = -\\hbar\\omega\\hat{a},\\quad [\\hat{H}, \\hat{a}^\\dagger] = \\hbar\\omega\\hat{a}^\\dagger"
+      ],
+      "keywords": [
+        "ボソン交換関係",
+        "生成消滅代数",
+        "数演算子表示",
+        "調和振動子ハミルトニアン"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics"
+      ]
+    },
+    {
+      "id": "phys.qm.op09_harmonic_oscillator_spectrum",
+      "short_code": "OP09",
+      "kind": "theorem_formula",
+      "title": "量子調和振動子のエネルギー固有値とフォック状態",
+      "summary": "昇降演算子の代数から量子調和振動子の離散エネルギースペクトル E_n = ℏω(n+1/2)、零点エネルギー、および基底状態からの固有状態構成を導く。",
+      "canonical_latex": "E_n = \\hbar\\omega\\left(n + \\frac{1}{2}\\right)\\;(n=0,1,2,\\dots),\\quad \\hat{a}|0\\rangle = 0,\\quad |n\\rangle = \\frac{(\\hat{a}^\\dagger)^n}{\\sqrt{n!}}|0\\rangle",
+      "aliases_latex": [
+        "\\hat{a}|n\\rangle = \\sqrt{n}|n-1\\rangle,\\quad \\hat{a}^\\dagger|n\\rangle = \\sqrt{n+1}|n+1\\rangle",
+        "E_0 = \\frac{1}{2}\\hbar\\omega"
+      ],
+      "keywords": [
+        "エネルギー固有値",
+        "零点エネルギー",
+        "基底状態",
+        "フォック状態",
+        "調和振動子"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "der_op01_from_wm02",
+      "target_node_id": "phys.qm.op01_dirac_bra_ket_hilbert",
+      "route_kind": "reformulation",
+      "title": "波動関数の規格化と確率解釈からのヒルベルト空間・ブラケット記法の定式化",
+      "premise_node_ids": [
+        "phys.qm.wm02_wavefunction_born_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "波動関数は2乗可積分関数空間 L^2(R^3) に属する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\iiint_{\\mathbb{R}^3} \\psi^*(\\mathbf{r},t)\\psi(\\mathbf{r},t)\\,dV = 1",
+          "to_latex": "\\langle \\phi | \\psi \\rangle := \\iiint_{\\mathbb{R}^3} \\phi^*(\\mathbf{r})\\psi(\\mathbf{r})\\,dV,\\quad \\langle \\psi | \\psi \\rangle = 1,\\quad \\iiint_{\\mathbb{R}^3} |\\mathbf{r}\\rangle\\langle \\mathbf{r}|\\,dV = \\hat{I}",
+          "operation_label": "ブラケット記法への抽象化",
+          "explanation": "波動関数の2乗可積分性に基づく内積を抽象ヒルベルト空間上のブラ・ケット記法として定式化し、位置基底による完全性関係を導入する。",
+          "used_node_ids": [
+            "phys.qm.wm02_wavefunction_born_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_inner_product",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_{\\mathbb{R}^3} \\psi^*(\\mathbf{r},t)\\psi(\\mathbf{r},t)\\,dV = 1",
+          "to_latex": "\\langle \\phi | \\psi \\rangle := \\iiint_{\\mathbb{R}^3} \\phi^*(\\mathbf{r})\\psi(\\mathbf{r})\\,dV,\\quad \\langle \\psi | \\psi \\rangle = 1",
+          "operation_label": "L^2 内積のブラケット定義",
+          "explanation": "任意の2つの状態波動関数に対して複素共役を用いたエルミート内積を定義し、規格化条件をノルムの条件として表す。",
+          "used_node_ids": [
+            "phys.qm.wm02_wavefunction_born_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_position_basis",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle \\phi | \\psi \\rangle := \\iiint_{\\mathbb{R}^3} \\phi^*(\\mathbf{r})\\psi(\\mathbf{r})\\,dV,\\quad \\langle \\psi | \\psi \\rangle = 1",
+          "to_latex": "\\langle \\mathbf{r} | \\psi \\rangle = \\psi(\\mathbf{r}),\\quad \\langle \\phi | \\psi \\rangle = \\iiint_{\\mathbb{R}^3} \\langle \\phi | \\mathbf{r} \\rangle \\langle \\mathbf{r} | \\psi \\rangle\\,dV",
+          "operation_label": "位置固有ケットによる波動関数表示",
+          "explanation": "位置 r の固有ケット |r⟩ を導入し、波動関数 ψ(r) を状態ケット |ψ⟩ の位置基底成分 ⟨r|ψ⟩ として解釈する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_completeness",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle \\mathbf{r} | \\psi \\rangle = \\psi(\\mathbf{r}),\\quad \\langle \\phi | \\psi \\rangle = \\iiint_{\\mathbb{R}^3} \\langle \\phi | \\mathbf{r} \\rangle \\langle \\mathbf{r} | \\psi \\rangle\\,dV",
+          "to_latex": "\\langle \\phi | \\psi \\rangle := \\iiint_{\\mathbb{R}^3} \\phi^*(\\mathbf{r})\\psi(\\mathbf{r})\\,dV,\\quad \\langle \\psi | \\psi \\rangle = 1,\\quad \\iiint_{\\mathbb{R}^3} |\\mathbf{r}\\rangle\\langle \\mathbf{r}|\\,dV = \\hat{I}",
+          "operation_label": "完全性関係の導出",
+          "explanation": "任意のブラ ⟨φ| とケット |ψ⟩ に対して成り立つ積分表示から、恒等演算子の位置基底展開（完全性関係）を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_op02_hermitian_observables",
+      "target_node_id": "phys.qm.op02_hermitian_operator_observables",
+      "route_kind": "deductive",
+      "title": "物理量の期待値の実数性からのエルミート演算子の導出",
+      "premise_node_ids": [
+        "phys.qm.op01_dirac_bra_ket_hilbert",
+        "phys.qm.wm03_tdse"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m10_integration_by_parts"
+      ],
+      "assumptions": [
+        "物理量の測定期待値は任意の状態に対して実数である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\langle A \\rangle_{\\psi} = \\iiint_{\\mathbb{R}^3} \\psi^*(\\mathbf{r})\\hat{A}\\psi(\\mathbf{r})\\,dV \\in \\mathbb{R}",
+          "to_latex": "\\hat{A}^\\dagger = \\hat{A} \\iff \\langle \\phi | \\hat{A}\\psi \\rangle = \\langle \\hat{A}\\phi | \\psi \\rangle,\\quad \\langle \\hat{A} \\rangle := \\langle \\psi | \\hat{A} | \\psi \\rangle \\in \\mathbb{R}",
+          "operation_label": "実期待値条件からの自己共役性導出",
+          "explanation": "期待値が常に実数となる条件と随伴演算子の定義から、物理量に対応する演算子がエルミート演算子であることを導く。",
+          "used_node_ids": [
+            "math.calc.m10_integration_by_parts",
+            "phys.qm.op01_dirac_bra_ket_hilbert",
+            "phys.qm.wm03_tdse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_adjoint_def",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle A \\rangle_{\\psi} = \\iiint_{\\mathbb{R}^3} \\psi^*(\\mathbf{r})\\hat{A}\\psi(\\mathbf{r})\\,dV \\in \\mathbb{R}",
+          "to_latex": "\\langle \\phi | \\hat{A}\\psi \\rangle = \\langle \\hat{A}^\\dagger\\phi | \\psi \\rangle = \\langle \\psi | \\hat{A}^\\dagger | \\phi \\rangle^*",
+          "operation_label": "エルミート随伴演算子の定義",
+          "explanation": "線形演算子 A に対して内積の反対側へ作用を移す随伴演算子 A† を定義する（微分演算子の場合は境界で消える条件の下で部分積分を用いる）。",
+          "used_node_ids": [
+            "math.calc.m10_integration_by_parts",
+            "phys.qm.op01_dirac_bra_ket_hilbert"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_reality_condition",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle \\phi | \\hat{A}\\psi \\rangle = \\langle \\hat{A}^\\dagger\\phi | \\psi \\rangle = \\langle \\psi | \\hat{A}^\\dagger | \\phi \\rangle^*",
+          "to_latex": "\\langle \\psi | \\hat{A} | \\psi \\rangle = \\langle \\psi | \\hat{A} | \\psi \\rangle^* = \\langle \\psi | \\hat{A}^\\dagger | \\psi \\rangle",
+          "operation_label": "対角要素の実数条件適用",
+          "explanation": "φ=ψ とおいた期待値が実数であることより ⟨ψ|A|ψ⟩ = ⟨ψ|A†|ψ⟩ が任意の状態 |ψ⟩ で成り立つ。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_hermitian_summary",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle \\psi | \\hat{A} | \\psi \\rangle = \\langle \\psi | \\hat{A} | \\psi \\rangle^* = \\langle \\psi | \\hat{A}^\\dagger | \\psi \\rangle",
+          "to_latex": "\\hat{A}^\\dagger = \\hat{A} \\iff \\langle \\phi | \\hat{A}\\psi \\rangle = \\langle \\hat{A}\\phi | \\psi \\rangle,\\quad \\langle \\hat{A} \\rangle := \\langle \\psi | \\hat{A} | \\psi \\rangle \\in \\mathbb{R}",
+          "operation_label": "極化恒等式による A† = A の帰結",
+          "explanation": "複素ヒルベルト空間における極化恒等式により、任意の対角行列要素が等しければ演算子として A† = A すなわちエルミート演算子となる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_op03_spectral_theorem",
+      "target_node_id": "phys.qm.op03_hermitian_spectral_theorem",
+      "route_kind": "deductive",
+      "title": "エルミート演算子の固有値実数性と固有状態直交性の証明",
+      "premise_node_ids": [
+        "phys.qm.op02_hermitian_operator_observables",
+        "phys.qm.op01_dirac_bra_ket_hilbert"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "固有状態は有限次元または離散スペクトルとして規格化可能である（連続スペクトルはデルタ関数規格化に一般化）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{A}^\\dagger = \\hat{A},\\quad \\hat{A}|a_n\\rangle = a_n|a_n\\rangle",
+          "to_latex": "a_n \\in \\mathbb{R},\\quad a_m \\neq a_n \\implies \\langle a_m | a_n \\rangle = 0,\\quad \\sum_n |a_n\\rangle\\langle a_n| = \\hat{I}",
+          "operation_label": "エルミート性の固有値問題への適用",
+          "explanation": "自己共役条件を固有値方程式の内積に適用することで、固有値の実数性、異なる固有値の固有状態の直交性、および完全性を得る。",
+          "used_node_ids": [
+            "phys.qm.op01_dirac_bra_ket_hilbert",
+            "phys.qm.op02_hermitian_operator_observables"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_real_eigenvalue",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{A}^\\dagger = \\hat{A},\\quad \\hat{A}|a_n\\rangle = a_n|a_n\\rangle",
+          "to_latex": "a_n\\langle a_n|a_n\\rangle = \\langle a_n|\\hat{A}|a_n\\rangle = \\langle a_n|\\hat{A}^\\dagger|a_n\\rangle = a_n^*\\langle a_n|a_n\\rangle \\implies a_n \\in \\mathbb{R}",
+          "operation_label": "固有値の実数性の証明",
+          "explanation": "固有状態 |a_n⟩ との内積をとり A† = A を適用すると (a_n - a_n*)⟨a_n|a_n⟩ = 0 となり、⟨a_n|a_n⟩ > 0 より固有値は実数となる。",
+          "used_node_ids": [
+            "phys.qm.op02_hermitian_operator_observables"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_orthogonality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a_n\\langle a_n|a_n\\rangle = \\langle a_n|\\hat{A}|a_n\\rangle = \\langle a_n|\\hat{A}^\\dagger|a_n\\rangle = a_n^*\\langle a_n|a_n\\rangle \\implies a_n \\in \\mathbb{R}",
+          "to_latex": "(a_n - a_m)\\langle a_m|a_n\\rangle = \\langle a_m|\\hat{A}|a_n\\rangle - \\langle \\hat{A}a_m|a_n\\rangle = 0 \\implies \\langle a_m|a_n\\rangle = \\delta_{mn}",
+          "operation_label": "異なる固有値間の直交性証明",
+          "explanation": "2つの固有状態 |a_m⟩, |a_n⟩ の行列要素の差をとると a_m が実数かつ A がエルミートであることから (a_n - a_m)⟨a_m|a_n⟩ = 0 を得る。",
+          "used_node_ids": [
+            "phys.qm.op02_hermitian_operator_observables"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_spectral_resolution",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(a_n - a_m)\\langle a_m|a_n\\rangle = \\langle a_m|\\hat{A}|a_n\\rangle - \\langle \\hat{A}a_m|a_n\\rangle = 0 \\implies \\langle a_m|a_n\\rangle = \\delta_{mn}",
+          "to_latex": "a_n \\in \\mathbb{R},\\quad a_m \\neq a_n \\implies \\langle a_m | a_n \\rangle = 0,\\quad \\sum_n |a_n\\rangle\\langle a_n| = \\hat{I}",
+          "operation_label": "スペクトル定理による完全性表示",
+          "explanation": "自己共役作用素のスペクトル定理により、正規直交固有基底 {|a_n⟩} はヒルベルト空間の完全正規直交系をなし、恒等演算子を展開する。",
+          "used_node_ids": [
+            "phys.qm.op01_dirac_bra_ket_hilbert"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_op04_canonical_commutation",
+      "target_node_id": "phys.qm.op04_canonical_commutation_relation",
+      "route_kind": "deductive",
+      "title": "位置表示における微分演算子からの正準交換関係 [x,p]=iℏ の導出",
+      "premise_node_ids": [
+        "phys.qm.wm01_de_broglie_relations",
+        "phys.qm.wm03_tdse",
+        "phys.qm.op01_dirac_bra_ket_hilbert"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "テスト波動関数 ψ(x) は1階連続微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{x}\\psi(x) = x\\psi(x),\\quad \\hat{p}\\psi(x) = -i\\hbar\\frac{\\partial\\psi(x)}{\\partial x}",
+          "to_latex": "[\\hat{x}, \\hat{p}] = i\\hbar,\\quad [\\hat{x}_j, \\hat{p}_k] = i\\hbar\\delta_{jk}",
+          "operation_label": "位置・運動量演算子の交換子評価",
+          "explanation": "位置表示の座標演算子 x と運動量演算子 -iℏ∂_x をテスト関数に作用させ、積の微分則を適用して正準交換関係 [x,p]=iℏ を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "phys.qm.wm01_de_broglie_relations",
+            "phys.qm.wm03_tdse"
+          ],
+          "sympy_check_hint": "diff(x*psi(x), x) - x*diff(psi(x), x) == psi(x)"
+        },
+        {
+          "step_id": "s2_apply_commutator",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{x}\\psi(x) = x\\psi(x),\\quad \\hat{p}\\psi(x) = -i\\hbar\\frac{\\partial\\psi(x)}{\\partial x}",
+          "to_latex": "[\\hat{x},\\hat{p}]\\psi(x) = x\\left(-i\\hbar\\frac{\\partial\\psi}{\\partial x}\\right) - \\left(-i\\hbar\\frac{\\partial}{\\partial x}(x\\psi)\\right)",
+          "operation_label": "テスト関数への交換子の作用",
+          "explanation": "ド・ブロイ関係とシュレーディンガー方程式の運動量演算子 p = -iℏ∂_x を用い、交換子 [x, p] = xp - px を任意の波動関数 ψ(x) に作用させる。",
+          "used_node_ids": [
+            "phys.qm.wm01_de_broglie_relations",
+            "phys.qm.wm03_tdse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_product_rule",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[\\hat{x},\\hat{p}]\\psi(x) = x\\left(-i\\hbar\\frac{\\partial\\psi}{\\partial x}\\right) - \\left(-i\\hbar\\frac{\\partial}{\\partial x}(x\\psi)\\right)",
+          "to_latex": "[\\hat{x},\\hat{p}]\\psi(x) = -i\\hbar x\\frac{\\partial\\psi}{\\partial x} + i\\hbar\\psi(x) + i\\hbar x\\frac{\\partial\\psi}{\\partial x} = i\\hbar\\psi(x)",
+          "operation_label": "積の微分則による相殺",
+          "explanation": "∂(xψ)/∂x = ψ + x ∂ψ/∂x を展開すると微分項が相殺し、定数 iℏ が残る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": "simplify(-I*hbar*x*diff(psi(x), x) + I*hbar*diff(x*psi(x), x)) == I*hbar*psi(x)"
+        },
+        {
+          "step_id": "s4_generalize_3d",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[\\hat{x},\\hat{p}]\\psi(x) = -i\\hbar x\\frac{\\partial\\psi}{\\partial x} + i\\hbar\\psi(x) + i\\hbar x\\frac{\\partial\\psi}{\\partial x} = i\\hbar\\psi(x)",
+          "to_latex": "[\\hat{x}, \\hat{p}] = i\\hbar,\\quad [\\hat{x}_j, \\hat{p}_k] = i\\hbar\\delta_{jk}",
+          "operation_label": "演算子等式および3次元への一般化",
+          "explanation": "任意の ψ について成立することから演算子等式 [x, p] = iℏ を得て、直交座標成分 (j, k = 1, 2, 3) についてクロネッカーのデルタ表示に一般化する。",
+          "used_node_ids": [
+            "phys.qm.op01_dirac_bra_ket_hilbert"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_op05_ehrenfest_heisenberg",
+      "target_node_id": "phys.qm.op05_ehrenfest_heisenberg_eom",
+      "route_kind": "deductive",
+      "title": "TDSEからのエーレンフェストの定理およびハイゼンベルク方程式の導出",
+      "premise_node_ids": [
+        "phys.qm.wm03_tdse",
+        "phys.qm.op02_hermitian_operator_observables",
+        "phys.qm.op04_canonical_commutation_relation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "ハミルトニアン演算子 H はエルミートである (H† = H)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "i\\hbar\\frac{\\partial}{\\partial t}|\\psi(t)\\rangle = \\hat{H}|\\psi(t)\\rangle,\\quad \\langle \\hat{A} \\rangle = \\langle \\psi(t) | \\hat{A} | \\psi(t) \\rangle",
+          "to_latex": "\\frac{d}{dt}\\langle \\hat{A} \\rangle = \\frac{1}{i\\hbar}\\langle [\\hat{A}, \\hat{H}] \\rangle + \\left\\langle \\frac{\\partial \\hat{A}}{\\partial t} \\right\\rangle,\\quad \\frac{d\\hat{A}_H}{dt} = \\frac{1}{i\\hbar}[\\hat{A}_H, \\hat{H}_H] + \\frac{\\partial \\hat{A}_H}{\\partial t}",
+          "operation_label": "期待値の時間微分とTDSEの代入",
+          "explanation": "期待値を時間で微分し、ケットとブラにそれぞれ時間依存シュレーディンガー方程式とそのエルミート共役を代入して交換子表示を得る。",
+          "used_node_ids": [
+            "phys.qm.op02_hermitian_operator_observables",
+            "phys.qm.wm03_tdse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_differentiate_expectation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "i\\hbar\\frac{\\partial}{\\partial t}|\\psi(t)\\rangle = \\hat{H}|\\psi(t)\\rangle,\\quad \\langle \\hat{A} \\rangle = \\langle \\psi(t) | \\hat{A} | \\psi(t) \\rangle",
+          "to_latex": "\\frac{d}{dt}\\langle\\psi|\\hat{A}|\\psi\\rangle = \\left(\\frac{\\partial}{\\partial t}\\langle\\psi|\\right)\\hat{A}|\\psi\\rangle + \\langle\\psi|\\frac{\\partial\\hat{A}}{\\partial t}|\\psi\\rangle + \\langle\\psi|\\hat{A}\\left(\\frac{\\partial}{\\partial t}|\\psi\\rangle\\right)",
+          "operation_label": "内積の時間微分にライプニッツ則を適用",
+          "explanation": "ブラ、演算子、ケットそれぞれの時間依存性に対して積の微分公式を適用する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_substitute_tdse",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\langle\\psi|\\hat{A}|\\psi\\rangle = \\left(\\frac{\\partial}{\\partial t}\\langle\\psi|\\right)\\hat{A}|\\psi\\rangle + \\langle\\psi|\\frac{\\partial\\hat{A}}{\\partial t}|\\psi\\rangle + \\langle\\psi|\\hat{A}\\left(\\frac{\\partial}{\\partial t}|\\psi\\rangle\\right)",
+          "to_latex": "\\frac{d}{dt}\\langle \\hat{A} \\rangle = \\frac{1}{i\\hbar}\\langle\\psi|(\\hat{A}\\hat{H} - \\hat{H}\\hat{A})|\\psi\\rangle + \\left\\langle\\frac{\\partial\\hat{A}}{\\partial t}\\right\\rangle",
+          "operation_label": "TDSEとエルミート共役式の代入",
+          "explanation": "∂_t|ψ⟩ = (1/iℏ)H|ψ⟩ と ∂_t⟨ψ| = -(1/iℏ)⟨ψ|H† = -(1/iℏ)⟨ψ|H を代入し、H のエルミート性を用いて整理する。",
+          "used_node_ids": [
+            "phys.qm.op02_hermitian_operator_observables",
+            "phys.qm.wm03_tdse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_heisenberg_picture",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\langle \\hat{A} \\rangle = \\frac{1}{i\\hbar}\\langle\\psi|(\\hat{A}\\hat{H} - \\hat{H}\\hat{A})|\\psi\\rangle + \\left\\langle\\frac{\\partial\\hat{A}}{\\partial t}\\right\\rangle",
+          "to_latex": "\\frac{d}{dt}\\langle \\hat{A} \\rangle = \\frac{1}{i\\hbar}\\langle [\\hat{A}, \\hat{H}] \\rangle + \\left\\langle \\frac{\\partial \\hat{A}}{\\partial t} \\right\\rangle,\\quad \\frac{d\\hat{A}_H}{dt} = \\frac{1}{i\\hbar}[\\hat{A}_H, \\hat{H}_H] + \\frac{\\partial \\hat{A}_H}{\\partial t}",
+          "operation_label": "ハイゼンベルク描像演算子への移行",
+          "explanation": "時間発展演算子 U(t) により状態の時間発展を演算子側へ移した A_H(t) = U† A U について、任意の状態での期待値の一致から演算子方程式を得る。",
+          "used_node_ids": [
+            "phys.qm.op04_canonical_commutation_relation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_op06_uncertainty_relation",
+      "target_node_id": "phys.qm.op06_robertson_schrodinger_uncertainty",
+      "route_kind": "deductive",
+      "title": "コーシー＝シュワルツの不等式によるロバートソン＝シュレーディンガー不確定性関係の導出",
+      "premise_node_ids": [
+        "phys.qm.op01_dirac_bra_ket_hilbert",
+        "phys.qm.op02_hermitian_operator_observables",
+        "phys.qm.op04_canonical_commutation_relation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "状態 |ψ⟩ は規格化されており、A, B の期待値および分散が有限である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta\\hat{A} := \\hat{A} - \\langle\\hat{A}\\rangle,\\quad \\Delta\\hat{B} := \\hat{B} - \\langle\\hat{B}\\rangle,\\quad \\sigma_A^2 = \\langle (\\Delta\\hat{A})^2 \\rangle",
+          "to_latex": "\\sigma_A^2\\sigma_B^2 \\ge \\left|\\frac{1}{2}\\langle \\{\\Delta\\hat{A}, \\Delta\\hat{B}\\} \\rangle\\right|^2 + \\left|\\frac{1}{2i}\\langle [\\hat{A}, \\hat{B}] \\rangle\\right|^2,\\quad \\sigma_x\\sigma_p \\ge \\frac{\\hbar}{2}",
+          "operation_label": "ヒルベルト空間のコーシー＝シュワルツ不等式適用",
+          "explanation": "偏差演算子を状態に作用させた2つのケットにコーシー＝シュワルツの不等式を適用し、エルミート部（反交換子）と反エルミート部（交換子）へ分解して不確定性関係を得る。",
+          "used_node_ids": [
+            "phys.qm.op01_dirac_bra_ket_hilbert",
+            "phys.qm.op02_hermitian_operator_observables",
+            "phys.qm.op04_canonical_commutation_relation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_cauchy_schwarz",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta\\hat{A} := \\hat{A} - \\langle\\hat{A}\\rangle,\\quad \\Delta\\hat{B} := \\hat{B} - \\langle\\hat{B}\\rangle,\\quad \\sigma_A^2 = \\langle (\\Delta\\hat{A})^2 \\rangle",
+          "to_latex": "\\sigma_A^2\\sigma_B^2 = \\langle\\Delta\\hat{A}\\psi|\\Delta\\hat{A}\\psi\\rangle\\langle\\Delta\\hat{B}\\psi|\\Delta\\hat{B}\\psi\\rangle \\ge |\\langle\\psi|\\Delta\\hat{A}\\Delta\\hat{B}|\\psi\\rangle|^2",
+          "operation_label": "ΔA|ψ⟩ と ΔB|ψ⟩ へのコーシー＝シュワルツ不等式",
+          "explanation": "ΔA, ΔB のエルミート性より分散がそれぞれのケットのノルム2乗に等しく、内積に対するコーシー＝シュワルツ不等式 |⟨u|u⟩⟨v|v⟩| ≥ |⟨u|v⟩|^2 が成り立つ。",
+          "used_node_ids": [
+            "phys.qm.op01_dirac_bra_ket_hilbert",
+            "phys.qm.op02_hermitian_operator_observables"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_hermitian_antihermitian_split",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_A^2\\sigma_B^2 = \\langle\\Delta\\hat{A}\\psi|\\Delta\\hat{A}\\psi\\rangle\\langle\\Delta\\hat{B}\\psi|\\Delta\\hat{B}\\psi\\rangle \\ge |\\langle\\psi|\\Delta\\hat{A}\\Delta\\hat{B}|\\psi\\rangle|^2",
+          "to_latex": "\\Delta\\hat{A}\\Delta\\hat{B} = \\frac{1}{2}\\{\\Delta\\hat{A},\\Delta\\hat{B}\\} + \\frac{1}{2}[\\hat{A},\\hat{B}] \\implies |\\langle\\Delta\\hat{A}\\Delta\\hat{B}\\rangle|^2 = \\left|\\frac{1}{2}\\langle\\{\\Delta\\hat{A},\\Delta\\hat{B}\\}\\rangle\\right|^2 + \\left|\\frac{1}{2i}\\langle[\\hat{A},\\hat{B}]\\rangle\\right|^2",
+          "operation_label": "反交換子（実部）と交換子（虚部）への分解",
+          "explanation": "[ΔA, ΔB] = [A, B] かつ反交換子 {ΔA, ΔB} はエルミート（期待値が実数）、i[A, B] もエルミート（よって [A, B] の期待値は純虚数）であることから絶対値の2乗が実部と虚部の2乗和に分かれる。",
+          "used_node_ids": [
+            "phys.qm.op02_hermitian_operator_observables"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_kennard_special_case",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta\\hat{A}\\Delta\\hat{B} = \\frac{1}{2}\\{\\Delta\\hat{A},\\Delta\\hat{B}\\} + \\frac{1}{2}[\\hat{A},\\hat{B}] \\implies |\\langle\\Delta\\hat{A}\\Delta\\hat{B}\\rangle|^2 = \\left|\\frac{1}{2}\\langle\\{\\Delta\\hat{A},\\Delta\\hat{B}\\}\\rangle\\right|^2 + \\left|\\frac{1}{2i}\\langle[\\hat{A},\\hat{B}]\\rangle\\right|^2",
+          "to_latex": "\\sigma_A^2\\sigma_B^2 \\ge \\left|\\frac{1}{2}\\langle \\{\\Delta\\hat{A}, \\Delta\\hat{B}\\} \\rangle\\right|^2 + \\left|\\frac{1}{2i}\\langle [\\hat{A}, \\hat{B}] \\rangle\\right|^2,\\quad \\sigma_x\\sigma_p \\ge \\frac{\\hbar}{2}",
+          "operation_label": "正準交換関係 [x,p]=iℏ の代入",
+          "explanation": "非負の第1項を落としたロバートソン不等式において A=x, B=p および [x,p]=iℏ を代入するとケナードの不確定性関係 σ_x σ_p ≥ ℏ/2 を得る。",
+          "used_node_ids": [
+            "phys.qm.op04_canonical_commutation_relation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_op07_ladder_ops_def",
+      "target_node_id": "phys.qm.op07_harmonic_oscillator_ladder_ops",
+      "route_kind": "reformulation",
+      "title": "1次元調和振動子ハミルトニアンの無次元化と昇降演算子の導入",
+      "premise_node_ids": [
+        "phys.qm.wm05_tise_stationary_states",
+        "phys.qm.op04_canonical_commutation_relation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "1次元調和振動子のポテンシャルは V(x) = (1/2) m ω^2 x^2 で与えられる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{H} = \\frac{\\hat{p}^2}{2m} + \\frac{1}{2}m\\omega^2\\hat{x}^2",
+          "to_latex": "\\hat{a} := \\sqrt{\\frac{m\\omega}{2\\hbar}}\\left(\\hat{x} + \\frac{i}{m\\omega}\\hat{p}\\right),\\quad \\hat{a}^\\dagger := \\sqrt{\\frac{m\\omega}{2\\hbar}}\\left(\\hat{x} - \\frac{i}{m\\omega}\\hat{p}\\right),\\quad \\hat{N} := \\hat{a}^\\dagger\\hat{a}",
+          "operation_label": "ハミルトニアンの因数分解に向けた演算子定義",
+          "explanation": "調和振動子ハミルトニアンを無次元座標・運動量で対称化し、複素因数分解に対応する消滅演算子 a、生成演算子 a† および数演算子 N を定義する。",
+          "used_node_ids": [
+            "phys.qm.op04_canonical_commutation_relation",
+            "phys.qm.wm05_tise_stationary_states"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_dimensionless_coords",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H} = \\frac{\\hat{p}^2}{2m} + \\frac{1}{2}m\\omega^2\\hat{x}^2",
+          "to_latex": "\\hat{X} := \\sqrt{\\frac{m\\omega}{\\hbar}}\\hat{x},\\quad \\hat{P} := \\frac{1}{\\sqrt{m\\hbar\\omega}}\\hat{p} \\implies \\hat{H} = \\frac{\\hbar\\omega}{2}(\\hat{X}^2 + \\hat{P}^2)",
+          "operation_label": "無次元位置・運動量演算子への変換",
+          "explanation": "特性長さ √(ℏ/mω) と特性運動量 √(mℏω) を用いて無次元演算子 X, P を導入し、ハミルトニアンを 2乗和の対称形に書き換える。",
+          "used_node_ids": [
+            "phys.qm.wm05_tise_stationary_states"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_define_ladder",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{X} := \\sqrt{\\frac{m\\omega}{\\hbar}}\\hat{x},\\quad \\hat{P} := \\frac{1}{\\sqrt{m\\hbar\\omega}}\\hat{p} \\implies \\hat{H} = \\frac{\\hbar\\omega}{2}(\\hat{X}^2 + \\hat{P}^2)",
+          "to_latex": "\\hat{a} := \\sqrt{\\frac{m\\omega}{2\\hbar}}\\left(\\hat{x} + \\frac{i}{m\\omega}\\hat{p}\\right),\\quad \\hat{a}^\\dagger := \\sqrt{\\frac{m\\omega}{2\\hbar}}\\left(\\hat{x} - \\frac{i}{m\\omega}\\hat{p}\\right),\\quad \\hat{N} := \\hat{a}^\\dagger\\hat{a}",
+          "operation_label": "a = (X + iP)/√2 と随伴の定義",
+          "explanation": "X^2 + P^2 を因数分解するため a = (X + iP)/√2 およびそのエルミート共役 a† = (X - iP)/√2 を定義し、数演算子 N = a†a を導入する。",
+          "used_node_ids": [
+            "phys.qm.op04_canonical_commutation_relation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_op08_ladder_algebra",
+      "target_node_id": "phys.qm.op08_ladder_algebra_commutators",
+      "route_kind": "deductive",
+      "title": "正準交換関係からの生成・消滅演算子交換代数とハミルトニアン書き換え",
+      "premise_node_ids": [
+        "phys.qm.op07_harmonic_oscillator_ladder_ops",
+        "phys.qm.op04_canonical_commutation_relation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "位置・運動量演算子は互いにエルミートかつ正準交換関係を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{a} = \\sqrt{\\frac{m\\omega}{2\\hbar}}\\left(\\hat{x} + \\frac{i}{m\\omega}\\hat{p}\\right),\\quad [\\hat{x},\\hat{p}] = i\\hbar",
+          "to_latex": "[\\hat{a}, \\hat{a}^\\dagger] = 1,\\quad \\hat{H} = \\hbar\\omega\\left(\\hat{N} + \\frac{1}{2}\\right),\\quad [\\hat{N}, \\hat{a}] = -\\hat{a},\\quad [\\hat{N}, \\hat{a}^\\dagger] = \\hat{a}^\\dagger",
+          "operation_label": "生成消滅演算子の交換代数の導出",
+          "explanation": "正準交換関係 [x,p]=iℏ の双線形性から [a,a†]=1 を導き、ハミルトニアンの数演算子表示と N と a, a† の交換関係を確定する。",
+          "used_node_ids": [
+            "phys.qm.op04_canonical_commutation_relation",
+            "phys.qm.op07_harmonic_oscillator_ladder_ops"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_commutator_a_adagger",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{a} = \\sqrt{\\frac{m\\omega}{2\\hbar}}\\left(\\hat{x} + \\frac{i}{m\\omega}\\hat{p}\\right),\\quad [\\hat{x},\\hat{p}] = i\\hbar",
+          "to_latex": "[\\hat{a}, \\hat{a}^\\dagger] = \\frac{m\\omega}{2\\hbar}\\left(-\\frac{i}{m\\omega}[\\hat{x},\\hat{p}] + \\frac{i}{m\\omega}[\\hat{p},\\hat{x}]\\right) = 1",
+          "operation_label": "ボソン交換関係 [a, a†] = 1 の計算",
+          "explanation": "[x,x]=[p,p]=0 および [p,x]=-[x,p]=-iℏ を代入することで [a, a†] = (1/2ℏ)(ℏ + ℏ) = 1 を得る。",
+          "used_node_ids": [
+            "phys.qm.op04_canonical_commutation_relation",
+            "phys.qm.op07_harmonic_oscillator_ladder_ops"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_factorize_hamiltonian",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[\\hat{a}, \\hat{a}^\\dagger] = \\frac{m\\omega}{2\\hbar}\\left(-\\frac{i}{m\\omega}[\\hat{x},\\hat{p}] + \\frac{i}{m\\omega}[\\hat{p},\\hat{x}]\\right) = 1",
+          "to_latex": "\\hat{a}^\\dagger\\hat{a} = \\frac{\\hat{H}}{\\hbar\\omega} - \\frac{1}{2} \\implies \\hat{H} = \\hbar\\omega\\left(\\hat{N} + \\frac{1}{2}\\right)",
+          "operation_label": "ハミルトニアンの数演算子表示",
+          "explanation": "a†a を展開すると (mω/2ℏ)(x^2 + p^2/(m^2ω^2) + (i/mω)[x,p]) = H/(ℏω) - 1/2 となるため、H = ℏω(N + 1/2) が従う。",
+          "used_node_ids": [
+            "phys.qm.op07_harmonic_oscillator_ladder_ops"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_number_commutators",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{a}^\\dagger\\hat{a} = \\frac{\\hat{H}}{\\hbar\\omega} - \\frac{1}{2} \\implies \\hat{H} = \\hbar\\omega\\left(\\hat{N} + \\frac{1}{2}\\right)",
+          "to_latex": "[\\hat{a}, \\hat{a}^\\dagger] = 1,\\quad \\hat{H} = \\hbar\\omega\\left(\\hat{N} + \\frac{1}{2}\\right),\\quad [\\hat{N}, \\hat{a}] = -\\hat{a},\\quad [\\hat{N}, \\hat{a}^\\dagger] = \\hat{a}^\\dagger",
+          "operation_label": "数演算子との交換関係の計算",
+          "explanation": "交換子の積公式 [AB, C] = A[B, C] + [A, C]B を用いると [a†a, a] = [a†, a]a = -a および [a†a, a†] = a†[a, a†] = a† を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_op09_harmonic_spectrum",
+      "target_node_id": "phys.qm.op09_harmonic_oscillator_spectrum",
+      "route_kind": "deductive",
+      "title": "昇降演算子の代数による調和振動子の固有値・固有状態の代数的導出",
+      "premise_node_ids": [
+        "phys.qm.op08_ladder_algebra_commutators",
+        "phys.qm.op03_hermitian_spectral_theorem",
+        "phys.qm.op01_dirac_bra_ket_hilbert"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ヒルベルト空間の状態ベクトルのノルム2乗は非負であり、零ベクトルのみノルムが0となる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{H} = \\hbar\\omega\\left(\\hat{N} + \\frac{1}{2}\\right),\\quad [\\hat{N},\\hat{a}] = -\\hat{a},\\quad [\\hat{N},\\hat{a}^\\dagger] = \\hat{a}^\\dagger",
+          "to_latex": "E_n = \\hbar\\omega\\left(n + \\frac{1}{2}\\right)\\;(n=0,1,2,\\dots),\\quad \\hat{a}|0\\rangle = 0,\\quad |n\\rangle = \\frac{(\\hat{a}^\\dagger)^n}{\\sqrt{n!}}|0\\rangle",
+          "operation_label": "代数的手法によるスペクトル決定",
+          "explanation": "数演算子 N = a†a の固有値の非負性と消滅演算子による降下作用から基底状態 a|0⟩=0 の存在を示し、生成演算子の反復作用により離散固有値とフォック状態を構成する。",
+          "used_node_ids": [
+            "phys.qm.op01_dirac_bra_ket_hilbert",
+            "phys.qm.op03_hermitian_spectral_theorem",
+            "phys.qm.op08_ladder_algebra_commutators"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_norm_nonnegativity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H} = \\hbar\\omega\\left(\\hat{N} + \\frac{1}{2}\\right),\\quad [\\hat{N},\\hat{a}] = -\\hat{a},\\quad [\\hat{N},\\hat{a}^\\dagger] = \\hat{a}^\\dagger",
+          "to_latex": "\\hat{N}|\\nu\\rangle = \\nu|\\nu\\rangle \\implies \\nu = \\langle\\nu|\\hat{a}^\\dagger\\hat{a}|\\nu\\rangle = \\|\\hat{a}|\\nu\\rangle\\|^2 \\ge 0",
+          "operation_label": "数演算子固有値の非負性証明",
+          "explanation": "N はエルミート演算子であり、規格化固有状態 |ν⟩ に対する期待値 ν = ⟨ν|a†a|ν⟩ は状態 a|ν⟩ のノルム2乗に等しいため非負である。",
+          "used_node_ids": [
+            "phys.qm.op01_dirac_bra_ket_hilbert",
+            "phys.qm.op03_hermitian_spectral_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_lowering_ground_state",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{N}|\\nu\\rangle = \\nu|\\nu\\rangle \\implies \\nu = \\langle\\nu|\\hat{a}^\\dagger\\hat{a}|\\nu\\rangle = \\|\\hat{a}|\\nu\\rangle\\|^2 \\ge 0",
+          "to_latex": "\\hat{N}(\\hat{a}|\\nu\\rangle) = (\\nu - 1)(\\hat{a}|\\nu\\rangle),\\quad \\nu_{\\min} = 0 \\iff \\hat{a}|0\\rangle = 0",
+          "operation_label": "消滅演算子による固有値降下と基底状態条件",
+          "explanation": "[N, a] = -a より a|ν⟩ は固有値 ν-1 を持つ。ν ≥ 0 を破らないためには降下列が ν=0 で停止しなければならず、a|0⟩ = 0 を満たす基底状態 |0⟩ が存在する。",
+          "used_node_ids": [
+            "phys.qm.op08_ladder_algebra_commutators"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_raising_fock_states",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{N}(\\hat{a}|\\nu\\rangle) = (\\nu - 1)(\\hat{a}|\\nu\\rangle),\\quad \\nu_{\\min} = 0 \\iff \\hat{a}|0\\rangle = 0",
+          "to_latex": "E_n = \\hbar\\omega\\left(n + \\frac{1}{2}\\right)\\;(n=0,1,2,\\dots),\\quad \\hat{a}|0\\rangle = 0,\\quad |n\\rangle = \\frac{(\\hat{a}^\\dagger)^n}{\\sqrt{n!}}|0\\rangle",
+          "operation_label": "生成演算子による励起状態と固有エネルギーの構成",
+          "explanation": "[N, a†] = a† により a†|n⟩ は固有値 n+1 を持ち、||a†|n⟩||^2 = ⟨n|aa†|n⟩ = n+1 から規格化された固有状態 |n⟩ = (a†)^n/√(n!) |0⟩ とエネルギー固有値 E_n = ℏω(n + 1/2) を得る。",
+          "used_node_ids": [
+            "phys.qm.op01_dirac_bra_ket_hilbert",
+            "phys.qm.op08_ladder_algebra_commutators"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

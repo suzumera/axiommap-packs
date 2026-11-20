@@ -1,0 +1,702 @@
+{
+  "pack_meta": {
+    "pack_id": "astro.orbit.maneuvers_tsiolkovsky",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "orbital_mechanics",
+    "title": "宇宙航行力学：ツィオルコフスキーの公式・ホーマン遷移・スイングバイ",
+    "language": "ja",
+    "description": "可変質量系の運動量保存からツィオルコフスキーのロケット方程式、vis-viva式からのホーマン遷移Δv、双楕円遷移、軌道面変更、重力アシストを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "astro.orbit.mt01_variable_mass_rocket_eom",
+      "short_code": "MT01",
+      "kind": "theorem_formula",
+      "title": "可変質量系の運動量保存とロケット推進運動方程式",
+      "summary": "時間とともに質量を噴射して減少させるロケット系の運動量収支にニュートンの第2法則と作用・反作用の法則を適用して得られる可変質量系の運動方程式。",
+      "canonical_latex": "m(t)\\frac{d\\mathbf{v}}{dt} = \\mathbf{F}_{\\mathrm{ext}} + \\mathbf{v}_{\\mathrm{rel}}\\frac{dm}{dt}\\quad \\left(\\mathbf{v}_{\\mathrm{rel}} = \\mathbf{v}_e - \\mathbf{v}\\right)",
+      "aliases_latex": [
+        "m\\dot{\\mathbf{v}} = \\mathbf{F}_{\\mathrm{ext}} + \\dot{m}\\mathbf{v}_{\\mathrm{rel}}",
+        "m\\frac{d\\mathbf{v}}{dt} = \\mathbf{F}_{\\mathrm{ext}} - \\mathbf{v}_{\\mathrm{rel}}\\dot{m}_{\\mathrm{prop}}"
+      ],
+      "keywords": [
+        "可変質量系",
+        "運動量保存",
+        "ロケット推進",
+        "推力方程式",
+        "排気相対速度"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.mt02_tsiolkovsky_rocket_equation",
+      "short_code": "MT02",
+      "kind": "theorem_formula",
+      "title": "ツィオルコフスキーのロケット方程式（理想速度増分）",
+      "summary": "外力のない直線推進において、ロケット推進運動方程式を初期質量から最終質量まで積分することで得られる理想速度増分（Δv）と質量比の対数関係。",
+      "canonical_latex": "\\Delta v = v_e \\ln\\left(\\frac{m_0}{m_f}\\right) = I_{\\mathrm{sp}} g_0 \\ln\\left(\\frac{m_0}{m_f}\\right)\\quad \\left(v_e := \\|\\mathbf{v}_{\\mathrm{rel}}\\| = I_{\\mathrm{sp}} g_0\\right)",
+      "aliases_latex": [
+        "\\frac{m_0}{m_f} = \\exp\\left(\\frac{\\Delta v}{v_e}\\right)",
+        "m_f = m_0 e^{-\\Delta v / (I_{\\mathrm{sp}} g_0)}"
+      ],
+      "keywords": [
+        "ツィオルコフスキーの公式",
+        "ロケット方程式",
+        "デルタV",
+        "比推力",
+        "質量比"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.mt03_hohmann_transfer_deltav",
+      "short_code": "MT03",
+      "kind": "theorem_formula",
+      "title": "ホーマン遷移軌道の2回噴射 Δv 公式",
+      "summary": "同一軌道面上の2つの共焦点円軌道間を近点・遠点で接する半楕円軌道で結ぶ2インパルス遷移について、vis-viva 方程式から導かれる各噴射の速度増分と総 Δv。",
+      "canonical_latex": "a_t = \\frac{r_1 + r_2}{2},\\quad \\Delta v_1 = \\sqrt{\\frac{\\mu}{r_1}}\\left(\\sqrt{\\frac{2r_2}{r_1+r_2}} - 1\\right),\\quad \\Delta v_2 = \\sqrt{\\frac{\\mu}{r_2}}\\left(1 - \\sqrt{\\frac{2r_1}{r_1+r_2}}\\right),\\quad \\Delta v_H = |\\Delta v_1| + |\\Delta v_2|",
+      "aliases_latex": [
+        "\\Delta v_H = \\sqrt{\\frac{\\mu}{r_1}}\\left(\\sqrt{\\frac{2r_2}{r_1+r_2}} - 1\\right) + \\sqrt{\\frac{\\mu}{r_2}}\\left(1 - \\sqrt{\\frac{2r_1}{r_1+r_2}}\\right)",
+        "T_t = \\pi\\sqrt{\\frac{(r_1+r_2)^3}{8\\mu}}"
+      ],
+      "keywords": [
+        "ホーマン遷移",
+        "軌道遷移",
+        "2インパルス遷移",
+        "vis-viva方程式",
+        "デルタV"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.mt04_bielliptic_transfer_deltav",
+      "short_code": "MT04",
+      "kind": "theorem_formula",
+      "title": "双楕円遷移の3回噴射 Δv とホーマン遷移に対する優位条件",
+      "summary": "中間遠点半径 r_b を経由する2つの半楕円軌道を用いた3インパルス遷移の総 Δv、および r_2/r_1 > 11.94 でホーマン遷移より省燃料となる漸近閾値条件。",
+      "canonical_latex": "\\Delta v_{\\mathrm{bi}} = \\left(\\sqrt{\\frac{2\\mu r_b}{r_1(r_1+r_b)}} - \\sqrt{\\frac{\\mu}{r_1}}\\right) + \\left(\\sqrt{\\frac{2\\mu r_2}{r_b(r_b+r_2)}} - \\sqrt{\\frac{2\\mu r_1}{r_b(r_1+r_b)}}\\right) + \\left(\\sqrt{\\frac{2\\mu r_b}{r_2(r_2+r_b)}} - \\sqrt{\\frac{\\mu}{r_2}}\\right),\\quad \\lim_{r_b\\to\\infty}\\Delta v_{\\mathrm{bi}} < \\Delta v_H \\iff \\frac{r_2}{r_1} > 11.9388\\dots",
+      "aliases_latex": [
+        "\\lim_{r_b\\to\\infty}\\frac{\\Delta v_{\\mathrm{bi}}}{\\sqrt{\\mu/r_1}} = (\\sqrt{2}-1)\\left(1 + \\frac{1}{\\sqrt{r_2/r_1}}\\right)",
+        "\\Delta v_{\\mathrm{bi}} = \\Delta v_1 + \\Delta v_2 + \\Delta v_3"
+      ],
+      "keywords": [
+        "双楕円遷移",
+        "3インパルス遷移",
+        "軌道遷移最適化",
+        "ホーマン遷移比較"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.mt05_plane_change_deltav",
+      "short_code": "MT05",
+      "kind": "theorem_formula",
+      "title": "軌道面変更マヌーバの Δv（単純変更および複合マヌーバ）",
+      "summary": "交点において軌道面の法線方向を角度 Δi だけ回転させる単純軌道面変更、および速さ変更を同時に行う複合マヌーバに必要な速度増分の余弦定理表示。",
+      "canonical_latex": "\\Delta v_{\\mathrm{comb}} = \\sqrt{v_1^2 + v_2^2 - 2 v_1 v_2 \\cos\\Delta i},\\qquad v_1 = v_2 = v \\implies \\Delta v_{\\mathrm{pure}} = 2v\\sin\\!\\left(\\frac{\\Delta i}{2}\\right)",
+      "aliases_latex": [
+        "\\Delta v = 2v\\sin\\left(\\frac{\\Delta i}{2}\\right)",
+        "\\Delta v^2 = v_1^2 + v_2^2 - 2 v_1 v_2 \\cos\\Delta i"
+      ],
+      "keywords": [
+        "軌道面変更",
+        "軌道傾斜角",
+        "複合マヌーバ",
+        "デルタV"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.mt06_hyperbolic_flyby_turn_angle",
+      "short_code": "MT06",
+      "kind": "theorem_formula",
+      "title": "双曲線フライバイの過剰速度 v_∞ と漸近偏向角 δ",
+      "summary": "惑星の重力圏内における双曲線近傍通過（フライバイ）について、双曲線過剰速度 v_∞ と近点距離 r_p から軌道離心率 e および漸近速度ベクトルの偏向角 δ を与える公式。",
+      "canonical_latex": "a = -\\frac{\\mu_p}{v_\\infty^2},\\quad e = 1 + \\frac{r_p v_\\infty^2}{\\mu_p},\\quad \\sin\\frac{\\delta}{2} = \\frac{1}{e} = \\frac{1}{1 + \\dfrac{r_p v_\\infty^2}{\\mu_p}}",
+      "aliases_latex": [
+        "\\delta = 2\\arcsin\\left(\\frac{1}{1 + r_p v_\\infty^2/\\mu_p}\\right)",
+        "e = \\sqrt{1 + \\left(\\frac{b v_\\infty^2}{\\mu_p}\\right)^2}"
+      ],
+      "keywords": [
+        "双曲線軌道",
+        "双曲線過剰速度",
+        "漸近偏向角",
+        "フライバイ",
+        "スイングバイ"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "astro.orbit.mt07_gravity_assist_deltav",
+      "short_code": "MT07",
+      "kind": "theorem_formula",
+      "title": "重力アシスト（スイングバイ）による太陽中心速度増分とエネルギー変化",
+      "summary": "接合円錐曲線近似のもとで惑星公転速度 V_p に双曲線過剰速度の回転を合成し、太陽中心慣性系における無噴射 Δv と比力学的エネルギー変化を導出する公式。",
+      "canonical_latex": "\\Delta\\mathbf{v} = \\mathbf{v}_{\\infty,\\mathrm{out}} - \\mathbf{v}_{\\infty,\\mathrm{in}},\\quad \\|\\Delta\\mathbf{v}\\| = 2v_\\infty\\sin\\frac{\\delta}{2} = \\frac{2v_\\infty}{1 + \\dfrac{r_p v_\\infty^2}{\\mu_p}},\\quad \\Delta\\varepsilon_{\\mathrm{helio}} = \\mathbf{V}_p\\cdot\\Delta\\mathbf{v}",
+      "aliases_latex": [
+        "\\mathbf{v}_2 - \\mathbf{v}_1 = \\mathbf{v}_{\\infty,\\mathrm{out}} - \\mathbf{v}_{\\infty,\\mathrm{in}}",
+        "\\Delta\\varepsilon_{\\mathrm{helio}} = \\mathbf{V}_p\\cdot(\\mathbf{v}_{\\infty,\\mathrm{out}} - \\mathbf{v}_{\\infty,\\mathrm{in}})"
+      ],
+      "keywords": [
+        "重力アシスト",
+        "スイングバイ",
+        "接合円錐曲線法",
+        "エネルギー変化",
+        "無噴射加速"
+      ],
+      "domain_tags": [
+        "orbital_mechanics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv.astro.orbit.mt01_variable_mass_rocket_eom",
+      "target_node_id": "astro.orbit.mt01_variable_mass_rocket_eom",
+      "route_kind": "deductive",
+      "title": "可変質量系の全運動量収支からロケット推進運動方程式を導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "phys.mech.p03_action_reaction"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.calc.m20_derivative_definition"
+      ],
+      "assumptions": [
+        "検査閉系（時刻 t のロケット本体と微小時間 Δt 間に放出された推進剤からなる固定質量系）を構成する",
+        "推進剤の相対排気速度 v_rel = v_e - v は連続かつ有界である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{P}(t) = m(t)\\mathbf{v}(t),\\quad \\mathbf{P}(t+\\Delta t) = (m+\\Delta m)(\\mathbf{v}+\\Delta\\mathbf{v}) + (-\\Delta m)(\\mathbf{v}+\\mathbf{v}_{\\mathrm{rel}})",
+          "to_latex": "m(t)\\frac{d\\mathbf{v}}{dt} = \\mathbf{F}_{\\mathrm{ext}} + \\mathbf{v}_{\\mathrm{rel}}\\frac{dm}{dt}",
+          "operation_label": "可変質量系運動方程式の導出概観",
+          "explanation": "時刻 t から t+Δt の固定粒子系の運動量変化を評価し、Δt→0 の極限でニュートンの第2法則を適用することでロケット推力項を導く。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.calc.m20_derivative_definition",
+            "phys.mech.p02_newton_second_law",
+            "phys.mech.p03_action_reaction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_momentum_balance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{P}(t) = m(t)\\mathbf{v}(t),\\quad \\mathbf{P}(t+\\Delta t) = (m+\\Delta m)(\\mathbf{v}+\\Delta\\mathbf{v}) + (-\\Delta m)(\\mathbf{v}+\\mathbf{v}_{\\mathrm{rel}})",
+          "to_latex": "\\Delta\\mathbf{P} = \\mathbf{P}(t+\\Delta t) - \\mathbf{P}(t) = m\\Delta\\mathbf{v} - \\mathbf{v}_{\\mathrm{rel}}\\Delta m + \\Delta m\\Delta\\mathbf{v}",
+          "operation_label": "固定粒子系の全運動量増分の計算",
+          "explanation": "時刻 t+Δt における本体運動量 (m+Δm)(v+Δv) と放出推進剤運動量 (-Δm)(v+v_rel) の和から初期運動量 mv を差し引き、mv および Δm·v の相殺を整理する。",
+          "used_node_ids": [
+            "phys.mech.p03_action_reaction"
+          ],
+          "sympy_check_hint": "expand((m + dm)*(v + dv) - dm*(v + v_rel) - m*v) == m*dv - dm*v_rel + dm*dv"
+        },
+        {
+          "step_id": "s3_limit_dt",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta\\mathbf{P} = \\mathbf{P}(t+\\Delta t) - \\mathbf{P}(t) = m\\Delta\\mathbf{v} - \\mathbf{v}_{\\mathrm{rel}}\\Delta m + \\Delta m\\Delta\\mathbf{v}",
+          "to_latex": "\\mathbf{F}_{\\mathrm{ext}} = \\lim_{\\Delta t\\to 0}\\frac{\\Delta\\mathbf{P}}{\\Delta t} = m\\frac{d\\mathbf{v}}{dt} - \\mathbf{v}_{\\mathrm{rel}}\\frac{dm}{dt}",
+          "operation_label": "微分係数の定義と運動の第2法則の適用",
+          "explanation": "両辺を Δt で割って Δt→0 の極限をとると、2次微小項 ΔmΔv/Δt は 0 に収束し、外力 F_ext と固定系運動量の時間変化率が等置される。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.calc.m20_derivative_definition",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_thrust_form",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F}_{\\mathrm{ext}} = \\lim_{\\Delta t\\to 0}\\frac{\\Delta\\mathbf{P}}{\\Delta t} = m\\frac{d\\mathbf{v}}{dt} - \\mathbf{v}_{\\mathrm{rel}}\\frac{dm}{dt}",
+          "to_latex": "m(t)\\frac{d\\mathbf{v}}{dt} = \\mathbf{F}_{\\mathrm{ext}} + \\mathbf{v}_{\\mathrm{rel}}\\frac{dm}{dt}",
+          "operation_label": "推力項の移項整理",
+          "explanation": "排気による反作用項 v_rel (dm/dt) を右辺へ移項して整理する（質量減少時 dm/dt < 0 かつ排気方向 v_rel は進行方向と逆向きのため正の推力となる）。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.astro.orbit.mt02_tsiolkovsky_rocket_equation",
+      "target_node_id": "astro.orbit.mt02_tsiolkovsky_rocket_equation",
+      "route_kind": "deductive",
+      "title": "ロケット推進運動方程式の変数分離積分によるツィオルコフスキーの公式の導出",
+      "premise_node_ids": [
+        "astro.orbit.mt01_variable_mass_rocket_eom"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "assumptions": [
+        "外力が零（F_ext = 0）の無重力・無抵抗空間での1次元加速を仮定する",
+        "有効排気速さ v_e = ||v_rel|| = I_sp g_0 は燃焼中に一定とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\frac{dv}{dt} = -v_e\\frac{dm}{dt}",
+          "to_latex": "\\Delta v = v_e \\ln\\left(\\frac{m_0}{m_f}\\right) = I_{\\mathrm{sp}} g_0 \\ln\\left(\\frac{m_0}{m_f}\\right)",
+          "operation_label": "ツィオルコフスキーの公式の導出概観",
+          "explanation": "外力なしの1次元ロケット運動方程式を質量で割って時間積分し、置換積分と微積分学の基本定理から対数型の Δv 公式を得る。",
+          "used_node_ids": [
+            "astro.orbit.mt01_variable_mass_rocket_eom",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_divide_mass",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\frac{dv}{dt} = -v_e\\frac{dm}{dt}",
+          "to_latex": "\\frac{dv}{dt} = -v_e\\frac{1}{m}\\frac{dm}{dt}",
+          "operation_label": "正質量による除算と変数分離",
+          "explanation": "機体質量 m(t) > 0 で両辺を割り、加速度 dv/dt を相対質量変化率 (1/m)(dm/dt) に比例する形へ変形する。",
+          "used_node_ids": [
+            "astro.orbit.mt01_variable_mass_rocket_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_definite_integral",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dv}{dt} = -v_e\\frac{1}{m}\\frac{dm}{dt}",
+          "to_latex": "\\int_{t_0}^{t_f}\\frac{dv}{dt}\\,dt = -v_e\\int_{m_0}^{m_f}\\frac{1}{m}\\,dm",
+          "operation_label": "燃焼区間での定積分と置換積分",
+          "explanation": "燃焼開始時刻 t_0（質量 m_0）から終了時刻 t_f（質量 m_f）まで時間で積分し、右辺に置換積分 m = m(t) を適用する。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_evaluate_log",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{t_0}^{t_f}\\frac{dv}{dt}\\,dt = -v_e\\int_{m_0}^{m_f}\\frac{1}{m}\\,dm",
+          "to_latex": "\\Delta v = v_e \\ln\\left(\\frac{m_0}{m_f}\\right) = I_{\\mathrm{sp}} g_0 \\ln\\left(\\frac{m_0}{m_f}\\right)",
+          "operation_label": "微積分学の基本定理による評価",
+          "explanation": "両辺の原始関数を境界で評価すると v(t_f)-v(t_0) = -v_e(ln m_f - ln m_0) = v_e ln(m_0/m_f) が得られ、v_e = I_sp g_0 を代入して完成する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": "-v_e * integrate(1/m, (m, m0, mf)) == v_e * log(m0/mf)"
+        }
+      ]
+    },
+    {
+      "id": "drv.astro.orbit.mt03_hohmann_transfer_deltav",
+      "target_node_id": "astro.orbit.mt03_hohmann_transfer_deltav",
+      "route_kind": "deductive",
+      "title": "vis-viva 方程式からホーマン遷移の2回噴射 Δv を導出",
+      "premise_node_ids": [
+        "astro.orbit.ka02_vis_viva_equation",
+        "astro.orbit.mt02_tsiolkovsky_rocket_equation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "初期軌道および目標軌道は中心天体 μ を焦点とする同一平面上の円軌道（半径 r_1, r_2）とする",
+        "遷移軌道は r_1 と r_2 をそれぞれ近点・遠点とする共焦点楕円であり、推進は瞬間的インパルスとみなす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "v^2 = \\mu\\left(\\frac{2}{r} - \\frac{1}{a}\\right),\\quad a_t = \\frac{r_1 + r_2}{2}",
+          "to_latex": "a_t = \\frac{r_1 + r_2}{2},\\quad \\Delta v_1 = \\sqrt{\\frac{\\mu}{r_1}}\\left(\\sqrt{\\frac{2r_2}{r_1+r_2}} - 1\\right),\\quad \\Delta v_2 = \\sqrt{\\frac{\\mu}{r_2}}\\left(1 - \\sqrt{\\frac{2r_1}{r_1+r_2}}\\right),\\quad \\Delta v_H = |\\Delta v_1| + |\\Delta v_2|",
+          "operation_label": "ホーマン遷移 Δv の導出概観",
+          "explanation": "円軌道速度と遷移楕円の近点・遠点速度を vis-viva 方程式から求め、両接点での接線方向速度差をとって総 Δv を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_speeds_vis_viva",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v^2 = \\mu\\left(\\frac{2}{r} - \\frac{1}{a}\\right),\\quad a_t = \\frac{r_1 + r_2}{2}",
+          "to_latex": "v_{c1} = \\sqrt{\\frac{\\mu}{r_1}},\\; v_{c2} = \\sqrt{\\frac{\\mu}{r_2}},\\; v_{t1} = \\sqrt{\\frac{2\\mu r_2}{r_1(r_1+r_2)}},\\; v_{t2} = \\sqrt{\\frac{2\\mu r_1}{r_2(r_1+r_2)}}",
+          "operation_label": "円軌道と遷移楕円端点の速度算出",
+          "explanation": "a = r_1, r_2 を代入して円軌道速度 v_c1, v_c2 を求め、次に a = a_t = (r_1+r_2)/2 および r = r_1, r_2 を vis-viva 式に代入して遷移軌道端点速度 v_t1, v_t2 を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation"
+          ],
+          "sympy_check_hint": "simplify(mu*(2/r1 - 2/(r1+r2))) == 2*mu*r2/(r1*(r1+r2))"
+        },
+        {
+          "step_id": "s3_burn_differences",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_{c1} = \\sqrt{\\frac{\\mu}{r_1}},\\; v_{c2} = \\sqrt{\\frac{\\mu}{r_2}},\\; v_{t1} = \\sqrt{\\frac{2\\mu r_2}{r_1(r_1+r_2)}},\\; v_{t2} = \\sqrt{\\frac{2\\mu r_1}{r_2(r_1+r_2)}}",
+          "to_latex": "\\Delta v_1 = \\sqrt{\\frac{\\mu}{r_1}}\\left(\\sqrt{\\frac{2r_2}{r_1+r_2}} - 1\\right),\\quad \\Delta v_2 = \\sqrt{\\frac{\\mu}{r_2}}\\left(1 - \\sqrt{\\frac{2r_1}{r_1+r_2}}\\right)",
+          "operation_label": "第1・第2インパルスの接線速度差計算",
+          "explanation": "両軌道は接点で速度ベクトルが同一直線上にあるため、Δv_1 = v_t1 - v_c1、Δv_2 = v_c2 - v_t2 を円軌道速度で括って無次元因子表現にする。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_total_sum",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta v_1 = \\sqrt{\\frac{\\mu}{r_1}}\\left(\\sqrt{\\frac{2r_2}{r_1+r_2}} - 1\\right),\\quad \\Delta v_2 = \\sqrt{\\frac{\\mu}{r_2}}\\left(1 - \\sqrt{\\frac{2r_1}{r_1+r_2}}\\right)",
+          "to_latex": "a_t = \\frac{r_1 + r_2}{2},\\quad \\Delta v_1 = \\sqrt{\\frac{\\mu}{r_1}}\\left(\\sqrt{\\frac{2r_2}{r_1+r_2}} - 1\\right),\\quad \\Delta v_2 = \\sqrt{\\frac{\\mu}{r_2}}\\left(1 - \\sqrt{\\frac{2r_1}{r_1+r_2}}\\right),\\quad \\Delta v_H = |\\Delta v_1| + |\\Delta v_2|",
+          "operation_label": "総 Δv の集約",
+          "explanation": "ツィオルコフスキーの公式における推進剤消費が総速度増分の和で決まるため、2回噴射の大きさの和 Δv_H = |Δv_1| + |Δv_2| を求める。",
+          "used_node_ids": [
+            "astro.orbit.mt02_tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.astro.orbit.mt04_bielliptic_transfer_deltav",
+      "target_node_id": "astro.orbit.mt04_bielliptic_transfer_deltav",
+      "route_kind": "deductive",
+      "title": "vis-viva 方程式から双楕円遷移の3回噴射 Δv と優位閾値条件を導出",
+      "premise_node_ids": [
+        "astro.orbit.ka02_vis_viva_equation",
+        "astro.orbit.mt03_hohmann_transfer_deltav"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "r_b > r_2 > r_1 とし、2つの半楕円遷移軌道はいずれも同一軌道面上にあり接線で接続される",
+        "全ての噴射は瞬間インパルスとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "a_{t1} = \\frac{r_1+r_b}{2},\\quad a_{t2} = \\frac{r_b+r_2}{2}\\quad (r_b > r_2 > r_1)",
+          "to_latex": "\\Delta v_{\\mathrm{bi}} = \\left(\\sqrt{\\frac{2\\mu r_b}{r_1(r_1+r_b)}} - \\sqrt{\\frac{\\mu}{r_1}}\\right) + \\left(\\sqrt{\\frac{2\\mu r_2}{r_b(r_b+r_2)}} - \\sqrt{\\frac{2\\mu r_1}{r_b(r_1+r_b)}}\\right) + \\left(\\sqrt{\\frac{2\\mu r_b}{r_2(r_2+r_b)}} - \\sqrt{\\frac{\\mu}{r_2}}\\right),\\quad \\lim_{r_b\\to\\infty}\\Delta v_{\\mathrm{bi}} < \\Delta v_H \\iff \\frac{r_2}{r_1} > 11.9388\\dots",
+          "operation_label": "双楕円遷移 Δv と閾値条件の導出概観",
+          "explanation": "2つの遷移楕円の近点・遠点速度を vis-viva 方程式から求めて3回の速度増分を加算し、r_b→∞ の放物線極限とホーマン遷移 Δv_H を比較する。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation",
+            "astro.orbit.mt03_hohmann_transfer_deltav"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_transfer_ellipse_speeds",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a_{t1} = \\frac{r_1+r_b}{2},\\quad a_{t2} = \\frac{r_b+r_2}{2}\\quad (r_b > r_2 > r_1)",
+          "to_latex": "v_{t1,p} = \\sqrt{\\frac{2\\mu r_b}{r_1(r_1+r_b)}},\\; v_{t1,a} = \\sqrt{\\frac{2\\mu r_1}{r_b(r_1+r_b)}},\\; v_{t2,a} = \\sqrt{\\frac{2\\mu r_2}{r_b(r_b+r_2)}},\\; v_{t2,p} = \\sqrt{\\frac{2\\mu r_b}{r_2(r_2+r_b)}}",
+          "operation_label": "2つの遷移楕円の端点速度の計算",
+          "explanation": "第1楕円（a_t1）の近点 r_1・遠点 r_b、第2楕円（a_t2）の遠点 r_b・近点 r_2 に vis-viva 方程式をそれぞれ適用する。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_sum_three_impulses",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_{t1,p} = \\sqrt{\\frac{2\\mu r_b}{r_1(r_1+r_b)}},\\; v_{t1,a} = \\sqrt{\\frac{2\\mu r_1}{r_b(r_1+r_b)}},\\; v_{t2,a} = \\sqrt{\\frac{2\\mu r_2}{r_b(r_b+r_2)}},\\; v_{t2,p} = \\sqrt{\\frac{2\\mu r_b}{r_2(r_2+r_b)}}",
+          "to_latex": "\\Delta v_{\\mathrm{bi}} = \\left(\\sqrt{\\frac{2\\mu r_b}{r_1(r_1+r_b)}} - \\sqrt{\\frac{\\mu}{r_1}}\\right) + \\left(\\sqrt{\\frac{2\\mu r_2}{r_b(r_b+r_2)}} - \\sqrt{\\frac{2\\mu r_1}{r_b(r_1+r_b)}}\\right) + \\left(\\sqrt{\\frac{2\\mu r_b}{r_2(r_2+r_b)}} - \\sqrt{\\frac{\\mu}{r_2}}\\right)",
+          "operation_label": "3回噴射の総 Δv の構成",
+          "explanation": "r_1 での加速 Δv_1 = v_t1,p - v_c1、r_b での加速 Δv_2 = v_t2,a - v_t1,a、r_2 での減速捕捉 Δv_3 = v_t2,p - v_c2（いずれも正値）を加算する。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_asymptotic_comparison",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta v_{\\mathrm{bi}} = \\left(\\sqrt{\\frac{2\\mu r_b}{r_1(r_1+r_b)}} - \\sqrt{\\frac{\\mu}{r_1}}\\right) + \\left(\\sqrt{\\frac{2\\mu r_2}{r_b(r_b+r_2)}} - \\sqrt{\\frac{2\\mu r_1}{r_b(r_1+r_b)}}\\right) + \\left(\\sqrt{\\frac{2\\mu r_b}{r_2(r_2+r_b)}} - \\sqrt{\\frac{\\mu}{r_2}}\\right)",
+          "to_latex": "\\Delta v_{\\mathrm{bi}} = \\left(\\sqrt{\\frac{2\\mu r_b}{r_1(r_1+r_b)}} - \\sqrt{\\frac{\\mu}{r_1}}\\right) + \\left(\\sqrt{\\frac{2\\mu r_2}{r_b(r_b+r_2)}} - \\sqrt{\\frac{2\\mu r_1}{r_b(r_1+r_b)}}\\right) + \\left(\\sqrt{\\frac{2\\mu r_b}{r_2(r_2+r_b)}} - \\sqrt{\\frac{\\mu}{r_2}}\\right),\\quad \\lim_{r_b\\to\\infty}\\Delta v_{\\mathrm{bi}} < \\Delta v_H \\iff \\frac{r_2}{r_1} > 11.9388\\dots",
+          "operation_label": "r_b→∞ 極限とホーマン遷移 Δv との比較",
+          "explanation": "r_b→∞ で中間噴射 Δv_2→0 となり Δv_bi/v_c1 → (√2-1)(1 + 1/√R)（R = r_2/r_1）に収束する。これを MT03 の Δv_H/v_c1 と等置して解くと臨界半径比 R ≈ 11.9388 が得られる。",
+          "used_node_ids": [
+            "astro.orbit.mt03_hohmann_transfer_deltav"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.astro.orbit.mt05_plane_change_deltav",
+      "target_node_id": "astro.orbit.mt05_plane_change_deltav",
+      "route_kind": "deductive",
+      "title": "速度ベクトルの回転と余弦定理から軌道面変更 Δv を導出",
+      "premise_node_ids": [
+        "astro.orbit.ka08_pqw_to_eci_rotation",
+        "astro.orbit.ka02_vis_viva_equation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "交点における瞬間的インパルス Δv により速度ベクトルを角度 Δi だけ回転させる",
+        "位置ベクトル r は噴射前後で変化しないため交点近傍で面内速度方向のみが回転する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{v}_1 = v_1\\hat{\\mathbf{u}}_1,\\quad \\mathbf{v}_2 = v_2\\hat{\\mathbf{u}}_2,\\quad \\hat{\\mathbf{u}}_1\\cdot\\hat{\\mathbf{u}}_2 = \\cos\\Delta i",
+          "to_latex": "\\Delta v_{\\mathrm{comb}} = \\sqrt{v_1^2 + v_2^2 - 2 v_1 v_2 \\cos\\Delta i},\\qquad v_1 = v_2 = v \\implies \\Delta v_{\\mathrm{pure}} = 2v\\sin\\!\\left(\\frac{\\Delta i}{2}\\right)",
+          "operation_label": "軌道面変更 Δv の導出概観",
+          "explanation": "変更前後の速度ベクトルの差のノルムを内積展開で評価し、一般の複合マヌーバ公式と等速純粋面変更公式を導く。",
+          "used_node_ids": [
+            "astro.orbit.ka08_pqw_to_eci_rotation",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_vector_norm_sq",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v}_1 = v_1\\hat{\\mathbf{u}}_1,\\quad \\mathbf{v}_2 = v_2\\hat{\\mathbf{u}}_2,\\quad \\hat{\\mathbf{u}}_1\\cdot\\hat{\\mathbf{u}}_2 = \\cos\\Delta i",
+          "to_latex": "\\Delta v_{\\mathrm{comb}} = \\|\\mathbf{v}_2 - \\mathbf{v}_1\\| = \\sqrt{v_1^2 + v_2^2 - 2 v_1 v_2 \\cos\\Delta i}",
+          "operation_label": "速度ベクトル差ノルムの内積展開（余弦定理）",
+          "explanation": "||v_2 - v_1||^2 = (v_2 - v_1)·(v_2 - v_1) = v_1^2 + v_2^2 - 2 v_1 v_2 (u_1·u_2) を計算して平方根をとる。",
+          "used_node_ids": [
+            "astro.orbit.ka08_pqw_to_eci_rotation",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_half_angle_identity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta v_{\\mathrm{comb}} = \\|\\mathbf{v}_2 - \\mathbf{v}_1\\| = \\sqrt{v_1^2 + v_2^2 - 2 v_1 v_2 \\cos\\Delta i}",
+          "to_latex": "\\Delta v_{\\mathrm{comb}} = \\sqrt{v_1^2 + v_2^2 - 2 v_1 v_2 \\cos\\Delta i},\\qquad v_1 = v_2 = v \\implies \\Delta v_{\\mathrm{pure}} = 2v\\sin\\!\\left(\\frac{\\Delta i}{2}\\right)",
+          "operation_label": "等速条件と半角公式による純粋軌道面変更の導出",
+          "explanation": "v_1 = v_2 = v を代入すると √(2v^2(1 - cos Δi)) となり、三角関数の加法定理に基づく半角関係 1 - cos Δi = 2 sin^2(Δi/2) から 2v sin(Δi/2) を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "simplify(sqrt(2*v**2*(1 - cos(di))) - 2*v*sin(di/2))"
+        }
+      ]
+    },
+    {
+      "id": "drv.astro.orbit.mt06_hyperbolic_flyby_turn_angle",
+      "target_node_id": "astro.orbit.mt06_hyperbolic_flyby_turn_angle",
+      "route_kind": "deductive",
+      "title": "双曲線軌道のエネルギー保存と極座標方程式から偏向角 δ を導出",
+      "premise_node_ids": [
+        "astro.orbit.ka02_vis_viva_equation",
+        "astro.orbit.ka01_angular_momentum_areal_velocity"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.geom.m07_conic_polar"
+      ],
+      "assumptions": [
+        "惑星重力圏内では惑星中心の2体双曲線運動（重力定数 μ_p、e > 1）に従う",
+        "漸近無限遠 r → ∞ における速さを双曲線過剰速度 v_∞ > 0 とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\varepsilon = \\frac{v_\\infty^2}{2} = -\\frac{\\mu_p}{2a},\\quad r = \\frac{a(1-e^2)}{1+e\\cos\\nu}",
+          "to_latex": "a = -\\frac{\\mu_p}{v_\\infty^2},\\quad e = 1 + \\frac{r_p v_\\infty^2}{\\mu_p},\\quad \\sin\\frac{\\delta}{2} = \\frac{1}{e} = \\frac{1}{1 + \\dfrac{r_p v_\\infty^2}{\\mu_p}}",
+          "operation_label": "双曲線フライバイ偏向角公式の導出概観",
+          "explanation": "比エネルギー保存から半長径 a < 0 を、近点距離 r_p から離心率 e を求め、r→∞ 漸近線の真近点角 ν_∞ を介して偏向角 δ を導く。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "astro.orbit.ka02_vis_viva_equation",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_semimajor_periapsis",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varepsilon = \\frac{v_\\infty^2}{2} = -\\frac{\\mu_p}{2a},\\quad r = \\frac{a(1-e^2)}{1+e\\cos\\nu}",
+          "to_latex": "a = -\\frac{\\mu_p}{v_\\infty^2},\\quad r_p = a(1-e) = \\frac{\\mu_p}{v_\\infty^2}(e - 1)",
+          "operation_label": "双曲線半長径と近点距離の関係式",
+          "explanation": "r→∞ でのエネルギー保存から a = -μ_p / v_∞^2 を得て、近点 ν = 0 を極座標式に代入すると r_p = a(1-e^2)/(1+e) = a(1-e) となる。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation",
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_eccentricity_asymptote",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a = -\\frac{\\mu_p}{v_\\infty^2},\\quad r_p = a(1-e) = \\frac{\\mu_p}{v_\\infty^2}(e - 1)",
+          "to_latex": "a = -\\frac{\\mu_p}{v_\\infty^2},\\quad e = 1 + \\frac{r_p v_\\infty^2}{\\mu_p},\\quad \\cos\\nu_\\infty = -\\frac{1}{e}",
+          "operation_label": "離心率の決定と漸近真近点角",
+          "explanation": "r_p の式を e について解いて e = 1 + r_p v_∞^2 / μ_p を得て、r → ∞ の漸近条件 1 + e cos ν_∞ = 0 から cos ν_∞ = -1/e を求める。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "math.geom.m07_conic_polar"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_turn_angle",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a = -\\frac{\\mu_p}{v_\\infty^2},\\quad e = 1 + \\frac{r_p v_\\infty^2}{\\mu_p},\\quad \\cos\\nu_\\infty = -\\frac{1}{e}",
+          "to_latex": "a = -\\frac{\\mu_p}{v_\\infty^2},\\quad e = 1 + \\frac{r_p v_\\infty^2}{\\mu_p},\\quad \\sin\\frac{\\delta}{2} = \\frac{1}{e} = \\frac{1}{1 + \\dfrac{r_p v_\\infty^2}{\\mu_p}}",
+          "operation_label": "幾何学的偏向角の導出",
+          "explanation": "近点通過の対称性から入出射漸近線のなす角（偏向角）は δ = 2ν_∞ - π となり、sin(δ/2) = sin(ν_∞ - π/2) = -cos ν_∞ = 1/e が従う。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "simplify(sin(nu_inf - pi/2) + cos(nu_inf)) == 0"
+        }
+      ]
+    },
+    {
+      "id": "drv.astro.orbit.mt07_gravity_assist_deltav",
+      "target_node_id": "astro.orbit.mt07_gravity_assist_deltav",
+      "route_kind": "deductive",
+      "title": "接合円錐曲線近似と回転変換による重力アシスト Δv・エネルギー変化の導出",
+      "premise_node_ids": [
+        "astro.orbit.mt06_hyperbolic_flyby_turn_angle",
+        "astro.orbit.ka02_vis_viva_equation"
+      ],
+      "required_math_node_ids": [
+        "math.alg.gr07_rodrigues_rotation_exp_map",
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "惑星の重力圏（ヒル球）は太陽周回スケールに対して十分小さく、フライバイ中の惑星公転速度 V_p は一定とみなす（接合円錐曲線近似）",
+        "双曲線軌道は惑星中心系で角運動量方向 h_p のまわりに漸近速度ベクトルを角度 δ だけ回転させる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{v}_1 = \\mathbf{V}_p + \\mathbf{v}_{\\infty,\\mathrm{in}},\\quad \\mathbf{v}_2 = \\mathbf{V}_p + \\mathbf{v}_{\\infty,\\mathrm{out}},\\quad \\mathbf{v}_{\\infty,\\mathrm{out}} = R(\\hat{\\mathbf{h}}_p,\\delta)\\mathbf{v}_{\\infty,\\mathrm{in}}",
+          "to_latex": "\\Delta\\mathbf{v} = \\mathbf{v}_{\\infty,\\mathrm{out}} - \\mathbf{v}_{\\infty,\\mathrm{in}},\\quad \\|\\Delta\\mathbf{v}\\| = 2v_\\infty\\sin\\frac{\\delta}{2} = \\frac{2v_\\infty}{1 + \\dfrac{r_p v_\\infty^2}{\\mu_p}},\\quad \\Delta\\varepsilon_{\\mathrm{helio}} = \\mathbf{V}_p\\cdot\\Delta\\mathbf{v}",
+          "operation_label": "重力アシスト Δv およびエネルギー変化の導出概観",
+          "explanation": "惑星中心系の過剰速度ベクトルの回転に惑星公転速度を合成し、太陽中心での無噴射 Δv と比力学的エネルギー増減を求める。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation",
+            "astro.orbit.mt06_hyperbolic_flyby_turn_angle",
+            "math.alg.gr07_rodrigues_rotation_exp_map",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_velocity_difference",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v}_1 = \\mathbf{V}_p + \\mathbf{v}_{\\infty,\\mathrm{in}},\\quad \\mathbf{v}_2 = \\mathbf{V}_p + \\mathbf{v}_{\\infty,\\mathrm{out}},\\quad \\mathbf{v}_{\\infty,\\mathrm{out}} = R(\\hat{\\mathbf{h}}_p,\\delta)\\mathbf{v}_{\\infty,\\mathrm{in}}",
+          "to_latex": "\\Delta\\mathbf{v} = \\mathbf{v}_{\\infty,\\mathrm{out}} - \\mathbf{v}_{\\infty,\\mathrm{in}},\\quad \\|\\mathbf{v}_{\\infty,\\mathrm{out}}\\| = \\|\\mathbf{v}_{\\infty,\\mathrm{in}}\\| = v_\\infty",
+          "operation_label": "太陽中心速度差と SO(3) 回転による大きさ不変性",
+          "explanation": "V_p が一定のため太陽中心速度差 Δv = v_2 - v_1 は過剰速度の差に等しく、直交行列 R(h_p, δ) ∈ SO(3) の作用により過剰速度の大きさ v_∞ は保存される。",
+          "used_node_ids": [
+            "math.alg.gr07_rodrigues_rotation_exp_map"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_deltav_magnitude",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta\\mathbf{v} = \\mathbf{v}_{\\infty,\\mathrm{out}} - \\mathbf{v}_{\\infty,\\mathrm{in}},\\quad \\|\\mathbf{v}_{\\infty,\\mathrm{out}}\\| = \\|\\mathbf{v}_{\\infty,\\mathrm{in}}\\| = v_\\infty",
+          "to_latex": "\\Delta\\mathbf{v} = \\mathbf{v}_{\\infty,\\mathrm{out}} - \\mathbf{v}_{\\infty,\\mathrm{in}},\\quad \\|\\Delta\\mathbf{v}\\| = 2v_\\infty\\sin\\frac{\\delta}{2} = \\frac{2v_\\infty}{1 + \\dfrac{r_p v_\\infty^2}{\\mu_p}},\\quad \\|\\mathbf{v}_{\\infty,\\mathrm{out}}\\| = \\|\\mathbf{v}_{\\infty,\\mathrm{in}}\\| = v_\\infty",
+          "operation_label": "偏向角 δ と MT06 による Δv 大きさの算出",
+          "explanation": "||Δv||^2 = 2 v_∞^2(1 - cos δ) = 4 v_∞^2 sin^2(δ/2) より ||Δv|| = 2 v_∞ sin(δ/2) を得て、MT06 の sin(δ/2) 式を代入する。",
+          "used_node_ids": [
+            "astro.orbit.mt06_hyperbolic_flyby_turn_angle",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_heliocentric_energy",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta\\mathbf{v} = \\mathbf{v}_{\\infty,\\mathrm{out}} - \\mathbf{v}_{\\infty,\\mathrm{in}},\\quad \\|\\Delta\\mathbf{v}\\| = 2v_\\infty\\sin\\frac{\\delta}{2} = \\frac{2v_\\infty}{1 + \\dfrac{r_p v_\\infty^2}{\\mu_p}},\\quad \\|\\mathbf{v}_{\\infty,\\mathrm{out}}\\| = \\|\\mathbf{v}_{\\infty,\\mathrm{in}}\\| = v_\\infty",
+          "to_latex": "\\Delta\\mathbf{v} = \\mathbf{v}_{\\infty,\\mathrm{out}} - \\mathbf{v}_{\\infty,\\mathrm{in}},\\quad \\|\\Delta\\mathbf{v}\\| = 2v_\\infty\\sin\\frac{\\delta}{2} = \\frac{2v_\\infty}{1 + \\dfrac{r_p v_\\infty^2}{\\mu_p}},\\quad \\Delta\\varepsilon_{\\mathrm{helio}} = \\mathbf{V}_p\\cdot\\Delta\\mathbf{v}",
+          "operation_label": "太陽中心比力学的エネルギー変化の評価",
+          "explanation": "惑星近傍での太陽重力ポテンシャルは変わらないため Δε_helio = (1/2)||V_p + v_∞,out||^2 - (1/2)||V_p + v_∞,in||^2 を展開すると、v_∞^2 の項が相殺して V_p·Δv のみが残る。",
+          "used_node_ids": [
+            "astro.orbit.ka02_vis_viva_equation",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

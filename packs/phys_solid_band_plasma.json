@@ -1,0 +1,895 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.solid.band_plasma",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "物性物理・プラズマ入門：ブロッホの定理・バンド構造・デバイ遮蔽とプラズマ振動",
+    "language": "ja",
+    "description": "周期ポテンシャル中のブロッホの定理、クローニッヒ＝ペニー模型とエネルギーバンド、有効質量、プラズマ振動数とデバイ長を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.solid.bp01_periodic_potential_translation",
+      "short_code": "BP01",
+      "kind": "definition",
+      "title": "結晶の周期ポテンシャルと並進演算子",
+      "summary": "ブラベー格子ベクトル R に対して不変な周期ポテンシャルと、波動関数を R だけシフトする並進演算子およびハミルトニアンとの可換性を定義する。",
+      "canonical_latex": "V(\\mathbf{r} + \\mathbf{R}) = V(\\mathbf{r}),\\quad \\hat{T}_{\\mathbf{R}}\\psi(\\mathbf{r}) := \\psi(\\mathbf{r} + \\mathbf{R}),\\quad [\\hat{H}, \\hat{T}_{\\mathbf{R}}] = 0",
+      "aliases_latex": [
+        "\\hat{T}_{\\mathbf{R}}\\hat{H} = \\hat{H}\\hat{T}_{\\mathbf{R}}"
+      ],
+      "keywords": [
+        "periodic potential",
+        "translation operator",
+        "Bravais lattice",
+        "commutator"
+      ],
+      "domain_tags": [
+        "physics",
+        "solid_state",
+        "quantum_mechanics"
+      ]
+    },
+    {
+      "id": "phys.solid.bp02_bloch_theorem",
+      "short_code": "BP02",
+      "kind": "theorem_formula",
+      "title": "ブロッホの定理（周期ポテンシャル中の電子波動関数）",
+      "summary": "周期ポテンシャル中の1電子固有状態は、平面波と格子周期関数 u_{nk}(r) の積として表され、並進に対して位相因子 e^{ik·R} のみを獲得する。",
+      "canonical_latex": "\\psi_{n\\mathbf{k}}(\\mathbf{r}) = e^{i\\mathbf{k}\\cdot\\mathbf{r}} u_{n\\mathbf{k}}(\\mathbf{r}),\\quad u_{n\\mathbf{k}}(\\mathbf{r}+\\mathbf{R}) = u_{n\\mathbf{k}}(\\mathbf{r}),\\quad \\psi_{n\\mathbf{k}}(\\mathbf{r}+\\mathbf{R}) = e^{i\\mathbf{k}\\cdot\\mathbf{R}}\\psi_{n\\mathbf{k}}(\\mathbf{r})",
+      "aliases_latex": [
+        "\\hat{T}_{\\mathbf{R}}\\psi_{n\\mathbf{k}}(\\mathbf{r}) = e^{i\\mathbf{k}\\cdot\\mathbf{R}}\\psi_{n\\mathbf{k}}(\\mathbf{r})"
+      ],
+      "keywords": [
+        "Bloch theorem",
+        "Bloch wave",
+        "crystal wavevector",
+        "periodic function"
+      ],
+      "domain_tags": [
+        "physics",
+        "solid_state",
+        "band_theory"
+      ]
+    },
+    {
+      "id": "phys.solid.bp03_kronig_penney_model",
+      "short_code": "BP03",
+      "kind": "definition",
+      "title": "クローニッヒ＝ペニー模型（1次元周期デルタポテンシャル列）",
+      "summary": "1次元周期ポテンシャルを等間隔 a のディラック・デルタ関数ポテンシャル列で理想化した可解バンド模型と対応するシュレーディンガー方程式を定義する。",
+      "canonical_latex": "V(x) = \\frac{\\hbar^2 P}{m a}\\sum_{n=-\\infty}^{\\infty}\\delta(x - na),\\quad -\\frac{\\hbar^2}{2m}\\frac{d^2\\psi}{dx^2} + V(x)\\psi(x) = E\\psi(x)",
+      "aliases_latex": [
+        "V(x) = \\alpha\\sum_{n=-\\infty}^{\\infty}\\delta(x-na)"
+      ],
+      "keywords": [
+        "Kronig-Penney model",
+        "Dirac comb",
+        "1D crystal",
+        "band model"
+      ],
+      "domain_tags": [
+        "physics",
+        "solid_state",
+        "band_theory"
+      ]
+    },
+    {
+      "id": "phys.solid.bp04_kronig_penney_band_dispersion",
+      "short_code": "BP04",
+      "kind": "theorem_formula",
+      "title": "クローニッヒ＝ペニー模型の分散関係とエネルギーバンド",
+      "summary": "境界接続条件とブロッホ境界条件から導かれる固有値方程式であり、右辺が [-1, 1] に入るエネルギー領域のみが許容バンド、それ以外が禁制帯（バンドギャップ）となる。",
+      "canonical_latex": "\\cos(ka) = \\cos(\\alpha a) + P\\frac{\\sin(\\alpha a)}{\\alpha a},\\quad \\alpha := \\frac{\\sqrt{2mE}}{\\hbar},\\quad \\left|\\cos(\\alpha a) + P\\frac{\\sin(\\alpha a)}{\\alpha a}\\right| \\le 1",
+      "aliases_latex": [
+        "\\cos(ka) = \\cos(\\alpha a) + P\\,\\mathrm{sinc}(\\alpha a)"
+      ],
+      "keywords": [
+        "energy band",
+        "band gap",
+        "Kronig-Penney dispersion",
+        "Brillouin zone"
+      ],
+      "domain_tags": [
+        "physics",
+        "solid_state",
+        "band_theory"
+      ]
+    },
+    {
+      "id": "phys.solid.bp05_crystal_momentum_group_velocity",
+      "short_code": "BP05",
+      "kind": "theorem_formula",
+      "title": "結晶運動量とブロッホ電子の群速度・半古典運動方程式",
+      "summary": "ブロッホ状態の波数ベクトル k に付随する結晶運動量 hk、エネルギー分散 E_n(k) の勾配で与えられる群速度、および外力に対する時間発展則を示す。",
+      "canonical_latex": "\\mathbf{p}_{\\mathrm{cryst}} := \\hbar\\mathbf{k},\\quad \\mathbf{v}_n(\\mathbf{k}) = \\frac{1}{\\hbar}\\nabla_{\\mathbf{k}} E_n(\\mathbf{k}),\\quad \\frac{d(\\hbar\\mathbf{k})}{dt} = \\mathbf{F}_{\\mathrm{ext}}",
+      "aliases_latex": [
+        "\\mathbf{v}_n(\\mathbf{k}) = \\frac{1}{\\hbar}\\frac{\\partial E_n(\\mathbf{k})}{\\partial \\mathbf{k}}"
+      ],
+      "keywords": [
+        "crystal momentum",
+        "group velocity",
+        "semiclassical dynamics",
+        "Bloch electron"
+      ],
+      "domain_tags": [
+        "physics",
+        "solid_state",
+        "band_theory"
+      ]
+    },
+    {
+      "id": "phys.solid.bp06_effective_mass_tensor",
+      "short_code": "BP06",
+      "kind": "theorem_formula",
+      "title": "バンド電子の有効質量と有効質量テンソル",
+      "summary": "バンド分散 E_n(k) の2階微分（曲率）の逆数として定義される有効質量テンソルと、外力による加速度を結びつける半古典関係式を与える。",
+      "canonical_latex": "\\left(\\mathbf{m}^{*-1}\\right)_{ij} := \\frac{1}{\\hbar^2}\\frac{\\partial^2 E_n(\\mathbf{k})}{\\partial k_i \\partial k_j},\\quad \\frac{d\\mathbf{v}_n}{dt} = \\mathbf{m}^{*-1}\\mathbf{F}_{\\mathrm{ext}},\\quad m^*(k) = \\hbar^2\\left(\\frac{d^2 E}{dk^2}\\right)^{-1}",
+      "aliases_latex": [
+        "\\frac{1}{m^*} = \\frac{1}{\\hbar^2}\\frac{d^2 E}{dk^2}"
+      ],
+      "keywords": [
+        "effective mass",
+        "band curvature",
+        "semiconductor",
+        "hole"
+      ],
+      "domain_tags": [
+        "physics",
+        "solid_state",
+        "band_theory"
+      ]
+    },
+    {
+      "id": "phys.solid.bp07_plasma_oscillation_frequency",
+      "short_code": "BP07",
+      "kind": "theorem_formula",
+      "title": "電子プラズマの集団振動とプラズマ振動数",
+      "summary": "一様正イオン背景中の自由電子密度揺らぎが静電復元力によって起こす単振動の方程式と、固有振動数であるプラズマ振動数 ω_p を与える。",
+      "canonical_latex": "\\frac{\\partial^2 \\delta n_e}{\\partial t^2} + \\omega_p^2\\,\\delta n_e = 0,\\quad \\omega_p := \\sqrt{\\frac{n_0 e^2}{\\varepsilon_0 m_e}}",
+      "aliases_latex": [
+        "\\omega_p^2 = \\frac{n_0 e^2}{\\varepsilon_0 m_e}"
+      ],
+      "keywords": [
+        "plasma frequency",
+        "plasma oscillation",
+        "Langmuir wave",
+        "electron gas"
+      ],
+      "domain_tags": [
+        "physics",
+        "plasma",
+        "solid_state"
+      ]
+    },
+    {
+      "id": "phys.solid.bp08_plasma_dielectric_function",
+      "short_code": "BP08",
+      "kind": "theorem_formula",
+      "title": "無衝突プラズマ・自由電子ガスの誘電関数と電磁波分散関係",
+      "summary": "振動電場に対する自由電子の分極応答から得られる周波数依存比誘電率と、それに伴う横波電磁波のカットオフ分散関係を示す。",
+      "canonical_latex": "\\varepsilon_r(\\omega) = 1 - \\frac{\\omega_p^2}{\\omega^2},\\quad \\omega^2 = \\omega_p^2 + c^2 k^2",
+      "aliases_latex": [
+        "\\varepsilon(\\omega) = \\varepsilon_0\\left(1 - \\frac{\\omega_p^2}{\\omega^2}\\right)"
+      ],
+      "keywords": [
+        "dielectric function",
+        "Drude model",
+        "plasma cutoff",
+        "dispersion relation"
+      ],
+      "domain_tags": [
+        "physics",
+        "plasma",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.solid.bp09_debye_shielding_length",
+      "short_code": "BP09",
+      "kind": "theorem_formula",
+      "title": "デバイ遮蔽（湯川型静電ポテンシャル）とデバイ長",
+      "summary": "熱平衡プラズマ中の点電荷が周囲の荷電粒子再分布によって指数関数的に遮蔽される現象と、その特徴的遮蔽距離であるデバイ長 λ_D を与える。",
+      "canonical_latex": "\\nabla^2\\phi = \\frac{1}{\\lambda_D^2}\\phi - \\frac{q}{\\varepsilon_0}\\delta(\\mathbf{r}),\\quad \\phi(r) = \\frac{q}{4\\pi\\varepsilon_0 r}e^{-r/\\lambda_D},\\quad \\lambda_D := \\sqrt{\\frac{\\varepsilon_0 k_{\\mathrm{B}} T}{n_0 e^2}}",
+      "aliases_latex": [
+        "\\lambda_D = \\sqrt{\\frac{\\varepsilon_0 k_{\\mathrm{B}} T}{n_0 e^2}}"
+      ],
+      "keywords": [
+        "Debye shielding",
+        "Debye length",
+        "screened Coulomb potential",
+        "plasma"
+      ],
+      "domain_tags": [
+        "physics",
+        "plasma",
+        "statistical_mechanics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_bp01_periodic_commutator",
+      "target_node_id": "phys.solid.bp01_periodic_potential_translation",
+      "route_kind": "deductive",
+      "title": "周期ポテンシャルと格子並進演算子の可換性の導出",
+      "premise_node_ids": [
+        "phys.qm.wm05_tise_stationary_states",
+        "phys.qm.op02_hermitian_operator_observables"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ポテンシャル V(r) はブラベー格子ベクトル R に対して周期的である",
+        "運動エネルギー演算子 -(\\hbar^2/2m)\\nabla^2 は並進に対して不変である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{H} = -\\frac{\\hbar^2}{2m}\\nabla^2 + V(\\mathbf{r}),\\quad V(\\mathbf{r}+\\mathbf{R}) = V(\\mathbf{r})",
+          "to_latex": "V(\\mathbf{r}+\\mathbf{R}) = V(\\mathbf{r}),\\quad \\hat{T}_{\\mathbf{R}}\\psi(\\mathbf{r}) := \\psi(\\mathbf{r}+\\mathbf{R}),\\quad [\\hat{H}, \\hat{T}_{\\mathbf{R}}] = 0",
+          "operation_label": "並進演算子の定義と交換関係の導出",
+          "explanation": "並進演算子を定義し、運動エネルギーと周期ポテンシャルの両方が並進不変であることからハミルトニアンとの可換性を導く。",
+          "used_node_ids": [
+            "phys.qm.op02_hermitian_operator_observables",
+            "phys.qm.wm05_tise_stationary_states"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_define_translation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H} = -\\frac{\\hbar^2}{2m}\\nabla^2 + V(\\mathbf{r}),\\quad V(\\mathbf{r}+\\mathbf{R}) = V(\\mathbf{r})",
+          "to_latex": "(\\hat{T}_{\\mathbf{R}}\\hat{H}\\psi)(\\mathbf{r}) = -\\frac{\\hbar^2}{2m}\\nabla^2\\psi(\\mathbf{r}+\\mathbf{R}) + V(\\mathbf{r}+\\mathbf{R})\\psi(\\mathbf{r}+\\mathbf{R})",
+          "operation_label": "並進演算子のハミルトニアン作用",
+          "explanation": "任意の波動関数へのハミルトニアン作用の後に並進演算子 T_R を作用させ、位置座標を r から r+R に置換する。",
+          "used_node_ids": [
+            "phys.qm.wm05_tise_stationary_states"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_apply_periodicity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\hat{T}_{\\mathbf{R}}\\hat{H}\\psi)(\\mathbf{r}) = -\\frac{\\hbar^2}{2m}\\nabla^2\\psi(\\mathbf{r}+\\mathbf{R}) + V(\\mathbf{r}+\\mathbf{R})\\psi(\\mathbf{r}+\\mathbf{R})",
+          "to_latex": "(\\hat{T}_{\\mathbf{R}}\\hat{H}\\psi)(\\mathbf{r}) = \\left(-\\frac{\\hbar^2}{2m}\\nabla^2 + V(\\mathbf{r})\\right)\\psi(\\mathbf{r}+\\mathbf{R}) = (\\hat{H}\\hat{T}_{\\mathbf{R}}\\psi)(\\mathbf{r})",
+          "operation_label": "ポテンシャル周期性の適用",
+          "explanation": "周期条件 V(r+R)=V(r) とラプラシアンの並進不変性を用いて T_R と H の作用順序を入れ替える。",
+          "used_node_ids": [
+            "phys.qm.op02_hermitian_operator_observables"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_conclude_commutator",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\hat{T}_{\\mathbf{R}}\\hat{H}\\psi)(\\mathbf{r}) = \\left(-\\frac{\\hbar^2}{2m}\\nabla^2 + V(\\mathbf{r})\\right)\\psi(\\mathbf{r}+\\mathbf{R}) = (\\hat{H}\\hat{T}_{\\mathbf{R}}\\psi)(\\mathbf{r})",
+          "to_latex": "V(\\mathbf{r}+\\mathbf{R}) = V(\\mathbf{r}),\\quad \\hat{T}_{\\mathbf{R}}\\psi(\\mathbf{r}) := \\psi(\\mathbf{r}+\\mathbf{R}),\\quad [\\hat{H}, \\hat{T}_{\\mathbf{R}}] = 0",
+          "operation_label": "交換子ゼロの結論",
+          "explanation": "任意の波動関数について T_R H = H T_R が成り立つため交換子 [H, T_R] = 0 を得る。",
+          "used_node_ids": [
+            "phys.qm.op02_hermitian_operator_observables"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_bp02_bloch_theorem",
+      "target_node_id": "phys.solid.bp02_bloch_theorem",
+      "route_kind": "deductive",
+      "title": "可換な並進演算子の同時固有状態としてのブロッホの定理の導出",
+      "premise_node_ids": [
+        "phys.solid.bp01_periodic_potential_translation",
+        "phys.qm.wm05_tise_stationary_states",
+        "phys.qm.op03_hermitian_spectral_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ボルン＝フォン・カルマン周期境界条件により並進演算子の固有値の絶対値は1である",
+        "すべての格子並進演算子 T_R は互いに可換である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "[\\hat{H}, \\hat{T}_{\\mathbf{R}}] = 0,\\quad \\hat{T}_{\\mathbf{R}_1}\\hat{T}_{\\mathbf{R}_2} = \\hat{T}_{\\mathbf{R}_1+\\mathbf{R}_2}",
+          "to_latex": "\\psi_{n\\mathbf{k}}(\\mathbf{r}) = e^{i\\mathbf{k}\\cdot\\mathbf{r}} u_{n\\mathbf{k}}(\\mathbf{r}),\\quad u_{n\\mathbf{k}}(\\mathbf{r}+\\mathbf{R}) = u_{n\\mathbf{k}}(\\mathbf{r}),\\quad \\psi_{n\\mathbf{k}}(\\mathbf{r}+\\mathbf{R}) = e^{i\\mathbf{k}\\cdot\\mathbf{R}}\\psi_{n\\mathbf{k}}(\\mathbf{r})",
+          "operation_label": "同時固有状態からブロッホ関数の導出",
+          "explanation": "ハミルトニアンと並進演算子の同時固有状態が持つ乗法的な位相固有値から、平面波と周期関数の積表示を導く。",
+          "used_node_ids": [
+            "phys.qm.op03_hermitian_spectral_theorem",
+            "phys.qm.wm05_tise_stationary_states",
+            "phys.solid.bp01_periodic_potential_translation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_simultaneous_eigenstates",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[\\hat{H}, \\hat{T}_{\\mathbf{R}}] = 0,\\quad \\hat{T}_{\\mathbf{R}_1}\\hat{T}_{\\mathbf{R}_2} = \\hat{T}_{\\mathbf{R}_1+\\mathbf{R}_2}",
+          "to_latex": "\\hat{H}\\psi = E\\psi,\\quad \\hat{T}_{\\mathbf{R}}\\psi(\\mathbf{r}) = c(\\mathbf{R})\\psi(\\mathbf{r}),\\quad c(\\mathbf{R}_1)c(\\mathbf{R}_2) = c(\\mathbf{R}_1+\\mathbf{R}_2)",
+          "operation_label": "同時固有関数の選択と固有値乗法性",
+          "explanation": "H とすべての T_R が可換であるため同時固有状態を選べ、並進群の群積構造から固有値 c(R) の乗法則が得られる。",
+          "used_node_ids": [
+            "phys.qm.op03_hermitian_spectral_theorem",
+            "phys.solid.bp01_periodic_potential_translation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_exponential_eigenvalue",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H}\\psi = E\\psi,\\quad \\hat{T}_{\\mathbf{R}}\\psi(\\mathbf{r}) = c(\\mathbf{R})\\psi(\\mathbf{r}),\\quad c(\\mathbf{R}_1)c(\\mathbf{R}_2) = c(\\mathbf{R}_1+\\mathbf{R}_2)",
+          "to_latex": "c(\\mathbf{R}) = e^{i\\mathbf{k}\\cdot\\mathbf{R}}\\,(|c(\\mathbf{R})|=1),\\quad \\psi_{n\\mathbf{k}}(\\mathbf{r}+\\mathbf{R}) = e^{i\\mathbf{k}\\cdot\\mathbf{R}}\\psi_{n\\mathbf{k}}(\\mathbf{r})",
+          "operation_label": "規格化条件による指数位相形",
+          "explanation": "周期境界条件のもとで |c(R)|=1 が要求されるため、乗法性より固有値は実波数ベクトル k を用いて exp(ik·R) と書ける。",
+          "used_node_ids": [
+            "phys.qm.wm05_tise_stationary_states"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_periodic_part_factor",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c(\\mathbf{R}) = e^{i\\mathbf{k}\\cdot\\mathbf{R}}\\,(|c(\\mathbf{R})|=1),\\quad \\psi_{n\\mathbf{k}}(\\mathbf{r}+\\mathbf{R}) = e^{i\\mathbf{k}\\cdot\\mathbf{R}}\\psi_{n\\mathbf{k}}(\\mathbf{r})",
+          "to_latex": "\\psi_{n\\mathbf{k}}(\\mathbf{r}) = e^{i\\mathbf{k}\\cdot\\mathbf{r}} u_{n\\mathbf{k}}(\\mathbf{r}),\\quad u_{n\\mathbf{k}}(\\mathbf{r}+\\mathbf{R}) = u_{n\\mathbf{k}}(\\mathbf{r}),\\quad \\psi_{n\\mathbf{k}}(\\mathbf{r}+\\mathbf{R}) = e^{i\\mathbf{k}\\cdot\\mathbf{R}}\\psi_{n\\mathbf{k}}(\\mathbf{r})",
+          "operation_label": "周期部分 u_{nk}(r) の分離",
+          "explanation": "u_{nk}(r) := exp(-ik·r) ψ_{nk}(r) と定義すると、u_{nk}(r+R) = u_{nk}(r) の格子周期性が直ちに示される。",
+          "used_node_ids": [
+            "phys.solid.bp01_periodic_potential_translation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_bp03_kronig_penney_model",
+      "target_node_id": "phys.solid.bp03_kronig_penney_model",
+      "route_kind": "reformulation",
+      "title": "1次元矩形ポテンシャル列のデルタ関数極限によるクローニッヒ＝ペニー模型の定式化",
+      "premise_node_ids": [
+        "phys.solid.bp01_periodic_potential_translation",
+        "phys.qm.wm05_tise_stationary_states"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "障壁幅 b -> 0 かつ障壁高さ V_0 -> \\infty の極限で面積 V_0 b を一定に保つ",
+        "無次元障壁強度パラメータ P := m a V_0 b / \\hbar^2 を用いる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V_{\\mathrm{rect}}(x) = V_0\\;\\text{for } na - b < x < na,\\quad V_{\\mathrm{rect}}(x) = 0\\;\\text{otherwise}",
+          "to_latex": "V(x) = \\frac{\\hbar^2 P}{m a}\\sum_{n=-\\infty}^{\\infty}\\delta(x - na),\\quad -\\frac{\\hbar^2}{2m}\\frac{d^2\\psi}{dx^2} + V(x)\\psi(x) = E\\psi(x)",
+          "operation_label": "矩形障壁列のデルタ関数極限",
+          "explanation": "周期的矩形障壁列に対して面積一定の極限を取り、無次元強度 P を導入して1次元シュレーディンガー方程式に組み込む。",
+          "used_node_ids": [
+            "phys.qm.wm05_tise_stationary_states",
+            "phys.solid.bp01_periodic_potential_translation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_square_barrier_limit",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\mathrm{rect}}(x) = V_0\\;\\text{for } na - b < x < na,\\quad V_{\\mathrm{rect}}(x) = 0\\;\\text{otherwise}",
+          "to_latex": "V(x) = \\lim_{\\substack{b\\to 0,\\, V_0\\to\\infty \\\\ V_0 b = \\text{const.}}} V_{\\mathrm{rect}}(x) = (V_0 b)\\sum_{n=-\\infty}^{\\infty}\\delta(x - na)",
+          "operation_label": "超関数としてのデルタ列極限",
+          "explanation": "幅 b をゼロ、高さ V_0 を無限大としつつ積 V_0 b を固定することで、周期 a のデルタ関数列ポテンシャルを得る。",
+          "used_node_ids": [
+            "phys.solid.bp01_periodic_potential_translation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_dimensionless_strength",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(x) = \\lim_{\\substack{b\\to 0,\\, V_0\\to\\infty \\\\ V_0 b = \\text{const.}}} V_{\\mathrm{rect}}(x) = (V_0 b)\\sum_{n=-\\infty}^{\\infty}\\delta(x - na)",
+          "to_latex": "V(x) = \\frac{\\hbar^2 P}{m a}\\sum_{n=-\\infty}^{\\infty}\\delta(x - na),\\quad -\\frac{\\hbar^2}{2m}\\frac{d^2\\psi}{dx^2} + V(x)\\psi(x) = E\\psi(x)",
+          "operation_label": "無次元パラメータ P と TISE の記述",
+          "explanation": "V_0 b = \\hbar^2 P / (ma) と無次元パラメータ P を定義し、時間非依存シュレーディンガー方程式に代入する。",
+          "used_node_ids": [
+            "phys.qm.wm05_tise_stationary_states"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_bp04_kronig_penney_dispersion",
+      "target_node_id": "phys.solid.bp04_kronig_penney_band_dispersion",
+      "route_kind": "deductive",
+      "title": "デルタポテンシャル接続条件とブロッホ条件によるバンド分散関係の導出",
+      "premise_node_ids": [
+        "phys.solid.bp02_bloch_theorem",
+        "phys.solid.bp03_kronig_penney_model",
+        "phys.qm.wm08_step_barrier_transmission"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "正のエネルギー領域 E = \\hbar^2 \\alpha^2 / (2m) > 0 を考える",
+        "非自明解が存在するための永年行列式条件を課す"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-\\frac{\\hbar^2}{2m}\\frac{d^2\\psi}{dx^2} + \\frac{\\hbar^2 P}{ma}\\sum_{n}\\delta(x-na)\\psi = E\\psi,\\quad \\psi(x+a) = e^{ika}\\psi(x)",
+          "to_latex": "\\cos(ka) = \\cos(\\alpha a) + P\\frac{\\sin(\\alpha a)}{\\alpha a},\\quad \\alpha := \\frac{\\sqrt{2mE}}{\\hbar},\\quad \\left|\\cos(\\alpha a) + P\\frac{\\sin(\\alpha a)}{\\alpha a}\\right| \\le 1",
+          "operation_label": "接続条件と永年方程式の解法",
+          "explanation": "自由領域の平面波解にブロッホ条件とデルタ関数での導関数跳躍条件を課し、非自明解条件から分散関係と許容バンド条件を導く。",
+          "used_node_ids": [
+            "phys.qm.wm08_step_barrier_transmission",
+            "phys.solid.bp02_bloch_theorem",
+            "phys.solid.bp03_kronig_penney_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_free_region_bloch",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{\\hbar^2}{2m}\\frac{d^2\\psi}{dx^2} + \\frac{\\hbar^2 P}{ma}\\sum_{n}\\delta(x-na)\\psi = E\\psi,\\quad \\psi(x+a) = e^{ika}\\psi(x)",
+          "to_latex": "\\psi_0(x) = A e^{i\\alpha x} + B e^{-i\\alpha x}\\,(0<x<a),\\quad \\psi_1(x) = e^{ika}\\big(A e^{i\\alpha(x-a)} + B e^{-i\\alpha(x-a)}\\big)\\,(a<x<2a)",
+          "operation_label": "単位胞内の一般解とブロッホ写像",
+          "explanation": "ポテンシャルがゼロの区間 (0,a) の一般解を波数 \\alpha = \\sqrt{2mE}/\\hbar で書き、ブロッホの定理で隣接区間 (a,2a) へ写す。",
+          "used_node_ids": [
+            "phys.solid.bp02_bloch_theorem",
+            "phys.solid.bp03_kronig_penney_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_delta_matching_conditions",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\psi_0(x) = A e^{i\\alpha x} + B e^{-i\\alpha x}\\,(0<x<a),\\quad \\psi_1(x) = e^{ika}\\big(A e^{i\\alpha(x-a)} + B e^{-i\\alpha(x-a)}\\big)\\,(a<x<2a)",
+          "to_latex": "\\psi_1(a) = \\psi_0(a),\\quad \\psi_1'(a^+) - \\psi_0'(a^-) = \\frac{2P}{a}\\psi_0(a)",
+          "operation_label": "x=a における連続性と導関数跳躍条件",
+          "explanation": "波動関数の連続性と、x=a の微小近傍でのシュレーディンガー方程式の積分による1階微分の跳躍条件を課す。",
+          "used_node_ids": [
+            "phys.qm.wm08_step_barrier_transmission",
+            "phys.solid.bp03_kronig_penney_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_secular_dispersion",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\psi_1(a) = \\psi_0(a),\\quad \\psi_1'(a^+) - \\psi_0'(a^-) = \\frac{2P}{a}\\psi_0(a)",
+          "to_latex": "\\cos(ka) = \\cos(\\alpha a) + P\\frac{\\sin(\\alpha a)}{\\alpha a},\\quad \\alpha := \\frac{\\sqrt{2mE}}{\\hbar},\\quad \\left|\\cos(\\alpha a) + P\\frac{\\sin(\\alpha a)}{\\alpha a}\\right| \\le 1",
+          "operation_label": "係数行列式ゼロによる分散関係",
+          "explanation": "A, B に関する2×2同次連立一次方程式の行列式をゼロとおくと cos(ka) の方程式が得られ、実数 k の存在条件よりエネルギーバンド構造が決定する。",
+          "used_node_ids": [
+            "phys.solid.bp02_bloch_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_bp05_group_velocity_crystal_momentum",
+      "target_node_id": "phys.solid.bp05_crystal_momentum_group_velocity",
+      "route_kind": "deductive",
+      "title": "ヘルマン＝ファインマン定理によるブロッホ電子の群速度と結晶運動量則の導出",
+      "premise_node_ids": [
+        "phys.solid.bp02_bloch_theorem",
+        "phys.qm.wm01_de_broglie_relations",
+        "phys.qm.op05_ehrenfest_heisenberg_eom"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "外力は格子定数より十分緩やかに変化し、バンド間遷移は無視できる（単一バンド近似）",
+        "ブロッホ関数は単位胞または結晶体積上で規格化されている"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{H}\\psi_{n\\mathbf{k}} = E_n(\\mathbf{k})\\psi_{n\\mathbf{k}},\\quad \\psi_{n\\mathbf{k}}(\\mathbf{r}) = e^{i\\mathbf{k}\\cdot\\mathbf{r}}u_{n\\mathbf{k}}(\\mathbf{r})",
+          "to_latex": "\\mathbf{p}_{\\mathrm{cryst}} := \\hbar\\mathbf{k},\\quad \\mathbf{v}_n(\\mathbf{k}) = \\frac{1}{\\hbar}\\nabla_{\\mathbf{k}} E_n(\\mathbf{k}),\\quad \\frac{d(\\hbar\\mathbf{k})}{dt} = \\mathbf{F}_{\\mathrm{ext}}",
+          "operation_label": "ブロッホハミルトニアンの k 微分とエネルギー保存",
+          "explanation": "u_{nk} の固有値方程式を k で微分して平均速度（群速度）を求め、外力による仕事率との比較から結晶運動量の運動方程式を導く。",
+          "used_node_ids": [
+            "phys.qm.op05_ehrenfest_heisenberg_eom",
+            "phys.qm.wm01_de_broglie_relations",
+            "phys.solid.bp02_bloch_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_bloch_hamiltonian",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H}\\psi_{n\\mathbf{k}} = E_n(\\mathbf{k})\\psi_{n\\mathbf{k}},\\quad \\psi_{n\\mathbf{k}}(\\mathbf{r}) = e^{i\\mathbf{k}\\cdot\\mathbf{r}}u_{n\\mathbf{k}}(\\mathbf{r})",
+          "to_latex": "\\hat{H}_{\\mathbf{k}} u_{n\\mathbf{k}} = E_n(\\mathbf{k}) u_{n\\mathbf{k}},\\quad \\hat{H}_{\\mathbf{k}} := \\frac{(\\hat{\\mathbf{p}} + \\hbar\\mathbf{k})^2}{2m} + V(\\mathbf{r})",
+          "operation_label": "周期部 u_{nk} に対する有効ハミルトニアン",
+          "explanation": "exp(ik·r) を運動量演算子 \\hat{p} = -i\\hbar\\nabla に通して周期関数 u_{nk} が満たす k 依存ハミルトニアン H_k を構成する。",
+          "used_node_ids": [
+            "phys.qm.wm01_de_broglie_relations",
+            "phys.solid.bp02_bloch_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_hellmann_feynman_velocity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H}_{\\mathbf{k}} u_{n\\mathbf{k}} = E_n(\\mathbf{k}) u_{n\\mathbf{k}},\\quad \\hat{H}_{\\mathbf{k}} := \\frac{(\\hat{\\mathbf{p}} + \\hbar\\mathbf{k})^2}{2m} + V(\\mathbf{r})",
+          "to_latex": "\\nabla_{\\mathbf{k}} E_n(\\mathbf{k}) = \\langle u_{n\\mathbf{k}}|\\nabla_{\\mathbf{k}}\\hat{H}_{\\mathbf{k}}|u_{n\\mathbf{k}}\\rangle = \\frac{\\hbar}{m}\\langle \\psi_{n\\mathbf{k}}|\\hat{\\mathbf{p}}|\\psi_{n\\mathbf{k}}\\rangle = \\hbar\\mathbf{v}_n(\\mathbf{k})",
+          "operation_label": "ヘルマン＝ファインマン関係と速度期待値",
+          "explanation": "規格化条件のもとで固有エネルギーの k 勾配を取り、\\nabla_k H_k = \\hbar(\\hat{p}+\\hbar k)/m より電子の平均速度 v_n(k) を導く。",
+          "used_node_ids": [
+            "phys.qm.op05_ehrenfest_heisenberg_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_semiclassical_force_work",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\mathbf{k}} E_n(\\mathbf{k}) = \\langle u_{n\\mathbf{k}}|\\nabla_{\\mathbf{k}}\\hat{H}_{\\mathbf{k}}|u_{n\\mathbf{k}}\\rangle = \\frac{\\hbar}{m}\\langle \\psi_{n\\mathbf{k}}|\\hat{\\mathbf{p}}|\\psi_{n\\mathbf{k}}\\rangle = \\hbar\\mathbf{v}_n(\\mathbf{k})",
+          "to_latex": "\\mathbf{p}_{\\mathrm{cryst}} := \\hbar\\mathbf{k},\\quad \\mathbf{v}_n(\\mathbf{k}) = \\frac{1}{\\hbar}\\nabla_{\\mathbf{k}} E_n(\\mathbf{k}),\\quad \\frac{d(\\hbar\\mathbf{k})}{dt} = \\mathbf{F}_{\\mathrm{ext}}",
+          "operation_label": "外力の仕事率と結晶運動量の時間変化",
+          "explanation": "エネルギー時間微分 dE_n/dt = \\nabla_k E_n · (dk/dt) = v_n · d(\\hbar k)/dt と外力の仕事率 F_ext · v_n を等置し、結晶運動量の運動方程式を得る。",
+          "used_node_ids": [
+            "phys.qm.op05_ehrenfest_heisenberg_eom",
+            "phys.qm.wm01_de_broglie_relations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_bp06_effective_mass_tensor",
+      "target_node_id": "phys.solid.bp06_effective_mass_tensor",
+      "route_kind": "deductive",
+      "title": "群速度の時間微分からの有効質量テンソルの導出",
+      "premise_node_ids": [
+        "phys.solid.bp05_crystal_momentum_group_velocity",
+        "phys.solid.bp04_kronig_penney_band_dispersion"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "エネルギーバンド E_n(k) は k に関して2階連続微分可能である",
+        "単一バンド内の半古典的波束ダイナミクスに従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{v}_n(\\mathbf{k}) = \\frac{1}{\\hbar}\\nabla_{\\mathbf{k}} E_n(\\mathbf{k}),\\quad \\hbar\\dot{\\mathbf{k}} = \\mathbf{F}_{\\mathrm{ext}}",
+          "to_latex": "\\left(\\mathbf{m}^{*-1}\\right)_{ij} := \\frac{1}{\\hbar^2}\\frac{\\partial^2 E_n(\\mathbf{k})}{\\partial k_i \\partial k_j},\\quad \\frac{d\\mathbf{v}_n}{dt} = \\mathbf{m}^{*-1}\\mathbf{F}_{\\mathrm{ext}},\\quad m^*(k) = \\hbar^2\\left(\\frac{d^2 E}{dk^2}\\right)^{-1}",
+          "operation_label": "連鎖律による加速度と有効質量の同定",
+          "explanation": "群速度を時間で微分し、結晶運動量の時間変化に外力を代入することで加速度と外力を結ぶ有効質量テンソルを同定する。",
+          "used_node_ids": [
+            "phys.solid.bp04_kronig_penney_band_dispersion",
+            "phys.solid.bp05_crystal_momentum_group_velocity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_velocity_time_derivative",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v}_n(\\mathbf{k}) = \\frac{1}{\\hbar}\\nabla_{\\mathbf{k}} E_n(\\mathbf{k}),\\quad \\hbar\\dot{\\mathbf{k}} = \\mathbf{F}_{\\mathrm{ext}}",
+          "to_latex": "\\frac{d v_{n,i}}{dt} = \\sum_{j=1}^{3} \\frac{1}{\\hbar}\\frac{\\partial^2 E_n(\\mathbf{k})}{\\partial k_i \\partial k_j}\\dot{k}_j",
+          "operation_label": "速度ベクトルの時間微分（連鎖律）",
+          "explanation": "速度の各成分 v_{n,i} を k_j を介して時間で微分する。",
+          "used_node_ids": [
+            "phys.solid.bp05_crystal_momentum_group_velocity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_substitute_k_dot",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d v_{n,i}}{dt} = \\sum_{j=1}^{3} \\frac{1}{\\hbar}\\frac{\\partial^2 E_n(\\mathbf{k})}{\\partial k_i \\partial k_j}\\dot{k}_j",
+          "to_latex": "\\frac{d v_{n,i}}{dt} = \\sum_{j=1}^{3} \\frac{1}{\\hbar^2}\\frac{\\partial^2 E_n(\\mathbf{k})}{\\partial k_i \\partial k_j} F_{\\mathrm{ext}, j}",
+          "operation_label": "外力関係式 \\dot{k} = F_ext / \\hbar の代入",
+          "explanation": "結晶運動量の運動方程式を用いて \\dot{k}_j を外力成分 F_{ext,j}/\\hbar で置換する。",
+          "used_node_ids": [
+            "phys.solid.bp05_crystal_momentum_group_velocity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_identify_effective_mass",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d v_{n,i}}{dt} = \\sum_{j=1}^{3} \\frac{1}{\\hbar^2}\\frac{\\partial^2 E_n(\\mathbf{k})}{\\partial k_i \\partial k_j} F_{\\mathrm{ext}, j}",
+          "to_latex": "\\left(\\mathbf{m}^{*-1}\\right)_{ij} := \\frac{1}{\\hbar^2}\\frac{\\partial^2 E_n(\\mathbf{k})}{\\partial k_i \\partial k_j},\\quad \\frac{d\\mathbf{v}_n}{dt} = \\mathbf{m}^{*-1}\\mathbf{F}_{\\mathrm{ext}},\\quad m^*(k) = \\hbar^2\\left(\\frac{d^2 E}{dk^2}\\right)^{-1}",
+          "operation_label": "逆有効質量テンソルの定義",
+          "explanation": "ニュートンの運動方程式 a = m^{-1} F との対比により逆有効質量テンソルを定義し、1次元等方極限でのスカラー有効質量を得る。",
+          "used_node_ids": [
+            "phys.solid.bp04_kronig_penney_band_dispersion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_bp07_plasma_oscillation",
+      "target_node_id": "phys.solid.bp07_plasma_oscillation_frequency",
+      "route_kind": "deductive",
+      "title": "線形化流体方程式とガウスの法則からのプラズマ振動数の導出",
+      "premise_node_ids": [
+        "phys.em.es04_gauss_law_differential",
+        "phys.em.ms01_lorentz_force_magnetic_def",
+        "phys.em.mw03_charge_conservation_continuity",
+        "phys.mech.vib01_damped_oscillator_eom"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "イオンは質量が大きいため静止し一様正背景電荷 +e n_0 を作るとみなす（冷たい無衝突電子プラズマ）",
+        "摂動 \\delta n_e, v_e, E は平衡値に比べて微小であり線形化できる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m_e\\frac{\\partial \\mathbf{v}_e}{\\partial t} = -e\\mathbf{E},\\quad \\frac{\\partial \\delta n_e}{\\partial t} + n_0\\nabla\\cdot\\mathbf{v}_e = 0,\\quad \\nabla\\cdot\\mathbf{E} = -\\frac{e\\,\\delta n_e}{\\varepsilon_0}",
+          "to_latex": "\\frac{\\partial^2 \\delta n_e}{\\partial t^2} + \\omega_p^2\\,\\delta n_e = 0,\\quad \\omega_p := \\sqrt{\\frac{n_0 e^2}{\\varepsilon_0 m_e}}",
+          "operation_label": "連続の式・運動方程式・ガウスの法則の連立消去",
+          "explanation": "線形化した電子の連続の式を時間微分して運動方程式とガウスの法則を代入し、電子密度揺らぎの単振動方程式とプラズマ振動数を導く。",
+          "used_node_ids": [
+            "phys.em.es04_gauss_law_differential",
+            "phys.em.ms01_lorentz_force_magnetic_def",
+            "phys.em.mw03_charge_conservation_continuity",
+            "phys.mech.vib01_damped_oscillator_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_linearized_fluid_gauss",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m_e\\frac{\\partial \\mathbf{v}_e}{\\partial t} = -e\\mathbf{E},\\quad \\frac{\\partial \\delta n_e}{\\partial t} + n_0\\nabla\\cdot\\mathbf{v}_e = 0,\\quad \\nabla\\cdot\\mathbf{E} = -\\frac{e\\,\\delta n_e}{\\varepsilon_0}",
+          "to_latex": "\\frac{\\partial^2 \\delta n_e}{\\partial t^2} = -n_0\\nabla\\cdot\\left(\\frac{\\partial \\mathbf{v}_e}{\\partial t}\\right) = \\frac{n_0 e}{m_e}\\nabla\\cdot\\mathbf{E}",
+          "operation_label": "連続の式の時間微分と運動方程式の代入",
+          "explanation": "線形化連続の式を時間で1階微分し、静電ローレンツ力による電子加速 \\partial v_e/\\partial t = -(e/m_e)E を代入する。",
+          "used_node_ids": [
+            "phys.em.ms01_lorentz_force_magnetic_def",
+            "phys.em.mw03_charge_conservation_continuity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_substitute_gauss",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial^2 \\delta n_e}{\\partial t^2} = -n_0\\nabla\\cdot\\left(\\frac{\\partial \\mathbf{v}_e}{\\partial t}\\right) = \\frac{n_0 e}{m_e}\\nabla\\cdot\\mathbf{E}",
+          "to_latex": "\\frac{\\partial^2 \\delta n_e}{\\partial t^2} = -\\frac{n_0 e^2}{\\varepsilon_0 m_e}\\delta n_e",
+          "operation_label": "ガウスの法則の代入",
+          "explanation": "正味電荷密度 \\rho = -e \\delta n_e に対するガウスの法則 \\nabla·E = -e \\delta n_e / \\varepsilon_0 を用いて電場の発散を消去する。",
+          "used_node_ids": [
+            "phys.em.es04_gauss_law_differential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_plasma_frequency_def",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial^2 \\delta n_e}{\\partial t^2} = -\\frac{n_0 e^2}{\\varepsilon_0 m_e}\\delta n_e",
+          "to_latex": "\\frac{\\partial^2 \\delta n_e}{\\partial t^2} + \\omega_p^2\\,\\delta n_e = 0,\\quad \\omega_p := \\sqrt{\\frac{n_0 e^2}{\\varepsilon_0 m_e}}",
+          "operation_label": "調和振動子との比較と \\omega_p の定義",
+          "explanation": "非減衰調和振動子の方程式と比較し、プラズマ振動数 \\omega_p を定義する。",
+          "used_node_ids": [
+            "phys.mech.vib01_damped_oscillator_eom"
+          ],
+          "sympy_check_hint": "sp.Eq(w_p**2, n_0*e**2/(eps_0*m_e))"
+        }
+      ]
+    },
+    {
+      "id": "drv_bp08_plasma_dielectric_dispersion",
+      "target_node_id": "phys.solid.bp08_plasma_dielectric_function",
+      "route_kind": "deductive",
+      "title": "調和電場応答からのプラズマ誘電関数と横波電磁波分散関係の導出",
+      "premise_node_ids": [
+        "phys.solid.bp07_plasma_oscillation_frequency",
+        "phys.em.dc05_polarization_bound_charges",
+        "phys.em.dc06_electric_displacement_gauss_law",
+        "phys.em.dc07_linear_dielectric_permittivity",
+        "phys.em.mw05_maxwell_equations",
+        "phys.em.mw06_em_wave_equation_vacuum"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "電磁場と電子変位は単一角振動数 \\omega で時間調和振動 exp(-i\\omega t) する",
+        "電子散乱による減衰は無視できる無衝突極限（\\gamma \\to 0）とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m_e\\ddot{\\mathbf{x}} = -e\\mathbf{E}_0 e^{-i\\omega t},\\quad \\mathbf{P} = -n_0 e \\mathbf{x}",
+          "to_latex": "\\varepsilon_r(\\omega) = 1 - \\frac{\\omega_p^2}{\\omega^2},\\quad \\omega^2 = \\omega_p^2 + c^2 k^2",
+          "operation_label": "電子分極率と媒質中波動方程式の適用",
+          "explanation": "振動電場に対する自由電子の変位から電気分極と比誘電率を求め、マクスウェル方程式の波動解から電磁波分散関係を導く。",
+          "used_node_ids": [
+            "phys.em.dc05_polarization_bound_charges",
+            "phys.em.dc06_electric_displacement_gauss_law",
+            "phys.em.dc07_linear_dielectric_permittivity",
+            "phys.em.mw05_maxwell_equations",
+            "phys.em.mw06_em_wave_equation_vacuum",
+            "phys.solid.bp07_plasma_oscillation_frequency"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_oscillating_polarization",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m_e\\ddot{\\mathbf{x}} = -e\\mathbf{E}_0 e^{-i\\omega t},\\quad \\mathbf{P} = -n_0 e \\mathbf{x}",
+          "to_latex": "\\mathbf{x}(\\omega) = \\frac{e}{m_e\\omega^2}\\mathbf{E},\\quad \\mathbf{P}(\\omega) = -\\frac{n_0 e^2}{m_e\\omega^2}\\mathbf{E} = -\\varepsilon_0\\frac{\\omega_p^2}{\\omega^2}\\mathbf{E}",
+          "operation_label": "調和変位と分極ベクトルの計算",
+          "explanation": "時間微分を -i\\omega に置換して変位を求め、分極 P = -n_0 e x をプラズマ振動数 \\omega_p で書き表す。",
+          "used_node_ids": [
+            "phys.em.dc05_polarization_bound_charges",
+            "phys.solid.bp07_plasma_oscillation_frequency"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_dielectric_permittivity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}(\\omega) = \\frac{e}{m_e\\omega^2}\\mathbf{E},\\quad \\mathbf{P}(\\omega) = -\\frac{n_0 e^2}{m_e\\omega^2}\\mathbf{E} = -\\varepsilon_0\\frac{\\omega_p^2}{\\omega^2}\\mathbf{E}",
+          "to_latex": "\\mathbf{D} = \\varepsilon_0\\mathbf{E} + \\mathbf{P} = \\varepsilon_0\\left(1 - \\frac{\\omega_p^2}{\\omega^2}\\right)\\mathbf{E},\\quad \\varepsilon_r(\\omega) = 1 - \\frac{\\omega_p^2}{\\omega^2}",
+          "operation_label": "電束密度と周波数依存比誘電率の導出",
+          "explanation": "電束密度 D = \\varepsilon_0 E + P に分極を代入し、線形誘電体の比誘電率 \\varepsilon_r(\\omega) を得る。",
+          "used_node_ids": [
+            "phys.em.dc06_electric_displacement_gauss_law",
+            "phys.em.dc07_linear_dielectric_permittivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_transverse_dispersion",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{D} = \\varepsilon_0\\mathbf{E} + \\mathbf{P} = \\varepsilon_0\\left(1 - \\frac{\\omega_p^2}{\\omega^2}\\right)\\mathbf{E},\\quad \\varepsilon_r(\\omega) = 1 - \\frac{\\omega_p^2}{\\omega^2}",
+          "to_latex": "\\varepsilon_r(\\omega) = 1 - \\frac{\\omega_p^2}{\\omega^2},\\quad \\omega^2 = \\omega_p^2 + c^2 k^2",
+          "operation_label": "媒質中の電磁波分散関係 c^2 k^2 = \\omega^2 \\varepsilon_r(\\omega)",
+          "explanation": "マクスウェル方程式による横波平面波の分散関係 c^2 k^2 = \\omega^2 \\varepsilon_r(\\omega) に代入し、\\omega > \\omega_p の透過条件を与える分散関係を得る。",
+          "used_node_ids": [
+            "phys.em.mw05_maxwell_equations",
+            "phys.em.mw06_em_wave_equation_vacuum"
+          ],
+          "sympy_check_hint": "sp.Eq(w**2 * (1 - w_p**2/w**2), c**2 * k**2)"
+        }
+      ]
+    },
+    {
+      "id": "drv_bp09_debye_shielding",
+      "target_node_id": "phys.solid.bp09_debye_shielding_length",
+      "route_kind": "deductive",
+      "title": "ポアソン＝ボルツマン方程式の線形化によるデバイ遮蔽とデバイ長の導出",
+      "premise_node_ids": [
+        "phys.em.es07_poisson_laplace_equations",
+        "phys.statmech.mc05_canonical_distribution",
+        "phys.em.es01_coulombs_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "プラズマ電子は温度 T のカノニカル（ボルツマン）分布に従い、イオン背景は一様 n_0 で固定されている",
+        "弱結合プラズマ近似 |e\\phi| \\ll k_B T が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla^2\\phi(\\mathbf{r}) = -\\frac{1}{\\varepsilon_0}\\big[q\\delta(\\mathbf{r}) + e(n_0 - n_e(\\mathbf{r}))\\big],\\quad n_e(\\mathbf{r}) = n_0 e^{e\\phi(\\mathbf{r})/(k_{\\mathrm{B}}T)}",
+          "to_latex": "\\nabla^2\\phi = \\frac{1}{\\lambda_D^2}\\phi - \\frac{q}{\\varepsilon_0}\\delta(\\mathbf{r}),\\quad \\phi(r) = \\frac{q}{4\\pi\\varepsilon_0 r}e^{-r/\\lambda_D},\\quad \\lambda_D := \\sqrt{\\frac{\\varepsilon_0 k_{\\mathrm{B}} T}{n_0 e^2}}",
+          "operation_label": "ポアソン＝ボルツマン方程式の線形化と球対称解",
+          "explanation": "ボルツマン因子を線形化して修正ヘルムホルツ方程式を導き、点電荷に対する球対称境界条件を解いてデバイ遮蔽ポテンシャルとデバイ長を得る。",
+          "used_node_ids": [
+            "phys.em.es01_coulombs_law",
+            "phys.em.es07_poisson_laplace_equations",
+            "phys.statmech.mc05_canonical_distribution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_boltzmann_poisson",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla^2\\phi(\\mathbf{r}) = -\\frac{1}{\\varepsilon_0}\\big[q\\delta(\\mathbf{r}) + e(n_0 - n_e(\\mathbf{r}))\\big],\\quad n_e(\\mathbf{r}) = n_0 e^{e\\phi(\\mathbf{r})/(k_{\\mathrm{B}}T)}",
+          "to_latex": "\\nabla^2\\phi(\\mathbf{r}) \\approx -\\frac{q}{\\varepsilon_0}\\delta(\\mathbf{r}) + \\frac{n_0 e^2}{\\varepsilon_0 k_{\\mathrm{B}}T}\\phi(\\mathbf{r})\\quad (|e\\phi| \\ll k_{\\mathrm{B}}T)",
+          "operation_label": "弱ポテンシャル近似でのボルツマン因子展開",
+          "explanation": "e^{e\\phi/(k_B T)} \\approx 1 + e\\phi/(k_B T) の1次展開をポアソン方程式に代入し線形化する。",
+          "used_node_ids": [
+            "phys.em.es07_poisson_laplace_equations",
+            "phys.statmech.mc05_canonical_distribution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_debye_length_ode",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla^2\\phi(\\mathbf{r}) \\approx -\\frac{q}{\\varepsilon_0}\\delta(\\mathbf{r}) + \\frac{n_0 e^2}{\\varepsilon_0 k_{\\mathrm{B}}T}\\phi(\\mathbf{r})\\quad (|e\\phi| \\ll k_{\\mathrm{B}}T)",
+          "to_latex": "\\frac{1}{r}\\frac{d^2(r\\phi)}{dr^2} = \\frac{1}{\\lambda_D^2}\\phi(r)\\;(r>0),\\quad \\lambda_D := \\sqrt{\\frac{\\varepsilon_0 k_{\\mathrm{B}} T}{n_0 e^2}}",
+          "operation_label": "デバイ長 \\lambda_D の定義と球座標常微分方程式化",
+          "explanation": "特性長さ \\lambda_D を定義し、r > 0 での球対称ラプラシアン \\nabla^2\\phi = (1/r)(r\\phi)'' を用いて常微分方程式に書き換える。",
+          "used_node_ids": [
+            "phys.em.es07_poisson_laplace_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_screened_coulomb",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{r}\\frac{d^2(r\\phi)}{dr^2} = \\frac{1}{\\lambda_D^2}\\phi(r)\\;(r>0),\\quad \\lambda_D := \\sqrt{\\frac{\\varepsilon_0 k_{\\mathrm{B}} T}{n_0 e^2}}",
+          "to_latex": "\\nabla^2\\phi = \\frac{1}{\\lambda_D^2}\\phi - \\frac{q}{\\varepsilon_0}\\delta(\\mathbf{r}),\\quad \\phi(r) = \\frac{q}{4\\pi\\varepsilon_0 r}e^{-r/\\lambda_D},\\quad \\lambda_D := \\sqrt{\\frac{\\varepsilon_0 k_{\\mathrm{B}} T}{n_0 e^2}}",
+          "operation_label": "遠方減衰条件とクーロン極限 r \\to 0 による係数決定",
+          "explanation": "r \\to \\infty でゼロとなる解 r\\phi = A e^{-r/\\lambda_D} を選び、r \\to 0 で点電荷のクーロンポテンシャルに一致する条件から A = q/(4\\pi\\varepsilon_0) を決定する。",
+          "used_node_ids": [
+            "phys.em.es01_coulombs_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

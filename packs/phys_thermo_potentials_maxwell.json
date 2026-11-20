@@ -1,0 +1,919 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.thermo.potentials_maxwell",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "熱力学2：熱力学ポテンシャル（F, G, H）・マクスウェルの関係式・相転移",
+    "language": "ja",
+    "description": "ルジャンドル変換によるヘルムホルツ・ギブズ自由エネルギーとエンタルピー、マクスウェルの関係式、クラウジウス＝クラペイロンの式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.thermo.tp01_enthalpy_legendre_diff",
+      "short_code": "TP01",
+      "kind": "theorem_formula",
+      "title": "エンタルピーのルジャンドル変換と自然変数 (S, p) での全微分",
+      "summary": "内部エネルギー U(S,V) の体積 V に関するルジャンドル変換としてエンタルピー H=U+pV を特徴づけ、その全微分と偏微分表示を得る。",
+      "canonical_latex": "H(S,p) := U + pV,\\quad dH = T\\,dS + V\\,dp,\\quad \\left(\\frac{\\partial H}{\\partial S}\\right)_p = T,\\quad \\left(\\frac{\\partial H}{\\partial p}\\right)_S = V",
+      "aliases_latex": [
+        "dH = T\\,dS + V\\,dp"
+      ],
+      "keywords": [
+        "エンタルピー",
+        "ルジャンドル変換",
+        "自然変数",
+        "全微分"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.tp02_helmholtz_free_energy",
+      "short_code": "TP02",
+      "kind": "definition",
+      "title": "ヘルムホルツ自由エネルギー F の定義と全微分",
+      "summary": "内部エネルギー U(S,V) をエントロピー S に関してルジャンドル変換して得られる熱力学ポテンシャルであり、(T, V) を自然変数とする。",
+      "canonical_latex": "F(T,V) := U - TS,\\quad dF = -S\\,dT - p\\,dV,\\quad \\left(\\frac{\\partial F}{\\partial T}\\right)_V = -S,\\quad \\left(\\frac{\\partial F}{\\partial V}\\right)_T = -p",
+      "aliases_latex": [
+        "A := U - TS",
+        "dF = -S\\,dT - p\\,dV"
+      ],
+      "keywords": [
+        "ヘルムホルツ自由エネルギー",
+        "ルジャンドル変換",
+        "熱力学ポテンシャル"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.tp03_gibbs_free_energy",
+      "short_code": "TP03",
+      "kind": "definition",
+      "title": "ギブズ自由エネルギー G の定義と全微分",
+      "summary": "内部エネルギー U(S,V) を S と V の両方についてルジャンドル変換（またはエンタルピー H の S に関する変換）して得られる熱力学ポテンシャルであり、(T, p) を自然変数とする。",
+      "canonical_latex": "G(T,p) := H - TS = U - TS + pV = F + pV,\\quad dG = -S\\,dT + V\\,dp,\\quad \\left(\\frac{\\partial G}{\\partial T}\\right)_p = -S,\\quad \\left(\\frac{\\partial G}{\\partial p}\\right)_T = V",
+      "aliases_latex": [
+        "dG = -S\\,dT + V\\,dp"
+      ],
+      "keywords": [
+        "ギブズ自由エネルギー",
+        "ルジャンドル変換",
+        "熱力学ポテンシャル"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.tp04_maxwell_relations",
+      "short_code": "TP04",
+      "kind": "theorem_formula",
+      "title": "マクスウェルの関係式",
+      "summary": "4つの熱力学ポテンシャル U, H, F, G が状態量として C^2 級であることから導かれる2階混合偏導関数の対称性に基づく偏微分恒等式群。",
+      "canonical_latex": "\\left(\\frac{\\partial T}{\\partial V}\\right)_S = -\\left(\\frac{\\partial p}{\\partial S}\\right)_V,\\quad \\left(\\frac{\\partial T}{\\partial p}\\right)_S = \\left(\\frac{\\partial V}{\\partial S}\\right)_p,\\quad \\left(\\frac{\\partial S}{\\partial V}\\right)_T = \\left(\\frac{\\partial p}{\\partial T}\\right)_V,\\quad \\left(\\frac{\\partial S}{\\partial p}\\right)_T = -\\left(\\frac{\\partial V}{\\partial T}\\right)_p",
+      "aliases_latex": [
+        "\\left(\\frac{\\partial S}{\\partial V}\\right)_T = \\left(\\frac{\\partial p}{\\partial T}\\right)_V"
+      ],
+      "keywords": [
+        "マクスウェルの関係式",
+        "混合偏微分",
+        "シュワルツの定理",
+        "熱力学ポテンシャル"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.tp05_tdS_heat_capacity_relations",
+      "short_code": "TP05",
+      "kind": "theorem_formula",
+      "title": "内部エネルギーの体積依存性と一般のマイヤー関係式",
+      "summary": "マクスウェルの関係式を用いて導かれる、任意の平衡系における内部エネルギーの等温体積微分および定圧熱容量と定積熱容量の差の一般式。",
+      "canonical_latex": "\\left(\\frac{\\partial U}{\\partial V}\\right)_T = T\\left(\\frac{\\partial p}{\\partial T}\\right)_V - p,\\qquad C_p - C_V = -T\\left(\\frac{\\partial p}{\\partial T}\\right)_V^2\\left(\\frac{\\partial V}{\\partial p}\\right)_T",
+      "aliases_latex": [
+        "C_p - C_V = T V \\frac{\\alpha^2}{\\kappa_T}"
+      ],
+      "keywords": [
+        "熱力学状態方程式",
+        "マイヤーの関係式",
+        "定積熱容量",
+        "定圧熱容量"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.tp06_equilibrium_stability_free_energy",
+      "short_code": "TP06",
+      "kind": "theorem_formula",
+      "title": "等温定積・等温定圧条件における自由エネルギー最小原理",
+      "summary": "熱浴（温度 T）や圧力浴（圧力 p）と接する系の不可逆変化と平衡条件を、クラウジウス不等式からヘルムホルツ自由エネルギー F およびギブズ自由エネルギー G の減少則として表す。",
+      "canonical_latex": "(dT=0,\\; dV=0 \\implies dF \\le 0),\\qquad (dT=0,\\; dp=0 \\implies dG \\le 0)\\quad (\\text{equality at reversible/equilibrium})",
+      "aliases_latex": [
+        "\\Delta F_{T,V} \\le 0",
+        "\\Delta G_{T,p} \\le 0"
+      ],
+      "keywords": [
+        "自発変化",
+        "熱平衡条件",
+        "自由エネルギー最小原理",
+        "不可逆過程"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.tp07_chemical_potential_open_system",
+      "short_code": "TP07",
+      "kind": "definition",
+      "title": "開放系の基本関係式・化学ポテンシャルとギブズ＝デュエム関係",
+      "summary": "粒子数（物質量）N の変化を取り入れた熱力学基本関係式における化学ポテンシャル mu の定義、示量性による G = mu N の関係、および示強変数間のギブズ＝デュエム関係式。",
+      "canonical_latex": "dU = T\\,dS - p\\,dV + \\mu\\,dN,\\quad dG = -S\\,dT + V\\,dp + \\mu\\,dN,\\quad \\mu(T,p) = \\left(\\frac{\\partial G}{\\partial N}\\right)_{T,p} = \\frac{G}{N},\\quad S\\,dT - V\\,dp + N\\,d\\mu = 0",
+      "aliases_latex": [
+        "S\\,dT - V\\,dp + N\\,d\\mu = 0",
+        "G = \\mu N"
+      ],
+      "keywords": [
+        "化学ポテンシャル",
+        "ギブズ＝デュエム関係",
+        "開放系",
+        "示量性"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.tp08_phase_equilibrium_coexistence",
+      "short_code": "TP08",
+      "kind": "theorem_formula",
+      "title": "1成分2相共存の相平衡条件",
+      "summary": "温度 T および圧力 p が一定の閉鎖系で2相 alpha, beta が共存するとき、全ギブズ自由エネルギーの最小条件から両相の化学ポテンシャルが一致することを示す平衡条件。",
+      "canonical_latex": "T_\\alpha = T_\\beta = T,\\quad p_\\alpha = p_\\beta = p,\\quad \\mu_\\alpha(T,p) = \\mu_\\beta(T,p)\\;\\big(g_\\alpha(T,p) = g_\\beta(T,p)\\big)\\quad (\\text{phase coexistence})",
+      "aliases_latex": [
+        "\\mu_\\alpha(T,p) = \\mu_\\beta(T,p)"
+      ],
+      "keywords": [
+        "相平衡",
+        "2相共存",
+        "化学ポテンシャルの一致",
+        "相転移"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "phys.thermo.tp09_clausius_clapeyron_equation",
+      "short_code": "TP09",
+      "kind": "theorem_formula",
+      "title": "クラウジウス＝クラペイロンの式",
+      "summary": "1次相転移の相境界（共存曲線）p(T) の傾きを、相間のモルエントロピー差（潜熱 L = T Delta s）とモル体積差 Delta v で結びつける関係式。",
+      "canonical_latex": "\\frac{dp}{dT} = \\frac{s_\\beta - s_\\alpha}{v_\\beta - v_\\alpha} = \\frac{\\Delta s}{\\Delta v} = \\frac{L}{T\\,\\Delta v}\\quad\\big(L := T(s_\\beta - s_\\alpha)\\big)\\quad (\\text{first-order phase transition})",
+      "aliases_latex": [
+        "\\frac{dp}{dT} = \\frac{L}{T(v_\\beta - v_\\alpha)}"
+      ],
+      "keywords": [
+        "クラウジウス＝クラペイロンの式",
+        "1次相転移",
+        "共存曲線",
+        "潜熱"
+      ],
+      "domain_tags": [
+        "physics",
+        "thermodynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.thermo.tp01_enthalpy_legendre_diff",
+      "target_node_id": "phys.thermo.tp01_enthalpy_legendre_diff",
+      "route_kind": "deductive",
+      "title": "熱力学基本関係式とルジャンドル変換からのエンタルピー全微分の導出",
+      "premise_node_ids": [
+        "phys.thermo.th04_heat_capacities_mayer",
+        "phys.thermo.th09_entropy_state_function",
+        "math.calc.m11_legendre_transform",
+        "math.calc.m19_differential_linearity_leibniz",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "単一成分・閉鎖系（物質量N一定）",
+        "可逆・準静的変化における状態量U(S,V)の微分可能性"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dU = T\\,dS - p\\,dV,\\quad H := U + pV",
+          "to_latex": "dH = T\\,dS + V\\,dp,\\quad \\left(\\frac{\\partial H}{\\partial S}\\right)_p = T,\\quad \\left(\\frac{\\partial H}{\\partial p}\\right)_S = V",
+          "operation_label": "ルジャンドル変換による全微分の展開",
+          "explanation": "H=U+pV の全微分を取り、dU=TdS-pdV を代入して p dV を相殺することで (S,p) に関する全微分と偏微分係数を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m11_legendre_transform",
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.th04_heat_capacities_mayer",
+            "phys.thermo.th09_entropy_state_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = T\\,dS - p\\,dV,\\quad H := U + pV",
+          "to_latex": "dH = dU + p\\,dV + V\\,dp",
+          "operation_label": "積の微分法則による H=U+pV の全微分",
+          "explanation": "エンタルピーの定義式 H=U+pV に微分形式の線形性とライプニッツ則を適用する（p = -(partial U/partial V)_S に関するルジャンドル変換）。",
+          "used_node_ids": [
+            "math.calc.m11_legendre_transform",
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.th04_heat_capacities_mayer"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dH = dU + p\\,dV + V\\,dp",
+          "to_latex": "dH = (T\\,dS - p\\,dV) + p\\,dV + V\\,dp = T\\,dS + V\\,dp",
+          "operation_label": "熱力学基本関係式の代入と整理",
+          "explanation": "dU = TdS - pdV を代入すると -pdV と +pdV が打ち消し合い、自然変数 S と p の全微分で表される。",
+          "used_node_ids": [
+            "phys.thermo.th09_entropy_state_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dH = (T\\,dS - p\\,dV) + p\\,dV + V\\,dp = T\\,dS + V\\,dp",
+          "to_latex": "dH = T\\,dS + V\\,dp,\\quad \\left(\\frac{\\partial H}{\\partial S}\\right)_p = T,\\quad \\left(\\frac{\\partial H}{\\partial p}\\right)_S = V",
+          "operation_label": "全微分展開との係数比較",
+          "explanation": "多変数関数 H(S,p) の全微分展開と比較して各偏導関数を同定する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.thermo.tp02_helmholtz_free_energy",
+      "target_node_id": "phys.thermo.tp02_helmholtz_free_energy",
+      "route_kind": "deductive",
+      "title": "U(S,V) のエントロピーに関するルジャンドル変換による F の導入",
+      "premise_node_ids": [
+        "phys.thermo.th09_entropy_state_function",
+        "math.calc.m11_legendre_transform",
+        "math.calc.m19_differential_linearity_leibniz",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "単一成分・閉鎖系（物質量N一定）",
+        "T = (partial U / partial S)_V > 0 による変数 S から T への反転可能性"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dU = T\\,dS - p\\,dV,\\quad T = \\left(\\frac{\\partial U}{\\partial S}\\right)_V",
+          "to_latex": "F := U - TS,\\quad dF = -S\\,dT - p\\,dV,\\quad \\left(\\frac{\\partial F}{\\partial T}\\right)_V = -S,\\quad \\left(\\frac{\\partial F}{\\partial V}\\right)_T = -p",
+          "operation_label": "ルジャンドル変換による F の定義と全微分導出",
+          "explanation": "U(S,V) に対し共役変数 T=(partial U/partial S)_V によるルジャンドル変換 F:=U-TS を行い、(T,V) を自然変数とする全微分と偏微分表示を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m11_legendre_transform",
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.th09_entropy_state_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = T\\,dS - p\\,dV,\\quad T = \\left(\\frac{\\partial U}{\\partial S}\\right)_V",
+          "to_latex": "F := U - TS,\\quad dF = dU - T\\,dS - S\\,dT",
+          "operation_label": "ルジャンドル変換 F=U-TS の定義と全微分",
+          "explanation": "独立変数を S から T へ切り替えるために F:=U-TS を定義し、全微分のライプニッツ則を展開する。",
+          "used_node_ids": [
+            "math.calc.m11_legendre_transform",
+            "math.calc.m19_differential_linearity_leibniz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F := U - TS,\\quad dF = dU - T\\,dS - S\\,dT",
+          "to_latex": "F := U - TS,\\quad dF = -S\\,dT - p\\,dV",
+          "operation_label": "基本関係式 dU の代入と TdS の相殺",
+          "explanation": "dU = TdS - pdV を代入して TdS 項を相殺し、自然変数 T, V の全微分を得る。",
+          "used_node_ids": [
+            "phys.thermo.th09_entropy_state_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F := U - TS,\\quad dF = -S\\,dT - p\\,dV",
+          "to_latex": "F := U - TS,\\quad dF = -S\\,dT - p\\,dV,\\quad \\left(\\frac{\\partial F}{\\partial T}\\right)_V = -S,\\quad \\left(\\frac{\\partial F}{\\partial V}\\right)_T = -p",
+          "operation_label": "全微分展開との比較による偏導関数の同定",
+          "explanation": "dF = (partial F/partial T)_V dT + (partial F/partial V)_T dV と比較する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.thermo.tp03_gibbs_free_energy",
+      "target_node_id": "phys.thermo.tp03_gibbs_free_energy",
+      "route_kind": "deductive",
+      "title": "二重ルジャンドル変換によるギブズ自由エネルギー G の導入と全微分",
+      "premise_node_ids": [
+        "phys.thermo.tp01_enthalpy_legendre_diff",
+        "phys.thermo.tp02_helmholtz_free_energy",
+        "math.calc.m11_legendre_transform",
+        "math.calc.m19_differential_linearity_leibniz",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "単一成分・閉鎖系（物質量N一定）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dH = T\\,dS + V\\,dp,\\quad dF = -S\\,dT - p\\,dV",
+          "to_latex": "G := H - TS = F + pV,\\quad dG = -S\\,dT + V\\,dp,\\quad \\left(\\frac{\\partial G}{\\partial T}\\right)_p = -S,\\quad \\left(\\frac{\\partial G}{\\partial p}\\right)_T = V",
+          "operation_label": "ルジャンドル変換による G の定義と全微分導出",
+          "explanation": "エンタルピー H(S,p) を S に関して（または F(T,V) を V に関して）ルジャンドル変換し、(T,p) を自然変数とするギブズ自由エネルギーとその偏微分表現を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m11_legendre_transform",
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.tp01_enthalpy_legendre_diff",
+            "phys.thermo.tp02_helmholtz_free_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dH = T\\,dS + V\\,dp,\\quad dF = -S\\,dT - p\\,dV",
+          "to_latex": "G := H - TS = F + pV,\\quad dG = dH - T\\,dS - S\\,dT",
+          "operation_label": "G の定義と全微分展開",
+          "explanation": "H=U+pV, F=U-TS より H-TS = F+pV が成り立ち、G:=H-TS に全微分のライプニッツ則を適用する。",
+          "used_node_ids": [
+            "math.calc.m11_legendre_transform",
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.tp01_enthalpy_legendre_diff",
+            "phys.thermo.tp02_helmholtz_free_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G := H - TS = F + pV,\\quad dG = dH - T\\,dS - S\\,dT",
+          "to_latex": "G := H - TS = F + pV,\\quad dG = -S\\,dT + V\\,dp",
+          "operation_label": "dH の代入による TdS の相殺",
+          "explanation": "dH = TdS + Vdp を代入して TdS 項を相殺する。",
+          "used_node_ids": [
+            "phys.thermo.tp01_enthalpy_legendre_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G := H - TS = F + pV,\\quad dG = -S\\,dT + V\\,dp",
+          "to_latex": "G := H - TS = F + pV,\\quad dG = -S\\,dT + V\\,dp,\\quad \\left(\\frac{\\partial G}{\\partial T}\\right)_p = -S,\\quad \\left(\\frac{\\partial G}{\\partial p}\\right)_T = V",
+          "operation_label": "偏導関数の同定",
+          "explanation": "全微分展開 dG = (partial G/partial T)_p dT + (partial G/partial p)_T dp と係数を比較する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.thermo.tp04_maxwell_relations",
+      "target_node_id": "phys.thermo.tp04_maxwell_relations",
+      "route_kind": "deductive",
+      "title": "熱力学ポテンシャルの混合2階偏微分の対称性からのマクスウェルの関係式の導出",
+      "premise_node_ids": [
+        "phys.thermo.th09_entropy_state_function",
+        "phys.thermo.tp01_enthalpy_legendre_diff",
+        "phys.thermo.tp02_helmholtz_free_energy",
+        "phys.thermo.tp03_gibbs_free_energy",
+        "math.calc.e01_hessian_matrix_def",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "熱力学ポテンシャル U(S,V), H(S,p), F(T,V), G(T,p) が各自然変数に関して C^2 級であること"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dU = T\\,dS - p\\,dV,\\; dH = T\\,dS + V\\,dp,\\; dF = -S\\,dT - p\\,dV,\\; dG = -S\\,dT + V\\,dp",
+          "to_latex": "\\left(\\frac{\\partial T}{\\partial V}\\right)_S = -\\left(\\frac{\\partial p}{\\partial S}\\right)_V,\\quad \\left(\\frac{\\partial T}{\\partial p}\\right)_S = \\left(\\frac{\\partial V}{\\partial S}\\right)_p,\\quad \\left(\\frac{\\partial S}{\\partial V}\\right)_T = \\left(\\frac{\\partial p}{\\partial T}\\right)_V,\\quad \\left(\\frac{\\partial S}{\\partial p}\\right)_T = -\\left(\\frac{\\partial V}{\\partial T}\\right)_p",
+          "operation_label": "状態量の全微分とシュワルツの対称性の適用",
+          "explanation": "4つの熱力学ポテンシャルの1階偏導関数を同定し、C^2 級関数の2階混合偏導関数の順序交換対称性（ヘッセ行列の対称性）を適用して4つのマクスウェルの関係式を得る。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th09_entropy_state_function",
+            "phys.thermo.tp01_enthalpy_legendre_diff",
+            "phys.thermo.tp02_helmholtz_free_energy",
+            "phys.thermo.tp03_gibbs_free_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = T\\,dS - p\\,dV,\\; dH = T\\,dS + V\\,dp,\\; dF = -S\\,dT - p\\,dV,\\; dG = -S\\,dT + V\\,dp",
+          "to_latex": "T=\\left(\\frac{\\partial U}{\\partial S}\\right)_V,\\; -p=\\left(\\frac{\\partial U}{\\partial V}\\right)_S,\\; T=\\left(\\frac{\\partial H}{\\partial S}\\right)_p,\\; V=\\left(\\frac{\\partial H}{\\partial p}\\right)_S,\\; -S=\\left(\\frac{\\partial F}{\\partial T}\\right)_V,\\; -p=\\left(\\frac{\\partial F}{\\partial V}\\right)_T,\\; -S=\\left(\\frac{\\partial G}{\\partial T}\\right)_p,\\; V=\\left(\\frac{\\partial G}{\\partial p}\\right)_T",
+          "operation_label": "各ポテンシャルの1階偏導関数の抽出",
+          "explanation": "全微分の係数比較により、4つのポテンシャルそれぞれの自然変数に対する1階偏導関数を表す。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th09_entropy_state_function",
+            "phys.thermo.tp01_enthalpy_legendre_diff",
+            "phys.thermo.tp02_helmholtz_free_energy",
+            "phys.thermo.tp03_gibbs_free_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T=\\left(\\frac{\\partial U}{\\partial S}\\right)_V,\\; -p=\\left(\\frac{\\partial U}{\\partial V}\\right)_S,\\; T=\\left(\\frac{\\partial H}{\\partial S}\\right)_p,\\; V=\\left(\\frac{\\partial H}{\\partial p}\\right)_S,\\; -S=\\left(\\frac{\\partial F}{\\partial T}\\right)_V,\\; -p=\\left(\\frac{\\partial F}{\\partial V}\\right)_T,\\; -S=\\left(\\frac{\\partial G}{\\partial T}\\right)_p,\\; V=\\left(\\frac{\\partial G}{\\partial p}\\right)_T",
+          "to_latex": "\\frac{\\partial^2 U}{\\partial V\\partial S}=\\frac{\\partial^2 U}{\\partial S\\partial V},\\; \\frac{\\partial^2 H}{\\partial p\\partial S}=\\frac{\\partial^2 H}{\\partial S\\partial p},\\; \\frac{\\partial^2 F}{\\partial V\\partial T}=\\frac{\\partial^2 F}{\\partial T\\partial V},\\; \\frac{\\partial^2 G}{\\partial p\\partial T}=\\frac{\\partial^2 G}{\\partial T\\partial p}\\quad \\text{with 1st derivatives substituted above}.",
+          "operation_label": "シュワルツの混合偏微分対称性（ヘッセ行列対称性）の適用",
+          "explanation": "各ポテンシャルが C^2 級であることから2階混合偏導関数の微分順序交換が成り立つ。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial^2 U}{\\partial V\\partial S}=\\frac{\\partial^2 U}{\\partial S\\partial V},\\; \\frac{\\partial^2 H}{\\partial p\\partial S}=\\frac{\\partial^2 H}{\\partial S\\partial p},\\; \\frac{\\partial^2 F}{\\partial V\\partial T}=\\frac{\\partial^2 F}{\\partial T\\partial V},\\; \\frac{\\partial^2 G}{\\partial p\\partial T}=\\frac{\\partial^2 G}{\\partial T\\partial p}\\quad \\text{with 1st derivatives substituted above}.",
+          "to_latex": "\\left(\\frac{\\partial T}{\\partial V}\\right)_S = -\\left(\\frac{\\partial p}{\\partial S}\\right)_V,\\quad \\left(\\frac{\\partial T}{\\partial p}\\right)_S = \\left(\\frac{\\partial V}{\\partial S}\\right)_p,\\quad \\left(\\frac{\\partial S}{\\partial V}\\right)_T = \\left(\\frac{\\partial p}{\\partial T}\\right)_V,\\quad \\left(\\frac{\\partial S}{\\partial p}\\right)_T = -\\left(\\frac{\\partial V}{\\partial T}\\right)_p",
+          "operation_label": "1階偏導関数の代入による整理",
+          "explanation": "2階混合偏微分に各1階偏導関数を代入し、4つのマクスウェルの関係式を確定する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.thermo.tp05_tdS_heat_capacity_relations",
+      "target_node_id": "phys.thermo.tp05_tdS_heat_capacity_relations",
+      "route_kind": "deductive",
+      "title": "マクスウェルの関係式を用いた内部エネルギー体積微分と一般マイヤー関係式の導出",
+      "premise_node_ids": [
+        "phys.thermo.th04_heat_capacities_mayer",
+        "phys.thermo.th09_entropy_state_function",
+        "phys.thermo.tp04_maxwell_relations",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "単一成分・閉鎖系（物質量N一定）",
+        "状態方程式 f(p,V,T)=0 が陰関数として各変数について微分可能であること"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dU = T\\,dS - p\\,dV,\\quad C_V = T\\left(\\frac{\\partial S}{\\partial T}\\right)_V,\\quad C_p = T\\left(\\frac{\\partial S}{\\partial T}\\right)_p",
+          "to_latex": "\\left(\\frac{\\partial U}{\\partial V}\\right)_T = T\\left(\\frac{\\partial p}{\\partial T}\\right)_V - p,\\qquad C_p - C_V = -T\\left(\\frac{\\partial p}{\\partial T}\\right)_V^2\\left(\\frac{\\partial V}{\\partial p}\\right)_T",
+          "operation_label": "変数 (T,V) の全微分展開とマクスウェル関係式の代入",
+          "explanation": "dU および dS を (T,V) で展開して偏微分を取り、マクスウェル関係式 (partial S/partial V)_T = (partial p/partial T)_V と状態方程式の循環関係を用いて両式を導く。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th04_heat_capacities_mayer",
+            "phys.thermo.th09_entropy_state_function",
+            "phys.thermo.tp04_maxwell_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = T\\,dS - p\\,dV,\\quad C_V = T\\left(\\frac{\\partial S}{\\partial T}\\right)_V,\\quad C_p = T\\left(\\frac{\\partial S}{\\partial T}\\right)_p",
+          "to_latex": "\\left(\\frac{\\partial U}{\\partial V}\\right)_T = T\\left(\\frac{\\partial S}{\\partial V}\\right)_T - p = T\\left(\\frac{\\partial p}{\\partial T}\\right)_V - p",
+          "operation_label": "等温体積微分の計算とマクスウェル関係式の適用",
+          "explanation": "dU = TdS - pdV を T 一定のもと V で偏微分し、マクスウェル関係式 (partial S/partial V)_T = (partial p/partial T)_V を代入する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th09_entropy_state_function",
+            "phys.thermo.tp04_maxwell_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{\\partial U}{\\partial V}\\right)_T = T\\left(\\frac{\\partial S}{\\partial V}\\right)_T - p = T\\left(\\frac{\\partial p}{\\partial T}\\right)_V - p",
+          "to_latex": "\\left(\\frac{\\partial U}{\\partial V}\\right)_T = T\\left(\\frac{\\partial p}{\\partial T}\\right)_V - p,\\quad C_p = T\\left(\\frac{\\partial S}{\\partial T}\\right)_V + T\\left(\\frac{\\partial S}{\\partial V}\\right)_T\\left(\\frac{\\partial V}{\\partial T}\\right)_p = C_V + T\\left(\\frac{\\partial p}{\\partial T}\\right)_V\\left(\\frac{\\partial V}{\\partial T}\\right)_p",
+          "operation_label": "S(T,V) の定圧温度微分による C_p の展開",
+          "explanation": "dS = (partial S/partial T)_V dT + (partial S/partial V)_T dV に p 一定での T 微分を施し、C_V とマクスウェル関係式を代入する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th04_heat_capacities_mayer",
+            "phys.thermo.tp04_maxwell_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{\\partial U}{\\partial V}\\right)_T = T\\left(\\frac{\\partial p}{\\partial T}\\right)_V - p,\\quad C_p = T\\left(\\frac{\\partial S}{\\partial T}\\right)_V + T\\left(\\frac{\\partial S}{\\partial V}\\right)_T\\left(\\frac{\\partial V}{\\partial T}\\right)_p = C_V + T\\left(\\frac{\\partial p}{\\partial T}\\right)_V\\left(\\frac{\\partial V}{\\partial T}\\right)_p",
+          "to_latex": "\\left(\\frac{\\partial U}{\\partial V}\\right)_T = T\\left(\\frac{\\partial p}{\\partial T}\\right)_V - p,\\qquad C_p - C_V = -T\\left(\\frac{\\partial p}{\\partial T}\\right)_V^2\\left(\\frac{\\partial V}{\\partial p}\\right)_T",
+          "operation_label": "偏微分の循環恒等式の代入",
+          "explanation": "状態方程式 f(p,V,T)=0 の全微分 dp = (partial p/partial T)_V dT + (partial p/partial V)_T dV において dp=0 とおくことで得られる (partial V/partial T)_p = -(partial p/partial T)_V (partial V/partial p)_T を代入して整理する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.thermo.tp06_equilibrium_stability_free_energy",
+      "target_node_id": "phys.thermo.tp06_equilibrium_stability_free_energy",
+      "route_kind": "deductive",
+      "title": "第1法則とクラウジウス不等式からの自由エネルギー最小原理の導出",
+      "premise_node_ids": [
+        "phys.thermo.th03_first_law_internal_energy",
+        "phys.thermo.th09_entropy_state_function",
+        "phys.thermo.tp02_helmholtz_free_energy",
+        "phys.thermo.tp03_gibbs_free_energy"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "温度 T_res = T の熱浴と接触（または圧力 p_res = p の圧力浴と接触）",
+        "体積変化以外の非膨張仕事（電気的・化学的仕事など）が存在しないこと (delta W_other = 0)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dU = \\delta Q - p_{\\mathrm{res}}\\,dV,\\quad dS \\ge \\frac{\\delta Q}{T_{\\mathrm{res}}}",
+          "to_latex": "(dT=0,\\; dV=0 \\implies dF \\le 0),\\qquad (dT=0,\\; dp=0 \\implies dG \\le 0)\\quad (\\text{equality at reversible/equilibrium})",
+          "operation_label": "第1法則と第2法則不等式の結合",
+          "explanation": "環境と接する系の第1法則とクラウジウス不等式から dU - T_res dS + p_res dV <= 0 を導き、等温定積および等温定圧条件を課して F, G の減少則を得る。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th09_entropy_state_function",
+            "phys.thermo.tp02_helmholtz_free_energy",
+            "phys.thermo.tp03_gibbs_free_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = \\delta Q - p_{\\mathrm{res}}\\,dV,\\quad dS \\ge \\frac{\\delta Q}{T_{\\mathrm{res}}}",
+          "to_latex": "dU - T_{\\mathrm{res}}\\,dS + p_{\\mathrm{res}}\\,dV \\le 0",
+          "operation_label": "熱量 delta Q の消去",
+          "explanation": "クラウジウス不等式より delta Q <= T_res dS であり、第1法則 delta Q = dU + p_res dV に代入する。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th09_entropy_state_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU - T_{\\mathrm{res}}\\,dS + p_{\\mathrm{res}}\\,dV \\le 0",
+          "to_latex": "dU - T\\,dS + p\\,dV \\le 0",
+          "operation_label": "熱浴・圧力浴との平衡設定 (T_res = T, p_res = p) の適用",
+          "explanation": "初期および終状態の系の温度と圧力が環境 T, p に一致する等温（または等温・等圧）過程を考える。",
+          "used_node_ids": [
+            "phys.thermo.tp02_helmholtz_free_energy",
+            "phys.thermo.tp03_gibbs_free_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU - T\\,dS + p\\,dV \\le 0",
+          "to_latex": "(dT=0,\\; dV=0 \\implies dF \\le 0),\\qquad (dT=0,\\; dp=0 \\implies dG \\le 0)\\quad (\\text{equality at reversible/equilibrium})",
+          "operation_label": "定積・定圧条件における F, G の微分との比較",
+          "explanation": "dT=0, dV=0 では dF = dU - TdS <= 0 となり、dT=0, dp=0 では dG = dU - TdS + pdV <= 0 となる。等号は可逆・平衡状態で成立する。",
+          "used_node_ids": [
+            "phys.thermo.tp02_helmholtz_free_energy",
+            "phys.thermo.tp03_gibbs_free_energy"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.thermo.tp07_chemical_potential_open_system",
+      "target_node_id": "phys.thermo.tp07_chemical_potential_open_system",
+      "route_kind": "deductive",
+      "title": "開放系の基本関係式と示量性からの G = mu N およびギブズ＝デュエム関係の導出",
+      "premise_node_ids": [
+        "phys.thermo.tp03_gibbs_free_energy",
+        "phys.thermo.th09_entropy_state_function",
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m19_differential_linearity_leibniz"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "単一成分・物質量 N の増減を許容する開放系",
+        "熱力学的極限における示量性（状態量 U, S, V, G の1次同次性）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dU = T\\,dS - p\\,dV + \\mu\\,dN,\\quad G = U - TS + pV",
+          "to_latex": "dG = -S\\,dT + V\\,dp + \\mu\\,dN,\\quad \\mu(T,p) = \\left(\\frac{\\partial G}{\\partial N}\\right)_{T,p} = \\frac{G}{N},\\quad S\\,dT - V\\,dp + N\\,d\\mu = 0",
+          "operation_label": "開放系への G の全微分拡張と示量性の適用",
+          "explanation": "dU に化学ポテンシャル項 mu dN を加えた開放系の関係式から dG を求め、G(T,p,N) の N に関する1次同次性より G = mu N とギブズ＝デュエム関係式を導く。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.th09_entropy_state_function",
+            "phys.thermo.tp03_gibbs_free_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = T\\,dS - p\\,dV + \\mu\\,dN,\\quad G = U - TS + pV",
+          "to_latex": "dG = -S\\,dT + V\\,dp + \\mu\\,dN,\\quad \\mu = \\left(\\frac{\\partial G}{\\partial N}\\right)_{T,p} = \\left(\\frac{\\partial U}{\\partial N}\\right)_{S,V} = \\left(\\frac{\\partial F}{\\partial N}\\right)_{T,V} = \\left(\\frac{\\partial H}{\\partial N}\\right)_{S,p}$$",
+          "operation_label": "G=U-TS+pV の全微分と化学ポテンシャルの偏微分表現",
+          "explanation": "G=U-TS+pV の全微分に開放系の dU = TdS - pdV + mu dN を代入して TdS と -pdV を相殺し、各ポテンシャルの N 偏微分として mu を同定する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.tp03_gibbs_free_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dG = -S\\,dT + V\\,dp + \\mu\\,dN,\\quad \\mu = \\left(\\frac{\\partial G}{\\partial N}\\right)_{T,p} = \\left(\\frac{\\partial U}{\\partial N}\\right)_{S,V} = \\left(\\frac{\\partial F}{\\partial N}\\right)_{T,V} = \\left(\\frac{\\partial H}{\\partial N}\\right)_{S,p}$$",
+          "to_latex": "dG = -S\\,dT + V\\,dp + \\mu\\,dN,\\quad G(T,p,\\lambda N) = \\lambda G(T,p,N) \\implies G = \\mu(T,p)N",
+          "operation_label": "示量性（1次同次性）による G = mu N の導出",
+          "explanation": "T, p は示強変数であり G は N に関する示量変数なので、T, p 一定で N をスケールすると G(T,p,N) = N g(T,p) となり、mu = (partial G/partial N)_{T,p} = g(T,p) = G/N を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dG = -S\\,dT + V\\,dp + \\mu\\,dN,\\quad G(T,p,\\lambda N) = \\lambda G(T,p,N) \\implies G = \\mu(T,p)N",
+          "to_latex": "dG = -S\\,dT + V\\,dp + \\mu\\,dN,\\quad \\mu(T,p) = \\left(\\frac{\\partial G}{\\partial N}\\right)_{T,p} = \\frac{G}{N},\\quad S\\,dT - V\\,dp + N\\,d\\mu = 0",
+          "operation_label": "G = mu N の全微分と dG の比較によるギブズ＝デュエム関係の導出",
+          "explanation": "d(mu N) = mu dN + N d mu を dG = -S dT + V dp + mu dN と等置し、mu dN を消去して S dT - V dp + N d mu = 0 を得る。",
+          "used_node_ids": [
+            "math.calc.m19_differential_linearity_leibniz"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.thermo.tp08_phase_equilibrium_coexistence",
+      "target_node_id": "phys.thermo.tp08_phase_equilibrium_coexistence",
+      "route_kind": "deductive",
+      "title": "全ギブズ自由エネルギー最小条件からの相平衡条件 mu_alpha = mu_beta の導出",
+      "premise_node_ids": [
+        "phys.thermo.tp06_equilibrium_stability_free_energy",
+        "phys.thermo.tp07_chemical_potential_open_system",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "単一成分・全物質量 N = N_alpha + N_beta 一定の閉鎖系",
+        "2相 alpha, beta が同じ温度 T・圧力 p で熱平衡・力学的平衡にあり、界面エネルギーを無視できること"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "G = G_\\alpha + G_\\beta = N_\\alpha\\mu_\\alpha(T,p) + N_\\beta\\mu_\\beta(T,p),\\quad N_\\alpha + N_\\beta = N = \\mathrm{const.}",
+          "to_latex": "T_\\alpha = T_\\beta = T,\\quad p_\\alpha = p_\\beta = p,\\quad \\mu_\\alpha(T,p) = \\mu_\\beta(T,p)\\;\\big(g_\\alpha(T,p) = g_\\beta(T,p)\\big)\\quad (\\text{phase coexistence})",
+          "operation_label": "等温定圧下での物質移動に対する G の極値条件",
+          "explanation": "全物質量保存 dN_beta = -dN_alpha のもとで、等温・定圧平衡条件 dG = 0 を課して両相の化学ポテンシャルの一致を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.tp06_equilibrium_stability_free_energy",
+            "phys.thermo.tp07_chemical_potential_open_system"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G = G_\\alpha + G_\\beta = N_\\alpha\\mu_\\alpha(T,p) + N_\\beta\\mu_\\beta(T,p),\\quad N_\\alpha + N_\\beta = N = \\mathrm{const.}",
+          "to_latex": "dG = \\big(\\mu_\\alpha(T,p) - \\mu_\\beta(T,p)\\big)\\,dN_\\alpha\\quad (dT=0,\\; dp=0,\\; dN_\\beta = -dN_\\alpha)$$",
+          "operation_label": "仮想的な相間の物質移動 dN_alpha に対する dG の計算",
+          "explanation": "各相に dG_i = -S_i dT + V_i dp + mu_i dN_i を適用し、dT=0, dp=0 および粒子数保存 dN_beta = -dN_alpha を代入する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.tp07_chemical_potential_open_system"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dG = \\big(\\mu_\\alpha(T,p) - \\mu_\\beta(T,p)\\big)\\,dN_\\alpha\\quad (dT=0,\\; dp=0,\\; dN_\\beta = -dN_\\alpha)$$",
+          "to_latex": "T_\\alpha = T_\\beta = T,\\quad p_\\alpha = p_\\beta = p,\\quad \\mu_\\alpha(T,p) = \\mu_\\beta(T,p)\\;\\big(g_\\alpha(T,p) = g_\\beta(T,p)\\big)\\quad (\\text{phase coexistence})",
+          "operation_label": "ギブズ自由エネルギー最小原理（平衡条件 dG = 0）の適用",
+          "explanation": "両相が共存する内部平衡点では任意の微小移動 dN_alpha に対し dG = 0 でなければならず、mu_alpha(T,p) = mu_beta(T,p)（すなわちモルギブズ自由エネルギーの一致 g_alpha = g_beta）が成り立つ。",
+          "used_node_ids": [
+            "phys.thermo.tp06_equilibrium_stability_free_energy"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.thermo.tp09_clausius_clapeyron_equation",
+      "target_node_id": "phys.thermo.tp09_clausius_clapeyron_equation",
+      "route_kind": "deductive",
+      "title": "相平衡条件とギブズ＝デュエム関係からのクラウジウス＝クラペイロンの式の導出",
+      "premise_node_ids": [
+        "phys.thermo.tp08_phase_equilibrium_coexistence",
+        "phys.thermo.tp07_chemical_potential_open_system",
+        "phys.thermo.th09_entropy_state_function",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "1次相転移であり共存曲線 p(T) が微分可能であること",
+        "両相のモル体積差 Delta v = v_beta - v_alpha != 0 であること"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mu_\\alpha(T,p) = \\mu_\\beta(T,p),\\quad S\\,dT - V\\,dp + N\\,d\\mu = 0",
+          "to_latex": "\\frac{dp}{dT} = \\frac{s_\\beta - s_\\alpha}{v_\\beta - v_\\alpha} = \\frac{\\Delta s}{\\Delta v} = \\frac{L}{T\\,\\Delta v}\\quad\\big(L := T(s_\\beta - s_\\alpha)\\big)\\quad (\\text{first-order phase transition})",
+          "operation_label": "共存曲線に沿った微分とギブズ＝デュエム関係の適用",
+          "explanation": "共存曲線に沿って d mu_alpha = d mu_beta とし、各相のギブズ＝デュエム関係 d mu_i = -s_i dT + v_i dp を代入して dp/dT を求める。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th09_entropy_state_function",
+            "phys.thermo.tp07_chemical_potential_open_system",
+            "phys.thermo.tp08_phase_equilibrium_coexistence"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu_\\alpha(T,p) = \\mu_\\beta(T,p),\\quad S\\,dT - V\\,dp + N\\,d\\mu = 0",
+          "to_latex": "d\\mu_\\alpha = d\\mu_\\beta,\\quad d\\mu_i = -s_i\\,dT + v_i\\,dp\\quad\\left(s_i := \\frac{S_i}{N_i},\\; v_i := \\frac{V_i}{N_i},\\; i\\in\\{\\alpha,\\beta\\}\\right)$$",
+          "operation_label": "共存曲線上の微小変位とモル量表示",
+          "explanation": "共存曲線上の点 (T,p) から (T+dT, p+dp) への変位でも相平衡が保たれるため d mu_alpha = d mu_beta が成り立ち、各相のギブズ＝デュエム関係を物質量 N_i で割って表す。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.tp07_chemical_potential_open_system",
+            "phys.thermo.tp08_phase_equilibrium_coexistence"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\mu_\\alpha = d\\mu_\\beta,\\quad d\\mu_i = -s_i\\,dT + v_i\\,dp\\quad\\left(s_i := \\frac{S_i}{N_i},\\; v_i := \\frac{V_i}{N_i},\\; i\\in\\{\\alpha,\\beta\\}\\right)$$",
+          "to_latex": "(v_\\beta - v_\\alpha)\\,dp = (s_\\beta - s_\\alpha)\\,dT",
+          "operation_label": "d mu_alpha = d mu_beta への代入と整理",
+          "explanation": "-s_alpha dT + v_alpha dp = -s_beta dT + v_beta dp を dT と dp ごとに整理する。",
+          "used_node_ids": [
+            "phys.thermo.tp07_chemical_potential_open_system"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(v_\\beta - v_\\alpha)\\,dp = (s_\\beta - s_\\alpha)\\,dT",
+          "to_latex": "\\frac{dp}{dT} = \\frac{s_\\beta - s_\\alpha}{v_\\beta - v_\\alpha} = \\frac{\\Delta s}{\\Delta v} = \\frac{L}{T\\,\\Delta v}\\quad\\big(L := T(s_\\beta - s_\\alpha)\\big)\\quad (\\text{first-order phase transition})",
+          "operation_label": "微分商の形成と可逆相転移潜熱 L = T Delta s の導入",
+          "explanation": "Delta v != 0 で割り、温度・圧力一定の可逆相転移における吸熱量（潜熱）L = delta Q_rev = T(s_beta - s_alpha) を用いて表す。",
+          "used_node_ids": [
+            "phys.thermo.th09_entropy_state_function"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

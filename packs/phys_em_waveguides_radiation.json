@@ -1,0 +1,924 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.em.waveguides_radiation",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "電磁気学発展：遅延ポテンシャル・電気双極子放射・フレネルの式",
+    "language": "ja",
+    "description": "ローレンツゲージと遅延ポテンシャル、ラーモアの公式、電磁波の境界面におけるスネルの法則・フレネル反射透過係数・ブリュースター角を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.em.emr01_potentials_lorenz_gauge",
+      "short_code": "EMR01",
+      "kind": "definition",
+      "title": "電磁ポテンシャルとローレンツゲージ条件",
+      "summary": "時間変動する電磁場に対するスカラーポテンシャルとベクトルポテンシャルの導入、および波動方程式を分離するローレンツゲージ条件を定義する。",
+      "canonical_latex": "\\mathbf{B}=\\nabla\\times\\mathbf{A},\\quad \\mathbf{E}=-\\nabla\\phi-\\frac{\\partial\\mathbf{A}}{\\partial t},\\quad \\nabla\\cdot\\mathbf{A}+\\frac{1}{c^2}\\frac{\\partial\\phi}{\\partial t}=0",
+      "aliases_latex": [
+        "\\nabla\\cdot\\mathbf{A}+\\mu_0\\varepsilon_0\\frac{\\partial\\phi}{\\partial t}=0"
+      ],
+      "keywords": [
+        "電磁ポテンシャル",
+        "ローレンツゲージ",
+        "ゲージ変換",
+        "ベクトルポテンシャル",
+        "スカラーポテンシャル"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.emr02_inhomogeneous_wave_eq_potentials",
+      "short_code": "EMR02",
+      "kind": "theorem_formula",
+      "title": "ローレンツゲージにおける電磁ポテンシャルの非斉次波動方程式",
+      "summary": "マクスウェル方程式に電磁ポテンシャルとローレンツゲージ条件を適用して得られる、スカラーおよびベクトルポテンシャルのダランベール型波動方程式。",
+      "canonical_latex": "\\nabla^2\\phi-\\frac{1}{c^2}\\frac{\\partial^2\\phi}{\\partial t^2}=-\\frac{\\rho}{\\varepsilon_0},\\qquad \\nabla^2\\mathbf{A}-\\frac{1}{c^2}\\frac{\\partial^2\\mathbf{A}}{\\partial t^2}=-\\mu_0\\mathbf{J}",
+      "aliases_latex": [
+        "\\Box\\phi=\\frac{\\rho}{\\varepsilon_0},\\quad \\Box\\mathbf{A}=\\mu_0\\mathbf{J}"
+      ],
+      "keywords": [
+        "非斉次波動方程式",
+        "ダランベール演算子",
+        "ローレンツゲージ",
+        "電磁ポテンシャル"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.emr03_retarded_potentials",
+      "short_code": "EMR03",
+      "kind": "theorem_formula",
+      "title": "遅延ポテンシャル（因果的グリーン関数解）",
+      "summary": "自由空間における非斉次波動方程式を因果律を満たす遅延グリーン関数で解いた、時刻の遅れを伴う電磁ポテンシャルの積分表示。",
+      "canonical_latex": "\\phi(\\mathbf{r},t)=\\frac{1}{4\\pi\\varepsilon_0}\\iiint_V\\frac{\\rho(\\mathbf{r}',t_{\\mathrm{ret}})}{|\\mathbf{r}-\\mathbf{r}'|}\\,dV',\\quad \\mathbf{A}(\\mathbf{r},t)=\\frac{\\mu_0}{4\\pi}\\iiint_V\\frac{\\mathbf{J}(\\mathbf{r}',t_{\\mathrm{ret}})}{|\\mathbf{r}-\\mathbf{r}'|}\\,dV'\\quad\\left(t_{\\mathrm{ret}}:=t-\\frac{|\\mathbf{r}-\\mathbf{r}'|}{c}\\right)",
+      "aliases_latex": [
+        "G_{\\mathrm{ret}}(\\mathbf{r}-\\mathbf{r}',t-t')=\\frac{\\delta(t-t'-|\\mathbf{r}-\\mathbf{r}'|/c)}{4\\pi|\\mathbf{r}-\\mathbf{r}'|}"
+      ],
+      "keywords": [
+        "遅延ポテンシャル",
+        "遅延時刻",
+        "グリーン関数",
+        "因果律"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.emr04_electric_dipole_radiation_fields",
+      "short_code": "EMR04",
+      "kind": "theorem_formula",
+      "title": "電気双極子放射の遠方電磁場（放射場）",
+      "summary": "波源寸法と波長に対して十分遠方の領域において、時間変動する電気双極子モーメントが生成する距離の逆数に比例した横電磁波の表式。",
+      "canonical_latex": "\\mathbf{E}_{\\mathrm{rad}}(\\mathbf{r},t)=\\frac{\\mu_0}{4\\pi r}\\big[(\\ddot{\\mathbf{p}}(t_{\\mathrm{ret}})\\times\\hat{\\mathbf{r}})\\times\\hat{\\mathbf{r}}\\big],\\qquad \\mathbf{B}_{\\mathrm{rad}}(\\mathbf{r},t)=\\frac{1}{c}\\hat{\\mathbf{r}}\\times\\mathbf{E}_{\\mathrm{rad}}(\\mathbf{r},t)",
+      "aliases_latex": [
+        "E_\\theta=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|\\sin\\theta}{4\\pi r},\\quad B_\\phi=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|\\sin\\theta}{4\\pi c r}"
+      ],
+      "keywords": [
+        "電気双極子放射",
+        "放射場",
+        "遠方界",
+        "ヘルツ双極子"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.emr05_larmor_radiation_power",
+      "short_code": "EMR05",
+      "kind": "theorem_formula",
+      "title": "電気双極子放射の角分布とラーモアの公式",
+      "summary": "電気双極子放射場のポインティングベクトルを全立体角で積分して得られる放射電力の角度依存性と、加速度運動する荷電粒子へのラーモアの全放射電力公式。",
+      "canonical_latex": "\\frac{dP}{d\\Omega}=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|^2\\sin^2\\theta}{16\\pi^2 c},\\qquad P=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|^2}{6\\pi c}=\\frac{q^2 a^2}{6\\pi\\varepsilon_0 c^3}",
+      "aliases_latex": [
+        "P=\\frac{\\mu_0 q^2 a^2}{6\\pi c}"
+      ],
+      "keywords": [
+        "ラーモアの公式",
+        "放射電力",
+        "双極子放射",
+        "ポインティングベクトル"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.emr06_dielectric_wave_boundary_kinematics",
+      "short_code": "EMR06",
+      "kind": "theorem_formula",
+      "title": "媒質境界面における電磁波の位相整合とスネルの法則",
+      "summary": "異なる屈折率を持つ線形等方媒質の平面境界における電場・磁場の連続性から導かれる振動数保存、反射の法則、およびスネルの屈折の法則。",
+      "canonical_latex": "\\omega_i=\\omega_r=\\omega_t,\\qquad \\theta_r=\\theta_i,\\qquad n_1\\sin\\theta_i=n_2\\sin\\theta_t\\quad\\left(n_m=\\sqrt{\\varepsilon_{r,m}\\mu_{r,m}}\\right)",
+      "aliases_latex": [
+        "\\mathbf{k}_{i,\\parallel}=\\mathbf{k}_{r,\\parallel}=\\mathbf{k}_{t,\\parallel}"
+      ],
+      "keywords": [
+        "スネルの法則",
+        "反射の法則",
+        "位相整合",
+        "屈折率"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "optics"
+      ]
+    },
+    {
+      "id": "phys.em.emr07_fresnel_te_s_polarization",
+      "short_code": "EMR07",
+      "kind": "theorem_formula",
+      "title": "フレネルの式（TE波／s偏光の振幅反射・透過係数）",
+      "summary": "電場が入射面に垂直（s偏光・TEモード）な平面電磁波が非磁性誘電体境界面に入射した際の振幅反射係数および振幅透過係数。",
+      "canonical_latex": "r_s=\\frac{n_1\\cos\\theta_i-n_2\\cos\\theta_t}{n_1\\cos\\theta_i+n_2\\cos\\theta_t},\\qquad t_s=\\frac{2n_1\\cos\\theta_i}{n_1\\cos\\theta_i+n_2\\cos\\theta_t}",
+      "aliases_latex": [
+        "r_\\perp=-\\frac{\\sin(\\theta_i-\\theta_t)}{\\sin(\\theta_i+\\theta_t)}"
+      ],
+      "keywords": [
+        "フレネルの式",
+        "s偏光",
+        "TE波",
+        "反射係数",
+        "透過係数"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "optics"
+      ]
+    },
+    {
+      "id": "phys.em.emr08_fresnel_tm_p_polarization",
+      "short_code": "EMR08",
+      "kind": "theorem_formula",
+      "title": "フレネルの式（TM波／p偏光の振幅反射・透過係数）",
+      "summary": "電場が入射面内（p偏光・TMモード）にある平面電磁波が非磁性誘電体境界面に入射した際の振幅反射係数および振幅透過係数。",
+      "canonical_latex": "r_p=\\frac{n_2\\cos\\theta_i-n_1\\cos\\theta_t}{n_2\\cos\\theta_i+n_1\\cos\\theta_t},\\qquad t_p=\\frac{2n_1\\cos\\theta_i}{n_2\\cos\\theta_i+n_1\\cos\\theta_t}",
+      "aliases_latex": [
+        "r_\\parallel=\\frac{\\tan(\\theta_i-\\theta_t)}{\\tan(\\theta_i+\\theta_t)}"
+      ],
+      "keywords": [
+        "フレネルの式",
+        "p偏光",
+        "TM波",
+        "反射係数",
+        "透過係数"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "optics"
+      ]
+    },
+    {
+      "id": "phys.em.emr09_brewster_angle_total_internal_reflection",
+      "short_code": "EMR09",
+      "kind": "theorem_formula",
+      "title": "ブリュースター角・臨界角（全反射）およびエネルギー反射率・透過率",
+      "summary": "p偏光の反射が消滅するブリュースター角、高屈折率媒質から低屈折率媒質への入射で生じる全反射の臨界角、ならびにポインティング流束に基づく反射率と透過率。",
+      "canonical_latex": "\\tan\\theta_B=\\frac{n_2}{n_1},\\qquad \\sin\\theta_c=\\frac{n_2}{n_1}\\;(n_1>n_2),\\qquad R=|r|^2,\\quad T=\\frac{n_2\\cos\\theta_t}{n_1\\cos\\theta_i}|t|^2=1-R",
+      "aliases_latex": [
+        "\\theta_B+\\theta_t=\\frac{\\pi}{2}"
+      ],
+      "keywords": [
+        "ブリュースター角",
+        "全反射",
+        "臨界角",
+        "反射率",
+        "透過率"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "optics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.emr01.potentials_lorenz_gauge",
+      "target_node_id": "phys.em.emr01_potentials_lorenz_gauge",
+      "route_kind": "deductive",
+      "title": "斉次マクスウェル方程式からの電磁ポテンシャル導入とローレンツゲージ固定",
+      "premise_node_ids": [
+        "phys.em.mw05_maxwell_equations",
+        "phys.em.ms03_gauss_law_magnetism",
+        "phys.em.mw02_faradays_law",
+        "phys.em.es05_electrostatic_irrotational"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "場は単連結領域上で十分に滑らかであり、時間微分と空間回転の順序交換が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla\\cdot\\mathbf{B}=0,\\quad \\nabla\\times\\mathbf{E}=-\\frac{\\partial\\mathbf{B}}{\\partial t}",
+          "to_latex": "\\mathbf{B}=\\nabla\\times\\mathbf{A},\\quad \\mathbf{E}=-\\nabla\\phi-\\frac{\\partial\\mathbf{A}}{\\partial t},\\quad \\nabla\\cdot\\mathbf{A}+\\frac{1}{c^2}\\frac{\\partial\\phi}{\\partial t}=0",
+          "operation_label": "ポテンシャル表現とゲージ固定",
+          "explanation": "磁場のガウスの法則とファラデーの法則から電磁ポテンシャルを導入し、ゲージ自由度を用いてローレンツゲージ条件を課す。",
+          "used_node_ids": [
+            "phys.em.es05_electrostatic_irrotational",
+            "phys.em.ms03_gauss_law_magnetism",
+            "phys.em.mw02_faradays_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\cdot\\mathbf{B}=0,\\quad \\nabla\\times\\mathbf{E}=-\\frac{\\partial\\mathbf{B}}{\\partial t}",
+          "to_latex": "\\mathbf{B}=\\nabla\\times\\mathbf{A},\\quad \\nabla\\times\\left(\\mathbf{E}+\\frac{\\partial\\mathbf{A}}{\\partial t}\\right)=\\mathbf{0}",
+          "operation_label": "ベクトルポテンシャルの導入",
+          "explanation": "発散が零のベクトル場BをベクトルポテンシャルAの回転として表し、ファラデーの法則に代入して回転が零の場を作る。",
+          "used_node_ids": [
+            "phys.em.ms03_gauss_law_magnetism",
+            "phys.em.mw02_faradays_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{B}=\\nabla\\times\\mathbf{A},\\quad \\nabla\\times\\left(\\mathbf{E}+\\frac{\\partial\\mathbf{A}}{\\partial t}\\right)=\\mathbf{0}",
+          "to_latex": "\\mathbf{B}=\\nabla\\times\\mathbf{A},\\quad \\mathbf{E}=-\\nabla\\phi-\\frac{\\partial\\mathbf{A}}{\\partial t}",
+          "operation_label": "スカラーポテンシャルの導入",
+          "explanation": "回転が零のベクトル場をスカラーポテンシャルφの負勾配で表し、電場のポテンシャル表示を得る。",
+          "used_node_ids": [
+            "phys.em.es05_electrostatic_irrotational"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{B}=\\nabla\\times\\mathbf{A},\\quad \\mathbf{E}=-\\nabla\\phi-\\frac{\\partial\\mathbf{A}}{\\partial t}",
+          "to_latex": "\\mathbf{B}=\\nabla\\times\\mathbf{A},\\quad \\mathbf{E}=-\\nabla\\phi-\\frac{\\partial\\mathbf{A}}{\\partial t},\\quad \\nabla\\cdot\\mathbf{A}+\\frac{1}{c^2}\\frac{\\partial\\phi}{\\partial t}=0",
+          "operation_label": "ゲージ自由度によるローレンツ条件の選択",
+          "explanation": "電磁場を不変に保つゲージ変換 A'=A+∇χ, φ'=φ-∂χ/∂t により、非斉次波動方程式を満たすχを選んでローレンツゲージ条件を課す。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.em.mw05_maxwell_equations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.emr02.wave_eq_potentials",
+      "target_node_id": "phys.em.emr02_inhomogeneous_wave_eq_potentials",
+      "route_kind": "deductive",
+      "title": "マクスウェル方程式とローレンツゲージからの非斉次波動方程式の導出",
+      "premise_node_ids": [
+        "phys.em.mw05_maxwell_equations",
+        "phys.em.mw06_em_wave_equation_vacuum",
+        "phys.em.emr01_potentials_lorenz_gauge"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "真空中の電磁場であり、c=1/sqrt(μ0 ε0) が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla\\cdot\\mathbf{E}=\\frac{\\rho}{\\varepsilon_0},\\quad \\nabla\\times\\mathbf{B}=\\mu_0\\mathbf{J}+\\frac{1}{c^2}\\frac{\\partial\\mathbf{E}}{\\partial t}",
+          "to_latex": "\\nabla^2\\phi-\\frac{1}{c^2}\\frac{\\partial^2\\phi}{\\partial t^2}=-\\frac{\\rho}{\\varepsilon_0},\\quad \\nabla^2\\mathbf{A}-\\frac{1}{c^2}\\frac{\\partial^2\\mathbf{A}}{\\partial t^2}=-\\mu_0\\mathbf{J}",
+          "operation_label": "ポテンシャル代入とゲージ分離",
+          "explanation": "ガウスの法則およびアンペール＝マクスウェルの法則に電磁ポテンシャルを代入し、ローレンツゲージ条件で連成項を消去する。",
+          "used_node_ids": [
+            "phys.em.emr01_potentials_lorenz_gauge",
+            "phys.em.mw05_maxwell_equations",
+            "phys.em.mw06_em_wave_equation_vacuum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\cdot\\mathbf{E}=\\frac{\\rho}{\\varepsilon_0},\\quad \\nabla\\times\\mathbf{B}=\\mu_0\\mathbf{J}+\\frac{1}{c^2}\\frac{\\partial\\mathbf{E}}{\\partial t}",
+          "to_latex": "-\\nabla^2\\phi-\\frac{\\partial}{\\partial t}(\\nabla\\cdot\\mathbf{A})=\\frac{\\rho}{\\varepsilon_0},\\quad \\nabla(\\nabla\\cdot\\mathbf{A})-\\nabla^2\\mathbf{A}+\\frac{1}{c^2}\\nabla\\frac{\\partial\\phi}{\\partial t}+\\frac{1}{c^2}\\frac{\\partial^2\\mathbf{A}}{\\partial t^2}=\\mu_0\\mathbf{J}",
+          "operation_label": "ポテンシャル表示の代入とベクトル恒等式",
+          "explanation": "EとBのポテンシャル表現を代入し、回転の回転公式 ∇×(∇×A)=∇(∇·A)-∇²A を適用する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "phys.em.emr01_potentials_lorenz_gauge",
+            "phys.em.mw06_em_wave_equation_vacuum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\nabla^2\\phi-\\frac{\\partial}{\\partial t}(\\nabla\\cdot\\mathbf{A})=\\frac{\\rho}{\\varepsilon_0},\\quad \\nabla(\\nabla\\cdot\\mathbf{A})-\\nabla^2\\mathbf{A}+\\frac{1}{c^2}\\nabla\\frac{\\partial\\phi}{\\partial t}+\\frac{1}{c^2}\\frac{\\partial^2\\mathbf{A}}{\\partial t^2}=\\mu_0\\mathbf{J}",
+          "to_latex": "\\nabla^2\\phi-\\frac{1}{c^2}\\frac{\\partial^2\\phi}{\\partial t^2}=-\\frac{\\rho}{\\varepsilon_0},\\quad \\nabla^2\\mathbf{A}-\\frac{1}{c^2}\\frac{\\partial^2\\mathbf{A}}{\\partial t^2}=-\\mu_0\\mathbf{J}",
+          "operation_label": "ローレンツゲージ条件の適用",
+          "explanation": "∇·A = -(1/c²)∂φ/∂t を代入すると、φとAの結合項が相殺して独立した非斉次波動方程式が得られる。",
+          "used_node_ids": [
+            "phys.em.emr01_potentials_lorenz_gauge"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.emr03.retarded_potentials",
+      "target_node_id": "phys.em.emr03_retarded_potentials",
+      "route_kind": "deductive",
+      "title": "因果的グリーン関数による遅延ポテンシャルの導出",
+      "premise_node_ids": [
+        "phys.em.emr02_inhomogeneous_wave_eq_potentials",
+        "phys.em.es06_electrostatic_potential",
+        "phys.em.ms04_vector_potential_coulomb_gauge"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.mi01_multiple_integral_def"
+      ],
+      "assumptions": [
+        "無限遠方でポテンシャルが0に減衰し、未来からの先進波を排除する因果律境界条件を課す。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\left(\\nabla^2-\\frac{1}{c^2}\\frac{\\partial^2}{\\partial t^2}\\right)\\psi(\\mathbf{r},t)=-s(\\mathbf{r},t)",
+          "to_latex": "\\phi(\\mathbf{r},t)=\\frac{1}{4\\pi\\varepsilon_0}\\iiint_V\\frac{\\rho(\\mathbf{r}',t_{\\mathrm{ret}})}{|\\mathbf{r}-\\mathbf{r}'|}\\,dV',\\quad \\mathbf{A}(\\mathbf{r},t)=\\frac{\\mu_0}{4\\pi}\\iiint_V\\frac{\\mathbf{J}(\\mathbf{r}',t_{\\mathrm{ret}})}{|\\mathbf{r}-\\mathbf{r}'|}\\,dV'",
+          "operation_label": "遅延グリーン関数との畳み込み",
+          "explanation": "ダランベール演算子の遅延グリーン関数を求め、電荷・電流密度との時空積分を実行して遅延ポテンシャルを得る。",
+          "used_node_ids": [
+            "phys.em.emr02_inhomogeneous_wave_eq_potentials",
+            "phys.em.es06_electrostatic_potential",
+            "phys.em.ms04_vector_potential_coulomb_gauge"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\nabla^2-\\frac{1}{c^2}\\frac{\\partial^2}{\\partial t^2}\\right)\\psi(\\mathbf{r},t)=-s(\\mathbf{r},t)",
+          "to_latex": "\\left(\\frac{1}{R}\\frac{\\partial^2}{\\partial R^2}R-\\frac{1}{c^2}\\frac{\\partial^2}{\\partial t^2}\\right)G(\\mathbf{R},t)=-\\delta^{(3)}(\\mathbf{R})\\delta(t)",
+          "operation_label": "球対称グリーン関数方程式への帰着",
+          "explanation": "R=|r-r'|とおき、空間的等方性から球対称ラプラシアンを用いて点波源に対するグリーン関数方程式を立てる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "phys.em.emr02_inhomogeneous_wave_eq_potentials"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{1}{R}\\frac{\\partial^2}{\\partial R^2}R-\\frac{1}{c^2}\\frac{\\partial^2}{\\partial t^2}\\right)G(\\mathbf{R},t)=-\\delta^{(3)}(\\mathbf{R})\\delta(t)",
+          "to_latex": "G_{\\mathrm{ret}}(\\mathbf{r}-\\mathbf{r}',t-t')=\\frac{\\delta(t-t'-|\\mathbf{r}-\\mathbf{r}'|/c)}{4\\pi|\\mathbf{r}-\\mathbf{r}'|}",
+          "operation_label": "外向き波動解と静電極限による係数決定",
+          "explanation": "R>0での一般解 f(t-R/c)/R を選び、R→0 でのポアソン方程式の1/(4πR)特異性と整合させて遅延グリーン関数を決定する。",
+          "used_node_ids": [
+            "phys.em.es06_electrostatic_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G_{\\mathrm{ret}}(\\mathbf{r}-\\mathbf{r}',t-t')=\\frac{\\delta(t-t'-|\\mathbf{r}-\\mathbf{r}'|/c)}{4\\pi|\\mathbf{r}-\\mathbf{r}'|}",
+          "to_latex": "\\phi(\\mathbf{r},t)=\\frac{1}{4\\pi\\varepsilon_0}\\iiint_V\\frac{\\rho(\\mathbf{r}',t_{\\mathrm{ret}})}{|\\mathbf{r}-\\mathbf{r}'|}\\,dV',\\quad \\mathbf{A}(\\mathbf{r},t)=\\frac{\\mu_0}{4\\pi}\\iiint_V\\frac{\\mathbf{J}(\\mathbf{r}',t_{\\mathrm{ret}})}{|\\mathbf{r}-\\mathbf{r}'|}\\,dV'",
+          "operation_label": "時間デルタ関数の積分評価",
+          "explanation": "G_retと波源 s=ρ/ε0, μ0 J の時空畳み込みを行い、t'積分を実行することで遅延時刻 t_ret=t-|r-r'|/c の式を得る。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "phys.em.es06_electrostatic_potential",
+            "phys.em.ms04_vector_potential_coulomb_gauge"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.emr04.dipole_radiation_fields",
+      "target_node_id": "phys.em.emr04_electric_dipole_radiation_fields",
+      "route_kind": "deductive",
+      "title": "遅延ベクトルポテンシャルの双極子展開による遠方放射場の導出",
+      "premise_node_ids": [
+        "phys.em.emr03_retarded_potentials",
+        "phys.em.emr01_potentials_lorenz_gauge",
+        "phys.em.dc04_electric_dipole_potential_field",
+        "phys.em.mw07_plane_em_waves_transversality"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m13_taylor_expansion"
+      ],
+      "assumptions": [
+        "波源サイズ d は観測距離 r および特徴的波長 λ に対して十分小さい（d ≪ λ ≪ r）。",
+        "電流分布は有界領域内に局在し、部分積分の境界項は消滅する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{A}(\\mathbf{r},t)=\\frac{\\mu_0}{4\\pi}\\iiint_V\\frac{\\mathbf{J}(\\mathbf{r}',t-|\\mathbf{r}-\\mathbf{r}'|/c)}{|\\mathbf{r}-\\mathbf{r}'|}\\,dV'",
+          "to_latex": "\\mathbf{E}_{\\mathrm{rad}}(\\mathbf{r},t)=\\frac{\\mu_0}{4\\pi r}\\big[(\\ddot{\\mathbf{p}}(t_{\\mathrm{ret}})\\times\\hat{\\mathbf{r}})\\times\\hat{\\mathbf{r}}\\big],\\quad \\mathbf{B}_{\\mathrm{rad}}(\\mathbf{r},t)=\\frac{1}{c}\\hat{\\mathbf{r}}\\times\\mathbf{E}_{\\mathrm{rad}}(\\mathbf{r},t)",
+          "operation_label": "電気双極子近似と遠方界の回転評価",
+          "explanation": "遅延ベクトルポテンシャルを電気双極子モーメントで表し、遠方領域で1/rに比例する放射成分を抽出する。",
+          "used_node_ids": [
+            "phys.em.dc04_electric_dipole_potential_field",
+            "phys.em.emr03_retarded_potentials",
+            "phys.em.mw07_plane_em_waves_transversality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{A}(\\mathbf{r},t)=\\frac{\\mu_0}{4\\pi}\\iiint_V\\frac{\\mathbf{J}(\\mathbf{r}',t-|\\mathbf{r}-\\mathbf{r}'|/c)}{|\\mathbf{r}-\\mathbf{r}'|}\\,dV'",
+          "to_latex": "\\mathbf{A}(\\mathbf{r},t)\\approx\\frac{\\mu_0}{4\\pi r}\\dot{\\mathbf{p}}(t-r/c)",
+          "operation_label": "多重極展開の最低次と連続の式の適用",
+          "explanation": "|r-r'|≈r とし、電荷保存則を用いて ∫J dV' = d/dt ∫r'ρ dV' = dp/dt と書き換える。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion",
+            "phys.em.dc04_electric_dipole_potential_field"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{A}(\\mathbf{r},t)\\approx\\frac{\\mu_0}{4\\pi r}\\dot{\\mathbf{p}}(t-r/c)",
+          "to_latex": "\\mathbf{B}_{\\mathrm{rad}}(\\mathbf{r},t)=\\nabla\\times\\mathbf{A}\\approx\\frac{\\mu_0}{4\\pi c r}\\big(\\ddot{\\mathbf{p}}(t_{\\mathrm{ret}})\\times\\hat{\\mathbf{r}}\\big)",
+          "operation_label": "回転演算と1/r成分の抽出",
+          "explanation": "∇(t-r/c)=-r̂/c による時間微分の連鎖律を適用し、1/r²の近接場項を無視して1/rの放射磁場を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "phys.em.emr01_potentials_lorenz_gauge"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{B}_{\\mathrm{rad}}(\\mathbf{r},t)=\\nabla\\times\\mathbf{A}\\approx\\frac{\\mu_0}{4\\pi c r}\\big(\\ddot{\\mathbf{p}}(t_{\\mathrm{ret}})\\times\\hat{\\mathbf{r}}\\big)",
+          "to_latex": "\\mathbf{E}_{\\mathrm{rad}}(\\mathbf{r},t)=\\frac{\\mu_0}{4\\pi r}\\big[(\\ddot{\\mathbf{p}}(t_{\\mathrm{ret}})\\times\\hat{\\mathbf{r}})\\times\\hat{\\mathbf{r}}\\big],\\quad \\mathbf{B}_{\\mathrm{rad}}(\\mathbf{r},t)=\\frac{1}{c}\\hat{\\mathbf{r}}\\times\\mathbf{E}_{\\mathrm{rad}}(\\mathbf{r},t)",
+          "operation_label": "局所平面波関係による放射電場の決定",
+          "explanation": "波源外の遠方領域では局所的に平面波 E_rad = c(B_rad × r̂) が成立するため、放射電場および横波関係式が得られる。",
+          "used_node_ids": [
+            "phys.em.mw07_plane_em_waves_transversality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.emr05.larmor_formula",
+      "target_node_id": "phys.em.emr05_larmor_radiation_power",
+      "route_kind": "deductive",
+      "title": "放射場のポインティング流束積分によるラーモアの公式の導出",
+      "premise_node_ids": [
+        "phys.em.emr04_electric_dipole_radiation_fields",
+        "phys.em.mw08_em_energy_density_poynting_vector",
+        "phys.em.mw09_poynting_theorem"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "assumptions": [
+        "加速度が非相対論的（v ≪ c）であり、単一電荷では p = q r から d²p/dt² = q a が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{S}=\\frac{1}{\\mu_0}(\\mathbf{E}_{\\mathrm{rad}}\\times\\mathbf{B}_{\\mathrm{rad}})",
+          "to_latex": "\\frac{dP}{d\\Omega}=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|^2\\sin^2\\theta}{16\\pi^2 c},\\quad P=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|^2}{6\\pi c}",
+          "operation_label": "エネルギー流束の球面積分",
+          "explanation": "電気双極子の放射電磁場からポインティングベクトルを計算し、遠方球面で積分して放射角分布と全放射電力を求める。",
+          "used_node_ids": [
+            "phys.em.emr04_electric_dipole_radiation_fields",
+            "phys.em.mw08_em_energy_density_poynting_vector",
+            "phys.em.mw09_poynting_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{S}=\\frac{1}{\\mu_0}(\\mathbf{E}_{\\mathrm{rad}}\\times\\mathbf{B}_{\\mathrm{rad}})",
+          "to_latex": "\\mathbf{S}=\\frac{1}{\\mu_0 c}|\\mathbf{E}_{\\mathrm{rad}}|^2\\hat{\\mathbf{r}}=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|^2\\sin^2\\theta}{16\\pi^2 c r^2}\\hat{\\mathbf{r}}",
+          "operation_label": "放射場の代入と方向角θの導入",
+          "explanation": "B_rad=(1/c)r̂×E_rad と |(p̈×r̂)×r̂|=|p̈|sinθ を用い、放射方向のポインティングベクトルを計算する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "phys.em.emr04_electric_dipole_radiation_fields",
+            "phys.em.mw08_em_energy_density_poynting_vector"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{S}=\\frac{1}{\\mu_0 c}|\\mathbf{E}_{\\mathrm{rad}}|^2\\hat{\\mathbf{r}}=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|^2\\sin^2\\theta}{16\\pi^2 c r^2}\\hat{\\mathbf{r}}",
+          "to_latex": "\\frac{dP}{d\\Omega}=r^2(\\mathbf{S}\\cdot\\hat{\\mathbf{r}})=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|^2\\sin^2\\theta}{16\\pi^2 c}",
+          "operation_label": "単位立体角あたりの放射電力の定義",
+          "explanation": "半径rの球面要素 dA=r² dΩ を通過するエネルギー流束から放射の角分布 dP/dΩ を得る。",
+          "used_node_ids": [
+            "phys.em.mw09_poynting_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dP}{d\\Omega}=r^2(\\mathbf{S}\\cdot\\hat{\\mathbf{r}})=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|^2\\sin^2\\theta}{16\\pi^2 c}",
+          "to_latex": "\\frac{dP}{d\\Omega}=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|^2\\sin^2\\theta}{16\\pi^2 c},\\quad P=\\frac{\\mu_0|\\ddot{\\mathbf{p}}|^2}{6\\pi c}",
+          "operation_label": "全立体角にわたる積分",
+          "explanation": "∫₀^{2π} dφ ∫₀^π sin³θ dθ = 2π(4/3) = 8π/3 を実行し、全放射電力および p̈=qa としたラーモアの公式を得る。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": "integrate(sin(theta)**3, (theta, 0, pi)) * 2 * pi"
+        }
+      ]
+    },
+    {
+      "id": "deriv.emr06.snell_law",
+      "target_node_id": "phys.em.emr06_dielectric_wave_boundary_kinematics",
+      "route_kind": "deductive",
+      "title": "境界面における位相整合条件からの反射の法則とスネルの法則の導出",
+      "premise_node_ids": [
+        "phys.em.mw07_plane_em_waves_transversality",
+        "phys.em.dc08_dielectric_boundary_conditions",
+        "phys.em.ms10_linear_magnetic_media_boundary_energy"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "境界面 z=0 は無限平面であり、両側の媒質は一様・線形・等方・無損失である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{E}_i e^{i(\\mathbf{k}_i\\cdot\\mathbf{r}-\\omega_i t)}+\\mathbf{E}_r e^{i(\\mathbf{k}_r\\cdot\\mathbf{r}-\\omega_r t)}=\\mathbf{E}_t e^{i(\\mathbf{k}_t\\cdot\\mathbf{r}-\\omega_t t)}\\quad(z=0)",
+          "to_latex": "\\omega_i=\\omega_r=\\omega_t,\\quad \\theta_r=\\theta_i,\\quad n_1\\sin\\theta_i=n_2\\sin\\theta_t",
+          "operation_label": "時空位相因子の恒等的整合",
+          "explanation": "境界面上の任意の時刻と位置で電場接線成分の境界条件が成立する要請から、振動数保存と波数接線成分保存を導きスネルの法則を得る。",
+          "used_node_ids": [
+            "phys.em.dc08_dielectric_boundary_conditions",
+            "phys.em.mw07_plane_em_waves_transversality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{E}_i e^{i(\\mathbf{k}_i\\cdot\\mathbf{r}-\\omega_i t)}+\\mathbf{E}_r e^{i(\\mathbf{k}_r\\cdot\\mathbf{r}-\\omega_r t)}=\\mathbf{E}_t e^{i(\\mathbf{k}_t\\cdot\\mathbf{r}-\\omega_t t)}\\quad(z=0)",
+          "to_latex": "\\omega_i=\\omega_r=\\omega_t=:\\omega,\\quad \\mathbf{k}_{i,\\parallel}=\\mathbf{k}_{r,\\parallel}=\\mathbf{k}_{t,\\parallel}",
+          "operation_label": "時刻と面内座標に関する位相の一致",
+          "explanation": "z=0 上のすべての (x,y,t) で線形結合が成立するには指数関数の位相因子が完全に一致する必要があり、角振動数と面内波数ベクトルが保存される。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.em.dc08_dielectric_boundary_conditions"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\omega_i=\\omega_r=\\omega_t=:\\omega,\\quad \\mathbf{k}_{i,\\parallel}=\\mathbf{k}_{r,\\parallel}=\\mathbf{k}_{t,\\parallel}",
+          "to_latex": "k_1\\sin\\theta_i=k_1\\sin\\theta_r=k_2\\sin\\theta_t\\quad\\left(k_m=\\frac{n_m\\omega}{c}\\right)",
+          "operation_label": "分散関係と入射角・反射角・屈折角の導入",
+          "explanation": "媒質中の分散関係 |k_m|=n_m ω/c と入射面内の幾何学的射影を代入する。",
+          "used_node_ids": [
+            "phys.em.ms10_linear_magnetic_media_boundary_energy",
+            "phys.em.mw07_plane_em_waves_transversality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_1\\sin\\theta_i=k_1\\sin\\theta_r=k_2\\sin\\theta_t\\quad\\left(k_m=\\frac{n_m\\omega}{c}\\right)",
+          "to_latex": "\\omega_i=\\omega_r=\\omega_t,\\quad \\theta_r=\\theta_i,\\quad n_1\\sin\\theta_i=n_2\\sin\\theta_t",
+          "operation_label": "共通因子の消去",
+          "explanation": "波数の共通因子 ω/c を消去することで、反射の法則とスネルの屈折の法則を得る。",
+          "used_node_ids": [
+            "phys.em.mw07_plane_em_waves_transversality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.emr07.fresnel_s_pol",
+      "target_node_id": "phys.em.emr07_fresnel_te_s_polarization",
+      "route_kind": "deductive",
+      "title": "電磁場接線成分の連続条件からのs偏光（TE波）フレネル係数の導出",
+      "premise_node_ids": [
+        "phys.em.emr06_dielectric_wave_boundary_kinematics",
+        "phys.em.dc08_dielectric_boundary_conditions",
+        "phys.em.ms10_linear_magnetic_media_boundary_energy",
+        "phys.em.mw07_plane_em_waves_transversality"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "両媒質は非磁性（μ1 = μ2 = μ0）であり、境界面上に自由表面電流 K_f = 0 がない。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{E}_{\\parallel,1}=\\mathbf{E}_{\\parallel,2},\\quad \\mathbf{H}_{\\parallel,1}=\\mathbf{H}_{\\parallel,2}\\quad(\\text{s-pol},\\;z=0)",
+          "to_latex": "r_s=\\frac{n_1\\cos\\theta_i-n_2\\cos\\theta_t}{n_1\\cos\\theta_i+n_2\\cos\\theta_t},\\quad t_s=\\frac{2n_1\\cos\\theta_i}{n_1\\cos\\theta_i+n_2\\cos\\theta_t}",
+          "operation_label": "s偏光境界連立方程式の求解",
+          "explanation": "入射面に垂直な電場を持つs偏光波に対してEとHの接線成分の連続条件を書き下し、反射振幅比と透過振幅比を解く。",
+          "used_node_ids": [
+            "phys.em.dc08_dielectric_boundary_conditions",
+            "phys.em.emr06_dielectric_wave_boundary_kinematics",
+            "phys.em.ms10_linear_magnetic_media_boundary_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{E}_{\\parallel,1}=\\mathbf{E}_{\\parallel,2},\\quad \\mathbf{H}_{\\parallel,1}=\\mathbf{H}_{\\parallel,2}\\quad(\\text{s-pol},\\;z=0)",
+          "to_latex": "E_{0i}+E_{0r}=E_{0t},\\quad \\frac{n_1}{\\mu_0 c}(E_{0i}-E_{0r})\\cos\\theta_i=\\frac{n_2}{\\mu_0 c}E_{0t}\\cos\\theta_t",
+          "operation_label": "接線成分への射影と磁場Hの表式代入",
+          "explanation": "Eが入射面に垂直であるためそのまま接線成分となり、H=(n/(μ0 c))(k̂×E) の面内射影に符号とcosθを掛ける。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.em.dc08_dielectric_boundary_conditions",
+            "phys.em.ms10_linear_magnetic_media_boundary_energy",
+            "phys.em.mw07_plane_em_waves_transversality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E_{0i}+E_{0r}=E_{0t},\\quad \\frac{n_1}{\\mu_0 c}(E_{0i}-E_{0r})\\cos\\theta_i=\\frac{n_2}{\\mu_0 c}E_{0t}\\cos\\theta_t",
+          "to_latex": "(n_1\\cos\\theta_i+n_2\\cos\\theta_t)E_{0r}=(n_1\\cos\\theta_i-n_2\\cos\\theta_t)E_{0i},\\quad E_{0t}=E_{0i}+E_{0r}",
+          "operation_label": "透過振幅E_0tの消去と整理",
+          "explanation": "第1式を第2式に代入し、共通因子 1/(μ0 c) を払って反射振幅 E_0r について整理する。",
+          "used_node_ids": [
+            "phys.em.emr06_dielectric_wave_boundary_kinematics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(n_1\\cos\\theta_i+n_2\\cos\\theta_t)E_{0r}=(n_1\\cos\\theta_i-n_2\\cos\\theta_t)E_{0i},\\quad E_{0t}=E_{0i}+E_{0r}",
+          "to_latex": "r_s=\\frac{n_1\\cos\\theta_i-n_2\\cos\\theta_t}{n_1\\cos\\theta_i+n_2\\cos\\theta_t},\\quad t_s=\\frac{2n_1\\cos\\theta_i}{n_1\\cos\\theta_i+n_2\\cos\\theta_t}",
+          "operation_label": "振幅反射・透過係数の定義と導出",
+          "explanation": "r_s=E_0r/E_0i および t_s=E_0t/E_0i=1+r_s としてs偏光のフレネルの式を得る。",
+          "used_node_ids": [
+            "phys.em.emr06_dielectric_wave_boundary_kinematics"
+          ],
+          "sympy_check_hint": "1 + (n1*cos(ti) - n2*cos(tt))/(n1*cos(ti) + n2*cos(tt))"
+        }
+      ]
+    },
+    {
+      "id": "deriv.emr08.fresnel_p_pol",
+      "target_node_id": "phys.em.emr08_fresnel_tm_p_polarization",
+      "route_kind": "deductive",
+      "title": "電磁場接線成分の連続条件からのp偏光（TM波）フレネル係数の導出",
+      "premise_node_ids": [
+        "phys.em.emr06_dielectric_wave_boundary_kinematics",
+        "phys.em.dc08_dielectric_boundary_conditions",
+        "phys.em.ms10_linear_magnetic_media_boundary_energy",
+        "phys.em.mw07_plane_em_waves_transversality"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "両媒質は非磁性（μ1 = μ2 = μ0）であり、境界面上に自由表面電流 K_f = 0 がない。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{E}_{\\parallel,1}=\\mathbf{E}_{\\parallel,2},\\quad \\mathbf{H}_{\\parallel,1}=\\mathbf{H}_{\\parallel,2}\\quad(\\text{p-pol},\\;z=0)",
+          "to_latex": "r_p=\\frac{n_2\\cos\\theta_i-n_1\\cos\\theta_t}{n_2\\cos\\theta_i+n_1\\cos\\theta_t},\\quad t_p=\\frac{2n_1\\cos\\theta_i}{n_2\\cos\\theta_i+n_1\\cos\\theta_t}",
+          "operation_label": "p偏光境界連立方程式の求解",
+          "explanation": "磁場が入射面に垂直（電場が入射面内）なp偏光波に対してEとHの接線成分の連続条件を連立し、反射・透過係数を解く。",
+          "used_node_ids": [
+            "phys.em.dc08_dielectric_boundary_conditions",
+            "phys.em.emr06_dielectric_wave_boundary_kinematics",
+            "phys.em.ms10_linear_magnetic_media_boundary_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{E}_{\\parallel,1}=\\mathbf{E}_{\\parallel,2},\\quad \\mathbf{H}_{\\parallel,1}=\\mathbf{H}_{\\parallel,2}\\quad(\\text{p-pol},\\;z=0)",
+          "to_latex": "(E_{0i}-E_{0r})\\cos\\theta_i=E_{0t}\\cos\\theta_t,\\quad \\frac{n_1}{\\mu_0 c}(E_{0i}+E_{0r})=\\frac{n_2}{\\mu_0 c}E_{0t}",
+          "operation_label": "電場接線射影と磁場連続条件の記述",
+          "explanation": "Eの境界面方向成分はcosθを伴い（反射波は向きが反転）、入射面に垂直なHは振幅がそのまま連続となる。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.em.dc08_dielectric_boundary_conditions",
+            "phys.em.ms10_linear_magnetic_media_boundary_energy",
+            "phys.em.mw07_plane_em_waves_transversality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(E_{0i}-E_{0r})\\cos\\theta_i=E_{0t}\\cos\\theta_t,\\quad \\frac{n_1}{\\mu_0 c}(E_{0i}+E_{0r})=\\frac{n_2}{\\mu_0 c}E_{0t}",
+          "to_latex": "(n_2\\cos\\theta_i+n_1\\cos\\theta_t)E_{0r}=(n_2\\cos\\theta_i-n_1\\cos\\theta_t)E_{0i},\\quad n_2 E_{0t}=n_1(E_{0i}+E_{0r})",
+          "operation_label": "透過振幅E_0tの消去と整理",
+          "explanation": "第2式より E_0t=(n1/n2)(E_0i+E_0r) を第1式に代入し、E_0r について整理する。",
+          "used_node_ids": [
+            "phys.em.emr06_dielectric_wave_boundary_kinematics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(n_2\\cos\\theta_i+n_1\\cos\\theta_t)E_{0r}=(n_2\\cos\\theta_i-n_1\\cos\\theta_t)E_{0i},\\quad n_2 E_{0t}=n_1(E_{0i}+E_{0r})",
+          "to_latex": "r_p=\\frac{n_2\\cos\\theta_i-n_1\\cos\\theta_t}{n_2\\cos\\theta_i+n_1\\cos\\theta_t},\\quad t_p=\\frac{2n_1\\cos\\theta_i}{n_2\\cos\\theta_i+n_1\\cos\\theta_t}",
+          "operation_label": "振幅反射・透過係数の導出",
+          "explanation": "r_p=E_0r/E_0i と t_p=E_0t/E_0i=(n1/n2)(1+r_p) を計算してp偏光のフレネルの式を得る。",
+          "used_node_ids": [
+            "phys.em.emr06_dielectric_wave_boundary_kinematics"
+          ],
+          "sympy_check_hint": "(n1/n2)*(1 + (n2*cos(ti) - n1*cos(tt))/(n2*cos(ti) + n1*cos(tt)))"
+        }
+      ]
+    },
+    {
+      "id": "deriv.emr09.brewster_tir_energy",
+      "target_node_id": "phys.em.emr09_brewster_angle_total_internal_reflection",
+      "route_kind": "deductive",
+      "title": "フレネルの式からのブリュースター角・全反射臨界角およびエネルギー反射率の導出",
+      "premise_node_ids": [
+        "phys.em.emr06_dielectric_wave_boundary_kinematics",
+        "phys.em.emr07_fresnel_te_s_polarization",
+        "phys.em.emr08_fresnel_tm_p_polarization",
+        "phys.em.mw08_em_energy_density_poynting_vector"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "両媒質は非磁性・透明（実屈折率 n1, n2 > 0）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r_p=\\frac{n_2\\cos\\theta_i-n_1\\cos\\theta_t}{n_2\\cos\\theta_i+n_1\\cos\\theta_t},\\quad n_1\\sin\\theta_i=n_2\\sin\\theta_t",
+          "to_latex": "\\tan\\theta_B=\\frac{n_2}{n_1},\\quad \\sin\\theta_c=\\frac{n_2}{n_1},\\quad R=|r|^2,\\quad T=\\frac{n_2\\cos\\theta_t}{n_1\\cos\\theta_i}|t|^2",
+          "operation_label": "零反射条件・臨界角条件・エネルギー流束比",
+          "explanation": "r_p=0 からブリュースター角、sin θ_t >= 1 から全反射臨界角を導き、ポインティングベクトル法線成分比からエネルギー保存則 R+T=1 を示す。",
+          "used_node_ids": [
+            "phys.em.emr06_dielectric_wave_boundary_kinematics",
+            "phys.em.emr07_fresnel_te_s_polarization",
+            "phys.em.emr08_fresnel_tm_p_polarization",
+            "phys.em.mw08_em_energy_density_poynting_vector"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_p=\\frac{n_2\\cos\\theta_i-n_1\\cos\\theta_t}{n_2\\cos\\theta_i+n_1\\cos\\theta_t},\\quad n_1\\sin\\theta_i=n_2\\sin\\theta_t",
+          "to_latex": "\\tan\\theta_B=\\frac{n_2}{n_1},\\quad n_1\\sin\\theta_i=n_2\\sin\\theta_t",
+          "operation_label": "p偏光反射消滅条件の解法",
+          "explanation": "r_p=0 即ち n2 cosθ_B = n1 cosθ_t とスネルの法則を連立すると sin(2θ_B)=sin(2θ_t) から θ_B+θ_t=π/2 が得られ、tanθ_B=n2/n1 となる。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "phys.em.emr06_dielectric_wave_boundary_kinematics",
+            "phys.em.emr08_fresnel_tm_p_polarization"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tan\\theta_B=\\frac{n_2}{n_1},\\quad n_1\\sin\\theta_i=n_2\\sin\\theta_t",
+          "to_latex": "\\tan\\theta_B=\\frac{n_2}{n_1},\\quad \\sin\\theta_c=\\frac{n_2}{n_1},\\quad |r_s|=|r_p|=1\\;(\\theta_i\\ge\\theta_c)",
+          "operation_label": "臨界角と全反射の導出",
+          "explanation": "n1>n2 で θ_i>=θ_c:=arcsin(n2/n1) のとき sinθ_t>1 となり cosθ_t が純虚数となるため、r_s, r_p は分子と分母が複素共役となり絶対値が1になる。",
+          "used_node_ids": [
+            "phys.em.emr07_fresnel_te_s_polarization",
+            "phys.em.emr08_fresnel_tm_p_polarization"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tan\\theta_B=\\frac{n_2}{n_1},\\quad \\sin\\theta_c=\\frac{n_2}{n_1},\\quad |r_s|=|r_p|=1\\;(\\theta_i\\ge\\theta_c)",
+          "to_latex": "\\tan\\theta_B=\\frac{n_2}{n_1},\\quad \\sin\\theta_c=\\frac{n_2}{n_1},\\quad R=|r|^2,\\quad T=\\frac{n_2\\cos\\theta_t}{n_1\\cos\\theta_i}|t|^2",
+          "operation_label": "ポインティング流束の法線成分比の評価",
+          "explanation": "境界面法線方向のエネルギー流束 S_z = (n/(2μ0 c))|E|²cosθ の入射波に対する比として反射率 R と透過率 T を定義し、R+T=1 を確認する。",
+          "used_node_ids": [
+            "phys.em.emr07_fresnel_te_s_polarization",
+            "phys.em.emr08_fresnel_tm_p_polarization",
+            "phys.em.mw08_em_energy_density_poynting_vector"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
