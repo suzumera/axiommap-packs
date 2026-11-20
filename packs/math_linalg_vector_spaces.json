@@ -1,0 +1,704 @@
+{
+  "pack_meta": {
+    "pack_id": "math.linalg.vector_spaces",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "線形代数：ベクトル空間・基底・次元と線形写像",
+    "language": "ja",
+    "description": "ベクトル空間の公理、線形独立、基底変換、核と像、次元定理（ランク・退化次数定理）を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.linalg.vs01_vector_space_axioms",
+      "short_code": "VS01",
+      "kind": "axiom",
+      "title": "ベクトル空間（線形空間）の公理",
+      "summary": "体 F（実数 R または複素数 C）上の集合 V に加法とスカラー乗法が定義され、加法の可換群性、分配法則、結合法則、単位元の8公理を満たす代数的構造。",
+      "canonical_latex": "\\forall \\mathbf{u},\\mathbf{v},\\mathbf{w}\\in V,\\ \\forall \\alpha,\\beta\\in\\mathbb{F}:\\; (\\mathbf{u}+\\mathbf{v})+\\mathbf{w}=\\mathbf{u}+(\\mathbf{v}+\\mathbf{w}),\\; \\mathbf{u}+\\mathbf{v}=\\mathbf{v}+\\mathbf{u},\\; \\exists\\mathbf{0}\\in V\\text{ s.t. }\\mathbf{v}+\\mathbf{0}=\\mathbf{v},\\; \\exists(-\\mathbf{v})\\in V\\text{ s.t. }\\mathbf{v}+(-\\mathbf{v})=\\mathbf{0},\\; \\alpha(\\mathbf{u}+\\mathbf{v})=\\alpha\\mathbf{u}+\\alpha\\mathbf{v},\\; (\\alpha+\\beta)\\mathbf{v}=\\alpha\\mathbf{v}+\\beta\\mathbf{v},\\; (\\alpha\\beta)\\mathbf{v}=\\alpha(\\beta\\mathbf{v}),\\; 1\\mathbf{v}=\\mathbf{v} ",
+      "aliases_latex": [
+        "(V, +, \\cdot)\\text{ is a vector space over }\\mathbb{F}"
+      ],
+      "keywords": [
+        "ベクトル空間",
+        "線形空間",
+        "公理",
+        "スカラー倍",
+        "加法"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.vs02_subspace_criterion",
+      "short_code": "VS02",
+      "kind": "theorem_formula",
+      "title": "部分空間の定義と部分空間判定条件",
+      "summary": "ベクトル空間 V の空でない部分集合 W が同じ演算のもとでベクトル空間をなす（部分空間である）ための必要十分条件は、任意の線形結合について閉じていることである。",
+      "canonical_latex": "W \\le V \\iff W \\neq \\emptyset \\land \\forall \\mathbf{u},\\mathbf{v}\\in W,\\ \\forall \\alpha,\\beta\\in\\mathbb{F},\\; \\alpha\\mathbf{u}+\\beta\\mathbf{v}\\in W",
+      "aliases_latex": [
+        "W \\le V \\iff \\mathbf{0}\\in W \\land (\\mathbf{u}+\\mathbf{v}\\in W) \\land (\\alpha\\mathbf{u}\\in W)"
+      ],
+      "keywords": [
+        "部分空間",
+        "閉性",
+        "線形結合",
+        "判定条件"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.vs03_linear_independence_span",
+      "short_code": "VS03",
+      "kind": "definition",
+      "title": "線形結合・生成空間・線形独立の定義",
+      "summary": "有限個のベクトルの線形結合全体がなす生成空間（スパン）と、自明でない線形結合で零ベクトルを表せない性質としての線形独立（1次独立）・線形従属を定義する。",
+      "canonical_latex": "\\operatorname{span}(\\mathbf{v}_1,\\dots,\\mathbf{v}_k) := \\left\\{\\sum_{i=1}^{k} c_i\\mathbf{v}_i \\;\\middle|\\; c_i\\in\\mathbb{F}\\right\\},\\quad \\{\\mathbf{v}_1,\\dots,\\mathbf{v}_k\\}\\text{ linearly independent} \\iff \\left(\\sum_{i=1}^{k} c_i\\mathbf{v}_i = \\mathbf{0} \\implies c_1=\\dots=c_k=0\\right) ",
+      "aliases_latex": [
+        "\\langle \\mathbf{v}_1,\\dots,\\mathbf{v}_k \\rangle = \\operatorname{span}(\\mathbf{v}_1,\\dots,\\mathbf{v}_k)"
+      ],
+      "keywords": [
+        "線形独立",
+        "1次独立",
+        "線形従属",
+        "生成空間",
+        "スパン"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.vs04_basis_and_dimension",
+      "short_code": "VS04",
+      "kind": "definition",
+      "title": "基底・座標ベクトル・次元の定義",
+      "summary": "線形独立かつベクトル空間 V 全体を生成するベクトルの組を基底と定義し、基底の元の個数（有限次元の場合）を次元 dim V と定義する。",
+      "canonical_latex": "\\mathcal{B}=(\\mathbf{e}_1,\\dots,\\mathbf{e}_n)\\text{ is a basis of } V \\iff \\mathcal{B}\\text{ is linearly independent} \\land \\operatorname{span}(\\mathcal{B})=V,\\quad \\dim V := |\\mathcal{B}| = n",
+      "aliases_latex": [
+        "\\dim_{\\mathbb{F}} V = n"
+      ],
+      "keywords": [
+        "基底",
+        "次元",
+        "生成系",
+        "線形独立"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.vs05_unique_coord_steinitz",
+      "short_code": "VS05",
+      "kind": "theorem_formula",
+      "title": "座標表示の一意性とシュタイニッツの交換定理（次元の不変性）",
+      "summary": "基底による任意のベクトルの線形結合表示は一意に定まり、また任意の線形独立集合の元の個数は生成集合の元の個数を超えない（シュタイニッツの交換定理）。これにより次元は基底の選び方に依らず不変となる。",
+      "canonical_latex": "\\forall \\mathbf{v}\\in V,\\ \\exists! (x_1,\\dots,x_n)^\\top\\in\\mathbb{F}^n:\\; \\mathbf{v}=\\sum_{i=1}^{n} x_i\\mathbf{e}_i,\\quad [\\mathbf{v}]_{\\mathcal{B}}:=(x_1,\\dots,x_n)^\\top;\\quad |\\mathcal{B}_1| = |\\mathcal{B}_2| = \\dim V",
+      "aliases_latex": [
+        "\\mathbf{v}\\in V \\leftrightarrow [\\mathbf{v}]_{\\mathcal{B}}\\in\\mathbb{F}^n,\\quad m\\le n\\text{ (Steinitz)}"
+      ],
+      "keywords": [
+        "座標表示",
+        "一意性",
+        "シュタイニッツの交換定理",
+        "次元の不変性"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.vs06_change_of_basis",
+      "short_code": "VS06",
+      "kind": "theorem_formula",
+      "title": "基底変換行列と座標の変換公式",
+      "summary": "旧基底 B から新基底 B' への基底変換行列 P（第 j 列が新基底ベクトル e'_j の B 座標）を定めると、任意のベクトルの座標は逆行列 P^{-1} を用いて変換される。",
+      "canonical_latex": "\\mathbf{e}'_j = \\sum_{i=1}^{n} P_{ij}\\mathbf{e}_i \\implies \\det P \\neq 0 \\land [\\mathbf{v}]_{\\mathcal{B}} = P[\\mathbf{v}]_{\\mathcal{B}'} \\land [\\mathbf{v}]_{\\mathcal{B}'} = P^{-1}[\\mathbf{v}]_{\\mathcal{B}}",
+      "aliases_latex": [
+        "\\mathcal{B}' = \\mathcal{B}P \\implies [\\mathbf{v}]_{\\mathcal{B}'} = P^{-1}[\\mathbf{v}]_{\\mathcal{B}}"
+      ],
+      "keywords": [
+        "基底変換",
+        "変換行列",
+        "座標変換",
+        "正則行列"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.vs07_linear_map_ker_im_def",
+      "short_code": "VS07",
+      "kind": "definition",
+      "title": "線形写像・核（Ker）と像（Im）の定義",
+      "summary": "ベクトル空間 V から W への写像 T で加法性と斉次性（線形性）を保つものを線形写像と定義し、零ベクトルへ写される元の集合を核 ker T、値域を像 Im T と定義する。",
+      "canonical_latex": "T(\\alpha\\mathbf{u}+\\beta\\mathbf{v}) = \\alpha T(\\mathbf{u})+\\beta T(\\mathbf{v}),\\quad \\ker T := \\{\\mathbf{v}\\in V \\mid T(\\mathbf{v})=\\mathbf{0}_W\\},\\quad \\operatorname{Im} T := \\{T(\\mathbf{v}) \\mid \\mathbf{v}\\in V\\} ",
+      "aliases_latex": [
+        "T\\in\\operatorname{Hom}(V,W),\\quad N(T)=\\ker T,\\quad R(T)=\\operatorname{Im} T"
+      ],
+      "keywords": [
+        "線形写像",
+        "核",
+        "像",
+        "カーネル",
+        "イメージ"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.vs08_ker_im_subspace_injectivity",
+      "short_code": "VS08",
+      "kind": "theorem_formula",
+      "title": "核・像の部分空間性と単射性の核判定定理",
+      "summary": "線形写像 T の核 ker T は定義域 V の部分空間、像 Im T は終域 W の部分空間であり、T が単射であるための必要十分条件は ker T = {0_V} となることである。",
+      "canonical_latex": "\\ker T \\le V,\\quad \\operatorname{Im} T \\le W,\\quad T\\text{ is injective} \\iff \\ker T = \\{\\mathbf{0}_V\\} ",
+      "aliases_latex": [
+        "T\\text{ injective} \\iff \\dim(\\ker T) = 0"
+      ],
+      "keywords": [
+        "単射",
+        "核空間",
+        "像空間",
+        "部分空間"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.vs09_matrix_representation_similarity",
+      "short_code": "VS09",
+      "kind": "theorem_formula",
+      "title": "線形写像の表現行列と基底変換則（相似変換）",
+      "summary": "基底 B, C に対する線形写像 T の表現行列 A により [T(v)]_C = A[v]_B が成立し、基底変換行列 P, Q のもとで表現行列は A' = Q^{-1}AP（自己準同型では相似変換 P^{-1}AP）へ変換される。",
+      "canonical_latex": "T(\\mathbf{e}_j) = \\sum_{i=1}^{m} A_{ij}\\mathbf{f}_i \\implies [T(\\mathbf{v})]_{\\mathcal{C}} = A[\\mathbf{v}]_{\\mathcal{B}},\\quad A' = Q^{-1}AP\\quad (V=W,\\;\\mathcal{B}=\\mathcal{C} \\implies A'=P^{-1}AP) ",
+      "aliases_latex": [
+        "A_{\\mathcal{C}',\\mathcal{B}'} = Q^{-1} A_{\\mathcal{C},\\mathcal{B}} P"
+      ],
+      "keywords": [
+        "表現行列",
+        "相似変換",
+        "基底変換",
+        "線形写像の行列表現"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.vs10_rank_nullity_theorem",
+      "short_code": "VS10",
+      "kind": "theorem_formula",
+      "title": "次元定理（ランク・退化次数定理）",
+      "summary": "有限次元ベクトル空間 V から W への線形写像 T について、定義域の次元は核の次元（退化次数 nullity）と像の次元（階数 rank）の和に等しい。",
+      "canonical_latex": "\\dim V = \\dim(\\ker T) + \\dim(\\operatorname{Im} T) = \\operatorname{nullity}(T) + \\operatorname{rank}(T) ",
+      "aliases_latex": [
+        "n = \\operatorname{nullity}(T) + \\operatorname{rank}(T)"
+      ],
+      "keywords": [
+        "次元定理",
+        "ランク・退化次数定理",
+        "階数",
+        "退化次数"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_vs02_subspace_criterion",
+      "target_node_id": "math.linalg.vs02_subspace_criterion",
+      "route_kind": "equivalence",
+      "title": "ベクトル空間の公理からの部分空間判定条件の導出",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "V is a vector space over field F and W is a subset of V with inherited operations."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(V,+,\\cdot)\\text{ satisfies VS01},\\; W\\subseteq V",
+          "to_latex": "W \\le V \\iff W \\neq \\emptyset \\land \\forall \\mathbf{u},\\mathbf{v}\\in W,\\ \\forall \\alpha,\\beta\\in\\mathbb{F},\\; \\alpha\\mathbf{u}+\\beta\\mathbf{v}\\in W",
+          "operation_label": "Overview: subspace criterion equivalence",
+          "explanation": "ベクトル空間の公理から導かれる零元・逆元の性質を用い、部分集合 W が部分空間であるための必要十分条件が非空性と線形結合に関する閉性であることを示す。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_zero_and_inverse",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0\\mathbf{v} = (0+0)\\mathbf{v} = 0\\mathbf{v} + 0\\mathbf{v},\\quad \\mathbf{v} + (-1)\\mathbf{v} = (1 + (-1))\\mathbf{v} = 0\\mathbf{v} ",
+          "to_latex": "0\\mathbf{v} = \\mathbf{0},\\quad (-1)\\mathbf{v} = -\\mathbf{v} ",
+          "operation_label": "Prove scalar-zero and negation identities from axioms",
+          "explanation": "公理（分配律とスカラー単位元 1v=v、加法逆元の存在）より、任意のスカラー 0 倍は零ベクトルに、(-1) 倍は加法逆元に一致する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_closure_implies_subspace",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W\\neq\\emptyset \\land (\\forall \\mathbf{u},\\mathbf{v}\\in W,\\ \\alpha,\\beta\\in\\mathbb{F},\\; \\alpha\\mathbf{u}+\\beta\\mathbf{v}\\in W) ",
+          "to_latex": "\\mathbf{0}=0\\mathbf{w}\\in W \\land (-\\mathbf{w})=(-1)\\mathbf{w}\\in W \\implies W\\le V",
+          "operation_label": "Sufficiency: closure implies all 8 axioms hold on W",
+          "explanation": "W の任意の元 w に対し α=β=0 で零ベクトル 0∈W、α=-1, β=0 で逆元 -w∈W が従い、結合律・交換律・分配律は V から継承されるため W は部分空間となる。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_subspace_implies_closure",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W\\le V",
+          "to_latex": "\\mathbf{0}\\in W \\implies W\\neq\\emptyset,\\quad \\alpha\\mathbf{u},\\beta\\mathbf{v}\\in W \\implies \\alpha\\mathbf{u}+\\beta\\mathbf{v}\\in W",
+          "operation_label": "Necessity: subspace axioms require non-emptiness and closure",
+          "explanation": "逆に W が部分空間なら零元の存在より W は空でなく、スカラー倍と加法が W 上の演算であることから任意の線形結合について閉じている。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_vs05_unique_coord_steinitz",
+      "target_node_id": "math.linalg.vs05_unique_coord_steinitz",
+      "route_kind": "deductive",
+      "title": "線形独立性と背理法による座標の一意性および次元の不変性（シュタイニッツの交換定理）の導出",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms",
+        "math.linalg.vs03_linear_independence_span",
+        "math.linalg.vs04_basis_and_dimension"
+      ],
+      "required_math_node_ids": [
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "assumptions": [
+        "V is a finitely generated vector space over field F."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{B}=(\\mathbf{e}_1,\\dots,\\mathbf{e}_n)\\text{ basis of }V",
+          "to_latex": "\\exists! [\\mathbf{v}]_{\\mathcal{B}}\\in\\mathbb{F}^n \\land |\\mathcal{B}_1|=|\\mathcal{B}_2|",
+          "operation_label": "Overview: unique coordinates and dimension invariance",
+          "explanation": "基底の線形独立性から座標表示の一意性を導き、シュタイニッツの交換定理を背理法で証明することで任意の2つの基底の元の個数が等しいことを示す。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.linalg.vs03_linear_independence_span",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_coord_uniqueness",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v}=\\sum_{i=1}^{n} x_i\\mathbf{e}_i = \\sum_{i=1}^{n} y_i\\mathbf{e}_i",
+          "to_latex": "\\sum_{i=1}^{n}(x_i-y_i)\\mathbf{e}_i=\\mathbf{0} \\implies \\forall i,\\; x_i=y_i",
+          "operation_label": "Prove uniqueness of coordinate representation",
+          "explanation": "同一ベクトル v の2通りの展開の差を取ると零ベクトルの線形結合表示となり、基底の線形独立性よりすべての係数差が 0 となって座標の一意性が従う。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.linalg.vs03_linear_independence_span",
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_steinitz_exchange",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\{\\mathbf{u}_1,\\dots,\\mathbf{u}_m\\}\\text{ lin. indep.},\\; \\operatorname{span}(\\mathbf{w}_1,\\dots,\\mathbf{w}_n)=V",
+          "to_latex": "m \\le n",
+          "operation_label": "Prove Steinitz exchange lemma by contradiction",
+          "explanation": "生成集合の元を線形独立集合の元で順次置換していく。もし m > n ならば n 回の置換後にも残る u_{n+1} が先の n 個の u の線形結合で表され線形独立性に矛盾するため（背理法）、m <= n が成り立つ。",
+          "used_node_ids": [
+            "math.linalg.vs03_linear_independence_span",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_dimension_invariance",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{B}_1,\\mathcal{B}_2\\text{ bases of }V",
+          "to_latex": "|\\mathcal{B}_1|\\le |\\mathcal{B}_2| \\land |\\mathcal{B}_2|\\le |\\mathcal{B}_1| \\implies |\\mathcal{B}_1|=|\\mathcal{B}_2|",
+          "operation_label": "Conclude invariance of dimension",
+          "explanation": "任意の2つの基底 B1, B2 はともに線形独立かつ生成系であるため、シュタイニッツの交換定理を双方向に適用して元の個数の一致（次元の不変性）を得る。",
+          "used_node_ids": [
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_vs06_change_of_basis",
+      "target_node_id": "math.linalg.vs06_change_of_basis",
+      "route_kind": "deductive",
+      "title": "基底の線形結合展開による基底変換行列と座標変換則の導出",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms",
+        "math.linalg.vs04_basis_and_dimension",
+        "math.linalg.vs05_unique_coord_steinitz"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "V is an n-dimensional vector space over field F with bases B and B'."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{B}=(\\mathbf{e}_1,\\dots,\\mathbf{e}_n),\\; \\mathcal{B}'=(\\mathbf{e}'_1,\\dots,\\mathbf{e}'_n)\\text{ bases of }V",
+          "to_latex": "[\\mathbf{v}]_{\\mathcal{B}} = P[\\mathbf{v}]_{\\mathcal{B}'},\\quad [\\mathbf{v}]_{\\mathcal{B}'} = P^{-1}[\\mathbf{v}]_{\\mathcal{B}}",
+          "operation_label": "Overview: change-of-basis coordinate transformation",
+          "explanation": "新基底ベクトルを旧基底で展開して基底変換行列 P を構成し、同一ベクトルの2通りの座標展開を比較して P の正則性と座標の反変変換則を導く。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.linalg.vs05_unique_coord_steinitz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_transition_matrix",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{e}'_j\\in V = \\operatorname{span}(\\mathcal{B})",
+          "to_latex": "\\mathbf{e}'_j = \\sum_{i=1}^{n} P_{ij}\\mathbf{e}_i,\\quad P := \\big([\\mathbf{e}'_1]_{\\mathcal{B}}\\ \\cdots\\ [\\mathbf{e}'_n]_{\\mathcal{B}}\\big)\\in\\mathbb{F}^{n\\times n} ",
+          "operation_label": "Define transition matrix P via unique basis expansion",
+          "explanation": "各新基底ベクトル e'_j を旧基底 B の線形結合として一意に展開し、その係数を列ベクトルに並べた n×n 行列 P を定義する。",
+          "used_node_ids": [
+            "math.linalg.vs04_basis_and_dimension",
+            "math.linalg.vs05_unique_coord_steinitz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_coord_relation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v} = \\sum_{j=1}^{n} x'_j\\mathbf{e}'_j = \\sum_{j=1}^{n} x'_j\\left(\\sum_{i=1}^{n} P_{ij}\\mathbf{e}_i\\right) ",
+          "to_latex": "\\sum_{i=1}^{n} x_i\\mathbf{e}_i = \\sum_{i=1}^{n}\\left(\\sum_{j=1}^{n} P_{ij}x'_j\\right)\\mathbf{e}_i \\implies [\\mathbf{v}]_{\\mathcal{B}} = P[\\mathbf{v}]_{\\mathcal{B}'} ",
+          "operation_label": "Rearrange double sum and equate coordinates",
+          "explanation": "ベクトル空間の公理（分配律・結合律）で和の順序を入れ替え、B に関する座標の一意性から [v]_B = P[v]_{B'} を得る。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.linalg.vs05_unique_coord_steinitz"
+          ],
+          "sympy_check_hint": "P * v_prime - v_old"
+        },
+        {
+          "step_id": "s2_3_invertibility",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[\\mathbf{v}]_{\\mathcal{B}} = P[\\mathbf{v}]_{\\mathcal{B}'},\\quad [\\mathbf{v}]_{\\mathcal{B}'} = Q[\\mathbf{v}]_{\\mathcal{B}} ",
+          "to_latex": "PQ = QP = I_n \\implies \\det P \\neq 0 \\land [\\mathbf{v}]_{\\mathcal{B}'} = P^{-1}[\\mathbf{v}]_{\\mathcal{B}} ",
+          "operation_label": "Establish invertibility of P by reversing roles",
+          "explanation": "B と B' の役割を入れ替えた逆向きの変換行列 Q を同様に構成すると、任意の座標に対して PQ[v]_B = [v]_B かつ QP[v]_{B'} = [v]_{B'} が成り立つため Q = P^{-1} となり、P の正則性と変換公式が示される。",
+          "used_node_ids": [
+            "math.linalg.vs05_unique_coord_steinitz"
+          ],
+          "sympy_check_hint": "P.inv()"
+        }
+      ]
+    },
+    {
+      "id": "deriv_vs08_ker_im_subspace_injectivity",
+      "target_node_id": "math.linalg.vs08_ker_im_subspace_injectivity",
+      "route_kind": "deductive",
+      "title": "線形性と部分空間判定条件による核・像の性質および単射性条件の導出",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms",
+        "math.linalg.vs02_subspace_criterion",
+        "math.linalg.vs07_linear_map_ker_im_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "T: V -> W is a linear map between vector spaces over field F."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T(\\alpha\\mathbf{u}+\\beta\\mathbf{v}) = \\alpha T(\\mathbf{u})+\\beta T(\\mathbf{v})",
+          "to_latex": "\\ker T \\le V,\\; \\operatorname{Im} T \\le W,\\; (T\\text{ injective} \\iff \\ker T = \\{\\mathbf{0}_V\\})",
+          "operation_label": "Overview: kernel/image subspaces and injectivity criterion",
+          "explanation": "T の線形性から T(0_V)=0_W を確認した上で、部分空間判定条件により ker T と Im T がそれぞれ V, W の部分空間であることを示し、単射性と核の自明性の同値性を導く。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.linalg.vs02_subspace_criterion",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_ker_subspace",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T(\\mathbf{0}_V) = T(0\\mathbf{0}_V) = 0T(\\mathbf{0}_V) = \\mathbf{0}_W,\\; \\mathbf{u},\\mathbf{v}\\in\\ker T",
+          "to_latex": "T(\\alpha\\mathbf{u}+\\beta\\mathbf{v}) = \\alpha\\mathbf{0}_W+\\beta\\mathbf{0}_W = \\mathbf{0}_W \\implies \\ker T \\le V",
+          "operation_label": "Verify subspace criterion for kernel",
+          "explanation": "0_V ∈ ker T より核は空でなく、核の元の任意の線形結合は T により 0_W に写されるため、部分空間判定条件より ker T <= V が成立する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.linalg.vs02_subspace_criterion",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_im_subspace",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{0}_W = T(\\mathbf{0}_V)\\in\\operatorname{Im} T,\\; T(\\mathbf{u}),T(\\mathbf{v})\\in\\operatorname{Im} T",
+          "to_latex": "\\alpha T(\\mathbf{u})+\\beta T(\\mathbf{v}) = T(\\alpha\\mathbf{u}+\\beta\\mathbf{v})\\in\\operatorname{Im} T \\implies \\operatorname{Im} T \\le W",
+          "operation_label": "Verify subspace criterion for image",
+          "explanation": "0_W ∈ Im T であり、像の元の線形結合も T(αu+βv) として像に含まれるため、部分空間判定条件より Im T <= W が成立する。",
+          "used_node_ids": [
+            "math.linalg.vs02_subspace_criterion",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_injectivity_equiv",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T(\\mathbf{u})=T(\\mathbf{v}) \\iff T(\\mathbf{u}-\\mathbf{v})=\\mathbf{0}_W \\iff \\mathbf{u}-\\mathbf{v}\\in\\ker T",
+          "to_latex": "(\\forall \\mathbf{u},\\mathbf{v}\\in V,\\; T(\\mathbf{u})=T(\\mathbf{v})\\implies\\mathbf{u}=\\mathbf{v}) \\iff \\ker T = \\{\\mathbf{0}_V\\} ",
+          "operation_label": "Equate injectivity to trivial kernel",
+          "explanation": "線形性から T(u)=T(v) と u-v ∈ ker T が同値であるため、すべての u, v に対して u=v が導かれる条件は ker T が零ベクトルのみからなることと同値である。",
+          "used_node_ids": [
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_vs09_matrix_representation",
+      "target_node_id": "math.linalg.vs09_matrix_representation_similarity",
+      "route_kind": "deductive",
+      "title": "線形写像の行列表現と基底変換に伴う相似変換則の導出",
+      "premise_node_ids": [
+        "math.linalg.vs05_unique_coord_steinitz",
+        "math.linalg.vs06_change_of_basis",
+        "math.linalg.vs07_linear_map_ker_im_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "dim V = n with bases B, B' and transition matrix P; dim W = m with bases C, C' and transition matrix Q."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T: V\\to W\\text{ linear},\\; [\\mathbf{v}]_{\\mathcal{B}} = P[\\mathbf{v}]_{\\mathcal{B}'},\\; [\\mathbf{w}]_{\\mathcal{C}} = Q[\\mathbf{w}]_{\\mathcal{C}'} ",
+          "to_latex": "[T(\\mathbf{v})]_{\\mathcal{C}} = A[\\mathbf{v}]_{\\mathcal{B}},\\quad A' = Q^{-1}AP",
+          "operation_label": "Overview: matrix representation and basis change formula",
+          "explanation": "基底の像の座標表示を列に並べて表現行列 A を構成し、始域・終域の基底変換公式を組み合わせて表現行列の変換則 A' = Q^{-1}AP を導く。",
+          "used_node_ids": [
+            "math.linalg.vs05_unique_coord_steinitz",
+            "math.linalg.vs06_change_of_basis",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_rep_matrix",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v}=\\sum_{j=1}^{n} x_j\\mathbf{e}_j,\\; T(\\mathbf{e}_j)=\\sum_{i=1}^{m} A_{ij}\\mathbf{f}_i",
+          "to_latex": "T(\\mathbf{v}) = \\sum_{i=1}^{m}\\left(\\sum_{j=1}^{n} A_{ij}x_j\\right)\\mathbf{f}_i \\implies [T(\\mathbf{v})]_{\\mathcal{C}} = A[\\mathbf{v}]_{\\mathcal{B}} ",
+          "operation_label": "Derive matrix-vector action from linearity",
+          "explanation": "v の基底展開に T の線形性を適用し、各 T(e_j) の基底 C による展開を代入して整理することで、座標空間における写像が行列積 A[v]_B に一致することを示す。",
+          "used_node_ids": [
+            "math.linalg.vs05_unique_coord_steinitz",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_basis_change_matrix",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[\\mathbf{v}]_{\\mathcal{B}} = P[\\mathbf{v}]_{\\mathcal{B}'},\\; [T(\\mathbf{v})]_{\\mathcal{C}} = Q[T(\\mathbf{v})]_{\\mathcal{C}'},\\; [T(\\mathbf{v})]_{\\mathcal{C}} = A[\\mathbf{v}]_{\\mathcal{B}} ",
+          "to_latex": "Q[T(\\mathbf{v})]_{\\mathcal{C}'} = AP[\\mathbf{v}]_{\\mathcal{B}'} ",
+          "operation_label": "Substitute coordinate transformations into representation equation",
+          "explanation": "始域と終域の基底変換公式を [T(v)]_C = A[v]_B に代入し、新旧座標の間の関係式を得る。",
+          "used_node_ids": [
+            "math.linalg.vs06_change_of_basis"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_similarity",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q[T(\\mathbf{v})]_{\\mathcal{C}'} = AP[\\mathbf{v}]_{\\mathcal{B}'},\\; \\det Q \\neq 0",
+          "to_latex": "[T(\\mathbf{v})]_{\\mathcal{C}'} = Q^{-1}AP[\\mathbf{v}]_{\\mathcal{B}'} \\implies A' = Q^{-1}AP",
+          "operation_label": "Invert Q to obtain transformed representation matrix",
+          "explanation": "変換行列 Q の逆行列を左から掛けて新基底での表現行列 A' = Q^{-1}AP を得、特に V=W かつ B=C のとき相似変換 A' = P^{-1}AP に帰着する。",
+          "used_node_ids": [
+            "math.linalg.vs05_unique_coord_steinitz",
+            "math.linalg.vs06_change_of_basis"
+          ],
+          "sympy_check_hint": "Q.inv() * A * P"
+        }
+      ]
+    },
+    {
+      "id": "deriv_vs10_rank_nullity",
+      "target_node_id": "math.linalg.vs10_rank_nullity_theorem",
+      "route_kind": "deductive",
+      "title": "核の基底の延長による次元定理（ランク・退化次数定理）の導出",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms",
+        "math.linalg.vs03_linear_independence_span",
+        "math.linalg.vs04_basis_and_dimension",
+        "math.linalg.vs05_unique_coord_steinitz",
+        "math.linalg.vs07_linear_map_ker_im_def",
+        "math.linalg.vs08_ker_im_subspace_injectivity"
+      ],
+      "required_math_node_ids": [
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "assumptions": [
+        "T: V -> W is a linear map and dim V = n is finite."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T: V\\to W\\text{ linear},\\; \\dim V = n < \\infty",
+          "to_latex": "\\dim V = \\dim(\\ker T) + \\dim(\\operatorname{Im} T) ",
+          "operation_label": "Overview: extend kernel basis and construct image basis",
+          "explanation": "ker T の基底を定義域 V の基底へと延長し、追加された基底ベクトルの T による像が Im T の基底をなすことを証明して次元定理を導く。",
+          "used_node_ids": [
+            "math.linalg.vs03_linear_independence_span",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.linalg.vs05_unique_coord_steinitz",
+            "math.linalg.vs07_linear_map_ker_im_def",
+            "math.linalg.vs08_ker_im_subspace_injectivity",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_extend_ker_basis",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ker T \\le V,\\; \\dim(\\ker T) = k \\le n",
+          "to_latex": "\\mathcal{B}_{\\ker}=(\\mathbf{u}_1,\\dots,\\mathbf{u}_k)\\text{ extends to }\\mathcal{B}_V=(\\mathbf{u}_1,\\dots,\\mathbf{u}_k,\\mathbf{v}_1,\\dots,\\mathbf{v}_r)\\text{ with }k+r=\\dim V",
+          "operation_label": "Extend basis of kernel to basis of V",
+          "explanation": "部分空間 ker T <= V の基底 (u_1,...,u_k) を、V の生成元を線形独立性を保ちながら順次付け加えることで V の基底 (u_1,...,u_k,v_1,...,v_r) に延長すると、dim V = k + r となる。",
+          "used_node_ids": [
+            "math.linalg.vs03_linear_independence_span",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.linalg.vs05_unique_coord_steinitz",
+            "math.linalg.vs08_ker_im_subspace_injectivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_im_spanning",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{w}=T(\\mathbf{x})\\in\\operatorname{Im} T,\\; \\mathbf{x}=\\sum_{i=1}^{k} a_i\\mathbf{u}_i + \\sum_{j=1}^{r} b_j\\mathbf{v}_j",
+          "to_latex": "\\mathbf{w} = \\sum_{i=1}^{k} a_i\\mathbf{0}_W + \\sum_{j=1}^{r} b_j T(\\mathbf{v}_j) = \\sum_{j=1}^{r} b_j T(\\mathbf{v}_j) \\implies \\operatorname{Im} T = \\operatorname{span}(T(\\mathbf{v}_1),\\dots,T(\\mathbf{v}_r)) ",
+          "operation_label": "Show images of complementary basis vectors span Im T",
+          "explanation": "任意の像の元 T(x) に対し x を B_V で展開し線形性を適用すると、u_i ∈ ker T より T(u_i)=0_W となって消えるため、(T(v_1),...,T(v_r)) が Im T を生成する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.linalg.vs03_linear_independence_span",
+            "math.linalg.vs07_linear_map_ker_im_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_im_independence_and_sum",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{j=1}^{r} c_j T(\\mathbf{v}_j)=\\mathbf{0}_W \\implies \\sum_{j=1}^{r} c_j\\mathbf{v}_j\\in\\ker T = \\operatorname{span}(\\mathbf{u}_1,\\dots,\\mathbf{u}_k) ",
+          "to_latex": "\\sum_{j=1}^{r} c_j\\mathbf{v}_j - \\sum_{i=1}^{k} d_i\\mathbf{u}_i = \\mathbf{0}_V \\implies c_j=0\\;(\\forall j) \\implies \\dim(\\operatorname{Im} T)=r \\land \\dim V = k+r",
+          "operation_label": "Prove linear independence of image basis and sum dimensions",
+          "explanation": "T(v_j) の線形結合が 0_W なら、線形性より sum c_j v_j が ker T に属し u_i の線形結合で書ける。もしある c_j≠0 なら B_V の線形独立性に矛盾するため（背理法）すべての c_j=0 となり、(T(v_1),...,T(v_r)) は Im T の基底をなす。よって dim(Im T)=r、dim V = k + r = dim(ker T) + dim(Im T) を得る。",
+          "used_node_ids": [
+            "math.linalg.vs03_linear_independence_span",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.linalg.vs05_unique_coord_steinitz",
+            "math.linalg.vs07_linear_map_ker_im_def",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

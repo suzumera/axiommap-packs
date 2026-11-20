@@ -1,0 +1,665 @@
+{
+  "pack_meta": {
+    "pack_id": "math.linalg.determinant_systems",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "線形代数：行列式・余因子展開・クラメルの公式",
+    "language": "ja",
+    "description": "交代多重線形性から行列式の性質、余因子展開、逆行列公式、連立1次方程式のクラメルの公式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.linalg.det01_alternating_multilinear_def",
+      "short_code": "DET01",
+      "kind": "definition",
+      "title": "交代多重線形形式と行列式の公理的定義",
+      "summary": "n次正方行列の列（または行）ベクトルを変数とするn重線形・交代的かつ単位行列で1をとる写像として行列式を特徴づける定義。",
+      "canonical_latex": "D(\\mathbf{a}_1,\\dots,\\alpha\\mathbf{a}_k+\\beta\\mathbf{b}_k,\\dots,\\mathbf{a}_n)=\\alpha D(\\dots,\\mathbf{a}_k,\\dots)+\\beta D(\\dots,\\mathbf{b}_k,\\dots),\\quad \\mathbf{a}_i=\\mathbf{a}_j\\ (i\\neq j)\\implies D(\\mathbf{a}_1,\\dots,\\mathbf{a}_n)=0,\\quad D(\\mathbf{e}_1,\\dots,\\mathbf{e}_n)=1",
+      "aliases_latex": [
+        "\\det(\\dots,\\mathbf{a}_i,\\dots,\\mathbf{a}_j,\\dots)=-\\det(\\dots,\\mathbf{a}_j,\\dots,\\mathbf{a}_i,\\dots),\\quad \\det(I_n)=1"
+      ],
+      "keywords": [
+        "alternating multilinear form",
+        "determinant",
+        "normalization",
+        "交代多重線形性",
+        "行列式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.det02_leibniz_formula",
+      "short_code": "DET02",
+      "kind": "theorem_formula",
+      "title": "ライプニッツの公式（置換による行列式の明示表現と一意存在）",
+      "summary": "交代多重線形性と正規化条件から一意に定まる行列式の、対称群S_nの置換と符号を用いた明示公式。",
+      "canonical_latex": "\\det(A) = \\sum_{\\sigma\\in S_n} \\operatorname{sgn}(\\sigma)\\prod_{i=1}^{n} A_{\\sigma(i),i} = \\sum_{\\tau\\in S_n} \\operatorname{sgn}(\\tau)\\prod_{i=1}^{n} A_{i,\\tau(i)}",
+      "aliases_latex": [
+        "\\det(A)=\\sum_{i_1,\\dots,i_n=1}^{n} \\varepsilon_{i_1\\cdots i_n} A_{i_1,1}\\cdots A_{i_n,n}"
+      ],
+      "keywords": [
+        "Leibniz formula",
+        "permutation",
+        "sign of permutation",
+        "ライプニッツの公式",
+        "置換の符号"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.det03_elementary_row_ops_transpose",
+      "short_code": "DET03",
+      "kind": "theorem_formula",
+      "title": "行列式の転置不変性と基本変形の法則",
+      "summary": "転置行列の行列式は元の行列式と等しく、行（列）の交換は符号反転、スカラー倍はその倍、他行（列）の定数倍の加算は行列式を不変に保つ。",
+      "canonical_latex": "\\det(A^\\top)=\\det(A),\\quad \\det(P_{ij}A)=-\\det(A),\\quad \\det(E_i(c)A)=c\\det(A),\\quad \\det(E_{ij}(c)A)=\\det(A)\\ (i\\neq j)",
+      "aliases_latex": [
+        "\\det(A)\\text{ invariant under } R_i \\leftarrow R_i + c R_j\\ (i\\neq j)"
+      ],
+      "keywords": [
+        "transpose invariance",
+        "elementary row operations",
+        "転置不変性",
+        "基本変形"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.det04_product_multiplicativity",
+      "short_code": "DET04",
+      "kind": "theorem_formula",
+      "title": "行列の積の行列式（乗法性）と正則性の行列式判定",
+      "summary": "同次正方行列の積に対して行列式は準同型（乗法的）であり、行列が正則であることと行列式が非零であることは同値である。",
+      "canonical_latex": "\\det(AB)=\\det(A)\\det(B),\\quad A\\in\\mathrm{GL}_n(\\mathbb{F})\\iff \\det(A)\\neq 0,\\quad \\det(A^{-1})=(\\det A)^{-1}",
+      "aliases_latex": [
+        "\\det(AB)=\\det(A)\\det(B),\\quad \\operatorname{rank}(A)=n \\iff \\det(A)\\neq 0"
+      ],
+      "keywords": [
+        "multiplicativity",
+        "invertibility criterion",
+        "行列式の乗法性",
+        "正則性判定"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.det05_minor_cofactor_def",
+      "short_code": "DET05",
+      "kind": "definition",
+      "title": "小行列式・余因子および余因子行列の定義",
+      "summary": "i行j列を除いた(n-1)次小行列の行列式（小行列式）、符号付き余因子、およびその転置として定義される余因子行列（随伴行列）。",
+      "canonical_latex": "M_{ij}(A):=\\det\\big(A_{\\hat{i},\\hat{j}}\\big),\\quad C_{ij}(A):=(-1)^{i+j}M_{ij}(A),\\quad (\\operatorname{adj} A)_{ij}:=C_{ji}(A)",
+      "aliases_latex": [
+        "\\widetilde{A}:=\\big(C_{ji}(A)\\big)_{1\\le i,j\\le n}=\\big(C(A)\\big)^\\top"
+      ],
+      "keywords": [
+        "minor",
+        "cofactor",
+        "adjugate matrix",
+        "小行列式",
+        "余因子行列"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.det06_cofactor_expansion",
+      "short_code": "DET06",
+      "kind": "theorem_formula",
+      "title": "ラプラスの余因子展開と異行・異列余因子和の零性",
+      "summary": "任意の行または列に沿った余因子展開が行列式を与え、異なる行または列の成分と余因子の積和は恒等的に零になる。",
+      "canonical_latex": "\\sum_{k=1}^{n} A_{ik} C_{jk}(A) = \\delta_{ij}\\det(A),\\quad \\sum_{k=1}^{n} A_{ki} C_{kj}(A) = \\delta_{ij}\\det(A)",
+      "aliases_latex": [
+        "\\det(A)=\\sum_{j=1}^{n} A_{ij}C_{ij}(A)=\\sum_{i=1}^{n} A_{ij}C_{ij}(A)"
+      ],
+      "keywords": [
+        "Laplace expansion",
+        "cofactor expansion",
+        "余因子展開",
+        "クロネッカーのデルタ"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.det07_adjugate_inverse_formula",
+      "short_code": "DET07",
+      "kind": "theorem_formula",
+      "title": "余因子行列の恒等式と逆行列の明示公式",
+      "summary": "元の行列と余因子行列の積は行列式倍の単位行列となり、det(A) != 0 のとき余因子行列を行列式で割ることで逆行列が明示的に求まる。",
+      "canonical_latex": "A\\operatorname{adj}(A) = (\\operatorname{adj} A)A = \\det(A)\\,I_n,\\quad \\det(A)\\neq 0\\implies A^{-1}=\\frac{1}{\\det(A)}\\operatorname{adj}(A)",
+      "aliases_latex": [
+        "(A^{-1})_{ij} = \\frac{C_{ji}(A)}{\\det(A)}"
+      ],
+      "keywords": [
+        "adjugate identity",
+        "inverse matrix formula",
+        "余因子行列",
+        "逆行列公式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.linalg.det08_cramers_rule",
+      "short_code": "DET08",
+      "kind": "theorem_formula",
+      "title": "連立1次方程式のクラメルの公式",
+      "summary": "正則な係数行列を持つn元連立1次方程式 Ax=b の一意解の各成分を、j列目を右辺ベクトルbで置き換えた行列の行列式とdet(A)の比で表す公式。",
+      "canonical_latex": "\\det(A)\\neq 0 \\land A\\mathbf{x}=\\mathbf{b}\\implies x_j=\\frac{\\det(A_j)}{\\det(A)},\\quad A_j:=(\\mathbf{a}_1,\\dots,\\mathbf{a}_{j-1},\\mathbf{b},\\mathbf{a}_{j+1},\\dots,\\mathbf{a}_n)",
+      "aliases_latex": [
+        "x_j = \\frac{1}{\\det(A)}\\det[\\mathbf{a}_1,\\dots,\\mathbf{b},\\dots,\\mathbf{a}_n]\\quad (j=1,\\dots,n)"
+      ],
+      "keywords": [
+        "Cramer's rule",
+        "linear system",
+        "クラメルの公式",
+        "連立1次方程式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "math.linalg.drv_det02_leibniz",
+      "target_node_id": "math.linalg.det02_leibniz_formula",
+      "route_kind": "deductive",
+      "title": "交代多重線形性と正規化条件からのライプニッツ公式の導出",
+      "premise_node_ids": [
+        "math.linalg.det01_alternating_multilinear_def",
+        "math.linalg.vs04_basis_and_dimension",
+        "math.linalg.vs05_unique_coord_steinitz"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "nは正の整数、Fは標数2でない体（または一般的な可換環、交代性の定義に基づく）。",
+        "任意の置換は互換の積に分解され、置換の符号sgn(sigma)は分解の偶奇によりwell-definedである。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "D\\text{ is alternating, multilinear, and } D(\\mathbf{e}_1,\\dots,\\mathbf{e}_n)=1",
+          "to_latex": "\\det(A)=D(\\mathbf{a}_1,\\dots,\\mathbf{a}_n)=\\sum_{\\sigma\\in S_n}\\operatorname{sgn}(\\sigma)\\prod_{j=1}^{n}A_{\\sigma(j),j}",
+          "operation_label": "標準基底展開と交代性の適用",
+          "explanation": "各列ベクトルを標準基底で展開し、多重線形性で和を外に出すと、添字重複項が交代性で消え、置換に対する符号付き和としてライプニッツの公式が一意に定まる。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.linalg.vs05_unique_coord_steinitz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_basis_expansion",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{a}_j = \\sum_{i_j=1}^{n} A_{i_j,j}\\mathbf{e}_{i_j}\\quad (j=1,\\dots,n)",
+          "to_latex": "D(\\mathbf{a}_1,\\dots,\\mathbf{a}_n) = \\sum_{i_1=1}^{n}\\cdots\\sum_{i_n=1}^{n} \\left(\\prod_{j=1}^{n} A_{i_j,j}\\right) D(\\mathbf{e}_{i_1},\\dots,\\mathbf{e}_{i_n})",
+          "operation_label": "標準基底表示への多重線形性適用",
+          "explanation": "各列ベクトルをF^nの標準基底の一意的な線形結合で表し、n重線形性を各引数に順次適用して展開する。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.linalg.vs04_basis_and_dimension",
+            "math.linalg.vs05_unique_coord_steinitz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_alternating_vanishing",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i_1,\\dots,i_n=1}^{n} \\left(\\prod_{j=1}^{n} A_{i_j,j}\\right) D(\\mathbf{e}_{i_1},\\dots,\\mathbf{e}_{i_n})",
+          "to_latex": "\\sum_{\\sigma\\in S_n} \\left(\\prod_{j=1}^{n} A_{\\sigma(j),j}\\right) D(\\mathbf{e}_{\\sigma(1)},\\dots,\\mathbf{e}_{\\sigma(n)})",
+          "operation_label": "重複添字項の消去",
+          "explanation": "交代性により2つの引数が一致する項 D(..., e_k, ..., e_k, ...) は0となるため、添字列 (i_1,...,i_n) が {1,...,n} の全単射すなわち置換 sigma に一致する項のみが残る。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_sign_normalization",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D(\\mathbf{e}_{\\sigma(1)},\\dots,\\mathbf{e}_{\\sigma(n)})",
+          "to_latex": "\\det(A)=\\sum_{\\sigma\\in S_n}\\operatorname{sgn}(\\sigma)\\prod_{j=1}^{n}A_{\\sigma(j),j}",
+          "operation_label": "交代性の反対称帰結と正規化条件",
+          "explanation": "多重線形性と交代性 D(..., u+v, ..., u+v, ...)=0 から任意の2列の交換で符号が反転するため、互換分解により D(e_{sigma(1)},...,e_{sigma(n)}) = sgn(sigma) D(e_1,...,e_n) = sgn(sigma) が得られ、一意性も直ちに従う。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "math.linalg.drv_det03_properties",
+      "target_node_id": "math.linalg.det03_elementary_row_ops_transpose",
+      "route_kind": "deductive",
+      "title": "ライプニッツ公式と多重線形性からの転置不変性・基本変形の導出",
+      "premise_node_ids": [
+        "math.linalg.det01_alternating_multilinear_def",
+        "math.linalg.det02_leibniz_formula"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.det03_elementary_row_ops_transpose"
+      ],
+      "assumptions": [
+        "S_nにおける逆置換 sigma^{-1} の符号は sgn(sigma^{-1}) = sgn(sigma) を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\det(A)=\\sum_{\\sigma\\in S_n}\\operatorname{sgn}(\\sigma)\\prod_{j=1}^{n}A_{\\sigma(j),j}",
+          "to_latex": "\\det(A^\\top)=\\det(A),\\quad \\det(P_{ij}A)=-\\det(A),\\quad \\det(E_i(c)A)=c\\det(A),\\quad \\det(E_{ij}(c)A)=\\det(A)",
+          "operation_label": "置換反転による転置不変性と行・列基本変形則の導出",
+          "explanation": "ライプニッツ公式の添字を逆置換で書き換えることで転置不変性を示し、列に対する交代多重線形性がそのまま行にも成り立つことから基本変形の公式を得る。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.linalg.det02_leibniz_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_transpose_invariance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det(A^\\top)=\\sum_{\\sigma\\in S_n}\\operatorname{sgn}(\\sigma)\\prod_{j=1}^{n}(A^\\top)_{\\sigma(j),j}",
+          "to_latex": "\\det(A^\\top)=\\sum_{\\sigma\\in S_n}\\operatorname{sgn}(\\sigma)\\prod_{j=1}^{n}A_{j,\\sigma(j)}=\\sum_{\\tau\\in S_n}\\operatorname{sgn}(\\tau)\\prod_{i=1}^{n}A_{\\tau(i),i}=\\det(A)",
+          "operation_label": "積の順序入替と逆置換 tau = sigma^{-1} の導入",
+          "explanation": "(A^T)_{sigma(j),j} = A_{j,sigma(j)} を i = sigma(j) と置き換えて積の順序を並べ替え、tau = sigma^{-1} が sgn(tau) = sgn(sigma) を満たすことより det(A^T) = det(A) を得る。",
+          "used_node_ids": [
+            "math.linalg.det02_leibniz_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_column_operations",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det(\\dots,\\mathbf{a}_i,\\dots,\\mathbf{a}_j,\\dots),\\; \\det(\\dots,c\\mathbf{a}_i,\\dots),\\; \\det(\\dots,\\mathbf{a}_i+c\\mathbf{a}_j,\\dots)",
+          "to_latex": "-\\det(A),\\quad c\\det(A),\\quad \\det(A)+c\\det(\\dots,\\mathbf{a}_j,\\dots,\\mathbf{a}_j,\\dots)=\\det(A)",
+          "operation_label": "交代多重線形性の列操作への適用",
+          "explanation": "列の交換では交代性の帰結より符号が反転し、定数倍では多重線形性よりc倍となり、他列の定数倍の加算では展開後の重複列項が0になるため不変となる。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_row_operations",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det(EA) = \\det\\big((EA)^\\top\\big) = \\det(A^\\top E^\\top)",
+          "to_latex": "\\det(P_{ij}A)=-\\det(A),\\quad \\det(E_i(c)A)=c\\det(A),\\quad \\det(E_{ij}(c)A)=\\det(A)",
+          "operation_label": "転置不変性による行基本変形への移行",
+          "explanation": "行基本変形行列 E の左乗算は転置 A^T への列基本変形 E^T の右乗算に対応するため、転置不変性と列基本変形の性質から行基本変形の3法則が直ちに従う。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.linalg.det03_elementary_row_ops_transpose"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "math.linalg.drv_det04_multiplicativity",
+      "target_node_id": "math.linalg.det04_product_multiplicativity",
+      "route_kind": "deductive",
+      "title": "行列式の乗法性と正則性判定条件の導出",
+      "premise_node_ids": [
+        "math.linalg.det01_alternating_multilinear_def",
+        "math.linalg.det03_elementary_row_ops_transpose",
+        "math.linalg.vs08_ker_im_subspace_injectivity",
+        "math.linalg.vs10_rank_nullity_theorem",
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.det02_leibniz_formula",
+        "math.linalg.vs03_linear_independence_span"
+      ],
+      "assumptions": [
+        "A, B は体 F 上の n 次正方行列である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F(B):=\\det(AB)\\text{ for fixed } A\\in M_n(\\mathbb{F})",
+          "to_latex": "\\det(AB)=\\det(A)\\det(B),\\quad A\\in\\mathrm{GL}_n(\\mathbb{F})\\iff \\det(A)\\neq 0,\\quad \\det(A^{-1})=(\\det A)^{-1}",
+          "operation_label": "Aを固定した交代多重線形形式の正規化と列独立性との同値性",
+          "explanation": "Bの列に関する写像 B -> det(AB) が交代多重線形であることを示して一意性から乗法性を導き、さらに列の線形従属性がdet=0と同値であることから正則性判定を得る。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.linalg.det03_elementary_row_ops_transpose",
+            "math.linalg.vs08_ker_im_subspace_injectivity",
+            "math.linalg.vs10_rank_nullity_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_fixed_A_multilinear",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "AB = (A\\mathbf{b}_1,\\dots,A\\mathbf{b}_n)",
+          "to_latex": "F(\\mathbf{b}_1,\\dots,\\mathbf{b}_n):=\\det(A\\mathbf{b}_1,\\dots,A\\mathbf{b}_n)\\text{ is alternating and multilinear}",
+          "operation_label": "左乗算による交代多重線形性の保存",
+          "explanation": "行列積 AB の第j列は A b_j であり、b_j に関して線形かつ b_i=b_j なら Ab_i=Ab_j となるため、det の交代多重線形性より F は B の列に関して交代多重線形となる。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_normalize_at_identity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F(\\mathbf{b}_1,\\dots,\\mathbf{b}_n) = F(\\mathbf{e}_1,\\dots,\\mathbf{e}_n)\\det(B)",
+          "to_latex": "\\det(AB)=\\det(AI_n)\\det(B)=\\det(A)\\det(B)",
+          "operation_label": "交代多重線形形式の一意性によるスカラー定数決定",
+          "explanation": "ライプニッツ公式の導出と同様に任意の交代多重線形形式は D(e_1,...,e_n) det(B) に等しいため、B=I_n での値 F(I_n)=det(A) を係数として乗法性 det(AB)=det(A)det(B) が成立する。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.linalg.det02_leibniz_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_invertibility_equivalence",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A\\in\\mathrm{GL}_n(\\mathbb{F}) \\text{ vs. } \\det(A)\\neq 0",
+          "to_latex": "A\\in\\mathrm{GL}_n(\\mathbb{F})\\iff \\det(A)\\neq 0,\\quad \\det(A^{-1})=(\\det A)^{-1}",
+          "operation_label": "乗法性と基底・次元定理による同値性証明",
+          "explanation": "Aが正則なら 1=det(I_n)=det(AA^{-1})=det(A)det(A^{-1}) より det(A)!=0 かつ det(A^{-1})=(det A)^{-1}。逆にAが非正則なら次元定理より列が線形従属となり、ある列を他列の線形結合で表し基本変形で零列を作れるため det(A)=0 となる（対偶・背理法）。",
+          "used_node_ids": [
+            "math.linalg.det03_elementary_row_ops_transpose",
+            "math.linalg.vs08_ker_im_subspace_injectivity",
+            "math.linalg.vs10_rank_nullity_theorem",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "math.linalg.drv_det06_cofactor_expansion",
+      "target_node_id": "math.linalg.det06_cofactor_expansion",
+      "route_kind": "deductive",
+      "title": "多重線形性とライプニッツ公式からの余因子展開および異行・異列直交性の導出",
+      "premise_node_ids": [
+        "math.linalg.det01_alternating_multilinear_def",
+        "math.linalg.det02_leibniz_formula",
+        "math.linalg.det03_elementary_row_ops_transpose",
+        "math.linalg.det05_minor_cofactor_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "n >= 2 とし、n=1 の場合は C_{11}(A) = 1 と規約する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\det(A)=\\det(\\mathbf{a}_1,\\dots,\\mathbf{a}_n)",
+          "to_latex": "\\sum_{k=1}^{n}A_{ik}C_{jk}(A)=\\delta_{ij}\\det(A),\\quad \\sum_{k=1}^{n}A_{ki}C_{kj}(A)=\\delta_{ij}\\det(A)",
+          "operation_label": "行（列）の標準基底分解と行（列）置換による小行列式帰着",
+          "explanation": "第i行（列）を標準基底で分解して多重線形性を適用し、行・列を第1行第1列へ移動したときの符号とライプニッツ公式を比較することで余因子展開を得て、重複行（列）の交代性から異添字和の零性を導く。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.linalg.det02_leibniz_formula",
+            "math.linalg.det03_elementary_row_ops_transpose",
+            "math.linalg.det05_minor_cofactor_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_row_linearity_split",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_i = \\sum_{k=1}^{n} A_{ik}\\mathbf{e}_k^\\top",
+          "to_latex": "\\det(A) = \\sum_{k=1}^{n} A_{ik} \\det\\big(A[\\mathbf{r}_i \\leftarrow \\mathbf{e}_k^\\top]\\big)",
+          "operation_label": "第i行に対する多重線形性の適用",
+          "explanation": "転置不変性より行列式は行に関しても多重線形であるため、第i行を標準基底ベクトルの和に分解して和を外に出す。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.linalg.det03_elementary_row_ops_transpose"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_leibniz_minor_match",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det\\big(A[\\mathbf{r}_i \\leftarrow \\mathbf{e}_k^\\top]\\big)",
+          "to_latex": "\\det\\big(A[\\mathbf{r}_i \\leftarrow \\mathbf{e}_k^\\top]\\big) = (-1)^{i+k}M_{ik}(A) = C_{ik}(A)",
+          "operation_label": "隣接互換による第1行第1列への移動と小行列式との一致",
+          "explanation": "第i行を (i-1) 回の隣接行交換で最上行へ、第k列を (k-1) 回の隣接列交換で最左列へ移すと符号 (-1)^{(i-1)+(k-1)}=(-1)^{i+k} が現れ、第1行が e_1^T のブロック行列のライプニッツ公式より小行列式 M_{ik}(A) に一致する。",
+          "used_node_ids": [
+            "math.linalg.det02_leibniz_formula",
+            "math.linalg.det03_elementary_row_ops_transpose",
+            "math.linalg.det05_minor_cofactor_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_off_diagonal_zero",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k=1}^{n} A_{ik}C_{jk}(A)\\quad (i\\neq j)",
+          "to_latex": "\\sum_{k=1}^{n} A_{ik}C_{jk}(A) = \\det\\big(A[\\mathbf{r}_j \\leftarrow \\mathbf{r}_i]\\big) = 0\\quad (i\\neq j)",
+          "operation_label": "重複行（列）を持つ行列への余因子展開の適用",
+          "explanation": "i != j のとき、第j行を第i行のコピーで置き換えた行列 A' の第j行に沿った余因子展開は sum_k A_{ik} C_{jk}(A) に等しく、A' は2つの同一行を持つため交代性より det(A') = 0 となる。列展開も転置不変性から同様に従う。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.linalg.det03_elementary_row_ops_transpose",
+            "math.linalg.det05_minor_cofactor_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "math.linalg.drv_det07_adjugate_inverse",
+      "target_node_id": "math.linalg.det07_adjugate_inverse_formula",
+      "route_kind": "deductive",
+      "title": "余因子展開からの余因子行列恒等式と逆行列公式の導出",
+      "premise_node_ids": [
+        "math.linalg.det04_product_multiplicativity",
+        "math.linalg.det05_minor_cofactor_def",
+        "math.linalg.det06_cofactor_expansion"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "A は体 F 上の n 次正方行列である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(\\operatorname{adj} A)_{kj}=C_{jk}(A)",
+          "to_latex": "A\\operatorname{adj}(A)=(\\operatorname{adj} A)A=\\det(A)I_n,\\quad \\det(A)\\neq 0\\implies A^{-1}=\\frac{1}{\\det(A)}\\operatorname{adj}(A)",
+          "operation_label": "余因子展開の行列積としての再定式化と除算",
+          "explanation": "A と余因子行列の積の各成分が余因子展開の直交関係式に一致することから恒等式 A adj(A) = (det A) I_n を導き、det(A) != 0 のとき両辺を det(A) で割って逆行列公式を得る。",
+          "used_node_ids": [
+            "math.linalg.det04_product_multiplicativity",
+            "math.linalg.det05_minor_cofactor_def",
+            "math.linalg.det06_cofactor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_matrix_product_entries",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\big(A\\operatorname{adj}(A)\\big)_{ij} = \\sum_{k=1}^{n} A_{ik}(\\operatorname{adj} A)_{kj},\\quad \\big((\\operatorname{adj} A)A\\big)_{ij} = \\sum_{k=1}^{n} (\\operatorname{adj} A)_{ik}A_{kj}",
+          "to_latex": "\\big(A\\operatorname{adj}(A)\\big)_{ij} = \\sum_{k=1}^{n} A_{ik}C_{jk}(A) = \\delta_{ij}\\det(A),\\quad \\big((\\operatorname{adj} A)A\\big)_{ij} = \\sum_{k=1}^{n} A_{kj}C_{ki}(A) = \\delta_{ij}\\det(A)",
+          "operation_label": "余因子行列の定義と余因子展開公式の代入",
+          "explanation": "(adj A)_{kj} = C_{jk}(A) を代入すると、A adj(A) の (i,j) 成分は行の余因子展開和に、(adj A) A の (i,j) 成分は列の余因子展開和に帰着し、いずれも delta_{ij} det(A) となる。",
+          "used_node_ids": [
+            "math.linalg.det05_minor_cofactor_def",
+            "math.linalg.det06_cofactor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_adjugate_identity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\big(A\\operatorname{adj}(A)\\big)_{ij} = \\big((\\operatorname{adj} A)A\\big)_{ij} = \\delta_{ij}\\det(A)",
+          "to_latex": "A\\operatorname{adj}(A) = (\\operatorname{adj} A)A = \\det(A)\\,I_n",
+          "operation_label": "成分表示から行列表記へのまとめ",
+          "explanation": "単位行列の (i,j) 成分が delta_{ij} であることから、両側の積がいずれも行列式倍の単位行列に等しいことが示される。",
+          "used_node_ids": [
+            "math.linalg.det06_cofactor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_inverse_division",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det(A)\\neq 0 \\land A\\operatorname{adj}(A)=(\\operatorname{adj} A)A=\\det(A)\\,I_n",
+          "to_latex": "A^{-1} = \\frac{1}{\\det(A)}\\operatorname{adj}(A)",
+          "operation_label": "非零行列式によるスカラー除算と逆行列の一意性",
+          "explanation": "det(A) != 0 のとき A は正則であり、両辺をスカラー det(A) で割ることで A ((det A)^{-1} adj A) = ((det A)^{-1} adj A) A = I_n となるため、逆行列の一意性から公式が導かれる。",
+          "used_node_ids": [
+            "math.linalg.det04_product_multiplicativity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "math.linalg.drv_det08_cramers_rule",
+      "target_node_id": "math.linalg.det08_cramers_rule",
+      "route_kind": "deductive",
+      "title": "逆行列の余因子公式と列余因子展開からのクラメルの公式の導出",
+      "premise_node_ids": [
+        "math.linalg.det04_product_multiplicativity",
+        "math.linalg.det06_cofactor_expansion",
+        "math.linalg.det07_adjugate_inverse_formula"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.det05_minor_cofactor_def"
+      ],
+      "assumptions": [
+        "係数行列 A は n 次正方行列で det(A) != 0 を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A\\mathbf{x}=\\mathbf{b},\\quad \\det(A)\\neq 0",
+          "to_latex": "x_j = \\frac{\\det(A_j)}{\\det(A)},\\quad A_j=(\\mathbf{a}_1,\\dots,\\mathbf{a}_{j-1},\\mathbf{b},\\mathbf{a}_{j+1},\\dots,\\mathbf{a}_n)",
+          "operation_label": "逆行列公式の適用と列置換行列の余因子展開",
+          "explanation": "A^{-1}b の第j成分を余因子行列で書き下すと sum_i b_i C_{ij}(A) / det(A) となり、分子が第j列をbに置き換えた行列 A_j の第j列に沿った余因子展開に一致することからクラメルの公式を得る。",
+          "used_node_ids": [
+            "math.linalg.det04_product_multiplicativity",
+            "math.linalg.det06_cofactor_expansion",
+            "math.linalg.det07_adjugate_inverse_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_invertible_unique_solution",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A\\mathbf{x}=\\mathbf{b}\\land \\det(A)\\neq 0",
+          "to_latex": "\\mathbf{x} = A^{-1}\\mathbf{b} = \\frac{1}{\\det(A)}\\operatorname{adj}(A)\\mathbf{b}",
+          "operation_label": "正則性と逆行列公式の適用",
+          "explanation": "det(A) != 0 より A は正則であるため一意解 x = A^{-1}b が存在し、逆行列の余因子公式を代入できる。",
+          "used_node_ids": [
+            "math.linalg.det04_product_multiplicativity",
+            "math.linalg.det07_adjugate_inverse_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_adjugate_component_form",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x} = \\frac{1}{\\det(A)}\\operatorname{adj}(A)\\mathbf{b}",
+          "to_latex": "x_j = \\frac{1}{\\det(A)}\\sum_{i=1}^{n}(\\operatorname{adj} A)_{ji} b_i = \\frac{1}{\\det(A)}\\sum_{i=1}^{n} b_i C_{ij}(A)",
+          "operation_label": "第j成分の書き下し",
+          "explanation": "余因子行列の定義 (adj A)_{ji} = C_{ij}(A) を用いて解ベクトル x の第j成分を成分和として展開する。",
+          "used_node_ids": [
+            "math.linalg.det05_minor_cofactor_def",
+            "math.linalg.det07_adjugate_inverse_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_cofactor_column_replacement",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{n} b_i C_{ij}(A)",
+          "to_latex": "\\sum_{i=1}^{n} b_i C_{ij}(A_j) = \\det(A_j) \\implies x_j = \\frac{\\det(A_j)}{\\det(A)}",
+          "operation_label": "第j列置換行列 A_j における余因子不変性の適用",
+          "explanation": "A の第j列のみを b に置き換えた行列 A_j では、第j列を除く部分から計算される余因子は不変 C_{ij}(A_j) = C_{ij}(A) であるため、この和はちょうど det(A_j) の第j列に沿う余因子展開に一致する。",
+          "used_node_ids": [
+            "math.linalg.det05_minor_cofactor_def",
+            "math.linalg.det06_cofactor_expansion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,612 @@
+{
+  "pack_meta": {
+    "pack_id": "math.calc.multiple_integrals",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "重積分と変数変換（ヤコビアン・球面/円柱座標）",
+    "language": "ja",
+    "description": "累次積分（フビニの定理）、変数変換におけるヤコビ行列式、3次元極座標・円柱座標の体積要素を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.calc.mi01_multiple_integral_def",
+      "short_code": "MI01",
+      "kind": "definition",
+      "title": "重積分（リーマン和の極限）の定義",
+      "summary": "有界閉領域上の多変数関数に対して、領域の微小な格子分割に対するリーマン和の分割幅極限として重積分を定義する。",
+      "canonical_latex": "\\iint_{D} f(x,y)\\,dx\\,dy := \\lim_{\\|\\Delta\\|\\to 0} \\sum_{k=1}^{N} f(\\xi_k, \\eta_k)\\,\\Delta A_k,\\quad \\iiint_{V} f(\\mathbf{x})\\,dV := \\lim_{\\|\\Delta\\|\\to 0} \\sum_{k=1}^{N} f(\\boldsymbol{\\xi}_k)\\,\\Delta V_k",
+      "aliases_latex": [
+        "\\int_{D} f(\\mathbf{x})\\,d\\mathbf{x} := \\lim_{\\|\\Delta\\|\\to 0} \\sum_{k} f(\\boldsymbol{\\xi}_k)\\,\\mu(D_k)"
+      ],
+      "keywords": [
+        "重積分",
+        "2重積分",
+        "3重積分",
+        "リーマン和",
+        "領域分割"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus",
+        "multivariable"
+      ]
+    },
+    {
+      "id": "math.calc.mi02_fubini_theorem",
+      "short_code": "MI02",
+      "kind": "theorem_formula",
+      "title": "フビニの定理（重積分の累次積分への帰着）",
+      "summary": "連続関数に対する有界領域上の重積分は、積分順序を交換可能な1変数定積分の反復（累次積分）として計算できる。",
+      "canonical_latex": "\\iint_{[a,b]\\times[c,d]} f(x,y)\\,dx\\,dy = \\int_{a}^{b}\\left(\\int_{c}^{d} f(x,y)\\,dy\\right)dx = \\int_{c}^{d}\\left(\\int_{a}^{b} f(x,y)\\,dx\\right)dy",
+      "aliases_latex": [
+        "\\iint_{D} f(x,y)\\,dx\\,dy = \\int_{a}^{b}\\left(\\int_{\\phi_1(x)}^{\\phi_2(x)} f(x,y)\\,dy\\right)dx"
+      ],
+      "keywords": [
+        "フビニの定理",
+        "累次積分",
+        "積分順序の交換",
+        "縦線集合",
+        "横線集合"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus",
+        "multivariable"
+      ]
+    },
+    {
+      "id": "math.calc.mi03_jacobian_matrix_determinant",
+      "short_code": "MI03",
+      "kind": "definition",
+      "title": "ヤコビ行列とヤコビアン（ヤコビ行列式）の定義",
+      "summary": "C1級座標変換の全微分を表す1階偏導関数の行列をヤコビ行列、その行列式をヤコビアンと定義する。",
+      "canonical_latex": "J_{\\mathbf{\\Phi}}(\\mathbf{u}) := \\left(\\frac{\\partial x_i}{\\partial u_j}(\\mathbf{u})\\right)_{1\\le i,j\\le n},\\quad \\frac{\\partial(x_1,\\dots,x_n)}{\\partial(u_1,\\dots,u_n)} := \\det J_{\\mathbf{\\Phi}}(\\mathbf{u})",
+      "aliases_latex": [
+        "\\det(D\\mathbf{\\Phi}(\\mathbf{u})) = \\det\\left(\\frac{\\partial \\mathbf{x}}{\\partial \\mathbf{u}}\\right)"
+      ],
+      "keywords": [
+        "ヤコビ行列",
+        "ヤコビアン",
+        "ヤコビ行列式",
+        "座標変換",
+        "フレシェ微分"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.calc.mi04_change_of_variables_multiple_integral",
+      "short_code": "MI04",
+      "kind": "theorem_formula",
+      "title": "重積分の変数変換公式（ヤコビアンによる体積要素変換）",
+      "summary": "C1級微分同相写像による重積分の変数変換では、微小面積・体積要素の拡大率としてヤコビアンの絶対値が掛かる。",
+      "canonical_latex": "\\int_{\\mathbf{\\Phi}(\\Omega)} f(\\mathbf{x})\\,d\\mathbf{x} = \\int_{\\Omega} f(\\mathbf{\\Phi}(\\mathbf{u}))\\,\\left|\\det\\frac{\\partial \\mathbf{\\Phi}}{\\partial \\mathbf{u}}(\\mathbf{u})\\right|\\,d\\mathbf{u}",
+      "aliases_latex": [
+        "\\iint_{D} f(x,y)\\,dx\\,dy = \\iint_{\\Omega} f(x(u,v),y(u,v))\\,\\left|\\frac{\\partial(x,y)}{\\partial(u,v)}\\right|\\,du\\,dv"
+      ],
+      "keywords": [
+        "変数変換公式",
+        "ヤコビアン",
+        "微分同相写像",
+        "体積要素",
+        "重積分"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus",
+        "multivariable"
+      ]
+    },
+    {
+      "id": "math.calc.mi05_polar_2d_area_element",
+      "short_code": "MI05",
+      "kind": "theorem_formula",
+      "title": "2次元極座標変換のヤコビアンと面積要素",
+      "summary": "2次元平面極座標変換のヤコビアンが動径 r に等しいことから、2重積分の面積要素 dx dy = r dr dθ を得る。",
+      "canonical_latex": "\\frac{\\partial(x,y)}{\\partial(r,\\theta)} = r,\\quad \\iint_{D} f(x,y)\\,dx\\,dy = \\iint_{\\Omega} f(r\\cos\\theta, r\\sin\\theta)\\,r\\,dr\\,d\\theta\\quad (r \\ge 0)",
+      "aliases_latex": [
+        "dx\\,dy = r\\,dr\\,d\\theta"
+      ],
+      "keywords": [
+        "2次元極座標",
+        "面積要素",
+        "ヤコビアン",
+        "極座標積分"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus",
+        "geometry"
+      ]
+    },
+    {
+      "id": "math.calc.mi06_cylindrical_coordinates_def",
+      "short_code": "MI06",
+      "kind": "definition",
+      "title": "3次元円柱座標系の定義",
+      "summary": "xy平面上の極座標 (r, θ) と z軸方向の高さを組み合わせた3次元空間の円柱座標変換を定義する。",
+      "canonical_latex": "x = r\\cos\\theta,\\quad y = r\\sin\\theta,\\quad z = z\\quad (r \\ge 0,\\; 0 \\le \\theta < 2\\pi,\\; z \\in \\mathbb{R})",
+      "aliases_latex": [
+        "\\mathbf{\\Phi}(r,\\theta,z) = (r\\cos\\theta, r\\sin\\theta, z)^\\top"
+      ],
+      "keywords": [
+        "円柱座標",
+        "3次元座標系",
+        "軸対称"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "geometry",
+        "calculus"
+      ]
+    },
+    {
+      "id": "math.calc.mi07_cylindrical_volume_element",
+      "short_code": "MI07",
+      "kind": "theorem_formula",
+      "title": "円柱座標変換のヤコビアンと体積要素",
+      "summary": "3次元円柱座標変換のヤコビアンが r となることから、3重積分の体積要素 dx dy dz = r dr dθ dz を導出する。",
+      "canonical_latex": "\\frac{\\partial(x,y,z)}{\\partial(r,\\theta,z)} = r,\\quad \\iiint_{V} f(x,y,z)\\,dx\\,dy\\,dz = \\iiint_{\\Omega} f(r\\cos\\theta, r\\sin\\theta, z)\\,r\\,dr\\,d\\theta\\,dz",
+      "aliases_latex": [
+        "dV = dx\\,dy\\,dz = r\\,dr\\,d\\theta\\,dz"
+      ],
+      "keywords": [
+        "円柱座標",
+        "体積要素",
+        "ヤコビアン",
+        "3重積分"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus",
+        "geometry"
+      ]
+    },
+    {
+      "id": "math.calc.mi08_spherical_coordinates_def",
+      "short_code": "MI08",
+      "kind": "definition",
+      "title": "3次元球面座標（3次元極座標）の定義",
+      "summary": "動径 r、天頂角（極角）θ、方位角 φ を用いて3次元空間の直交座標を表す球面座標変換を定義する。",
+      "canonical_latex": "x = r\\sin\\theta\\cos\\varphi,\\quad y = r\\sin\\theta\\sin\\varphi,\\quad z = r\\cos\\theta\\quad (r \\ge 0,\\; 0 \\le \\theta \\le \\pi,\\; 0 \\le \\varphi < 2\\pi)",
+      "aliases_latex": [
+        "\\mathbf{\\Phi}(r,\\theta,\\varphi) = (r\\sin\\theta\\cos\\varphi, r\\sin\\theta\\sin\\varphi, r\\cos\\theta)^\\top"
+      ],
+      "keywords": [
+        "球面座標",
+        "3次元極座標",
+        "天頂角",
+        "方位角"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "geometry",
+        "calculus"
+      ]
+    },
+    {
+      "id": "math.calc.mi09_spherical_volume_element",
+      "short_code": "MI09",
+      "kind": "theorem_formula",
+      "title": "3次元球面座標変換のヤコビアンと体積要素",
+      "summary": "球面座標変換のヤコビアンが r^2 sin θ であることを示し、3重積分の体積要素 dx dy dz = r^2 sin θ dr dθ dφ を導出する。",
+      "canonical_latex": "\\frac{\\partial(x,y,z)}{\\partial(r,\\theta,\\varphi)} = r^2\\sin\\theta,\\quad \\iiint_{V} f(x,y,z)\\,dx\\,dy\\,dz = \\iiint_{\\Omega} f(r\\sin\\theta\\cos\\varphi, r\\sin\\theta\\sin\\varphi, r\\cos\\theta)\\,r^2\\sin\\theta\\,dr\\,d\\theta\\,d\\varphi",
+      "aliases_latex": [
+        "dV = dx\\,dy\\,dz = r^2\\sin\\theta\\,dr\\,d\\theta\\,d\\varphi"
+      ],
+      "keywords": [
+        "球面座標",
+        "3次元極座標",
+        "体積要素",
+        "ヤコビアン",
+        "3重積分"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus",
+        "geometry"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_mi02_fubini",
+      "target_node_id": "math.calc.mi02_fubini_theorem",
+      "route_kind": "deductive",
+      "title": "リーマン和の分解によるフビニの定理（累次積分）の導出",
+      "premise_node_ids": [
+        "math.calc.mi01_multiple_integral_def",
+        "math.calc.m42_planar_area_integral_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity",
+        "math.calc.m25_integral_monotonicity_squeeze",
+        "math.calc.m52_continuous_function_integrability"
+      ],
+      "assumptions": [
+        "f(x,y) は有界閉長方形 R = [a,b]×[c,d] 上で連続である（より一般の縦線/横線集合 D へも指示関数と境界の零測度性により拡張される）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\iint_{[a,b]\\times[c,d]} f(x,y)\\,dx\\,dy = \\lim_{\\|\\Delta\\|\\to 0}\\sum_{i=1}^{m}\\sum_{j=1}^{n} f(\\xi_i,\\eta_j)\\,\\Delta x_i\\,\\Delta y_j",
+          "to_latex": "\\iint_{[a,b]\\times[c,d]} f(x,y)\\,dx\\,dy = \\int_{a}^{b}\\left(\\int_{c}^{d} f(x,y)\\,dy\\right)dx = \\int_{c}^{d}\\left(\\int_{a}^{b} f(x,y)\\,dx\\right)dy",
+          "operation_label": "fubini_iterated_integral_overview",
+          "explanation": "長方形領域の直積格子分割における2重リーマン和を反復和へ整理し、各座標方向の1変数積分を順次極限移行することで重積分を累次積分へ帰着させる。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_grid_partition_sum",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iint_{R} f(x,y)\\,dx\\,dy = \\lim_{\\|\\Delta\\|\\to 0}\\sum_{i=1}^{m}\\sum_{j=1}^{n} f(\\xi_i,\\eta_j)\\,\\Delta x_i\\,\\Delta y_j",
+          "to_latex": "\\sum_{i=1}^{m}\\Delta x_i \\left(\\sum_{j=1}^{n} f(\\xi_i,\\eta_j)\\,\\Delta y_j\\right),\\quad F(x) := \\int_{c}^{d} f(x,y)\\,dy",
+          "operation_label": "tensor_grid_riemann_sum_factorization",
+          "explanation": "閉長方形 R=[a,b]×[c,d] の分割に対して面積素 ΔA_ij = Δx_i Δy_j を用いて2重和を書き下し、固定した x に対する y 方向の1変数積分関数 F(x) を定義する。",
+          "used_node_ids": [
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_uniform_continuity_approximation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left|\\sum_{i=1}^{m}\\sum_{j=1}^{n} f(\\xi_i,\\eta_j)\\,\\Delta x_i\\,\\Delta y_j - \\sum_{i=1}^{m} F(\\xi_i)\\,\\Delta x_i\\right|",
+          "to_latex": "\\left|\\sum_{i=1}^{m}\\Delta x_i\\left(\\sum_{j=1}^{n} f(\\xi_i,\\eta_j)\\,\\Delta y_j - \\int_{c}^{d} f(\\xi_i,y)\\,dy\\right)\\right| \\le (b-a)(d-c)\\,\\omega_f(\\|\\Delta\\|)\\xrightarrow{\\|\\Delta\\|\\to 0} 0",
+          "operation_label": "uniform_continuity_squeeze_estimate",
+          "explanation": "有界閉長方形上の連続関数の一様連続性より、内側のリーマン和と F(ξ_i) の差は振幅 ω_f(||Δ||) で一様に抑えられ、分割細分化極限で誤差が 0 に収束する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m25_integral_monotonicity_squeeze"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_outer_integral_symmetry",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{\\|\\Delta\\|\\to 0}\\sum_{i=1}^{m} F(\\xi_i)\\,\\Delta x_i = \\int_{a}^{b} F(x)\\,dx",
+          "to_latex": "\\iint_{R} f(x,y)\\,dx\\,dy = \\int_{a}^{b}\\left(\\int_{c}^{d} f(x,y)\\,dy\\right)dx = \\int_{c}^{d}\\left(\\int_{a}^{b} f(x,y)\\,dx\\right)dy",
+          "operation_label": "outer_integral_limit_and_symmetry",
+          "explanation": "連続関数 F(x) の1変数リーマン和の極限として x 方向の外側積分を得て、x と y の役割を入れ替えた議論および断面面積積分との整合により順序交換の等式が確定する。",
+          "used_node_ids": [
+            "math.calc.m42_planar_area_integral_def",
+            "math.calc.m52_continuous_function_integrability"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_mi04_change_of_variables",
+      "target_node_id": "math.calc.mi04_change_of_variables_multiple_integral",
+      "route_kind": "deductive",
+      "title": "1次線形近似と平行体体積による重積分の変数変換公式の導出",
+      "premise_node_ids": [
+        "math.calc.mi01_multiple_integral_def",
+        "math.calc.mi03_jacobian_matrix_determinant"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m25_integral_monotonicity_squeeze",
+        "math.calc.m43_definite_integral_substitution",
+        "math.calc.m45_total_differentiability_def",
+        "math.vec.m14_scalar_triple_product",
+        "math.vec.m62_vector_valued_total_diff"
+      ],
+      "assumptions": [
+        "Φ: Ω → D は有界領域上の C1 級全単射（微分同相写像）であり、境界近傍を除いて det(DΦ) ≠ 0 を満たす。",
+        "f は D 上で連続とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\int_{\\mathbf{\\Phi}(\\Omega)} f(\\mathbf{x})\\,d\\mathbf{x} = \\lim_{\\|\\Delta\\|\\to 0}\\sum_{k} f(\\mathbf{\\Phi}(\\mathbf{u}_k))\\,\\operatorname{Vol}(\\mathbf{\\Phi}(Q_k))",
+          "to_latex": "\\int_{\\mathbf{\\Phi}(\\Omega)} f(\\mathbf{x})\\,d\\mathbf{x} = \\int_{\\Omega} f(\\mathbf{\\Phi}(\\mathbf{u}))\\,\\left|\\det\\frac{\\partial \\mathbf{\\Phi}}{\\partial \\mathbf{u}}(\\mathbf{u})\\right|\\,d\\mathbf{u}",
+          "operation_label": "jacobian_volume_scaling_overview",
+          "explanation": "パラメータ領域 Ω の微小超直方体 Q_k の像 Φ(Q_k) を全微分による1次線形写像 DΦ(u_k) の像である平行体で近似し、その体積比 |det DΦ(u_k)| をリーマン和に代入して極限をとる。",
+          "used_node_ids": [
+            "math.calc.m45_total_differentiability_def",
+            "math.calc.mi01_multiple_integral_def",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.vec.m62_vector_valued_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_local_linearization",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q_k = \\prod_{j=1}^{n} [u_{k,j}, u_{k,j}+\\Delta u_j],\\quad \\mathbf{x} = \\mathbf{\\Phi}(\\mathbf{u}_k + \\mathbf{h})",
+          "to_latex": "\\mathbf{\\Phi}(\\mathbf{u}_k + \\mathbf{h}) - \\mathbf{\\Phi}(\\mathbf{u}_k) = \\sum_{j=1}^{n} \\frac{\\partial \\mathbf{\\Phi}}{\\partial u_j}(\\mathbf{u}_k)\\,h_j + o(\\|\\mathbf{h}\\|) = J_{\\mathbf{\\Phi}}(\\mathbf{u}_k)\\mathbf{h} + o(\\|\\mathbf{h}\\|)",
+          "operation_label": "first_order_taylor_linearization_of_map",
+          "explanation": "微小超直方体 Q_k 上で座標写像 Φ を全微分（1次近似）し、各座標軸辺 Δu_j e_j がヤコビ行列 J_Φ(u_k) の各列ベクトル (∂Φ/∂u_j)Δu_j で張られる平行体へ写像されることを示す。",
+          "used_node_ids": [
+            "math.calc.m45_total_differentiability_def",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.vec.m62_vector_valued_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_parallelepiped_volume_determinant",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Vol}\\big(J_{\\mathbf{\\Phi}}(\\mathbf{u}_k)(Q_k)\\big) = \\operatorname{Vol}\\left(\\left\\{\\sum_{j=1}^{n} t_j \\frac{\\partial \\mathbf{\\Phi}}{\\partial u_j}(\\mathbf{u}_k)\\Delta u_j : 0\\le t_j\\le 1\\right\\}\\right)",
+          "to_latex": "\\operatorname{Vol}(\\mathbf{\\Phi}(Q_k)) = \\left|\\det\\left(\\frac{\\partial \\mathbf{\\Phi}}{\\partial u_1},\\dots,\\frac{\\partial \\mathbf{\\Phi}}{\\partial u_n}\\right)\\right|\\,\\prod_{j=1}^{n}\\Delta u_j + o(\\|\\Delta\\mathbf{u}\\|^n) = \\left|\\det J_{\\mathbf{\\Phi}}(\\mathbf{u}_k)\\right|\\,\\operatorname{Vol}(Q_k) + o(\\operatorname{Vol}(Q_k))",
+          "operation_label": "determinant_as_oriented_volume_ratio",
+          "explanation": "線形写像による超立方体の像（平行体）の体積が基底列ベクトルの行列式の絶対値（2次元では平行四辺形の面積、3次元ではスカラー三重積の絶対値）に等しいことを適用する。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.vec.m14_scalar_triple_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_riemann_sum_limit",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k} f(\\mathbf{\\Phi}(\\mathbf{u}_k))\\,\\operatorname{Vol}(\\mathbf{\\Phi}(Q_k)) = \\sum_{k} f(\\mathbf{\\Phi}(\\mathbf{u}_k))\\,\\left|\\det J_{\\mathbf{\\Phi}}(\\mathbf{u}_k)\\right|\\,\\operatorname{Vol}(Q_k) + \\sum_{k} o(\\operatorname{Vol}(Q_k))",
+          "to_latex": "\\int_{\\mathbf{\\Phi}(\\Omega)} f(\\mathbf{x})\\,d\\mathbf{x} = \\int_{\\Omega} f(\\mathbf{\\Phi}(\\mathbf{u}))\\,\\left|\\det\\frac{\\partial \\mathbf{\\Phi}}{\\partial \\mathbf{u}}(\\mathbf{u})\\right|\\,d\\mathbf{u}",
+          "operation_label": "riemann_sum_limit_in_parameter_space",
+          "explanation": "高次の線形化誤差項の総和が分割幅 0 の極限で消滅することを評価し、パラメータ空間 Ω 上の重積分表現を得る。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_mi05_polar_2d_area_element",
+      "target_node_id": "math.calc.mi05_polar_2d_area_element",
+      "route_kind": "deductive",
+      "title": "2次元極座標変換のヤコビアン計算と面積要素 r dr dθ の導出",
+      "premise_node_ids": [
+        "math.geom.m30_polar_coordinates_basis_def",
+        "math.calc.mi03_jacobian_matrix_determinant",
+        "math.calc.mi04_change_of_variables_multiple_integral"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m31_trig_derivatives",
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "assumptions": [
+        "r > 0, 0 < θ < 2π 上で極座標写像 Φ(r,θ) = (r cos θ, r sin θ) は C1 級微分同相であり、r=0 や半直線 θ=0 は平面上の測度 0 集合として重積分に寄与しない。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "x = r\\cos\\theta,\\quad y = r\\sin\\theta,\\quad \\frac{\\partial(x,y)}{\\partial(r,\\theta)} = \\det\\begin{pmatrix}\\partial_r x & \\partial_\\theta x \\\\ \\partial_r y & \\partial_\\theta y\\end{pmatrix}",
+          "to_latex": "\\frac{\\partial(x,y)}{\\partial(r,\\theta)} = r,\\quad \\iint_{D} f(x,y)\\,dx\\,dy = \\iint_{\\Omega} f(r\\cos\\theta, r\\sin\\theta)\\,r\\,dr\\,d\\theta",
+          "operation_label": "polar_jacobian_and_area_element_overview",
+          "explanation": "極座標の座標変換式から 2×2 ヤコビ行列を構成し、その行列式が r(cos^2 θ + sin^2 θ) = r となることから変数変換公式により面積要素 r dr dθ を得る。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.calc.mi04_change_of_variables_multiple_integral",
+            "math.geom.m30_polar_coordinates_basis_def"
+          ],
+          "sympy_check_hint": "sp.simplify(sp.Matrix([[sp.cos(theta), -r*sp.sin(theta)], [sp.sin(theta), r*sp.cos(theta)]]).det()) - r"
+        },
+        {
+          "step_id": "s2_partial_derivatives_matrix",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x(r,\\theta) = r\\cos\\theta,\\quad y(r,\\theta) = r\\sin\\theta",
+          "to_latex": "J_{\\mathbf{\\Phi}}(r,\\theta) = \\begin{pmatrix}\\frac{\\partial x}{\\partial r} & \\frac{\\partial x}{\\partial \\theta} \\\\ \\frac{\\partial y}{\\partial r} & \\frac{\\partial y}{\\partial \\theta}\\end{pmatrix} = \\begin{pmatrix}\\cos\\theta & -r\\sin\\theta \\\\ \\sin\\theta & r\\cos\\theta\\end{pmatrix}",
+          "operation_label": "compute_polar_jacobian_matrix",
+          "explanation": "極座標の成分表示に対して r および θ に関する偏微分を計算し、ヤコビ行列を明示的に求める。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m44_partial_derivative_def",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.geom.m30_polar_coordinates_basis_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_determinant_and_integral",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det\\begin{pmatrix}\\cos\\theta & -r\\sin\\theta \\\\ \\sin\\theta & r\\cos\\theta\\end{pmatrix} = r\\cos^2\\theta + r\\sin^2\\theta",
+          "to_latex": "\\frac{\\partial(x,y)}{\\partial(r,\\theta)} = r,\\quad \\iint_{D} f(x,y)\\,dx\\,dy = \\iint_{\\Omega} f(r\\cos\\theta, r\\sin\\theta)\\,r\\,dr\\,d\\theta",
+          "operation_label": "simplify_jacobian_and_apply_change_of_variables",
+          "explanation": "ピタゴラス恒等式 cos^2 θ + sin^2 θ = 1 によりヤコビアンが r（r ≥ 0 のため絶対値も r）に帰着することを示し、重積分の変数変換公式へ代入する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.calc.mi04_change_of_variables_multiple_integral"
+          ],
+          "sympy_check_hint": "sp.simplify(r*sp.cos(theta)**2 + r*sp.sin(theta)**2) - r"
+        }
+      ]
+    },
+    {
+      "id": "deriv_mi07_cylindrical_volume_element",
+      "target_node_id": "math.calc.mi07_cylindrical_volume_element",
+      "route_kind": "deductive",
+      "title": "円柱座標変換のヤコビアン計算と体積要素 r dr dθ dz の導出",
+      "premise_node_ids": [
+        "math.calc.mi06_cylindrical_coordinates_def",
+        "math.calc.mi03_jacobian_matrix_determinant",
+        "math.calc.mi04_change_of_variables_multiple_integral"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m31_trig_derivatives",
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "assumptions": [
+        "r > 0, 0 < θ < 2π, z ∈ R 上で円柱座標写像は C1 級微分同相であり、r=0 の軸は 3 次元空間で零測度集合である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "x = r\\cos\\theta,\\quad y = r\\sin\\theta,\\quad z = z",
+          "to_latex": "\\frac{\\partial(x,y,z)}{\\partial(r,\\theta,z)} = r,\\quad \\iiint_{V} f(x,y,z)\\,dx\\,dy\\,dz = \\iiint_{\\Omega} f(r\\cos\\theta, r\\sin\\theta, z)\\,r\\,dr\\,d\\theta\\,dz",
+          "operation_label": "cylindrical_jacobian_and_volume_element_overview",
+          "explanation": "円柱座標の 3×3 ヤコビ行列がブロック対角構造を持つことを用いて行列式 r を計算し、3重積分の変数変換公式により体積要素 r dr dθ dz を得る。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.calc.mi04_change_of_variables_multiple_integral",
+            "math.calc.mi06_cylindrical_coordinates_def"
+          ],
+          "sympy_check_hint": "sp.simplify(sp.Matrix([[sp.cos(theta), -r*sp.sin(theta), 0], [sp.sin(theta), r*sp.cos(theta), 0], [0, 0, 1]]).det()) - r"
+        },
+        {
+          "step_id": "s2_block_jacobian_matrix",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x = r\\cos\\theta,\\quad y = r\\sin\\theta,\\quad z = z",
+          "to_latex": "J_{\\mathbf{\\Phi}}(r,\\theta,z) = \\begin{pmatrix}\\cos\\theta & -r\\sin\\theta & 0 \\\\ \\sin\\theta & r\\cos\\theta & 0 \\\\ 0 & 0 & 1\\end{pmatrix}",
+          "operation_label": "construct_cylindrical_jacobian_matrix",
+          "explanation": "円柱座標の各成分を (r, θ, z) で偏微分し、z が独立であることから 2×2 極座標ブロックと 1×1 単位ブロックからなる 3×3 ヤコビ行列を構成する。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m44_partial_derivative_def",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.calc.mi06_cylindrical_coordinates_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_determinant_and_volume_element",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det\\begin{pmatrix}\\cos\\theta & -r\\sin\\theta & 0 \\\\ \\sin\\theta & r\\cos\\theta & 0 \\\\ 0 & 0 & 1\\end{pmatrix} = 1\\cdot(r\\cos^2\\theta + r\\sin^2\\theta)",
+          "to_latex": "\\frac{\\partial(x,y,z)}{\\partial(r,\\theta,z)} = r,\\quad \\iiint_{V} f(x,y,z)\\,dx\\,dy\\,dz = \\iiint_{\\Omega} f(r\\cos\\theta, r\\sin\\theta, z)\\,r\\,dr\\,d\\theta\\,dz",
+          "operation_label": "evaluate_cylindrical_jacobian_and_substitute",
+          "explanation": "第3行に関する余因子展開とピタゴラス恒等式よりヤコビアンが r であることを示し、r ≥ 0 を考慮して体積要素 r dr dθ dz を得る。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.calc.mi04_change_of_variables_multiple_integral"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_mi09_spherical_volume_element",
+      "target_node_id": "math.calc.mi09_spherical_volume_element",
+      "route_kind": "deductive",
+      "title": "3次元球面座標変換のヤコビアン計算と体積要素 r^2 sin θ dr dθ dφ の導出",
+      "premise_node_ids": [
+        "math.calc.mi08_spherical_coordinates_def",
+        "math.calc.mi03_jacobian_matrix_determinant",
+        "math.calc.mi04_change_of_variables_multiple_integral"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m31_trig_derivatives",
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "assumptions": [
+        "r > 0, 0 < θ < π, 0 < φ < 2π 上で球面座標写像は C1 級微分同相であり、r=0, θ=0,π 等は 3 次元空間の零測度集合である。",
+        "r ≥ 0 かつ 0 ≤ θ ≤ π の範囲では r^2 sin θ ≥ 0 である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "x = r\\sin\\theta\\cos\\varphi,\\quad y = r\\sin\\theta\\sin\\varphi,\\quad z = r\\cos\\theta",
+          "to_latex": "\\frac{\\partial(x,y,z)}{\\partial(r,\\theta,\\varphi)} = r^2\\sin\\theta,\\quad \\iiint_{V} f(x,y,z)\\,dx\\,dy\\,dz = \\iiint_{\\Omega} f(r\\sin\\theta\\cos\\varphi, r\\sin\\theta\\sin\\varphi, r\\cos\\theta)\\,r^2\\sin\\theta\\,dr\\,d\\theta\\,d\\varphi",
+          "operation_label": "spherical_jacobian_and_volume_element_overview",
+          "explanation": "球面座標変換の 3×3 ヤコビ行列を求め、第3行での余因子展開と三角関数のピタゴラス恒等式を用いてヤコビアン r^2 sin θ を導き、体積要素を確定する。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.calc.mi04_change_of_variables_multiple_integral",
+            "math.calc.mi08_spherical_coordinates_def"
+          ],
+          "sympy_check_hint": "sp.simplify(sp.Matrix([[sp.sin(theta)*sp.cos(phi), r*sp.cos(theta)*sp.cos(phi), -r*sp.sin(theta)*sp.sin(phi)], [sp.sin(theta)*sp.sin(phi), r*sp.cos(theta)*sp.sin(phi), r*sp.sin(theta)*sp.cos(phi)], [sp.cos(theta), -r*sp.sin(theta), 0]]).det()) - r**2*sp.sin(theta)"
+        },
+        {
+          "step_id": "s2_spherical_jacobian_matrix",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{\\Phi}(r,\\theta,\\varphi) = \\begin{pmatrix}r\\sin\\theta\\cos\\varphi \\\\ r\\sin\\theta\\sin\\varphi \\\\ r\\cos\\theta\\end{pmatrix}",
+          "to_latex": "J_{\\mathbf{\\Phi}}(r,\\theta,\\varphi) = \\begin{pmatrix}\\sin\\theta\\cos\\varphi & r\\cos\\theta\\cos\\varphi & -r\\sin\\theta\\sin\\varphi \\\\ \\sin\\theta\\sin\\varphi & r\\cos\\theta\\sin\\varphi & r\\sin\\theta\\cos\\varphi \\\\ \\cos\\theta & -r\\sin\\theta & 0\\end{pmatrix}",
+          "operation_label": "compute_spherical_jacobian_matrix",
+          "explanation": "球面座標の各直交成分 (x, y, z) を (r, θ, φ) について偏微分し、3×3 ヤコビ行列の各成分を算出する。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m44_partial_derivative_def",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.calc.mi08_spherical_coordinates_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_cofactor_expansion_by_row3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det J_{\\mathbf{\\Phi}} = \\cos\\theta\\,(r^2\\cos\\theta\\sin\\theta\\cos^2\\varphi + r^2\\cos\\theta\\sin\\theta\\sin^2\\varphi) - (-r\\sin\\theta)\\,(r\\sin^2\\theta\\cos^2\\varphi + r\\sin^2\\theta\\sin^2\\varphi)",
+          "to_latex": "\\det J_{\\mathbf{\\Phi}} = r^2\\sin\\theta\\cos^2\\theta + r^2\\sin^3\\theta = r^2\\sin\\theta\\,(\\cos^2\\theta + \\sin^2\\theta) = r^2\\sin\\theta",
+          "operation_label": "cofactor_expansion_and_pythagorean_reduction",
+          "explanation": "第3行（z 成分の行、第3列が 0）に沿って余因子展開を行い、φ と θ それぞれに cos^2 + sin^2 = 1 を適用してヤコビアンが r^2 sin θ に簡約されることを示す。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "sp.simplify(r**2*sp.sin(theta)*sp.cos(theta)**2 + r**2*sp.sin(theta)**3) - r**2*sp.sin(theta)"
+        },
+        {
+          "step_id": "s4_apply_change_of_variables",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left|\\frac{\\partial(x,y,z)}{\\partial(r,\\theta,\\varphi)}\\right| = |r^2\\sin\\theta| = r^2\\sin\\theta\\quad (r\\ge 0,\\; 0\\le\\theta\\le\\pi)",
+          "to_latex": "\\iiint_{V} f(x,y,z)\\,dx\\,dy\\,dz = \\iiint_{\\Omega} f(r\\sin\\theta\\cos\\varphi, r\\sin\\theta\\sin\\varphi, r\\cos\\theta)\\,r^2\\sin\\theta\\,dr\\,d\\theta\\,d\\varphi",
+          "operation_label": "substitute_spherical_jacobian_into_integral",
+          "explanation": "θ ∈ [0, π] で sin θ ≥ 0 であることから絶対値が外れ、重積分の変数変換公式より球面座標の体積要素 r^2 sin θ dr dθ dφ を得る。",
+          "used_node_ids": [
+            "math.calc.mi04_change_of_variables_multiple_integral"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

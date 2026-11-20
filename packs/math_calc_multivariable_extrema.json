@@ -1,0 +1,602 @@
+{
+  "pack_meta": {
+    "pack_id": "math.calc.multivariable_extrema",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "多変数微積分：ヘッセ行列とラグランジュの未定乗数法",
+    "language": "ja",
+    "description": "多変数テイラー展開から極値判定（ヘッセ行列）、拘束条件付き最適化のラグランジュ未定乗数法を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.calc.e01_hessian_matrix_def",
+      "short_code": "E01",
+      "kind": "definition",
+      "title": "ヘッセ行列と2次形式の定義（シュワルツの対称性）",
+      "summary": "多変数スカラー関数の全2階偏導関数を並べたヘッセ行列とそれに対応する2次形式を定義する。C2級関数ではシュワルツの定理によりヘッセ行列は対称行列となる。",
+      "canonical_latex": "H_f(\\mathbf{x}) := \\left(\\frac{\\partial^2 f}{\\partial x_i \\partial x_j}(\\mathbf{x})\\right)_{1\\le i,j\\le n},\\quad f \\in C^2 \\implies H_f(\\mathbf{x})^\\top = H_f(\\mathbf{x}),\\quad Q(\\mathbf{h}) = \\mathbf{h}^\\top H_f(\\mathbf{x})\\mathbf{h}",
+      "aliases_latex": [
+        "\\nabla^2 f(\\mathbf{x}) = \\left[\\frac{\\partial^2 f}{\\partial x_i \\partial x_j}(\\mathbf{x})\\right]"
+      ],
+      "keywords": [
+        "ヘッセ行列",
+        "2階偏導関数",
+        "シュワルツの定理",
+        "対称行列",
+        "2次形式"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus"
+      ]
+    },
+    {
+      "id": "math.calc.e02_multivariable_taylor_2nd",
+      "short_code": "E02",
+      "kind": "theorem_formula",
+      "title": "多変数関数の2次テイラー展開（ラグランジュ・ペアノ剰余項）",
+      "summary": "C2級多変数スカラー関数を点aの近傍で勾配ベクトルとヘッセ行列を用いて2次まで展開する定理。",
+      "canonical_latex": "f(\\mathbf{a}+\\mathbf{h}) = f(\\mathbf{a}) + \\nabla f(\\mathbf{a})\\cdot\\mathbf{h} + \\frac{1}{2}\\mathbf{h}^\\top H_f(\\mathbf{a}+\\theta\\mathbf{h})\\mathbf{h} = f(\\mathbf{a}) + \\nabla f(\\mathbf{a})\\cdot\\mathbf{h} + \\frac{1}{2}\\mathbf{h}^\\top H_f(\\mathbf{a})\\mathbf{h} + o(\\|\\mathbf{h}\\|^2)\\quad (0<\\theta<1)",
+      "aliases_latex": [
+        "f(\\mathbf{x}) = f(\\mathbf{a}) + \\nabla f(\\mathbf{a})^\\top (\\mathbf{x}-\\mathbf{a}) + \\frac{1}{2}(\\mathbf{x}-\\mathbf{a})^\\top H_f(\\mathbf{a})(\\mathbf{x}-\\mathbf{a}) + o(\\|\\mathbf{x}-\\mathbf{a}\\|^2)"
+      ],
+      "keywords": [
+        "多変数テイラー展開",
+        "2次近似",
+        "勾配",
+        "ヘッセ行列",
+        "ペアノ剰余項"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus"
+      ]
+    },
+    {
+      "id": "math.calc.e03_stationary_point_condition",
+      "short_code": "E03",
+      "kind": "theorem_formula",
+      "title": "多変数関数の極値の1階必要条件（停留点条件）",
+      "summary": "開集合上の微分可能な多変数関数が内点aで極大または極小をとるならば、点aにおける全偏微分係数が零となり勾配ベクトルが零ベクトルになる。",
+      "canonical_latex": "\\mathbf{a} \\in \\operatorname{int}(D)\\text{ is a local extremum of } f \\implies \\nabla f(\\mathbf{a}) = \\mathbf{0}\\;\\left(\\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0,\\; \\forall i=1,\\dots,n\\right)",
+      "aliases_latex": [
+        "df_{\\mathbf{a}} = 0 \\iff \\nabla f(\\mathbf{a}) = \\mathbf{0}"
+      ],
+      "keywords": [
+        "停留点",
+        "臨界点",
+        "1階必要条件",
+        "極値",
+        "フェルマーの定理"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus"
+      ]
+    },
+    {
+      "id": "math.calc.e04_quadratic_form_definiteness",
+      "short_code": "E04",
+      "kind": "math_boundary",
+      "title": "実対称行列の定値性とシルベスターの判定条件",
+      "summary": "実対称行列Aに対応する2次形式の正定値・負定値・不定値性を、全固有値の符号および主小行列式（シルベスターの判定法）によって特徴づける線形代数の境界知識。",
+      "canonical_latex": "A \\succ 0 \\iff \\forall \\mathbf{h}\\neq\\mathbf{0},\\; \\mathbf{h}^\\top A\\mathbf{h} > 0 \\iff \\forall i,\\; \\lambda_i(A) > 0 \\iff \\forall k=1,\\dots,n,\\; \\Delta_k(A) > 0",
+      "aliases_latex": [
+        "A \\prec 0 \\iff (-1)^k \\Delta_k(A) > 0\\ (k=1,\\dots,n)"
+      ],
+      "keywords": [
+        "正定値行列",
+        "負定値行列",
+        "不定値",
+        "シルベスターの判定法",
+        "固有値"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "math.calc.e05_hessian_extremum_test",
+      "short_code": "E05",
+      "kind": "theorem_formula",
+      "title": "ヘッセ行列による2階極値判定法（極小・極大・鞍点）",
+      "summary": "停留点におけるヘッセ行列が正定値なら狭義極小、負定値なら狭義極大、不定値なら鞍点（極値でない）となる2階判定条件。",
+      "canonical_latex": "\\nabla f(\\mathbf{a}) = \\mathbf{0} \\implies \\begin{cases} H_f(\\mathbf{a}) \\succ 0 \\implies \\text{strict local minimum}, \\\\ H_f(\\mathbf{a}) \\prec 0 \\implies \\text{strict local maximum}, \\\\ H_f(\\mathbf{a}) \\text{ indefinite} \\implies \\text{saddle point} \\end{cases}",
+      "aliases_latex": [
+        "\\mathbf{h}^\\top H_f(\\mathbf{a})\\mathbf{h} > 0\\ (\\mathbf{h}\\neq\\mathbf{0}) \\implies f(\\mathbf{a}+\\mathbf{h}) > f(\\mathbf{a})"
+      ],
+      "keywords": [
+        "極値判定",
+        "ヘッセ行列",
+        "2階十分条件",
+        "鞍点",
+        "正定値"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.calc.e06_constrained_extremum_problem",
+      "short_code": "E06",
+      "kind": "definition",
+      "title": "等式制約付き最適化問題と正則点（制約想定）の定義",
+      "summary": "m本の等式制約g(x)=0の下で目的関数f(x)の極値を求める問題と、制約勾配ベクトルが線形独立となる正則条件（LICQ）を定義する。",
+      "canonical_latex": "\\min/\\max_{\\mathbf{x}\\in\\mathbb{R}^n} f(\\mathbf{x})\\;\\text{ s.t. }\\mathbf{g}(\\mathbf{x}) = (g_1(\\mathbf{x}),\\dots,g_m(\\mathbf{x}))^\\top = \\mathbf{0},\\quad \\operatorname{rank}\\!\\left(D\\mathbf{g}(\\mathbf{a})\\right) = m\\;(m < n)",
+      "aliases_latex": [
+        "\\{\\nabla g_1(\\mathbf{a}),\\dots,\\nabla g_m(\\mathbf{a})\\}\\text{ linearly independent}"
+      ],
+      "keywords": [
+        "制約付き最適化",
+        "等式制約",
+        "正則点",
+        "制約想定",
+        "ヤコビ行列"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.calc.e07_lagrange_multiplier_theorem",
+      "short_code": "E07",
+      "kind": "theorem_formula",
+      "title": "ラグランジュの未定乗数法（1階必要条件）",
+      "summary": "正則な等式制約g(x)=0の下でfが点aにおいて局所極値をとるならば、ラグランジュ関数L(x,λ)の勾配が零となる未定乗数λが存在する。",
+      "canonical_latex": "\\mathcal{L}(\\mathbf{x},\\boldsymbol{\\lambda}) := f(\\mathbf{x}) + \\sum_{j=1}^{m}\\lambda_j g_j(\\mathbf{x}),\\quad \\nabla_{\\mathbf{x}}\\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda}) = \\nabla f(\\mathbf{a}) + \\sum_{j=1}^{m}\\lambda_j \\nabla g_j(\\mathbf{a}) = \\mathbf{0},\\quad \\nabla_{\\boldsymbol{\\lambda}}\\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda}) = \\mathbf{g}(\\mathbf{a}) = \\mathbf{0}",
+      "aliases_latex": [
+        "\\nabla f(\\mathbf{a}) = -\\sum_{j=1}^{m}\\lambda_j \\nabla g_j(\\mathbf{a})",
+        "\\nabla f(\\mathbf{a}) = \\sum_{j=1}^{m}\\mu_j \\nabla g_j(\\mathbf{a})"
+      ],
+      "keywords": [
+        "ラグランジュの未定乗数法",
+        "ラグランジアン",
+        "未定乗数",
+        "制約付き極値",
+        "1階必要条件"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus",
+        "optimization"
+      ]
+    },
+    {
+      "id": "math.calc.e08_constrained_hessian_2nd_order",
+      "short_code": "E08",
+      "kind": "theorem_formula",
+      "title": "制約付き極値の2階十分条件（接空間上のラグランジアン・ヘッセ行列）",
+      "summary": "ラグランジュの未定乗数条件を満たす点において、制約多様体の接空間T = ker(Dg(a))に制限したラグランジアンのヘッセ行列が正定値（負定値）であれば、制約付き狭義極小（極大）となる。",
+      "canonical_latex": "\\nabla_{\\mathbf{x}}\\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda})=\\mathbf{0} \\land \\forall \\mathbf{h}\\in\\ker(D\\mathbf{g}(\\mathbf{a}))\\setminus\\{\\mathbf{0}\\},\\; \\mathbf{h}^\\top \\nabla_{\\mathbf{x}\\mathbf{x}}^2\\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda})\\mathbf{h} > 0 \\implies \\mathbf{a}\\text{ is a strict constrained local minimum}",
+      "aliases_latex": [
+        "D\\mathbf{g}(\\mathbf{a})\\mathbf{h} = \\mathbf{0}\\ (\\mathbf{h}\\neq\\mathbf{0}) \\implies \\mathbf{h}^\\top H_{\\mathbf{x}}\\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda})\\mathbf{h} > 0"
+      ],
+      "keywords": [
+        "制約付き2階十分条件",
+        "接空間",
+        "縁付きヘッセ行列",
+        "ラグランジアン",
+        "極値判定"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "calculus",
+        "optimization"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_e02_multivariable_taylor_2nd",
+      "target_node_id": "math.calc.e02_multivariable_taylor_2nd",
+      "route_kind": "deductive",
+      "title": "1変数テイラーの定理と連鎖律による多変数2次テイラー展開の導出",
+      "premise_node_ids": [
+        "math.calc.t04_taylor_lagrange_remainder",
+        "math.calc.t10_taylor_asymptotic_approx",
+        "math.calc.m35_multivariable_chain_rule",
+        "math.calc.m36_derivative_linearity",
+        "math.calc.e01_hessian_matrix_def",
+        "math.vec.m33_gradient_definition"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "assumptions": [
+        "fは点aの凸近傍U上でC2級（2階連続微分可能）である",
+        "線分 {a + th | 0 <= t <= 1} がUに含まれる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\varphi(t) := f(\\mathbf{a}+t\\mathbf{h})\\quad (t\\in[0,1])",
+          "to_latex": "f(\\mathbf{a}+\\mathbf{h}) = f(\\mathbf{a}) + \\nabla f(\\mathbf{a})\\cdot\\mathbf{h} + \\frac{1}{2}\\mathbf{h}^\\top H_f(\\mathbf{a}+\\theta\\mathbf{h})\\mathbf{h} = f(\\mathbf{a}) + \\nabla f(\\mathbf{a})\\cdot\\mathbf{h} + \\frac{1}{2}\\mathbf{h}^\\top H_f(\\mathbf{a})\\mathbf{h} + o(\\|\\mathbf{h}\\|^2)",
+          "operation_label": "線分上の1変数化と2次テイラー展開",
+          "explanation": "直線a+thに沿って1変数関数φ(t)を定義し、1変数テイラーの定理と多変数連鎖律を用いて勾配とヘッセ行列による2次展開式を導く。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.m35_multivariable_chain_rule",
+            "math.calc.t04_taylor_lagrange_remainder",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_line_restriction",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varphi(t) := f(\\mathbf{a}+t\\mathbf{h}),\\quad \\varphi \\in C^2([0,1])",
+          "to_latex": "f(\\mathbf{a}+\\mathbf{h}) = \\varphi(1) = \\varphi(0) + \\varphi'(0) + \\frac{1}{2}\\varphi''(\\theta)\\quad (\\exists\\theta\\in(0,1))",
+          "operation_label": "1変数テイラーの定理（n=1）の適用",
+          "explanation": "線分上の1変数関数φ(t)はC2級であり、区間[0,1]で1変数テイラーの定理（ラグランジュ剰余項）をt=0のまわりでt=1に適用する。",
+          "used_node_ids": [
+            "math.calc.t04_taylor_lagrange_remainder"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_first_derivative",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varphi'(t) = \\frac{d}{dt}f(\\mathbf{a}+t\\mathbf{h})",
+          "to_latex": "\\varphi'(t) = \\sum_{i=1}^{n}\\frac{\\partial f}{\\partial x_i}(\\mathbf{a}+t\\mathbf{h})h_i = \\nabla f(\\mathbf{a}+t\\mathbf{h})\\cdot\\mathbf{h}",
+          "operation_label": "多変数連鎖律による1階微分の計算",
+          "explanation": "直線経路r(t)=a+thの速度が定ベクトルhであることから、多変数関数の合成微分法則によりφ'(t)を勾配との内積で表す。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "math.vec.m28_dot_product_component_def",
+            "math.vec.m33_gradient_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_second_derivative",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varphi''(t) = \\frac{d}{dt}\\left(\\sum_{i=1}^{n}\\frac{\\partial f}{\\partial x_i}(\\mathbf{a}+t\\mathbf{h})h_i\\right)",
+          "to_latex": "\\varphi''(t) = \\sum_{i=1}^{n}\\sum_{j=1}^{n}\\frac{\\partial^2 f}{\\partial x_i\\partial x_j}(\\mathbf{a}+t\\mathbf{h})h_i h_j = \\mathbf{h}^\\top H_f(\\mathbf{a}+t\\mathbf{h})\\mathbf{h},\\quad \\frac{1}{2}\\mathbf{h}^\\top\\big(H_f(\\mathbf{a}+\\theta\\mathbf{h})-H_f(\\mathbf{a})\\big)\\mathbf{h} = o(\\|\\mathbf{h}\\|^2)",
+          "operation_label": "2階微分の評価とペアノ剰余項への帰着",
+          "explanation": "微分作用素の線形性と多変数連鎖律を再適用してφ''(t)をヘッセ行列の2次形式で表示し、H_fの連続性よりh→0でo(||h||^2)の評価を得る。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.m35_multivariable_chain_rule",
+            "math.calc.m36_derivative_linearity",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_e03_stationary_point_condition",
+      "target_node_id": "math.calc.e03_stationary_point_condition",
+      "route_kind": "deductive",
+      "title": "座標軸方向の極値評価による停留点条件の導出",
+      "premise_node_ids": [
+        "math.calc.m44_partial_derivative_def",
+        "math.calc.m20_derivative_definition",
+        "math.vec.m33_gradient_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "aは定義域Dの内点であり、fはaにおいて全偏微分が存在する",
+        "aはfの局所極値点（極小点または極大点）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\exists \\delta>0:\\; \\forall \\mathbf{x}\\in B(\\mathbf{a},\\delta),\\; f(\\mathbf{x}) \\ge f(\\mathbf{a})\\text{ (or } \\le f(\\mathbf{a})\\text{)}",
+          "to_latex": "\\nabla f(\\mathbf{a}) = \\mathbf{0}",
+          "operation_label": "座標軸切片における片側極限の符号比較",
+          "explanation": "各座標軸に沿った1変数制限関数に極値の不等式を適用し、左右からの差分商の極限が一致することから全偏微分係数が零であることを導く。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m44_partial_derivative_def",
+            "math.vec.m33_gradient_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_coordinate_slice",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_i(t) := f(\\mathbf{a} + t\\mathbf{e}_i)\\quad (|t| < \\delta)",
+          "to_latex": "\\forall t\\in(-\\delta,\\delta),\\; g_i(t) - g_i(0) \\ge 0\\quad (\\text{for local min; } \\le 0\\text{ for local max})",
+          "operation_label": "各座標方向への1変数関数の制限",
+          "explanation": "内点aのδ近傍上で第i基本ベクトルe_i方向にtを動かした1変数関数g_i(t)を定義すると、t=0はg_iの局所極値となる。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_sign_of_quotients",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_i(t) - g_i(0) \\ge 0\\quad (|t|<\\delta)",
+          "to_latex": "\\frac{f(\\mathbf{a}+t\\mathbf{e}_i)-f(\\mathbf{a})}{t} \\ge 0\\;(t>0),\\quad \\frac{f(\\mathbf{a}+t\\mathbf{e}_i)-f(\\mathbf{a})}{t} \\le 0\\;(t<0)",
+          "operation_label": "差分商の符号評価",
+          "explanation": "極小点の場合（極大点も不等号が逆転するのみで同様）、t>0で差分商は非負、t<0で非正となる。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_gradient_zero",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 \\le \\lim_{t\\to 0^+}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i)-f(\\mathbf{a})}{t} = \\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = \\lim_{t\\to 0^-}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i)-f(\\mathbf{a})}{t} \\le 0",
+          "to_latex": "\\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0\\;(\\forall i) \\implies \\nabla f(\\mathbf{a}) = \\mathbf{0}",
+          "operation_label": "偏微分係数の零性と勾配の消滅",
+          "explanation": "偏微分の存在により左右の片側極限は一致するため偏微分係数は0となり、全成分が0ゆえ勾配ベクトルは零ベクトルとなる。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def",
+            "math.vec.m33_gradient_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_e05_hessian_extremum_test",
+      "target_node_id": "math.calc.e05_hessian_extremum_test",
+      "route_kind": "deductive",
+      "title": "2次テイラー展開と対称行列の定値性によるヘッセ行列極値判定法の導出",
+      "premise_node_ids": [
+        "math.calc.e02_multivariable_taylor_2nd",
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "fは停留点aの近傍でC2級である",
+        "∇f(a) = 0が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla f(\\mathbf{a}) = \\mathbf{0},\\quad f\\in C^2",
+          "to_latex": "\\operatorname{sgn}\\big(f(\\mathbf{a}+\\mathbf{h}) - f(\\mathbf{a})\\big) = \\operatorname{sgn}\\big(\\mathbf{h}^\\top H_f(\\mathbf{a})\\mathbf{h}\\big)\\quad (0 < \\|\\mathbf{h}\\| < \\delta)",
+          "operation_label": "停留点での2次近似と固有値下界による剰余項の支配",
+          "explanation": "停留点では1次項が消え、2次形式の最小・最大固有値による評価がo(||h||^2)の誤差項を支配するため、ヘッセ行列の定値性により極値と鞍点が判定される。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_taylor_at_stationary",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\mathbf{a}+\\mathbf{h}) = f(\\mathbf{a}) + \\nabla f(\\mathbf{a})\\cdot\\mathbf{h} + \\frac{1}{2}\\mathbf{h}^\\top H_f(\\mathbf{a})\\mathbf{h} + o(\\|\\mathbf{h}\\|^2)",
+          "to_latex": "f(\\mathbf{a}+\\mathbf{h}) - f(\\mathbf{a}) = \\frac{1}{2}\\mathbf{h}^\\top H_f(\\mathbf{a})\\mathbf{h} + \\varepsilon(\\mathbf{h})\\|\\mathbf{h}\\|^2,\\quad \\lim_{\\mathbf{h}\\to\\mathbf{0}}\\varepsilon(\\mathbf{h}) = 0",
+          "operation_label": "停留点条件の代入",
+          "explanation": "多変数2次テイラー展開に停留点条件∇f(a)=0を代入すると、変分はヘッセ行列の2次形式と高次微小誤差項の和に帰着する。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_definiteness_bound",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H_f(\\mathbf{a}) \\succ 0 \\implies \\lambda_{\\min} > 0,\\quad \\mathbf{h}^\\top H_f(\\mathbf{a})\\mathbf{h} \\ge \\lambda_{\\min}\\|\\mathbf{h}\\|^2",
+          "to_latex": "\\|\\mathbf{h}\\| < \\delta \\implies |\\varepsilon(\\mathbf{h})| < \\frac{\\lambda_{\\min}}{4} \\implies f(\\mathbf{a}+\\mathbf{h}) - f(\\mathbf{a}) \\ge \\frac{\\lambda_{\\min}}{4}\\|\\mathbf{h}\\|^2 > 0\\;(\\mathbf{h}\\neq\\mathbf{0})",
+          "operation_label": "定値性による2次項の支配評価（極小・極大）",
+          "explanation": "正定値なら最小固有値λ_min>0で下から押さえられ、十分小さいhに対して誤差項を上回るため狭義極小となる。負定値も符号反転により同様に狭義極大が従う。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_saddle_case",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists \\mathbf{u}_+, \\mathbf{u}_-:\\; \\mathbf{u}_+^\\top H_f(\\mathbf{a})\\mathbf{u}_+ > 0,\\quad \\mathbf{u}_-^\\top H_f(\\mathbf{a})\\mathbf{u}_- < 0",
+          "to_latex": "\\exists t_0>0,\\; \\forall t\\in(0,t_0):\\; f(\\mathbf{a}+t\\mathbf{u}_+) > f(\\mathbf{a}) > f(\\mathbf{a}+t\\mathbf{u}_-)",
+          "operation_label": "不定値の場合の鞍点構成",
+          "explanation": "不定値の場合は2次形式が正となる方向u_+と負となる方向u_-が存在し、それぞれの方向に沿って微小移動すると関数値が逆符号に変化するため極値ではなく鞍点となる。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_e07_lagrange_multiplier_theorem",
+      "target_node_id": "math.calc.e07_lagrange_multiplier_theorem",
+      "route_kind": "deductive",
+      "title": "陰関数定理によるラグランジュの未定乗数法の導出",
+      "premise_node_ids": [
+        "math.calc.e06_constrained_extremum_problem",
+        "math.calc.m60_implicit_function_theorem",
+        "math.calc.m35_multivariable_chain_rule",
+        "math.calc.e03_stationary_point_condition"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m33_gradient_definition"
+      ],
+      "assumptions": [
+        "fとgは点aの開近傍でC1級である",
+        "aは制約g(x)=0上の局所極値点であり、正則条件 rank(Dg(a)) = m を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{g}(\\mathbf{a})=\\mathbf{0},\\quad \\operatorname{rank}(D\\mathbf{g}(\\mathbf{a}))=m,\\quad \\mathbf{a}\\text{ local extremum of }f|_{\\{\\mathbf{g}=\\mathbf{0}\\}}",
+          "to_latex": "\\exists \\boldsymbol{\\lambda}\\in\\mathbb{R}^m:\\; \\nabla f(\\mathbf{a}) + \\sum_{j=1}^{m}\\lambda_j\\nabla g_j(\\mathbf{a}) = \\mathbf{0},\\quad \\mathbf{g}(\\mathbf{a})=\\mathbf{0}",
+          "operation_label": "陰関数定理による自由変数への縮約と未定乗数の構成",
+          "explanation": "制約の正則性から陰関数定理を用いて従属変数を自由変数の関数として解き、制約なし極値条件と合成微分を適用して未定乗数ベクトルλを明示的に構成する。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e06_constrained_extremum_problem",
+            "math.calc.m35_multivariable_chain_rule",
+            "math.calc.m60_implicit_function_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_variable_partition_ift",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}=(\\mathbf{u},\\mathbf{v})\\in\\mathbb{R}^{n-m}\\times\\mathbb{R}^m,\\quad \\det\\!\\left(\\frac{\\partial\\mathbf{g}}{\\partial\\mathbf{v}}(\\mathbf{a})\\right)\\neq 0",
+          "to_latex": "\\exists\\boldsymbol{\\psi}\\in C^1:\\; \\mathbf{v}=\\boldsymbol{\\psi}(\\mathbf{u}),\\quad D\\boldsymbol{\\psi}(\\mathbf{u}_0) = -\\left(\\frac{\\partial\\mathbf{g}}{\\partial\\mathbf{v}}(\\mathbf{a})\\right)^{-1}\\frac{\\partial\\mathbf{g}}{\\partial\\mathbf{u}}(\\mathbf{a})",
+          "operation_label": "変数分割と陰関数定理の適用",
+          "explanation": "ヤコビ行列Dg(a)の階数がmゆえ、適切な座標の並び替えでm×m部分行列∂g/∂vが正則となる。陰関数定理により従属変数vをuのC1級関数ψ(u)として表す。",
+          "used_node_ids": [
+            "math.calc.e06_constrained_extremum_problem",
+            "math.calc.m60_implicit_function_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_unconstrained_reduction",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{f}(\\mathbf{u}) := f(\\mathbf{u},\\boldsymbol{\\psi}(\\mathbf{u}))\\text{ has an unconstrained local extremum at }\\mathbf{u}_0",
+          "to_latex": "\\nabla_{\\mathbf{u}}\\tilde{f}(\\mathbf{u}_0) = \\nabla_{\\mathbf{u}}f(\\mathbf{a}) + \\big(D\\boldsymbol{\\psi}(\\mathbf{u}_0)\\big)^\\top \\nabla_{\\mathbf{v}}f(\\mathbf{a}) = \\mathbf{0}",
+          "operation_label": "制約なし目的関数への帰着と1階必要条件",
+          "explanation": "u_0は縮約関数f̃(u)の制約なし極値点なので、停留点条件と多変数連鎖律によりuに関する勾配が零となる。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m35_multivariable_chain_rule",
+            "math.vec.m33_gradient_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_define_multipliers",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\boldsymbol{\\lambda}^\\top := -\\nabla_{\\mathbf{v}}f(\\mathbf{a})^\\top\\left(\\frac{\\partial\\mathbf{g}}{\\partial\\mathbf{v}}(\\mathbf{a})\\right)^{-1}",
+          "to_latex": "\\nabla_{\\mathbf{v}}f(\\mathbf{a}) + \\left(\\frac{\\partial\\mathbf{g}}{\\partial\\mathbf{v}}(\\mathbf{a})\\right)^\\top\\boldsymbol{\\lambda} = \\mathbf{0},\\quad \\nabla_{\\mathbf{u}}f(\\mathbf{a}) + \\left(\\frac{\\partial\\mathbf{g}}{\\partial\\mathbf{u}}(\\mathbf{a})\\right)^\\top\\boldsymbol{\\lambda} = \\mathbf{0} \\implies \\nabla_{\\mathbf{x}}\\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda}) = \\mathbf{0}",
+          "operation_label": "未定乗数λの定義と全変数での勾配消滅",
+          "explanation": "定義したλによりv成分のL勾配が自動的に0となり、Dψの公式を代入するとu成分のL勾配も0となるため、∇_x L(a,λ)=0が成立する。",
+          "used_node_ids": [
+            "math.calc.m60_implicit_function_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_e08_constrained_hessian_2nd_order",
+      "target_node_id": "math.calc.e08_constrained_hessian_2nd_order",
+      "route_kind": "deductive",
+      "title": "接空間方向への2次テイラー展開による制約付き2階十分条件の導出",
+      "premise_node_ids": [
+        "math.calc.e07_lagrange_multiplier_theorem",
+        "math.calc.e02_multivariable_taylor_2nd",
+        "math.calc.e04_quadratic_form_definiteness",
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "fとgは点aの近傍でC2級である",
+        "∇_x L(a, λ) = 0 および g(a) = 0 が成り立つ",
+        "ker(Dg(a))上の非零ベクトルhに対して h^T H_x L(a, λ) h > 0 が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla_{\\mathbf{x}}\\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda})=\\mathbf{0},\\quad \\forall\\mathbf{h}\\in\\ker(D\\mathbf{g}(\\mathbf{a}))\\setminus\\{\\mathbf{0}\\}:\\; \\mathbf{h}^\\top\\nabla_{\\mathbf{x}\\mathbf{x}}^2\\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda})\\mathbf{h}>0",
+          "to_latex": "\\exists\\delta>0:\\; \\forall \\mathbf{x}\\in B(\\mathbf{a},\\delta)\\setminus\\{\\mathbf{a}\\}\\text{ with }\\mathbf{g}(\\mathbf{x})=\\mathbf{0},\\; f(\\mathbf{x}) > f(\\mathbf{a})",
+          "operation_label": "実行可能変位の接空間集積とラグランジアン2次展開",
+          "explanation": "制約集合上ではfとラグランジアンが一致することからLを2次展開し、制約集合に沿う任意の微小変位の極限方向が接空間ker(Dg(a))に属することを用いて狭義極小性を背理法で示す。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.e04_quadratic_form_definiteness",
+            "math.calc.e07_lagrange_multiplier_theorem",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_lagrangian_expansion",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{g}(\\mathbf{a}+\\mathbf{h}) = \\mathbf{0} \\implies f(\\mathbf{a}+\\mathbf{h}) - f(\\mathbf{a}) = \\mathcal{L}(\\mathbf{a}+\\mathbf{h},\\boldsymbol{\\lambda}) - \\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda})",
+          "to_latex": "f(\\mathbf{a}+\\mathbf{h}) - f(\\mathbf{a}) = \\frac{1}{2}\\mathbf{h}^\\top \\nabla_{\\mathbf{x}\\mathbf{x}}^2\\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda})\\mathbf{h} + o(\\|\\mathbf{h}\\|^2)",
+          "operation_label": "実行可能点でのラグランジアンの2次テイラー展開",
+          "explanation": "g(a+h)=0となる点ではf(a+h)=L(a+h,λ)であり、∇_x L(a,λ)=0を用いてLを2次まで展開すると1次項が消去される。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_tangent_space_projection",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{h}_k \\to \\mathbf{0},\\; \\mathbf{h}_k\\neq\\mathbf{0},\\; \\mathbf{g}(\\mathbf{a}+\\mathbf{h}_k)=\\mathbf{0},\\; \\mathbf{d}_k := \\frac{\\mathbf{h}_k}{\\|\\mathbf{h}_k\\|} \\to \\mathbf{d}",
+          "to_latex": "\\mathbf{0} = \\frac{\\mathbf{g}(\\mathbf{a}+\\mathbf{h}_k) - \\mathbf{g}(\\mathbf{a})}{\\|\\mathbf{h}_k\\|} = D\\mathbf{g}(\\mathbf{a})\\mathbf{d}_k + o(1) \\implies D\\mathbf{g}(\\mathbf{a})\\mathbf{d} = \\mathbf{0}\\;(\\mathbf{d}\\in\\ker(D\\mathbf{g}(\\mathbf{a})),\\; \\|\\mathbf{d}\\|=1)",
+          "operation_label": "正規化変位列の極限による接空間所属の証明",
+          "explanation": "制約条件を満たす微小変位列の単位方向ベクトルの集積点dをとると、gの1次展開より極限方向dは必ず接空間ker(Dg(a))に含まれる。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_sign_conclusion",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\mathbf{a}+\\mathbf{h}_k) \\le f(\\mathbf{a}) \\implies \\frac{1}{2}\\mathbf{d}_k^\\top \\nabla_{\\mathbf{x}\\mathbf{x}}^2\\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda})\\mathbf{d}_k + o(1) \\le 0",
+          "to_latex": "\\frac{1}{2}\\mathbf{d}^\\top \\nabla_{\\mathbf{x}\\mathbf{x}}^2\\mathcal{L}(\\mathbf{a},\\boldsymbol{\\lambda})\\mathbf{d} \\le 0 \\implies \\bot \\implies \\text{strict constrained local minimum}",
+          "operation_label": "背理法と2次形式の正定値性による結論",
+          "explanation": "もし狭義極小でないと仮定してf(a+h_k)<=f(a)なる点列h_k→0をとれば、極限でd^T H_x L d <= 0となり接空間上の正定値性に矛盾するため、制約付き狭義極小が証明される。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,809 @@
+{
+  "pack_meta": {
+    "pack_id": "math.vec.curvilinear_coords",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematics",
+    "title": "一般直交曲線座標の微分演算子（球座標・円柱座標のラプラシアン）",
+    "language": "ja",
+    "description": "計量因子（ラメ係数）から一般直交曲線座標の grad, div, rot, ラプラシアンを導出し球座標・円柱座標へ適用する。"
+  },
+  "nodes": [
+    {
+      "id": "math.vec.cc01_orthogonal_curvilinear_def",
+      "short_code": "CC01",
+      "kind": "definition",
+      "title": "一般直交曲線座標と計量因子（ラメ係数）の定義",
+      "summary": "3次元ユークリッド空間における直交曲線座標 (q1, q2, q3)、局所正規直交基底、計量因子（ラメ係数 h1, h2, h3）、および線素・体積要素を定義する。",
+      "canonical_latex": "\\frac{\\partial \\mathbf{r}}{\\partial q_i}\\cdot\\frac{\\partial \\mathbf{r}}{\\partial q_j} = h_i^2 \\delta_{ij},\\quad h_i := \\left\\|\\frac{\\partial \\mathbf{r}}{\\partial q_i}\\right\\| > 0,\\quad \\mathbf{e}_i := \\frac{1}{h_i}\\frac{\\partial \\mathbf{r}}{\\partial q_i},\\quad ds^2 = \\sum_{i=1}^{3} h_i^2\\,dq_i^2,\\quad dV = h_1 h_2 h_3\\,dq_1\\,dq_2\\,dq_3",
+      "aliases_latex": [
+        "d\\mathbf{r} = \\sum_{i=1}^{3} h_i\\,dq_i\\,\\mathbf{e}_i,\\quad \\mathbf{e}_i\\cdot\\mathbf{e}_j = \\delta_{ij}"
+      ],
+      "keywords": [
+        "curvilinear coordinates",
+        "Lame coefficients",
+        "scale factors",
+        "metric",
+        "orthonormal basis"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "vector_calculus"
+      ]
+    },
+    {
+      "id": "math.vec.cc02_curvilinear_grad",
+      "short_code": "CC02",
+      "kind": "theorem_formula",
+      "title": "一般直交曲線座標における勾配（grad）",
+      "summary": "一般直交曲線座標におけるスカラー場 f の勾配ベクトルを計量因子 h_i と局所正規直交基底 e_i を用いて表す公式。",
+      "canonical_latex": "\\nabla f = \\sum_{i=1}^{3} \\frac{1}{h_i}\\frac{\\partial f}{\\partial q_i}\\mathbf{e}_i = \\frac{1}{h_1}\\frac{\\partial f}{\\partial q_1}\\mathbf{e}_1 + \\frac{1}{h_2}\\frac{\\partial f}{\\partial q_2}\\mathbf{e}_2 + \\frac{1}{h_3}\\frac{\\partial f}{\\partial q_3}\\mathbf{e}_3",
+      "aliases_latex": [
+        "\\operatorname{grad} f = \\sum_{i=1}^{3} \\frac{1}{h_i}\\frac{\\partial f}{\\partial q_i}\\mathbf{e}_i"
+      ],
+      "keywords": [
+        "gradient",
+        "curvilinear coordinates",
+        "scale factors"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "vector_calculus"
+      ]
+    },
+    {
+      "id": "math.vec.cc03_curvilinear_div",
+      "short_code": "CC03",
+      "kind": "theorem_formula",
+      "title": "一般直交曲線座標における発散（div）",
+      "summary": "一般直交曲線座標の基底成分 F = F_1 e_1 + F_2 e_2 + F_3 e_3 に対するベクトル場の発散の公式。",
+      "canonical_latex": "\\nabla \\cdot \\mathbf{F} = \\frac{1}{h_1 h_2 h_3}\\left[\\frac{\\partial}{\\partial q_1}(h_2 h_3 F_1) + \\frac{\\partial}{\\partial q_2}(h_3 h_1 F_2) + \\frac{\\partial}{\\partial q_3}(h_1 h_2 F_3)\\right]",
+      "aliases_latex": [
+        "\\operatorname{div}\\mathbf{F} = \\frac{1}{h_1 h_2 h_3}\\sum_{\\text{cyc}} \\frac{\\partial}{\\partial q_1}(h_2 h_3 F_1)"
+      ],
+      "keywords": [
+        "divergence",
+        "curvilinear coordinates",
+        "Gauss theorem"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "vector_calculus"
+      ]
+    },
+    {
+      "id": "math.vec.cc04_curvilinear_curl",
+      "short_code": "CC04",
+      "kind": "theorem_formula",
+      "title": "一般直交曲線座標における回転（rot / curl）",
+      "summary": "一般直交曲線座標の基底成分 F = F_1 e_1 + F_2 e_2 + F_3 e_3 に対するベクトル場の回転の公式。",
+      "canonical_latex": "\\nabla \\times \\mathbf{F} = \\frac{1}{h_1 h_2 h_3}\\begin{vmatrix} h_1\\mathbf{e}_1 & h_2\\mathbf{e}_2 & h_3\\mathbf{e}_3 \\\\ \\frac{\\partial}{\\partial q_1} & \\frac{\\partial}{\\partial q_2} & \\frac{\\partial}{\\partial q_3} \\\\ h_1 F_1 & h_2 F_2 & h_3 F_3 \\end{vmatrix} = \\frac{1}{h_2 h_3}\\left(\\frac{\\partial(h_3 F_3)}{\\partial q_2} - \\frac{\\partial(h_2 F_2)}{\\partial q_3}\\right)\\mathbf{e}_1 + \\text{cyc.}",
+      "aliases_latex": [
+        "(\\operatorname{rot}\\mathbf{F})_1 = \\frac{1}{h_2 h_3}\\left(\\frac{\\partial(h_3 F_3)}{\\partial q_2} - \\frac{\\partial(h_2 F_2)}{\\partial q_3}\\right)"
+      ],
+      "keywords": [
+        "curl",
+        "rotation",
+        "curvilinear coordinates",
+        "Stokes theorem"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "vector_calculus"
+      ]
+    },
+    {
+      "id": "math.vec.cc05_curvilinear_laplacian",
+      "short_code": "CC05",
+      "kind": "theorem_formula",
+      "title": "一般直交曲線座標におけるスカラー・ラプラシアン",
+      "summary": "一般直交曲線座標におけるスカラー場 f のラプラシアン div(grad f) の一般表示。",
+      "canonical_latex": "\\nabla^2 f = \\frac{1}{h_1 h_2 h_3}\\left[\\frac{\\partial}{\\partial q_1}\\left(\\frac{h_2 h_3}{h_1}\\frac{\\partial f}{\\partial q_1}\\right) + \\frac{\\partial}{\\partial q_2}\\left(\\frac{h_3 h_1}{h_2}\\frac{\\partial f}{\\partial q_2}\\right) + \\frac{\\partial}{\\partial q_3}\\left(\\frac{h_1 h_2}{h_3}\\frac{\\partial f}{\\partial q_3}\\right)\\right]",
+      "aliases_latex": [
+        "\\Delta f = \\nabla \\cdot (\\nabla f)"
+      ],
+      "keywords": [
+        "Laplacian",
+        "curvilinear coordinates",
+        "scale factors"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "vector_calculus"
+      ]
+    },
+    {
+      "id": "math.vec.cc06_cylindrical_scale_factors",
+      "short_code": "CC06",
+      "kind": "theorem_formula",
+      "title": "円柱座標の計量因子（ラメ係数）と局所正規直交基底",
+      "summary": "3次元円柱座標 (r, theta, z) における計量因子 h_r = 1, h_theta = r, h_z = 1 と局所正規直交基底 (e_r, e_theta, e_z) の表示。",
+      "canonical_latex": "(q_1, q_2, q_3) = (r, \\theta, z),\\quad h_r = 1,\\; h_\\theta = r,\\; h_z = 1,\\quad \\mathbf{e}_r = \\cos\\theta\\,\\mathbf{e}_x + \\sin\\theta\\,\\mathbf{e}_y,\\; \\mathbf{e}_\\theta = -\\sin\\theta\\,\\mathbf{e}_x + \\cos\\theta\\,\\mathbf{e}_y,\\; \\mathbf{e}_z = \\mathbf{e}_z",
+      "aliases_latex": [
+        "ds^2 = dr^2 + r^2 d\\theta^2 + dz^2,\\quad dV = r\\,dr\\,d\\theta\\,dz"
+      ],
+      "keywords": [
+        "cylindrical coordinates",
+        "scale factors",
+        "orthonormal basis"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "vector_calculus"
+      ]
+    },
+    {
+      "id": "math.vec.cc07_cylindrical_diff_ops_laplacian",
+      "short_code": "CC07",
+      "kind": "theorem_formula",
+      "title": "円柱座標の微分演算子（grad, div, rot）とラプラシアン",
+      "summary": "3次元円柱座標 (r, theta, z) における勾配・発散・回転およびスカラー・ラプラシアンの明示公式。",
+      "canonical_latex": "\\nabla f = \\frac{\\partial f}{\\partial r}\\mathbf{e}_r + \\frac{1}{r}\\frac{\\partial f}{\\partial \\theta}\\mathbf{e}_\\theta + \\frac{\\partial f}{\\partial z}\\mathbf{e}_z,\\quad \\nabla\\cdot\\mathbf{F} = \\frac{1}{r}\\frac{\\partial(r F_r)}{\\partial r} + \\frac{1}{r}\\frac{\\partial F_\\theta}{\\partial \\theta} + \\frac{\\partial F_z}{\\partial z},\\quad \\nabla^2 f = \\frac{1}{r}\\frac{\\partial}{\\partial r}\\left(r\\frac{\\partial f}{\\partial r}\\right) + \\frac{1}{r^2}\\frac{\\partial^2 f}{\\partial \\theta^2} + \\frac{\\partial^2 f}{\\partial z^2} ",
+      "aliases_latex": [
+        "\\nabla \\times \\mathbf{F} = \\left(\\frac{1}{r}\\frac{\\partial F_z}{\\partial \\theta} - \\frac{\\partial F_\\theta}{\\partial z}\\right)\\mathbf{e}_r + \\left(\\frac{\\partial F_r}{\\partial z} - \\frac{\\partial F_z}{\\partial r}\\right)\\mathbf{e}_\\theta + \\frac{1}{r}\\left(\\frac{\\partial(r F_\\theta)}{\\partial r} - \\frac{\\partial F_r}{\\partial \\theta}\\right)\\mathbf{e}_z"
+      ],
+      "keywords": [
+        "cylindrical coordinates",
+        "Laplacian",
+        "grad",
+        "div",
+        "rot"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "vector_calculus"
+      ]
+    },
+    {
+      "id": "math.vec.cc08_spherical_scale_factors",
+      "short_code": "CC08",
+      "kind": "theorem_formula",
+      "title": "球面座標の計量因子（ラメ係数）と局所正規直交基底",
+      "summary": "3次元球面座標 (r, theta, phi) における計量因子 h_r = 1, h_theta = r, h_phi = r sin(theta) と局所正規直交基底 (e_r, e_theta, e_phi) の表示。",
+      "canonical_latex": "(q_1, q_2, q_3) = (r, \\theta, \\varphi),\\quad h_r = 1,\\; h_\\theta = r,\\; h_\\varphi = r\\sin\\theta,\\quad \\mathbf{e}_r = \\begin{pmatrix}\\sin\\theta\\cos\\varphi\\\\\\sin\\theta\\sin\\varphi\\\\\\cos\\theta\\end{pmatrix},\\; \\mathbf{e}_\\theta = \\begin{pmatrix}\\cos\\theta\\cos\\varphi\\\\\\cos\\theta\\sin\\varphi\\\\-\\sin\\theta\\end{pmatrix},\\; \\mathbf{e}_\\varphi = \\begin{pmatrix}-\\sin\\varphi\\\\\\cos\\varphi\\\\0\\end{pmatrix} ",
+      "aliases_latex": [
+        "ds^2 = dr^2 + r^2 d\\theta^2 + r^2\\sin^2\\theta\\,d\\varphi^2,\\quad dV = r^2\\sin\\theta\\,dr\\,d\\theta\\,d\\varphi"
+      ],
+      "keywords": [
+        "spherical coordinates",
+        "scale factors",
+        "orthonormal basis"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "vector_calculus"
+      ]
+    },
+    {
+      "id": "math.vec.cc09_spherical_diff_ops_laplacian",
+      "short_code": "CC09",
+      "kind": "theorem_formula",
+      "title": "球面座標の微分演算子（grad, div, rot）とラプラシアン",
+      "summary": "3次元球面座標 (r, theta, phi) における勾配・発散・回転およびスカラー・ラプラシアンの明示公式。",
+      "canonical_latex": "\\nabla f = \\frac{\\partial f}{\\partial r}\\mathbf{e}_r + \\frac{1}{r}\\frac{\\partial f}{\\partial \\theta}\\mathbf{e}_\\theta + \\frac{1}{r\\sin\\theta}\\frac{\\partial f}{\\partial \\varphi}\\mathbf{e}_\\varphi,\\quad \\nabla\\cdot\\mathbf{F} = \\frac{1}{r^2}\\frac{\\partial(r^2 F_r)}{\\partial r} + \\frac{1}{r\\sin\\theta}\\frac{\\partial(\\sin\\theta\\,F_\\theta)}{\\partial \\theta} + \\frac{1}{r\\sin\\theta}\\frac{\\partial F_\\varphi}{\\partial \\varphi},\\quad \\nabla^2 f = \\frac{1}{r^2}\\frac{\\partial}{\\partial r}\\left(r^2\\frac{\\partial f}{\\partial r}\\right) + \\frac{1}{r^2\\sin\\theta}\\frac{\\partial}{\\partial \\theta}\\left(\\sin\\theta\\frac{\\partial f}{\\partial \\theta}\\right) + \\frac{1}{r^2\\sin^2\\theta}\\frac{\\partial^2 f}{\\partial \\varphi^2} ",
+      "aliases_latex": [
+        "\\nabla \\times \\mathbf{F} = \\frac{1}{r\\sin\\theta}\\left(\\frac{\\partial(\\sin\\theta\\,F_\\varphi)}{\\partial \\theta} - \\frac{\\partial F_\\theta}{\\partial \\varphi}\\right)\\mathbf{e}_r + \\frac{1}{r}\\left(\\frac{1}{\\sin\\theta}\\frac{\\partial F_r}{\\partial \\varphi} - \\frac{\\partial(r F_\\varphi)}{\\partial r}\\right)\\mathbf{e}_\\theta + \\frac{1}{r}\\left(\\frac{\\partial(r F_\\theta)}{\\partial r} - \\frac{\\partial F_r}{\\partial \\theta}\\right)\\mathbf{e}_\\varphi"
+      ],
+      "keywords": [
+        "spherical coordinates",
+        "Laplacian",
+        "grad",
+        "div",
+        "rot"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "vector_calculus"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_cc02_curvilinear_grad",
+      "target_node_id": "math.vec.cc02_curvilinear_grad",
+      "route_kind": "deductive",
+      "title": "全微分の座標不変性による一般直交曲線座標の勾配の導出",
+      "premise_node_ids": [
+        "math.vec.cc01_orthogonal_curvilinear_def",
+        "math.vec.m62_vector_valued_total_diff",
+        "math.calc.m08_partial_total_diff",
+        "math.vec.m33_gradient_definition",
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "座標変換 r(q1, q2, q3) は正則な直交曲線座標であり、f は C1 級スカラー場である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "df = \\nabla f \\cdot d\\mathbf{r} = \\sum_{i=1}^{3} \\frac{\\partial f}{\\partial q_i}\\,dq_i",
+          "to_latex": "\\nabla f = \\sum_{i=1}^{3} \\frac{1}{h_i}\\frac{\\partial f}{\\partial q_i}\\mathbf{e}_i",
+          "operation_label": "全微分の座標不変性から勾配成分を同定",
+          "explanation": "スカラー場 f の全微分 df = grad(f)・dr を直交曲線座標の微小変位 dr = sum h_i dq_i e_i で表し、座標 q_i に関する全微分と係数を比較して勾配を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.m28_dot_product_component_def",
+            "math.vec.m33_gradient_definition",
+            "math.vec.m62_vector_valued_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_dr_expansion",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\mathbf{r} = \\sum_{i=1}^{3} \\frac{\\partial \\mathbf{r}}{\\partial q_i}\\,dq_i",
+          "to_latex": "d\\mathbf{r} = \\sum_{i=1}^{3} h_i\\,dq_i\\,\\mathbf{e}_i",
+          "operation_label": "位置ベクトルの全微分を計量因子と基底で表す",
+          "explanation": "ベクトル値関数の全微分公式と直交曲線座標の局所基底の定義 (dr/dq_i = h_i e_i) を用いて微小変位ベクトル dr を展開する。",
+          "used_node_ids": [
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.m62_vector_valued_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_df_comparison",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "df = \\nabla f \\cdot d\\mathbf{r} = \\sum_{i=1}^{3} \\frac{\\partial f}{\\partial q_i}\\,dq_i",
+          "to_latex": "\\sum_{i=1}^{3} (\\nabla f \\cdot \\mathbf{e}_i)\\,h_i\\,dq_i = \\sum_{i=1}^{3} \\frac{\\partial f}{\\partial q_i}\\,dq_i",
+          "operation_label": "内積の双線形性と全微分の比較",
+          "explanation": "勾配の定義より df = grad(f)・dr が成り立つため、前ステップの dr を代入し、q_i による全微分 df = sum (df/dq_i) dq_i と等置する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.vec.m28_dot_product_component_def",
+            "math.vec.m33_gradient_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_grad_components",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\nabla f \\cdot \\mathbf{e}_i)\\,h_i = \\frac{\\partial f}{\\partial q_i}\\quad (i=1,2,3)",
+          "to_latex": "\\nabla f = \\sum_{i=1}^{3} \\frac{1}{h_i}\\frac{\\partial f}{\\partial q_i}\\mathbf{e}_i",
+          "operation_label": "正規直交基底への展開",
+          "explanation": "微小増分 dq_i は互いに独立であるから両辺の係数が一致し、正規直交基底 {e_1, e_2, e_3} に関する成分 (grad f)・e_i = (1/h_i)(df/dq_i) から公式を得る。",
+          "used_node_ids": [
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cc03_curvilinear_div",
+      "target_node_id": "math.vec.cc03_curvilinear_div",
+      "route_kind": "deductive",
+      "title": "ガウスの発散定理による一般直交曲線座標の発散の導出",
+      "premise_node_ids": [
+        "math.vec.cc01_orthogonal_curvilinear_def",
+        "math.vec.vc05_gauss_divergence_theorem",
+        "math.vec.vc01_divergence_def",
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ベクトル場 F は C1 級であり、計量因子 h_i は滑らかで正値である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\iiint_{\\Delta V} (\\nabla \\cdot \\mathbf{F})\\,dV = \\iint_{\\partial(\\Delta V)} (\\mathbf{F} \\cdot \\mathbf{n})\\,dS",
+          "to_latex": "\\nabla \\cdot \\mathbf{F} = \\frac{1}{h_1 h_2 h_3}\\left[\\frac{\\partial}{\\partial q_1}(h_2 h_3 F_1) + \\frac{\\partial}{\\partial q_2}(h_3 h_1 F_2) + \\frac{\\partial}{\\partial q_3}(h_1 h_2 F_3)\\right]",
+          "operation_label": "微小直交曲線座標箱へのガウスの発散定理の適用",
+          "explanation": "座標面で囲まれた微小体積要素 dV = h_1 h_2 h_3 dq_1 dq_2 dq_3 にガウスの発散定理を適用し、対向する3組の座標面を通過する流束の和を微小体積で割って極限をとる。",
+          "used_node_ids": [
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.m28_dot_product_component_def",
+            "math.vec.vc01_divergence_def",
+            "math.vec.vc05_gauss_divergence_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_flux_q1_faces",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Phi_1 = \\iint_{q_1+\\Delta q_1} F_1\\,dS_1 - \\iint_{q_1} F_1\\,dS_1",
+          "to_latex": "\\Phi_1 = \\left[\\frac{\\partial}{\\partial q_1}(h_2 h_3 F_1) + o(1)\\right]\\Delta q_1\\Delta q_2\\Delta q_3",
+          "operation_label": "q1 一定面対の正味流束の評価",
+          "explanation": "法線ベクトルが ±e_1 となる q_1 と q_1 + dq_1 の2面の面積要素は dS_1 = h_2 h_3 dq_2 dq_3 であり、1次テーラー近似により流束差が (d/dq_1)(h_2 h_3 F_1) dq_1 dq_2 dq_3 となる。",
+          "used_node_ids": [
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_total_flux",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iint_{\\partial(\\Delta V)} (\\mathbf{F}\\cdot\\mathbf{n})\\,dS = \\Phi_1 + \\Phi_2 + \\Phi_3",
+          "to_latex": "\\iint_{\\partial(\\Delta V)} (\\mathbf{F}\\cdot\\mathbf{n})\\,dS = \\left[\\frac{\\partial(h_2 h_3 F_1)}{\\partial q_1} + \\frac{\\partial(h_3 h_1 F_2)}{\\partial q_2} + \\frac{\\partial(h_1 h_2 F_3)}{\\partial q_3} + o(1)\\right]\\Delta q_1\\Delta q_2\\Delta q_3",
+          "operation_label": "3組の対向面からの全流束の合算",
+          "explanation": "q_2 面対および q_3 面対についても同様に流束差を求め、閉曲面全体の表面積分として合算する。",
+          "used_node_ids": [
+            "math.vec.cc01_orthogonal_curvilinear_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_limit_div",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\cdot\\mathbf{F} = \\lim_{\\Delta q_i\\to 0}\\frac{1}{\\Delta V}\\iint_{\\partial(\\Delta V)}(\\mathbf{F}\\cdot\\mathbf{n})\\,dS",
+          "to_latex": "\\nabla\\cdot\\mathbf{F} = \\frac{1}{h_1 h_2 h_3}\\left[\\frac{\\partial}{\\partial q_1}(h_2 h_3 F_1) + \\frac{\\partial}{\\partial q_2}(h_3 h_1 F_2) + \\frac{\\partial}{\\partial q_3}(h_1 h_2 F_3)\\right]",
+          "operation_label": "体積要素で割り極限操作を行う",
+          "explanation": "ガウスの発散定理の左辺を (div F) dV = (div F) h_1 h_2 h_3 dq_1 dq_2 dq_3 で評価し、微小体積で割って dq_i -> 0 の極限をとることで発散の一般式を得る。",
+          "used_node_ids": [
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.vc01_divergence_def",
+            "math.vec.vc05_gauss_divergence_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cc04_curvilinear_curl",
+      "target_node_id": "math.vec.cc04_curvilinear_curl",
+      "route_kind": "deductive",
+      "title": "ストークスの回転定理による一般直交曲線座標の回転の導出",
+      "premise_node_ids": [
+        "math.vec.cc01_orthogonal_curvilinear_def",
+        "math.vec.vc06_stokes_theorem",
+        "math.vec.vc02_curl_def",
+        "math.vec.m28_dot_product_component_def",
+        "math.vec.m29_cross_product_levi_civita_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "右手系直交曲線座標 e_1 x e_2 = e_3 であり、F は C1 級ベクトル場である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\oint_{\\partial(\\Delta S_i)} \\mathbf{F}\\cdot d\\mathbf{r} = \\iint_{\\Delta S_i} (\\nabla \\times \\mathbf{F})\\cdot\\mathbf{n}\\,dS",
+          "to_latex": "\\nabla \\times \\mathbf{F} = \\frac{1}{h_1 h_2 h_3}\\begin{vmatrix} h_1\\mathbf{e}_1 & h_2\\mathbf{e}_2 & h_3\\mathbf{e}_3 \\\\ \\frac{\\partial}{\\partial q_1} & \\frac{\\partial}{\\partial q_2} & \\frac{\\partial}{\\partial q_3} \\\\ h_1 F_1 & h_2 F_2 & h_3 F_3 \\end{vmatrix} ",
+          "operation_label": "微小座標面へのストークスの定理の適用",
+          "explanation": "各座標軸に直交する微小座標面要素にストークスの回転定理を適用し、周回線積分から rot F の各基底成分を求めて行列式表示にまとめる。",
+          "used_node_ids": [
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.m28_dot_product_component_def",
+            "math.vec.m29_cross_product_levi_civita_def",
+            "math.vec.vc02_curl_def",
+            "math.vec.vc06_stokes_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_circulation_s1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma_1 = \\oint_{\\partial(\\Delta S_1)} \\mathbf{F}\\cdot d\\mathbf{r} = \\oint_{\\partial(\\Delta S_1)} (F_2 h_2\\,dq_2 + F_3 h_3\\,dq_3) ",
+          "to_latex": "\\Gamma_1 = \\left[\\frac{\\partial(h_3 F_3)}{\\partial q_2} - \\frac{\\partial(h_2 F_2)}{\\partial q_3} + o(1)\\right]\\Delta q_2\\Delta q_3",
+          "operation_label": "q1 一定面要素の周回線積分の評価",
+          "explanation": "e_1 を法線とする微小四辺形（q_2, q_3 の増分 dq_2, dq_3）の4辺に沿って F・dr を積分すると、対向辺の差から (d(h_3 F_3)/dq_2 - d(h_2 F_2)/dq_3) dq_2 dq_3 が得られる。",
+          "used_node_ids": [
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_stokes_components",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\nabla \\times \\mathbf{F})_1 \\approx \\frac{\\Gamma_1}{\\Delta S_1},\\quad \\Delta S_1 = h_2 h_3\\,\\Delta q_2\\Delta q_3",
+          "to_latex": "(\\nabla \\times \\mathbf{F})_1 = \\frac{1}{h_2 h_3}\\left(\\frac{\\partial(h_3 F_3)}{\\partial q_2} - \\frac{\\partial(h_2 F_2)}{\\partial q_3}\\right),\\; \\text{and cyclic } (1\\to 2\\to 3\\to 1) ",
+          "operation_label": "ストークスの定理による各成分の決定",
+          "explanation": "ストークスの定理より周回積分は (rot F)_1 dS_1 に等しいため、面積要素 dS_1 = h_2 h_3 dq_2 dq_3 で割って極限をとり、添字の巡回置換で第2・第3成分も得る。",
+          "used_node_ids": [
+            "math.vec.vc02_curl_def",
+            "math.vec.vc06_stokes_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_determinant_form",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla \\times \\mathbf{F} = \\sum_{\\text{cyc}} \\frac{1}{h_2 h_3}\\left(\\frac{\\partial(h_3 F_3)}{\\partial q_2} - \\frac{\\partial(h_2 F_2)}{\\partial q_3}\\right)\\mathbf{e}_1",
+          "to_latex": "\\nabla \\times \\mathbf{F} = \\frac{1}{h_1 h_2 h_3}\\begin{vmatrix} h_1\\mathbf{e}_1 & h_2\\mathbf{e}_2 & h_3\\mathbf{e}_3 \\\\ \\frac{\\partial}{\\partial q_1} & \\frac{\\partial}{\\partial q_2} & \\frac{\\partial}{\\partial q_3} \\\\ h_1 F_1 & h_2 F_2 & h_3 F_3 \\end{vmatrix} ",
+          "operation_label": "3次行列式形式への整理",
+          "explanation": "各成分を 1/(h_1 h_2 h_3) でくくり、外積の行列式表現に対応させることで覚えやすい3x3行列式表示を得る。",
+          "used_node_ids": [
+            "math.vec.m29_cross_product_levi_civita_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cc05_curvilinear_laplacian",
+      "target_node_id": "math.vec.cc05_curvilinear_laplacian",
+      "route_kind": "deductive",
+      "title": "一般直交曲線座標の勾配と発散の合成によるラプラシアンの導出",
+      "premise_node_ids": [
+        "math.vec.cc01_orthogonal_curvilinear_def",
+        "math.vec.cc02_curvilinear_grad",
+        "math.vec.cc03_curvilinear_div"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f は C2 級スカラー場であり、計量因子 h_i は C1 級で正値である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla^2 f = \\nabla \\cdot (\\nabla f),\\quad \\nabla f = \\sum_{i=1}^{3} \\frac{1}{h_i}\\frac{\\partial f}{\\partial q_i}\\mathbf{e}_i",
+          "to_latex": "\\nabla^2 f = \\frac{1}{h_1 h_2 h_3}\\left[\\frac{\\partial}{\\partial q_1}\\left(\\frac{h_2 h_3}{h_1}\\frac{\\partial f}{\\partial q_1}\\right) + \\frac{\\partial}{\\partial q_2}\\left(\\frac{h_3 h_1}{h_2}\\frac{\\partial f}{\\partial q_2}\\right) + \\frac{\\partial}{\\partial q_3}\\left(\\frac{h_1 h_2}{h_3}\\frac{\\partial f}{\\partial q_3}\\right)\\right]",
+          "operation_label": "勾配ベクトルへの発散公式の適用",
+          "explanation": "スカラー・ラプラシアン div(grad f) に対し、一般直交曲線座標の勾配成分を一般直交曲線座標の発散公式に代入して得る。",
+          "used_node_ids": [
+            "math.vec.cc02_curvilinear_grad",
+            "math.vec.cc03_curvilinear_div"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_grad_components",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F} := \\nabla f",
+          "to_latex": "F_1 = \\frac{1}{h_1}\\frac{\\partial f}{\\partial q_1},\\quad F_2 = \\frac{1}{h_2}\\frac{\\partial f}{\\partial q_2},\\quad F_3 = \\frac{1}{h_3}\\frac{\\partial f}{\\partial q_3} ",
+          "operation_label": "勾配ベクトルの基底成分の取り出し",
+          "explanation": "一般直交曲線座標の勾配公式より、F = grad f の正規直交基底 e_i に沿う成分 F_i を同定する。",
+          "used_node_ids": [
+            "math.vec.cc02_curvilinear_grad"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_substitute_into_div",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\cdot\\mathbf{F} = \\frac{1}{h_1 h_2 h_3}\\sum_{\\text{cyc}} \\frac{\\partial}{\\partial q_1}(h_2 h_3 F_1) ",
+          "to_latex": "\\nabla^2 f = \\frac{1}{h_1 h_2 h_3}\\left[\\frac{\\partial}{\\partial q_1}\\left(\\frac{h_2 h_3}{h_1}\\frac{\\partial f}{\\partial q_1}\\right) + \\frac{\\partial}{\\partial q_2}\\left(\\frac{h_3 h_1}{h_2}\\frac{\\partial f}{\\partial q_2}\\right) + \\frac{\\partial}{\\partial q_3}\\left(\\frac{h_1 h_2}{h_3}\\frac{\\partial f}{\\partial q_3}\\right)\\right]",
+          "operation_label": "発散公式への成分代入",
+          "explanation": "各成分 F_i = (1/h_i)(df/dq_i) を一般直交曲線座標の発散公式へ代入し、スカラー・ラプラシアンの一般式を得る。",
+          "used_node_ids": [
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.cc03_curvilinear_div"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cc06_cylindrical_scale_factors",
+      "target_node_id": "math.vec.cc06_cylindrical_scale_factors",
+      "route_kind": "deductive",
+      "title": "円柱座標変換の微分による計量因子と局所基底の導出",
+      "premise_node_ids": [
+        "math.vec.cc01_orthogonal_curvilinear_def",
+        "math.calc.mi06_cylindrical_coordinates_def",
+        "math.calc.m31_trig_derivatives",
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "r > 0 かつ 0 <= theta < 2*pi とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}(r,\\theta,z) = (r\\cos\\theta,\\, r\\sin\\theta,\\, z)^\\top",
+          "to_latex": "h_r = 1,\\; h_\\theta = r,\\; h_z = 1,\\quad \\mathbf{e}_r = \\cos\\theta\\,\\mathbf{e}_x + \\sin\\theta\\,\\mathbf{e}_y,\\; \\mathbf{e}_\\theta = -\\sin\\theta\\,\\mathbf{e}_x + \\cos\\theta\\,\\mathbf{e}_y,\\; \\mathbf{e}_z = \\mathbf{e}_z",
+          "operation_label": "偏微分ベクトルの直交性確認とノルム計算",
+          "explanation": "円柱座標の位置ベクトル r(r, theta, z) を各座標で偏微分して直交性を確認し、そのノルムから計量因子と正規化基底ベクトルを求める。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.calc.mi06_cylindrical_coordinates_def",
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_partial_derivatives",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}(r,\\theta,z) = r\\cos\\theta\\,\\mathbf{e}_x + r\\sin\\theta\\,\\mathbf{e}_y + z\\,\\mathbf{e}_z",
+          "to_latex": "\\frac{\\partial\\mathbf{r}}{\\partial r} = \\begin{pmatrix}\\cos\\theta\\\\\\sin\\theta\\\\0\\end{pmatrix},\\quad \\frac{\\partial\\mathbf{r}}{\\partial \\theta} = \\begin{pmatrix}-r\\sin\\theta\\\\r\\cos\\theta\\\\0\\end{pmatrix},\\quad \\frac{\\partial\\mathbf{r}}{\\partial z} = \\begin{pmatrix}0\\\\0\\\\1\\end{pmatrix} ",
+          "operation_label": "位置ベクトルの各座標による偏微分",
+          "explanation": "三角関数の導関数を用いて r(r, theta, z) を r, theta, z それぞれで偏微分する。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.calc.mi06_cylindrical_coordinates_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_orthogonality_and_norms",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial\\mathbf{r}}{\\partial q_i}\\cdot\\frac{\\partial\\mathbf{r}}{\\partial q_j} = h_i^2\\delta_{ij} ",
+          "to_latex": "h_r = 1,\\; h_\\theta = r,\\; h_z = 1,\\quad \\mathbf{e}_r = \\cos\\theta\\,\\mathbf{e}_x + \\sin\\theta\\,\\mathbf{e}_y,\\; \\mathbf{e}_\\theta = -\\sin\\theta\\,\\mathbf{e}_x + \\cos\\theta\\,\\mathbf{e}_y,\\; \\mathbf{e}_z = \\mathbf{e}_z",
+          "operation_label": "内積による直交性検証と正規化",
+          "explanation": "内積計算とピタゴラス恒等式 cos^2(theta)+sin^2(theta)=1 により互いに直交することおよびノルム h_r=1, h_theta=r, h_z=1 を示し、各偏微分ベクトルを計量因子で割って正規直交基底を得る。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cc07_cylindrical_diff_ops_laplacian",
+      "target_node_id": "math.vec.cc07_cylindrical_diff_ops_laplacian",
+      "route_kind": "deductive",
+      "title": "一般直交曲線座標の公式への円柱座標計量因子の適用",
+      "premise_node_ids": [
+        "math.vec.cc06_cylindrical_scale_factors",
+        "math.vec.cc02_curvilinear_grad",
+        "math.vec.cc03_curvilinear_div",
+        "math.vec.cc04_curvilinear_curl",
+        "math.vec.cc05_curvilinear_laplacian"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "r > 0 とし、f および F は十分滑らか（C2 級）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(q_1,q_2,q_3) = (r,\\theta,z),\\quad (h_1,h_2,h_3) = (1,r,1) ",
+          "to_latex": "\\nabla f = \\frac{\\partial f}{\\partial r}\\mathbf{e}_r + \\frac{1}{r}\\frac{\\partial f}{\\partial \\theta}\\mathbf{e}_\\theta + \\frac{\\partial f}{\\partial z}\\mathbf{e}_z,\\quad \\nabla^2 f = \\frac{1}{r}\\frac{\\partial}{\\partial r}\\left(r\\frac{\\partial f}{\\partial r}\\right) + \\frac{1}{r^2}\\frac{\\partial^2 f}{\\partial \\theta^2} + \\frac{\\partial^2 f}{\\partial z^2} ",
+          "operation_label": "円柱座標の計量因子を一般公式へ代入",
+          "explanation": "計量因子 h_r = 1, h_theta = r, h_z = 1 および体積要素因子 h_1 h_2 h_3 = r を一般直交曲線座標の grad, div, rot, ラプラシアンの公式に代入して円柱座標の微分演算子を得る。",
+          "used_node_ids": [
+            "math.vec.cc02_curvilinear_grad",
+            "math.vec.cc03_curvilinear_div",
+            "math.vec.cc04_curvilinear_curl",
+            "math.vec.cc05_curvilinear_laplacian",
+            "math.vec.cc06_cylindrical_scale_factors"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_grad_div",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(h_1,h_2,h_3) = (1,r,1),\\quad h_1 h_2 h_3 = r",
+          "to_latex": "\\nabla f = \\frac{\\partial f}{\\partial r}\\mathbf{e}_r + \\frac{1}{r}\\frac{\\partial f}{\\partial \\theta}\\mathbf{e}_\\theta + \\frac{\\partial f}{\\partial z}\\mathbf{e}_z,\\quad \\nabla\\cdot\\mathbf{F} = \\frac{1}{r}\\frac{\\partial(r F_r)}{\\partial r} + \\frac{1}{r}\\frac{\\partial F_\\theta}{\\partial \\theta} + \\frac{\\partial F_z}{\\partial z} ",
+          "operation_label": "円柱座標の勾配と発散の算出",
+          "explanation": "一般の勾配公式と発散公式に (h_1, h_2, h_3) = (1, r, 1) を代入し、z および theta に関する微分から定数因子を外に出して整理する。",
+          "used_node_ids": [
+            "math.vec.cc02_curvilinear_grad",
+            "math.vec.cc03_curvilinear_div",
+            "math.vec.cc06_cylindrical_scale_factors"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_curl",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\times\\mathbf{F} = \\frac{1}{r}\\begin{vmatrix}\\mathbf{e}_r & r\\mathbf{e}_\\theta & \\mathbf{e}_z \\\\ \\frac{\\partial}{\\partial r} & \\frac{\\partial}{\\partial \\theta} & \\frac{\\partial}{\\partial z} \\\\ F_r & r F_\\theta & F_z\\end{vmatrix} ",
+          "to_latex": "\\nabla \\times \\mathbf{F} = \\left(\\frac{1}{r}\\frac{\\partial F_z}{\\partial \\theta} - \\frac{\\partial F_\\theta}{\\partial z}\\right)\\mathbf{e}_r + \\left(\\frac{\\partial F_r}{\\partial z} - \\frac{\\partial F_z}{\\partial r}\\right)\\mathbf{e}_\\theta + \\frac{1}{r}\\left(\\frac{\\partial(r F_\\theta)}{\\partial r} - \\frac{\\partial F_r}{\\partial \\theta}\\right)\\mathbf{e}_z",
+          "operation_label": "円柱座標の回転の算出",
+          "explanation": "一般の回転行列式に (h_1, h_2, h_3) = (1, r, 1) を代入して展開し、各成分を得る。",
+          "used_node_ids": [
+            "math.vec.cc04_curvilinear_curl",
+            "math.vec.cc06_cylindrical_scale_factors"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_laplacian",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla^2 f = \\frac{1}{r}\\left[\\frac{\\partial}{\\partial r}\\left(r\\frac{\\partial f}{\\partial r}\\right) + \\frac{\\partial}{\\partial \\theta}\\left(\\frac{1}{r}\\frac{\\partial f}{\\partial \\theta}\\right) + \\frac{\\partial}{\\partial z}\\left(r\\frac{\\partial f}{\\partial z}\\right)\\right] ",
+          "to_latex": "\\nabla^2 f = \\frac{1}{r}\\frac{\\partial}{\\partial r}\\left(r\\frac{\\partial f}{\\partial r}\\right) + \\frac{1}{r^2}\\frac{\\partial^2 f}{\\partial \\theta^2} + \\frac{\\partial^2 f}{\\partial z^2} ",
+          "operation_label": "円柱座標のラプラシアンの算出",
+          "explanation": "一般のラプラシアン公式に (h_1, h_2, h_3) = (1, r, 1) を代入し、theta 微分と z 微分の項から r に依る因子を前に出して標準形を得る。",
+          "used_node_ids": [
+            "math.vec.cc05_curvilinear_laplacian",
+            "math.vec.cc06_cylindrical_scale_factors"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cc08_spherical_scale_factors",
+      "target_node_id": "math.vec.cc08_spherical_scale_factors",
+      "route_kind": "deductive",
+      "title": "球面座標変換の微分による計量因子と局所基底の導出",
+      "premise_node_ids": [
+        "math.vec.cc01_orthogonal_curvilinear_def",
+        "math.calc.mi08_spherical_coordinates_def",
+        "math.calc.m31_trig_derivatives",
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "r > 0、0 < theta < pi、0 <= phi < 2*pi とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}(r,\\theta,\\varphi) = (r\\sin\\theta\\cos\\varphi,\\, r\\sin\\theta\\sin\\varphi,\\, r\\cos\\theta)^\\top",
+          "to_latex": "h_r = 1,\\; h_\\theta = r,\\; h_\\varphi = r\\sin\\theta,\\quad \\mathbf{e}_r = \\begin{pmatrix}\\sin\\theta\\cos\\varphi\\\\\\sin\\theta\\sin\\varphi\\\\\\cos\\theta\\end{pmatrix},\\; \\mathbf{e}_\\theta = \\begin{pmatrix}\\cos\\theta\\cos\\varphi\\\\\\cos\\theta\\sin\\varphi\\\\-\\sin\\theta\\end{pmatrix},\\; \\mathbf{e}_\\varphi = \\begin{pmatrix}-\\sin\\varphi\\\\\\cos\\varphi\\\\0\\end{pmatrix} ",
+          "operation_label": "偏微分ベクトルの直交性確認とノルム計算",
+          "explanation": "球面座標の位置ベクトル r(r, theta, phi) を各座標で偏微分して直交性を確認し、ノルムから計量因子 h_r, h_theta, h_phi と正規直交基底を導出する。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.calc.mi08_spherical_coordinates_def",
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_partial_derivatives",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}(r,\\theta,\\varphi) = \\begin{pmatrix}r\\sin\\theta\\cos\\varphi\\\\r\\sin\\theta\\sin\\varphi\\\\r\\cos\\theta\\end{pmatrix} ",
+          "to_latex": "\\frac{\\partial\\mathbf{r}}{\\partial r} = \\begin{pmatrix}\\sin\\theta\\cos\\varphi\\\\\\sin\\theta\\sin\\varphi\\\\\\cos\\theta\\end{pmatrix},\\; \\frac{\\partial\\mathbf{r}}{\\partial \\theta} = r\\begin{pmatrix}\\cos\\theta\\cos\\varphi\\\\\\cos\\theta\\sin\\varphi\\\\-\\sin\\theta\\end{pmatrix},\\; \\frac{\\partial\\mathbf{r}}{\\partial \\varphi} = r\\sin\\theta\\begin{pmatrix}-\\sin\\varphi\\\\\\cos\\varphi\\\\0\\end{pmatrix} ",
+          "operation_label": "位置ベクトルの各座標による偏微分",
+          "explanation": "三角関数の微分を用いて r(r, theta, phi) を r, theta, phi でそれぞれ偏微分する。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives",
+            "math.calc.mi08_spherical_coordinates_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_orthogonality_and_norms",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial\\mathbf{r}}{\\partial q_i}\\cdot\\frac{\\partial\\mathbf{r}}{\\partial q_j} = h_i^2\\delta_{ij} ",
+          "to_latex": "h_r = 1,\\; h_\\theta = r,\\; h_\\varphi = r\\sin\\theta,\\quad \\mathbf{e}_i = \\frac{1}{h_i}\\frac{\\partial\\mathbf{r}}{\\partial q_i} ",
+          "operation_label": "内積による直交性検証と正規化",
+          "explanation": "ピタゴラス恒等式を用いて各偏微分ベクトルが互いに直交することとノルム h_r = 1, h_theta = r, h_phi = r sin(theta) を示し、正規化して右手系正規直交基底を得る。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.vec.cc01_orthogonal_curvilinear_def",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cc09_spherical_diff_ops_laplacian",
+      "target_node_id": "math.vec.cc09_spherical_diff_ops_laplacian",
+      "route_kind": "deductive",
+      "title": "一般直交曲線座標の公式への球面座標計量因子の適用",
+      "premise_node_ids": [
+        "math.vec.cc08_spherical_scale_factors",
+        "math.vec.cc02_curvilinear_grad",
+        "math.vec.cc03_curvilinear_div",
+        "math.vec.cc04_curvilinear_curl",
+        "math.vec.cc05_curvilinear_laplacian"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "r > 0、0 < theta < pi とし、f および F は十分滑らか（C2 級）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(q_1,q_2,q_3) = (r,\\theta,\\varphi),\\quad (h_1,h_2,h_3) = (1, r, r\\sin\\theta) ",
+          "to_latex": "\\nabla f = \\frac{\\partial f}{\\partial r}\\mathbf{e}_r + \\frac{1}{r}\\frac{\\partial f}{\\partial \\theta}\\mathbf{e}_\\theta + \\frac{1}{r\\sin\\theta}\\frac{\\partial f}{\\partial \\varphi}\\mathbf{e}_\\varphi,\\quad \\nabla^2 f = \\frac{1}{r^2}\\frac{\\partial}{\\partial r}\\left(r^2\\frac{\\partial f}{\\partial r}\\right) + \\frac{1}{r^2\\sin\\theta}\\frac{\\partial}{\\partial \\theta}\\left(\\sin\\theta\\frac{\\partial f}{\\partial \\theta}\\right) + \\frac{1}{r^2\\sin^2\\theta}\\frac{\\partial^2 f}{\\partial \\varphi^2} ",
+          "operation_label": "球面座標の計量因子を一般公式へ代入",
+          "explanation": "計量因子 h_r = 1, h_theta = r, h_phi = r sin(theta) および体積要素因子 h_1 h_2 h_3 = r^2 sin(theta) を一般直交曲線座標の grad, div, rot, ラプラシアンの公式に代入する。",
+          "used_node_ids": [
+            "math.vec.cc02_curvilinear_grad",
+            "math.vec.cc03_curvilinear_div",
+            "math.vec.cc04_curvilinear_curl",
+            "math.vec.cc05_curvilinear_laplacian",
+            "math.vec.cc08_spherical_scale_factors"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_grad_div",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(h_1,h_2,h_3) = (1, r, r\\sin\\theta),\\quad h_1 h_2 h_3 = r^2\\sin\\theta",
+          "to_latex": "\\nabla f = \\frac{\\partial f}{\\partial r}\\mathbf{e}_r + \\frac{1}{r}\\frac{\\partial f}{\\partial \\theta}\\mathbf{e}_\\theta + \\frac{1}{r\\sin\\theta}\\frac{\\partial f}{\\partial \\varphi}\\mathbf{e}_\\varphi,\\quad \\nabla\\cdot\\mathbf{F} = \\frac{1}{r^2}\\frac{\\partial(r^2 F_r)}{\\partial r} + \\frac{1}{r\\sin\\theta}\\frac{\\partial(\\sin\\theta\\,F_\\theta)}{\\partial \\theta} + \\frac{1}{r\\sin\\theta}\\frac{\\partial F_\\varphi}{\\partial \\varphi} ",
+          "operation_label": "球面座標の勾配と発散の算出",
+          "explanation": "一般の勾配公式と発散公式に (h_1, h_2, h_3) = (1, r, r sin(theta)) を代入し、各偏微分に対して定数となる因子を約分して整理する。",
+          "used_node_ids": [
+            "math.vec.cc02_curvilinear_grad",
+            "math.vec.cc03_curvilinear_div",
+            "math.vec.cc08_spherical_scale_factors"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_curl",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\times\\mathbf{F} = \\frac{1}{r^2\\sin\\theta}\\begin{vmatrix}\\mathbf{e}_r & r\\mathbf{e}_\\theta & r\\sin\\theta\\,\\mathbf{e}_\\varphi \\\\ \\frac{\\partial}{\\partial r} & \\frac{\\partial}{\\partial \\theta} & \\frac{\\partial}{\\partial \\varphi} \\\\ F_r & r F_\\theta & r\\sin\\theta\\,F_\\varphi\\end{vmatrix} ",
+          "to_latex": "\\nabla \\times \\mathbf{F} = \\frac{1}{r\\sin\\theta}\\left(\\frac{\\partial(\\sin\\theta\\,F_\\varphi)}{\\partial \\theta} - \\frac{\\partial F_\\theta}{\\partial \\varphi}\\right)\\mathbf{e}_r + \\frac{1}{r}\\left(\\frac{1}{\\sin\\theta}\\frac{\\partial F_r}{\\partial \\varphi} - \\frac{\\partial(r F_\\varphi)}{\\partial r}\\right)\\mathbf{e}_\\theta + \\frac{1}{r}\\left(\\frac{\\partial(r F_\\theta)}{\\partial r} - \\frac{\\partial F_r}{\\partial \\theta}\\right)\\mathbf{e}_\\varphi",
+          "operation_label": "球面座標の回転の算出",
+          "explanation": "一般の回転行列式に球面座標の計量因子を代入して展開し、各成分の r および sin(theta) を約分する。",
+          "used_node_ids": [
+            "math.vec.cc04_curvilinear_curl",
+            "math.vec.cc08_spherical_scale_factors"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_laplacian",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla^2 f = \\frac{1}{r^2\\sin\\theta}\\left[\\frac{\\partial}{\\partial r}\\left(r^2\\sin\\theta\\frac{\\partial f}{\\partial r}\\right) + \\frac{\\partial}{\\partial \\theta}\\left(\\sin\\theta\\frac{\\partial f}{\\partial \\theta}\\right) + \\frac{\\partial}{\\partial \\varphi}\\left(\\frac{1}{\\sin\\theta}\\frac{\\partial f}{\\partial \\varphi}\\right)\\right] ",
+          "to_latex": "\\nabla^2 f = \\frac{1}{r^2}\\frac{\\partial}{\\partial r}\\left(r^2\\frac{\\partial f}{\\partial r}\\right) + \\frac{1}{r^2\\sin\\theta}\\frac{\\partial}{\\partial \\theta}\\left(\\sin\\theta\\frac{\\partial f}{\\partial \\theta}\\right) + \\frac{1}{r^2\\sin^2\\theta}\\frac{\\partial^2 f}{\\partial \\varphi^2} ",
+          "operation_label": "球面座標のラプラシアンの算出",
+          "explanation": "一般のラプラシアン公式に (h_1, h_2, h_3) = (1, r, r sin(theta)) を代入し、r 微分から sin(theta) を、phi 微分から 1/sin(theta) をくくり出して標準形を得る。",
+          "used_node_ids": [
+            "math.vec.cc05_curvilinear_laplacian",
+            "math.vec.cc08_spherical_scale_factors"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
