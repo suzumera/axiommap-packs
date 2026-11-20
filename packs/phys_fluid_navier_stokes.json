@@ -1,0 +1,893 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.fluid.navier_stokes",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "粘性流体力学：ナビエ＝ストークス方程式・レイノルズ数・境界層",
+    "language": "ja",
+    "description": "ニュートン流体の粘性応力テンソルからナビエ＝ストークス方程式、無次元化とレイノルズ数、ポアズイユ流、プラントル境界層方程式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.fluid.ns01_rate_of_strain_tensor",
+      "short_code": "NS01",
+      "kind": "definition",
+      "title": "変形速度テンソル（ひずみ速度テンソル）とスピンテンソル",
+      "summary": "速度勾配テンソルを対称部分（変形速度テンソル）と反対称部分（スピン・渦度テンソル）に分解した量であり、流体の局所的な伸長・せん断変形率と剛体回転角速度を表す。",
+      "canonical_latex": "D_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\Omega_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\operatorname{tr}(\\mathbf{D}) = \\nabla\\cdot\\mathbf{u}",
+      "aliases_latex": [
+        "e_{ij} = \\frac{1}{2}(\\partial_j u_i + \\partial_i u_j)"
+      ],
+      "keywords": [
+        "変形速度テンソル",
+        "ひずみ速度テンソル",
+        "スピンテンソル",
+        "速度勾配テンソル"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_dynamics"
+      ]
+    },
+    {
+      "id": "phys.fluid.ns02_newtonian_viscous_stress",
+      "short_code": "NS02",
+      "kind": "definition",
+      "title": "ニュートン流体の粘性応力テンソルとストークスの仮説",
+      "summary": "粘性応力テンソルが変形速度テンソルに線形かつ等方的に比例する構成則と、体積粘性率ゼロを仮定するストークスの仮説（第2粘性係数と第1粘性係数の関係）を定める。",
+      "canonical_latex": "\\sigma_{ij} = -p\\delta_{ij} + \\tau_{ij},\\quad \\tau_{ij} = 2\\mu D_{ij} + \\lambda_{\\mathrm{v}}(\\nabla\\cdot\\mathbf{u})\\delta_{ij},\\quad \\tau_{ij} = 2\\mu\\left(D_{ij} - \\frac{1}{3}(\\nabla\\cdot\\mathbf{u})\\delta_{ij}\\right)",
+      "aliases_latex": [
+        "\\sigma_{ij} = -p\\delta_{ij} + 2\\mu D_{ij} - \\frac{2}{3}\\mu(\\nabla\\cdot\\mathbf{u})\\delta_{ij}"
+      ],
+      "keywords": [
+        "ニュートン流体",
+        "粘性応力テンソル",
+        "粘性係数",
+        "ストークスの仮説"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_dynamics"
+      ]
+    },
+    {
+      "id": "phys.fluid.ns03_navier_stokes_compressible",
+      "short_code": "NS03",
+      "kind": "theorem_formula",
+      "title": "圧縮性粘性流体のナビエ＝ストークス方程式",
+      "summary": "コーシーの運動方程式にニュートン流体の粘性応力構成則を代入して得られる、圧縮性粘性流体の運動量保存の一般方程式。",
+      "canonical_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p + \\mu\\nabla^2\\mathbf{u} + (\\lambda_{\\mathrm{v}} + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\rho\\mathbf{f}",
+      "aliases_latex": [
+        "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p + \\mu\\nabla^2\\mathbf{u} + \\frac{1}{3}\\mu\\nabla(\\nabla\\cdot\\mathbf{u}) + \\rho\\mathbf{f}"
+      ],
+      "keywords": [
+        "ナビエ＝ストークス方程式",
+        "圧縮性流体",
+        "粘性流体",
+        "運動量保存則"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_dynamics"
+      ]
+    },
+    {
+      "id": "phys.fluid.ns04_navier_stokes_incompressible",
+      "short_code": "NS04",
+      "kind": "theorem_formula",
+      "title": "非圧縮性ナビエ＝ストークス方程式と動粘性係数",
+      "summary": "非圧縮条件 div u = 0 と密度一定の仮定のもとで得られる非圧縮粘性流体の基礎方程式であり、動粘性係数 nu = mu / rho によって粘性拡散項が記述される。",
+      "canonical_latex": "\\nabla\\cdot\\mathbf{u} = 0,\\quad \\frac{\\partial\\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\nu\\nabla^2\\mathbf{u} + \\mathbf{f}\\quad \\left(\\nu := \\frac{\\mu}{\\rho}\\right)",
+      "aliases_latex": [
+        "\\frac{D\\mathbf{u}}{Dt} = -\\frac{1}{\\rho}\\nabla p + \\nu\\nabla^2\\mathbf{u} + \\mathbf{f}"
+      ],
+      "keywords": [
+        "非圧縮性ナビエ＝ストークス方程式",
+        "動粘性係数",
+        "ソレノイダル条件"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_dynamics"
+      ]
+    },
+    {
+      "id": "phys.fluid.ns05_reynolds_number_nondim",
+      "short_code": "NS05",
+      "kind": "theorem_formula",
+      "title": "ナビエ＝ストークス方程式の無次元化とレイノルズ数 Re",
+      "summary": "代表長さ L と代表速度 U による無次元化を通じて導かれる無次元方程式と、慣性力と粘性力の比を表す無次元数であるレイノルズ数 Re の定義。",
+      "canonical_latex": "\\frac{\\partial\\mathbf{u}^*}{\\partial t^*} + (\\mathbf{u}^*\\cdot\\nabla^*)\\mathbf{u}^* = -\\nabla^* p^* + \\frac{1}{\\mathrm{Re}}\\nabla^{*2}\\mathbf{u}^*,\\quad \\mathrm{Re} := \\frac{\\rho U L}{\\mu} = \\frac{U L}{\\nu}",
+      "aliases_latex": [
+        "\\mathrm{Re} = \\frac{UL}{\\nu}"
+      ],
+      "keywords": [
+        "レイノルズ数",
+        "無次元化",
+        "力学相似則",
+        "慣性力と粘性力の比"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_dynamics"
+      ]
+    },
+    {
+      "id": "phys.fluid.ns06_plane_poiseuille_flow",
+      "short_code": "NS06",
+      "kind": "theorem_formula",
+      "title": "平行平板間の層流ポアズイユ流（放物線速度分布と流量）",
+      "summary": "静止した平行平板間の定常・一様圧力勾配駆動層流に対するナビエ＝ストークス方程式の厳密解であり、放物線型の速度分布と単位幅あたり体積流量を与える。",
+      "canonical_latex": "u(y) = -\\frac{1}{2\\mu}\\frac{dp}{dx}(h^2 - y^2),\\quad q = \\int_{-h}^{h} u(y)\\,dy = -\\frac{2h^3}{3\\mu}\\frac{dp}{dx}",
+      "aliases_latex": [
+        "u(y) = u_{\\max}\\left(1 - \\frac{y^2}{h^2}\\right)"
+      ],
+      "keywords": [
+        "平面ポアズイユ流",
+        "平行平板間流れ",
+        "厳密解",
+        "放物線速度分布"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_dynamics"
+      ]
+    },
+    {
+      "id": "phys.fluid.ns07_hagen_poiseuille_pipe",
+      "short_code": "NS07",
+      "kind": "theorem_formula",
+      "title": "円管内のハーゲン＝ポアズイユ流とハーゲン＝ポアズイユの法則",
+      "summary": "半径 R の円管内の定常軸対称層流に対する厳密解であり、管径の4乗に比例する体積流量公式（ハーゲン＝ポアズイユの法則）を与える。",
+      "canonical_latex": "u_z(r) = -\\frac{1}{4\\mu}\\frac{dp}{dz}(R^2 - r^2),\\quad Q = \\int_{0}^{R} 2\\pi r\\,u_z(r)\\,dr = -\\frac{\\pi R^4}{8\\mu}\\frac{dp}{dz} = \\frac{\\pi R^4 \\Delta p}{8\\mu L}",
+      "aliases_latex": [
+        "Q = \\frac{\\pi D^4 \\Delta p}{128\\mu L}"
+      ],
+      "keywords": [
+        "ハーゲン＝ポアズイユの法則",
+        "円管内層流",
+        "管摩擦",
+        "厳密解"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_dynamics"
+      ]
+    },
+    {
+      "id": "phys.fluid.ns08_boundary_layer_scaling",
+      "short_code": "NS08",
+      "kind": "definition",
+      "title": "高レイノルズ数流れにおける境界層厚さのスケーリングと無次元変数",
+      "summary": "Re >> 1 の領域において固体壁面近傍の薄い粘性境界層内で慣性項と粘性項がつり合う条件から導かれる境界層厚さのスケーリング delta / L ~ Re^{-1/2} と引き伸ばし変数。",
+      "canonical_latex": "\\frac{\\delta}{L} \\sim \\mathrm{Re}^{-1/2},\\quad Y = \\mathrm{Re}^{1/2} y^*,\\quad V = \\mathrm{Re}^{1/2} v^*",
+      "aliases_latex": [
+        "\\delta \\sim \\sqrt{\\frac{\\nu L}{U}}"
+      ],
+      "keywords": [
+        "境界層厚さ",
+        "漸近スケーリング",
+        "引き伸ばし座標",
+        "高レイノルズ数極限"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_dynamics"
+      ]
+    },
+    {
+      "id": "phys.fluid.ns09_prandtl_boundary_layer_eq",
+      "short_code": "NS09",
+      "kind": "theorem_formula",
+      "title": "プラントルの境界層方程式（2次元定常非圧縮流）",
+      "summary": "高レイノルズ数極限の境界層スケーリングによりナビエ＝ストークス方程式を簡約して得られる放物型偏微分方程式系であり、境界層外縁の主流速度と圧力勾配が整合する。",
+      "canonical_latex": "\\frac{\\partial u}{\\partial x} + \\frac{\\partial v}{\\partial y} = 0,\\quad u\\frac{\\partial u}{\\partial x} + v\\frac{\\partial u}{\\partial y} = U_e(x)\\frac{dU_e}{dx} + \\nu\\frac{\\partial^2 u}{\\partial y^2},\\quad \\frac{\\partial p}{\\partial y} = 0",
+      "aliases_latex": [
+        "u u_x + v u_y = -\\frac{1}{\\rho}p_x + \\nu u_{yy}"
+      ],
+      "keywords": [
+        "プラントル境界層方程式",
+        "境界層理論",
+        "放物型近似",
+        "主流との接合"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_dynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_ns01_rate_of_strain",
+      "target_node_id": "phys.fluid.ns01_rate_of_strain_tensor",
+      "route_kind": "reformulation",
+      "title": "オイラー速度場の勾配テンソル分解による変形速度テンソルとスピンテンソルの定義",
+      "premise_node_ids": [
+        "phys.fluid.fl01_eulerian_lagrangian_field_def",
+        "phys.cont.el01_displacement_strain_tensor"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m44_partial_derivative_def",
+        "math.vec.vc01_divergence_def"
+      ],
+      "assumptions": [
+        "速度場 u(x,t) は空間に関して C1 級とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial u_i}{\\partial x_j}",
+          "to_latex": "D_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\Omega_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\operatorname{tr}(\\mathbf{D}) = \\nabla\\cdot\\mathbf{u}",
+          "operation_label": "速度勾配の対称・反対称分解",
+          "explanation": "オイラー速度場の空間偏導関数を対称部（変形速度テンソル）と反対称部（スピンテンソル）に一意分解し、トレースが速度の発散に一致することを示す。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def",
+            "math.vec.vc01_divergence_def",
+            "phys.cont.el01_displacement_strain_tensor",
+            "phys.fluid.fl01_eulerian_lagrangian_field_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_decompose_grad",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial u_i}{\\partial x_j}",
+          "to_latex": "\\frac{\\partial u_i}{\\partial x_j} = \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right) + \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right)",
+          "operation_label": "恒等式による対称・反対称分解",
+          "explanation": "微小ひずみテンソルと同様に、速度勾配テンソルを転置との和・差の半分に恒等変形する。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def",
+            "phys.cont.el01_displacement_strain_tensor",
+            "phys.fluid.fl01_eulerian_lagrangian_field_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_define_d_omega",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial u_i}{\\partial x_j} = \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right) + \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right)",
+          "to_latex": "D_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\Omega_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right)",
+          "operation_label": "変形速度・スピンテンソルの定義",
+          "explanation": "対称部分を純粋な変形を表す変形速度テンソル D_ij、反対称部分を剛体回転を表すスピンテンソル Omega_ij と定義する。",
+          "used_node_ids": [
+            "phys.cont.el01_displacement_strain_tensor"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_trace_divergence",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\Omega_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right)",
+          "to_latex": "D_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\Omega_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\operatorname{tr}(\\mathbf{D}) = \\nabla\\cdot\\mathbf{u}",
+          "operation_label": "対角和と発散の一致",
+          "explanation": "i = j について和をとると D_ii = sum_i du_i/dx_i = div u となり、体積膨張率を表す。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ns02_newtonian_stress",
+      "target_node_id": "phys.fluid.ns02_newtonian_viscous_stress",
+      "route_kind": "deductive",
+      "title": "等方線形構成則とストークスの仮説によるニュートン流体粘性応力の導出",
+      "premise_node_ids": [
+        "phys.fluid.fl05_ideal_fluid_pressure_stress",
+        "phys.cont.el02_cauchy_stress_principle",
+        "phys.cont.el05_isotropic_lame_hooke",
+        "phys.fluid.ns01_rate_of_strain_tensor"
+      ],
+      "required_math_node_ids": [
+        "math.vec.vc01_divergence_def"
+      ],
+      "assumptions": [
+        "流体は等方的かつ空間的に均一な構成則に従う",
+        "応力は変形速度テンソルに線形依存し、静止時（D=0）では等方圧力 -p delta_ij に帰着する",
+        "平均垂直応力の負値が熱力学的圧力に等しい（ストークスの仮説）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma_{ij} = -p\\delta_{ij} + \\tau_{ij}",
+          "to_latex": "\\sigma_{ij} = -p\\delta_{ij} + \\tau_{ij},\\quad \\tau_{ij} = 2\\mu D_{ij} + \\lambda_{\\mathrm{v}}(\\nabla\\cdot\\mathbf{u})\\delta_{ij},\\quad \\tau_{ij} = 2\\mu\\left(D_{ij} - \\frac{1}{3}(\\nabla\\cdot\\mathbf{u})\\delta_{ij}\\right)",
+          "operation_label": "等方線形構成則とストークスの仮説の適用",
+          "explanation": "完全流体の等方圧力応力に変形速度依存の粘性応力 tau_ij を加え、等方線形表現定理とストークスの仮説を用いてニュートン流体の応力表示を得る。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def",
+            "phys.cont.el02_cauchy_stress_principle",
+            "phys.cont.el05_isotropic_lame_hooke",
+            "phys.fluid.fl05_ideal_fluid_pressure_stress",
+            "phys.fluid.ns01_rate_of_strain_tensor"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_isotropic_linear_form",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{ij} = -p\\delta_{ij} + \\tau_{ij}",
+          "to_latex": "\\tau_{ij} = 2\\mu D_{ij} + \\lambda_{\\mathrm{v}}\\operatorname{tr}(\\mathbf{D})\\delta_{ij} = 2\\mu D_{ij} + \\lambda_{\\mathrm{v}}(\\nabla\\cdot\\mathbf{u})\\delta_{ij}",
+          "operation_label": "等方線形2階テンソル表現の適用",
+          "explanation": "弾性体のラメ表示と同様に、対称2階テンソル D_ij に線形かつ等方的に依存する粘性応力は2つのスカラー係数 mu, lambda_v で表される。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def",
+            "phys.cont.el05_isotropic_lame_hooke",
+            "phys.fluid.ns01_rate_of_strain_tensor"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_stokes_hypothesis",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tau_{ij} = 2\\mu D_{ij} + \\lambda_{\\mathrm{v}}\\operatorname{tr}(\\mathbf{D})\\delta_{ij} = 2\\mu D_{ij} + \\lambda_{\\mathrm{v}}(\\nabla\\cdot\\mathbf{u})\\delta_{ij}",
+          "to_latex": "-\\frac{1}{3}\\operatorname{tr}(\\boldsymbol{\\sigma}) = p - \\left(\\lambda_{\\mathrm{v}} + \\frac{2}{3}\\mu\\right)(\\nabla\\cdot\\mathbf{u}) = p \\implies \\lambda_{\\mathrm{v}} = -\\frac{2}{3}\\mu",
+          "operation_label": "ストークスの仮説による第2粘性係数の決定",
+          "explanation": "機械的圧力 -tr(sigma)/3 が静水圧 p に一致する（体積粘性率 lambda_v + 2mu/3 = 0）と要請して lambda_v = -2mu/3 を得る。",
+          "used_node_ids": [
+            "phys.cont.el02_cauchy_stress_principle",
+            "phys.fluid.fl05_ideal_fluid_pressure_stress"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_deviatoric_viscous_stress",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{1}{3}\\operatorname{tr}(\\boldsymbol{\\sigma}) = p - \\left(\\lambda_{\\mathrm{v}} + \\frac{2}{3}\\mu\\right)(\\nabla\\cdot\\mathbf{u}) = p \\implies \\lambda_{\\mathrm{v}} = -\\frac{2}{3}\\mu",
+          "to_latex": "\\sigma_{ij} = -p\\delta_{ij} + \\tau_{ij},\\quad \\tau_{ij} = 2\\mu D_{ij} + \\lambda_{\\mathrm{v}}(\\nabla\\cdot\\mathbf{u})\\delta_{ij},\\quad \\tau_{ij} = 2\\mu\\left(D_{ij} - \\frac{1}{3}(\\nabla\\cdot\\mathbf{u})\\delta_{ij}\\right)",
+          "operation_label": "偏差粘性応力表示の確定",
+          "explanation": "lambda_v = -2mu/3 を代入することで、純粋せん断と体積膨張を分離したニュートン流体の粘性応力テンソルを得る。",
+          "used_node_ids": [
+            "phys.fluid.fl05_ideal_fluid_pressure_stress",
+            "phys.fluid.ns01_rate_of_strain_tensor"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ns03_compressible_ns",
+      "target_node_id": "phys.fluid.ns03_navier_stokes_compressible",
+      "route_kind": "deductive",
+      "title": "運動量保存則とニュートン粘性応力による圧縮性ナビエ＝ストークス方程式の導出",
+      "premise_node_ids": [
+        "phys.fluid.fl02_material_derivative",
+        "phys.fluid.fl03_reynolds_transport_theorem",
+        "phys.fluid.fl04_continuity_equation",
+        "phys.cont.el03_cauchy_eom_symmetry",
+        "phys.fluid.ns02_newtonian_viscous_stress"
+      ],
+      "required_math_node_ids": [
+        "math.vec.vc01_divergence_def",
+        "math.vec.vc05_gauss_divergence_theorem"
+      ],
+      "assumptions": [
+        "粘性係数 mu および第2粘性係数 lambda_v は空間的に一様定数とする",
+        "流体場は連続かつ十分に滑らかとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d}{dt}\\iiint_{V(t)} \\rho u_i\\,dV = \\iint_{\\partial V(t)} \\sum_{j=1}^{3} \\sigma_{ij}n_j\\,dS + \\iiint_{V(t)} \\rho f_i\\,dV",
+          "to_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p + \\mu\\nabla^2\\mathbf{u} + (\\lambda_{\\mathrm{v}} + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\rho\\mathbf{f}",
+          "operation_label": "輸送定理と粘性応力の代入",
+          "explanation": "物質体積に対する運動量保存則にレイノルズの輸送定理・発散定理・連続の式を適用して流体のコーシー運動方程式を得て、ニュートン流体の構成則を代入する。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def",
+            "math.vec.vc05_gauss_divergence_theorem",
+            "phys.cont.el03_cauchy_eom_symmetry",
+            "phys.fluid.fl02_material_derivative",
+            "phys.fluid.fl03_reynolds_transport_theorem",
+            "phys.fluid.fl04_continuity_equation",
+            "phys.fluid.ns02_newtonian_viscous_stress"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_cauchy_eom_fluid",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\iiint_{V(t)} \\rho u_i\\,dV = \\iint_{\\partial V(t)} \\sum_{j=1}^{3} \\sigma_{ij}n_j\\,dS + \\iiint_{V(t)} \\rho f_i\\,dV",
+          "to_latex": "\\rho\\frac{Du_i}{Dt} = \\sum_{j=1}^{3}\\frac{\\partial \\sigma_{ij}}{\\partial x_j} + \\rho f_i",
+          "operation_label": "局所微分形運動方程式の導出",
+          "explanation": "レイノルズの輸送定理と連続の式で左辺を rho Du_i/Dt に整理し、表面力積分にガウスの発散定理を適用して任意体積 V(t) で局所化する。",
+          "used_node_ids": [
+            "math.vec.vc05_gauss_divergence_theorem",
+            "phys.cont.el03_cauchy_eom_symmetry",
+            "phys.fluid.fl02_material_derivative",
+            "phys.fluid.fl03_reynolds_transport_theorem",
+            "phys.fluid.fl04_continuity_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_substitute_stress",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{Du_i}{Dt} = \\sum_{j=1}^{3}\\frac{\\partial \\sigma_{ij}}{\\partial x_j} + \\rho f_i",
+          "to_latex": "\\rho\\frac{Du_i}{Dt} = -\\frac{\\partial p}{\\partial x_i} + \\sum_{j=1}^{3}\\frac{\\partial}{\\partial x_j}\\left[\\mu\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right) + \\lambda_{\\mathrm{v}}(\\nabla\\cdot\\mathbf{u})\\delta_{ij}\\right] + \\rho f_i",
+          "operation_label": "ニュートン流体応力テンソルの代入",
+          "explanation": "sigma_ij = -p delta_ij + 2 mu D_ij + lambda_v (div u) delta_ij を運動方程式の応力発散項に代入する。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def",
+            "phys.fluid.ns02_newtonian_viscous_stress"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_vector_form",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{Du_i}{Dt} = -\\frac{\\partial p}{\\partial x_i} + \\sum_{j=1}^{3}\\frac{\\partial}{\\partial x_j}\\left[\\mu\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right) + \\lambda_{\\mathrm{v}}(\\nabla\\cdot\\mathbf{u})\\delta_{ij}\\right] + \\rho f_i",
+          "to_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p + \\mu\\nabla^2\\mathbf{u} + (\\lambda_{\\mathrm{v}} + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\rho\\mathbf{f}",
+          "operation_label": "定数粘性係数のもとでの整理",
+          "explanation": "mu と lambda_v を定数とし、偏微分の順序交換 sum_j d^2 u_j / (dx_j dx_i) = d(div u)/dx_i を用いてベクトル形式にまとめる。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ns04_incompressible_ns",
+      "target_node_id": "phys.fluid.ns04_navier_stokes_incompressible",
+      "route_kind": "deductive",
+      "title": "非圧縮条件による非圧縮性ナビエ＝ストークス方程式の導出",
+      "premise_node_ids": [
+        "phys.fluid.ns03_navier_stokes_compressible",
+        "phys.fluid.fl04_continuity_equation",
+        "phys.fluid.fl02_material_derivative"
+      ],
+      "required_math_node_ids": [
+        "math.vec.vc01_divergence_def"
+      ],
+      "assumptions": [
+        "流体密度 rho は一様定数であり非圧縮条件 div u = 0 が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p + \\mu\\nabla^2\\mathbf{u} + (\\lambda_{\\mathrm{v}} + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\rho\\mathbf{f}",
+          "to_latex": "\\nabla\\cdot\\mathbf{u} = 0,\\quad \\frac{\\partial\\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\nu\\nabla^2\\mathbf{u} + \\mathbf{f}\\quad \\left(\\nu := \\frac{\\mu}{\\rho}\\right)",
+          "operation_label": "非圧縮条件と動粘性係数の導入",
+          "explanation": "圧縮性ナビエ＝ストークス方程式に非圧縮条件 div u = 0 を課し、密度 rho で除して動粘性係数 nu = mu / rho を導入する。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def",
+            "phys.fluid.fl02_material_derivative",
+            "phys.fluid.fl04_continuity_equation",
+            "phys.fluid.ns03_navier_stokes_compressible"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_apply_div_zero",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p + \\mu\\nabla^2\\mathbf{u} + (\\lambda_{\\mathrm{v}} + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\rho\\mathbf{f}",
+          "to_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p + \\mu\\nabla^2\\mathbf{u} + \\rho\\mathbf{f}\\quad (\\nabla\\cdot\\mathbf{u} = 0)",
+          "operation_label": "体積膨張項の消去",
+          "explanation": "連続の式から導かれる非圧縮性条件 div u = 0 により (lambda_v + mu) grad(div u) の項が消滅する。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def",
+            "phys.fluid.fl04_continuity_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_divide_rho_material_deriv",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p + \\mu\\nabla^2\\mathbf{u} + \\rho\\mathbf{f}\\quad (\\nabla\\cdot\\mathbf{u} = 0)",
+          "to_latex": "\\nabla\\cdot\\mathbf{u} = 0,\\quad \\frac{\\partial\\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\nu\\nabla^2\\mathbf{u} + \\mathbf{f}\\quad \\left(\\nu := \\frac{\\mu}{\\rho}\\right)",
+          "operation_label": "実質微分の展開と動粘性係数の定義",
+          "explanation": "両辺を一定密度 rho で割り、実質微分 Du/Dt を局所微分と移流項に展開し、nu := mu / rho を定義する。",
+          "used_node_ids": [
+            "phys.fluid.fl02_material_derivative"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ns05_reynolds_number",
+      "target_node_id": "phys.fluid.ns05_reynolds_number_nondim",
+      "route_kind": "reformulation",
+      "title": "代表スケールによるナビエ＝ストークス方程式の無次元化とレイノルズ数の出現",
+      "premise_node_ids": [
+        "phys.fluid.ns04_navier_stokes_incompressible"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "保存外力は無視するか圧力に含める（f = 0）",
+        "流れ場に特徴的な代表長さ L と代表速度 U が存在する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial\\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\nu\\nabla^2\\mathbf{u}",
+          "to_latex": "\\frac{\\partial\\mathbf{u}^*}{\\partial t^*} + (\\mathbf{u}^*\\cdot\\nabla^*)\\mathbf{u}^* = -\\nabla^* p^* + \\frac{1}{\\mathrm{Re}}\\nabla^{*2}\\mathbf{u}^*,\\quad \\mathrm{Re} := \\frac{\\rho U L}{\\mu} = \\frac{U L}{\\nu}",
+          "operation_label": "変数スケーリングと無次元化",
+          "explanation": "x* = x/L, u* = u/U, t* = Ut/L, p* = p/(rho U^2) を導入して方程式を無次元化し、粘性項の係数としてレイノルズ数の逆数 1/Re を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "phys.fluid.ns04_navier_stokes_incompressible"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_scales",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial\\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\nu\\nabla^2\\mathbf{u}",
+          "to_latex": "\\frac{U^2}{L}\\left(\\frac{\\partial\\mathbf{u}^*}{\\partial t^*} + (\\mathbf{u}^*\\cdot\\nabla^*)\\mathbf{u}^*\\right) = -\\frac{U^2}{L}\\nabla^* p^* + \\frac{\\nu U}{L^2}\\nabla^{*2}\\mathbf{u}^*",
+          "operation_label": "連鎖律による無次元微分の書き換え",
+          "explanation": "d/dt = (U/L) d/dt*、nabla = (1/L) nabla* および u = U u*、p = rho U^2 p* を連鎖律に従って代入する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_normalize_inertial",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{U^2}{L}\\left(\\frac{\\partial\\mathbf{u}^*}{\\partial t^*} + (\\mathbf{u}^*\\cdot\\nabla^*)\\mathbf{u}^*\\right) = -\\frac{U^2}{L}\\nabla^* p^* + \\frac{\\nu U}{L^2}\\nabla^{*2}\\mathbf{u}^*",
+          "to_latex": "\\frac{\\partial\\mathbf{u}^*}{\\partial t^*} + (\\mathbf{u}^*\\cdot\\nabla^*)\\mathbf{u}^* = -\\nabla^* p^* + \\frac{1}{\\mathrm{Re}}\\nabla^{*2}\\mathbf{u}^*,\\quad \\mathrm{Re} := \\frac{\\rho U L}{\\mu} = \\frac{U L}{\\nu}",
+          "operation_label": "慣性スケール U^2/L での規格化",
+          "explanation": "両辺を慣性加速度スケール U^2/L で除すると粘性項の係数が nu/(UL) となり、その逆数としてレイノルズ数 Re = UL/nu が定まる。",
+          "used_node_ids": [
+            "phys.fluid.ns04_navier_stokes_incompressible"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ns06_plane_poiseuille",
+      "target_node_id": "phys.fluid.ns06_plane_poiseuille_flow",
+      "route_kind": "deductive",
+      "title": "平行平板間の定常層流に対するナビエ＝ストークス方程式の積分と平面ポアズイユ流",
+      "premise_node_ids": [
+        "phys.fluid.ns04_navier_stokes_incompressible"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m26_zero_derivative_constant_lemma"
+      ],
+      "assumptions": [
+        "定常・十分発達した2次元平行流 u = (u(y), 0, 0) で外力はない（f = 0）",
+        "壁面 y = +h, -h において粘着境界条件（すべりなし条件）u(+/-h) = 0 が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial\\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\nu\\nabla^2\\mathbf{u},\\quad \\mathbf{u}=(u(y),0,0),\\; u(\\pm h)=0",
+          "to_latex": "u(y) = -\\frac{1}{2\\mu}\\frac{dp}{dx}(h^2 - y^2),\\quad q = \\int_{-h}^{h} u(y)\\,dy = -\\frac{2h^3}{3\\mu}\\frac{dp}{dx}",
+          "operation_label": "平行流縮約・2回積分と流量評価",
+          "explanation": "定常平行流の仮定により移流項が消滅して線形常微分方程式に帰着させ、すべりなし条件で積分して放物線速度分布と流量を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "phys.fluid.ns04_navier_stokes_incompressible"
+          ],
+          "sympy_check_hint": "integrate((h**2 - y**2), (y, -h, h)) == 4*h**3/3"
+        },
+        {
+          "step_id": "s2_reduce_to_ode",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial\\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\nu\\nabla^2\\mathbf{u},\\quad \\mathbf{u}=(u(y),0,0),\\; u(\\pm h)=0",
+          "to_latex": "\\frac{d^2 u}{dy^2} = \\frac{1}{\\mu}\\frac{dp}{dx} = \\text{const.},\\quad \\frac{\\partial p}{\\partial y} = 0",
+          "operation_label": "移流項の消滅と圧力勾配の定数性",
+          "explanation": "y方向式から dp/dy = 0、x方向式から mu u''(y) = dp/dx を得る。左辺は y のみ、右辺は x のみの関数であるため両辺は定数となる。",
+          "used_node_ids": [
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "phys.fluid.ns04_navier_stokes_incompressible"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_integrate_bc",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 u}{dy^2} = \\frac{1}{\\mu}\\frac{dp}{dx} = \\text{const.},\\quad \\frac{\\partial p}{\\partial y} = 0",
+          "to_latex": "u(y) = \\frac{1}{2\\mu}\\frac{dp}{dx}y^2 + C_1 y + C_2 \\implies u(y) = -\\frac{1}{2\\mu}\\frac{dp}{dx}(h^2 - y^2)",
+          "operation_label": "2回積分と壁面すべりなし境界条件の適用",
+          "explanation": "y に関して2回積分し、境界条件 u(h) = u(-h) = 0 から C_1 = 0, C_2 = -(h^2 / 2mu)(dp/dx) を決定する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_compute_flux",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(y) = \\frac{1}{2\\mu}\\frac{dp}{dx}y^2 + C_1 y + C_2 \\implies u(y) = -\\frac{1}{2\\mu}\\frac{dp}{dx}(h^2 - y^2)",
+          "to_latex": "u(y) = -\\frac{1}{2\\mu}\\frac{dp}{dx}(h^2 - y^2),\\quad q = \\int_{-h}^{h} u(y)\\,dy = -\\frac{2h^3}{3\\mu}\\frac{dp}{dx}",
+          "operation_label": "断面体積流量の積分評価",
+          "explanation": "速度分布 u(y) を平板間の区間 [-h, h] で定積分して単位幅あたり体積流量 q を求める。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ns07_hagen_poiseuille",
+      "target_node_id": "phys.fluid.ns07_hagen_poiseuille_pipe",
+      "route_kind": "deductive",
+      "title": "円柱座標ナビエ＝ストークス方程式からのハーゲン＝ポアズイユ流の導出",
+      "premise_node_ids": [
+        "phys.fluid.ns04_navier_stokes_incompressible"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.mi05_polar_2d_area_element",
+        "math.vec.cc07_cylindrical_diff_ops_laplacian"
+      ],
+      "assumptions": [
+        "定常軸対称の十分発達した円管内流 u = u_z(r) e_z で外力はない（f = 0）",
+        "管壁 r = R でのすべりなし条件 u_z(R) = 0 と中心軸 r = 0 での有界性が成り立つ",
+        "管長 L にわたる圧力降下 Delta p = -(dp/dz) L > 0 が一定である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla\\cdot\\mathbf{u}=0,\\; (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\nu\\nabla^2\\mathbf{u},\\quad \\mathbf{u}=u_z(r)\\mathbf{e}_z,\\; u_z(R)=0",
+          "to_latex": "u_z(r) = -\\frac{1}{4\\mu}\\frac{dp}{dz}(R^2 - r^2),\\quad Q = \\int_{0}^{R} 2\\pi r\\,u_z(r)\\,dr = -\\frac{\\pi R^4}{8\\mu}\\frac{dp}{dz} = \\frac{\\pi R^4 \\Delta p}{8\\mu L}",
+          "operation_label": "円柱座標縮約・積分と流量公式の導出",
+          "explanation": "円柱座標ラプラシアンを用いて軸方向運動方程式を常微分方程式に帰着させ、境界条件と断面極座標積分からハーゲン＝ポアズイユの法則を導く。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.mi05_polar_2d_area_element",
+            "math.vec.cc07_cylindrical_diff_ops_laplacian",
+            "phys.fluid.ns04_navier_stokes_incompressible"
+          ],
+          "sympy_check_hint": "integrate(2*pi*r*(R**2 - r**2), (r, 0, R)) == pi*R**4/2"
+        },
+        {
+          "step_id": "s2_cylindrical_ode",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\cdot\\mathbf{u}=0,\\; (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\nu\\nabla^2\\mathbf{u},\\quad \\mathbf{u}=u_z(r)\\mathbf{e}_z,\\; u_z(R)=0",
+          "to_latex": "\\frac{1}{r}\\frac{d}{dr}\\left(r\\frac{du_z}{dr}\\right) = \\frac{1}{\\mu}\\frac{dp}{dz} = \\text{const.}",
+          "operation_label": "円柱座標ラプラシアンの適用と変数分離",
+          "explanation": "定常軸対称一方向流では移流項が零となり、円柱座標のスカラーラプラシアンから動径方向の2階常微分方程式を得る。",
+          "used_node_ids": [
+            "math.vec.cc07_cylindrical_diff_ops_laplacian",
+            "phys.fluid.ns04_navier_stokes_incompressible"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_integrate_axisymmetric",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{r}\\frac{d}{dr}\\left(r\\frac{du_z}{dr}\\right) = \\frac{1}{\\mu}\\frac{dp}{dz} = \\text{const.}",
+          "to_latex": "u_z(r) = \\frac{1}{4\\mu}\\frac{dp}{dz}r^2 + C_1\\ln r + C_2 \\implies u_z(r) = -\\frac{1}{4\\mu}\\frac{dp}{dz}(R^2 - r^2)",
+          "operation_label": "r=0 有界性と r=R 粘着条件による積分定数決定",
+          "explanation": "r を掛けて2回積分し、r -> 0 で有限である条件から C_1 = 0、管壁 u_z(R) = 0 から C_2 を決める。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_pipe_flow_rate",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_z(r) = \\frac{1}{4\\mu}\\frac{dp}{dz}r^2 + C_1\\ln r + C_2 \\implies u_z(r) = -\\frac{1}{4\\mu}\\frac{dp}{dz}(R^2 - r^2)",
+          "to_latex": "u_z(r) = -\\frac{1}{4\\mu}\\frac{dp}{dz}(R^2 - r^2),\\quad Q = \\int_{0}^{R} 2\\pi r\\,u_z(r)\\,dr = -\\frac{\\pi R^4}{8\\mu}\\frac{dp}{dz} = \\frac{\\pi R^4 \\Delta p}{8\\mu L}",
+          "operation_label": "円形断面上の極座標面積分",
+          "explanation": "面積要素 r dr d theta を角度 [0, 2pi] と動径 [0, R] で積分し、dp/dz = -Delta p / L を代入する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.mi05_polar_2d_area_element"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ns08_bl_scaling",
+      "target_node_id": "phys.fluid.ns08_boundary_layer_scaling",
+      "route_kind": "deductive",
+      "title": "高レイノルズ数における粘性項と慣性項の釣合いによる境界層スケーリング",
+      "premise_node_ids": [
+        "phys.fluid.ns05_reynolds_number_nondim",
+        "phys.fluid.fl04_continuity_equation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "レイノルズ数は非常に大きい（Re >> 1）",
+        "境界層厚さ delta は主流方向の代表長さ L に比べ十分に薄い（delta << L）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial u^*}{\\partial x^*} + \\frac{\\partial v^*}{\\partial y^*} = 0,\\quad u^*\\frac{\\partial u^*}{\\partial x^*} + v^*\\frac{\\partial u^*}{\\partial y^*} = -\\frac{\\partial p^*}{\\partial x^*} + \\frac{1}{\\mathrm{Re}}\\left(\\frac{\\partial^2 u^*}{\\partial x^{*2}} + \\frac{\\partial^2 u^*}{\\partial y^{*2}}\\right)",
+          "to_latex": "\\frac{\\delta}{L} \\sim \\mathrm{Re}^{-1/2},\\quad Y = \\mathrm{Re}^{1/2} y^*,\\quad V = \\mathrm{Re}^{1/2} v^*",
+          "operation_label": "オーダー評価と引き伸ばし変数の導出",
+          "explanation": "境界層内でx方向慣性項とy方向粘性拡散項が同じオーダーになる条件から delta/L ~ Re^{-1/2} を導き、連続の式を保つ垂直速度スケール V を定める。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "phys.fluid.fl04_continuity_equation",
+            "phys.fluid.ns05_reynolds_number_nondim"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_order_balance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial u^*}{\\partial x^*} + \\frac{\\partial v^*}{\\partial y^*} = 0,\\quad u^*\\frac{\\partial u^*}{\\partial x^*} + v^*\\frac{\\partial u^*}{\\partial y^*} = -\\frac{\\partial p^*}{\\partial x^*} + \\frac{1}{\\mathrm{Re}}\\left(\\frac{\\partial^2 u^*}{\\partial x^{*2}} + \\frac{\\partial^2 u^*}{\\partial y^{*2}}\\right)",
+          "to_latex": "1 \\sim \\frac{1}{\\mathrm{Re}}\\left(\\frac{L}{\\delta}\\right)^2 \\implies \\frac{\\delta}{L} \\sim \\mathrm{Re}^{-1/2}",
+          "operation_label": "慣性項と壁法線粘性項のオーダー釣合い",
+          "explanation": "x* ~ O(1), u* ~ O(1), y* ~ O(delta/L) とすると、慣性項は O(1)、粘性項の主要部は (1/Re)(L/delta)^2 となり両者の釣合いから delta/L ~ Re^{-1/2} を得る。",
+          "used_node_ids": [
+            "phys.fluid.ns05_reynolds_number_nondim"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_stretched_coords",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "1 \\sim \\frac{1}{\\mathrm{Re}}\\left(\\frac{L}{\\delta}\\right)^2 \\implies \\frac{\\delta}{L} \\sim \\mathrm{Re}^{-1/2}",
+          "to_latex": "\\frac{\\delta}{L} \\sim \\mathrm{Re}^{-1/2},\\quad Y = \\mathrm{Re}^{1/2} y^*,\\quad V = \\mathrm{Re}^{1/2} v^*",
+          "operation_label": "連続の式による引き伸ばし座標と法線速度スケーリング",
+          "explanation": "連続の式 du*/dx* + dv*/dy* = 0 の2項が同オーダー O(1) となるため v* ~ O(delta/L) = O(Re^{-1/2}) が要請され、Y と V を定義する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "phys.fluid.fl04_continuity_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_ns09_prandtl_bl",
+      "target_node_id": "phys.fluid.ns09_prandtl_boundary_layer_eq",
+      "route_kind": "deductive",
+      "title": "漸近スケーリングと主流ベルヌーイ関係によるプラントル境界層方程式の導出",
+      "premise_node_ids": [
+        "phys.fluid.ns04_navier_stokes_incompressible",
+        "phys.fluid.ns05_reynolds_number_nondim",
+        "phys.fluid.ns08_boundary_layer_scaling",
+        "phys.fluid.fl08_bernoulli_theorem"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "流れは2次元定常非圧縮流であり Re -> infinity の漸近極限をとる",
+        "境界層外縁 Y -> infinity では非粘性主流速度 u -> U_e(x) に滑らかに接合する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u^*\\frac{\\partial u^*}{\\partial x^*} + v^*\\frac{\\partial u^*}{\\partial y^*} = -\\frac{\\partial p^*}{\\partial x^*} + \\frac{1}{\\mathrm{Re}}\\nabla^{*2}u^*,\\quad u^*\\frac{\\partial v^*}{\\partial x^*} + v^*\\frac{\\partial v^*}{\\partial y^*} = -\\frac{\\partial p^*}{\\partial y^*} + \\frac{1}{\\mathrm{Re}}\\nabla^{*2}v^*",
+          "to_latex": "\\frac{\\partial u}{\\partial x} + \\frac{\\partial v}{\\partial y} = 0,\\quad u\\frac{\\partial u}{\\partial x} + v\\frac{\\partial u}{\\partial y} = U_e(x)\\frac{dU_e}{dx} + \\nu\\frac{\\partial^2 u}{\\partial y^2},\\quad \\frac{\\partial p}{\\partial y} = 0",
+          "operation_label": "境界層漸近展開と外縁主流圧力勾配の接合",
+          "explanation": "引き伸ばし変数 (x*, Y, V) を代入して O(1) の主要項のみを残すことで dp/dy = 0 と放物型x方向式を得て、外縁のベルヌーイ則と接合して有次元形に戻す。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "phys.fluid.fl08_bernoulli_theorem",
+            "phys.fluid.ns04_navier_stokes_incompressible",
+            "phys.fluid.ns05_reynolds_number_nondim",
+            "phys.fluid.ns08_boundary_layer_scaling"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_rescaled_asymptotic",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u^*\\frac{\\partial u^*}{\\partial x^*} + v^*\\frac{\\partial u^*}{\\partial y^*} = -\\frac{\\partial p^*}{\\partial x^*} + \\frac{1}{\\mathrm{Re}}\\nabla^{*2}u^*,\\quad u^*\\frac{\\partial v^*}{\\partial x^*} + v^*\\frac{\\partial v^*}{\\partial y^*} = -\\frac{\\partial p^*}{\\partial y^*} + \\frac{1}{\\mathrm{Re}}\\nabla^{*2}v^*",
+          "to_latex": "\\frac{\\partial p^*}{\\partial Y} = \\mathcal{O}(\\mathrm{Re}^{-1}) \\to 0,\\quad u^*\\frac{\\partial u^*}{\\partial x^*} + V\\frac{\\partial u^*}{\\partial Y} = -\\frac{\\partial p^*}{\\partial x^*} + \\frac{\\partial^2 u^*}{\\partial Y^2} + \\mathcal{O}(\\mathrm{Re}^{-1})",
+          "operation_label": "引き伸ばし変数代入と Re -> infinity 極限",
+          "explanation": "y* = Re^{-1/2} Y, v* = Re^{-1/2} V を代入すると、y方向式から dp*/dY = O(Re^{-1}) -> 0 が導かれ、x方向式からはx方向の2階粘性微分が O(Re^{-1}) として落とされる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "phys.fluid.ns05_reynolds_number_nondim",
+            "phys.fluid.ns08_boundary_layer_scaling"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_bernoulli_matching",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial p^*}{\\partial Y} = \\mathcal{O}(\\mathrm{Re}^{-1}) \\to 0,\\quad u^*\\frac{\\partial u^*}{\\partial x^*} + V\\frac{\\partial u^*}{\\partial Y} = -\\frac{\\partial p^*}{\\partial x^*} + \\frac{\\partial^2 u^*}{\\partial Y^2} + \\mathcal{O}(\\mathrm{Re}^{-1})",
+          "to_latex": "-\\frac{1}{\\rho}\\frac{dp}{dx} = U_e(x)\\frac{dU_e}{dx},\\quad \\frac{\\partial p}{\\partial y} = 0",
+          "operation_label": "境界層外縁のベルヌーイの定理との整合",
+          "explanation": "dp/dy = 0 より圧力 p は層内で一定値 p(x) をとり、境界層外縁の非粘性主流に対するベルヌーイの定理 p/rho + U_e(x)^2 / 2 = const. を微分して圧力勾配項を置き換える。",
+          "used_node_ids": [
+            "phys.fluid.fl08_bernoulli_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_dimensional_form",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{1}{\\rho}\\frac{dp}{dx} = U_e(x)\\frac{dU_e}{dx},\\quad \\frac{\\partial p}{\\partial y} = 0",
+          "to_latex": "\\frac{\\partial u}{\\partial x} + \\frac{\\partial v}{\\partial y} = 0,\\quad u\\frac{\\partial u}{\\partial x} + v\\frac{\\partial u}{\\partial y} = U_e(x)\\frac{dU_e}{dx} + \\nu\\frac{\\partial^2 u}{\\partial y^2},\\quad \\frac{\\partial p}{\\partial y} = 0",
+          "operation_label": "有次元変数への復元",
+          "explanation": "無次元変数から有次元物理量 (x, y, u, v, p) に戻し、2次元定常非圧縮流に対するプラントルの境界層方程式系を完成させる。",
+          "used_node_ids": [
+            "phys.fluid.ns04_navier_stokes_incompressible",
+            "phys.fluid.ns08_boundary_layer_scaling"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

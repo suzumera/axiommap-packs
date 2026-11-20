@@ -1,0 +1,891 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.fluid.euler_bernoulli",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "流体力学基礎：連続の式・オイラー方程式・ベルヌーイの定理・渦度",
+    "language": "ja",
+    "description": "ラグランジュ微分（実質微分）、質量保存（連続の式）、完全流体のオイラー方程式、流線上のベルヌーイ定理、ケルビンの循環定理を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.fluid.fl01_eulerian_lagrangian_field_def",
+      "short_code": "FL01",
+      "kind": "definition",
+      "title": "オイラー描像・ラグランジュ描像と流跡線の方程式",
+      "summary": "空間固定座標と時刻で物理量を表すオイラー描像と、初期位置でラベル付けした流体粒子を追跡するラグランジュ描像およびフロー写像を定義する。",
+      "canonical_latex": "\\frac{\\partial \\mathbf{\\Phi}(\\mathbf{a}, t)}{\\partial t} = \\mathbf{u}\\big(\\mathbf{\\Phi}(\\mathbf{a}, t), t\\big),\\quad \\mathbf{\\Phi}(\\mathbf{a}, 0) = \\mathbf{a},\\quad f_L(\\mathbf{a}, t) := f\\big(\\mathbf{\\Phi}(\\mathbf{a}, t), t\\big).",
+      "aliases_latex": [
+        "\\dot{\\mathbf{x}}(t) = \\mathbf{u}(\\mathbf{x}(t), t),\\; \\mathbf{x}(0) = \\mathbf{a}"
+      ],
+      "keywords": [
+        "オイラー描像",
+        "ラグランジュ描像",
+        "流跡線",
+        "フロー写像",
+        "速度場"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_mechanics"
+      ]
+    },
+    {
+      "id": "phys.fluid.fl02_material_derivative",
+      "short_code": "FL02",
+      "kind": "theorem_formula",
+      "title": "ラグランジュ微分（実質微分・物質微分）",
+      "summary": "流体粒子に沿って移動しながら観測するスカラー場およびベクトル場の時間変化率を与える微分演算子 D/Dt を導出する。",
+      "canonical_latex": "\\frac{Df}{Dt} := \\left.\\frac{\\partial f_L(\\mathbf{a}, t)}{\\partial t}\\right|_{\\mathbf{a}} = \\frac{\\partial f}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)f,\\qquad \\frac{D\\mathbf{A}}{Dt} = \\frac{\\partial \\mathbf{A}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{A}.",
+      "aliases_latex": [
+        "\\frac{D}{Dt} = \\frac{\\partial}{\\partial t} + \\mathbf{u}\\cdot\\nabla"
+      ],
+      "keywords": [
+        "ラグランジュ微分",
+        "実質微分",
+        "物質微分",
+        "移流項"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_mechanics"
+      ]
+    },
+    {
+      "id": "phys.fluid.fl03_reynolds_transport_theorem",
+      "short_code": "FL03",
+      "kind": "theorem_formula",
+      "title": "レイノルズの輸送定理",
+      "summary": "流体粒子と共に移動・変形する物質体積 V(t) 上の体積積分の時間微分を、実質微分と速度の発散を含む積分および検査体積の境界流束積分で表す。",
+      "canonical_latex": "\\frac{d}{dt}\\iiint_{V(t)} f(\\mathbf{x}, t)\\,dV = \\iiint_{V(t)} \\left(\\frac{Df}{Dt} + f(\\nabla\\cdot\\mathbf{u})\\right)dV = \\iiint_{V(t)} \\frac{\\partial f}{\\partial t}\\,dV + \\iint_{\\partial V(t)} f(\\mathbf{u}\\cdot\\mathbf{n})\\,dS.",
+      "aliases_latex": [
+        "\\frac{d}{dt}\\int_{V(t)} f\\,dV = \\int_{V(t)} \\left(\\frac{\\partial f}{\\partial t} + \\nabla\\cdot(f\\mathbf{u})\\right)dV"
+      ],
+      "keywords": [
+        "レイノルズの輸送定理",
+        "物質体積",
+        "ヤコビアン",
+        "オイラーの膨張公式"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_mechanics"
+      ]
+    },
+    {
+      "id": "phys.fluid.fl04_continuity_equation",
+      "short_code": "FL04",
+      "kind": "theorem_formula",
+      "title": "質量保存則（連続の式）と非圧縮性条件",
+      "summary": "物質体積内の質量保存から微分形の連続の式を導出し、密度一定（または実質微分零）の非圧縮性流体におけるソレノイダル条件を得る。",
+      "canonical_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho\\mathbf{u}) = 0 \\iff \\frac{D\\rho}{Dt} + \\rho(\\nabla\\cdot\\mathbf{u}) = 0;\\qquad \\frac{D\\rho}{Dt} = 0 \\implies \\nabla\\cdot\\mathbf{u} = 0.",
+      "aliases_latex": [
+        "\\partial_t \\rho + \\nabla\\cdot(\\rho\\mathbf{u}) = 0"
+      ],
+      "keywords": [
+        "連続の式",
+        "質量保存則",
+        "非圧縮性流体",
+        "発散零"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_mechanics"
+      ]
+    },
+    {
+      "id": "phys.fluid.fl05_ideal_fluid_pressure_stress",
+      "short_code": "FL05",
+      "kind": "definition",
+      "title": "完全流体の等方応力テンソルと圧力勾配力",
+      "summary": "粘性によるせん断応力が存在しない完全流体において、コーシー応力テンソルが静水圧による等方形式で表され、正味表面力が圧力勾配力となることを定式化する。",
+      "canonical_latex": "\\sigma_{ij} = -p\\,\\delta_{ij},\\quad \\mathbf{t}(\\mathbf{x},\\mathbf{n}) = \\boldsymbol{\\sigma}\\mathbf{n} = -p\\,\\mathbf{n},\\quad \\iint_{\\partial V(t)} (-p\\,\\mathbf{n})\\,dS = -\\iiint_{V(t)} \\nabla p\\,dV.",
+      "aliases_latex": [
+        "\\boldsymbol{\\sigma} = -p I_3"
+      ],
+      "keywords": [
+        "完全流体",
+        "圧力",
+        "等方応力テンソル",
+        "圧力勾配力"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_mechanics"
+      ]
+    },
+    {
+      "id": "phys.fluid.fl06_euler_equation",
+      "short_code": "FL06",
+      "kind": "theorem_formula",
+      "title": "完全流体のオイラー運動方程式",
+      "summary": "物質体積に対する運動量保存則と完全流体の圧力応力を組み合わせ、非粘性流体の基礎運動方程式であるオイラー方程式を導出する。",
+      "canonical_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p + \\rho\\mathbf{f}.",
+      "aliases_latex": [
+        "\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{f}"
+      ],
+      "keywords": [
+        "オイラー方程式",
+        "運動量保存",
+        "完全流体",
+        "流体力学"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_mechanics"
+      ]
+    },
+    {
+      "id": "phys.fluid.fl07_lamb_form_vorticity_def",
+      "short_code": "FL07",
+      "kind": "theorem_formula",
+      "title": "渦度の定義とオイラー方程式のラム（Lamb）形式",
+      "summary": "速度場の回転として渦度ベクトルを定義し、ベクトル恒等式により移流項を運動エネルギー勾配と渦力項に分解したラム形式を導出する。",
+      "canonical_latex": "\\boldsymbol{\\omega} := \\nabla\\times\\mathbf{u},\\quad (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = \\nabla\\left(\\frac{1}{2}u^2\\right) - \\mathbf{u}\\times\\boldsymbol{\\omega} \\implies \\frac{\\partial \\mathbf{u}}{\\partial t} + \\nabla\\left(\\frac{1}{2}u^2\\right) - \\mathbf{u}\\times\\boldsymbol{\\omega} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{f}.",
+      "aliases_latex": [
+        "\\partial_t \\mathbf{u} + \\nabla(\\tfrac{1}{2}u^2) - \\mathbf{u}\\times(\\nabla\\times\\mathbf{u}) = -\\frac{1}{\\rho}\\nabla p + \\mathbf{f}"
+      ],
+      "keywords": [
+        "渦度",
+        "ラム形式",
+        "クロッコの式",
+        "移流項分解"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_mechanics"
+      ]
+    },
+    {
+      "id": "phys.fluid.fl08_bernoulli_theorem",
+      "short_code": "FL08",
+      "kind": "theorem_formula",
+      "title": "流線上のベルヌーイの定理",
+      "summary": "定常・保存体積力・バロトロピー（または非圧縮性）の完全流体において、単位質量あたりのエネルギー和が流線に沿って一定となるベルヌーイの定理を導出する。",
+      "canonical_latex": "\\frac{1}{2}u^2 + \\int \\frac{dp}{\\rho(p)} + \\Psi(\\mathbf{x}) = \\text{const. (along a streamline)},\\qquad \\rho=\\text{const.},\\;\\Psi=gz \\implies \\frac{1}{2}u^2 + \\frac{p}{\\rho} + gz = \\text{const.}",
+      "aliases_latex": [
+        "\\frac{1}{2}\\rho u^2 + p + \\rho g z = \\text{const.}"
+      ],
+      "keywords": [
+        "ベルヌーイの定理",
+        "流線",
+        "定常流",
+        "エネルギー保存"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_mechanics"
+      ]
+    },
+    {
+      "id": "phys.fluid.fl09_circulation_kelvin_theorem",
+      "short_code": "FL09",
+      "kind": "theorem_formula",
+      "title": "速度循環とケルビンの循環定理",
+      "summary": "流体と共に移動する閉曲線に沿う速度循環の時間変化を評価し、バロトロピー・保存力下の完全流体で循環が保存されるケルビンの循環定理を導出する。",
+      "canonical_latex": "\\Gamma(t) := \\oint_{C(t)} \\mathbf{u}\\cdot d\\mathbf{r} = \\iint_{S(t)} \\boldsymbol{\\omega}\\cdot\\mathbf{n}\\,dS,\\qquad \\frac{d\\Gamma}{dt} = \\oint_{C(t)} \\left(-\\frac{1}{\\rho}\\nabla p + \\mathbf{f}\\right)\\cdot d\\mathbf{r} = 0\\;\\big(\\rho=\\rho(p),\\; \\mathbf{f}=-\\nabla\\Psi\\big).",
+      "aliases_latex": [
+        "\\frac{d}{dt}\\oint_{C(t)} \\mathbf{u}\\cdot d\\mathbf{r} = 0"
+      ],
+      "keywords": [
+        "循環",
+        "ケルビンの循環定理",
+        "渦度保存",
+        "ストークスの定理"
+      ],
+      "domain_tags": [
+        "physics",
+        "fluid_mechanics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_fl01_eulerian_lagrangian_field",
+      "target_node_id": "phys.fluid.fl01_eulerian_lagrangian_field_def",
+      "route_kind": "reformulation",
+      "title": "速度場の常微分方程式による流跡線フロー写像とラグランジュ場の構成",
+      "premise_node_ids": [
+        "math.ode.fo01_first_order_ode_def",
+        "math.vec.m27_vector_component_differentiation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "速度場 u(x,t) は空間・時間に関して滑らか（C1級以上）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{u}(\\mathbf{x}, t) = \\sum_{i=1}^{3} u_i(\\mathbf{x}, t)\\mathbf{e}_i,\\quad \\mathbf{x}(0) = \\mathbf{a}.",
+          "to_latex": "\\frac{\\partial \\mathbf{\\Phi}(\\mathbf{a}, t)}{\\partial t} = \\mathbf{u}\\big(\\mathbf{\\Phi}(\\mathbf{a}, t), t\\big),\\quad \\mathbf{\\Phi}(\\mathbf{a}, 0) = \\mathbf{a},\\quad f_L(\\mathbf{a}, t) := f\\big(\\mathbf{\\Phi}(\\mathbf{a}, t), t\\big).",
+          "operation_label": "初期値問題によるフロー写像と合成場の定義",
+          "explanation": "オイラー速度場 u(x,t) に対する粒子軌道の常微分方程式の初期値問題からフロー写像 Φ(a,t) を定め、任意のスカラー場 f のラグランジュ表示 f_L を定義する。",
+          "used_node_ids": [
+            "math.ode.fo01_first_order_ode_def",
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_ode_trajectory",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{u}(\\mathbf{x}, t) = \\sum_{i=1}^{3} u_i(\\mathbf{x}, t)\\mathbf{e}_i,\\quad \\mathbf{x}(0) = \\mathbf{a}.",
+          "to_latex": "\\frac{d\\mathbf{x}}{dt} = \\mathbf{u}(\\mathbf{x}(t), t),\\quad \\mathbf{x}(0) = \\mathbf{a}.",
+          "operation_label": "1階常微分方程式の初期値問題としての定式化",
+          "explanation": "各時刻における流体粒子の速度が空間位置でのオイラー速度場に一致するという条件を1階連立常微分方程式の初期値問題として書く。",
+          "used_node_ids": [
+            "math.ode.fo01_first_order_ode_def",
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_flow_map",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\mathbf{x}}{dt} = \\mathbf{u}(\\mathbf{x}(t), t),\\quad \\mathbf{x}(0) = \\mathbf{a}.",
+          "to_latex": "\\frac{\\partial \\mathbf{\\Phi}(\\mathbf{a}, t)}{\\partial t} = \\mathbf{u}\\big(\\mathbf{\\Phi}(\\mathbf{a}, t), t\\big),\\quad \\mathbf{\\Phi}(\\mathbf{a}, 0) = \\mathbf{a},\\quad f_L(\\mathbf{a}, t) := f\\big(\\mathbf{\\Phi}(\\mathbf{a}, t), t\\big).",
+          "operation_label": "初期位置パラメータによるフロー写像と合成場",
+          "explanation": "解軌道の初期位置 a への依存性を明示した写像 Φ(a,t) を導入し、オイラー場 f(x,t) を軌道上に引き戻してラグランジュ場 f_L(a,t) を定義する。",
+          "used_node_ids": [
+            "math.ode.fo01_first_order_ode_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_fl02_material_derivative",
+      "target_node_id": "phys.fluid.fl02_material_derivative",
+      "route_kind": "deductive",
+      "title": "合成関数の微分法則によるラグランジュ微分（実質微分）の導出",
+      "premise_node_ids": [
+        "phys.fluid.fl01_eulerian_lagrangian_field_def",
+        "math.calc.m35_multivariable_chain_rule",
+        "math.vec.m33_gradient_definition"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m27_vector_component_differentiation"
+      ],
+      "assumptions": [
+        "場 f(x,t) および軌道 Φ(a,t) は偏微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{Df}{Dt} := \\left.\\frac{\\partial}{\\partial t} f\\big(\\mathbf{\\Phi}(\\mathbf{a}, t), t\\big)\\right|_{\\mathbf{a}}.",
+          "to_latex": "\\frac{Df}{Dt} = \\frac{\\partial f}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)f,\\qquad \\frac{D\\mathbf{A}}{Dt} = \\frac{\\partial \\mathbf{A}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{A}.",
+          "operation_label": "多変数連鎖律の適用",
+          "explanation": "初期位置 a を固定した時間微分に多変数合成微分法則を適用し、局所時間微分と移流項に分解する。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "math.vec.m33_gradient_definition",
+            "phys.fluid.fl01_eulerian_lagrangian_field_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_chain_rule",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{Df}{Dt} := \\left.\\frac{\\partial}{\\partial t} f\\big(\\mathbf{\\Phi}(\\mathbf{a}, t), t\\big)\\right|_{\\mathbf{a}}.",
+          "to_latex": "\\frac{Df}{Dt} = \\frac{\\partial f}{\\partial t} + \\sum_{i=1}^{3} \\frac{\\partial f}{\\partial x_i}\\frac{\\partial \\Phi_i(\\mathbf{a}, t)}{\\partial t}.",
+          "operation_label": "4変数（x1, x2, x3, t）に関する連鎖律",
+          "explanation": "第4引数 t の直接微分と、空間座標 Φ_i(a,t) を介した連鎖律の和として時間微分を展開する。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_subst_velocity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{Df}{Dt} = \\frac{\\partial f}{\\partial t} + \\sum_{i=1}^{3} \\frac{\\partial f}{\\partial x_i}\\frac{\\partial \\Phi_i(\\mathbf{a}, t)}{\\partial t}.",
+          "to_latex": "\\frac{Df}{Dt} = \\frac{\\partial f}{\\partial t} + \\sum_{i=1}^{3} u_i \\frac{\\partial f}{\\partial x_i} = \\frac{\\partial f}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)f.",
+          "operation_label": "速度場と勾配による内積表現",
+          "explanation": "FL01 の粒子速度 ∂Φ_i/∂t = u_i を代入し、勾配 ∇f の定義を用いて (u·∇)f として整理する。",
+          "used_node_ids": [
+            "math.vec.m33_gradient_definition",
+            "phys.fluid.fl01_eulerian_lagrangian_field_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_vector_ext",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{Df}{Dt} = \\frac{\\partial f}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)f.",
+          "to_latex": "\\frac{Df}{Dt} = \\frac{\\partial f}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)f,\\qquad \\frac{D\\mathbf{A}}{Dt} = \\frac{\\partial \\mathbf{A}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{A}.",
+          "operation_label": "ベクトル場各成分への適用",
+          "explanation": "デカルト座標の固定基底のもとでベクトル場 A の各成分 A_j に同一の演算子 D/Dt を適用し、ベクトル実質微分の表示を得る。",
+          "used_node_ids": [
+            "math.vec.m27_vector_component_differentiation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_fl03_reynolds_transport_theorem",
+      "target_node_id": "phys.fluid.fl03_reynolds_transport_theorem",
+      "route_kind": "deductive",
+      "title": "ヤコビアン変換とオイラー膨張公式によるレイノルズの輸送定理の導出",
+      "premise_node_ids": [
+        "phys.fluid.fl02_material_derivative",
+        "math.calc.mi04_change_of_variables_multiple_integral",
+        "math.vec.vc05_gauss_divergence_theorem",
+        "math.vec.vc10_div_curl_product_rules"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.calc.mi03_jacobian_matrix_determinant",
+        "math.ode.sys02_wronskian_liouville",
+        "math.vec.vc01_divergence_def"
+      ],
+      "assumptions": [
+        "フロー写像 Φ(·,t) は正のヤコビアン J > 0 を持つ微分同相写像である",
+        "被積分関数 f は連続微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d}{dt}\\iiint_{V(t)} f(\\mathbf{x}, t)\\,dV = \\frac{d}{dt}\\iiint_{V_0} f\\big(\\mathbf{\\Phi}(\\mathbf{a}, t), t\\big)\\,J(\\mathbf{a}, t)\\,dV_0.",
+          "to_latex": "\\frac{d}{dt}\\iiint_{V(t)} f(\\mathbf{x}, t)\\,dV = \\iiint_{V(t)} \\left(\\frac{Df}{Dt} + f(\\nabla\\cdot\\mathbf{u})\\right)dV = \\iiint_{V(t)} \\frac{\\partial f}{\\partial t}\\,dV + \\iint_{\\partial V(t)} f(\\mathbf{u}\\cdot\\mathbf{n})\\,dS.",
+          "operation_label": "ヤコビアン時間微分とガウスの発散定理",
+          "explanation": "物質体積 V(t) を固定初期領域 V_0 へ変数変換して積分内で時間微分し、DJ/Dt = J(∇·u) と発散定理を適用して輸送定理の両形式を得る。",
+          "used_node_ids": [
+            "math.calc.mi04_change_of_variables_multiple_integral",
+            "math.ode.sys02_wronskian_liouville",
+            "math.vec.vc05_gauss_divergence_theorem",
+            "math.vec.vc10_div_curl_product_rules",
+            "phys.fluid.fl02_material_derivative"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_jacobian_deriv",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\iiint_{V(t)} f(\\mathbf{x}, t)\\,dV = \\frac{d}{dt}\\iiint_{V_0} f\\big(\\mathbf{\\Phi}(\\mathbf{a}, t), t\\big)\\,J(\\mathbf{a}, t)\\,dV_0.",
+          "to_latex": "\\iiint_{V_0} \\left(\\frac{Df}{Dt}J + f\\frac{DJ}{Dt}\\right)dV_0 = \\iiint_{V_0} \\left(\\frac{Df}{Dt} + f(\\nabla\\cdot\\mathbf{u})\\right)J\\,dV_0.",
+          "operation_label": "積の微分則とオイラーの膨張公式 DJ/Dt = J(∇·u) の適用",
+          "explanation": "ヤコビ行列 F_{ij} = ∂Φ_i/∂a_j が dF/dt = (∇u)F を満たすことからアベル＝リウヴィルの公式より DJ/Dt = tr(∇u)J = (∇·u)J となるため、積の微分をまとめる。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.ode.sys02_wronskian_liouville",
+            "math.vec.vc01_divergence_def",
+            "phys.fluid.fl02_material_derivative"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_pullback",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_{V_0} \\left(\\frac{Df}{Dt} + f(\\nabla\\cdot\\mathbf{u})\\right)J\\,dV_0.",
+          "to_latex": "\\iiint_{V(t)} \\left(\\frac{Df}{Dt} + f(\\nabla\\cdot\\mathbf{u})\\right)dV = \\iiint_{V(t)} \\left(\\frac{\\partial f}{\\partial t} + \\nabla\\cdot(f\\mathbf{u})\\right)dV.",
+          "operation_label": "現在配置 V(t) への逆変換と積の発散則",
+          "explanation": "dV = J dV_0 により積分領域を V(t) へ戻し、Df/Dt + f(∇·u) = ∂f/∂t + u·∇f + f(∇·u) = ∂f/∂t + ∇·(fu) と書き換える。",
+          "used_node_ids": [
+            "math.calc.mi04_change_of_variables_multiple_integral",
+            "math.vec.vc10_div_curl_product_rules",
+            "phys.fluid.fl02_material_derivative"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_gauss_boundary",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_{V(t)} \\left(\\frac{Df}{Dt} + f(\\nabla\\cdot\\mathbf{u})\\right)dV = \\iiint_{V(t)} \\left(\\frac{\\partial f}{\\partial t} + \\nabla\\cdot(f\\mathbf{u})\\right)dV.",
+          "to_latex": "\\frac{d}{dt}\\iiint_{V(t)} f(\\mathbf{x}, t)\\,dV = \\iiint_{V(t)} \\left(\\frac{Df}{Dt} + f(\\nabla\\cdot\\mathbf{u})\\right)dV = \\iiint_{V(t)} \\frac{\\partial f}{\\partial t}\\,dV + \\iint_{\\partial V(t)} f(\\mathbf{u}\\cdot\\mathbf{n})\\,dS.",
+          "operation_label": "ガウスの発散定理による境界流束形式への変換",
+          "explanation": "∇·(fu) の体積積分にガウスの発散定理を適用し、検査領域表面を通過する流束の面積分表示を得る。",
+          "used_node_ids": [
+            "math.vec.vc05_gauss_divergence_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_fl04_continuity_equation",
+      "target_node_id": "phys.fluid.fl04_continuity_equation",
+      "route_kind": "deductive",
+      "title": "物質体積の質量保存とレイノルズ輸送定理による連続の式の導出",
+      "premise_node_ids": [
+        "phys.fluid.fl03_reynolds_transport_theorem",
+        "math.vec.vc10_div_curl_product_rules"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m50_positive_continuous_integral"
+      ],
+      "assumptions": [
+        "湧き出し・吸い込みがない閉じた流体物質体積で質量が保存される",
+        "被積分関数 ∂ρ/∂t + ∇·(ρu) は連続である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d}{dt}\\iiint_{V(t)} \\rho(\\mathbf{x}, t)\\,dV = 0.",
+          "to_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho\\mathbf{u}) = 0 \\iff \\frac{D\\rho}{Dt} + \\rho(\\nabla\\cdot\\mathbf{u}) = 0;\\qquad \\frac{D\\rho}{Dt} = 0 \\implies \\nabla\\cdot\\mathbf{u} = 0.",
+          "operation_label": "輸送定理の適用と任意物質体積による局所化",
+          "explanation": "質量保存式にレイノルズの輸送定理を適用し、任意の物質体積で積分が零となることから局所的な連続の式と非圧縮条件を得る。",
+          "used_node_ids": [
+            "math.calc.m50_positive_continuous_integral",
+            "math.vec.vc10_div_curl_product_rules",
+            "phys.fluid.fl03_reynolds_transport_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_apply_rtt",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\iiint_{V(t)} \\rho(\\mathbf{x}, t)\\,dV = 0.",
+          "to_latex": "\\iiint_{V(t)} \\left(\\frac{D\\rho}{Dt} + \\rho(\\nabla\\cdot\\mathbf{u})\\right)dV = \\iiint_{V(t)} \\left(\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho\\mathbf{u})\\right)dV = 0.",
+          "operation_label": "密度 ρ に対するレイノルズの輸送定理",
+          "explanation": "FL03 に f = ρ を代入し、実質微分表示と発散表示の体積積分を得る。",
+          "used_node_ids": [
+            "math.vec.vc10_div_curl_product_rules",
+            "phys.fluid.fl03_reynolds_transport_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_localize",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_{V(t)} \\left(\\frac{D\\rho}{Dt} + \\rho(\\nabla\\cdot\\mathbf{u})\\right)dV = \\iiint_{V(t)} \\left(\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho\\mathbf{u})\\right)dV = 0.",
+          "to_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho\\mathbf{u}) = 0 \\iff \\frac{D\\rho}{Dt} + \\rho(\\nabla\\cdot\\mathbf{u}) = 0;\\qquad \\frac{D\\rho}{Dt} = 0 \\implies \\nabla\\cdot\\mathbf{u} = 0.",
+          "operation_label": "積分領域の任意性による局所微分方程式化と非圧縮極限",
+          "explanation": "被積分関数が連続かつ任意の物質体積 V(t) で積分が零であるため被積分関数は恒等的に零となる。さらに ρ > 0 の下で Dρ/Dt = 0 を課すと ∇·u = 0 が従う。",
+          "used_node_ids": [
+            "math.calc.m50_positive_continuous_integral"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_fl05_ideal_fluid_pressure_stress",
+      "target_node_id": "phys.fluid.fl05_ideal_fluid_pressure_stress",
+      "route_kind": "deductive",
+      "title": "完全流体の等方応力仮定とガウス発散定理による圧力勾配力の導出",
+      "premise_node_ids": [
+        "phys.cont.el02_cauchy_stress_principle",
+        "math.vec.vc05_gauss_divergence_theorem",
+        "math.vec.m33_gradient_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "完全流体（非粘性流体）では任意の面上の接線応力（せん断応力）が零である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "t_i(\\mathbf{x}, \\mathbf{n}) = \\sum_{j=1}^{3} \\sigma_{ij}(\\mathbf{x})\\,n_j,\\qquad \\mathbf{t}\\parallel \\mathbf{n}.",
+          "to_latex": "\\sigma_{ij} = -p\\,\\delta_{ij},\\quad \\mathbf{t}(\\mathbf{x},\\mathbf{n}) = \\boldsymbol{\\sigma}\\mathbf{n} = -p\\,\\mathbf{n},\\quad \\iint_{\\partial V(t)} (-p\\,\\mathbf{n})\\,dS = -\\iiint_{V(t)} \\nabla p\\,dV.",
+          "operation_label": "等方応力の同定と発散定理による体積積分変換",
+          "explanation": "せん断応力零の条件からコーシー応力テンソルを等方圧力項 -p δ_ij に特定し、表面力の面積分を発散定理で圧力勾配の体積積分に書き換える。",
+          "used_node_ids": [
+            "math.vec.m33_gradient_definition",
+            "math.vec.vc05_gauss_divergence_theorem",
+            "phys.cont.el02_cauchy_stress_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_isotropic_stress",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "t_i(\\mathbf{x}, \\mathbf{n}) = \\sum_{j=1}^{3} \\sigma_{ij}(\\mathbf{x})\\,n_j,\\qquad \\mathbf{t}\\parallel \\mathbf{n}.",
+          "to_latex": "\\sigma_{ij} = -p\\,\\delta_{ij},\\quad \\mathbf{t}(\\mathbf{x},\\mathbf{n}) = \\boldsymbol{\\sigma}\\mathbf{n} = -p\\,\\mathbf{n}.",
+          "operation_label": "任意の法線に対する平行条件からの等方テンソル導出",
+          "explanation": "任意の単位法線 n に対して σn が n に平行であることから、σ は単位テンソルのスカラー倍であり、圧縮応力を正とする圧力 p を用いて σ_{ij} = -p δ_{ij} と置ける。",
+          "used_node_ids": [
+            "phys.cont.el02_cauchy_stress_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_surface_to_volume",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{ij} = -p\\,\\delta_{ij},\\quad \\mathbf{t}(\\mathbf{x},\\mathbf{n}) = \\boldsymbol{\\sigma}\\mathbf{n} = -p\\,\\mathbf{n}.",
+          "to_latex": "\\sigma_{ij} = -p\\,\\delta_{ij},\\quad \\mathbf{t}(\\mathbf{x},\\mathbf{n}) = \\boldsymbol{\\sigma}\\mathbf{n} = -p\\,\\mathbf{n},\\quad \\iint_{\\partial V(t)} (-p\\,\\mathbf{n})\\,dS = -\\iiint_{V(t)} \\nabla p\\,dV.",
+          "operation_label": "各成分への発散定理の適用",
+          "explanation": "第 i 成分の面積分 ∬ (-p e_i · n) dS にガウスの発散定理を適用すると -∭ ∂p/∂x_i dV となり、3成分をまとめて -∭ ∇p dV を得る。",
+          "used_node_ids": [
+            "math.vec.m33_gradient_definition",
+            "math.vec.vc05_gauss_divergence_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_fl06_euler_equation",
+      "target_node_id": "phys.fluid.fl06_euler_equation",
+      "route_kind": "deductive",
+      "title": "運動量保存則と連続の式・圧力勾配力からのオイラー方程式の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "phys.fluid.fl02_material_derivative",
+        "phys.fluid.fl03_reynolds_transport_theorem",
+        "phys.fluid.fl04_continuity_equation",
+        "phys.fluid.fl05_ideal_fluid_pressure_stress"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.calc.m50_positive_continuous_integral"
+      ],
+      "assumptions": [
+        "流体は非粘性（完全流体）であり、外力は単位質量あたり f(x,t) で与えられる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d}{dt}\\iiint_{V(t)} \\rho\\mathbf{u}\\,dV = \\iiint_{V(t)} \\rho\\mathbf{f}\\,dV + \\iint_{\\partial V(t)} \\mathbf{t}(\\mathbf{x}, \\mathbf{n})\\,dS.",
+          "to_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p + \\rho\\mathbf{f}.",
+          "operation_label": "輸送定理・連続の式・圧力勾配力の統合",
+          "explanation": "物質体積に対するニュートンの第2法則の左辺に輸送定理と連続の式、右辺に完全流体の圧力勾配力を適用し、領域の任意性からオイラー方程式を導く。",
+          "used_node_ids": [
+            "math.calc.m50_positive_continuous_integral",
+            "phys.fluid.fl02_material_derivative",
+            "phys.fluid.fl03_reynolds_transport_theorem",
+            "phys.fluid.fl04_continuity_equation",
+            "phys.fluid.fl05_ideal_fluid_pressure_stress",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_momentum_rtt",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\iiint_{V(t)} \\rho\\mathbf{u}\\,dV = \\iiint_{V(t)} \\rho\\mathbf{f}\\,dV + \\iint_{\\partial V(t)} \\mathbf{t}(\\mathbf{x}, \\mathbf{n})\\,dS.",
+          "to_latex": "\\iiint_{V(t)} \\left[\\frac{D(\\rho\\mathbf{u})}{Dt} + \\rho\\mathbf{u}(\\nabla\\cdot\\mathbf{u})\\right]dV = \\iiint_{V(t)} (-\\nabla p + \\rho\\mathbf{f})\\,dV.",
+          "operation_label": "運動量密度への輸送定理と圧力応力の体積積分化",
+          "explanation": "左辺の各成分に FL03 を適用し、右辺の表面力積分に FL05 の -∭∇p dV を代入する。",
+          "used_node_ids": [
+            "phys.fluid.fl03_reynolds_transport_theorem",
+            "phys.fluid.fl05_ideal_fluid_pressure_stress"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_apply_continuity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_{V(t)} \\left[\\frac{D(\\rho\\mathbf{u})}{Dt} + \\rho\\mathbf{u}(\\nabla\\cdot\\mathbf{u})\\right]dV = \\iiint_{V(t)} (-\\nabla p + \\rho\\mathbf{f})\\,dV.",
+          "to_latex": "\\iiint_{V(t)} \\rho\\frac{D\\mathbf{u}}{Dt}\\,dV = \\iiint_{V(t)} (-\\nabla p + \\rho\\mathbf{f})\\,dV.",
+          "operation_label": "実質微分の積法則と連続の式による簡約",
+          "explanation": "D(ρu)/Dt + ρu(∇·u) = ρ(Du/Dt) + u(Dρ/Dt + ρ∇·u) と展開し、連続の式 FL04 により第2項を消去する。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "phys.fluid.fl04_continuity_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_local_euler",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_{V(t)} \\rho\\frac{D\\mathbf{u}}{Dt}\\,dV = \\iiint_{V(t)} (-\\nabla p + \\rho\\mathbf{f})\\,dV.",
+          "to_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p + \\rho\\mathbf{f}.",
+          "operation_label": "体積の任意性による局所化と実質微分の展開",
+          "explanation": "任意の物質体積 V(t) で成立することから被積分関数を等置し、FL02 を用いて実質微分を展開する。",
+          "used_node_ids": [
+            "math.calc.m50_positive_continuous_integral",
+            "phys.fluid.fl02_material_derivative"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_fl07_lamb_form_vorticity",
+      "target_node_id": "phys.fluid.fl07_lamb_form_vorticity_def",
+      "route_kind": "reformulation",
+      "title": "移流項のベクトル恒等式によるオイラー方程式のラム形式の導出",
+      "premise_node_ids": [
+        "phys.fluid.fl06_euler_equation",
+        "math.vec.vc02_curl_def",
+        "math.vec.m29_cross_product_levi_civita_def",
+        "math.vec.m33_gradient_definition"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "assumptions": [
+        "速度場 u は連続微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{f},\\qquad \\boldsymbol{\\omega} := \\nabla\\times\\mathbf{u}.",
+          "to_latex": "\\boldsymbol{\\omega} := \\nabla\\times\\mathbf{u},\\quad (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = \\nabla\\left(\\frac{1}{2}u^2\\right) - \\mathbf{u}\\times\\boldsymbol{\\omega} \\implies \\frac{\\partial \\mathbf{u}}{\\partial t} + \\nabla\\left(\\frac{1}{2}u^2\\right) - \\mathbf{u}\\times\\boldsymbol{\\omega} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{f}.",
+          "operation_label": "移流項の勾配と渦力積への恒等変形",
+          "explanation": "渦度 ω = ∇×u を定義し、ベクトル解析の恒等式 (u·∇)u = ∇(u^2/2) - u×(∇×u) をオイラー方程式へ代入してラム形式を得る。",
+          "used_node_ids": [
+            "math.vec.m29_cross_product_levi_civita_def",
+            "math.vec.m33_gradient_definition",
+            "math.vec.vc02_curl_def",
+            "phys.fluid.fl06_euler_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_cross_identity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{f},\\qquad \\boldsymbol{\\omega} := \\nabla\\times\\mathbf{u}.",
+          "to_latex": "\\big(\\mathbf{u}\\times(\\nabla\\times\\mathbf{u})\\big)_i = \\sum_{j=1}^{3} u_j\\frac{\\partial u_j}{\\partial x_i} - \\sum_{j=1}^{3} u_j\\frac{\\partial u_i}{\\partial x_j} = \\frac{\\partial}{\\partial x_i}\\left(\\frac{1}{2}u^2\\right) - \\big((\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\big)_i.",
+          "operation_label": "レヴィ＝チヴィタ記号の縮約による成分恒等式の証明",
+          "explanation": "外積と回転の成分定義から ε_{ijk}ε_{klm} = δ_{il}δ_{jm} - δ_{im}δ_{jl} を用いて u×ω の第 i 成分を展開し、運動エネルギー密度勾配と移流項の差に変形する。",
+          "used_node_ids": [
+            "math.vec.m28_dot_product_component_def",
+            "math.vec.m29_cross_product_levi_civita_def",
+            "math.vec.m33_gradient_definition",
+            "math.vec.vc02_curl_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_euler",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\big(\\mathbf{u}\\times(\\nabla\\times\\mathbf{u})\\big)_i = \\sum_{j=1}^{3} u_j\\frac{\\partial u_j}{\\partial x_i} - \\sum_{j=1}^{3} u_j\\frac{\\partial u_i}{\\partial x_j} = \\frac{\\partial}{\\partial x_i}\\left(\\frac{1}{2}u^2\\right) - \\big((\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\big)_i.",
+          "to_latex": "\\boldsymbol{\\omega} := \\nabla\\times\\mathbf{u},\\quad (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = \\nabla\\left(\\frac{1}{2}u^2\\right) - \\mathbf{u}\\times\\boldsymbol{\\omega} \\implies \\frac{\\partial \\mathbf{u}}{\\partial t} + \\nabla\\left(\\frac{1}{2}u^2\\right) - \\mathbf{u}\\times\\boldsymbol{\\omega} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{f}.",
+          "operation_label": "オイラー方程式への代入",
+          "explanation": "(u·∇)u = ∇(u^2/2) - u×ω をオイラー方程式（FL06 を ρ で割った式）へ代入してラム形式が完成する。",
+          "used_node_ids": [
+            "phys.fluid.fl06_euler_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_fl08_bernoulli_theorem",
+      "target_node_id": "phys.fluid.fl08_bernoulli_theorem",
+      "route_kind": "deductive",
+      "title": "定常・バロトロピー完全流体のラム形式からのベルヌーイの定理の導出",
+      "premise_node_ids": [
+        "phys.fluid.fl07_lamb_form_vorticity_def",
+        "phys.mech.p08_conservative_potential",
+        "math.vec.m05_gradient_line_integral",
+        "math.vec.m34_vector_line_integral_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.vec.m14_scalar_triple_product"
+      ],
+      "assumptions": [
+        "流れは定常（∂u/∂t = 0）である",
+        "流体は完全流体かつバロトロピー（ρ = ρ(p)）である",
+        "体積力 f は保存力 f = -∇Ψ である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial \\mathbf{u}}{\\partial t} + \\nabla\\left(\\frac{1}{2}u^2\\right) - \\mathbf{u}\\times\\boldsymbol{\\omega} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{f}.",
+          "to_latex": "\\frac{1}{2}u^2 + \\int \\frac{dp}{\\rho(p)} + \\Psi(\\mathbf{x}) = \\text{const. (along a streamline)},\\qquad \\rho=\\text{const.},\\;\\Psi=gz \\implies \\frac{1}{2}u^2 + \\frac{p}{\\rho} + gz = \\text{const.}",
+          "operation_label": "定常・バロトロピー条件の適用と流線に沿う積分",
+          "explanation": "定常性・保存力・バロトロピー圧力関数を用いてラム形式を全水頭勾配の形にまとめ、流線に沿う接線成分の内積をとって渦力項を消去し積分する。",
+          "used_node_ids": [
+            "math.vec.m05_gradient_line_integral",
+            "math.vec.m14_scalar_triple_product",
+            "math.vec.m34_vector_line_integral_def",
+            "phys.fluid.fl07_lamb_form_vorticity_def",
+            "phys.mech.p08_conservative_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_barotropic_potential",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathbf{u}}{\\partial t} + \\nabla\\left(\\frac{1}{2}u^2\\right) - \\mathbf{u}\\times\\boldsymbol{\\omega} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{f}.",
+          "to_latex": "\\nabla\\left(\\frac{1}{2}u^2 + w(p) + \\Psi\\right) = \\mathbf{u}\\times\\boldsymbol{\\omega},\\qquad w(p) := \\int \\frac{dp}{\\rho(p)}.",
+          "operation_label": "圧力関数 w(p) と保存ポテンシャル Ψ の導入",
+          "explanation": "∂u/∂t = 0、f = -∇Ψ を代入し、連鎖律より ∇w(p) = (1/ρ(p))∇p となるエンタルピー型圧力関数 w(p) を導入して左辺を単一の勾配にまとめる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "phys.mech.p08_conservative_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_streamline_dot",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\left(\\frac{1}{2}u^2 + w(p) + \\Psi\\right) = \\mathbf{u}\\times\\boldsymbol{\\omega},\\qquad w(p) := \\int \\frac{dp}{\\rho(p)}.",
+          "to_latex": "\\frac{d\\mathbf{r}}{ds}\\parallel \\mathbf{u} \\implies \\nabla\\left(\\frac{1}{2}u^2 + w + \\Psi\\right)\\cdot d\\mathbf{r} = (\\mathbf{u}\\times\\boldsymbol{\\omega})\\cdot d\\mathbf{r} = 0.",
+          "operation_label": "流線微小変位 dr との内積による渦力項の直交消去",
+          "explanation": "流線に沿う接線ベクトル dr が速度 u に平行であるため、スカラー三重積の性質より (u×ω)·dr = 0 が成り立つ。",
+          "used_node_ids": [
+            "math.vec.m14_scalar_triple_product",
+            "math.vec.m34_vector_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integrate_streamline",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\mathbf{r}}{ds}\\parallel \\mathbf{u} \\implies \\nabla\\left(\\frac{1}{2}u^2 + w + \\Psi\\right)\\cdot d\\mathbf{r} = (\\mathbf{u}\\times\\boldsymbol{\\omega})\\cdot d\\mathbf{r} = 0.",
+          "to_latex": "\\frac{1}{2}u^2 + \\int \\frac{dp}{\\rho(p)} + \\Psi(\\mathbf{x}) = \\text{const. (along a streamline)},\\qquad \\rho=\\text{const.},\\;\\Psi=gz \\implies \\frac{1}{2}u^2 + \\frac{p}{\\rho} + gz = \\text{const.}",
+          "operation_label": "勾配の線積分によるベルヌーイ定数の導出",
+          "explanation": "流線上の2点間で勾配の線積分を実行するとベルヌーイ関数が一定値となる。密度一定・一様重力場 Ψ = gz の場合に標準形が得られる。",
+          "used_node_ids": [
+            "math.vec.m05_gradient_line_integral"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_fl09_circulation_kelvin_theorem",
+      "target_node_id": "phys.fluid.fl09_circulation_kelvin_theorem",
+      "route_kind": "deductive",
+      "title": "物質閉曲線の時間微分とオイラー方程式によるケルビンの循環定理の導出",
+      "premise_node_ids": [
+        "phys.fluid.fl06_euler_equation",
+        "phys.fluid.fl07_lamb_form_vorticity_def",
+        "math.vec.m34_vector_line_integral_def",
+        "math.vec.m05_gradient_line_integral",
+        "math.vec.vc06_stokes_theorem"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m15_product_rule",
+        "phys.fluid.fl02_material_derivative",
+        "phys.mech.p08_conservative_potential"
+      ],
+      "assumptions": [
+        "流体は完全流体かつバロトロピー（ρ = ρ(p)）である",
+        "体積力は保存力 f = -∇Ψ である",
+        "閉曲線 C(t) は単連結曲面 S(t) の境界であり、速度場は滑らかである"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Gamma(t) := \\oint_{C(t)} \\mathbf{u}\\cdot d\\mathbf{r},\\qquad C(t) = \\mathbf{\\Phi}(C_0, t).",
+          "to_latex": "\\Gamma(t) := \\oint_{C(t)} \\mathbf{u}\\cdot d\\mathbf{r} = \\iint_{S(t)} \\boldsymbol{\\omega}\\cdot\\mathbf{n}\\,dS,\\qquad \\frac{d\\Gamma}{dt} = \\oint_{C(t)} \\left(-\\frac{1}{\\rho}\\nabla p + \\mathbf{f}\\right)\\cdot d\\mathbf{r} = 0\\;\\big(\\rho=\\rho(p),\\; \\mathbf{f}=-\\nabla\\Psi\\big).",
+          "operation_label": "ストークスの定理および実質閉曲線の時間微分評価",
+          "explanation": "物質閉曲線に沿う循環を定義してストークスの定理で渦度流束と結びつけ、時間微分にオイラー方程式と保存力・バロトロピー条件を代入して保存則を得る。",
+          "used_node_ids": [
+            "math.vec.m05_gradient_line_integral",
+            "math.vec.m34_vector_line_integral_def",
+            "math.vec.vc06_stokes_theorem",
+            "phys.fluid.fl06_euler_equation",
+            "phys.fluid.fl07_lamb_form_vorticity_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_stokes_vorticity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma(t) := \\oint_{C(t)} \\mathbf{u}\\cdot d\\mathbf{r},\\qquad C(t) = \\mathbf{\\Phi}(C_0, t).",
+          "to_latex": "\\Gamma(t) = \\iint_{S(t)} (\\nabla\\times\\mathbf{u})\\cdot\\mathbf{n}\\,dS = \\iint_{S(t)} \\boldsymbol{\\omega}\\cdot\\mathbf{n}\\,dS,\\qquad \\frac{d\\Gamma}{dt} = \\oint_{C(t)} \\left(\\frac{D\\mathbf{u}}{Dt}\\cdot d\\mathbf{r} + \\mathbf{u}\\cdot d\\mathbf{u}\\right).",
+          "operation_label": "ストークスの定理の適用と循環の実質時間微分",
+          "explanation": "循環にストークスの定理を適用して渦度流束表示を得るとともに、物質閉曲線パラメータ s ∈ [0,1] に引き戻して d/dt(u·∂Φ/∂s) = (Du/Dt)·∂Φ/∂s + u·∂u/∂s を計算する。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.vec.m34_vector_line_integral_def",
+            "math.vec.vc06_stokes_theorem",
+            "phys.fluid.fl02_material_derivative",
+            "phys.fluid.fl07_lamb_form_vorticity_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_euler_subst",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma(t) = \\iint_{S(t)} (\\nabla\\times\\mathbf{u})\\cdot\\mathbf{n}\\,dS = \\iint_{S(t)} \\boldsymbol{\\omega}\\cdot\\mathbf{n}\\,dS,\\qquad \\frac{d\\Gamma}{dt} = \\oint_{C(t)} \\left(\\frac{D\\mathbf{u}}{Dt}\\cdot d\\mathbf{r} + \\mathbf{u}\\cdot d\\mathbf{u}\\right).",
+          "to_latex": "\\frac{d\\Gamma}{dt} = \\oint_{C(t)} \\left(-\\frac{1}{\\rho}\\nabla p + \\mathbf{f}\\right)\\cdot d\\mathbf{r} + \\oint_{C(t)} d\\left(\\frac{1}{2}u^2\\right) = \\oint_{C(t)} \\left(-\\frac{1}{\\rho}\\nabla p + \\mathbf{f}\\right)\\cdot d\\mathbf{r}.",
+          "operation_label": "オイラー方程式の代入と完全微分の周回積分消滅",
+          "explanation": "Du/Dt にオイラー方程式 FL06 を代入し、u·du = d(u^2/2) の閉曲線に沿う積分が単一値関数の始点・終点一致により零となることを用いる。",
+          "used_node_ids": [
+            "math.vec.m05_gradient_line_integral",
+            "phys.fluid.fl06_euler_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_kelvin_zero",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\Gamma}{dt} = \\oint_{C(t)} \\left(-\\frac{1}{\\rho}\\nabla p + \\mathbf{f}\\right)\\cdot d\\mathbf{r}.",
+          "to_latex": "\\Gamma(t) := \\oint_{C(t)} \\mathbf{u}\\cdot d\\mathbf{r} = \\iint_{S(t)} \\boldsymbol{\\omega}\\cdot\\mathbf{n}\\,dS,\\qquad \\frac{d\\Gamma}{dt} = \\oint_{C(t)} \\left(-\\frac{1}{\\rho}\\nabla p + \\mathbf{f}\\right)\\cdot d\\mathbf{r} = 0\\;\\big(\\rho=\\rho(p),\\; \\mathbf{f}=-\\nabla\\Psi\\big).",
+          "operation_label": "バロトロピー・保存力条件による勾配閉積分の消滅",
+          "explanation": "ρ = ρ(p) かつ f = -∇Ψ のとき -(1/ρ)∇p + f = -∇(w + Ψ) と単一スカラー関数の勾配で表されるため、閉曲線に沿う周回積分は恒等的に零となり循環保存が示される。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.vec.m05_gradient_line_integral",
+            "phys.mech.p08_conservative_potential"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

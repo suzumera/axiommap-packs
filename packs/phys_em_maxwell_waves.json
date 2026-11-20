@@ -1,0 +1,896 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.em.maxwell_waves",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "電磁気学4：ファラデーの電磁誘導・変位電流・マクスウェル方程式と電磁波",
+    "language": "ja",
+    "description": "ファラデーの法則、電荷保存則からの変位電流導入、マクスウェル方程式4本、真空中の波動方程式、ポインティングベクトルを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.em.mw01_magnetic_flux_emf",
+      "short_code": "MW01",
+      "kind": "definition",
+      "title": "磁束と誘導起電力の定義",
+      "summary": "向き付けられた曲面Sを貫く磁束密度Bの面積分として磁束を定義し、閉回路に沿う単位電荷あたりの電磁力（電場および運動起電力）の周回線積分として誘導起電力を定義する。",
+      "canonical_latex": "\\Phi_B := \\iint_S \\mathbf{B}\\cdot\\mathbf{n}\\,dS,\\qquad \\mathcal{E} := \\oint_{\\partial S} (\\mathbf{E} + \\mathbf{v}\\times\\mathbf{B})\\cdot d\\mathbf{r} ",
+      "aliases_latex": [
+        "\\Phi_B = \\iint_S \\mathbf{B}\\cdot d\\mathbf{S},\\quad \\mathcal{E} = \\oint_C \\mathbf{f}\\cdot d\\mathbf{r}"
+      ],
+      "keywords": [
+        "磁束",
+        "誘導起電力",
+        "運動起電力",
+        "ローレンツ力",
+        "面積分"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.mw02_faradays_law",
+      "short_code": "MW02",
+      "kind": "theorem_formula",
+      "title": "ファラデーの電磁誘導の法則（積分形・微分形）",
+      "summary": "閉回路を貫く磁束の時間変化率の負号が誘導起電力（電場の周回積分）に等しいという法則。固定曲面ではストークスの定理により、時間変化する磁場が渦電場を生む微分形に帰着する。",
+      "canonical_latex": "\\oint_{\\partial S} \\mathbf{E}\\cdot d\\mathbf{r} = -\\frac{d\\Phi_B}{dt} = -\\iint_S \\frac{\\partial \\mathbf{B}}{\\partial t}\\cdot\\mathbf{n}\\,dS,\\qquad \\nabla\\times\\mathbf{E} = -\\frac{\\partial \\mathbf{B}}{\\partial t} ",
+      "aliases_latex": [
+        "\\mathcal{E} = -\\frac{d\\Phi_B}{dt},\\quad \\operatorname{rot}\\mathbf{E} = -\\frac{\\partial\\mathbf{B}}{\\partial t}"
+      ],
+      "keywords": [
+        "ファラデーの法則",
+        "電磁誘導",
+        "レンツの法則",
+        "誘導電場",
+        "マクスウェル方程式"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.mw03_charge_conservation_continuity",
+      "short_code": "MW03",
+      "kind": "theorem_formula",
+      "title": "電荷保存則と電流の連続の式",
+      "summary": "任意体積領域内の全電荷の時間減少率が境界面から流出する全電流に等しいという大局的保存則、および発散定理から導かれる局所的な電荷・電流の連続の方程式。",
+      "canonical_latex": "\\frac{d}{dt}\\iiint_V \\rho\\,dV = -\\oiint_{\\partial V} \\mathbf{J}\\cdot\\mathbf{n}\\,dS,\\qquad \\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot\\mathbf{J} = 0 ",
+      "aliases_latex": [
+        "\\frac{\\partial\\rho}{\\partial t} + \\operatorname{div}\\mathbf{J} = 0"
+      ],
+      "keywords": [
+        "電荷保存則",
+        "連続の式",
+        "電流密度",
+        "発散定理"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.mw04_displacement_current_ampere_maxwell",
+      "short_code": "MW04",
+      "kind": "theorem_formula",
+      "title": "変位電流とアンペール＝マクスウェルの法則",
+      "summary": "非定常電流に対する連続の式とガウスの法則から静磁場のアンペールの法則の矛盾を解消するために導入される変位電流密度と、それを含む一般化されたアンペール＝マクスウェルの法則（真空・媒質中）。",
+      "canonical_latex": "\\mathbf{J}_d = \\varepsilon_0\\frac{\\partial \\mathbf{E}}{\\partial t},\\qquad \\nabla\\times\\mathbf{B} = \\mu_0\\left(\\mathbf{J} + \\varepsilon_0\\frac{\\partial \\mathbf{E}}{\\partial t}\\right),\\qquad \\nabla\\times\\mathbf{H} = \\mathbf{J}_f + \\frac{\\partial \\mathbf{D}}{\\partial t} ",
+      "aliases_latex": [
+        "\\oint_{\\partial S}\\mathbf{B}\\cdot d\\mathbf{r} = \\mu_0 I_{\\mathrm{enc}} + \\mu_0\\varepsilon_0\\frac{d\\Phi_E}{dt}"
+      ],
+      "keywords": [
+        "変位電流",
+        "アンペール＝マクスウェルの法則",
+        "非定常電流",
+        "電束密度"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.mw05_maxwell_equations",
+      "short_code": "MW05",
+      "kind": "theorem_formula",
+      "title": "マクスウェル方程式（古典電磁気学の基礎方程式系）",
+      "summary": "ガウスの法則、磁場のガウスの法則、ファラデーの電磁誘導の法則、アンペール＝マクスウェルの法則の4本の方程式からなる電磁場の基本方程式系（真空の微視的形式と媒質中の巨視的形式）。",
+      "canonical_latex": "\\nabla\\cdot\\mathbf{E}=\\frac{\\rho}{\\varepsilon_0},\\; \\nabla\\cdot\\mathbf{B}=0,\\; \\nabla\\times\\mathbf{E}=-\\frac{\\partial\\mathbf{B}}{\\partial t},\\; \\nabla\\times\\mathbf{B}=\\mu_0\\left(\\mathbf{J}+\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}\\right),\\quad \\nabla\\cdot\\mathbf{D}=\\rho_f,\\; \\nabla\\times\\mathbf{H}=\\mathbf{J}_f+\\frac{\\partial\\mathbf{D}}{\\partial t} ",
+      "aliases_latex": [
+        "\\nabla\\cdot\\mathbf{D}=\\rho_f,\\; \\nabla\\cdot\\mathbf{B}=0,\\; \\nabla\\times\\mathbf{E}=-\\partial_t\\mathbf{B},\\; \\nabla\\times\\mathbf{H}=\\mathbf{J}_f+\\partial_t\\mathbf{D}"
+      ],
+      "keywords": [
+        "マクスウェル方程式",
+        "電磁気学",
+        "基礎方程式",
+        "電磁場"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.mw06_em_wave_equation_vacuum",
+      "short_code": "MW06",
+      "kind": "theorem_formula",
+      "title": "真空中の電磁波動方程式と光速 c",
+      "summary": "電荷・電流のない真空中でマクスウェル方程式の回転をとることで得られる電場および磁場に対する3次元波動方程式と、誘電率・透磁率から定まる伝播速度（真空中の光速）。",
+      "canonical_latex": "\\nabla^2\\mathbf{E} - \\frac{1}{c^2}\\frac{\\partial^2\\mathbf{E}}{\\partial t^2} = \\mathbf{0},\\qquad \\nabla^2\\mathbf{B} - \\frac{1}{c^2}\\frac{\\partial^2\\mathbf{B}}{\\partial t^2} = \\mathbf{0},\\qquad c = \\frac{1}{\\sqrt{\\mu_0\\varepsilon_0}} ",
+      "aliases_latex": [
+        "\\Box\\mathbf{E} = \\mathbf{0},\\quad \\Box\\mathbf{B} = \\mathbf{0},\\quad c=(\\mu_0\\varepsilon_0)^{-1/2}"
+      ],
+      "keywords": [
+        "波動方程式",
+        "電磁波",
+        "光速",
+        "ダランベルシアン",
+        "真空"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.mw07_plane_em_waves_transversality",
+      "short_code": "MW07",
+      "kind": "theorem_formula",
+      "title": "平面電磁波の横波性と電磁場直交関係",
+      "summary": "真空中の波動方程式の単色平面波解に対してマクスウェル方程式を適用して得られる分散関係、電場・磁場が波数ベクトルに直交する横波性、および電場と磁場の外積・振幅関係。",
+      "canonical_latex": "\\omega = c|\\mathbf{k}|,\\quad \\mathbf{k}\\cdot\\mathbf{E} = 0,\\quad \\mathbf{k}\\cdot\\mathbf{B} = 0,\\quad \\mathbf{B} = \\frac{1}{\\omega}(\\mathbf{k}\\times\\mathbf{E}) = \\frac{1}{c}(\\hat{\\mathbf{k}}\\times\\mathbf{E}) ",
+      "aliases_latex": [
+        "|\\mathbf{E}| = c|\\mathbf{B}|,\\quad \\hat{\\mathbf{k}}\\cdot\\mathbf{E}=\\hat{\\mathbf{k}}\\cdot\\mathbf{B}=0"
+      ],
+      "keywords": [
+        "平面波",
+        "横波",
+        "分散関係",
+        "波動インピーダンス",
+        "偏光"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.mw08_em_energy_density_poynting_vector",
+      "short_code": "MW08",
+      "kind": "definition",
+      "title": "電磁場のエネルギー密度とポインティングベクトル",
+      "summary": "電場と磁場の静エネルギー密度を動的な場へ拡張した単位体積あたりの電磁エネルギー密度、および単位時間・単位面積あたりの電磁エネルギー流束を表すポインティングベクトルの定義。",
+      "canonical_latex": "u_{\\mathrm{em}} := \\frac{1}{2}\\left(\\varepsilon_0|\\mathbf{E}|^2 + \\frac{1}{\\mu_0}|\\mathbf{B}|^2\\right) = \\frac{1}{2}(\\mathbf{E}\\cdot\\mathbf{D} + \\mathbf{B}\\cdot\\mathbf{H}),\\qquad \\mathbf{S} := \\frac{1}{\\mu_0}(\\mathbf{E}\\times\\mathbf{B}) = \\mathbf{E}\\times\\mathbf{H} ",
+      "aliases_latex": [
+        "u_{\\mathrm{em}} = u_e + u_m,\\quad \\mathbf{S} = \\mathbf{E}\\times\\mathbf{H}"
+      ],
+      "keywords": [
+        "ポインティングベクトル",
+        "エネルギー密度",
+        "エネルギー流束",
+        "電磁エネルギー"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "phys.em.mw09_poynting_theorem",
+      "short_code": "MW09",
+      "kind": "theorem_formula",
+      "title": "ポインティングの定理（電磁場のエネルギー保存則）",
+      "summary": "電磁場が電流に与える仕事率（ジュール熱と力学的仕事）が電磁エネルギー密度の時間減少とポインティングベクトルの流出の和に等しいことを述べるエネルギー保存則（微分形・積分形）。",
+      "canonical_latex": "\\frac{\\partial u_{\\mathrm{em}}}{\\partial t} + \\nabla\\cdot\\mathbf{S} = -\\mathbf{J}\\cdot\\mathbf{E},\\qquad \\frac{d}{dt}\\iiint_V u_{\\mathrm{em}}\\,dV + \\oiint_{\\partial V} \\mathbf{S}\\cdot\\mathbf{n}\\,dS = -\\iiint_V \\mathbf{J}\\cdot\\mathbf{E}\\,dV ",
+      "aliases_latex": [
+        "-\\frac{dU_{\\mathrm{em}}}{dt} = \\oiint_{\\partial V}\\mathbf{S}\\cdot d\\mathbf{S} + \\iiint_V \\mathbf{J}\\cdot\\mathbf{E}\\,dV"
+      ],
+      "keywords": [
+        "ポインティングの定理",
+        "エネルギー保存則",
+        "ジュール熱",
+        "電磁放射"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_mw01_flux_emf_def",
+      "target_node_id": "phys.em.mw01_magnetic_flux_emf",
+      "route_kind": "reformulation",
+      "title": "面積分とローレンツ力からの磁束・誘導起電力の定義",
+      "premise_node_ids": [
+        "phys.em.ms01_lorentz_force_magnetic_def"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m34_vector_line_integral_def",
+        "math.vec.vc03_surface_integral_def"
+      ],
+      "assumptions": [
+        "曲線∂Sは区分的に滑らかな閉曲線であり、曲面Sの向きと右ねじの法則で整合する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{f} = \\frac{\\mathbf{F}}{q} = \\mathbf{E} + \\mathbf{v}\\times\\mathbf{B},\\quad \\iint_S \\mathbf{F}_{\\mathrm{vec}}\\cdot\\mathbf{n}\\,dS",
+          "to_latex": "\\Phi_B := \\iint_S \\mathbf{B}\\cdot\\mathbf{n}\\,dS,\\qquad \\mathcal{E} := \\oint_{\\partial S} (\\mathbf{E} + \\mathbf{v}\\times\\mathbf{B})\\cdot d\\mathbf{r} ",
+          "operation_label": "磁束と起電力の積分定義",
+          "explanation": "磁束密度の面積分により磁束を定義し、ローレンツ力の単位電荷あたり力積の周回線積分により誘導起電力を定義する。",
+          "used_node_ids": [
+            "math.vec.m34_vector_line_integral_def",
+            "math.vec.vc03_surface_integral_def",
+            "phys.em.ms01_lorentz_force_magnetic_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_flux_def",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{f} = \\frac{\\mathbf{F}}{q} = \\mathbf{E} + \\mathbf{v}\\times\\mathbf{B},\\quad \\iint_S \\mathbf{F}_{\\mathrm{vec}}\\cdot\\mathbf{n}\\,dS",
+          "to_latex": "\\Phi_B := \\iint_S \\mathbf{B}\\cdot\\mathbf{n}\\,dS,\\quad \\mathbf{f}_{\\mathrm{em}} = \\mathbf{E} + \\mathbf{v}\\times\\mathbf{B} ",
+          "operation_label": "面積分の適用と単位電荷あたりの電磁力",
+          "explanation": "面積分の定義を磁束密度Bに適用して磁束を定め、ローレンツ力を電荷qで割って単位電荷あたりの力場を抽出する。",
+          "used_node_ids": [
+            "math.vec.vc03_surface_integral_def",
+            "phys.em.ms01_lorentz_force_magnetic_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_emf_line_integral",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Phi_B := \\iint_S \\mathbf{B}\\cdot\\mathbf{n}\\,dS,\\quad \\mathbf{f}_{\\mathrm{em}} = \\mathbf{E} + \\mathbf{v}\\times\\mathbf{B} ",
+          "to_latex": "\\Phi_B := \\iint_S \\mathbf{B}\\cdot\\mathbf{n}\\,dS,\\qquad \\mathcal{E} := \\oint_{\\partial S} (\\mathbf{E} + \\mathbf{v}\\times\\mathbf{B})\\cdot d\\mathbf{r} ",
+          "operation_label": "線積分の適用による起電力の定義",
+          "explanation": "閉回路∂Sに沿う単位電荷あたりの電磁力の周回線積分を誘導起電力として定義する。",
+          "used_node_ids": [
+            "math.vec.m34_vector_line_integral_def",
+            "phys.em.ms01_lorentz_force_magnetic_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_mw02_faraday_induction",
+      "target_node_id": "phys.em.mw02_faradays_law",
+      "route_kind": "inductive",
+      "title": "運動起電力と磁束規則からのファラデーの法則（積分形・微分形）の導出",
+      "premise_node_ids": [
+        "phys.em.mw01_magnetic_flux_emf",
+        "phys.em.ms01_lorentz_force_magnetic_def"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product",
+        "math.vec.vc06_stokes_theorem"
+      ],
+      "assumptions": [
+        "実験的誘導原理（磁束規則）および静止閉曲面Sに対する微分の入れ替え可能性（BのC1級正則性）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{E} = \\oint_{\\partial S} (\\mathbf{E} + \\mathbf{v}\\times\\mathbf{B})\\cdot d\\mathbf{r},\\quad \\Phi_B = \\iint_S \\mathbf{B}\\cdot\\mathbf{n}\\,dS",
+          "to_latex": "\\oint_{\\partial S} \\mathbf{E}\\cdot d\\mathbf{r} = -\\frac{d\\Phi_B}{dt} = -\\iint_S \\frac{\\partial \\mathbf{B}}{\\partial t}\\cdot\\mathbf{n}\\,dS,\\qquad \\nabla\\times\\mathbf{E} = -\\frac{\\partial \\mathbf{B}}{\\partial t} ",
+          "operation_label": "磁束規則の一般化とストークスの定理",
+          "explanation": "ローレンツ力による運動起電力の磁束変化率関係（磁束規則）を静止回路の時間変化する磁場へ一般化し、ストークスの定理を用いてファラデーの法則の微分形を得る。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "math.vec.vc06_stokes_theorem",
+            "phys.em.ms01_lorentz_force_magnetic_def",
+            "phys.em.mw01_magnetic_flux_emf"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_motional_flux_rule",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{E} = \\oint_{\\partial S} (\\mathbf{E} + \\mathbf{v}\\times\\mathbf{B})\\cdot d\\mathbf{r},\\quad \\Phi_B = \\iint_S \\mathbf{B}\\cdot\\mathbf{n}\\,dS",
+          "to_latex": "\\mathcal{E} = \\oint_{\\partial S} \\mathbf{E}\\cdot d\\mathbf{r} = -\\frac{d\\Phi_B}{dt} = -\\frac{d}{dt}\\iint_S \\mathbf{B}\\cdot\\mathbf{n}\\,dS",
+          "operation_label": "運動起電力からの磁束規則と静止回路への拡張",
+          "explanation": "時間不変磁場中の運動回路で成り立つ v×B による起電力関係 E = -dΦ_B/dt（スカラー三重積の性質で掃過磁束に一致）を、空間に固定された閉回路と時間変化する磁場にも成立する誘導法則として採用する。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.em.ms01_lorentz_force_magnetic_def",
+            "phys.em.mw01_magnetic_flux_emf"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_fixed_surface_time_deriv",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{E} = \\oint_{\\partial S} \\mathbf{E}\\cdot d\\mathbf{r} = -\\frac{d\\Phi_B}{dt} = -\\frac{d}{dt}\\iint_S \\mathbf{B}\\cdot\\mathbf{n}\\,dS",
+          "to_latex": "\\oint_{\\partial S} \\mathbf{E}\\cdot d\\mathbf{r} = -\\iint_S \\frac{\\partial \\mathbf{B}}{\\partial t}\\cdot\\mathbf{n}\\,dS",
+          "operation_label": "固定曲面での時間微分と面積分の交換",
+          "explanation": "曲面Sを空間に固定（v=0）すると、全時間微分を面積分内の偏微分として中に入れることができる。",
+          "used_node_ids": [
+            "phys.em.mw01_magnetic_flux_emf"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_stokes_differential",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{\\partial S} \\mathbf{E}\\cdot d\\mathbf{r} = -\\iint_S \\frac{\\partial \\mathbf{B}}{\\partial t}\\cdot\\mathbf{n}\\,dS",
+          "to_latex": "\\oint_{\\partial S} \\mathbf{E}\\cdot d\\mathbf{r} = -\\frac{d\\Phi_B}{dt} = -\\iint_S \\frac{\\partial \\mathbf{B}}{\\partial t}\\cdot\\mathbf{n}\\,dS,\\qquad \\nabla\\times\\mathbf{E} = -\\frac{\\partial \\mathbf{B}}{\\partial t} ",
+          "operation_label": "ストークスの定理による局所化",
+          "explanation": "左辺の周回積分にストークスの定理を適用し、任意の曲面Sで積分が等しいことから被積分関数を等置して微分形を得る。",
+          "used_node_ids": [
+            "math.vec.vc06_stokes_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_mw03_charge_continuity",
+      "target_node_id": "phys.em.mw03_charge_conservation_continuity",
+      "route_kind": "deductive",
+      "title": "大局的電荷保存則と発散定理からの連続の式の導出",
+      "premise_node_ids": [
+        "phys.em.ms01_lorentz_force_magnetic_def"
+      ],
+      "required_math_node_ids": [
+        "math.vec.vc05_gauss_divergence_theorem"
+      ],
+      "assumptions": [
+        "検査体積Vは空間に固定されており、電荷密度ρおよび電流密度JはC1級である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Q(t) = \\iiint_V \\rho(\\mathbf{r}, t)\\,dV,\\quad I_{\\mathrm{out}}(t) = \\oiint_{\\partial V} \\mathbf{J}\\cdot\\mathbf{n}\\,dS",
+          "to_latex": "\\frac{d}{dt}\\iiint_V \\rho\\,dV = -\\oiint_{\\partial V} \\mathbf{J}\\cdot\\mathbf{n}\\,dS,\\qquad \\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot\\mathbf{J} = 0 ",
+          "operation_label": "電荷保存則への発散定理の適用",
+          "explanation": "検査体積内の電荷の時間減少率が境界面からの流出電流に等しい式にガウスの発散定理を適用し、連続の式を導く。",
+          "used_node_ids": [
+            "math.vec.vc05_gauss_divergence_theorem",
+            "phys.em.ms01_lorentz_force_magnetic_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integral_balance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q(t) = \\iiint_V \\rho(\\mathbf{r}, t)\\,dV,\\quad I_{\\mathrm{out}}(t) = \\oiint_{\\partial V} \\mathbf{J}\\cdot\\mathbf{n}\\,dS",
+          "to_latex": "\\frac{dQ}{dt} = \\iiint_V \\frac{\\partial \\rho}{\\partial t}\\,dV = -\\oiint_{\\partial V} \\mathbf{J}\\cdot\\mathbf{n}\\,dS",
+          "operation_label": "電荷収支の立式と固定体積微分の交換",
+          "explanation": "電荷が生成・消滅しないという保存則により dQ/dt = -I_out が成り立ち、Vが固定されているため時間微分を体積積分内に移す。",
+          "used_node_ids": [
+            "phys.em.ms01_lorentz_force_magnetic_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_apply_divergence_theorem",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dQ}{dt} = \\iiint_V \\frac{\\partial \\rho}{\\partial t}\\,dV = -\\oiint_{\\partial V} \\mathbf{J}\\cdot\\mathbf{n}\\,dS",
+          "to_latex": "\\iiint_V \\left(\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot\\mathbf{J}\\right)dV = 0",
+          "operation_label": "ガウスの発散定理の適用",
+          "explanation": "境界面∂V上の面積分にガウスの発散定理を適用して体積積分へ変換し、左辺へ移項してまとめる。",
+          "used_node_ids": [
+            "math.vec.vc05_gauss_divergence_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_localize_continuity",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_V \\left(\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot\\mathbf{J}\\right)dV = 0",
+          "to_latex": "\\frac{d}{dt}\\iiint_V \\rho\\,dV = -\\oiint_{\\partial V} \\mathbf{J}\\cdot\\mathbf{n}\\,dS,\\qquad \\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot\\mathbf{J} = 0 ",
+          "operation_label": "任意領域性による局所化",
+          "explanation": "任意の検査体積Vに対して体積積分が零であるため、連続性により被積分関数が恒等的に零となる連続の式を得る。",
+          "used_node_ids": [
+            "math.vec.vc05_gauss_divergence_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_mw04_displacement_current",
+      "target_node_id": "phys.em.mw04_displacement_current_ampere_maxwell",
+      "route_kind": "deductive",
+      "title": "電荷保存則とガウスの法則からの変位電流の導入",
+      "premise_node_ids": [
+        "phys.em.ms05_ampere_law_differential",
+        "phys.em.es04_gauss_law_differential",
+        "phys.em.mw03_charge_conservation_continuity",
+        "phys.em.dc06_electric_displacement_gauss_law",
+        "phys.em.ms09_magnetic_field_h_ampere_matter"
+      ],
+      "required_math_node_ids": [
+        "math.vec.vc08_div_curl_zero"
+      ],
+      "assumptions": [
+        "回転の発散が零である恒等式が成り立つほど電場・磁場が滑らか（C2級）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla\\times\\mathbf{B} = \\mu_0(\\mathbf{J} + \\mathbf{J}_d),\\quad \\nabla\\cdot\\mathbf{E} = \\frac{\\rho}{\\varepsilon_0},\\quad \\frac{\\partial\\rho}{\\partial t} + \\nabla\\cdot\\mathbf{J} = 0",
+          "to_latex": "\\mathbf{J}_d = \\varepsilon_0\\frac{\\partial \\mathbf{E}}{\\partial t},\\qquad \\nabla\\times\\mathbf{B} = \\mu_0\\left(\\mathbf{J} + \\varepsilon_0\\frac{\\partial \\mathbf{E}}{\\partial t}\\right),\\qquad \\nabla\\times\\mathbf{H} = \\mathbf{J}_f + \\frac{\\partial \\mathbf{D}}{\\partial t} ",
+          "operation_label": "発散恒等式と連続の式による変位電流の決定",
+          "explanation": "アンペールの法則の両辺の発散が零になる要請と連続の式・ガウスの法則を組み合わせることで変位電流を特定し、媒質中表現へ展開する。",
+          "used_node_ids": [
+            "math.vec.vc08_div_curl_zero",
+            "phys.em.dc06_electric_displacement_gauss_law",
+            "phys.em.es04_gauss_law_differential",
+            "phys.em.ms05_ampere_law_differential",
+            "phys.em.ms09_magnetic_field_h_ampere_matter",
+            "phys.em.mw03_charge_conservation_continuity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_div_ampere_contradiction",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\times\\mathbf{B} = \\mu_0(\\mathbf{J} + \\mathbf{J}_d),\\quad \\nabla\\cdot\\mathbf{E} = \\frac{\\rho}{\\varepsilon_0},\t \\frac{\\partial\\rho}{\\partial t} + \\nabla\\cdot\\mathbf{J} = 0",
+          "to_latex": "0 = \\nabla\\cdot(\\nabla\\times\\mathbf{B}) = \\mu_0(\\nabla\\cdot\\mathbf{J} + \\nabla\\cdot\\mathbf{J}_d) \\implies \\nabla\\cdot\\mathbf{J}_d = -\\nabla\\cdot\\mathbf{J} = \\frac{\\partial\\rho}{\\partial t} ",
+          "operation_label": "回転の発散零性と連続の式の代入",
+          "explanation": "静磁場のアンペールの法則の補正項J_dを仮定し、両辺の発散をとると回転の発散は零であるため、連続の式からJ_dの発散が電荷密度の時間変化率に一致する。",
+          "used_node_ids": [
+            "math.vec.vc08_div_curl_zero",
+            "phys.em.ms05_ampere_law_differential",
+            "phys.em.mw03_charge_conservation_continuity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_gauss_law",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 = \\nabla\\cdot(\\nabla\\times\\mathbf{B}) = \\mu_0(\\nabla\\cdot\\mathbf{J} + \\nabla\\cdot\\mathbf{J}_d) \\implies \\nabla\\cdot\\mathbf{J}_d = -\\nabla\\cdot\\mathbf{J} = \\frac{\\partial\\rho}{\\partial t} ",
+          "to_latex": "\\nabla\\cdot\\mathbf{J}_d = \\frac{\\partial}{\\partial t}(\\varepsilon_0\\nabla\\cdot\\mathbf{E}) = \\nabla\\cdot\\left(\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}\\right) \\implies \\mathbf{J}_d = \\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t} ",
+          "operation_label": "ガウスの法則の代入による変位電流の同定",
+          "explanation": "ガウスの法則を用いてρをε0(∇・E)で置き換え、空間・時間微分の交換により変位電流密度を同定する。",
+          "used_node_ids": [
+            "phys.em.es04_gauss_law_differential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_ampere_maxwell_matter",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\cdot\\mathbf{J}_d = \\frac{\\partial}{\\partial t}(\\varepsilon_0\\nabla\\cdot\\mathbf{E}) = \\nabla\\cdot\\left(\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}\\right) \\implies \\mathbf{J}_d = \\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t} ",
+          "to_latex": "\\mathbf{J}_d = \\varepsilon_0\\frac{\\partial \\mathbf{E}}{\\partial t},\\qquad \\nabla\\times\\mathbf{B} = \\mu_0\\left(\\mathbf{J} + \\varepsilon_0\\frac{\\partial \\mathbf{E}}{\\partial t}\\right),\\qquad \\nabla\\times\\mathbf{H} = \\mathbf{J}_f + \\frac{\\partial \\mathbf{D}}{\\partial t} ",
+          "operation_label": "アンペール＝マクスウェルの法則の定式化",
+          "explanation": "真空中の式に変位電流を加え、さらに分極電流∂P/∂tおよび磁化電流∇×Mを整理することで媒質中のHとDを用いた形式を得る。",
+          "used_node_ids": [
+            "phys.em.dc06_electric_displacement_gauss_law",
+            "phys.em.ms05_ampere_law_differential",
+            "phys.em.ms09_magnetic_field_h_ampere_matter"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_mw05_maxwell_system",
+      "target_node_id": "phys.em.mw05_maxwell_equations",
+      "route_kind": "reformulation",
+      "title": "4本の基本法則の統合によるマクスウェル方程式系の構成",
+      "premise_node_ids": [
+        "phys.em.es04_gauss_law_differential",
+        "phys.em.ms03_gauss_law_magnetism",
+        "phys.em.mw02_faradays_law",
+        "phys.em.mw04_displacement_current_ampere_maxwell",
+        "phys.em.dc06_electric_displacement_gauss_law",
+        "phys.em.ms09_magnetic_field_h_ampere_matter"
+      ],
+      "required_math_node_ids": [
+        "math.vec.vc05_gauss_divergence_theorem",
+        "math.vec.vc06_stokes_theorem"
+      ],
+      "assumptions": [
+        "すべての電磁場E, B, D, Hおよび電荷・電流源は任意の非定常状態を含む一般の動的場である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla\\cdot\\mathbf{E}=\\frac{\\rho}{\\varepsilon_0},\\; \\nabla\\cdot\\mathbf{B}=0,\\; \\nabla\\times\\mathbf{E}=-\\frac{\\partial\\mathbf{B}}{\\partial t},\\; \\nabla\\times\\mathbf{B}=\\mu_0\\mathbf{J}+\\mu_0\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t} ",
+          "to_latex": "\\nabla\\cdot\\mathbf{E}=\\frac{\\rho}{\\varepsilon_0},\\; \\nabla\\cdot\\mathbf{B}=0,\\; \\nabla\\times\\mathbf{E}=-\\frac{\\partial\\mathbf{B}}{\\partial t},\\; \\nabla\\times\\mathbf{B}=\\mu_0\\left(\\mathbf{J}+\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}\\right),\\quad \\nabla\\cdot\\mathbf{D}=\\rho_f,\\; \\nabla\\times\\mathbf{H}=\\mathbf{J}_f+\\frac{\\partial\\mathbf{D}}{\\partial t} ",
+          "operation_label": "微視的・巨視的マクスウェル方程式系の統合",
+          "explanation": "静電場・静磁場から拡張された4本の発散・回転方程式を統合し、真空表現および媒質中表現を一つの連立系として確立する。",
+          "used_node_ids": [
+            "phys.em.dc06_electric_displacement_gauss_law",
+            "phys.em.es04_gauss_law_differential",
+            "phys.em.ms03_gauss_law_magnetism",
+            "phys.em.ms09_magnetic_field_h_ampere_matter",
+            "phys.em.mw02_faradays_law",
+            "phys.em.mw04_displacement_current_ampere_maxwell"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_collect_vacuum_micro",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\cdot\\mathbf{E}=\\frac{\\rho}{\\varepsilon_0},\\; \\nabla\\cdot\\mathbf{B}=0,\\; \\nabla\\times\\mathbf{E}=-\\frac{\\partial\\mathbf{B}}{\\partial t},\\; \\nabla\\times\\mathbf{B}=\\mu_0\\mathbf{J}+\\mu_0\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t} ",
+          "to_latex": "\\begin{cases}\\nabla\\cdot\\mathbf{E}=\\frac{\\rho}{\\varepsilon_0}, & \\nabla\\cdot\\mathbf{B}=0,\\\\ \\nabla\\times\\mathbf{E}=-\\frac{\\partial\\mathbf{B}}{\\partial t}, & \\nabla\\times\\mathbf{B}=\\mu_0\\left(\\mathbf{J}+\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}\\right)\\end{cases} ",
+          "operation_label": "真空・微視的4方程式の連立化",
+          "explanation": "電場と磁場に対するガウスの法則、ファラデーの法則、アンペール＝マクスウェルの法則を連立偏微分方程式系としてまとめる。",
+          "used_node_ids": [
+            "phys.em.es04_gauss_law_differential",
+            "phys.em.ms03_gauss_law_magnetism",
+            "phys.em.mw02_faradays_law",
+            "phys.em.mw04_displacement_current_ampere_maxwell"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_macroscopic_form",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\begin{cases}\\nabla\\cdot\\mathbf{E}=\\frac{\\rho}{\\varepsilon_0}, & \\nabla\\cdot\\mathbf{B}=0,\\\\ \\nabla\\times\\mathbf{E}=-\\frac{\\partial\\mathbf{B}}{\\partial t}, & \\nabla\\times\\mathbf{B}=\\mu_0\\left(\\mathbf{J}+\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}\\right)\\end{cases} ",
+          "to_latex": "\\nabla\\cdot\\mathbf{E}=\\frac{\\rho}{\\varepsilon_0},\\; \\nabla\\cdot\\mathbf{B}=0,\\; \\nabla\\times\\mathbf{E}=-\\frac{\\partial\\mathbf{B}}{\\partial t},\\; \\nabla\\times\\mathbf{B}=\\mu_0\\left(\\mathbf{J}+\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}\\right),\\quad \\nabla\\cdot\\mathbf{D}=\\rho_f,\\; \\nabla\\times\\mathbf{H}=\\mathbf{J}_f+\\frac{\\partial\\mathbf{D}}{\\partial t} ",
+          "operation_label": "電束密度Dと磁場の強さHによる媒質表現の併記",
+          "explanation": "自由電荷・自由電流に基づくDとHの方程式を並置し、物質中を含む統一的マクスウェル方程式系を完成させる。",
+          "used_node_ids": [
+            "phys.em.dc06_electric_displacement_gauss_law",
+            "phys.em.ms09_magnetic_field_h_ampere_matter",
+            "phys.em.mw04_displacement_current_ampere_maxwell"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_mw06_vacuum_wave_eq",
+      "target_node_id": "phys.em.mw06_em_wave_equation_vacuum",
+      "route_kind": "deductive",
+      "title": "真空中のマクスウェル方程式からの電磁波動方程式と光速の導出",
+      "premise_node_ids": [
+        "phys.em.mw05_maxwell_equations"
+      ],
+      "required_math_node_ids": [
+        "math.pde.pde03_classical_pde_definitions",
+        "math.vec.vc09_vector_laplacian_identity"
+      ],
+      "assumptions": [
+        "真空中の自由空間であり、電荷密度ρ=0かつ電流密度J=0である",
+        "EとBはC2級であり空間微分と時間微分が交換可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla\\cdot\\mathbf{E}=0,\\; \\nabla\\cdot\\mathbf{B}=0,\\; \\nabla\\times\\mathbf{E}=-\\frac{\\partial\\mathbf{B}}{\\partial t},\\; \\nabla\\times\\mathbf{B}=\\mu_0\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t} ",
+          "to_latex": "\\nabla^2\\mathbf{E} - \\frac{1}{c^2}\\frac{\\partial^2\\mathbf{E}}{\\partial t^2} = \\mathbf{0},\\qquad \\nabla^2\\mathbf{B} - \\frac{1}{c^2}\\frac{\\partial^2\\mathbf{B}}{\\partial t^2} = \\mathbf{0},\\qquad c = \\frac{1}{\\sqrt{\\mu_0\\varepsilon_0}} ",
+          "operation_label": "回転の回転恒等式によるE・Bの非連成波動方程式の導出",
+          "explanation": "源のない真空中のマクスウェル方程式に対してさらに回転をとり、ベクトルラプラシアン恒等式を適用して光速cをもつ波動方程式を導く。",
+          "used_node_ids": [
+            "math.pde.pde03_classical_pde_definitions",
+            "math.vec.vc09_vector_laplacian_identity",
+            "phys.em.mw05_maxwell_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_curl_of_faraday_ampere",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\cdot\\mathbf{E}=0,\\; \\nabla\\cdot\\mathbf{B}=0,\\; \\nabla\\times\\mathbf{E}=-\\frac{\\partial\\mathbf{B}}{\\partial t},\\; \\nabla\\times\\mathbf{B}=\\mu_0\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t} ",
+          "to_latex": "\\nabla\\times(\\nabla\\times\\mathbf{E}) = -\\frac{\\partial}{\\partial t}(\\nabla\\times\\mathbf{B}) = -\\mu_0\\varepsilon_0\\frac{\\partial^2\\mathbf{E}}{\\partial t^2},\\quad \\nabla\\times(\\nabla\\times\\mathbf{B}) = \\mu_0\\varepsilon_0\\frac{\\partial}{\\partial t}(\\nabla\\times\\mathbf{E}) = -\\mu_0\\varepsilon_0\\frac{\\partial^2\\mathbf{B}}{\\partial t^2} ",
+          "operation_label": "ファラデー・アンペール式の回転操作と相互代入",
+          "explanation": "回転方程式の双方に∇×を作用させ、空間微分と時間微分を交換して他方の方程式を代入することでEとBを分離する。",
+          "used_node_ids": [
+            "phys.em.mw05_maxwell_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_vector_laplacian_id",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\times(\\nabla\\times\\mathbf{E}) = -\\frac{\\partial}{\\partial t}(\\nabla\\times\\mathbf{B}) = -\\mu_0\\varepsilon_0\\frac{\\partial^2\\mathbf{E}}{\\partial t^2},\\quad \\nabla\\times(\\nabla\\times\\mathbf{B}) = \\mu_0\\varepsilon_0\\frac{\\partial}{\\partial t}(\\nabla\\times\\mathbf{E}) = -\\mu_0\\varepsilon_0\\frac{\\partial^2\\mathbf{B}}{\\partial t^2} ",
+          "to_latex": "\\nabla(\\nabla\\cdot\\mathbf{E}) - \\nabla^2\\mathbf{E} = -\\mu_0\\varepsilon_0\\frac{\\partial^2\\mathbf{E}}{\\partial t^2},\\quad \\nabla(\\nabla\\cdot\\mathbf{B}) - \\nabla^2\\mathbf{B} = -\\mu_0\\varepsilon_0\\frac{\\partial^2\\mathbf{B}}{\\partial t^2} ",
+          "operation_label": "ベクトルラプラシアン恒等式の適用",
+          "explanation": "左辺に回転の回転恒等式 ∇×(∇×F) = ∇(∇・F) - ∇^2 F を適用する。",
+          "used_node_ids": [
+            "math.vec.vc09_vector_laplacian_identity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_speed_of_light_wave_eq",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla(\\nabla\\cdot\\mathbf{E}) - \\nabla^2\\mathbf{E} = -\\mu_0\\varepsilon_0\\frac{\\partial^2\\mathbf{E}}{\\partial t^2},\\quad \\nabla(\\nabla\\cdot\\mathbf{B}) - \\nabla^2\\mathbf{B} = -\\mu_0\\varepsilon_0\\frac{\\partial^2\\mathbf{B}}{\\partial t^2} ",
+          "to_latex": "\\nabla^2\\mathbf{E} - \\frac{1}{c^2}\\frac{\\partial^2\\mathbf{E}}{\\partial t^2} = \\mathbf{0},\\qquad \\nabla^2\\mathbf{B} - \\frac{1}{c^2}\\frac{\\partial^2\\mathbf{B}}{\\partial t^2} = \\mathbf{0},\\qquad c = \\frac{1}{\\sqrt{\\mu_0\\varepsilon_0}} ",
+          "operation_label": "発散零条件の代入と波動方程式の同定",
+          "explanation": "真空条件 ∇・E = 0, ∇・B = 0 を代入し、古典的波動方程式の標準形と比較して伝播速度 c = 1/√(μ0 ε0) を得る。",
+          "used_node_ids": [
+            "math.pde.pde03_classical_pde_definitions",
+            "phys.em.mw05_maxwell_equations"
+          ],
+          "sympy_check_hint": "c = 1/sqrt(mu_0*epsilon_0)"
+        }
+      ]
+    },
+    {
+      "id": "drv_mw07_plane_wave_transverse",
+      "target_node_id": "phys.em.mw07_plane_em_waves_transversality",
+      "route_kind": "deductive",
+      "title": "単色平面波仮設による分散関係・横波性・EとBの直交関係の導出",
+      "premise_node_ids": [
+        "phys.em.mw05_maxwell_equations",
+        "phys.em.mw06_em_wave_equation_vacuum"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "解として定数振幅ベクトルE0, B0を持つ単色平面波形式を仮定し、実部をとって物理場とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{E}(\\mathbf{r},t)=\\mathbf{E}_0 e^{i(\\mathbf{k}\\cdot\\mathbf{r}-\\omega t)},\\; \\mathbf{B}(\\mathbf{r},t)=\\mathbf{B}_0 e^{i(\\mathbf{k}\\cdot\\mathbf{r}-\\omega t)},\\; \\nabla^2\\mathbf{E} - \\frac{1}{c^2}\\frac{\\partial^2\\mathbf{E}}{\\partial t^2}=\\mathbf{0} ",
+          "to_latex": "\\omega = c|\\mathbf{k}|,\\quad \\mathbf{k}\\cdot\\mathbf{E} = 0,\\quad \\mathbf{k}\\cdot\\mathbf{B} = 0,\\quad \\mathbf{B} = \\frac{1}{\\omega}(\\mathbf{k}\\times\\mathbf{E}) = \\frac{1}{c}(\\hat{\\mathbf{k}}\\times\\mathbf{E}) ",
+          "operation_label": "平面波アンザッツへの微分作用素の適用",
+          "explanation": "平面波解を波動方程式とマクスウェル方程式に代入し、空間・時間微分を波数ベクトルと角振動数に置き換えて横波性と電磁場比を導く。",
+          "used_node_ids": [
+            "phys.em.mw05_maxwell_equations",
+            "phys.em.mw06_em_wave_equation_vacuum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_dispersion_relation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{E}(\\mathbf{r},t)=\\mathbf{E}_0 e^{i(\\mathbf{k}\\cdot\\mathbf{r}-\\omega t)},\\; \\mathbf{B}(\\mathbf{r},t)=\\mathbf{B}_0 e^{i(\\mathbf{k}\\cdot\\mathbf{r}-\\omega t)},\\; \\nabla^2\\mathbf{E} - \\frac{1}{c^2}\\frac{\\partial^2\\mathbf{E}}{\\partial t^2}=\\mathbf{0} ",
+          "to_latex": "\\left(-k^2 + \\frac{\\omega^2}{c^2}\\right)\\mathbf{E}_0 = \\mathbf{0} \\implies \\omega = c|\\mathbf{k}| ",
+          "operation_label": "波動方程式の代入による分散関係",
+          "explanation": "平面波に対する微分演算子の置き換え ∇→ik, ∂_t→-iω により分散関係 ω = c|k| を得る。",
+          "used_node_ids": [
+            "phys.em.mw06_em_wave_equation_vacuum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_transversality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(-k^2 + \\frac{\\omega^2}{c^2}\\right)\\mathbf{E}_0 = \\mathbf{0} \\implies \\omega = c|\\mathbf{k}| ",
+          "to_latex": "i\\mathbf{k}\\cdot\\mathbf{E}_0 = 0,\\; i\\mathbf{k}\\cdot\\mathbf{B}_0 = 0 \\implies \\mathbf{k}\\cdot\\mathbf{E} = 0,\\; \\mathbf{k}\\cdot\\mathbf{B} = 0,\\; \\omega = c|\\mathbf{k}| ",
+          "operation_label": "ガウスの法則による横波性の導出",
+          "explanation": "真空中の発散方程式 ∇・E = 0 と ∇・B = 0 に平面波を代入し、電場と磁場がともに進行方向kに直交する横波であることを示す。",
+          "used_node_ids": [
+            "phys.em.mw05_maxwell_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_faraday_field_ratio",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "i\\mathbf{k}\\cdot\\mathbf{E}_0 = 0,\\; i\\mathbf{k}\\cdot\\mathbf{B}_0 = 0 \\implies \\mathbf{k}\\cdot\\mathbf{E} = 0,\\; \\mathbf{k}\\cdot\\mathbf{B} = 0,\\; \\omega = c|\\mathbf{k}| ",
+          "to_latex": "\\omega = c|\\mathbf{k}|,\\quad \\mathbf{k}\\cdot\\mathbf{E} = 0,\\quad \\mathbf{k}\\cdot\\mathbf{B} = 0,\\quad \\mathbf{B} = \\frac{1}{\\omega}(\\mathbf{k}\\times\\mathbf{E}) = \\frac{1}{c}(\\hat{\\mathbf{k}}\\times\\mathbf{E}) ",
+          "operation_label": "ファラデーの法則によるEとBの直交関係",
+          "explanation": "ファラデーの法則 ∇×E = -∂B/∂t に平面波を代入して ik×E0 = iωB0 を得、分散関係 ω = c|k| を用いて B = (k_hat×E)/c を導く。",
+          "used_node_ids": [
+            "phys.em.mw05_maxwell_equations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_mw08_energy_poynting_def",
+      "target_node_id": "phys.em.mw08_em_energy_density_poynting_vector",
+      "route_kind": "reformulation",
+      "title": "静電・静磁エネルギー密度の統合とポインティングベクトルの定義",
+      "premise_node_ids": [
+        "phys.em.es09_electrostatic_field_energy_density",
+        "phys.em.dc09_dielectric_electrostatic_energy",
+        "phys.em.ms10_linear_magnetic_media_boundary_energy",
+        "phys.em.mw05_maxwell_equations"
+      ],
+      "required_math_node_ids": [
+        "math.vec.vc10_div_curl_product_rules"
+      ],
+      "assumptions": [
+        "線形等方媒質または真空中において静エネルギー密度の表式を動的電磁場に拡張適用する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u_e = \\frac{1}{2}\\varepsilon_0|\\mathbf{E}|^2 = \\frac{1}{2}\\mathbf{E}\\cdot\\mathbf{D},\\quad u_m = \\frac{1}{2\\mu_0}|\\mathbf{B}|^2 = \\frac{1}{2}\\mathbf{B}\\cdot\\mathbf{H},\\quad \\mathbf{E}\\cdot(\\nabla\\times\\mathbf{H}) - \\mathbf{H}\\cdot(\\nabla\\times\\mathbf{E})",
+          "to_latex": "u_{\\mathrm{em}} := \\frac{1}{2}\\left(\\varepsilon_0|\\mathbf{E}|^2 + \\frac{1}{\\mu_0}|\\mathbf{B}|^2\\right) = \\frac{1}{2}(\\mathbf{E}\\cdot\\mathbf{D} + \\mathbf{B}\\cdot\\mathbf{H}),\\qquad \\mathbf{S} := \\frac{1}{\\mu_0}(\\mathbf{E}\\times\\mathbf{B}) = \\mathbf{E}\\times\\mathbf{H} ",
+          "operation_label": "電磁エネルギー密度の加算とエネルギー流束の抽出",
+          "explanation": "電場と磁場のエネルギー密度を合算して電磁エネルギー密度を定義し、マクスウェル方程式のエネルギー収支式に現れる発散項からポインティングベクトルを定義する。",
+          "used_node_ids": [
+            "math.vec.vc10_div_curl_product_rules",
+            "phys.em.dc09_dielectric_electrostatic_energy",
+            "phys.em.es09_electrostatic_field_energy_density",
+            "phys.em.ms10_linear_magnetic_media_boundary_energy",
+            "phys.em.mw05_maxwell_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_total_energy_density",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_e = \\frac{1}{2}\\varepsilon_0|\\mathbf{E}|^2 = \\frac{1}{2}\\mathbf{E}\\cdot\\mathbf{D},\\quad u_m = \\frac{1}{2\\mu_0}|\\mathbf{B}|^2 = \\frac{1}{2}\\mathbf{B}\\cdot\\mathbf{H},\\quad \\mathbf{E}\\cdot(\\nabla\\times\\mathbf{H}) - \\mathbf{H}\\cdot(\\nabla\\times\\mathbf{E})",
+          "to_latex": "u_{\\mathrm{em}} := u_e + u_m = \\frac{1}{2}\\left(\\varepsilon_0|\\mathbf{E}|^2 + \\frac{1}{\\mu_0}|\\mathbf{B}|^2\\right) = \\frac{1}{2}(\\mathbf{E}\\cdot\\mathbf{D} + \\mathbf{B}\\cdot\\mathbf{H}),\\quad -\\nabla\\cdot(\\mathbf{E}\\times\\mathbf{H}) = \\mathbf{E}\\cdot(\\nabla\\times\\mathbf{H}) - \\mathbf{H}\\cdot(\\nabla\\times\\mathbf{E}) ",
+          "operation_label": "静電・静磁エネルギー密度の結合と外積発散恒等式",
+          "explanation": "静電エネルギー密度u_eと磁気エネルギー密度u_mを足し合わせて全電磁エネルギー密度を構成し、外積の発散恒等式により回転の結合項を書き換える。",
+          "used_node_ids": [
+            "math.vec.vc10_div_curl_product_rules",
+            "phys.em.dc09_dielectric_electrostatic_energy",
+            "phys.em.es09_electrostatic_field_energy_density",
+            "phys.em.ms10_linear_magnetic_media_boundary_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_poynting_flux_def",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_{\\mathrm{em}} := u_e + u_m = \\frac{1}{2}\\left(\\varepsilon_0|\\mathbf{E}|^2 + \\frac{1}{\\mu_0}|\\mathbf{B}|^2\\right) = \\frac{1}{2}(\\mathbf{E}\\cdot\\mathbf{D} + \\mathbf{B}\\cdot\\mathbf{H}),\\quad -\\nabla\\cdot(\\mathbf{E}\\times\\mathbf{H}) = \\mathbf{E}\\cdot(\\nabla\\times\\mathbf{H}) - \\mathbf{H}\\cdot(\\nabla\\times\\mathbf{E}) ",
+          "to_latex": "u_{\\mathrm{em}} := \\frac{1}{2}\\left(\\varepsilon_0|\\mathbf{E}|^2 + \\frac{1}{\\mu_0}|\\mathbf{B}|^2\\right) = \\frac{1}{2}(\\mathbf{E}\\cdot\\mathbf{D} + \\mathbf{B}\\cdot\\mathbf{H}),\\qquad \\mathbf{S} := \\frac{1}{\\mu_0}(\\mathbf{E}\\times\\mathbf{B}) = \\mathbf{E}\\times\\mathbf{H} ",
+          "operation_label": "エネルギー流束ベクトルSの定義",
+          "explanation": "マクスウェル方程式の回転項の内積から現れる発散の引数 E×H を電磁エネルギー流束密度（ポインティングベクトル）として定義する。",
+          "used_node_ids": [
+            "phys.em.mw05_maxwell_equations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_mw09_poynting_theorem",
+      "target_node_id": "phys.em.mw09_poynting_theorem",
+      "route_kind": "deductive",
+      "title": "マクスウェル方程式とジュール仕事率からのポインティングの定理の導出",
+      "premise_node_ids": [
+        "phys.em.mw05_maxwell_equations",
+        "phys.em.mw08_em_energy_density_poynting_vector",
+        "phys.em.ms01_lorentz_force_magnetic_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.vec.vc01_divergence_def",
+        "math.vec.vc02_curl_def",
+        "math.vec.vc05_gauss_divergence_theorem"
+      ],
+      "assumptions": [
+        "真空（または定数ε0, μ0）において電磁場E, BはC1級であり、電流Jに対してJ・Eが電磁場のなす単位体積あたりの仕事率を与える"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{J}\\cdot\\mathbf{E} = \\mathbf{E}\\cdot\\left(\\frac{1}{\\mu_0}\\nabla\\times\\mathbf{B} - \\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}\\right),\\quad \\nabla\\times\\mathbf{E} = -\\frac{\\partial\\mathbf{B}}{\\partial t} ",
+          "to_latex": "\\frac{\\partial u_{\\mathrm{em}}}{\\partial t} + \\nabla\\cdot\\mathbf{S} = -\\mathbf{J}\\cdot\\mathbf{E},\\qquad \\frac{d}{dt}\\iiint_V u_{\\mathrm{em}}\\,dV + \\oiint_{\\partial V} \\mathbf{S}\\cdot\\mathbf{n}\\,dS = -\\iiint_V \\mathbf{J}\\cdot\\mathbf{E}\\,dV ",
+          "operation_label": "電磁仕事率の変形と発散定理による保存則導出",
+          "explanation": "アンペール＝マクスウェルの法則から電流密度Jを消去してJ・Eを展開し、ファラデーの法則と外積の発散公式・ガウスの発散定理を用いてポインティングの定理を導く。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.vec.vc01_divergence_def",
+            "math.vec.vc02_curl_def",
+            "math.vec.vc05_gauss_divergence_theorem",
+            "phys.em.ms01_lorentz_force_magnetic_def",
+            "phys.em.mw05_maxwell_equations",
+            "phys.em.mw08_em_energy_density_poynting_vector"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_power_density_ampere",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{J}\\cdot\\mathbf{E} = \\mathbf{E}\\cdot\\left(\\frac{1}{\\mu_0}\\nabla\\times\\mathbf{B} - \\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}\\right),\\quad \\nabla\\times\\mathbf{E} = -\\frac{\\partial\\mathbf{B}}{\\partial t} ",
+          "to_latex": "\\mathbf{J}\\cdot\\mathbf{E} = \\frac{1}{\\mu_0}\\big[\\mathbf{B}\\cdot(\\nabla\\times\\mathbf{E}) - \\nabla\\cdot(\\mathbf{E}\\times\\mathbf{B})\\big] - \\varepsilon_0\\mathbf{E}\\cdot\\frac{\\partial\\mathbf{E}}{\\partial t} ",
+          "operation_label": "外積の発散恒等式の適用",
+          "explanation": "発散・回転の成分展開に基づくベクトル恒等式 E・(∇×B) = B・(∇×E) - ∇・(E×B) を用いて回転項を書き換える。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def",
+            "math.vec.vc02_curl_def",
+            "phys.em.mw05_maxwell_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_faraday_energy",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{J}\\cdot\\mathbf{E} = \\frac{1}{\\mu_0}\\big[\\mathbf{B}\\cdot(\\nabla\\times\\mathbf{E}) - \\nabla\\cdot(\\mathbf{E}\\times\\mathbf{B})\\big] - \\varepsilon_0\\mathbf{E}\\cdot\\frac{\\partial\\mathbf{E}}{\\partial t} ",
+          "to_latex": "\\mathbf{J}\\cdot\\mathbf{E} = -\\frac{\\partial}{\\partial t}\\left(\\frac{\\varepsilon_0}{2}|\\mathbf{E}|^2 + \\frac{1}{2\\mu_0}|\\mathbf{B}|^2\\right) - \\nabla\\cdot\\left(\\frac{1}{\\mu_0}\\mathbf{E}\\times\\mathbf{B}\\right) = -\\frac{\\partial u_{\\mathrm{em}}}{\\partial t} - \\nabla\\cdot\\mathbf{S} ",
+          "operation_label": "ファラデーの法則の代入と積の微分法則",
+          "explanation": "∇×E = -∂B/∂t を代入し、積の微分法則（E・∂E/∂t = 1/2 ∂(|E|^2)/∂t など）を用いてエネルギー密度とポインティングベクトルでまとめる。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "phys.em.mw05_maxwell_equations",
+            "phys.em.mw08_em_energy_density_poynting_vector"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integral_poynting_theorem",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{J}\\cdot\\mathbf{E} = -\\frac{\\partial}{\\partial t}\\left(\\frac{\\varepsilon_0}{2}|\\mathbf{E}|^2 + \\frac{1}{2\\mu_0}|\\mathbf{B}|^2\\right) - \\nabla\\cdot\\left(\\frac{1}{\\mu_0}\\mathbf{E}\\times\\mathbf{B}\\right) = -\\frac{\\partial u_{\\mathrm{em}}}{\\partial t} - \\nabla\\cdot\\mathbf{S} ",
+          "to_latex": "\\frac{\\partial u_{\\mathrm{em}}}{\\partial t} + \\nabla\\cdot\\mathbf{S} = -\\mathbf{J}\\cdot\\mathbf{E},\\qquad \\frac{d}{dt}\\iiint_V u_{\\mathrm{em}}\\,dV + \\oiint_{\\partial V} \\mathbf{S}\\cdot\\mathbf{n}\\,dS = -\\iiint_V \\mathbf{J}\\cdot\\mathbf{E}\\,dV ",
+          "operation_label": "体積積分とガウスの発散定理による積分形の導出",
+          "explanation": "移項してポインティングの定理の微分形を得、固定体積Vで積分して発散定理を適用することで大局的なエネルギー保存則を得る。",
+          "used_node_ids": [
+            "math.vec.vc05_gauss_divergence_theorem",
+            "phys.em.ms01_lorentz_force_magnetic_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

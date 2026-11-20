@@ -1,0 +1,856 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.em.electrostatics",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "電磁気学1：クーロンの法則・ガウスの法則・静電ポテンシャル・ポアソン方程式",
+    "language": "ja",
+    "description": "クーロンの法則と重ね合わせ、ガウスの法則（積分形・微分形）、静電ポテンシャル、ポアソン・ラプラス方程式、静電エネルギーを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.em.es01_coulombs_law",
+      "short_code": "ES01",
+      "kind": "empirical_hypothesis",
+      "title": "クーロンの法則（点電荷間の静電気力）",
+      "summary": "真空中の静止した2つの点電荷間に働く中心逆2乗力（静電気力）の法則。",
+      "canonical_latex": "\\mathbf{F}_{12} = \\frac{1}{4\\pi\\varepsilon_0}\\frac{q_1 q_2}{|\\mathbf{r}_2 - \\mathbf{r}_1|^3}(\\mathbf{r}_2 - \\mathbf{r}_1) = \\frac{q_1 q_2}{4\\pi\\varepsilon_0 r_{12}^2}\\hat{\\mathbf{r}}_{12} ",
+      "aliases_latex": [
+        "\\mathbf{F}_{12} = k_e\\frac{q_1 q_2}{r_{12}^2}\\hat{\\mathbf{r}}_{12}"
+      ],
+      "keywords": [
+        "クーロンの法則",
+        "静電気力",
+        "真空の誘電率",
+        "逆2乗則"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "electrostatics"
+      ]
+    },
+    {
+      "id": "phys.em.es02_electric_field_superposition",
+      "short_code": "ES02",
+      "kind": "definition",
+      "title": "電場ベクトルと重ね合わせの原理",
+      "summary": "単位正試験電荷が受ける静電気力として定義される静電場と、離散・連続電荷分布に対する線形重ね合わせの原理。",
+      "canonical_latex": "\\mathbf{E}(\\mathbf{r}) := \\frac{\\mathbf{F}(\\mathbf{r})}{q_0} = \\frac{1}{4\\pi\\varepsilon_0}\\sum_{i=1}^{N} q_i\\frac{\\mathbf{r}-\\mathbf{r}_i}{|\\mathbf{r}-\\mathbf{r}_i|^3} = \\frac{1}{4\\pi\\varepsilon_0}\\iiint_{V} \\rho(\\mathbf{r}')\\frac{\\mathbf{r}-\\mathbf{r}'}{|\\mathbf{r}-\\mathbf{r}'|^3}\\,dV'",
+      "aliases_latex": [
+        "\\mathbf{E}(\\mathbf{r}) = \\frac{1}{4\\pi\\varepsilon_0}\\int \\frac{\\mathbf{r}-\\mathbf{r}'}{|\\mathbf{r}-\\mathbf{r}'|^3}\\,dq'"
+      ],
+      "keywords": [
+        "電場",
+        "電界",
+        "重ね合わせの原理",
+        "電荷密度"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "electrostatics"
+      ]
+    },
+    {
+      "id": "phys.em.es03_gauss_law_integral",
+      "short_code": "ES03",
+      "kind": "theorem_formula",
+      "title": "ガウスの法則（積分形）",
+      "summary": "任意の閉曲面を貫く電束（電場の面積分）が、その内部に含まれる全電荷を真空の誘電率で割ったものに等しいという法則。",
+      "canonical_latex": "\\oiint_{\\partial V} \\mathbf{E}\\cdot\\mathbf{n}\\,dS = \\frac{Q_{\\mathrm{enc}}}{\\varepsilon_0} = \\frac{1}{\\varepsilon_0}\\iiint_{V} \\rho(\\mathbf{r})\\,dV",
+      "aliases_latex": [
+        "\\oint_{\\partial V} \\mathbf{E}\\cdot d\\mathbf{S} = \\frac{Q}{\\varepsilon_0}"
+      ],
+      "keywords": [
+        "ガウスの法則",
+        "積分形",
+        "電束",
+        "立体角"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "electrostatics"
+      ]
+    },
+    {
+      "id": "phys.em.es04_gauss_law_differential",
+      "short_code": "ES04",
+      "kind": "theorem_formula",
+      "title": "ガウスの法則（微分形）",
+      "summary": "空間各点における電場の発散が、その点の体積電荷密度を真空の誘電率で割った値に等しいことを表す局所法則。",
+      "canonical_latex": "\\nabla \\cdot \\mathbf{E}(\\mathbf{r}) = \\frac{\\rho(\\mathbf{r})}{\\varepsilon_0} ",
+      "aliases_latex": [
+        "\\operatorname{div}\\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}"
+      ],
+      "keywords": [
+        "ガウスの法則",
+        "微分形",
+        "発散",
+        "マクスウェル方程式"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "electrostatics"
+      ]
+    },
+    {
+      "id": "phys.em.es05_electrostatic_irrotational",
+      "short_code": "ES05",
+      "kind": "theorem_formula",
+      "title": "静電場の保存性と渦なし条件",
+      "summary": "静電場の任意の閉曲線に沿う線積分が零となり、局所的に回転が零（渦なし場）となる性質。",
+      "canonical_latex": "\\oint_{C} \\mathbf{E}\\cdot d\\mathbf{r} = 0,\\qquad \\nabla \\times \\mathbf{E} = \\mathbf{0} ",
+      "aliases_latex": [
+        "\\operatorname{rot}\\mathbf{E} = \\mathbf{0}"
+      ],
+      "keywords": [
+        "保存場",
+        "渦なし条件",
+        "周回積分",
+        "静電場"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "electrostatics"
+      ]
+    },
+    {
+      "id": "phys.em.es06_electrostatic_potential",
+      "short_code": "ES06",
+      "kind": "definition",
+      "title": "静電ポテンシャル（電位）と電場の勾配表示",
+      "summary": "単位電荷を基準点から運ぶ際の仕事として定義されるスカラー静電ポテンシャルと、その負の勾配としての電場表示。",
+      "canonical_latex": "\\phi(\\mathbf{r}) := -\\int_{\\mathbf{r}_{\\mathrm{ref}}}^{\\mathbf{r}} \\mathbf{E}(\\mathbf{r}')\\cdot d\\mathbf{r}' = \\frac{1}{4\\pi\\varepsilon_0}\\iiint_{V}\\frac{\\rho(\\mathbf{r}')}{|\\mathbf{r}-\\mathbf{r}'|}\\,dV',\\qquad \\mathbf{E}(\\mathbf{r}) = -\\nabla\\phi(\\mathbf{r})",
+      "aliases_latex": [
+        "V(\\mathbf{r}) = \\frac{1}{4\\pi\\varepsilon_0}\\sum_i \\frac{q_i}{|\\mathbf{r}-\\mathbf{r}_i|},\\quad \\mathbf{E} = -\\nabla V"
+      ],
+      "keywords": [
+        "静電ポテンシャル",
+        "電位",
+        "勾配",
+        "スカラーポテンシャル"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "electrostatics"
+      ]
+    },
+    {
+      "id": "phys.em.es07_poisson_laplace_equations",
+      "short_code": "ES07",
+      "kind": "theorem_formula",
+      "title": "静電場のポアソン方程式とラプラス方程式",
+      "summary": "静電ポテンシャルと電荷密度を結ぶ2階線形楕円型偏微分方程式（ポアソン方程式）と、電荷のない領域におけるラプラス方程式。",
+      "canonical_latex": "\\nabla^2 \\phi(\\mathbf{r}) = -\\frac{\\rho(\\mathbf{r})}{\\varepsilon_0},\\qquad \\rho(\\mathbf{r}) = 0 \\implies \\nabla^2 \\phi(\\mathbf{r}) = 0",
+      "aliases_latex": [
+        "\\Delta \\phi = -\\frac{\\rho}{\\varepsilon_0}"
+      ],
+      "keywords": [
+        "ポアソン方程式",
+        "ラプラス方程式",
+        "ラプラシアン",
+        "境界値問題"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "electrostatics"
+      ]
+    },
+    {
+      "id": "phys.em.es08_electrostatic_energy_discrete_cont",
+      "short_code": "ES08",
+      "kind": "theorem_formula",
+      "title": "電荷系の静電エネルギー（離散系・連続分布）",
+      "summary": "無限遠から電荷を集めて所定の電荷配置を形成するのに要する仕事としての静電ポテンシャルエネルギー。",
+      "canonical_latex": "U_e = \\frac{1}{2}\\sum_{i=1}^{N} q_i \\phi(\\mathbf{r}_i) = \\frac{1}{8\\pi\\varepsilon_0}\\sum_{i\\neq j}\\frac{q_i q_j}{|\\mathbf{r}_i - \\mathbf{r}_j|} = \\frac{1}{2}\\iiint_{V} \\rho(\\mathbf{r})\\phi(\\mathbf{r})\\,dV",
+      "aliases_latex": [
+        "U_e = \\frac{1}{2}\\int \\rho\\phi\\,dV"
+      ],
+      "keywords": [
+        "静電エネルギー",
+        "静電ポテンシャルエネルギー",
+        "電荷配置"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "electrostatics"
+      ]
+    },
+    {
+      "id": "phys.em.es09_electrostatic_field_energy_density",
+      "short_code": "ES09",
+      "kind": "theorem_formula",
+      "title": "静電場のエネルギー密度と場のエネルギー表示",
+      "summary": "静電エネルギーを電荷と電位の積から全空間にわたる電場強度の2乗の積分へと書き換えた場のエネルギー表現とエネルギー密度。",
+      "canonical_latex": "U_e = \\frac{\\varepsilon_0}{2}\\iiint_{\\mathbb{R}^3} |\\mathbf{E}(\\mathbf{r})|^2\\,dV,\\qquad u_e(\\mathbf{r}) := \\frac{1}{2}\\varepsilon_0 |\\mathbf{E}(\\mathbf{r})|^2",
+      "aliases_latex": [
+        "u_e = \\frac{1}{2}\\mathbf{E}\\cdot\\mathbf{D}"
+      ],
+      "keywords": [
+        "静電エネルギー密度",
+        "場のエネルギー",
+        "空間積分"
+      ],
+      "domain_tags": [
+        "physics",
+        "electromagnetism",
+        "electrostatics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "phys.em.es_d01",
+      "target_node_id": "phys.em.es01_coulombs_law",
+      "route_kind": "inductive",
+      "title": "実験的逆2乗則と作用・反作用からのクーロンの法則のベクトル定式化",
+      "premise_node_ids": [
+        "phys.mech.p03_action_reaction"
+      ],
+      "required_math_node_ids": [
+        "math.vec.cc08_spherical_scale_factors",
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "assumptions": [
+        "真空中の静止した2つの点電荷を考え、力は電荷を結ぶ直線方向に働く。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F \\propto \\frac{q_1 q_2}{r_{12}^2},\\quad \\mathbf{F}_{12} = -\\mathbf{F}_{21} ",
+          "to_latex": "\\mathbf{F}_{12} = \\frac{1}{4\\pi\\varepsilon_0}\\frac{q_1 q_2}{|\\mathbf{r}_2 - \\mathbf{r}_1|^3}(\\mathbf{r}_2 - \\mathbf{r}_1) = \\frac{q_1 q_2}{4\\pi\\varepsilon_0 r_{12}^2}\\hat{\\mathbf{r}}_{12} ",
+          "operation_label": "3次元ベクトル定式化",
+          "explanation": "ねじり秤等の実験で確立された距離の逆2乗則と電荷積への比例性、および作用・反作用の法則を3次元位置ベクトルで表現し、SI単位系の比例定数 1/(4πε0) を導入する。",
+          "used_node_ids": [
+            "math.vec.cc08_spherical_scale_factors",
+            "math.vec.m28_dot_product_component_def",
+            "phys.mech.p03_action_reaction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_unit_vector",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F \\propto \\frac{q_1 q_2}{r_{12}^2},\\quad \\mathbf{F}_{12} = -\\mathbf{F}_{21} ",
+          "to_latex": "\\mathbf{r}_{12} := \\mathbf{r}_2 - \\mathbf{r}_1,\\quad r_{12} = |\\mathbf{r}_{12}|,\\quad \\hat{\\mathbf{r}}_{12} := \\frac{\\mathbf{r}_2 - \\mathbf{r}_1}{|\\mathbf{r}_2 - \\mathbf{r}_1|} ",
+          "operation_label": "相対位置ベクトルと単位ベクトルの定義",
+          "explanation": "電荷 q1（位置 r1）から電荷 q2（位置 r2）への相対位置ベクトルと方向単位ベクトルを内積ノルムにより定義する。",
+          "used_node_ids": [
+            "math.vec.cc08_spherical_scale_factors",
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_si_constant",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_{12} := \\mathbf{r}_2 - \\mathbf{r}_1,\\quad r_{12} = |\\mathbf{r}_{12}|,\\quad \\hat{\\mathbf{r}}_{12} := \\frac{\\mathbf{r}_2 - \\mathbf{r}_1}{|\\mathbf{r}_2 - \\mathbf{r}_1|} ",
+          "to_latex": "\\mathbf{F}_{12} = \\frac{1}{4\\pi\\varepsilon_0}\\frac{q_1 q_2}{|\\mathbf{r}_2 - \\mathbf{r}_1|^3}(\\mathbf{r}_2 - \\mathbf{r}_1) = \\frac{q_1 q_2}{4\\pi\\varepsilon_0 r_{12}^2}\\hat{\\mathbf{r}}_{12} ",
+          "operation_label": "比例定数と作用・反作用の整合",
+          "explanation": "真空の誘電率 ε0 を用いて比例定数を 1/(4πε0) と定め、同符号で斥力・異符号で引力となるベクトル形式を得る。",
+          "used_node_ids": [
+            "phys.mech.p03_action_reaction"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "phys.em.es_d02",
+      "target_node_id": "phys.em.es02_electric_field_superposition",
+      "route_kind": "deductive",
+      "title": "クーロンの法則と重ね合わせによる電場ベクトルの導出",
+      "premise_node_ids": [
+        "phys.em.es01_coulombs_law"
+      ],
+      "required_math_node_ids": [
+        "math.calc.mi01_multiple_integral_def"
+      ],
+      "assumptions": [
+        "点電荷間の力は互いに独立に加算される（線形重ね合わせの原理）。",
+        "連続電荷分布では微小体積要素 dV' の電荷 dq' = ρ(r')dV' を点電荷とみなす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{F}_i = \\frac{q_i q_0}{4\\pi\\varepsilon_0}\\frac{\\mathbf{r} - \\mathbf{r}_i}{|\\mathbf{r} - \\mathbf{r}_i|^3} ",
+          "to_latex": "\\mathbf{E}(\\mathbf{r}) := \\frac{\\mathbf{F}(\\mathbf{r})}{q_0} = \\frac{1}{4\\pi\\varepsilon_0}\\sum_{i=1}^{N} q_i\\frac{\\mathbf{r}-\\mathbf{r}_i}{|\\mathbf{r}-\\mathbf{r}_i|^3} = \\frac{1}{4\\pi\\varepsilon_0}\\iiint_{V} \\rho(\\mathbf{r}')\\frac{\\mathbf{r}-\\mathbf{r}'}{|\\mathbf{r}-\\mathbf{r}'|^3}\\,dV'",
+          "operation_label": "電場の定義と連続極限",
+          "explanation": "各点電荷からのクーロン力を重ね合わせて試験電荷 q0 で割り、さらに連続極限をとることで電荷密度 ρ による積分表示を導く。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "phys.em.es01_coulombs_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_superposition",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F}_i = \\frac{q_i q_0}{4\\pi\\varepsilon_0}\\frac{\\mathbf{r} - \\mathbf{r}_i}{|\\mathbf{r} - \\mathbf{r}_i|^3} ",
+          "to_latex": "\\mathbf{E}(\\mathbf{r}) := \\frac{1}{q_0}\\sum_{i=1}^{N}\\mathbf{F}_i = \\frac{1}{4\\pi\\varepsilon_0}\\sum_{i=1}^{N} q_i\\frac{\\mathbf{r}-\\mathbf{r}_i}{|\\mathbf{r}-\\mathbf{r}_i|^3} ",
+          "operation_label": "離散点電荷系の重ね合わせ",
+          "explanation": "位置 r の試験電荷 q0 が受ける合力を q0 で除し、試験電荷に依存しない電場ベクトル E(r) を得る。",
+          "used_node_ids": [
+            "phys.em.es01_coulombs_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_continuum_limit",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{E}(\\mathbf{r}) := \\frac{1}{q_0}\\sum_{i=1}^{N}\\mathbf{F}_i = \\frac{1}{4\\pi\\varepsilon_0}\\sum_{i=1}^{N} q_i\\frac{\\mathbf{r}-\\mathbf{r}_i}{|\\mathbf{r}-\\mathbf{r}_i|^3} ",
+          "to_latex": "\\mathbf{E}(\\mathbf{r}) := \\frac{\\mathbf{F}(\\mathbf{r})}{q_0} = \\frac{1}{4\\pi\\varepsilon_0}\\sum_{i=1}^{N} q_i\\frac{\\mathbf{r}-\\mathbf{r}_i}{|\\mathbf{r}-\\mathbf{r}_i|^3} = \\frac{1}{4\\pi\\varepsilon_0}\\iiint_{V} \\rho(\\mathbf{r}')\\frac{\\mathbf{r}-\\mathbf{r}'}{|\\mathbf{r}-\\mathbf{r}'|^3}\\,dV'",
+          "operation_label": "体積積分への連続極限移行",
+          "explanation": "微小体積要素 ΔV_k の電荷 Δq_k = ρ(r'_k)ΔV_k の和についてリーマン和の極限をとり、3重積分による電場表示を得る。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "phys.em.es_d03",
+      "target_node_id": "phys.em.es03_gauss_law_integral",
+      "route_kind": "deductive",
+      "title": "クーロン電場と立体角積分による積分形ガウスの法則の導出",
+      "premise_node_ids": [
+        "phys.em.es02_electric_field_superposition"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity",
+        "math.calc.mi08_spherical_coordinates_def",
+        "math.calc.mi09_spherical_volume_element",
+        "math.vec.vc03_surface_integral_def"
+      ],
+      "assumptions": [
+        "閉曲面 ∂V は区分的に滑らかで向き付け可能であり、点電荷は曲面 ∂V 上には存在しない。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{E}(\\mathbf{r}) = \\frac{1}{4\\pi\\varepsilon_0}\\sum_{i=1}^{N} q_i\\frac{\\mathbf{r}-\\mathbf{r}_i}{|\\mathbf{r}-\\mathbf{r}_i|^3} ",
+          "to_latex": "\\oiint_{\\partial V} \\mathbf{E}\\cdot\\mathbf{n}\\,dS = \\frac{Q_{\\mathrm{enc}}}{\\varepsilon_0} = \\frac{1}{\\varepsilon_0}\\iiint_{V} \\rho(\\mathbf{r})\\,dV",
+          "operation_label": "閉曲面上の電束積分と立体角評価",
+          "explanation": "単一点電荷の電場を球面および一般閉曲面上で面積分して立体角から内部電荷のみの寄与を取り出し、重ね合わせの線形性により積分形ガウスの法則を導く。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.mi08_spherical_coordinates_def",
+            "math.calc.mi09_spherical_volume_element",
+            "math.vec.vc03_surface_integral_def",
+            "phys.em.es02_electric_field_superposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_point_charge_sphere",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{E}(\\mathbf{r}) = \\frac{1}{4\\pi\\varepsilon_0}\\sum_{i=1}^{N} q_i\\frac{\\mathbf{r}-\\mathbf{r}_i}{|\\mathbf{r}-\\mathbf{r}_i|^3} ",
+          "to_latex": "\\oiint_{S_R} \\mathbf{E}_q\\cdot\\mathbf{n}\\,dS = \\int_{0}^{2\\pi}\\int_{0}^{\\pi} \\frac{q}{4\\pi\\varepsilon_0 R^2} R^2\\sin\\theta\\,d\\theta\\,d\\varphi = \\frac{q}{\\varepsilon_0} ",
+          "operation_label": "中心球面上の面積分計算",
+          "explanation": "原点にある点電荷 q を囲む半径 R の球面 S_R 上で法線ベクトル n = r_hat、面要素 dS = R^2 sinθ dθ dφ を用いて積分し、R に依らず q/ε0 となることを示す。",
+          "used_node_ids": [
+            "math.calc.mi08_spherical_coordinates_def",
+            "math.calc.mi09_spherical_volume_element",
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_solid_angle_general",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oiint_{S_R} \\mathbf{E}_q\\cdot\\mathbf{n}\\,dS = \\int_{0}^{2\\pi}\\int_{0}^{\\pi} \\frac{q}{4\\pi\\varepsilon_0 R^2} R^2\\sin\\theta\\,d\\theta\\,d\\varphi = \\frac{q}{\\varepsilon_0} ",
+          "to_latex": "\\oiint_{\\partial V} \\mathbf{E}_q\\cdot\\mathbf{n}\\,dS = \\frac{q}{4\\pi\\varepsilon_0}\\oiint_{\\partial V} \\frac{\\hat{\\mathbf{r}}\\cdot\\mathbf{n}}{r^2}\\,dS = \\begin{cases} q/\\varepsilon_0 & (q \\in V) \\\\ 0 & (q \\notin V) \\end{cases} ",
+          "operation_label": "一般閉曲面での立体角積分",
+          "explanation": "面積素の法線射影 dΩ = (r_hat・n)dS/r^2 が符号付き立体角要素であることから、閉曲面内部の電荷では全立体角 4π、外部の電荷では相殺して 0 となることを導く。",
+          "used_node_ids": [
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_superposition_flux",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oiint_{\\partial V} \\mathbf{E}_q\\cdot\\mathbf{n}\\,dS = \\frac{q}{4\\pi\\varepsilon_0}\\oiint_{\\partial V} \\frac{\\hat{\\mathbf{r}}\\cdot\\mathbf{n}}{r^2}\\,dS = \\begin{cases} q/\\varepsilon_0 & (q \\in V) \\\\ 0 & (q \\notin V) \\end{cases} ",
+          "to_latex": "\\oiint_{\\partial V} \\mathbf{E}\\cdot\\mathbf{n}\\,dS = \\frac{Q_{\\mathrm{enc}}}{\\varepsilon_0} = \\frac{1}{\\varepsilon_0}\\iiint_{V} \\rho(\\mathbf{r})\\,dV",
+          "operation_label": "重ね合わせによる全電荷の集約",
+          "explanation": "面積分の線形性により各電荷の電束を足し合わせると、閉曲面内部の電荷の総和 Q_enc = ∫∫∫_V ρ dV のみが残る。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "phys.em.es02_electric_field_superposition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "phys.em.es_d04",
+      "target_node_id": "phys.em.es04_gauss_law_differential",
+      "route_kind": "deductive",
+      "title": "ガウスの発散定理による積分形ガウスの法則の微分形への変換",
+      "premise_node_ids": [
+        "phys.em.es03_gauss_law_integral"
+      ],
+      "required_math_node_ids": [
+        "math.vec.vc01_divergence_def",
+        "math.vec.vc05_gauss_divergence_theorem"
+      ],
+      "assumptions": [
+        "電場 E は C^1 級、電荷密度 ρ は連続関数とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\oiint_{\\partial V} \\mathbf{E}\\cdot\\mathbf{n}\\,dS = \\frac{1}{\\varepsilon_0}\\iiint_{V} \\rho(\\mathbf{r})\\,dV",
+          "to_latex": "\\nabla \\cdot \\mathbf{E}(\\mathbf{r}) = \\frac{\\rho(\\mathbf{r})}{\\varepsilon_0} ",
+          "operation_label": "発散定理と局所化",
+          "explanation": "積分形ガウスの法則の左辺にガウスの発散定理を適用して体積積分に統一し、任意領域 V に対する恒等式から被積分関数を局所的に等値する。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def",
+            "math.vec.vc05_gauss_divergence_theorem",
+            "phys.em.es03_gauss_law_integral"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_apply_divergence_thm",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oiint_{\\partial V} \\mathbf{E}\\cdot\\mathbf{n}\\,dS = \\frac{1}{\\varepsilon_0}\\iiint_{V} \\rho(\\mathbf{r})\\,dV",
+          "to_latex": "\\iiint_{V} \\left(\\nabla\\cdot\\mathbf{E}(\\mathbf{r}) - \\frac{\\rho(\\mathbf{r})}{\\varepsilon_0}\\right) dV = 0",
+          "operation_label": "ガウスの発散定理の適用",
+          "explanation": "左辺の閉曲面面積分を ∇・E の体積積分に置き換え、右辺を移項して単一の体積積分方程式にまとめる。",
+          "used_node_ids": [
+            "math.vec.vc05_gauss_divergence_theorem",
+            "phys.em.es03_gauss_law_integral"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_localize_pointwise",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_{V} \\left(\\nabla\\cdot\\mathbf{E}(\\mathbf{r}) - \\frac{\\rho(\\mathbf{r})}{\\varepsilon_0}\\right) dV = 0",
+          "to_latex": "\\nabla \\cdot \\mathbf{E}(\\mathbf{r}) = \\frac{\\rho(\\mathbf{r})}{\\varepsilon_0} ",
+          "operation_label": "積分領域の任意性による局所化",
+          "explanation": "体積積分が任意の有界領域 V について零となるため、連続な被積分関数は空間の各点で恒等的に零でなければならない。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "phys.em.es_d05",
+      "target_node_id": "phys.em.es05_electrostatic_irrotational",
+      "route_kind": "deductive",
+      "title": "クーロン場の中心力線積分とストークスの定理による渦なし条件の導出",
+      "premise_node_ids": [
+        "phys.em.es02_electric_field_superposition"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.vec.m34_vector_line_integral_def",
+        "math.vec.vc02_curl_def",
+        "math.vec.vc06_stokes_theorem"
+      ],
+      "assumptions": [
+        "曲線 C は点電荷の特異点を通らない単連結領域内の区分的滑らかな閉曲線とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{E}(\\mathbf{r}) = \\frac{1}{4\\pi\\varepsilon_0}\\sum_{i=1}^{N} q_i\\frac{\\mathbf{r}-\\mathbf{r}_i}{|\\mathbf{r}-\\mathbf{r}_i|^3} ",
+          "to_latex": "\\oint_{C} \\mathbf{E}\\cdot d\\mathbf{r} = 0,\\qquad \\nabla \\times \\mathbf{E} = \\mathbf{0} ",
+          "operation_label": "線積分の経路独立性と回転の零化",
+          "explanation": "各点電荷の電場の線積分が動径距離のみに依存して閉曲線上で零となることを示し、ストークスの定理により局所的な ∇×E = 0 を導く。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.vec.m34_vector_line_integral_def",
+            "math.vec.vc02_curl_def",
+            "math.vec.vc06_stokes_theorem",
+            "phys.em.es02_electric_field_superposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_radial_line_integral",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{E}(\\mathbf{r}) = \\frac{1}{4\\pi\\varepsilon_0}\\sum_{i=1}^{N} q_i\\frac{\\mathbf{r}-\\mathbf{r}_i}{|\\mathbf{r}-\\mathbf{r}_i|^3} ",
+          "to_latex": "\\int_{\\mathbf{r}_A}^{\\mathbf{r}_B} \\mathbf{E}\\cdot d\\mathbf{r} = \\sum_{i=1}^{N}\\frac{q_i}{4\\pi\\varepsilon_0}\\int_{r_{i,A}}^{r_{i,B}}\\frac{dr_i}{r_i^2} = \\sum_{i=1}^{N}\\frac{q_i}{4\\pi\\varepsilon_0}\\left(\\frac{1}{r_{i,A}} - \\frac{1}{r_{i,B}}\\right) ",
+          "operation_label": "動径方向線積分の実行",
+          "explanation": "各点電荷からの距離 r_i = |r - r_i| に対して (r - r_i)・dr = r_i dr_i が成り立つことから、線積分が始点と終点の距離のみに依存することを示す。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.vec.m34_vector_line_integral_def",
+            "phys.em.es02_electric_field_superposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_closed_loop_stokes",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{\\mathbf{r}_A}^{\\mathbf{r}_B} \\mathbf{E}\\cdot d\\mathbf{r} = \\sum_{i=1}^{N}\\frac{q_i}{4\\pi\\varepsilon_0}\\int_{r_{i,A}}^{r_{i,B}}\\frac{dr_i}{r_i^2} = \\sum_{i=1}^{N}\\frac{q_i}{4\\pi\\varepsilon_0}\\left(\\frac{1}{r_{i,A}} - \\frac{1}{r_{i,B}}\\right) ",
+          "to_latex": "\\oint_{C} \\mathbf{E}\\cdot d\\mathbf{r} = \\iint_{S} (\\nabla\\times\\mathbf{E})\\cdot\\mathbf{n}\\,dS = 0",
+          "operation_label": "閉曲線積分とストークスの定理の適用",
+          "explanation": "始点と終点を一致させた閉曲線 C では各電荷からの距離差が相殺して周回積分が 0 となり、ストークスの定理により曲面 S 上の ∇×E の面積分も 0 となる。",
+          "used_node_ids": [
+            "math.vec.vc06_stokes_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_curl_zero",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{C} \\mathbf{E}\\cdot d\\mathbf{r} = \\iint_{S} (\\nabla\\times\\mathbf{E})\\cdot\\mathbf{n}\\,dS = 0",
+          "to_latex": "\\oint_{C} \\mathbf{E}\\cdot d\\mathbf{r} = 0,\\qquad \\nabla \\times \\mathbf{E} = \\mathbf{0} ",
+          "operation_label": "曲面 S の任意性による局所回転零化",
+          "explanation": "任意の向きと位置の微小曲面 S について面積分が零であることから、特異点を除くすべての点で ∇×E = 0 が従う。",
+          "used_node_ids": [
+            "math.vec.vc02_curl_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "phys.em.es_d06",
+      "target_node_id": "phys.em.es06_electrostatic_potential",
+      "route_kind": "deductive",
+      "title": "保存静電場からの静電ポテンシャル導入とクーロン積分表示",
+      "premise_node_ids": [
+        "phys.em.es05_electrostatic_irrotational",
+        "phys.em.es02_electric_field_superposition",
+        "phys.mech.p08_conservative_potential"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m05_gradient_line_integral",
+        "math.vec.m33_gradient_definition",
+        "math.vec.vc07_curl_grad_zero"
+      ],
+      "assumptions": [
+        "有界領域に分布する電荷に対して基準点 r_ref を無限遠（φ(∞)=0）にとる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\oint_{C} \\mathbf{E}\\cdot d\\mathbf{r} = 0,\\qquad \\nabla \\times \\mathbf{E} = \\mathbf{0} ",
+          "to_latex": "\\phi(\\mathbf{r}) := -\\int_{\\mathbf{r}_{\\mathrm{ref}}}^{\\mathbf{r}} \\mathbf{E}(\\mathbf{r}')\\cdot d\\mathbf{r}' = \\frac{1}{4\\pi\\varepsilon_0}\\iiint_{V}\\frac{\\rho(\\mathbf{r}')}{|\\mathbf{r}-\\mathbf{r}'|}\\,dV',\\qquad \\mathbf{E}(\\mathbf{r}) = -\\nabla\\phi(\\mathbf{r})",
+          "operation_label": "スカラーポテンシャルの定義と積分評価",
+          "explanation": "静電場の経路独立性により一意的なスカラーポテンシャル φ(r) が定義され E = -∇φ を満たすこと、さらに無限遠基準でクーロン電場を積分して積分表示を得ることを示す。",
+          "used_node_ids": [
+            "math.vec.m05_gradient_line_integral",
+            "math.vec.m33_gradient_definition",
+            "math.vec.vc07_curl_grad_zero",
+            "phys.em.es02_electric_field_superposition",
+            "phys.em.es05_electrostatic_irrotational",
+            "phys.mech.p08_conservative_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_path_independence",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\oint_{C} \\mathbf{E}\\cdot d\\mathbf{r} = 0,\\qquad \\nabla \\times \\mathbf{E} = \\mathbf{0} ",
+          "to_latex": "\\phi(\\mathbf{r}) := -\\int_{\\mathbf{r}_{\\mathrm{ref}}}^{\\mathbf{r}} \\mathbf{E}(\\mathbf{r}')\\cdot d\\mathbf{r}',\\qquad \\mathbf{E}(\\mathbf{r}) = -\\nabla\\phi(\\mathbf{r})",
+          "operation_label": "線積分の経路独立性と勾配関係",
+          "explanation": "閉曲線上の線積分が 0 であることから線積分値が経路に依らず終点 r のみの関数となり、勾配の線積分公式および ∇×(∇φ)=0 と整合する E = -∇φ が得られる。",
+          "used_node_ids": [
+            "math.vec.m05_gradient_line_integral",
+            "math.vec.m33_gradient_definition",
+            "math.vec.vc07_curl_grad_zero",
+            "phys.em.es05_electrostatic_irrotational",
+            "phys.mech.p08_conservative_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integral_representation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\phi(\\mathbf{r}) := -\\int_{\\mathbf{r}_{\\mathrm{ref}}}^{\\mathbf{r}} \\mathbf{E}(\\mathbf{r}')\\cdot d\\mathbf{r}',\\qquad \\mathbf{E}(\\mathbf{r}) = -\\nabla\\phi(\\mathbf{r})",
+          "to_latex": "\\phi(\\mathbf{r}) := -\\int_{\\mathbf{r}_{\\mathrm{ref}}}^{\\mathbf{r}} \\mathbf{E}(\\mathbf{r}')\\cdot d\\mathbf{r}' = \\frac{1}{4\\pi\\varepsilon_0}\\iiint_{V}\\frac{\\rho(\\mathbf{r}')}{|\\mathbf{r}-\\mathbf{r}'|}\\,dV',\\qquad \\mathbf{E}(\\mathbf{r}) = -\\nabla\\phi(\\mathbf{r})",
+          "operation_label": "無限遠基準でのクーロン電場の積分",
+          "explanation": "連続電荷分布の電場表示を代入し、基準点 r_ref → ∞（電位 0）として動径積分を実行することで 1/|r - r'| を核とするポテンシャルの積分表示を得る。",
+          "used_node_ids": [
+            "math.vec.m05_gradient_line_integral",
+            "phys.em.es02_electric_field_superposition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "phys.em.es_d07",
+      "target_node_id": "phys.em.es07_poisson_laplace_equations",
+      "route_kind": "deductive",
+      "title": "微分形ガウスの法則と静電ポテンシャルからのポアソン・ラプラス方程式の導出",
+      "premise_node_ids": [
+        "phys.em.es04_gauss_law_differential",
+        "phys.em.es06_electrostatic_potential"
+      ],
+      "required_math_node_ids": [
+        "math.pde.pde03_classical_pde_definitions",
+        "math.vec.m33_gradient_definition",
+        "math.vec.vc01_divergence_def"
+      ],
+      "assumptions": [
+        "静電ポテンシャル φ は C^2 級とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla \\cdot \\mathbf{E}(\\mathbf{r}) = \\frac{\\rho(\\mathbf{r})}{\\varepsilon_0},\\qquad \\mathbf{E}(\\mathbf{r}) = -\\nabla\\phi(\\mathbf{r})",
+          "to_latex": "\\nabla^2 \\phi(\\mathbf{r}) = -\\frac{\\rho(\\mathbf{r})}{\\varepsilon_0},\\qquad \\rho(\\mathbf{r}) = 0 \\implies \\nabla^2 \\phi(\\mathbf{r}) = 0",
+          "operation_label": "勾配の発散によるポアソン方程式導出",
+          "explanation": "電場のポテンシャル表示 E = -∇φ を微分形ガウスの法則に代入してポアソン方程式を得、電荷密度零の極限としてラプラス方程式を導く。",
+          "used_node_ids": [
+            "math.pde.pde03_classical_pde_definitions",
+            "math.vec.m33_gradient_definition",
+            "math.vec.vc01_divergence_def",
+            "phys.em.es04_gauss_law_differential",
+            "phys.em.es06_electrostatic_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_potential",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla \\cdot \\mathbf{E}(\\mathbf{r}) = \\frac{\\rho(\\mathbf{r})}{\\varepsilon_0},\\qquad \\mathbf{E}(\\mathbf{r}) = -\\nabla\\phi(\\mathbf{r})",
+          "to_latex": "\\nabla \\cdot (-\\nabla\\phi(\\mathbf{r})) = -\\nabla^2\\phi(\\mathbf{r}) = \\frac{\\rho(\\mathbf{r})}{\\varepsilon_0} ",
+          "operation_label": "ガウスの法則への電位表示の代入",
+          "explanation": "発散と勾配の定義を合成し、∇・(∇φ) = ∇^2 φ の関係を用いて電場を消去する。",
+          "used_node_ids": [
+            "math.vec.m33_gradient_definition",
+            "math.vec.vc01_divergence_def",
+            "phys.em.es04_gauss_law_differential",
+            "phys.em.es06_electrostatic_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_poisson_and_laplace",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla \\cdot (-\\nabla\\phi(\\mathbf{r})) = -\\nabla^2\\phi(\\mathbf{r}) = \\frac{\\rho(\\mathbf{r})}{\\varepsilon_0} ",
+          "to_latex": "\\nabla^2 \\phi(\\mathbf{r}) = -\\frac{\\rho(\\mathbf{r})}{\\varepsilon_0},\\qquad \\rho(\\mathbf{r}) = 0 \\implies \\nabla^2 \\phi(\\mathbf{r}) = 0",
+          "operation_label": "ポアソン・ラプラス方程式の整理",
+          "explanation": "符号を整理してポアソン方程式を得、自由空間（ρ = 0）において古典PDEであるラプラス方程式に帰着することを確認する。",
+          "used_node_ids": [
+            "math.pde.pde03_classical_pde_definitions"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "phys.em.es_d08",
+      "target_node_id": "phys.em.es08_electrostatic_energy_discrete_cont",
+      "route_kind": "deductive",
+      "title": "電荷配置の組み立て仕事による離散・連続静電エネルギーの導出",
+      "premise_node_ids": [
+        "phys.em.es01_coulombs_law",
+        "phys.em.es06_electrostatic_potential",
+        "phys.mech.p07_work_kinetic_energy",
+        "phys.mech.p08_conservative_potential"
+      ],
+      "required_math_node_ids": [
+        "math.calc.mi01_multiple_integral_def"
+      ],
+      "assumptions": [
+        "点電荷自身の自己エネルギーは除外し、連続分布では各微小電荷が作る静電ポテンシャルによる極限をとる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "W_k = q_k\\phi_{k-1}(\\mathbf{r}_k) = \\frac{q_k}{4\\pi\\varepsilon_0}\\sum_{j=1}^{k-1}\\frac{q_j}{|\\mathbf{r}_k - \\mathbf{r}_j|} ",
+          "to_latex": "U_e = \\frac{1}{2}\\sum_{i=1}^{N} q_i \\phi(\\mathbf{r}_i) = \\frac{1}{8\\pi\\varepsilon_0}\\sum_{i\\neq j}\\frac{q_i q_j}{|\\mathbf{r}_i - \\mathbf{r}_j|} = \\frac{1}{2}\\iiint_{V} \\rho(\\mathbf{r})\\phi(\\mathbf{r})\\,dV",
+          "operation_label": "電荷配置の逐次仕事総和と連続極限",
+          "explanation": "無限遠から電荷を1つずつ運ぶのに要する仕事を総和し、対和の対称化によって係数 1/2 の電位表現と連続分布表示を導く。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "phys.em.es01_coulombs_law",
+            "phys.em.es06_electrostatic_potential",
+            "phys.mech.p07_work_kinetic_energy",
+            "phys.mech.p08_conservative_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_pairwise_sum",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W_k = q_k\\phi_{k-1}(\\mathbf{r}_k) = \\frac{q_k}{4\\pi\\varepsilon_0}\\sum_{j=1}^{k-1}\\frac{q_j}{|\\mathbf{r}_k - \\mathbf{r}_j|} ",
+          "to_latex": "U_e = \\sum_{k=2}^{N} W_k = \\frac{1}{4\\pi\\varepsilon_0}\\sum_{1 \\le j < i \\le N}\\frac{q_i q_j}{|\\mathbf{r}_i - \\mathbf{r}_j|} = \\frac{1}{8\\pi\\varepsilon_0}\\sum_{i\\neq j}\\frac{q_i q_j}{|\\mathbf{r}_i - \\mathbf{r}_j|} ",
+          "operation_label": "対和の対称化（二重計上の補正）",
+          "explanation": "既に配置された k-1 個の電荷の場に対して k 番目の電荷を運ぶ仕事 W_k を k = 2..N で足し合わせ、i ≠ j の全対和に書き換えて重複分の 1/2 を掛ける。",
+          "used_node_ids": [
+            "phys.em.es01_coulombs_law",
+            "phys.mech.p07_work_kinetic_energy",
+            "phys.mech.p08_conservative_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_potential_and_continuum",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U_e = \\sum_{k=2}^{N} W_k = \\frac{1}{4\\pi\\varepsilon_0}\\sum_{1 \\le j < i \\le N}\\frac{q_i q_j}{|\\mathbf{r}_i - \\mathbf{r}_j|} = \\frac{1}{8\\pi\\varepsilon_0}\\sum_{i\\neq j}\\frac{q_i q_j}{|\\mathbf{r}_i - \\mathbf{r}_j|} ",
+          "to_latex": "U_e = \\frac{1}{2}\\sum_{i=1}^{N} q_i \\phi(\\mathbf{r}_i) = \\frac{1}{8\\pi\\varepsilon_0}\\sum_{i\\neq j}\\frac{q_i q_j}{|\\mathbf{r}_i - \\mathbf{r}_j|} = \\frac{1}{2}\\iiint_{V} \\rho(\\mathbf{r})\\phi(\\mathbf{r})\\,dV",
+          "operation_label": "電位表現と連続分布積分への移行",
+          "explanation": "各点 i の他の全電荷による電位 φ(r_i) を用いてまとめ、連続電荷分布 ρ(r)dV へのリーマン極限により体積積分表示を得る。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "phys.em.es06_electrostatic_potential"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "phys.em.es_d09",
+      "target_node_id": "phys.em.es09_electrostatic_field_energy_density",
+      "route_kind": "deductive",
+      "title": "ガウスの法則と3次元部分積分による静電場エネルギー密度の導出",
+      "premise_node_ids": [
+        "phys.em.es08_electrostatic_energy_discrete_cont",
+        "phys.em.es04_gauss_law_differential",
+        "phys.em.es06_electrostatic_potential"
+      ],
+      "required_math_node_ids": [
+        "math.vec.vc05_gauss_divergence_theorem",
+        "math.vec.vc10_div_curl_product_rules"
+      ],
+      "assumptions": [
+        "電荷分布 ρ は有界領域に局在し、無限遠（r → ∞）で φ ~ O(1/r), |E| ~ O(1/r^2) と減衰する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "U_e = \\frac{1}{2}\\iiint_{\\mathbb{R}^3} \\rho(\\mathbf{r})\\phi(\\mathbf{r})\\,dV",
+          "to_latex": "U_e = \\frac{\\varepsilon_0}{2}\\iiint_{\\mathbb{R}^3} |\\mathbf{E}(\\mathbf{r})|^2\\,dV,\\qquad u_e(\\mathbf{r}) := \\frac{1}{2}\\varepsilon_0 |\\mathbf{E}(\\mathbf{r})|^2",
+          "operation_label": "場の量への積分変換とエネルギー密度定義",
+          "explanation": "電荷密度をガウスの法則で電場の発散に置き換え、発散のライプニッツ則と発散定理を適用して境界項を無限遠で消去し、場のエネルギー密度を導出する。",
+          "used_node_ids": [
+            "math.vec.vc05_gauss_divergence_theorem",
+            "math.vec.vc10_div_curl_product_rules",
+            "phys.em.es04_gauss_law_differential",
+            "phys.em.es06_electrostatic_potential",
+            "phys.em.es08_electrostatic_energy_discrete_cont"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_gauss",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U_e = \\frac{1}{2}\\iiint_{\\mathbb{R}^3} \\rho(\\mathbf{r})\\phi(\\mathbf{r})\\,dV",
+          "to_latex": "U_e = \\frac{\\varepsilon_0}{2}\\iiint_{V_R} \\phi(\\nabla\\cdot\\mathbf{E})\\,dV = \\frac{\\varepsilon_0}{2}\\iiint_{V_R} \\big[\\nabla\\cdot(\\phi\\mathbf{E}) - (\\nabla\\phi)\\cdot\\mathbf{E}\\big]\\,dV",
+          "operation_label": "ガウスの法則の代入と積の微分法則",
+          "explanation": "半径 R の十分大きい球体 V_R 上で ρ = ε0 ∇・E を代入し、∇・(φE) = (∇φ)・E + φ(∇・E) により被積分関数を変形する。",
+          "used_node_ids": [
+            "math.vec.vc10_div_curl_product_rules",
+            "phys.em.es04_gauss_law_differential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integration_by_parts_3d",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U_e = \\frac{\\varepsilon_0}{2}\\iiint_{V_R} \\phi(\\nabla\\cdot\\mathbf{E})\\,dV = \\frac{\\varepsilon_0}{2}\\iiint_{V_R} \\big[\\nabla\\cdot(\\phi\\mathbf{E}) - (\\nabla\\phi)\\cdot\\mathbf{E}\\big]\\,dV",
+          "to_latex": "U_e = \\frac{\\varepsilon_0}{2}\\oiint_{\\partial V_R} \\phi\\mathbf{E}\\cdot\\mathbf{n}\\,dS + \\frac{\\varepsilon_0}{2}\\iiint_{V_R} |\\mathbf{E}|^2\\,dV",
+          "operation_label": "発散定理と E = -∇φ の適用",
+          "explanation": "第1項にガウスの発散定理を適用して境界面 ∂V_R 上の面積分に変換し、第2項に -∇φ = E を代入して |E|^2 を得る。",
+          "used_node_ids": [
+            "math.vec.vc05_gauss_divergence_theorem",
+            "phys.em.es06_electrostatic_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_boundary_vanishes",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U_e = \\frac{\\varepsilon_0}{2}\\oiint_{\\partial V_R} \\phi\\mathbf{E}\\cdot\\mathbf{n}\\,dS + \\frac{\\varepsilon_0}{2}\\iiint_{V_R} |\\mathbf{E}|^2\\,dV",
+          "to_latex": "U_e = \\frac{\\varepsilon_0}{2}\\iiint_{\\mathbb{R}^3} |\\mathbf{E}(\\mathbf{r})|^2\\,dV,\\qquad u_e(\\mathbf{r}) := \\frac{1}{2}\\varepsilon_0 |\\mathbf{E}(\\mathbf{r})|^2",
+          "operation_label": "無限遠境界極限（R → ∞）での表面項消滅",
+          "explanation": "球面 ∂V_R の面積は 4πR^2 であるが被積分関数 φ|E| は O(R^{-3}) で減衰するため面積分は O(R^{-1}) → 0 となり、全空間の場のエネルギー表示および密度 u_e が得られる。",
+          "used_node_ids": [
+            "phys.em.es08_electrostatic_energy_discrete_cont"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,906 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.mech.damped_forced_coupled",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "振動力学：減衰・強制振動（共振・Q値）と連成振動・基準振動",
+    "language": "ja",
+    "description": "減衰振動の3分類、強制振動の振幅・位相応答とQ値、多自由度連成振動の固有値問題と基準座標を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.mech.vib01_damped_oscillator_eom",
+      "short_code": "VIB01",
+      "kind": "definition",
+      "title": "減衰調和振動子の運動方程式と減衰パラメータ",
+      "summary": "線形粘性減衰力と線形復元力が働く1自由度振動子の運動方程式を質量で規格化し、固有角振動数・減衰係数・減衰比を定義する。",
+      "canonical_latex": "m\\ddot{x} + c\\dot{x} + kx = 0 \\iff \\ddot{x} + 2\\gamma\\dot{x} + \\omega_0^2 x = 0\\quad\\left(\\gamma := \\frac{c}{2m},\\; \\omega_0 := \\sqrt{\\frac{k}{m}},\\; \\zeta := \\frac{\\gamma}{\\omega_0} = \\frac{c}{2\\sqrt{mk}}\\right)\\",
+      "aliases_latex": [
+        "\\ddot{x} + 2\\zeta\\omega_0\\dot{x} + \\omega_0^2 x = 0"
+      ],
+      "keywords": [
+        "damped oscillator",
+        "damping ratio",
+        "natural frequency",
+        "viscous damping"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "oscillation"
+      ]
+    },
+    {
+      "id": "phys.mech.vib02_damping_three_regimes",
+      "short_code": "VIB02",
+      "kind": "theorem_formula",
+      "title": "減衰振動の3分類（不足減衰・臨界減衰・過減衰）と一般解",
+      "summary": "減衰調和振動子の特性方程式の判別式により、運動を不足減衰・臨界減衰・過減衰の3様式に分類し、各々の実一般解を与える。",
+      "canonical_latex": "x(t) = \\begin{cases} e^{-\\gamma t}\\big(C_1\\cos\\omega_d t + C_2\\sin\\omega_d t\\big),\\; \\omega_d = \\sqrt{\\omega_0^2 - \\gamma^2} & (\\zeta < 1:\\; \\text{underdamped}) \\\\ (C_1 + C_2 t)e^{-\\omega_0 t} & (\\zeta = 1:\\; \\text{critically damped}) \\\\ C_1 e^{-(\\gamma - \\beta)t} + C_2 e^{-(\\gamma + \\beta)t},\\; \\beta = \\sqrt{\\gamma^2 - \\omega_0^2} & (\\zeta > 1:\\; \\text{overdamped}) \\end{cases}\\",
+      "aliases_latex": [
+        "x(t) = A e^{-\\gamma t}\\cos(\\omega_d t + \\phi)\\;(\\gamma < \\omega_0)"
+      ],
+      "keywords": [
+        "underdamped",
+        "critically damped",
+        "overdamped",
+        "characteristic equation"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "oscillation"
+      ]
+    },
+    {
+      "id": "phys.mech.vib03_forced_oscillator_eom",
+      "short_code": "VIB03",
+      "kind": "definition",
+      "title": "周期的外力による強制減衰振動の運動方程式と複素化",
+      "summary": "調和周期外力を受ける減衰振動子の非同次線形運動方程式を定式化し、解析のために対応する複素微分方程式を導入する。",
+      "canonical_latex": "\\ddot{x} + 2\\gamma\\dot{x} + \\omega_0^2 x = \\frac{F_0}{m}\\cos(\\omega t),\\qquad \\ddot{z} + 2\\gamma\\dot{z} + \\omega_0^2 z = \\frac{F_0}{m}e^{i\\omega t}\\quad\\big(x(t) = \\operatorname{Re} z(t)\\big)\\",
+      "aliases_latex": [
+        "m\\ddot{x} + c\\dot{x} + kx = F_0\\cos(\\omega t)"
+      ],
+      "keywords": [
+        "forced oscillation",
+        "harmonic excitation",
+        "complexification"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "oscillation"
+      ]
+    },
+    {
+      "id": "phys.mech.vib04_steady_state_amp_phase",
+      "short_code": "VIB04",
+      "kind": "theorem_formula",
+      "title": "強制振動の定常応答（振幅倍率と位相遅れ）",
+      "summary": "過渡解が減衰した後の定常特解を求め、駆動角振動数に依存する定常振幅と外力に対する位相遅れを導出する。",
+      "canonical_latex": "x_{\\text{st}}(t) = A(\\omega)\\cos\\big(\\omega t - \\delta(\\omega)\\big),\\quad A(\\omega) = \\frac{F_0/m}{\\sqrt{(\\omega_0^2 - \\omega^2)^2 + (2\\gamma\\omega)^2}},\\quad \\tan\\delta(\\omega) = \\frac{2\\gamma\\omega}{\\omega_0^2 - \\omega^2}\\",
+      "aliases_latex": [
+        "A(\\omega) = \\frac{F_0/k}{\\sqrt{(1 - (\\omega/\\omega_0)^2)^2 + (2\\zeta\\omega/\\omega_0)^2}}"
+      ],
+      "keywords": [
+        "steady-state response",
+        "amplitude response",
+        "phase lag",
+        "frequency response"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "oscillation"
+      ]
+    },
+    {
+      "id": "phys.mech.vib05_resonance_q_factor",
+      "short_code": "VIB05",
+      "kind": "theorem_formula",
+      "title": "共振周波数・半値幅および Q 値（品質係数）",
+      "summary": "振幅が極大となる共振角振動数と Q 値（品質係数）を導出し、弱減衰極限における共振倍率およびエネルギー半値幅との関係を定式化する。",
+      "canonical_latex": "\\omega_r = \\sqrt{\\omega_0^2 - 2\\gamma^2}\\;\\Big(\\gamma < \\frac{\\omega_0}{\\sqrt{2}}\\Big),\\quad Q := \\frac{\\omega_0}{2\\gamma} = \\frac{1}{2\\zeta},\\quad \\frac{A(\\omega_0)}{A(0)} = Q,\\quad \\frac{\\omega_0}{\\Delta\\omega_{\\text{FWHM}}} \\approx Q\\;\\big(Q \\gg 1,\\; \\Delta\\omega_{\\text{FWHM}} \\approx 2\\gamma\\big)\\",
+      "aliases_latex": [
+        "A_{\\max} = A(\\omega_r) = \\frac{F_0/m}{2\\gamma\\sqrt{\\omega_0^2 - \\gamma^2}}"
+      ],
+      "keywords": [
+        "resonance",
+        "Q factor",
+        "quality factor",
+        "bandwidth",
+        "FWHM"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "oscillation"
+      ]
+    },
+    {
+      "id": "phys.mech.vib06_coupled_lagrangian_small_osc",
+      "short_code": "VIB06",
+      "kind": "definition",
+      "title": "多自由度微小振動のラグランジアンと質量行列・剛性行列",
+      "summary": "安定平衡点近傍の2次近似により、多自由度系の運動エネルギーとポテンシャルエネルギーを対称正定値な質量行列および剛性行列の2次形式で表す。",
+      "canonical_latex": "L(\\mathbf{q},\\dot{\\mathbf{q}}) = \\frac{1}{2}\\dot{\\mathbf{q}}^\\top M\\dot{\\mathbf{q}} - \\frac{1}{2}\\mathbf{q}^\\top K\\mathbf{q},\\quad M_{ij} = \\left.\\frac{\\partial^2 T}{\\partial \\dot{q}_i\\partial \\dot{q}_j}\\right|_{\\mathbf{0}}\\;(M^\\top = M \\succ 0),\\quad K_{ij} = \\frac{\\partial^2 V}{\\partial q_i\\partial q_j}(\\mathbf{0})\\;(K^\\top = K \\succ 0)\\",
+      "aliases_latex": [
+        "T = \\frac{1}{2}\\sum_{i,j}M_{ij}\\dot{q}_i\\dot{q}_j,\\; V = \\frac{1}{2}\\sum_{i,j}K_{ij}q_i q_j"
+      ],
+      "keywords": [
+        "coupled oscillation",
+        "mass matrix",
+        "stiffness matrix",
+        "small oscillation"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "analytical_mechanics"
+      ]
+    },
+    {
+      "id": "phys.mech.vib07_coupled_matrix_eom",
+      "short_code": "VIB07",
+      "kind": "theorem_formula",
+      "title": "多自由度連成振動の行列運動方程式",
+      "summary": "微小振動のラグランジアンにオイラー＝ラグランジュ方程式を適用し、n自由度連成振動の行列形式運動方程式を導出する。",
+      "canonical_latex": "M\\ddot{\\mathbf{q}} + K\\mathbf{q} = \\mathbf{0}\\quad \\left(\\sum_{j=1}^{n} M_{ij}\\ddot{q}_j + \\sum_{j=1}^{n} K_{ij}q_j = 0,\\; i = 1,\\dots,n\\right)\\",
+      "aliases_latex": [
+        "\\ddot{\\mathbf{q}} + M^{-1}K\\mathbf{q} = \\mathbf{0}"
+      ],
+      "keywords": [
+        "matrix equation of motion",
+        "coupled system",
+        "Euler-Lagrange"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "analytical_mechanics"
+      ]
+    },
+    {
+      "id": "phys.mech.vib08_generalized_eigenvalue_modes",
+      "short_code": "VIB08",
+      "kind": "theorem_formula",
+      "title": "基準振動数の一般化固有値問題と基準モードの直交性",
+      "summary": "単調和振動の仮設から質量・剛性行列の一般化固有値問題を導き、質量重み付き対称化によって固有振動数の実正値性と基準モードの M-直交・K-直交性を証明する。",
+      "canonical_latex": "(K - \\omega_\\alpha^2 M)\\mathbf{u}_\\alpha = \\mathbf{0},\\quad \\det(K - \\omega^2 M) = 0,\\quad \\mathbf{u}_\\alpha^\\top M\\mathbf{u}_\\beta = \\delta_{\\alpha\\beta},\\quad \\mathbf{u}_\\alpha^\\top K\\mathbf{u}_\\beta = \\omega_\\alpha^2 \\delta_{\\alpha\\beta}\\",
+      "aliases_latex": [
+        "K U = M U \\Omega^2,\\; U^\\top M U = I_n,\\; U^\\top K U = \\Omega^2"
+      ],
+      "keywords": [
+        "generalized eigenvalue problem",
+        "normal modes",
+        "modal orthogonality",
+        "eigenfrequency"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "phys.mech.vib09_normal_coordinates_decoupling",
+      "short_code": "VIB09",
+      "kind": "theorem_formula",
+      "title": "基準座標変換による運動方程式の非連成化と一般解",
+      "summary": "基準モード行列による座標変換（基準座標）を用いて連成運動方程式を n 個の独立な単振動方程式へ分解し、重ね合わせとして一般解を構成する。",
+      "canonical_latex": "\\mathbf{q}(t) = U\\boldsymbol{\\eta}(t) = \\sum_{\\alpha=1}^{n} \\eta_\\alpha(t)\\mathbf{u}_\\alpha \\implies \\ddot{\\eta}_\\alpha + \\omega_\\alpha^2 \\eta_\\alpha = 0,\\quad \\mathbf{q}(t) = \\sum_{\\alpha=1}^{n} C_\\alpha \\mathbf{u}_\\alpha \\cos(\\omega_\\alpha t + \\phi_\\alpha)\\",
+      "aliases_latex": [
+        "\\ddot{\\boldsymbol{\\eta}} + \\Omega^2\\boldsymbol{\\eta} = \\mathbf{0}"
+      ],
+      "keywords": [
+        "normal coordinates",
+        "decoupling",
+        "modal superposition",
+        "normal mode"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "oscillation"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_vib01_eom",
+      "target_node_id": "phys.mech.vib01_damped_oscillator_eom",
+      "route_kind": "deductive",
+      "title": "ニュートン運動方程式からの減衰調和振動子方程式の定式化",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "phys.mech.p12_harmonic_oscillator"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "質点の運動は1次元であり、速度に比例する線形粘性抵抗 -c\\dot{x} とフックの復元力 -kx のみが作用する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\ddot{x} = -kx - c\\dot{x}\\quad(m>0,\\; k>0,\\; c\\ge 0)\\",
+          "to_latex": "\\ddot{x} + 2\\gamma\\dot{x} + \\omega_0^2 x = 0,\\quad \\gamma := \\frac{c}{2m},\\; \\omega_0 := \\sqrt{\\frac{k}{m}},\\; \\zeta := \\frac{\\gamma}{\\omega_0}\\",
+          "operation_label": "運動方程式の規格化と減衰パラメータ定義",
+          "explanation": "復元力と線形粘性抵抗力を入れた運動方程式を質量 m で割り、減衰係数 \\gamma、固有角振動数 \\omega_0、減衰比 \\zeta を導入する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "phys.mech.p02_newton_second_law",
+            "phys.mech.p12_harmonic_oscillator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_force_balance",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\ddot{x} = -kx - c\\dot{x}\\quad(m>0,\\; k>0,\\; c\\ge 0)\\",
+          "to_latex": "m\\ddot{x} + c\\dot{x} + kx = 0\\",
+          "operation_label": "同次線形微分方程式への移項整理",
+          "explanation": "ニュートンの第2法則における復元力と粘性抵抗力の和を左辺へ移項し、2階同次線形常微分方程式の形に整える。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law",
+            "phys.mech.p12_harmonic_oscillator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_normalize_mass",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\ddot{x} + c\\dot{x} + kx = 0\\",
+          "to_latex": "\\ddot{x} + \\frac{c}{m}\\dot{x} + \\frac{k}{m}x = 0\\",
+          "operation_label": "質量による両辺除算",
+          "explanation": "m > 0 により両辺を m で割り、最高階導関数の係数を 1 に規格化する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_define_params",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{x} + \\frac{c}{m}\\dot{x} + \\frac{k}{m}x = 0\\",
+          "to_latex": "\\ddot{x} + 2\\gamma\\dot{x} + \\omega_0^2 x = 0,\\quad \\gamma := \\frac{c}{2m},\\; \\omega_0 := \\sqrt{\\frac{k}{m}},\\; \\zeta := \\frac{\\gamma}{\\omega_0}\\",
+          "operation_label": "物理パラメータの置換定義",
+          "explanation": "\\gamma = c/(2m)、\\omega_0 = \\sqrt{k/m}、無次元減衰比 \\zeta = \\gamma/\\omega_0 を定義し標準形を得る。",
+          "used_node_ids": [
+            "phys.mech.p12_harmonic_oscillator"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_vib02_three_regimes",
+      "target_node_id": "phys.mech.vib02_damping_three_regimes",
+      "route_kind": "deductive",
+      "title": "特性方程式の判別による減衰振動3分類と一般解の導出",
+      "premise_node_ids": [
+        "phys.mech.vib01_damped_oscillator_eom"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t06_exp_power_derivatives",
+        "math.ode.m39_linear_ode_superposition",
+        "math.ode.sys07_complex_eigen_real_solution",
+        "math.ode.sys08_2d_phase_plane_trace_det"
+      ],
+      "assumptions": [
+        "\\gamma \\ge 0 かつ \\omega_0 > 0 は時間によらない定数である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{x} + 2\\gamma\\dot{x} + \\omega_0^2 x = 0\\",
+          "to_latex": "x(t) = \\begin{cases} e^{-\\gamma t}(C_1\\cos\\omega_d t + C_2\\sin\\omega_d t) & (\\gamma < \\omega_0) \\\\ (C_1 + C_2 t)e^{-\\gamma t} & (\\gamma = \\omega_0) \\\\ C_1 e^{r_+ t} + C_2 e^{r_- t} & (\\gamma > \\omega_0) \\end{cases}\\",
+          "operation_label": "特性根の符号分類と実一般解の構成",
+          "explanation": "指数関数仮設 x(t)=e^{rt} から得られる2次特性方程式の判別式の符号により3分類し、重ね合わせの原理で実一般解を構成する。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.m39_linear_ode_superposition",
+            "math.ode.sys07_complex_eigen_real_solution",
+            "math.ode.sys08_2d_phase_plane_trace_det",
+            "phys.mech.vib01_damped_oscillator_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_characteristic_eq",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{x} + 2\\gamma\\dot{x} + \\omega_0^2 x = 0\\",
+          "to_latex": "r^2 + 2\\gamma r + \\omega_0^2 = 0 \\implies r_{\\pm} = -\\gamma \\pm \\sqrt{\\gamma^2 - \\omega_0^2}\\",
+          "operation_label": "特性方程式と解の公式",
+          "explanation": "x(t)=e^{rt} を代入して e^{rt}\\neq 0 で割ると特性方程式が得られ、2次方程式の解の公式により特性根 r_{\\pm} が求まる。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.sys08_2d_phase_plane_trace_det",
+            "phys.mech.vib01_damped_oscillator_eom"
+          ],
+          "sympy_check_hint": "sp.solve(r**2 + 2*gamma*r + omega0**2, r)"
+        },
+        {
+          "step_id": "s2_2_classify_discriminant",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r^2 + 2\\gamma r + \\omega_0^2 = 0 \\implies r_{\\pm} = -\\gamma \\pm \\sqrt{\\gamma^2 - \\omega_0^2}\\",
+          "to_latex": "\\Delta = \\gamma^2 - \\omega_0^2 \\begin{cases} < 0:\\; r_{\\pm} = -\\gamma \\pm i\\omega_d \\\\ = 0:\\; r_+ = r_- = -\\gamma \\\\ > 0:\\; r_{\\pm} = -\\gamma \\pm \\beta \\end{cases}\\quad(\\omega_d = \\sqrt{\\omega_0^2 - \\gamma^2},\\; \\beta = \\sqrt{\\gamma^2 - \\omega_0^2})\\",
+          "operation_label": "判別式 \\Delta = \\gamma^2 - \\omega_0^2 による3分類",
+          "explanation": "\\zeta = \\gamma/\\omega_0 の値（<1, =1, >1）に対応して、特性根が共役複素根・実重根・相異なる2実根に分かれる。",
+          "used_node_ids": [
+            "math.ode.sys08_2d_phase_plane_trace_det"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_real_general_solutions",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta = \\gamma^2 - \\omega_0^2 \\begin{cases} < 0:\\; r_{\\pm} = -\\gamma \\pm i\\omega_d \\\\ = 0:\\; r_+ = r_- = -\\gamma \\\\ > 0:\\; r_{\\pm} = -\\gamma \\pm \\beta \\end{cases}\\quad(\\omega_d = \\sqrt{\\omega_0^2 - \\gamma^2},\\; \\beta = \\sqrt{\\gamma^2 - \\omega_0^2})\\",
+          "to_latex": "x(t) = \\begin{cases} e^{-\\gamma t}(C_1\\cos\\omega_d t + C_2\\sin\\omega_d t) & (\\gamma < \\omega_0) \\\\ (C_1 + C_2 t)e^{-\\gamma t} & (\\gamma = \\omega_0) \\\\ C_1 e^{r_+ t} + C_2 e^{r_- t} & (\\gamma > \\omega_0) \\end{cases}\\",
+          "operation_label": "独立基本解の線形結合による実一般解の構成",
+          "explanation": "複素共役根では実部・虚部をとって振動減衰解を、重根では te^{-\\gamma t} を第2独立解として用い、重ね合わせの原理から各場合の一般解を得る。",
+          "used_node_ids": [
+            "math.ode.m39_linear_ode_superposition",
+            "math.ode.sys07_complex_eigen_real_solution"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_vib03_forced_eom",
+      "target_node_id": "phys.mech.vib03_forced_oscillator_eom",
+      "route_kind": "reformulation",
+      "title": "周期外力項の導入と複素微分方程式への拡張",
+      "premise_node_ids": [
+        "phys.mech.vib01_damped_oscillator_eom",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "実外力は単一角振動数 \\omega を持つ調和外力 F(t) = F_0\\cos(\\omega t) である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\ddot{x} = -kx - c\\dot{x} + F_0\\cos(\\omega t)\\",
+          "to_latex": "\\ddot{x} + 2\\gamma\\dot{x} + \\omega_0^2 x = f_0\\cos(\\omega t),\\quad \\ddot{z} + 2\\gamma\\dot{z} + \\omega_0^2 z = f_0 e^{i\\omega t}\\;\\big(f_0 := \\frac{F_0}{m},\\; x = \\operatorname{Re} z\\big)\\",
+          "operation_label": "強制振動方程式の規格化と複素表示",
+          "explanation": "周期外力を加えた運動方程式を質量で規格化し、微分作用素の実線形性を利用して複素変数 z(t) の方程式へと拡張する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "phys.mech.p02_newton_second_law",
+            "phys.mech.vib01_damped_oscillator_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_add_forcing",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\ddot{x} = -kx - c\\dot{x} + F_0\\cos(\\omega t)\\",
+          "to_latex": "\\ddot{x} + 2\\gamma\\dot{x} + \\omega_0^2 x = \\frac{F_0}{m}\\cos(\\omega t)\\",
+          "operation_label": "非同次標準形への整理",
+          "explanation": "左辺に減衰振動作用素をまとめ、両辺を質量 m で割って標準形の非同次方程式を得る。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law",
+            "phys.mech.vib01_damped_oscillator_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_complexify_eom",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{x} + 2\\gamma\\dot{x} + \\omega_0^2 x = \\frac{F_0}{m}\\cos(\\omega t)\\",
+          "to_latex": "\\ddot{x} + 2\\gamma\\dot{x} + \\omega_0^2 x = f_0\\cos(\\omega t),\\quad \\ddot{z} + 2\\gamma\\dot{z} + \\omega_0^2 z = f_0 e^{i\\omega t}\\;\\big(f_0 := \\frac{F_0}{m},\\; x = \\operatorname{Re} z\\big)\\",
+          "operation_label": "オイラーの公式による複素化",
+          "explanation": "\\cos(\\omega t) = \\operatorname{Re}(e^{i\\omega t}) と実係数線形微分演算子との可換性から、複素解 z の実部が元の方程式を満たす。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_vib04_steady_state",
+      "target_node_id": "phys.mech.vib04_steady_state_amp_phase",
+      "route_kind": "deductive",
+      "title": "複素特解を用いた強制振動の定常振幅と位相遅れの導出",
+      "premise_node_ids": [
+        "phys.mech.vib03_forced_oscillator_eom",
+        "phys.mech.vib02_damping_three_regimes"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.calc.t06_exp_power_derivatives",
+        "math.geom.m38_unit_circle_angle_existence"
+      ],
+      "assumptions": [
+        "\\gamma > 0 により同次一般解は t\\to\\infty で指数減衰するため、長時間極限では特解のみが残る。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{z} + 2\\gamma\\dot{z} + \\omega_0^2 z = f_0 e^{i\\omega t}\\",
+          "to_latex": "x_{\\text{st}}(t) = A(\\omega)\\cos\\big(\\omega t - \\delta(\\omega)\\big),\\quad A(\\omega) = \\frac{f_0}{\\sqrt{(\\omega_0^2 - \\omega^2)^2 + (2\\gamma\\omega)^2}},\\quad \\tan\\delta(\\omega) = \\frac{2\\gamma\\omega}{\\omega_0^2 - \\omega^2}\\",
+          "operation_label": "複素振幅の極形式表示と定常実解の抽出",
+          "explanation": "定常解 z_{\\text{st}}(t) = \\tilde{A}e^{i\\omega t} を代入して複素振幅を求め、その絶対値と偏角から実定常解の振幅と位相遅れを得る。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.calc.t06_exp_power_derivatives",
+            "math.geom.m38_unit_circle_angle_existence",
+            "phys.mech.vib02_damping_three_regimes",
+            "phys.mech.vib03_forced_oscillator_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_complex_ansatz",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{z} + 2\\gamma\\dot{z} + \\omega_0^2 z = f_0 e^{i\\omega t}\\",
+          "to_latex": "z_{\\text{st}}(t) = \\tilde{A}e^{i\\omega t},\\quad \\tilde{A}(\\omega) = \\frac{f_0}{(\\omega_0^2 - \\omega^2) + 2i\\gamma\\omega}\\",
+          "operation_label": "複素調和特解の代入と代数求解",
+          "explanation": "\\dot{z}_{\\text{st}} = i\\omega z_{\\text{st}},\\; \\ddot{z}_{\\text{st}} = -\\omega^2 z_{\\text{st}} を代入し、複素振幅 \\tilde{A}(\\omega) を代数的に解く。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "phys.mech.vib03_forced_oscillator_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_polar_form",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "z_{\\text{st}}(t) = \\tilde{A}e^{i\\omega t},\\quad \\tilde{A}(\\omega) = \\frac{f_0}{(\\omega_0^2 - \\omega^2) + 2i\\gamma\\omega}\\",
+          "to_latex": "\\tilde{A}(\\omega) = A(\\omega)e^{-i\\delta(\\omega)},\\quad A(\\omega) = \\frac{f_0}{\\sqrt{(\\omega_0^2 - \\omega^2)^2 + (2\\gamma\\omega)^2}},\\quad \\tan\\delta(\\omega) = \\frac{2\\gamma\\omega}{\\omega_0^2 - \\omega^2}\\",
+          "operation_label": "複素数の極座標（振幅・位相）表示",
+          "explanation": "分母の複素数を絶対値と偏角 \\delta(\\omega)\\in[0,\\pi] で表し、\\tilde{A} の極形式を確定する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.geom.m38_unit_circle_angle_existence"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_take_real_part",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{A}(\\omega) = A(\\omega)e^{-i\\delta(\\omega)},\\quad A(\\omega) = \\frac{f_0}{\\sqrt{(\\omega_0^2 - \\omega^2)^2 + (2\\gamma\\omega)^2}},\\quad \\tan\\delta(\\omega) = \\frac{2\\gamma\\omega}{\\omega_0^2 - \\omega^2}\\",
+          "to_latex": "x_{\\text{st}}(t) = A(\\omega)\\cos\\big(\\omega t - \\delta(\\omega)\\big),\\quad A(\\omega) = \\frac{f_0}{\\sqrt{(\\omega_0^2 - \\omega^2)^2 + (2\\gamma\\omega)^2}},\\quad \\tan\\delta(\\omega) = \\frac{2\\gamma\\omega}{\\omega_0^2 - \\omega^2}\\",
+          "operation_label": "実部の取得と過渡項の消滅",
+          "explanation": "t\\to\\infty で減衰する同次解を除いた定常解として x_{\\text{st}}(t) = \\operatorname{Re}(A e^{i(\\omega t - \\delta)}) を得る。",
+          "used_node_ids": [
+            "phys.mech.vib02_damping_three_regimes",
+            "phys.mech.vib03_forced_oscillator_eom"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_vib05_resonance_q",
+      "target_node_id": "phys.mech.vib05_resonance_q_factor",
+      "route_kind": "deductive",
+      "title": "振幅極大条件と弱減衰近似による共振角振動数・Q値の導出",
+      "premise_node_ids": [
+        "phys.mech.vib04_steady_state_amp_phase"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "assumptions": [
+        "弱減衰領域（\\gamma < \\omega_0/\\sqrt{2}、特に半値幅評価では \\gamma \\ll \\omega_0）を仮定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A(\\omega) = \\frac{f_0}{\\sqrt{(\\omega_0^2 - \\omega^2)^2 + 4\\gamma^2\\omega^2}}\\",
+          "to_latex": "\\omega_r = \\sqrt{\\omega_0^2 - 2\\gamma^2},\\quad Q := \\frac{\\omega_0}{2\\gamma},\\quad \\frac{A(\\omega_0)}{A(0)} = Q,\\quad \\Delta\\omega_{\\text{FWHM}} \\approx 2\\gamma = \\frac{\\omega_0}{Q}\\",
+          "operation_label": "振幅極大条件の微分とQ値・半値幅の評価",
+          "explanation": "振幅分母の最小化から共振角振動数 \\omega_r を求め、Q 値の定義、固有振動数における振幅倍率、共振峰の半値全幅を導く。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.t10_taylor_asymptotic_approx",
+            "phys.mech.vib04_steady_state_amp_phase"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_peak_frequency",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A(\\omega) = \\frac{f_0}{\\sqrt{(\\omega_0^2 - \\omega^2)^2 + 4\\gamma^2\\omega^2}}\\",
+          "to_latex": "\\frac{d}{d(\\omega^2)}\\big[(\\omega_0^2 - \\omega^2)^2 + 4\\gamma^2\\omega^2\\big] = 0 \\implies \\omega_r = \\sqrt{\\omega_0^2 - 2\\gamma^2}\\;\\Big(\\gamma < \\frac{\\omega_0}{\\sqrt{2}}\\Big)\\",
+          "operation_label": "根号内2次式の最小化による共振角振動数の導出",
+          "explanation": "s = \\omega^2 に関して分母の根号内を微分して停留点を求め、正の解として \\omega_r を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "phys.mech.vib04_steady_state_amp_phase"
+          ],
+          "sympy_check_hint": "sp.solve(sp.diff((omega0**2 - s)**2 + 4*gamma**2*s, s), s)"
+        },
+        {
+          "step_id": "s2_2_q_factor_gain",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{d(\\omega^2)}\\big[(\\omega_0^2 - \\omega^2)^2 + 4\\gamma^2\\omega^2\\big] = 0 \\implies \\omega_r = \\sqrt{\\omega_0^2 - 2\\gamma^2}\\;\\Big(\\gamma < \\frac{\\omega_0}{\\sqrt{2}}\\Big)\\",
+          "to_latex": "Q := \\frac{\\omega_0}{2\\gamma} = \\frac{1}{2\\zeta} \\implies \\frac{A(\\omega_0)}{A(0)} = \\frac{f_0/(2\\gamma\\omega_0)}{f_0/\\omega_0^2} = Q\\",
+          "operation_label": "Q値の定義と静的変位に対する増幅率",
+          "explanation": "Q := \\omega_0/(2\\gamma) を導入すると、\\omega = \\omega_0 における振幅と静的極限 \\omega = 0 における振幅の比が厳密に Q となる。",
+          "used_node_ids": [
+            "phys.mech.vib04_steady_state_amp_phase"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_lorentzian_fwhm",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q := \\frac{\\omega_0}{2\\gamma} = \\frac{1}{2\\zeta} \\implies \\frac{A(\\omega_0)}{A(0)} = Q\\",
+          "to_latex": "\\omega_r = \\sqrt{\\omega_0^2 - 2\\gamma^2},\\quad Q := \\frac{\\omega_0}{2\\gamma},\\quad \\frac{A(\\omega_0)}{A(0)} = Q,\\quad \\Delta\\omega_{\\text{FWHM}} \\approx 2\\gamma = \\frac{\\omega_0}{Q}\\",
+          "operation_label": "共振近傍のローレンツ近似と半値全幅",
+          "explanation": "\\omega\\approx\\omega_0 近傍で \\omega_0^2 - \\omega^2 \\approx 2\\omega_0(\\omega_0 - \\omega) と1次近似すると、A(\\omega)^2 が半値となる幅 \\Delta\\omega_{\\text{FWHM}} \\approx 2\\gamma = \\omega_0/Q を得る。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "phys.mech.vib04_steady_state_amp_phase"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_vib06_lagrangian",
+      "target_node_id": "phys.mech.vib06_coupled_lagrangian_small_osc",
+      "route_kind": "deductive",
+      "title": "安定平衡点近傍の2次テイラー展開による微小振動ラグランジアンの導出",
+      "premise_node_ids": [
+        "phys.mech.p20_euler_lagrange",
+        "math.calc.e02_multivariable_taylor_2nd",
+        "math.calc.e03_stationary_point_condition"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e01_hessian_matrix_def",
+        "math.calc.e04_quadratic_form_definiteness",
+        "math.calc.e05_hessian_extremum_test",
+        "math.geom.m12_generalized_coordinates"
+      ],
+      "assumptions": [
+        "拘束は時間に陽に依存しない（スクレロノーム）であり、一般化座標 \\mathbf{q}=\\mathbf{0} はポテンシャルの狭義極小点である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L(\\mathbf{q},\\dot{\\mathbf{q}}) = \\frac{1}{2}\\sum_{i,j=1}^{n} a_{ij}(\\mathbf{q})\\dot{q}_i\\dot{q}_j - V(\\mathbf{q}),\\quad \\nabla V(\\mathbf{0}) = \\mathbf{0}\\",
+          "to_latex": "L(\\mathbf{q},\\dot{\\mathbf{q}}) = \\frac{1}{2}\\dot{\\mathbf{q}}^\\top M\\dot{\\mathbf{q}} - \\frac{1}{2}\\mathbf{q}^\\top K\\mathbf{q},\\quad M^\\top = M \\succ 0,\\; K^\\top = K \\succ 0\\",
+          "operation_label": "平衡点近傍での2次形式近似",
+          "explanation": "ポテンシャル V(\\mathbf{q}) と運動エネルギー計量 a_{ij}(\\mathbf{q}) を平衡点周りで展開し、2次微小量までを残して定数係数行列 M, K を定義する。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e04_quadratic_form_definiteness",
+            "math.calc.e05_hessian_extremum_test",
+            "math.geom.m12_generalized_coordinates",
+            "phys.mech.p20_euler_lagrange"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_expand_potential",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L(\\mathbf{q},\\dot{\\mathbf{q}}) = \\frac{1}{2}\\sum_{i,j=1}^{n} a_{ij}(\\mathbf{q})\\dot{q}_i\\dot{q}_j - V(\\mathbf{q}),\\quad \\nabla V(\\mathbf{0}) = \\mathbf{0}\\",
+          "to_latex": "V(\\mathbf{q}) = V(\\mathbf{0}) + \\frac{1}{2}\\mathbf{q}^\\top K\\mathbf{q} + o(\\|\\mathbf{q}\\|^2),\\quad K := H_V(\\mathbf{0}) = K^\\top \\succ 0\\",
+          "operation_label": "ポテンシャルの2次テイラー展開と正定値性",
+          "explanation": "停留点条件 \\nabla V(\\mathbf{0})=\\mathbf{0} により1次項が消え、安定平衡条件からヘッセ行列 K = H_V(\\mathbf{0}) は実対称かつ正定値となる。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_kinetic_matrix",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(\\mathbf{q}) = V(\\mathbf{0}) + \\frac{1}{2}\\mathbf{q}^\\top K\\mathbf{q} + o(\\|\\mathbf{q}\\|^2),\\quad K := H_V(\\mathbf{0}) = K^\\top \\succ 0\\",
+          "to_latex": "L(\\mathbf{q},\\dot{\\mathbf{q}}) = \\frac{1}{2}\\dot{\\mathbf{q}}^\\top M\\dot{\\mathbf{q}} - \\frac{1}{2}\\mathbf{q}^\\top K\\mathbf{q},\\quad M^\\top = M \\succ 0,\\; K^\\top = K \\succ 0\\",
+          "operation_label": "質量行列の0次固定と定数ポテンシャルの消去",
+          "explanation": "a_{ij}(\\mathbf{q}) = M_{ij} + \\mathcal{O}(\\|\\mathbf{q}\\|) の主要項 M_{ij} := a_{ij}(\\mathbf{0}) をとり、運動方程式に寄与しない定数 V(\\mathbf{0}) を落とす。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness",
+            "math.geom.m12_generalized_coordinates",
+            "phys.mech.p20_euler_lagrange"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_vib07_matrix_eom",
+      "target_node_id": "phys.mech.vib07_coupled_matrix_eom",
+      "route_kind": "deductive",
+      "title": "オイラー＝ラグランジュ方程式による連成行列運動方程式の導出",
+      "premise_node_ids": [
+        "phys.mech.vib06_coupled_lagrangian_small_osc",
+        "phys.mech.p20_euler_lagrange"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "M, K は対称定数行列である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L(\\mathbf{q},\\dot{\\mathbf{q}}) = \\frac{1}{2}\\dot{\\mathbf{q}}^\\top M\\dot{\\mathbf{q}} - \\frac{1}{2}\\mathbf{q}^\\top K\\mathbf{q}\\",
+          "to_latex": "M\\ddot{\\mathbf{q}} + K\\mathbf{q} = \\mathbf{0}\\",
+          "operation_label": "2次形式ラグランジアンの変分微分",
+          "explanation": "一般化速度と一般化座標に関する偏微分を計算し、オイラー＝ラグランジュ方程式に代入して行列方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m36_derivative_linearity",
+            "phys.mech.p20_euler_lagrange",
+            "phys.mech.vib06_coupled_lagrangian_small_osc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_partial_derivatives",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L(\\mathbf{q},\\dot{\\mathbf{q}}) = \\frac{1}{2}\\dot{\\mathbf{q}}^\\top M\\dot{\\mathbf{q}} - \\frac{1}{2}\\mathbf{q}^\\top K\\mathbf{q}\\",
+          "to_latex": "\\frac{\\partial L}{\\partial \\dot{q}_i} = \\sum_{j=1}^{n} M_{ij}\\dot{q}_j,\\quad \\frac{\\partial L}{\\partial q_i} = -\\sum_{j=1}^{n} K_{ij} q_j\\",
+          "operation_label": "2次形式の偏微分の成分計算",
+          "explanation": "M_{ij}=M_{ji} および K_{ij}=K_{ji} の対称性を用いて、各成分 \\dot{q}_i, q_i に関する偏導関数を計算する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.mech.vib06_coupled_lagrangian_small_osc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_apply_euler_lagrange",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial L}{\\partial \\dot{q}_i} = \\sum_{j=1}^{n} M_{ij}\\dot{q}_j,\\quad \\frac{\\partial L}{\\partial q_i} = -\\sum_{j=1}^{n} K_{ij} q_j\\",
+          "to_latex": "M\\ddot{\\mathbf{q}} + K\\mathbf{q} = \\mathbf{0}\\",
+          "operation_label": "時間微分の適用と行列形式への統合",
+          "explanation": "d/dt(\\partial L/\\partial \\dot{q}_i) - \\partial L/\\partial q_i = 0 を i=1,\\dots,n についてまとめ、行列運動方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "phys.mech.p20_euler_lagrange"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_vib08_eigenmodes",
+      "target_node_id": "phys.mech.vib08_generalized_eigenvalue_modes",
+      "route_kind": "deductive",
+      "title": "質量重み付き対称化による固有振動数とモード直交性の導出",
+      "premise_node_ids": [
+        "phys.mech.vib07_coupled_matrix_eom"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.eig01_eigenvalue_eigenvector_def",
+        "math.linalg.eig02_characteristic_polynomial",
+        "math.linalg.eig06_hermitian_eigen_properties",
+        "math.linalg.eig07_spectral_theorem"
+      ],
+      "assumptions": [
+        "M, K は実対称正定値行列である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "M\\ddot{\\mathbf{q}} + K\\mathbf{q} = \\mathbf{0}\\quad(M^\\top = M \\succ 0,\\; K^\\top = K \\succ 0)\\",
+          "to_latex": "(K - \\omega_\\alpha^2 M)\\mathbf{u}_\\alpha = \\mathbf{0},\\; \\det(K - \\omega^2 M) = 0,\\; \\mathbf{u}_\\alpha^\\top M\\mathbf{u}_\\beta = \\delta_{\\alpha\\beta},\\; \\mathbf{u}_\\alpha^\\top K\\mathbf{u}_\\beta = \\omega_\\alpha^2\\delta_{\\alpha\\beta}\\",
+          "operation_label": "単調和仮設と標準固有値問題への帰着",
+          "explanation": "単調和振動の仮設から一般化固有値問題を導き、M^{-1/2} による相似・合同変換とスペクトル定理を用いて直交基底を構成する。",
+          "used_node_ids": [
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.eig02_characteristic_polynomial",
+            "math.linalg.eig06_hermitian_eigen_properties",
+            "math.linalg.eig07_spectral_theorem",
+            "phys.mech.vib07_coupled_matrix_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_harmonic_ansatz",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M\\ddot{\\mathbf{q}} + K\\mathbf{q} = \\mathbf{0}\\quad(M^\\top = M \\succ 0,\\; K^\\top = K \\succ 0)\\",
+          "to_latex": "\\mathbf{q}(t) = \\mathbf{u}e^{i\\omega t} \\implies (K - \\omega^2 M)\\mathbf{u} = \\mathbf{0},\\quad \\det(K - \\omega^2 M) = 0\\",
+          "operation_label": "単調和仮設と永年方程式",
+          "explanation": "\\mathbf{q}(t) = \\mathbf{u}e^{i\\omega t} を代入すると線形代数系 (K-\\omega^2 M)\\mathbf{u}=\\mathbf{0} となり、非自明解の存在条件から永年方程式が得られる。",
+          "used_node_ids": [
+            "math.linalg.eig01_eigenvalue_eigenvector_def",
+            "math.linalg.eig02_characteristic_polynomial",
+            "phys.mech.vib07_coupled_matrix_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_mass_weighted_symmetric",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{q}(t) = \\mathbf{u}e^{i\\omega t} \\implies (K - \\omega^2 M)\\mathbf{u} = \\mathbf{0},\\quad \\det(K - \\omega^2 M) = 0\\",
+          "to_latex": "\\tilde{K}\\tilde{\\mathbf{u}}_\\alpha = \\omega_\\alpha^2\\tilde{\\mathbf{u}}_\\alpha\\quad\\big(\\tilde{K} := M^{-1/2}KM^{-1/2} = \\tilde{K}^\\top,\\; \\tilde{\\mathbf{u}}_\\alpha := M^{1/2}\\mathbf{u}_\\alpha\\big)\\",
+          "operation_label": "質量行列の平方根による標準対称固有値問題化",
+          "explanation": "M \\succ 0 より対称正定値平方根 M^{1/2} が存在し、\\tilde{\\mathbf{u}} = M^{1/2}\\mathbf{u} とおくことで実対称行列 \\tilde{K} の標準固有値問題へ変換する。",
+          "used_node_ids": [
+            "math.linalg.eig07_spectral_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_mode_orthogonality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{K}\\tilde{\\mathbf{u}}_\\alpha = \\omega_\\alpha^2\\tilde{\\mathbf{u}}_\\alpha\\quad\\big(\\tilde{K} := M^{-1/2}KM^{-1/2} = \\tilde{K}^\\top,\\; \\tilde{\\mathbf{u}}_\\alpha := M^{1/2}\\mathbf{u}_\\alpha\\big)\\",
+          "to_latex": "(K - \\omega_\\alpha^2 M)\\mathbf{u}_\\alpha = \\mathbf{0},\\; \\det(K - \\omega^2 M) = 0,\\; \\mathbf{u}_\\alpha^\\top M\\mathbf{u}_\\beta = \\delta_{\\alpha\\beta},\\; \\mathbf{u}_\\alpha^\\top K\\mathbf{u}_\\beta = \\omega_\\alpha^2\\delta_{\\alpha\\beta}\\",
+          "operation_label": "スペクトル定理によるM-直交・K-直交正規基底の確定",
+          "explanation": "スペクトル定理により \\tilde{\\mathbf{u}}_\\alpha を正規直交基底 \\tilde{\\mathbf{u}}_\\alpha^\\top\\tilde{\\mathbf{u}}_\\beta = \\delta_{\\alpha\\beta} にとると、元のベクトルで M-正規直交性および K-直交性が従う。",
+          "used_node_ids": [
+            "math.linalg.eig06_hermitian_eigen_properties",
+            "math.linalg.eig07_spectral_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_vib09_normal_coords",
+      "target_node_id": "phys.mech.vib09_normal_coordinates_decoupling",
+      "route_kind": "deductive",
+      "title": "モード行列変換による基準座標への非連成化と一般解",
+      "premise_node_ids": [
+        "phys.mech.vib08_generalized_eigenvalue_modes",
+        "phys.mech.vib07_coupled_matrix_eom",
+        "phys.mech.p12_harmonic_oscillator"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.eig08_quadratic_form_principal_axis",
+        "math.ode.m06_linear_ode_2nd",
+        "math.ode.m39_linear_ode_superposition"
+      ],
+      "assumptions": [
+        "固有モード行列 U = (\\mathbf{u}_1,\\dots,\\mathbf{u}_n) は正則であり、M と K を同時に対角化する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "M\\ddot{\\mathbf{q}} + K\\mathbf{q} = \\mathbf{0},\\quad U^\\top M U = I_n,\\quad U^\\top K U = \\Omega^2 = \\operatorname{diag}(\\omega_1^2,\\dots,\\omega_n^2)\\",
+          "to_latex": "\\mathbf{q}(t) = U\\boldsymbol{\\eta}(t) \\implies \\ddot{\\eta}_\\alpha + \\omega_\\alpha^2\\eta_\\alpha = 0,\\quad \\mathbf{q}(t) = \\sum_{\\alpha=1}^{n} C_\\alpha\\mathbf{u}_\\alpha\\cos(\\omega_\\alpha t + \\phi_\\alpha)\\",
+          "operation_label": "同時対角化による基準座標方程式の導出と線形重ね合わせ",
+          "explanation": "モード行列 U による基底変換と左からの U^\\top 乗算により運動方程式を独立な単振動系へ分離し、線形重ね合わせで一般解を得る。",
+          "used_node_ids": [
+            "math.linalg.eig08_quadratic_form_principal_axis",
+            "math.ode.m06_linear_ode_2nd",
+            "math.ode.m39_linear_ode_superposition",
+            "phys.mech.p12_harmonic_oscillator",
+            "phys.mech.vib07_coupled_matrix_eom",
+            "phys.mech.vib08_generalized_eigenvalue_modes"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_modal_matrix_transform",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M\\ddot{\\mathbf{q}} + K\\mathbf{q} = \\mathbf{0},\\quad U^\\top M U = I_n,\\quad U^\\top K U = \\Omega^2 = \\operatorname{diag}(\\omega_1^2,\\dots,\\omega_n^2)\\",
+          "to_latex": "\\mathbf{q}(t) = U\\boldsymbol{\\eta}(t) \\implies U^\\top M U\\ddot{\\boldsymbol{\\eta}} + U^\\top K U\\boldsymbol{\\eta} = \\mathbf{0}\\",
+          "operation_label": "モード行列座標変換と左からの転置乗算",
+          "explanation": "主軸変換 \\mathbf{q} = U\\boldsymbol{\\eta} を運動方程式に代入し、左から U^\\top を掛けて同時対角化可能な形式へ変換する。",
+          "used_node_ids": [
+            "math.linalg.eig08_quadratic_form_principal_axis",
+            "phys.mech.vib07_coupled_matrix_eom",
+            "phys.mech.vib08_generalized_eigenvalue_modes"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_decoupled_odes",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{q}(t) = U\\boldsymbol{\\eta}(t) \\implies U^\\top M U\\ddot{\\boldsymbol{\\eta}} + U^\\top K U\\boldsymbol{\\eta} = \\mathbf{0}\\",
+          "to_latex": "\\ddot{\\boldsymbol{\\eta}} + \\Omega^2\\boldsymbol{\\eta} = \\mathbf{0} \\iff \\ddot{\\eta}_\\alpha + \\omega_\\alpha^2\\eta_\\alpha = 0\\;(\\alpha = 1,\\dots,n)\\",
+          "operation_label": "直交関係による非連成化",
+          "explanation": "U^\\top M U = I_n と U^\\top K U = \\Omega^2 を適用すると、各成分 \\eta_\\alpha に関する n 本の独立な単振動方程式が得られる。",
+          "used_node_ids": [
+            "phys.mech.vib08_generalized_eigenvalue_modes"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_superposition_solution",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\boldsymbol{\\eta}} + \\Omega^2\\boldsymbol{\\eta} = \\mathbf{0} \\iff \\ddot{\\eta}_\\alpha + \\omega_\\alpha^2\\eta_\\alpha = 0\\;(\\alpha = 1,\\dots,n)\\",
+          "to_latex": "\\mathbf{q}(t) = U\\boldsymbol{\\eta}(t) \\implies \\ddot{\\eta}_\\alpha + \\omega_\\alpha^2\\eta_\\alpha = 0,\\quad \\mathbf{q}(t) = \\sum_{\\alpha=1}^{n} C_\\alpha\\mathbf{u}_\\alpha\\cos(\\omega_\\alpha t + \\phi_\\alpha)\\",
+          "operation_label": "単振動解の重ね合わせによる一般解の合成",
+          "explanation": "各 \\eta_\\alpha(t) = C_\\alpha\\cos(\\omega_\\alpha t + \\phi_\\alpha) を解き、線形重ね合わせ \\mathbf{q} = \\sum_\\alpha \\eta_\\alpha \\mathbf{u}_\\alpha によって一般解を得る。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd",
+            "math.ode.m39_linear_ode_superposition",
+            "phys.mech.p12_harmonic_oscillator"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

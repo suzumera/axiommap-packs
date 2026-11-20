@@ -1,0 +1,955 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.cont.elasticity",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "連続体力学：応力テンソル・ひずみテンソル・フックの法則と弾性波",
+    "language": "ja",
+    "description": "コーシーの応力原理、対称ひずみテンソル、等方弾性体のラメ定数・ヤング率・ポアソン比、P波・S波の波動方程式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.cont.el01_displacement_strain_tensor",
+      "short_code": "EL01",
+      "kind": "definition",
+      "title": "変位場と微小対称ひずみテンソル・体積ひずみ",
+      "summary": "連続体の変位ベクトル場の勾配を対称部分（微小ひずみテンソル）と反対称部分（剛体微小回転テンソル）に分解し、対角和として体積ひずみを定義する。",
+      "canonical_latex": "\\varepsilon_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\omega_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\theta := \\operatorname{tr}(\\boldsymbol{\\varepsilon}) = \\nabla\\cdot\\mathbf{u}",
+      "aliases_latex": [
+        "\\boldsymbol{\\varepsilon} = \\frac{1}{2}\\big(\\nabla\\mathbf{u} + (\\nabla\\mathbf{u})^\\top\\big)",
+        "\\varepsilon_{kk} = u_{k,k} = \\operatorname{div}\\mathbf{u}"
+      ],
+      "keywords": [
+        "変位場",
+        "ひずみテンソル",
+        "対称ひずみ",
+        "微小変形",
+        "体積ひずみ"
+      ],
+      "domain_tags": [
+        "physics",
+        "continuum_mechanics",
+        "elasticity"
+      ]
+    },
+    {
+      "id": "phys.cont.el02_cauchy_stress_principle",
+      "short_code": "EL02",
+      "kind": "theorem_formula",
+      "title": "コーシーの応力原理とコーシー応力テンソル",
+      "summary": "連続体内部の仮想切断面の単位法線ベクトルに対し、表面力（トラクション）ベクトルが線形写像すなわち2階コーシー応力テンソルによって与えられることを示す原理。",
+      "canonical_latex": "\\mathbf{t}(\\mathbf{x}, \\mathbf{n}) = \\boldsymbol{\\sigma}(\\mathbf{x})\\mathbf{n},\\qquad t_i(\\mathbf{x}, \\mathbf{n}) = \\sum_{j=1}^{3} \\sigma_{ij}(\\mathbf{x})\\,n_j",
+      "aliases_latex": [
+        "\\mathbf{t}^{(n)} = \\boldsymbol{\\sigma}\\cdot\\mathbf{n}",
+        "t_i = \\sigma_{ij}n_j"
+      ],
+      "keywords": [
+        "コーシーの応力原理",
+        "応力テンソル",
+        "トラクション",
+        "コーシーの四面体"
+      ],
+      "domain_tags": [
+        "physics",
+        "continuum_mechanics",
+        "elasticity"
+      ]
+    },
+    {
+      "id": "phys.cont.el03_cauchy_eom_symmetry",
+      "short_code": "EL03",
+      "kind": "theorem_formula",
+      "title": "コーシーの運動方程式と応力テンソルの対称性",
+      "summary": "並進運動量保存則と発散定理から導かれる連続体の局所運動方程式、および角運動量保存則（極性モーメント不在下）から導かれる応力テンソルの対称性。",
+      "canonical_latex": "\\rho\\frac{\\partial^2 u_i}{\\partial t^2} = \\sum_{j=1}^{3}\\frac{\\partial \\sigma_{ij}}{\\partial x_j} + f_i,\\qquad \\sigma_{ij} = \\sigma_{ji}",
+      "aliases_latex": [
+        "\\rho\\ddot{\\mathbf{u}} = \\nabla\\cdot\\boldsymbol{\\sigma} + \\mathbf{f},\\quad \\boldsymbol{\\sigma}^\\top = \\boldsymbol{\\sigma}",
+        "\\sigma_{ij,j} + f_i = \\rho\\ddot{u}_i"
+      ],
+      "keywords": [
+        "コーシーの運動方程式",
+        "応力テンソルの対称性",
+        "運動量保存",
+        "角運動量保存"
+      ],
+      "domain_tags": [
+        "physics",
+        "continuum_mechanics",
+        "elasticity"
+      ]
+    },
+    {
+      "id": "phys.cont.el04_generalized_hookes_law",
+      "short_code": "EL04",
+      "kind": "definition",
+      "title": "一般化フックの法則と4階弾性定数テンソル",
+      "summary": "微小変形領域においてひずみエネルギー密度を2次形式で展開して得られる応力とひずみの線形構成則、および弾性定数テンソルの対称性。",
+      "canonical_latex": "\\sigma_{ij} = \\sum_{k,l=1}^{3} C_{ijkl}\\,\\varepsilon_{kl},\\qquad C_{ijkl} = C_{jikl} = C_{ijlk} = C_{klij}",
+      "aliases_latex": [
+        "\\boldsymbol{\\sigma} = \\mathbb{C} : \\boldsymbol{\\varepsilon}",
+        "W(\\boldsymbol{\\varepsilon}) = \\frac{1}{2}\\sum_{i,j,k,l=1}^{3} C_{ijkl}\\varepsilon_{ij}\\varepsilon_{kl},\\quad \\sigma_{ij} = \\frac{\\partial W}{\\partial \\varepsilon_{ij}}"
+      ],
+      "keywords": [
+        "一般化フックの法則",
+        "弾性定数テンソル",
+        "ひずみエネルギー密度",
+        "構成則"
+      ],
+      "domain_tags": [
+        "physics",
+        "continuum_mechanics",
+        "elasticity"
+      ]
+    },
+    {
+      "id": "phys.cont.el05_isotropic_lame_hooke",
+      "short_code": "EL05",
+      "kind": "theorem_formula",
+      "title": "等方線形弾性体のフックの法則とラメ定数",
+      "summary": "SO(3)回転対称性（等方性）を課すことで21個の独立弾性定数が2つのラメ定数（第一ラメ定数と剛性率）に帰着する等方弾性構成則。",
+      "canonical_latex": "\\sigma_{ij} = \\lambda(\\operatorname{tr}\\boldsymbol{\\varepsilon})\\delta_{ij} + 2\\mu\\varepsilon_{ij} = \\lambda(\\nabla\\cdot\\mathbf{u})\\delta_{ij} + 2\\mu\\varepsilon_{ij}",
+      "aliases_latex": [
+        "\\boldsymbol{\\sigma} = \\lambda(\\operatorname{tr}\\boldsymbol{\\varepsilon})I_3 + 2\\mu\\boldsymbol{\\varepsilon}",
+        "\\varepsilon_{ij} = \\frac{1}{2\\mu}\\sigma_{ij} - \\frac{\\lambda}{2\\mu(3\\lambda + 2\\mu)}(\\operatorname{tr}\\boldsymbol{\\sigma})\\delta_{ij}"
+      ],
+      "keywords": [
+        "等方弾性体",
+        "ラメ定数",
+        "剛性率",
+        "フックの法則",
+        "等方テンソル"
+      ],
+      "domain_tags": [
+        "physics",
+        "continuum_mechanics",
+        "elasticity"
+      ]
+    },
+    {
+      "id": "phys.cont.el06_youngs_modulus_poisson_ratio",
+      "short_code": "EL06",
+      "kind": "theorem_formula",
+      "title": "ヤング率・ポアソン比・体積弾性率とラメ定数の関係",
+      "summary": "単軸引張状態および静水圧状態から定義されるヤング率、ポアソン比、体積弾性率とラメ定数との相互変換関係式。",
+      "canonical_latex": "E = \\frac{\\mu(3\\lambda + 2\\mu)}{\\lambda + \\mu},\\quad \\nu = \\frac{\\lambda}{2(\\lambda + \\mu)},\\quad K = \\lambda + \\frac{2}{3}\\mu = \\frac{E}{3(1 - 2\\nu)}",
+      "aliases_latex": [
+        "\\lambda = \\frac{E\\nu}{(1+\\nu)(1-2\\nu)},\\quad \\mu = G = \\frac{E}{2(1+\\nu)}",
+        "\\varepsilon_{ij} = \\frac{1+\\nu}{E}\\sigma_{ij} - \\frac{\\nu}{E}(\\operatorname{tr}\\boldsymbol{\\sigma})\\delta_{ij}"
+      ],
+      "keywords": [
+        "ヤング率",
+        "ポアソン比",
+        "体積弾性率",
+        "せん断弾性率",
+        "ラメ定数"
+      ],
+      "domain_tags": [
+        "physics",
+        "continuum_mechanics",
+        "elasticity"
+      ]
+    },
+    {
+      "id": "phys.cont.el07_navier_cauchy_equation",
+      "short_code": "EL07",
+      "kind": "theorem_formula",
+      "title": "ナビエ＝コーシーの弾性運動方程式",
+      "summary": "均質等方線形弾性体におけるコーシーの運動方程式にフックの法則を代入して得られる、変位ベクトル場に関する連立2階偏微分方程式。",
+      "canonical_latex": "\\rho\\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\mu\\nabla^2\\mathbf{u} + \\mathbf{f}",
+      "aliases_latex": [
+        "\\rho\\ddot{\\mathbf{u}} = (\\lambda + 2\\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) - \\mu\\nabla\\times(\\nabla\\times\\mathbf{u}) + \\mathbf{f}",
+        "\\rho\\frac{\\partial^2 u_i}{\\partial t^2} = (\\lambda + \\mu)\\frac{\\partial (\\nabla\\cdot\\mathbf{u})}{\\partial x_i} + \\mu\\nabla^2 u_i + f_i"
+      ],
+      "keywords": [
+        "ナビエ＝コーシー方程式",
+        "弾性運動方程式",
+        "等方弾性体",
+        "変位場"
+      ],
+      "domain_tags": [
+        "physics",
+        "continuum_mechanics",
+        "elasticity"
+      ]
+    },
+    {
+      "id": "phys.cont.el08_p_wave_equation",
+      "short_code": "EL08",
+      "kind": "theorem_formula",
+      "title": "P波（縦波・疎密波）の波動方程式と音速",
+      "summary": "体積ひずみ（または無回転変位成分）が従う3次元スカラー波動方程式と、縦波（P波）の位相速度の表式。",
+      "canonical_latex": "\\frac{\\partial^2 \\theta}{\\partial t^2} = c_P^2 \\nabla^2 \\theta,\\qquad c_P = \\sqrt{\\frac{\\lambda + 2\\mu}{\\rho}} = \\sqrt{\\frac{E(1-\\nu)}{\\rho(1+\\nu)(1-2\\nu)}}",
+      "aliases_latex": [
+        "\\frac{\\partial^2 \\phi}{\\partial t^2} = c_P^2 \\nabla^2 \\phi\\quad(\\mathbf{u}_L = \\nabla\\phi)",
+        "v_P = \\sqrt{\\frac{K + \\frac{4}{3}\\mu}{\\rho}}"
+      ],
+      "keywords": [
+        "P波",
+        "縦波",
+        "疎密波",
+        "波動方程式",
+        "弾性波"
+      ],
+      "domain_tags": [
+        "physics",
+        "continuum_mechanics",
+        "elasticity",
+        "waves"
+      ]
+    },
+    {
+      "id": "phys.cont.el09_s_wave_equation",
+      "short_code": "EL09",
+      "kind": "theorem_formula",
+      "title": "S波（横波・せん断波）の波動方程式と音速",
+      "summary": "回転ベクトル（または非圧縮性せん断変位成分）が従う3次元ベクトル波動方程式と、横波（S波）の位相速度の表式。",
+      "canonical_latex": "\\frac{\\partial^2 \\boldsymbol{\\omega}}{\\partial t^2} = c_S^2 \\nabla^2 \\boldsymbol{\\omega},\\qquad c_S = \\sqrt{\\frac{\\mu}{\\rho}} = \\sqrt{\\frac{E}{2\\rho(1+\\nu)}}",
+      "aliases_latex": [
+        "\\frac{\\partial^2 \\boldsymbol{\\psi}}{\\partial t^2} = c_S^2 \\nabla^2 \\boldsymbol{\\psi}\\quad(\\mathbf{u}_T = \\nabla\\times\\boldsymbol{\\psi},\\; \\nabla\\cdot\\boldsymbol{\\psi}=0)",
+        "\\frac{c_P}{c_S} = \\sqrt{\\frac{\\lambda + 2\\mu}{\\mu}} = \\sqrt{\\frac{2(1-\\nu)}{1-2\\nu}} > \\sqrt{2}"
+      ],
+      "keywords": [
+        "S波",
+        "横波",
+        "せん断波",
+        "波動方程式",
+        "弾性波"
+      ],
+      "domain_tags": [
+        "physics",
+        "continuum_mechanics",
+        "elasticity",
+        "waves"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv.el01_strain_from_displacement_grad",
+      "target_node_id": "phys.cont.el01_displacement_strain_tensor",
+      "route_kind": "deductive",
+      "title": "微小変位勾配の1次展開と対称・反対称分解によるひずみテンソルの導出",
+      "premise_node_ids": [
+        "math.calc.m08_partial_total_diff",
+        "math.calc.e02_multivariable_taylor_2nd"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms",
+        "math.vec.vc01_divergence_def"
+      ],
+      "assumptions": [
+        "変位勾配が微小（|\\partial u_i / \\partial x_j| \\ll 1）であり、高次項を無視できる（幾何学的線形化）",
+        "変位場 \\mathbf{u}(\\mathbf{x},t) は空間座標に関してC1級である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}'(\\mathbf{x}, t) = \\mathbf{x} + \\mathbf{u}(\\mathbf{x}, t)",
+          "to_latex": "\\varepsilon_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\omega_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\theta := \\operatorname{tr}(\\boldsymbol{\\varepsilon}) = \\nabla\\cdot\\mathbf{u}",
+          "operation_label": "変位勾配の線形化と対称分解",
+          "explanation": "変形後の線素長変化を全微分と1次展開で評価し、非線形項を落とした変位勾配を対称ひずみテンソルと反対称回転テンソルへ一意分解する。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.m08_partial_total_diff",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_line_element_change",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}'(\\mathbf{x}, t) = \\mathbf{x} + \\mathbf{u}(\\mathbf{x}, t)",
+          "to_latex": "d\\mathbf{x}' = d\\mathbf{x} + (\\nabla\\mathbf{u})\\,d\\mathbf{x},\\quad \\|d\\mathbf{x}'\\|^2 - \\|d\\mathbf{x}\\|^2 = d\\mathbf{x}^\\top\\big(\\nabla\\mathbf{u} + (\\nabla\\mathbf{u})^\\top + (\\nabla\\mathbf{u})^\\top\\nabla\\mathbf{u}\\big)d\\mathbf{x}",
+          "operation_label": "線素の全微分と伸びの2乗評価",
+          "explanation": "多変数関数の全微分を用いて変形後の微小線素ベクトルを求め、ユークリッド内積の差を計算してひずみに寄与する行列を抽出する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_linearization_decomposition",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\mathbf{x}' = d\\mathbf{x} + (\\nabla\\mathbf{u})\\,d\\mathbf{x},\\quad \\|d\\mathbf{x}'\\|^2 - \\|d\\mathbf{x}\\|^2 = d\\mathbf{x}^\\top\\big(\\nabla\\mathbf{u} + (\\nabla\\mathbf{u})^\\top + (\\nabla\\mathbf{u})^\\top\\nabla\\mathbf{u}\\big)d\\mathbf{x}",
+          "to_latex": "\\frac{\\partial u_i}{\\partial x_j} = \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right) + \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right)",
+          "operation_label": "微小変形近似と対称・反対称分解",
+          "explanation": "変位勾配の2次項 (\\nabla\\mathbf{u})^\\top\\nabla\\mathbf{u} を高次微小量として無視し、線形な変位勾配テンソルを行列空間の直和分解により対称成分と反対称成分に分ける。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_strain_and_dilatation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial u_i}{\\partial x_j} = \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right) + \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right)",
+          "to_latex": "\\varepsilon_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\omega_{ij} := \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} - \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\theta := \\operatorname{tr}(\\boldsymbol{\\varepsilon}) = \\nabla\\cdot\\mathbf{u}",
+          "operation_label": "ひずみテンソル・回転テンソル・体積ひずみの定義",
+          "explanation": "線素の長さ変化に寄与する対称部分を微小ひずみテンソル、長さを変えない反対称部分を微小回転テンソルと定義し、対角和から1次の体積変化率（体積ひずみ）を得る。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.el02_cauchy_tetrahedron",
+      "target_node_id": "phys.cont.el02_cauchy_stress_principle",
+      "route_kind": "deductive",
+      "title": "コーシーの四面体における力の釣合いによる応力テンソルの導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "phys.mech.p03_action_reaction"
+      ],
+      "required_math_node_ids": [
+        "math.calc.mi01_multiple_integral_def",
+        "math.vec.vc03_surface_integral_def"
+      ],
+      "assumptions": [
+        "任意の仮想切断面上の内力は、位置と切断面の外向き単位法線ベクトルのみに依存するトラクションベクトル \\mathbf{t}(\\mathbf{x}, \\mathbf{n}) として表現できる（コーシーの応力仮説）",
+        "密度 \\rho、加速度 \\ddot{\\mathbf{u}}、体積力密度 \\mathbf{f} は局所的に有界かつ連続である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\iint_{\\partial\\Omega_\\varepsilon} \\mathbf{t}(\\mathbf{x}, \\mathbf{n})\\,dS + \\iiint_{\\Omega_\\varepsilon} (\\mathbf{f} - \\rho\\ddot{\\mathbf{u}})\\,dV = \\mathbf{0}",
+          "to_latex": "\\mathbf{t}(\\mathbf{x}, \\mathbf{n}) = \\boldsymbol{\\sigma}(\\mathbf{x})\\mathbf{n},\\qquad t_i(\\mathbf{x}, \\mathbf{n}) = \\sum_{j=1}^{3} \\sigma_{ij}(\\mathbf{x})\\,n_j",
+          "operation_label": "コーシーの四面体極限と作用反作用則の適用",
+          "explanation": "高さ h の微小四面体に運動の第2法則を適用し、h\\to 0 の極限で体積力と慣性力が消滅することおよび作用反作用則からトラクションが法線の線形関数であることを導く。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "math.vec.vc03_surface_integral_def",
+            "phys.mech.p02_newton_second_law",
+            "phys.mech.p03_action_reaction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_tetrahedron_balance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iint_{\\partial\\Omega_\\varepsilon} \\mathbf{t}(\\mathbf{x}, \\mathbf{n})\\,dS + \\iiint_{\\Omega_\\varepsilon} (\\mathbf{f} - \\rho\\ddot{\\mathbf{u}})\\,dV = \\mathbf{0}",
+          "to_latex": "\\mathbf{t}(\\mathbf{x}, \\mathbf{n})\\,\\Delta S + \\sum_{j=1}^{3} \\mathbf{t}(\\mathbf{x}, -\\mathbf{e}_j)\\,\\Delta S_j = \\mathcal{O}(h^3)",
+          "operation_label": "微小四面体における面積・体積スケーリング評価",
+          "explanation": "座標面と法線 \\mathbf{n} の斜面からなる高さ h の四面体では面積が \\mathcal{O}(h^2)、体積が \\mathcal{O}(h^3) であるため、平均値評価により表面力の和と体積項のオーダーが分離される。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "math.vec.vc03_surface_integral_def",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_limit_action_reaction",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{t}(\\mathbf{x}, \\mathbf{n})\\,\\Delta S + \\sum_{j=1}^{3} \\mathbf{t}(\\mathbf{x}, -\\mathbf{e}_j)\\,\\Delta S_j = \\mathcal{O}(h^3)",
+          "to_latex": "\\mathbf{t}(\\mathbf{x}, \\mathbf{n}) = \\sum_{j=1}^{3} n_j\\,\\mathbf{t}(\\mathbf{x}, \\mathbf{e}_j)",
+          "operation_label": "面積射影関係と作用・反作用則の適用",
+          "explanation": "幾何関係 \\Delta S_j = n_j\\Delta S を代入して \\Delta S \\propto h^2 で割り h\\to 0 の極限を取り、切断面両側の作用反作用則 \\mathbf{t}(\\mathbf{x}, -\\mathbf{e}_j) = -\\mathbf{t}(\\mathbf{x}, \\mathbf{e}_j) を適用する。",
+          "used_node_ids": [
+            "phys.mech.p03_action_reaction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_stress_tensor_definition",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{t}(\\mathbf{x}, \\mathbf{n}) = \\sum_{j=1}^{3} n_j\\,\\mathbf{t}(\\mathbf{x}, \\mathbf{e}_j)",
+          "to_latex": "\\mathbf{t}(\\mathbf{x}, \\mathbf{n}) = \\boldsymbol{\\sigma}(\\mathbf{x})\\mathbf{n},\\qquad t_i(\\mathbf{x}, \\mathbf{n}) = \\sum_{j=1}^{3} \\sigma_{ij}(\\mathbf{x})\\,n_j",
+          "operation_label": "コーシー応力テンソル成分の同定",
+          "explanation": "各座標軸に垂直な面上のトラクション成分 \\sigma_{ij}(\\mathbf{x}) := t_i(\\mathbf{x}, \\mathbf{e}_j) を要素とする2階テンソルをコーシー応力テンソルとしてまとめる。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.el03_cauchy_eom_and_symmetry",
+      "target_node_id": "phys.cont.el03_cauchy_eom_symmetry",
+      "route_kind": "deductive",
+      "title": "運動量・角運動量保存則と発散定理によるコーシーの運動方程式および応力対称性の導出",
+      "premise_node_ids": [
+        "phys.cont.el02_cauchy_stress_principle",
+        "phys.mech.p02_newton_second_law",
+        "phys.mech.p10_angular_momentum_torque"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m50_positive_continuous_integral",
+        "math.vec.m29_cross_product_levi_civita_def",
+        "math.vec.vc05_gauss_divergence_theorem"
+      ],
+      "assumptions": [
+        "体積偶力（カップルストレス）が存在しない無極性連続体を仮定する",
+        "応力テンソル \\boldsymbol{\\sigma} は空間に関してC1級であり、微小変位領域で実時間微分 \\ddot{\\mathbf{u}} = \\partial^2\\mathbf{u}/\\partial t^2 とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\iiint_\\Omega \\rho\\ddot{u}_i\\,dV = \\iint_{\\partial\\Omega} t_i\\,dS + \\iiint_\\Omega f_i\\,dV,\\quad \\iiint_\\Omega (\\mathbf{x}\\times\\rho\\ddot{\\mathbf{u}})\\,dV = \\iint_{\\partial\\Omega} (\\mathbf{x}\\times\\mathbf{t})\\,dS + \\iiint_\\Omega (\\mathbf{x}\\times\\mathbf{f})\\,dV",
+          "to_latex": "\\rho\\frac{\\partial^2 u_i}{\\partial t^2} = \\sum_{j=1}^{3}\\frac{\\partial \\sigma_{ij}}{\\partial x_j} + f_i,\\qquad \\sigma_{ij} = \\sigma_{ji}",
+          "operation_label": "ガウスの発散定理による面積分の体積積分変換と局所化",
+          "explanation": "任意検査体積上の表面力・表面トルクの積分をコーシー応力原理と発散定理で体積積分へ変換し、検査体積の任意性から運動方程式と応力対称性を同時に導く。",
+          "used_node_ids": [
+            "math.calc.m50_positive_continuous_integral",
+            "math.vec.m29_cross_product_levi_civita_def",
+            "math.vec.vc05_gauss_divergence_theorem",
+            "phys.cont.el02_cauchy_stress_principle",
+            "phys.mech.p02_newton_second_law",
+            "phys.mech.p10_angular_momentum_torque"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_divergence_theorem_momentum",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_\\Omega \\rho\\ddot{u}_i\\,dV = \\iint_{\\partial\\Omega} t_i\\,dS + \\iiint_\\Omega f_i\\,dV,\\quad \\iiint_\\Omega (\\mathbf{x}\\times\\rho\\ddot{\\mathbf{u}})\\,dV = \\iint_{\\partial\\Omega} (\\mathbf{x}\\times\\mathbf{t})\\,dS + \\iiint_\\Omega (\\mathbf{x}\\times\\mathbf{f})\\,dV",
+          "to_latex": "\\iiint_\\Omega \\left(\\rho\\frac{\\partial^2 u_i}{\\partial t^2} - \\sum_{j=1}^{3}\\frac{\\partial \\sigma_{ij}}{\\partial x_j} - f_i\\right)dV = 0,\\quad \\iiint_\\Omega \\sum_{j,k=1}^{3}\\varepsilon_{ijk}\\left[x_j\\left(\\rho\\ddot{u}_k - \\sum_{l=1}^{3}\\frac{\\partial\\sigma_{kl}}{\\partial x_l} - f_k\\right) - \\sigma_{kj}\\right]dV = 0",
+          "operation_label": "応力テンソル代入と発散定理の適用",
+          "explanation": "t_i = \\sum_j \\sigma_{ij}n_j を代入してガウスの発散定理を並進・回転両積分式に適用し、すべてを体積積分へまとめる。",
+          "used_node_ids": [
+            "math.vec.m29_cross_product_levi_civita_def",
+            "math.vec.vc05_gauss_divergence_theorem",
+            "phys.cont.el02_cauchy_stress_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_localize_linear_momentum",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_\\Omega \\left(\\rho\\frac{\\partial^2 u_i}{\\partial t^2} - \\sum_{j=1}^{3}\\frac{\\partial \\sigma_{ij}}{\\partial x_j} - f_i\\right)dV = 0,\\quad \\iiint_\\Omega \\sum_{j,k=1}^{3}\\varepsilon_{ijk}\\left[x_j\\left(\\rho\\ddot{u}_k - \\sum_{l=1}^{3}\\frac{\\partial\\sigma_{kl}}{\\partial x_l} - f_k\\right) - \\sigma_{kj}\\right]dV = 0",
+          "to_latex": "\\rho\\frac{\\partial^2 u_i}{\\partial t^2} = \\sum_{j=1}^{3}\\frac{\\partial \\sigma_{ij}}{\\partial x_j} + f_i,\\quad \\iiint_\\Omega \\sum_{j,k=1}^{3}\\varepsilon_{ijk}\\sigma_{kj}\\,dV = 0",
+          "operation_label": "連続被積分関数の局所化による運動方程式の確定",
+          "explanation": "任意の領域 \\Omega で並進積分の値が零となることと連続性から被積分関数が恒等的に零となり、これを回転積分式へ代入して括弧内の項を消去する。",
+          "used_node_ids": [
+            "math.calc.m50_positive_continuous_integral",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_stress_symmetry",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{\\partial^2 u_i}{\\partial t^2} = \\sum_{j=1}^{3}\\frac{\\partial \\sigma_{ij}}{\\partial x_j} + f_i,\\quad \\iiint_\\Omega \\sum_{j,k=1}^{3}\\varepsilon_{ijk}\\sigma_{kj}\\,dV = 0",
+          "to_latex": "\\rho\\frac{\\partial^2 u_i}{\\partial t^2} = \\sum_{j=1}^{3}\\frac{\\partial \\sigma_{ij}}{\\partial x_j} + f_i,\\qquad \\sigma_{ij} = \\sigma_{ji}",
+          "operation_label": "反対称成分の消滅と応力対称性の導出",
+          "explanation": "回転積分の局所化により \\sum_{j,k}\\varepsilon_{ijk}\\sigma_{kj} = 0 が任意の i で成り立つため、応力テンソルは対称となる。",
+          "used_node_ids": [
+            "math.calc.m50_positive_continuous_integral",
+            "math.vec.m29_cross_product_levi_civita_def",
+            "phys.mech.p10_angular_momentum_torque"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.el04_hooke_from_strain_energy",
+      "target_node_id": "phys.cont.el04_generalized_hookes_law",
+      "route_kind": "deductive",
+      "title": "ひずみエネルギー密度の2次テイラー展開による一般化フックの法則の導出",
+      "premise_node_ids": [
+        "phys.cont.el01_displacement_strain_tensor",
+        "phys.cont.el03_cauchy_eom_symmetry"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e01_hessian_matrix_def",
+        "math.calc.e02_multivariable_taylor_2nd"
+      ],
+      "assumptions": [
+        "等温または断熱過程における弾性体の単位体積あたりの仕事はひずみテンソルのみのC2級状態関数 W(\\boldsymbol{\\varepsilon}) で表される（超弾性）",
+        "無ひずみ状態 \\boldsymbol{\\varepsilon} = \\mathbf{0} は無応力自然状態（\\sigma_{ij}(\\mathbf{0})=0）かつ W(\\mathbf{0})=0 とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "W(\\boldsymbol{\\varepsilon}) = W(\\mathbf{0}) + \\sum_{i,j=1}^{3}\\left.\\frac{\\partial W}{\\partial \\varepsilon_{ij}}\\right|_{\\mathbf{0}}\\varepsilon_{ij} + \\frac{1}{2}\\sum_{i,j,k,l=1}^{3}\\left.\\frac{\\partial^2 W}{\\partial \\varepsilon_{ij}\\partial \\varepsilon_{kl}}\\right|_{\\mathbf{0}}\\varepsilon_{ij}\\varepsilon_{kl} + o(\\|\\boldsymbol{\\varepsilon}\\|^2)",
+          "to_latex": "\\sigma_{ij} = \\sum_{k,l=1}^{3} C_{ijkl}\\,\\varepsilon_{kl},\\qquad C_{ijkl} = C_{jikl} = C_{ijlk} = C_{klij}",
+          "operation_label": "2次ひずみエネルギーの微分と対称性の導出",
+          "explanation": "自然状態周りのひずみエネルギー密度の2次テイラー展開から \\sigma_{ij} = \\partial W / \\partial \\varepsilon_{ij} を計算し、ヘッセ行列の対称性および応力・ひずみの対称性から弾性定数テンソルの全対称性を得る。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.e02_multivariable_taylor_2nd",
+            "phys.cont.el01_displacement_strain_tensor",
+            "phys.cont.el03_cauchy_eom_symmetry"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_quadratic_strain_energy",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W(\\boldsymbol{\\varepsilon}) = W(\\mathbf{0}) + \\sum_{i,j=1}^{3}\\left.\\frac{\\partial W}{\\partial \\varepsilon_{ij}}\\right|_{\\mathbf{0}}\\varepsilon_{ij} + \\frac{1}{2}\\sum_{i,j,k,l=1}^{3}\\left.\\frac{\\partial^2 W}{\\partial \\varepsilon_{ij}\\partial \\varepsilon_{kl}}\\right|_{\\mathbf{0}}\\varepsilon_{ij}\\varepsilon_{kl} + o(\\|\\boldsymbol{\\varepsilon}\\|^2)",
+          "to_latex": "W(\\boldsymbol{\\varepsilon}) \\approx \\frac{1}{2}\\sum_{i,j,k,l=1}^{3} C_{ijkl}\\,\\varepsilon_{ij}\\varepsilon_{kl},\\qquad C_{ijkl} := \\left.\\frac{\\partial^2 W}{\\partial \\varepsilon_{ij}\\partial \\varepsilon_{kl}}\\right|_{\\mathbf{0}}",
+          "operation_label": "自然状態条件の適用と弾性定数の定義",
+          "explanation": "基準エネルギー W(\\mathbf{0}) = 0 および無応力自然状態 \\left.\\frac{\\partial W}{\\partial \\varepsilon_{ij}}\\right|_{\\mathbf{0}} = \\sigma_{ij}(\\mathbf{0}) = 0 を課し、2次近似における2階導関数を弾性定数テンソルと定義する。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_differentiate_energy",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W(\\boldsymbol{\\varepsilon}) \\approx \\frac{1}{2}\\sum_{i,j,k,l=1}^{3} C_{ijkl}\\,\\varepsilon_{ij}\\varepsilon_{kl},\\qquad C_{ijkl} := \\left.\\frac{\\partial^2 W}{\\partial \\varepsilon_{ij}\\partial \\varepsilon_{kl}}\\right|_{\\mathbf{0}}",
+          "to_latex": "\\sigma_{ij} = \\frac{\\partial W}{\\partial \\varepsilon_{ij}} = \\sum_{k,l=1}^{3} C_{ijkl}\\,\\varepsilon_{kl},\\qquad C_{ijkl} = C_{klij}",
+          "operation_label": "応力の偏微分表示と主対称性の適用",
+          "explanation": "C2級関数に対するシュワルツの定理（ヘッセ行列の対称性）により C_{ijkl} = C_{klij} が成り立つことを用いて、2次形式を \\varepsilon_{ij} で偏微分する。",
+          "used_node_ids": [
+            "math.calc.e01_hessian_matrix_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_minor_symmetries",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{ij} = \\frac{\\partial W}{\\partial \\varepsilon_{ij}} = \\sum_{k,l=1}^{3} C_{ijkl}\\,\\varepsilon_{kl},\\qquad C_{ijkl} = C_{klij}",
+          "to_latex": "\\sigma_{ij} = \\sum_{k,l=1}^{3} C_{ijkl}\\,\\varepsilon_{kl},\\qquad C_{ijkl} = C_{jikl} = C_{ijlk} = C_{klij}",
+          "operation_label": "応力とひずみの対称性による副対称性の確立",
+          "explanation": "コーシー応力テンソル \\sigma_{ij}=\\sigma_{ji} と微小ひずみテンソル \\varepsilon_{kl}=\\varepsilon_{lk} の対称性から、前2添字および後2添字の交換対称性を得る。",
+          "used_node_ids": [
+            "phys.cont.el01_displacement_strain_tensor",
+            "phys.cont.el03_cauchy_eom_symmetry"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.el05_isotropic_lame_representation",
+      "target_node_id": "phys.cont.el05_isotropic_lame_hooke",
+      "route_kind": "deductive",
+      "title": "SO(3)等方性不変テンソル表現によるラメ定数型フックの法則の導出",
+      "premise_node_ids": [
+        "phys.cont.el04_generalized_hookes_law",
+        "phys.cont.el01_displacement_strain_tensor"
+      ],
+      "required_math_node_ids": [
+        "math.alg.gr04_so3_su2_matrix_groups_def",
+        "math.linalg.eig07_spectral_theorem"
+      ],
+      "assumptions": [
+        "材料は完全等方性であり、弾性定数テンソル C_{ijkl} は任意の回転 Q \\in \\mathrm{SO}(3) に対して不変である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma_{ij} = \\sum_{k,l=1}^{3} C_{ijkl}\\,\\varepsilon_{kl},\\quad \\forall Q\\in\\mathrm{SO}(3),\\; C_{pqrs} = \\sum_{i,j,k,l=1}^{3} Q_{pi}Q_{qj}Q_{rk}Q_{sl}C_{ijkl}",
+          "to_latex": "\\sigma_{ij} = \\lambda(\\operatorname{tr}\\boldsymbol{\\varepsilon})\\delta_{ij} + 2\\mu\\varepsilon_{ij} = \\lambda(\\nabla\\cdot\\mathbf{u})\\delta_{ij} + 2\\mu\\varepsilon_{ij}",
+          "operation_label": "等方4階テンソル表現とひずみの縮約",
+          "explanation": "SO(3)不変な4階等方テンソルの一般表示に副対称性を課して2定数形式へ縮約し、ひずみテンソルとの積からラメ定数による等方フックの法則を導く。",
+          "used_node_ids": [
+            "math.alg.gr04_so3_su2_matrix_groups_def",
+            "phys.cont.el01_displacement_strain_tensor",
+            "phys.cont.el04_generalized_hookes_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_isotropic_fourth_rank_tensor",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{ij} = \\sum_{k,l=1}^{3} C_{ijkl}\\,\\varepsilon_{kl},\\quad \\forall Q\\in\\mathrm{SO}(3),\\; C_{pqrs} = \\sum_{i,j,k,l=1}^{3} Q_{pi}Q_{qj}Q_{rk}Q_{sl}C_{ijkl}",
+          "to_latex": "C_{ijkl} = \\lambda\\delta_{ij}\\delta_{kl} + \\mu(\\delta_{ik}\\delta_{jl} + \\delta_{il}\\delta_{jk}) + \\tilde{\\mu}(\\delta_{ik}\\delta_{jl} - \\delta_{il}\\delta_{jk})",
+          "operation_label": "SO(3)不変4階テンソルの基底展開",
+          "explanation": "3次元特殊直交群 SO(3) の座標軸回転・反転対称性テストにより、4階等方テンソルはクロネッカーのデルタの積の3つの線形結合で張られる。",
+          "used_node_ids": [
+            "math.alg.gr04_so3_su2_matrix_groups_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_apply_minor_symmetry",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_{ijkl} = \\lambda\\delta_{ij}\\delta_{kl} + \\mu(\\delta_{ik}\\delta_{jl} + \\delta_{il}\\delta_{jk}) + \\tilde{\\mu}(\\delta_{ik}\\delta_{jl} - \\delta_{il}\\delta_{jk})",
+          "to_latex": "C_{ijkl} = \\lambda\\delta_{ij}\\delta_{kl} + \\mu(\\delta_{ik}\\delta_{jl} + \\delta_{il}\\delta_{jk})",
+          "operation_label": "副対称性による反対称項の消去",
+          "explanation": "一般化フックの法則の対称性 C_{ijkl} = C_{ijlk} を適用すると k と l の交換で符号が反転する \\tilde{\\mu} の項が零となる。",
+          "used_node_ids": [
+            "phys.cont.el04_generalized_hookes_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_contract_strain",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_{ijkl} = \\lambda\\delta_{ij}\\delta_{kl} + \\mu(\\delta_{ik}\\delta_{jl} + \\delta_{il}\\delta_{jk})",
+          "to_latex": "\\sigma_{ij} = \\lambda(\\operatorname{tr}\\boldsymbol{\\varepsilon})\\delta_{ij} + 2\\mu\\varepsilon_{ij} = \\lambda(\\nabla\\cdot\\mathbf{u})\\delta_{ij} + 2\\mu\\varepsilon_{ij}",
+          "operation_label": "ひずみテンソルとの縮約と体積ひずみ表示",
+          "explanation": "C_{ijkl} と \\varepsilon_{kl} を縮約し、\\varepsilon_{ij} = \\varepsilon_{ji} および \\operatorname{tr}\\boldsymbol{\\varepsilon} = \\nabla\\cdot\\mathbf{u} を用いることでラメ定数表示を得る。",
+          "used_node_ids": [
+            "phys.cont.el01_displacement_strain_tensor",
+            "phys.cont.el04_generalized_hookes_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.el06_engineering_moduli_from_lame",
+      "target_node_id": "phys.cont.el06_youngs_modulus_poisson_ratio",
+      "route_kind": "deductive",
+      "title": "単軸引張および静水圧応力状態からのヤング率・ポアソン比・体積弾性率の導出",
+      "premise_node_ids": [
+        "phys.cont.el05_isotropic_lame_hooke"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs05_unique_coord_steinitz"
+      ],
+      "assumptions": [
+        "弾性安定性のため \\mu > 0 かつ 3\\lambda + 2\\mu > 0 を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma_{ij} = \\lambda(\\operatorname{tr}\\boldsymbol{\\varepsilon})\\delta_{ij} + 2\\mu\\varepsilon_{ij},\\quad \\sigma_{11}=\\sigma,\\; \\sigma_{22}=\\sigma_{33}=\\sigma_{ij}=0\\;(i\\neq j)",
+          "to_latex": "E = \\frac{\\mu(3\\lambda + 2\\mu)}{\\lambda + \\mu},\\quad \\nu = \\frac{\\lambda}{2(\\lambda + \\mu)},\\quad K = \\lambda + \\frac{2}{3}\\mu = \\frac{E}{3(1 - 2\\nu)}",
+          "operation_label": "フックの法則の反転と単軸・静水圧弾性率の評価",
+          "explanation": "等方フックの法則を対角和と成分連立方程式によってひずみについて解き、単軸引張定義および静水圧圧縮定義に代入して各弾性率をラメ定数で表す。",
+          "used_node_ids": [
+            "math.linalg.vs05_unique_coord_steinitz",
+            "phys.cont.el05_isotropic_lame_hooke"
+          ],
+          "sympy_check_hint": "sp.solve([sp.Eq(l*(e1+2*e2)+2*m*e1, s), sp.Eq(l*(e1+2*e2)+2*m*e2, 0)], (e1, e2))"
+        },
+        {
+          "step_id": "s2_trace_bulk_modulus",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{ij} = \\lambda(\\operatorname{tr}\\boldsymbol{\\varepsilon})\\delta_{ij} + 2\\mu\\varepsilon_{ij},\\quad \\sigma_{11}=\\sigma,\\; \\sigma_{22}=\\sigma_{33}=\\sigma_{ij}=0\\;(i\\neq j)",
+          "to_latex": "\\operatorname{tr}\\boldsymbol{\\sigma} = (3\\lambda + 2\\mu)\\operatorname{tr}\\boldsymbol{\\varepsilon} \\implies \\operatorname{tr}\\boldsymbol{\\varepsilon} = \\frac{\\sigma}{3\\lambda + 2\\mu},\\quad K := \\frac{\\operatorname{tr}\\boldsymbol{\\sigma}/3}{\\operatorname{tr}\\boldsymbol{\\varepsilon}} = \\lambda + \\frac{2}{3}\\mu",
+          "operation_label": "対角和による体積ひずみと体積弾性率の抽出",
+          "explanation": "等方フックの法則の両辺のトレースを取り、平均垂直応力と体積ひずみの比から体積弾性率 K を得るとともに、単軸状態の体積ひずみを求める。",
+          "used_node_ids": [
+            "phys.cont.el05_isotropic_lame_hooke"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_solve_uniaxial_strains",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{tr}\\boldsymbol{\\sigma} = (3\\lambda + 2\\mu)\\operatorname{tr}\\boldsymbol{\\varepsilon} \\implies \\operatorname{tr}\\boldsymbol{\\varepsilon} = \\frac{\\sigma}{3\\lambda + 2\\mu},\\quad K := \\frac{\\operatorname{tr}\\boldsymbol{\\sigma}/3}{\\operatorname{tr}\\boldsymbol{\\varepsilon}} = \\lambda + \\frac{2}{3}\\mu",
+          "to_latex": "\\varepsilon_{11} = \\frac{(\\lambda + \\mu)\\sigma}{\\mu(3\\lambda + 2\\mu)},\\quad \\varepsilon_{22} = \\varepsilon_{33} = -\\frac{\\lambda\\sigma}{2\\mu(3\\lambda + 2\\mu)}",
+          "operation_label": "軸方向ひずみと横方向ひずみの代数求解",
+          "explanation": "単軸引張条件 \\sigma_{11}=\\sigma, \\sigma_{22}=\\sigma_{33}=0 に \\operatorname{tr}\\boldsymbol{\\varepsilon} = \\sigma/(3\\lambda+2\\mu) を戻し代入し、軸ひずみと横ひずみを求める。",
+          "used_node_ids": [
+            "math.linalg.vs05_unique_coord_steinitz",
+            "phys.cont.el05_isotropic_lame_hooke"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_young_poisson_relations",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varepsilon_{11} = \\frac{(\\lambda + \\mu)\\sigma}{\\mu(3\\lambda + 2\\mu)},\\quad \\varepsilon_{22} = \\varepsilon_{33} = -\\frac{\\lambda\\sigma}{2\\mu(3\\lambda + 2\\mu)}",
+          "to_latex": "E = \\frac{\\mu(3\\lambda + 2\\mu)}{\\lambda + \\mu},\\quad \\nu = \\frac{\\lambda}{2(\\lambda + \\mu)},\\quad K = \\lambda + \\frac{2}{3}\\mu = \\frac{E}{3(1 - 2\\nu)}",
+          "operation_label": "ヤング率およびポアソン比の定義適用と恒等変形",
+          "explanation": "定義 E := \\sigma / \\varepsilon_{11} および \\nu := -\\varepsilon_{22}/\\varepsilon_{11} を代入し、さらに 1 - 2\\nu = \\mu / (\\lambda + \\mu) を用いて K と E, \\nu の関係を示す。",
+          "used_node_ids": [
+            "phys.cont.el05_isotropic_lame_hooke"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.el07_navier_cauchy_from_hooke",
+      "target_node_id": "phys.cont.el07_navier_cauchy_equation",
+      "route_kind": "deductive",
+      "title": "コーシーの運動方程式への等方フックの法則代入によるナビエ＝コーシー方程式の導出",
+      "premise_node_ids": [
+        "phys.cont.el03_cauchy_eom_symmetry",
+        "phys.cont.el05_isotropic_lame_hooke",
+        "phys.cont.el01_displacement_strain_tensor"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m33_gradient_definition",
+        "math.vec.vc01_divergence_def",
+        "math.vec.vc09_vector_laplacian_identity"
+      ],
+      "assumptions": [
+        "弾性体は空間的に均質であり、ラメ定数 \\lambda, \\mu は位置によらず一定である",
+        "変位場 \\mathbf{u}(\\mathbf{x}, t) はC2級であり偏微分の順序交換が可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho\\frac{\\partial^2 u_i}{\\partial t^2} = \\sum_{j=1}^{3}\\frac{\\partial \\sigma_{ij}}{\\partial x_j} + f_i,\\quad \\sigma_{ij} = \\lambda(\\nabla\\cdot\\mathbf{u})\\delta_{ij} + \\mu\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right)",
+          "to_latex": "\\rho\\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\mu\\nabla^2\\mathbf{u} + \\mathbf{f}",
+          "operation_label": "応力発散の展開とベクトル微分演算子へのまとめ",
+          "explanation": "均質等方フックの法則をコーシーの運動方程式へ代入して空間偏微分を展開し、勾配とベクトルラプラシアンによってナビエ＝コーシー方程式を導く。",
+          "used_node_ids": [
+            "math.vec.m33_gradient_definition",
+            "math.vec.vc01_divergence_def",
+            "math.vec.vc09_vector_laplacian_identity",
+            "phys.cont.el01_displacement_strain_tensor",
+            "phys.cont.el03_cauchy_eom_symmetry",
+            "phys.cont.el05_isotropic_lame_hooke"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_expand_stress_divergence",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{\\partial^2 u_i}{\\partial t^2} = \\sum_{j=1}^{3}\\frac{\\partial \\sigma_{ij}}{\\partial x_j} + f_i,\\quad \\sigma_{ij} = \\lambda(\\nabla\\cdot\\mathbf{u})\\delta_{ij} + \\mu\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right)",
+          "to_latex": "\\rho\\frac{\\partial^2 u_i}{\\partial t^2} = \\lambda\\frac{\\partial}{\\partial x_i}(\\nabla\\cdot\\mathbf{u}) + \\mu\\sum_{j=1}^{3}\\frac{\\partial^2 u_i}{\\partial x_j^2} + \\mu\\frac{\\partial}{\\partial x_i}\\left(\\sum_{j=1}^{3}\\frac{\\partial u_j}{\\partial x_j}\\right) + f_i",
+          "operation_label": "応力成分の偏微分展開と微分順序交換",
+          "explanation": "定数である \\lambda, \\mu を微分の外に出し、2階偏微分の交換性 \\partial_j\\partial_i u_j = \\partial_i\\partial_j u_j を用いて発散成分を括り出す。",
+          "used_node_ids": [
+            "phys.cont.el01_displacement_strain_tensor",
+            "phys.cont.el03_cauchy_eom_symmetry",
+            "phys.cont.el05_isotropic_lame_hooke"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_vector_form",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{\\partial^2 u_i}{\\partial t^2} = \\lambda\\frac{\\partial}{\\partial x_i}(\\nabla\\cdot\\mathbf{u}) + \\mu\\sum_{j=1}^{3}\\frac{\\partial^2 u_i}{\\partial x_j^2} + \\mu\\frac{\\partial}{\\partial x_i}\\left(\\sum_{j=1}^{3}\\frac{\\partial u_j}{\\partial x_j}\\right) + f_i",
+          "to_latex": "\\rho\\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\mu\\nabla^2\\mathbf{u} + \\mathbf{f}",
+          "operation_label": "ベクトル微分演算子表記への統合",
+          "explanation": "発散の勾配項を (\\lambda + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) にまとめ、成分ごとのラプラシアン和をベクトルラプラシアン \\nabla^2\\mathbf{u} としてベクトル表示を得る。",
+          "used_node_ids": [
+            "math.vec.m33_gradient_definition",
+            "math.vec.vc01_divergence_def",
+            "math.vec.vc09_vector_laplacian_identity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.el08_p_wave_from_navier_cauchy",
+      "target_node_id": "phys.cont.el08_p_wave_equation",
+      "route_kind": "deductive",
+      "title": "ナビエ＝コーシー方程式の発散操作によるP波（縦波）波動方程式の導出",
+      "premise_node_ids": [
+        "phys.cont.el07_navier_cauchy_equation",
+        "math.pde.pde03_classical_pde_definitions"
+      ],
+      "required_math_node_ids": [
+        "math.vec.vc01_divergence_def",
+        "math.vec.vc08_div_curl_zero",
+        "math.vec.vc09_vector_laplacian_identity",
+        "phys.cont.el01_displacement_strain_tensor",
+        "phys.cont.el06_youngs_modulus_poisson_ratio"
+      ],
+      "assumptions": [
+        "体積力は零（\\mathbf{f} = \\mathbf{0}）であり、媒質は均質（\\rho, \\lambda, \\mu = \\text{const.}）である",
+        "変位場 \\mathbf{u} は空間3階・時間2階連続微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho\\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\mu\\nabla^2\\mathbf{u}",
+          "to_latex": "\\frac{\\partial^2 \\theta}{\\partial t^2} = c_P^2 \\nabla^2 \\theta,\\qquad c_P = \\sqrt{\\frac{\\lambda + 2\\mu}{\\rho}} = \\sqrt{\\frac{E(1-\\nu)}{\\rho(1+\\nu)(1-2\\nu)}}",
+          "operation_label": "発散の適用とP波速度の同定",
+          "explanation": "外力のないナビエ＝コーシー方程式の両辺の発散を取り、体積ひずみ \\theta = \\nabla\\cdot\\mathbf{u} に対するスカラー波動方程式とP波音速を導出する。",
+          "used_node_ids": [
+            "math.pde.pde03_classical_pde_definitions",
+            "math.vec.vc01_divergence_def",
+            "phys.cont.el01_displacement_strain_tensor",
+            "phys.cont.el06_youngs_modulus_poisson_ratio",
+            "phys.cont.el07_navier_cauchy_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_take_divergence",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\mu\\nabla^2\\mathbf{u}",
+          "to_latex": "\\rho\\frac{\\partial^2 (\\nabla\\cdot\\mathbf{u})}{\\partial t^2} = (\\lambda + \\mu)\\nabla\\cdot\\big(\\nabla(\\nabla\\cdot\\mathbf{u})\\big) + \\mu\\nabla\\cdot(\\nabla^2\\mathbf{u})",
+          "operation_label": "運動方程式両辺への発散演算子の作用",
+          "explanation": "空間発散と時間2階偏微分の交換性を利用し、ナビエ＝コーシー方程式の各項に \\nabla\\cdot を作用させる。",
+          "used_node_ids": [
+            "math.vec.vc01_divergence_def",
+            "phys.cont.el07_navier_cauchy_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_simplify_laplacian",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{\\partial^2 (\\nabla\\cdot\\mathbf{u})}{\\partial t^2} = (\\lambda + \\mu)\\nabla\\cdot\\big(\\nabla(\\nabla\\cdot\\mathbf{u})\\big) + \\mu\\nabla\\cdot(\\nabla^2\\mathbf{u})",
+          "to_latex": "\\rho\\frac{\\partial^2 \\theta}{\\partial t^2} = (\\lambda + 2\\mu)\\nabla^2\\theta",
+          "operation_label": "ベクトル恒等式によるスカラーラプラシアンへの簡約",
+          "explanation": "\\nabla\\cdot(\\nabla^2\\mathbf{u}) = \\nabla^2(\\nabla\\cdot\\mathbf{u})（あるいは回転の回転恒等式と回転の発散零）および \\theta = \\nabla\\cdot\\mathbf{u} を用いて右辺をまとめる。",
+          "used_node_ids": [
+            "math.vec.vc08_div_curl_zero",
+            "math.vec.vc09_vector_laplacian_identity",
+            "phys.cont.el01_displacement_strain_tensor"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_identify_p_wave_speed",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{\\partial^2 \\theta}{\\partial t^2} = (\\lambda + 2\\mu)\\nabla^2\\theta",
+          "to_latex": "\\frac{\\partial^2 \\theta}{\\partial t^2} = c_P^2 \\nabla^2 \\theta,\\qquad c_P = \\sqrt{\\frac{\\lambda + 2\\mu}{\\rho}} = \\sqrt{\\frac{E(1-\\nu)}{\\rho(1+\\nu)(1-2\\nu)}}",
+          "operation_label": "標準波動方程式との比較および弾性率変換",
+          "explanation": "両辺を \\rho で割り古典波動方程式と比較してP波速度 c_P を得た後、ラメ定数とヤング率・ポアソン比の関係式を代入する。",
+          "used_node_ids": [
+            "math.pde.pde03_classical_pde_definitions",
+            "phys.cont.el06_youngs_modulus_poisson_ratio"
+          ],
+          "sympy_check_hint": "sp.simplify((E*nu/((1+nu)*(1-2*nu)) + 2*E/(2*(1+nu))) / (E*(1-nu)/((1+nu)*(1-2*nu))))"
+        }
+      ]
+    },
+    {
+      "id": "drv.el09_s_wave_from_navier_cauchy",
+      "target_node_id": "phys.cont.el09_s_wave_equation",
+      "route_kind": "deductive",
+      "title": "ナビエ＝コーシー方程式の回転操作によるS波（横波）波動方程式の導出",
+      "premise_node_ids": [
+        "phys.cont.el07_navier_cauchy_equation",
+        "math.pde.pde03_classical_pde_definitions"
+      ],
+      "required_math_node_ids": [
+        "math.vec.vc02_curl_def",
+        "math.vec.vc07_curl_grad_zero",
+        "math.vec.vc09_vector_laplacian_identity",
+        "phys.cont.el06_youngs_modulus_poisson_ratio"
+      ],
+      "assumptions": [
+        "体積力は零（\\mathbf{f} = \\mathbf{0}）であり、媒質は均質（\\rho, \\lambda, \\mu = \\text{const.}）である",
+        "変位場 \\mathbf{u} は空間3階・時間2階連続微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho\\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\mu\\nabla^2\\mathbf{u}",
+          "to_latex": "\\frac{\\partial^2 \\boldsymbol{\\omega}}{\\partial t^2} = c_S^2 \\nabla^2 \\boldsymbol{\\omega},\\qquad c_S = \\sqrt{\\frac{\\mu}{\\rho}} = \\sqrt{\\frac{E}{2\\rho(1+\\nu)}}",
+          "operation_label": "回転演算子の適用とS波速度の同定",
+          "explanation": "外力のないナビエ＝コーシー方程式の両辺の回転を取り、勾配の回転が零となる恒等式を用いて回転ベクトル \\boldsymbol{\\omega} = \\frac{1}{2}\\nabla\\times\\mathbf{u} の波動方程式とS波音速を導出する。",
+          "used_node_ids": [
+            "math.pde.pde03_classical_pde_definitions",
+            "math.vec.vc02_curl_def",
+            "math.vec.vc07_curl_grad_zero",
+            "phys.cont.el06_youngs_modulus_poisson_ratio",
+            "phys.cont.el07_navier_cauchy_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_take_curl",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\mu\\nabla^2\\mathbf{u}",
+          "to_latex": "\\rho\\frac{\\partial^2 (\\nabla\\times\\mathbf{u})}{\\partial t^2} = (\\lambda + \\mu)\\nabla\\times\\big(\\nabla(\\nabla\\cdot\\mathbf{u})\\big) + \\mu\\nabla\\times(\\nabla^2\\mathbf{u})",
+          "operation_label": "運動方程式両辺への回転演算子の作用",
+          "explanation": "空間回転と時間2階偏微分の交換性を利用し、ナビエ＝コーシー方程式の各項に \\nabla\\times を作用させる。",
+          "used_node_ids": [
+            "math.vec.vc02_curl_def",
+            "phys.cont.el07_navier_cauchy_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_vanish_grad_curl",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{\\partial^2 (\\nabla\\times\\mathbf{u})}{\\partial t^2} = (\\lambda + \\mu)\\nabla\\times\\big(\\nabla(\\nabla\\cdot\\mathbf{u})\\big) + \\mu\\nabla\\times(\\nabla^2\\mathbf{u})",
+          "to_latex": "\\rho\\frac{\\partial^2 \\boldsymbol{\\omega}}{\\partial t^2} = \\mu\\nabla^2\\boldsymbol{\\omega}",
+          "operation_label": "勾配の回転零恒等式とラプラシアン交換",
+          "explanation": "恒等式 \\nabla\\times(\\nabla f) = \\mathbf{0} により第1項を消去し、\\nabla\\times(\\nabla^2\\mathbf{u}) = \\nabla^2(\\nabla\\times\\mathbf{u}) と回転ベクトル \\boldsymbol{\\omega} := \\frac{1}{2}\\nabla\\times\\mathbf{u} を用いて簡約する。",
+          "used_node_ids": [
+            "math.vec.vc07_curl_grad_zero",
+            "math.vec.vc09_vector_laplacian_identity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_identify_s_wave_speed",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho\\frac{\\partial^2 \\boldsymbol{\\omega}}{\\partial t^2} = \\mu\\nabla^2\\boldsymbol{\\omega}",
+          "to_latex": "\\frac{\\partial^2 \\boldsymbol{\\omega}}{\\partial t^2} = c_S^2 \\nabla^2 \\boldsymbol{\\omega},\\qquad c_S = \\sqrt{\\frac{\\mu}{\\rho}} = \\sqrt{\\frac{E}{2\\rho(1+\\nu)}}",
+          "operation_label": "標準波動方程式との比較および剛性率変換",
+          "explanation": "両辺を \\rho で割り古典波動方程式と比較してS波速度 c_S を得た後、剛性率とヤング率・ポアソン比の関係 \\mu = E / [2(1+\\nu)] を代入する。",
+          "used_node_ids": [
+            "math.pde.pde03_classical_pde_definitions",
+            "phys.cont.el06_youngs_modulus_poisson_ratio"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,898 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.mech.rigid_body_euler",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "剛体力学：慣性テンソル・主軸変換とオイラーの運動方程式",
+    "language": "ja",
+    "description": "剛体の角運動量と慣性テンソル、平行軸の定理、対称対角化による慣性主軸、オイラー角とオイラーの剛体運動方程式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.mech.rb01_rigid_body_velocity_field",
+      "short_code": "RB01",
+      "kind": "definition",
+      "title": "剛体の拘束条件と速度場の表示（オイラー＝シャールの公式）",
+      "summary": "質点間距離が不変である剛体において、任意の質点の位置は代表点の並進とSO(3)回転で表され、速度場は並進速度と角速度ベクトルの外積の和として一意に記述される。",
+      "canonical_latex": "\\|\\mathbf{r}_i - \\mathbf{r}_j\\| = \\text{const.} \\implies \\mathbf{v}_i(t) = \\mathbf{V}_O(t) + \\boldsymbol{\\omega}(t)\\times\\big(\\mathbf{r}_i(t) - \\mathbf{R}_O(t)\\big)",
+      "aliases_latex": [
+        "\\mathbf{v}_P = \\mathbf{v}_O + \\boldsymbol{\\omega}\\times\\mathbf{r}_{OP}"
+      ],
+      "keywords": [
+        "剛体",
+        "速度場",
+        "角速度ベクトル",
+        "オイラー・シャールの定理"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "rigid_body"
+      ]
+    },
+    {
+      "id": "phys.mech.rb02_inertia_tensor_def",
+      "short_code": "RB02",
+      "kind": "definition",
+      "title": "剛体の角運動量と慣性テンソルの定義",
+      "summary": "一点の周りで回転する剛体の全角運動量は角速度ベクトルに対する線形写像として表され、その表現行列が慣性テンソル（2階対称テンソル）として定義される。",
+      "canonical_latex": "\\mathbf{L} = \\mathbf{I}\\boldsymbol{\\omega},\\quad I_{jk} := \\sum_i m_i\\big(r_i^2\\delta_{jk} - x_{i,j}x_{i,k}\\big) = \\int_V \\rho(\\mathbf{r})\\big(r^2\\delta_{jk} - x_j x_k\\big)\\,dV",
+      "aliases_latex": [
+        "\\mathbf{I} = \\int_V \\rho(\\mathbf{r})\\big((\\mathbf{r}\\cdot\\mathbf{r})I_3 - \\mathbf{r}\\mathbf{r}^\\top\\big)\\,dV"
+      ],
+      "keywords": [
+        "角運動量",
+        "慣性テンソル",
+        "慣性モーメント",
+        "慣性乗積"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "rigid_body"
+      ]
+    },
+    {
+      "id": "phys.mech.rb03_rotational_kinetic_energy",
+      "short_code": "RB03",
+      "kind": "theorem_formula",
+      "title": "剛体の回転運動エネルギーと慣性テンソルの2次形式",
+      "summary": "固定点または重心周りの剛体の回転運動エネルギーは、角速度ベクトルと角運動量の内積の半分、すなわち慣性テンソルを核とする正定値（半正定値）2次形式で表される。",
+      "canonical_latex": "T_{\\mathrm{rot}} = \\frac{1}{2}\\boldsymbol{\\omega}\\cdot\\mathbf{L} = \\frac{1}{2}\\boldsymbol{\\omega}^\\top \\mathbf{I}\\boldsymbol{\\omega} = \\frac{1}{2}\\sum_{j,k=1}^{3} I_{jk}\\omega_j\\omega_k",
+      "aliases_latex": [
+        "K_{\\mathrm{rot}} = \\frac{1}{2}\\boldsymbol{\\omega}^\\top \\mathbf{I}\\boldsymbol{\\omega}"
+      ],
+      "keywords": [
+        "回転運動エネルギー",
+        "2次形式",
+        "慣性テンソル"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "rigid_body"
+      ]
+    },
+    {
+      "id": "phys.mech.rb04_parallel_axis_theorem",
+      "short_code": "RB04",
+      "kind": "theorem_formula",
+      "title": "平行軸の定理（シュタイナーの定理）",
+      "summary": "重心を通る軸に関する慣性テンソルに対し、平行移動した点に関する慣性テンソルは、全質量を重心に集中させた質点の慣性テンソルを加えたものに等しい。",
+      "canonical_latex": "I_{jk}(\\mathbf{a}) = I_{jk}^{\\mathrm{cm}} + M\\big(a^2\\delta_{jk} - a_j a_k\\big)",
+      "aliases_latex": [
+        "I = I_{\\mathrm{cm}} + M d^2"
+      ],
+      "keywords": [
+        "平行軸の定理",
+        "シュタイナーの定理",
+        "重心",
+        "慣性テンソル"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "rigid_body"
+      ]
+    },
+    {
+      "id": "phys.mech.rb05_principal_axes_inertia",
+      "short_code": "RB05",
+      "kind": "theorem_formula",
+      "title": "慣性テンソルの直交対角化と慣性主軸・主慣性モーメント",
+      "summary": "慣性テンソルは実対称半正定値行列であるためスペクトル定理により直交対角化可能であり、固有ベクトルが互いに直交する慣性主軸、固有値が非負の主慣性モーメントを与える。",
+      "canonical_latex": "\\exists Q\\in\\mathrm{SO}(3):\\; Q^\\top \\mathbf{I} Q = \\operatorname{diag}(I_1, I_2, I_3)\\;(I_k \\ge 0),\\quad T_{\\mathrm{rot}} = \\frac{1}{2}\\sum_{k=1}^{3} I_k \\omega_k^2",
+      "aliases_latex": [
+        "\\mathbf{L} = I_1\\omega_1\\mathbf{e}'_1 + I_2\\omega_2\\mathbf{e}'_2 + I_3\\omega_3\\mathbf{e}'_3"
+      ],
+      "keywords": [
+        "慣性主軸",
+        "主慣性モーメント",
+        "直交対角化",
+        "スペクトル定理"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "rigid_body"
+      ]
+    },
+    {
+      "id": "phys.mech.rb06_rigid_body_torque_eom",
+      "short_code": "RB06",
+      "kind": "theorem_formula",
+      "title": "剛体の回転運動方程式（全角運動量と外力トルク）",
+      "summary": "固定点または重心を原点にとるとき、作用・反作用の法則により内力によるトルクは互いに打ち消し合い、剛体の全角運動量の時間変化率は外力による合トルクに等しい。",
+      "canonical_latex": "\\frac{d\\mathbf{L}}{dt} = \\mathbf{N}^{\\mathrm{ext}} = \\sum_i \\mathbf{r}_i\\times\\mathbf{F}_i^{\\mathrm{ext}}",
+      "aliases_latex": [
+        "\\dot{\\mathbf{L}} = \\boldsymbol{\\tau}_{\\mathrm{ext}}"
+      ],
+      "keywords": [
+        "回転運動方程式",
+        "外力トルク",
+        "角運動量",
+        "内力相殺"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "rigid_body"
+      ]
+    },
+    {
+      "id": "phys.mech.rb07_euler_equations_rigid_body",
+      "short_code": "RB07",
+      "kind": "theorem_formula",
+      "title": "オイラーの剛体運動方程式（主軸固定座標系）",
+      "summary": "剛体に固定された慣性主軸座標系で輸送定理を適用することにより、慣性テンソルが定数対角行列となる形で剛体回転の非線形連立微分方程式が得られる。",
+      "canonical_latex": "I_1\\dot{\\omega}_1 - (I_2 - I_3)\\omega_2\\omega_3 = N_1,\\quad I_2\\dot{\\omega}_2 - (I_3 - I_1)\\omega_3\\omega_1 = N_2,\\quad I_3\\dot{\\omega}_3 - (I_1 - I_2)\\omega_1\\omega_2 = N_3",
+      "aliases_latex": [
+        "\\mathbf{I}\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}\\boldsymbol{\\omega}) = \\mathbf{N}"
+      ],
+      "keywords": [
+        "オイラーの運動方程式",
+        "剛体回転",
+        "主軸座標系",
+        "ジャイロ項"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "rigid_body"
+      ]
+    },
+    {
+      "id": "phys.mech.rb08_euler_angles_rotation",
+      "short_code": "RB08",
+      "kind": "definition",
+      "title": "オイラー角（ZXZ規約）による回転行列のパラメータ表示",
+      "summary": "3次元特殊直交群 SO(3) の元を、歳差角 φ・章動角 θ・自転角 ψ の3つの独立な角度を用いた3回の連続基本回転の積として表現する。",
+      "canonical_latex": "R(\\phi,\\theta,\\psi) = R_z(\\phi)R_x(\\theta)R_z(\\psi) = \\begin{pmatrix} \\cos\\phi\\cos\\psi - \\sin\\phi\\cos\\theta\\sin\\psi & -\\cos\\phi\\sin\\psi - \\sin\\phi\\cos\\theta\\cos\\psi & \\sin\\phi\\sin\\theta \\\\ \\sin\\phi\\cos\\psi + \\cos\\phi\\cos\\theta\\sin\\psi & -\\sin\\phi\\sin\\psi + \\cos\\phi\\cos\\theta\\cos\\psi & -\\cos\\phi\\sin\\theta \\\\ \\sin\\theta\\sin\\psi & \\sin\\theta\\cos\\psi & \\cos\\theta \\end{pmatrix}",
+      "aliases_latex": [
+        "R(\\phi,\\theta,\\psi) = \\exp(\\phi J_3)\\exp(\\theta J_1)\\exp(\\psi J_3)"
+      ],
+      "keywords": [
+        "オイラー角",
+        "回転行列",
+        "SO(3)",
+        "姿勢表現"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "rigid_body"
+      ]
+    },
+    {
+      "id": "phys.mech.rb09_euler_kinematic_equations",
+      "short_code": "RB09",
+      "kind": "theorem_formula",
+      "title": "オイラーの運動学方程式（角速度とオイラー角速度の関係）",
+      "summary": "オイラー角による回転行列 R(φ,θ,ψ) の時間微分から導かれる、本体固定座標系における角速度ベクトル成分とオイラー角の時間微分の線形関係式。",
+      "canonical_latex": "\\omega_1 = \\dot{\\phi}\\sin\\theta\\sin\\psi + \\dot{\\theta}\\cos\\psi,\\quad \\omega_2 = \\dot{\\phi}\\sin\\theta\\cos\\psi - \\dot{\\theta}\\sin\\psi,\\quad \\omega_3 = \\dot{\\phi}\\cos\\theta + \\dot{\\psi}",
+      "aliases_latex": [
+        "\\boldsymbol{\\omega}_{\\mathrm{body}} = \\dot{\\phi}\\,R_z(-\\psi)R_x(-\\theta)\\mathbf{e}_3 + \\dot{\\theta}\\,R_z(-\\psi)\\mathbf{e}_1 + \\dot{\\psi}\\mathbf{e}_3"
+      ],
+      "keywords": [
+        "オイラーの運動学方程式",
+        "角速度",
+        "オイラー角",
+        "ジンバルロック"
+      ],
+      "domain_tags": [
+        "physics",
+        "mechanics",
+        "rigid_body"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_rb01_velocity_field",
+      "target_node_id": "phys.mech.rb01_rigid_body_velocity_field",
+      "route_kind": "deductive",
+      "title": "剛体固定基底とポアソン公式からの速度場導出",
+      "premise_node_ids": [
+        "phys.mech.nif01_rotating_basis_kinematics",
+        "phys.mech.nif03_rotating_velocity_acceleration",
+        "math.alg.gr04_so3_su2_matrix_groups_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "剛体内の任意の2点間のユークリッド距離は時間によらず一定である",
+        "剛体に固定された正規直交基底の姿勢は SO(3) 値関数 R(t) で記述される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}_i(t) = \\mathbf{R}_O(t) + R(t)\\mathbf{r}_{i,0},\\quad R(t)\\in\\mathrm{SO}(3)",
+          "to_latex": "\\mathbf{v}_i(t) = \\mathbf{V}_O(t) + \\boldsymbol{\\omega}(t)\\times\\mathbf{r}_i'(t),\\quad \\mathbf{r}_i'(t) = \\mathbf{r}_i(t) - \\mathbf{R}_O(t)",
+          "operation_label": "剛体変位の時間微分",
+          "explanation": "剛体固定基底における各点の座標が定数であることを用いて時間微分し、ポアソンの公式を適用することで並進速度と回転速度の和を得る。",
+          "used_node_ids": [
+            "math.alg.gr04_so3_su2_matrix_groups_def",
+            "phys.mech.nif01_rotating_basis_kinematics",
+            "phys.mech.nif03_rotating_velocity_acceleration"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_position_decomp",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_i(t) = \\mathbf{R}_O(t) + R(t)\\mathbf{r}_{i,0},\\quad R(t)\\in\\mathrm{SO}(3)",
+          "to_latex": "\\mathbf{r}_i(t) = \\mathbf{R}_O(t) + \\sum_{a=1}^{3} x'_{i,a}\\mathbf{e}'_a(t),\\quad \\dot{x}'_{i,a} = 0",
+          "operation_label": "物体固定基底による展開",
+          "explanation": "剛体の回転行列 R(t) の列ベクトルを物体固定正規直交基底 e'_a(t) とおくと、相対位置ベクトルの物体座標成分 x'_{i,a} は時間不変となる。",
+          "used_node_ids": [
+            "math.alg.gr04_so3_su2_matrix_groups_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_time_derivative",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_i(t) = \\mathbf{R}_O(t) + \\sum_{a=1}^{3} x'_{i,a}\\mathbf{e}'_a(t),\\quad \\dot{x}'_{i,a} = 0",
+          "to_latex": "\\mathbf{v}_i(t) = \\dot{\\mathbf{R}}_O(t) + \\sum_{a=1}^{3} x'_{i,a}\\dot{\\mathbf{e}}'_a(t)",
+          "operation_label": "線形性と定数成分の時間微分",
+          "explanation": "x'_{i,a} が時間に対して定数であるため、時間微分は代表点の位置と基底ベクトルのみに作用する。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_poisson_apply",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v}_i(t) = \\dot{\\mathbf{R}}_O(t) + \\sum_{a=1}^{3} x'_{i,a}\\dot{\\mathbf{e}}'_a(t)",
+          "to_latex": "\\mathbf{v}_i(t) = \\mathbf{V}_O(t) + \\boldsymbol{\\omega}(t)\\times\\mathbf{r}_i'(t),\\quad \\mathbf{r}_i'(t) = \\mathbf{r}_i(t) - \\mathbf{R}_O(t)",
+          "operation_label": "ポアソンの運動学公式の適用",
+          "explanation": "回転基底の時間微分公式 e'_a_dot = ω × e'_a を代入し、外積の線形性でまとめることで剛体の速度場公式を得る。",
+          "used_node_ids": [
+            "phys.mech.nif01_rotating_basis_kinematics",
+            "phys.mech.nif03_rotating_velocity_acceleration"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rb02_inertia_tensor",
+      "target_node_id": "phys.mech.rb02_inertia_tensor_def",
+      "route_kind": "deductive",
+      "title": "角運動量への速度場代入と慣性テンソルの導出",
+      "premise_node_ids": [
+        "phys.mech.p10_angular_momentum_torque",
+        "phys.mech.rb01_rigid_body_velocity_field"
+      ],
+      "required_math_node_ids": [
+        "math.calc.mi01_multiple_integral_def",
+        "math.vec.m29_cross_product_levi_civita_def"
+      ],
+      "assumptions": [
+        "剛体の1点（固定点または重心）を原点とし V_O = 0 とする",
+        "連続体極限では微小体積要素 dV に質量 dm = ρ(r) dV が分布する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{L} = \\sum_{i} m_i \\mathbf{r}_i \\times \\mathbf{v}_i,\\quad \\mathbf{v}_i = \\boldsymbol{\\omega}\\times\\mathbf{r}_i",
+          "to_latex": "\\mathbf{L} = \\mathbf{I}\\boldsymbol{\\omega},\\quad I_{jk} = \\sum_i m_i\\big(r_i^2\\delta_{jk} - x_{i,j}x_{i,k}\\big) = \\int_V \\rho(\\mathbf{r})\\big(r^2\\delta_{jk} - x_j x_k\\big)\\,dV",
+          "operation_label": "三重外積の展開と線形変換への整理",
+          "explanation": "角運動量の定義に純粋回転の速度場を代入してベクトル三重積を展開し、ω に対する係数行列として慣性テンソルを抽出する。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "math.vec.m29_cross_product_levi_civita_def",
+            "phys.mech.p10_angular_momentum_torque",
+            "phys.mech.rb01_rigid_body_velocity_field"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_vel",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{L} = \\sum_{i} m_i \\mathbf{r}_i \\times \\mathbf{v}_i,\\quad \\mathbf{v}_i = \\boldsymbol{\\omega}\\times\\mathbf{r}_i",
+          "to_latex": "\\mathbf{L} = \\sum_{i} m_i \\mathbf{r}_i \\times (\\boldsymbol{\\omega}\\times\\mathbf{r}_i)",
+          "operation_label": "回転速度場の代入",
+          "explanation": "全質点の角運動量の和に v_i = ω × r_i を代入する。",
+          "used_node_ids": [
+            "phys.mech.p10_angular_momentum_torque",
+            "phys.mech.rb01_rigid_body_velocity_field"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_bac_cab",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{L} = \\sum_{i} m_i \\mathbf{r}_i \\times (\\boldsymbol{\\omega}\\times\\mathbf{r}_i)",
+          "to_latex": "L_j = \\sum_{k=1}^{3}\\left[\\sum_i m_i\\big(r_i^2\\delta_{jk} - x_{i,j}x_{i,k}\\big)\\right]\\omega_k",
+          "operation_label": "ベクトル三重積恒等式の適用",
+          "explanation": "エディントンのイプシロン縮約（BAC-CAB則） r × (ω × r) = r^2 ω - (r · ω) r により各成分を行列積の形に書き換える。",
+          "used_node_ids": [
+            "math.vec.m29_cross_product_levi_civita_def"
+          ],
+          "sympy_check_hint": "a.cross(w.cross(a)) - (a.dot(a)*w - a.dot(w)*a)"
+        },
+        {
+          "step_id": "s2_continuum_limit",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L_j = \\sum_{k=1}^{3}\\left[\\sum_i m_i\\big(r_i^2\\delta_{jk} - x_{i,j}x_{i,k}\\big)\\right]\\omega_k",
+          "to_latex": "\\mathbf{L} = \\mathbf{I}\\boldsymbol{\\omega},\\quad I_{jk} = \\sum_i m_i\\big(r_i^2\\delta_{jk} - x_{i,j}x_{i,k}\\big) = \\int_V \\rho(\\mathbf{r})\\big(r^2\\delta_{jk} - x_j x_k\\big)\\,dV",
+          "operation_label": "慣性テンソル定義と連続体極限",
+          "explanation": "離散和の係数を慣性テンソル成分 I_{jk} と定義し、連続的な質量密度分布に対して体積重積分で表す。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rb03_rotational_kinetic",
+      "target_node_id": "phys.mech.rb03_rotational_kinetic_energy",
+      "route_kind": "deductive",
+      "title": "剛体の運動エネルギーの2次形式表現の導出",
+      "premise_node_ids": [
+        "phys.mech.rb01_rigid_body_velocity_field",
+        "phys.mech.rb02_inertia_tensor_def"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m14_scalar_triple_product",
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "assumptions": [
+        "固定点または重心周りの純粋回転（V_O = 0）を扱う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T_{\\mathrm{rot}} = \\frac{1}{2}\\sum_i m_i \\|\\mathbf{v}_i\\|^2,\\quad \\mathbf{v}_i = \\boldsymbol{\\omega}\\times\\mathbf{r}_i",
+          "to_latex": "T_{\\mathrm{rot}} = \\frac{1}{2}\\boldsymbol{\\omega}\\cdot\\mathbf{L} = \\frac{1}{2}\\boldsymbol{\\omega}^\\top \\mathbf{I}\\boldsymbol{\\omega}",
+          "operation_label": "スカラー三重積巡回性による2次形式化",
+          "explanation": "各質点の運動エネルギーの総和に速度場公式を代入し、スカラー三重積の巡回対称性を用いて角運動量と角速度の内積へ変形する。",
+          "used_node_ids": [
+            "math.vec.m14_scalar_triple_product",
+            "math.vec.m28_dot_product_component_def",
+            "phys.mech.rb01_rigid_body_velocity_field",
+            "phys.mech.rb02_inertia_tensor_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_expand_norm",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\mathrm{rot}} = \\frac{1}{2}\\sum_i m_i \\|\\mathbf{v}_i\\|^2,\\quad \\mathbf{v}_i = \\boldsymbol{\\omega}\\times\\mathbf{r}_i",
+          "to_latex": "T_{\\mathrm{rot}} = \\frac{1}{2}\\sum_i m_i (\\boldsymbol{\\omega}\\times\\mathbf{r}_i)\\cdot(\\boldsymbol{\\omega}\\times\\mathbf{r}_i)",
+          "operation_label": "ノルム2乗の内積展開",
+          "explanation": "各質点の速度2乗を内積 (ω × r_i) · (ω × r_i) として展開する。",
+          "used_node_ids": [
+            "math.vec.m28_dot_product_component_def",
+            "phys.mech.rb01_rigid_body_velocity_field"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_triple_perm",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\mathrm{rot}} = \\frac{1}{2}\\sum_i m_i (\\boldsymbol{\\omega}\\times\\mathbf{r}_i)\\cdot(\\boldsymbol{\\omega}\\times\\mathbf{r}_i)",
+          "to_latex": "T_{\\mathrm{rot}} = \\frac{1}{2}\\boldsymbol{\\omega}\\cdot\\sum_i m_i \\mathbf{r}_i\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}_i)",
+          "operation_label": "スカラー三重積の巡回置換",
+          "explanation": "A · (B × C) = B · (C × A) を (ω × r_i) · (ω × r_i) に適用して ω を和の外へ括り出す。",
+          "used_node_ids": [
+            "math.vec.m14_scalar_triple_product"
+          ],
+          "sympy_check_hint": "(w.cross(r)).dot(w.cross(r)) - w.dot(r.cross(w.cross(r)))"
+        },
+        {
+          "step_id": "s2_insert_inertia",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\mathrm{rot}} = \\frac{1}{2}\\boldsymbol{\\omega}\\cdot\\sum_i m_i \\mathbf{r}_i\\times(\\boldsymbol{\\omega}\\times\\mathbf{r}_i)",
+          "to_latex": "T_{\\mathrm{rot}} = \\frac{1}{2}\\boldsymbol{\\omega}\\cdot\\mathbf{L} = \\frac{1}{2}\\boldsymbol{\\omega}^\\top \\mathbf{I}\\boldsymbol{\\omega}",
+          "operation_label": "慣性テンソル表示の代入",
+          "explanation": "和の部分が角運動量 L = Iω に一致することから回転運動エネルギーの2次形式表示を得る。",
+          "used_node_ids": [
+            "phys.mech.rb02_inertia_tensor_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rb04_parallel_axis",
+      "target_node_id": "phys.mech.rb04_parallel_axis_theorem",
+      "route_kind": "deductive",
+      "title": "重心座標系からの平行移動による平行軸の定理の導出",
+      "premise_node_ids": [
+        "phys.mech.rb02_inertia_tensor_def"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m28_dot_product_component_def"
+      ],
+      "assumptions": [
+        "r_i は重心からの相対位置ベクトルであり ∑ m_i r_i = 0 を満たす",
+        "M = ∑ m_i は剛体の全質量である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_{jk}(\\mathbf{a}) = \\sum_i m_i\\big(\\|\\mathbf{r}_i + \\mathbf{a}\\|^2\\delta_{jk} - (x_{i,j} + a_j)(x_{i,k} + a_k)\\big),\\quad \\sum_i m_i \\mathbf{r}_i = \\mathbf{0}",
+          "to_latex": "I_{jk}(\\mathbf{a}) = I_{jk}^{\\mathrm{cm}} + M\\big(a^2\\delta_{jk} - a_j a_k\\big)",
+          "operation_label": "位置ベクトルの平行移動展開",
+          "explanation": "重心からの相対位置にオフセットベクトル a を加えた座標を慣性テンソル定義に代入し、重心条件による交差項の消滅を用いて定理を導く。",
+          "used_node_ids": [
+            "math.vec.m28_dot_product_component_def",
+            "phys.mech.rb02_inertia_tensor_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_expand_terms",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{jk}(\\mathbf{a}) = \\sum_i m_i\\big(\\|\\mathbf{r}_i + \\mathbf{a}\\|^2\\delta_{jk} - (x_{i,j} + a_j)(x_{i,k} + a_k)\\big),\\quad \\sum_i m_i \\mathbf{r}_i = \\mathbf{0}",
+          "to_latex": "I_{jk}(\\mathbf{a}) = \\sum_i m_i\\big[(r_i^2 + 2\\mathbf{r}_i\\cdot\\mathbf{a} + a^2)\\delta_{jk} - (x_{i,j}x_{i,k} + x_{i,j}a_k + a_j x_{i,k} + a_j a_k)\\big]",
+          "operation_label": "内積と成分積の展開",
+          "explanation": "ノルムの2乗と座標積をそれぞれ展開する。",
+          "used_node_ids": [
+            "math.vec.m28_dot_product_component_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_vanish_cross_terms",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{jk}(\\mathbf{a}) = \\sum_i m_i\\big[(r_i^2 + 2\\mathbf{r}_i\\cdot\\mathbf{a} + a^2)\\delta_{jk} - (x_{i,j}x_{i,k} + x_{i,j}a_k + a_j x_{i,k} + a_j a_k)\\big]",
+          "to_latex": "I_{jk}(\\mathbf{a}) = \\sum_i m_i(r_i^2\\delta_{jk} - x_{i,j}x_{i,k}) + \\left(\\sum_i m_i\\right)(a^2\\delta_{jk} - a_j a_k)",
+          "operation_label": "重心条件による1次交差項の消去",
+          "explanation": "r_i について線形の項はすべて ∑ m_i r_i = 0 により零となる。",
+          "used_node_ids": [
+            "phys.mech.rb02_inertia_tensor_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_identify_cm_mass",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{jk}(\\mathbf{a}) = \\sum_i m_i(r_i^2\\delta_{jk} - x_{i,j}x_{i,k}) + \\left(\\sum_i m_i\\right)(a^2\\delta_{jk} - a_j a_k)",
+          "to_latex": "I_{jk}(\\mathbf{a}) = I_{jk}^{\\mathrm{cm}} + M\\big(a^2\\delta_{jk} - a_j a_k\\big)",
+          "operation_label": "重心慣性テンソルと全質量の同定",
+          "explanation": "第1項を重心周りの慣性テンソル I^{cm}、第2項の質量和を全質量 M とおいて平行軸の定理を得る。",
+          "used_node_ids": [
+            "phys.mech.rb02_inertia_tensor_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rb05_principal_axes",
+      "target_node_id": "phys.mech.rb05_principal_axes_inertia",
+      "route_kind": "deductive",
+      "title": "スペクトル定理による慣性主軸と主慣性モーメントの導出",
+      "premise_node_ids": [
+        "phys.mech.rb02_inertia_tensor_def",
+        "phys.mech.rb03_rotational_kinetic_energy"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.eig07_spectral_theorem",
+        "math.linalg.eig08_quadratic_form_principal_axis"
+      ],
+      "assumptions": [
+        "質量密度 ρ(r) ≥ 0 である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_{jk} = \\int_V \\rho(\\mathbf{r})(r^2\\delta_{jk} - x_j x_k)\\,dV,\\quad T_{\\mathrm{rot}} = \\frac{1}{2}\\boldsymbol{\\omega}^\\top \\mathbf{I}\\boldsymbol{\\omega}",
+          "to_latex": "\\exists Q\\in\\mathrm{SO}(3):\\; Q^\\top \\mathbf{I} Q = \\operatorname{diag}(I_1, I_2, I_3)\\;(I_k \\ge 0),\\quad T_{\\mathrm{rot}} = \\frac{1}{2}\\sum_{k=1}^{3} I_k \\omega_k^2",
+          "operation_label": "実対称行列の直交対角化と主軸変換",
+          "explanation": "慣性テンソルが実対称かつ半正定値であることを示し、スペクトル定理と主軸定理により直交対角化および回転運動エネルギーの標準形を導く。",
+          "used_node_ids": [
+            "math.linalg.eig07_spectral_theorem",
+            "math.linalg.eig08_quadratic_form_principal_axis",
+            "phys.mech.rb02_inertia_tensor_def",
+            "phys.mech.rb03_rotational_kinetic_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_symmetry_psd",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{jk} = \\int_V \\rho(\\mathbf{r})(r^2\\delta_{jk} - x_j x_k)\\,dV,\\quad T_{\\mathrm{rot}} = \\frac{1}{2}\\boldsymbol{\\omega}^\\top \\mathbf{I}\\boldsymbol{\\omega}",
+          "to_latex": "I_{jk} = I_{kj} \\land \\forall\\boldsymbol{\\omega}\\in\\mathbb{R}^3,\\; \\boldsymbol{\\omega}^\\top\\mathbf{I}\\boldsymbol{\\omega} = \\int_V \\rho\\|\\boldsymbol{\\omega}\\times\\mathbf{r}\\|^2\\,dV \\ge 0",
+          "operation_label": "実対称性と半正定値性の確認",
+          "explanation": "定義式が添字 j,k について対称であり、また任意の角速度に対して 2次形式が非負であることから実対称半正定値性が従う。",
+          "used_node_ids": [
+            "phys.mech.rb02_inertia_tensor_def",
+            "phys.mech.rb03_rotational_kinetic_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_spectral_diag",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{jk} = I_{kj} \\land \\forall\\boldsymbol{\\omega}\\in\\mathbb{R}^3,\\; \\boldsymbol{\\omega}^\\top\\mathbf{I}\\boldsymbol{\\omega} = \\int_V \\rho\\|\\boldsymbol{\\omega}\\times\\mathbf{r}\\|^2\\,dV \\ge 0",
+          "to_latex": "\\exists Q\\in\\mathrm{SO}(3):\\; Q^\\top \\mathbf{I} Q = \\operatorname{diag}(I_1, I_2, I_3),\\quad I_k \\ge 0\\;(k=1,2,3)",
+          "operation_label": "スペクトル定理の適用",
+          "explanation": "実対称行列のスペクトル定理により右手系直交行列 Q ∈ SO(3) で対角化でき、半正定値性から固有値 I_k ≥ 0 が保証される。",
+          "used_node_ids": [
+            "math.linalg.eig07_spectral_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_principal_kinetic",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists Q\\in\\mathrm{SO}(3):\\; Q^\\top \\mathbf{I} Q = \\operatorname{diag}(I_1, I_2, I_3),\\quad I_k \\ge 0\\;(k=1,2,3)",
+          "to_latex": "\\exists Q\\in\\mathrm{SO}(3):\\; Q^\\top \\mathbf{I} Q = \\operatorname{diag}(I_1, I_2, I_3)\\;(I_k \\ge 0),\\quad T_{\\mathrm{rot}} = \\frac{1}{2}\\sum_{k=1}^{3} I_k \\omega_k^2",
+          "operation_label": "2次形式の主軸標準化",
+          "explanation": "主軸座標系での角速度成分 ω_k を用いると、主軸定理により回転運動エネルギーが交差項のない平方和となる。",
+          "used_node_ids": [
+            "math.linalg.eig08_quadratic_form_principal_axis"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rb06_torque_eom",
+      "target_node_id": "phys.mech.rb06_rigid_body_torque_eom",
+      "route_kind": "deductive",
+      "title": "作用・反作用の法則による剛体全角運動量方程式の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "phys.mech.p03_action_reaction",
+        "phys.mech.p10_angular_momentum_torque"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "原点は慣性系における固定点または剛体の重心である",
+        "質点間の内力 F_{ij} は2質点を結ぶ直線方向を向く中心力型（強い作用・反作用の法則）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{L} = \\sum_i \\mathbf{r}_i\\times\\mathbf{p}_i,\\quad \\dot{\\mathbf{p}}_i = \\mathbf{F}_i^{\\mathrm{ext}} + \\sum_{j\\neq i}\\mathbf{F}_{ij}",
+          "to_latex": "\\frac{d\\mathbf{L}}{dt} = \\mathbf{N}^{\\mathrm{ext}} = \\sum_i \\mathbf{r}_i\\times\\mathbf{F}_i^{\\mathrm{ext}}",
+          "operation_label": "全角運動量の時間微分と内力トルク相殺",
+          "explanation": "多粒子系の全角運動量を時間微分し、ニュートンの第2法則と強い作用・反作用の法則によって内力のモーメント和が消えることを示す。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p02_newton_second_law",
+            "phys.mech.p03_action_reaction",
+            "phys.mech.p10_angular_momentum_torque"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_diff_L",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{L} = \\sum_i \\mathbf{r}_i\\times\\mathbf{p}_i,\\quad \\dot{\\mathbf{p}}_i = \\mathbf{F}_i^{\\mathrm{ext}} + \\sum_{j\\neq i}\\mathbf{F}_{ij}",
+          "to_latex": "\\frac{d\\mathbf{L}}{dt} = \\sum_i \\mathbf{r}_i\\times\\mathbf{F}_i^{\\mathrm{ext}} + \\sum_{i < j}(\\mathbf{r}_i - \\mathbf{r}_j)\\times\\mathbf{F}_{ij}",
+          "operation_label": "外積のライプニッツ則とペア和への再編",
+          "explanation": "v_i × p_i = 0 であり、F_{ji} = -F_{ij} を用いて内力トルクを各ペア (i, j) についてまとめる。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p03_action_reaction",
+            "phys.mech.p10_angular_momentum_torque"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_internal_torque_cancel",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\mathbf{L}}{dt} = \\sum_i \\mathbf{r}_i\\times\\mathbf{F}_i^{\\mathrm{ext}} + \\sum_{i < j}(\\mathbf{r}_i - \\mathbf{r}_j)\\times\\mathbf{F}_{ij}",
+          "to_latex": "\\frac{d\\mathbf{L}}{dt} = \\mathbf{N}^{\\mathrm{ext}} = \\sum_i \\mathbf{r}_i\\times\\mathbf{F}_i^{\\mathrm{ext}}",
+          "operation_label": "中心力型内力の外積零",
+          "explanation": "F_{ij} が相対位置ベクトル (r_i - r_j) に平行であるため (r_i - r_j) × F_{ij} = 0 となり、外力トルクのみが残る。",
+          "used_node_ids": [
+            "phys.mech.p03_action_reaction"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rb07_euler_equations",
+      "target_node_id": "phys.mech.rb07_euler_equations_rigid_body",
+      "route_kind": "deductive",
+      "title": "輸送定理と慣性主軸によるオイラーの運動方程式の導出",
+      "premise_node_ids": [
+        "phys.mech.nif02_vector_time_derivative_operator",
+        "phys.mech.rb05_principal_axes_inertia",
+        "phys.mech.rb06_rigid_body_torque_eom"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m29_cross_product_levi_civita_def"
+      ],
+      "assumptions": [
+        "物体に固定された慣性主軸基底 {e'_1, e'_2, e'_3} を用いるため主慣性モーメント I_k は時間定数である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\left(\\frac{d\\mathbf{L}}{dt}\\right)_{\\mathrm{in}} = \\mathbf{N},\\quad \\mathbf{L} = \\sum_{k=1}^{3} I_k \\omega_k \\mathbf{e}'_k",
+          "to_latex": "I_1\\dot{\\omega}_1 - (I_2 - I_3)\\omega_2\\omega_3 = N_1,\\quad I_2\\dot{\\omega}_2 - (I_3 - I_1)\\omega_3\\omega_1 = N_2,\\quad I_3\\dot{\\omega}_3 - (I_1 - I_2)\\omega_1\\omega_2 = N_3",
+          "operation_label": "回転座標系輸送定理の適用と成分展開",
+          "explanation": "慣性系での角運動量の時間微分を輸送定理により物体固定主軸系での微分と ω × L の和に変換し、主軸成分ごとに書き下す。",
+          "used_node_ids": [
+            "math.vec.m29_cross_product_levi_civita_def",
+            "phys.mech.nif02_vector_time_derivative_operator",
+            "phys.mech.rb05_principal_axes_inertia",
+            "phys.mech.rb06_rigid_body_torque_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_transport_theorem",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{d\\mathbf{L}}{dt}\\right)_{\\mathrm{in}} = \\mathbf{N},\\quad \\mathbf{L} = \\sum_{k=1}^{3} I_k \\omega_k \\mathbf{e}'_k",
+          "to_latex": "\\left(\\frac{d\\mathbf{L}}{dt}\\right)_{\\mathrm{body}} + \\boldsymbol{\\omega}\\times\\mathbf{L} = \\mathbf{N}",
+          "operation_label": "回転座標系における時間微分の変換",
+          "explanation": "輸送定理 (dL/dt)_in = (dL/dt)_body + ω × L を剛体の回転運動方程式に適用する。",
+          "used_node_ids": [
+            "phys.mech.nif02_vector_time_derivative_operator",
+            "phys.mech.rb06_rigid_body_torque_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_body_components",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{d\\mathbf{L}}{dt}\\right)_{\\mathrm{body}} + \\boldsymbol{\\omega}\\times\\mathbf{L} = \\mathbf{N}",
+          "to_latex": "\\sum_{k=1}^{3} I_k\\dot{\\omega}_k\\mathbf{e}'_k + \\boldsymbol{\\omega}\\times\\left(\\sum_{k=1}^{3} I_k\\omega_k\\mathbf{e}'_k\\right) = \\sum_{k=1}^{3} N_k\\mathbf{e}'_k",
+          "operation_label": "主軸固定基底での表現",
+          "explanation": "物体固定主軸系では I_k が定数であるため、(dL/dt)_body の成分は I_k ω_k_dot となる。",
+          "used_node_ids": [
+            "phys.mech.rb05_principal_axes_inertia"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_cross_expand",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k=1}^{3} I_k\\dot{\\omega}_k\\mathbf{e}'_k + \\boldsymbol{\\omega}\\times\\left(\\sum_{k=1}^{3} I_k\\omega_k\\mathbf{e}'_k\\right) = \\sum_{k=1}^{3} N_k\\mathbf{e}'_k",
+          "to_latex": "I_1\\dot{\\omega}_1 - (I_2 - I_3)\\omega_2\\omega_3 = N_1,\\quad I_2\\dot{\\omega}_2 - (I_3 - I_1)\\omega_3\\omega_1 = N_2,\\quad I_3\\dot{\\omega}_3 - (I_1 - I_2)\\omega_1\\omega_2 = N_3",
+          "operation_label": "外積成分の展開",
+          "explanation": "外積 ω × L の各主軸成分 (ω_2 L_3 - ω_3 L_2) 等を展開することでオイラーの剛体運動方程式を得る。",
+          "used_node_ids": [
+            "math.vec.m29_cross_product_levi_civita_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rb08_euler_angles",
+      "target_node_id": "phys.mech.rb08_euler_angles_rotation",
+      "route_kind": "deductive",
+      "title": "ロドリゲスの公式の合成によるZXZオイラー角回転行列の導出",
+      "premise_node_ids": [
+        "math.alg.gr04_so3_su2_matrix_groups_def",
+        "math.alg.gr07_rodrigues_rotation_exp_map"
+      ],
+      "required_math_node_ids": [
+        "math.alg.gr06_so3_generators_commutation"
+      ],
+      "assumptions": [
+        "ZXZ規約のオイラー角 (φ, θ, ψ) により順次z軸・新x軸・新z軸周りに回転する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "R\\in\\mathrm{SO}(3),\\quad R_z(\\alpha) = \\exp(\\alpha J_3),\\quad R_x(\\beta) = \\exp(\\beta J_1)",
+          "to_latex": "R(\\phi,\\theta,\\psi) = R_z(\\phi)R_x(\\theta)R_z(\\psi) = \\begin{pmatrix} \\cos\\phi\\cos\\psi - \\sin\\phi\\cos\\theta\\sin\\psi & -\\cos\\phi\\sin\\psi - \\sin\\phi\\cos\\theta\\cos\\psi & \\sin\\phi\\sin\\theta \\\\ \\sin\\phi\\cos\\psi + \\cos\\phi\\cos\\theta\\sin\\psi & -\\sin\\phi\\sin\\psi + \\cos\\phi\\cos\\theta\\cos\\psi & -\\cos\\phi\\sin\\theta \\\\ \\sin\\theta\\sin\\psi & \\sin\\theta\\cos\\psi & \\cos\\theta \\end{pmatrix}",
+          "operation_label": "基本回転行列の3重積による合成",
+          "explanation": "z軸およびx軸周りの基本回転行列をロドリゲスの回転公式から構成し、ZXZ順に積をとることでオイラー角回転行列を得る。",
+          "used_node_ids": [
+            "math.alg.gr04_so3_su2_matrix_groups_def",
+            "math.alg.gr06_so3_generators_commutation",
+            "math.alg.gr07_rodrigues_rotation_exp_map"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_rodrigues_axes",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R\\in\\mathrm{SO}(3),\\quad R_z(\\alpha) = \\exp(\\alpha J_3),\\quad R_x(\\beta) = \\exp(\\beta J_1)",
+          "to_latex": "R_z(\\alpha) = \\begin{pmatrix} \\cos\\alpha & -\\sin\\alpha & 0 \\\\ \\sin\\alpha & \\cos\\alpha & 0 \\\\ 0 & 0 & 1 \\end{pmatrix},\\quad R_x(\\beta) = \\begin{pmatrix} 1 & 0 & 0 \\\\ 0 & \\cos\\beta & -\\sin\\beta \\\\ 0 & \\sin\\beta & \\cos\\beta \\end{pmatrix}",
+          "operation_label": "座標軸周りのロドリゲス公式の評価",
+          "explanation": "so(3) の生成子 J_3, J_1 に対してロドリゲスの公式 I_3 + sin(α)J + (1 - cos(α))J^2 を計算し、基本回転行列を求める。",
+          "used_node_ids": [
+            "math.alg.gr06_so3_generators_commutation",
+            "math.alg.gr07_rodrigues_rotation_exp_map"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_compose_zxz",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_z(\\alpha) = \\begin{pmatrix} \\cos\\alpha & -\\sin\\alpha & 0 \\\\ \\sin\\alpha & \\cos\\alpha & 0 \\\\ 0 & 0 & 1 \\end{pmatrix},\\quad R_x(\\beta) = \\begin{pmatrix} 1 & 0 & 0 \\\\ 0 & \\cos\\beta & -\\sin\\beta \\\\ 0 & \\sin\\beta & \\cos\\beta \\end{pmatrix}",
+          "to_latex": "R(\\phi,\\theta,\\psi) = R_z(\\phi)R_x(\\theta)R_z(\\psi) = \\begin{pmatrix} \\cos\\phi\\cos\\psi - \\sin\\phi\\cos\\theta\\sin\\psi & -\\cos\\phi\\sin\\psi - \\sin\\phi\\cos\\theta\\cos\\psi & \\sin\\phi\\sin\\theta \\\\ \\sin\\phi\\cos\\psi + \\cos\\phi\\cos\\theta\\sin\\psi & -\\sin\\phi\\sin\\psi + \\cos\\phi\\cos\\theta\\cos\\psi & -\\cos\\phi\\sin\\theta \\\\ \\sin\\theta\\sin\\psi & \\sin\\theta\\cos\\psi & \\cos\\theta \\end{pmatrix}",
+          "operation_label": "行列積の直接計算",
+          "explanation": "SO(3) の群積として R_z(φ) R_x(θ) R_z(ψ) を実行し、9成分の明示表現を得る。",
+          "used_node_ids": [
+            "math.alg.gr04_so3_su2_matrix_groups_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rb09_euler_kinematics",
+      "target_node_id": "phys.mech.rb09_euler_kinematic_equations",
+      "route_kind": "deductive",
+      "title": "SO(3) 随伴作用によるオイラーの運動学方程式の導出",
+      "premise_node_ids": [
+        "phys.mech.rb08_euler_angles_rotation",
+        "math.alg.gr06_so3_generators_commutation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m15_product_rule",
+        "math.calc.m31_trig_derivatives"
+      ],
+      "assumptions": [
+        "オイラー角 φ(t), θ(t), ψ(t) は時間 t に関して微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "R(\\phi,\\theta,\\psi) = R_z(\\phi)R_x(\\theta)R_z(\\psi),\\quad \\Omega_{\\mathrm{body}} = R^\\top \\dot{R} = \\sum_{k=1}^{3} \\omega_k J_k",
+          "to_latex": "\\omega_1 = \\dot{\\phi}\\sin\\theta\\sin\\psi + \\dot{\\theta}\\cos\\psi,\\quad \\omega_2 = \\dot{\\phi}\\sin\\theta\\cos\\psi - \\dot{\\theta}\\sin\\psi,\\quad \\omega_3 = \\dot{\\phi}\\cos\\theta + \\dot{\\psi}",
+          "operation_label": "回転行列の対数微分とリー代数成分比較",
+          "explanation": "回転行列積に積の微分則と連鎖律を適用して R^T R_dot を計算し、SO(3) の随伴作用 M J_k M^T を用いて本体角速度の各成分を求める。",
+          "used_node_ids": [
+            "math.alg.gr06_so3_generators_commutation",
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule",
+            "math.calc.m31_trig_derivatives",
+            "phys.mech.rb08_euler_angles_rotation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_diff_rotation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R(\\phi,\\theta,\\psi) = R_z(\\phi)R_x(\\theta)R_z(\\psi),\\quad \\Omega_{\\mathrm{body}} = R^\\top \\dot{R} = \\sum_{k=1}^{3} \\omega_k J_k",
+          "to_latex": "\\Omega_{\\mathrm{body}} = \\dot{\\phi}\\,R_z(-\\psi)R_x(-\\theta)J_3 R_x(\\theta)R_z(\\psi) + \\dot{\\theta}\\,R_z(-\\psi)J_1 R_z(\\psi) + \\dot{\\psi}J_3",
+          "operation_label": "積の微分法と生成子微分の適用",
+          "explanation": "d/dt R_a(α) = α_dot R_a(α) J_a と R^T = R_z(-ψ)R_x(-θ)R_z(-φ) を用いて R^T R_dot を3項の和に分解する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule",
+            "math.calc.m31_trig_derivatives",
+            "phys.mech.rb08_euler_angles_rotation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_adjoint_action",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Omega_{\\mathrm{body}} = \\dot{\\phi}\\,R_z(-\\psi)R_x(-\\theta)J_3 R_x(\\theta)R_z(\\psi) + \\dot{\\theta}\\,R_z(-\\psi)J_1 R_z(\\psi) + \\dot{\\psi}J_3",
+          "to_latex": "\\boldsymbol{\\omega}_{\\mathrm{body}} = \\dot{\\phi}\\,R_z(-\\psi)R_x(-\\theta)\\mathbf{e}_3 + \\dot{\\theta}\\,R_z(-\\psi)\\mathbf{e}_1 + \\dot{\\psi}\\mathbf{e}_3",
+          "operation_label": "so(3) 随伴作用の軸ベクトル変換",
+          "explanation": "任意の M ∈ SO(3) に対する共役変換 M J_k M^T が回転軸 M e_k に対応する歪対称行列を与えることを利用して角速度ベクトルへ移す。",
+          "used_node_ids": [
+            "math.alg.gr06_so3_generators_commutation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_eval_components",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\boldsymbol{\\omega}_{\\mathrm{body}} = \\dot{\\phi}\\,R_z(-\\psi)R_x(-\\theta)\\mathbf{e}_3 + \\dot{\\theta}\\,R_z(-\\psi)\\mathbf{e}_1 + \\dot{\\psi}\\mathbf{e}_3",
+          "to_latex": "\\omega_1 = \\dot{\\phi}\\sin\\theta\\sin\\psi + \\dot{\\theta}\\cos\\psi,\\quad \\omega_2 = \\dot{\\phi}\\sin\\theta\\cos\\psi - \\dot{\\theta}\\sin\\psi,\\quad \\omega_3 = \\dot{\\phi}\\cos\\theta + \\dot{\\psi}",
+          "operation_label": "基底ベクトルの逆回転成分計算",
+          "explanation": "R_x(-θ)e_3 = (0, sinθ, cosθ)^T に R_z(-ψ) を作用させ、同様に R_z(-ψ)e_1 = (cosψ, -sinψ, 0)^T を加えて成分表示を得る。",
+          "used_node_ids": [
+            "phys.mech.rb08_euler_angles_rotation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
