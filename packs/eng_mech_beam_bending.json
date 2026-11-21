@@ -1,0 +1,734 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.mech.beam_bending",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mechanical_engineering",
+    "title": "材料力学1：軸力・ねじり・梁の曲げモーメントとたわみ微分方程式",
+    "language": "ja",
+    "description": "せん断力図・曲げモーメント図、断面二次モーメントと曲げ応力 σ=My/I、オイラー＝ベルヌーイ梁のたわみ方程式 EI y''''=w(x) を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.beam.n01_continuum_statics_hooke",
+      "short_code": "BM01",
+      "kind": "math_boundary",
+      "title": "連続体の静的釣合条件と線形弾性体のフックの法則",
+      "summary": "静止した連続体・棒要素に対する力とモーメントの静的釣合条件、および等方線形弾性体における垂直応力・せん断応力とひずみの比例関係（フックの法則）。",
+      "canonical_latex": "\\sum \\mathbf{F} = \\mathbf{0},\\quad \\sum \\mathbf{M} = \\mathbf{0},\\quad \\sigma = E\\varepsilon,\\quad \\tau = G\\gamma",
+      "aliases_latex": [
+        "\\sigma_x = E\\varepsilon_x,\\quad \\tau = G\\gamma"
+      ],
+      "keywords": [
+        "静的釣合",
+        "フックの法則",
+        "ヤング率",
+        "横弾性係数",
+        "線形弾性体"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.beam.n02_axial_torsion_stress",
+      "short_code": "BM02",
+      "kind": "theorem_formula",
+      "title": "軸力による垂直応力・伸びと丸棒のねじりせん断応力・ねじり角",
+      "summary": "一様断面の棒に軸力 N が作用するときの垂直応力と軸方向伸び、および円形断面軸にねじりモーメント T が作用するときのせん断応力とねじり角の公式。",
+      "canonical_latex": "\\sigma = \\frac{N}{A},\\quad \\delta = \\frac{NL}{EA},\\quad \\tau = \\frac{Tr}{J},\\quad \\phi = \\frac{TL}{GJ}",
+      "aliases_latex": [
+        "\\tau_{\\max} = \\frac{T R}{J},\\quad J = \\int_A r^2\\,dA"
+      ],
+      "keywords": [
+        "軸力",
+        "垂直応力",
+        "ねじり",
+        "断面二次極モーメント",
+        "ねじり角"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.beam.n03_shear_bending_equilibrium",
+      "short_code": "BM03",
+      "kind": "theorem_formula",
+      "title": "梁のせん断力・曲げモーメントと分布荷重の微分関係（SFD・BMDの基礎）",
+      "summary": "下向き分布荷重 w(x) を受ける梁の微小要素の力とモーメントの釣合から導かれる、せん断力 V(x) と曲げモーメント M(x) の微分関係および積分表現。",
+      "canonical_latex": "\\frac{dV(x)}{dx} = -w(x),\\quad \\frac{dM(x)}{dx} = V(x),\\quad \\frac{d^2 M(x)}{dx^2} = -w(x)",
+      "aliases_latex": [
+        "V(x_2) - V(x_1) = -\\int_{x_1}^{x_2} w(x)\\,dx,\\quad M(x_2) - M(x_1) = \\int_{x_1}^{x_2} V(x)\\,dx"
+      ],
+      "keywords": [
+        "せん断力図",
+        "曲げモーメント図",
+        "SFD",
+        "BMD",
+        "分布荷重"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.beam.n04_second_moment_of_area",
+      "short_code": "BM04",
+      "kind": "definition",
+      "title": "中立軸条件（断面一次モーメント零）と断面二次モーメントの定義",
+      "summary": "純曲げを受ける梁断面において軸力が零となる中立軸の条件（断面一次モーメントが零）と、曲げ剛性を支配する断面二次モーメント I の定義および長方形断面の計算式。",
+      "canonical_latex": "Q_z = \\int_A y\\,dA = 0,\\quad I = \\int_A y^2\\,dA,\\quad I_{\\text{rect}} = \\frac{bh^3}{12}",
+      "aliases_latex": [
+        "I_z = \\iint_A y^2\\,dy\\,dz"
+      ],
+      "keywords": [
+        "断面二次モーメント",
+        "断面一次モーメント",
+        "中立軸",
+        "長方形断面"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.beam.n05_euler_bernoulli_kinematics",
+      "short_code": "BM05",
+      "kind": "definition",
+      "title": "オイラー＝ベルヌーイの仮定（平面保持の仮定）と曲げひずみ・曲率",
+      "summary": "変形前後で梁の横断面が中立軸に垂直な平面を保つという幾何学的仮定と、微小たわみ y(x)（下向き正）に対する曲率および軸方向ひずみの線形分布。",
+      "canonical_latex": "\\varepsilon_x(x,y) = \\kappa(x)\\,y,\\quad \\kappa(x) = \\frac{1}{\\rho(x)} \\approx -\\frac{d^2 y(x)}{dx^2}",
+      "aliases_latex": [
+        "\\varepsilon_x = \\frac{y}{\\rho} = -y\\frac{d^2 y}{dx^2}"
+      ],
+      "keywords": [
+        "オイラー＝ベルヌーイの仮定",
+        "平面保持の仮定",
+        "曲率",
+        "曲げひずみ"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.beam.n06_bending_stress_formula",
+      "short_code": "BM06",
+      "kind": "theorem_formula",
+      "title": "曲げ応力の公式（ナビエの式）と曲げモーメント・曲率関係",
+      "summary": "フックの法則と平面保持の仮定を断面上で積分して得られる、曲げモーメントと曲率の関係 M = EIκ および断面内の曲げ応力分布 σ = My/I。",
+      "canonical_latex": "M(x) = E I \\kappa(x),\\quad \\sigma(x,y) = \\frac{M(x)\\,y}{I}",
+      "aliases_latex": [
+        "\\sigma = \\frac{M y}{I},\\quad \\frac{1}{\\rho} = \\frac{M}{EI}"
+      ],
+      "keywords": [
+        "曲げ応力",
+        "ナビエの式",
+        "曲げ剛性",
+        "EI"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.beam.n07_beam_deflection_ode",
+      "short_code": "BM07",
+      "kind": "theorem_formula",
+      "title": "オイラー＝ベルヌーイ梁のたわみ微分方程式",
+      "summary": "曲げモーメントと曲率の関係式および梁の釣合微分方程式を結合して得られる、2階・3階・4階のたわみ支配微分方程式 EI y'''' = w(x)。",
+      "canonical_latex": "EI\\frac{d^2 y}{dx^2} = -M(x),\\quad EI\\frac{d^3 y}{dx^3} = -V(x),\\quad EI\\frac{d^4 y}{dx^4} = w(x)",
+      "aliases_latex": [
+        "EI y''''(x) = w(x)"
+      ],
+      "keywords": [
+        "たわみ微分方程式",
+        "オイラー＝ベルヌーイ梁",
+        "4階微分方程式",
+        "弾性曲線式"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.beam.n08_cantilever_simply_supported_solutions",
+      "short_code": "BM08",
+      "kind": "theorem_formula",
+      "title": "代表的境界条件（片持ち梁・単純支持梁）のたわみ公式",
+      "summary": "たわみ微分方程式を境界条件のもとで積分して得られる、先端集中荷重 P を受ける片持ち梁および等分布荷重 w0 を受ける単純支持梁の最大たわみ公式。",
+      "canonical_latex": "y_{\\max,\\text{cantilever}} = \\frac{P L^3}{3 E I},\\quad y_{\\max,\\text{simply}} = \\frac{5 w_0 L^4}{384 E I}",
+      "aliases_latex": [
+        "y(L) = \\frac{PL^3}{3EI},\\quad y(L/2) = \\frac{5 w_0 L^4}{384 EI}"
+      ],
+      "keywords": [
+        "片持ち梁",
+        "単純支持梁",
+        "最大たわみ",
+        "境界条件"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.beam.d01_axial_torsion",
+      "target_node_id": "eng.beam.n02_axial_torsion_stress",
+      "route_kind": "deductive",
+      "title": "静的釣合とフックの法則からの軸力・ねじり公式の導出",
+      "premise_node_ids": [
+        "eng.beam.n01_continuum_statics_hooke"
+      ],
+      "required_math_node_ids": [
+        "math.calc.mi01_multiple_integral_def"
+      ],
+      "assumptions": [
+        "一様断面および等方線形弾性体を仮定する",
+        "ねじりでは円形断面において平面保持と半径方向の直線保持が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum \\mathbf{F} = \\mathbf{0},\\; \\sum \\mathbf{M} = \\mathbf{0},\\; \\sigma = E\\varepsilon,\\; \\tau = G\\gamma",
+          "to_latex": "\\sigma = \\frac{N}{A},\\quad \\delta = \\frac{NL}{EA},\\quad \\tau = \\frac{Tr}{J},\\quad \\phi = \\frac{TL}{GJ}",
+          "operation_label": "断面積分による応力・変形公式の導出",
+          "explanation": "一様ひずみ・線形ねじりひずみ分布とフックの法則を断面積分し、軸力 N とトルク T の釣合条件を適用して応力と変形量を求める。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma = E\\varepsilon,\\quad \\varepsilon = \\frac{\\delta}{L},\\quad N = \\int_A \\sigma\\,dA",
+          "to_latex": "N = \\sigma A \\implies \\sigma = \\frac{N}{A},\\quad \\delta = \\frac{NL}{EA}",
+          "operation_label": "軸力の断面積分と伸びの導出",
+          "explanation": "一様垂直応力分布のもとで断面全体にわたる合力が軸力 N に等しいことから垂直応力と伸びを求める。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "N = \\sigma A \\implies \\sigma = \\frac{N}{A},\\quad \\delta = \\frac{NL}{EA}",
+          "to_latex": "\\gamma = \\frac{r\\phi}{L},\\quad \\tau = G\\gamma = G\\frac{r\\phi}{L},\\quad T = \\int_A r\\tau\\,dA",
+          "operation_label": "円形断面ねじりの幾何学とトルク積分定式化",
+          "explanation": "ねじり角 φ によるせん断ひずみの半径比例関係とフックの法則をせん断応力に代入し、トルクの積分表式を立てる。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\gamma = \\frac{r\\phi}{L},\\quad \\tau = G\\gamma = G\\frac{r\\phi}{L},\\quad T = \\int_A r\\tau\\,dA",
+          "to_latex": "\\sigma = \\frac{N}{A},\\quad \\delta = \\frac{NL}{EA},\\quad \\tau = \\frac{Tr}{J},\\quad \\phi = \\frac{TL}{GJ}",
+          "operation_label": "断面二次極モーメント J の導入と統合",
+          "explanation": "断面二次極モーメント J = ∫_A r^2 dA を用いて T = GJφ/L を解き、せん断応力とねじり角の公式を得る。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.beam.d02_shear_bending_diff",
+      "target_node_id": "eng.beam.n03_shear_bending_equilibrium",
+      "route_kind": "deductive",
+      "title": "梁の微小要素の静的釣合からのせん断力・曲げモーメント微分関係の導出",
+      "premise_node_ids": [
+        "eng.beam.n01_continuum_statics_hooke"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m20_derivative_definition"
+      ],
+      "assumptions": [
+        "下向き分布荷重 w(x) に対して、左断面で上向き・右断面で下向きのせん断力 V(x) と下に凸の曲げモーメント M(x) を正とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum F_y = 0,\\quad \\sum M_z = 0",
+          "to_latex": "\\frac{dV(x)}{dx} = -w(x),\\quad \\frac{dM(x)}{dx} = V(x),\\quad \\frac{d^2 M(x)}{dx^2} = -w(x)",
+          "operation_label": "微小要素 dx の釣合と極限操作",
+          "explanation": "長さ dx の梁要素における鉛直方向の力の釣合とモーメントの釣合を立て、dx → 0 の極限をとることで微分関係を得る。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(x) - V(x+dx) - w(x)\\,dx = 0",
+          "to_latex": "\\frac{V(x+dx) - V(x)}{dx} = -w(x) \\implies \\frac{dV(x)}{dx} = -w(x)",
+          "operation_label": "鉛直方向の力の釣合と微分定義の適用",
+          "explanation": "微小要素の上向き合力を零とおき、dx で割って dx → 0 の極限をとることで dV/dx = -w(x) を導く。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{V(x+dx) - V(x)}{dx} = -w(x) \\implies \\frac{dV(x)}{dx} = -w(x)",
+          "to_latex": "M(x) + V(x)\\,dx - M(x+dx) - \\frac{1}{2}w(x)(dx)^2 = 0",
+          "operation_label": "右断面まわりのモーメント釣合式の立式",
+          "explanation": "右断面まわりの時計回りモーメントの総和が零である条件を記述する。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M(x) + V(x)\\,dx - M(x+dx) - \\frac{1}{2}w(x)(dx)^2 = 0",
+          "to_latex": "\\frac{dV(x)}{dx} = -w(x),\\quad \\frac{dM(x)}{dx} = V(x),\\quad \\frac{d^2 M(x)}{dx^2} = -w(x)",
+          "operation_label": "高次微小項の消去と2階微分関係の統合",
+          "explanation": "dx で割り dx → 0 の極限をとって dM/dx = V(x) を得て、さらに x で微分して d^2M/dx^2 = -w(x) を導く。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.beam.d03_second_moment_area",
+      "target_node_id": "eng.beam.n04_second_moment_of_area",
+      "route_kind": "deductive",
+      "title": "純曲げの軸力零条件による中立軸と断面二次モーメントの導出",
+      "premise_node_ids": [
+        "eng.beam.n01_continuum_statics_hooke"
+      ],
+      "required_math_node_ids": [
+        "math.calc.mi01_multiple_integral_def",
+        "math.calc.mi02_fubini_theorem"
+      ],
+      "assumptions": [
+        "純曲げ状態では断面上の軸方向合力が零（N = 0）であり、ひずみは中立軸からの距離 y に比例する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "N = \\int_A \\sigma\\,dA = 0,\\quad \\sigma = E\\kappa y",
+          "to_latex": "Q_z = \\int_A y\\,dA = 0,\\quad I = \\int_A y^2\\,dA,\\quad I_{\\text{rect}} = \\frac{bh^3}{12}",
+          "operation_label": "純曲げ条件からの図心一致と長方形断面二次モーメントの積分",
+          "explanation": "軸力零の釣合条件から断面一次モーメント零の中立軸条件を導き、断面二次モーメントの定義および長方形断面の積分値を求める。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "math.calc.mi01_multiple_integral_def",
+            "math.calc.mi02_fubini_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "N = \\int_A \\sigma\\,dA = 0,\\quad \\sigma = E\\kappa y",
+          "to_latex": "E\\kappa \\int_A y\\,dA = 0 \\implies Q_z = \\int_A y\\,dA = 0",
+          "operation_label": "軸方向合力の零条件からの中立軸条件導出",
+          "explanation": "Eκ ≠ 0 の一般の曲げにおいて、軸力 N = 0 から断面一次モーメント Q_z = 0（中立軸が図心を通ること）が導かれる。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E\\kappa \\int_A y\\,dA = 0 \\implies Q_z = \\int_A y\\,dA = 0",
+          "to_latex": "I := \\int_A y^2\\,dA,\\quad I_{\\text{rect}} = \\int_{-b/2}^{b/2}\\int_{-h/2}^{h/2} y^2\\,dy\\,dz",
+          "operation_label": "断面二次モーメントの定義と長方形断面への累次積分設定",
+          "explanation": "曲げに対する断面形状の抵抗を表す断面二次モーメント I を定義し、幅 b・高さ h の長方形断面にフビニの定理を適用する。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "math.calc.mi02_fubini_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I := \\int_A y^2\\,dA,\\quad I_{\\text{rect}} = \\int_{-b/2}^{b/2}\\int_{-h/2}^{h/2} y^2\\,dy\\,dz",
+          "to_latex": "Q_z = \\int_A y\\,dA = 0,\\quad I = \\int_A y^2\\,dA,\\quad I_{\\text{rect}} = \\frac{bh^3}{12}",
+          "operation_label": "長方形断面の定積分評価",
+          "explanation": "y について [-h/2, h/2]、z について [-b/2, b/2] で積分し、I_rect = bh^3/12 を得る。",
+          "used_node_ids": [
+            "math.calc.mi02_fubini_theorem"
+          ],
+          "sympy_check_hint": "integrate(y**2, (y, -h/2, h/2), (z, -b/2, b/2)) - b*h**3/12"
+        }
+      ]
+    },
+    {
+      "id": "eng.beam.d04_eb_kinematics",
+      "target_node_id": "eng.beam.n05_euler_bernoulli_kinematics",
+      "route_kind": "deductive",
+      "title": "平面保持の仮定と微小変形近似による曲げひずみ・曲率の導出",
+      "premise_node_ids": [
+        "eng.beam.n01_continuum_statics_hooke"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m20_derivative_definition",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "assumptions": [
+        "変形前後で横断面は平面を保ち中立軸に垂直である",
+        "たわみ角 dy/dx は 1 に比べて十分小さい（|y'| << 1）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "ds_0 = \\rho\\,d\\theta,\\quad ds = (\\rho + y)\\,d\\theta,\\quad \\kappa = \\frac{-y''}{(1 + y'^2)^{3/2}}",
+          "to_latex": "\\varepsilon_x(x,y) = \\kappa(x)\\,y,\\quad \\kappa(x) = \\frac{1}{\\rho(x)} \\approx -\\frac{d^2 y(x)}{dx^2}",
+          "operation_label": "弧長変化によるひずみ表現と小傾斜近似",
+          "explanation": "曲率半径 ρ の円弧変形における線素伸びからひずみ ε_x = y/ρ を求め、たわみ曲線の曲率式に微小傾斜近似 |y'| << 1 を適用する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "ds_0 = \\rho\\,d\\theta,\\quad ds = (\\rho + y)\\,d\\theta",
+          "to_latex": "\\varepsilon_x = \\frac{ds - ds_0}{ds_0} = \\frac{y}{\\rho} = \\kappa(x)\\,y",
+          "operation_label": "中立面からの距離 y における軸方向ひずみの導出",
+          "explanation": "平面保持の仮定のもとで、中立面（y = 0）より距離 y にある繊維の伸び率から ε_x = κy を得る。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varepsilon_x = \\frac{ds - ds_0}{ds_0} = \\frac{y}{\\rho} = \\kappa(x)\\,y",
+          "to_latex": "\\kappa(x) = \\frac{-y''(x)}{\\big(1 + (y'(x))^2\\big)^{3/2}} = -y''(x)\\left(1 - \\frac{3}{2}(y'(x))^2 + \\mathcal{O}(y'^4)\\right)",
+          "operation_label": "厳密曲率式へのテイラー漸近展開の適用",
+          "explanation": "下向き正のたわみ y(x) に対する下に凸の曲率公式を |y'| << 1 のもとで展開する。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\kappa(x) = \\frac{-y''(x)}{\\big(1 + (y'(x))^2\\big)^{3/2}} = -y''(x)\\left(1 - \\frac{3}{2}(y'(x))^2 + \\mathcal{O}(y'^4)\\right)",
+          "to_latex": "\\varepsilon_x(x,y) = \\kappa(x)\\,y,\\quad \\kappa(x) = \\frac{1}{\\rho(x)} \\approx -\\frac{d^2 y(x)}{dx^2}",
+          "operation_label": "1次微小近似による曲率公式の確定",
+          "explanation": "(y')^2 以上の高次項を無視して κ ≈ -d^2y/dx^2 を得る。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.beam.d05_bending_stress",
+      "target_node_id": "eng.beam.n06_bending_stress_formula",
+      "route_kind": "deductive",
+      "title": "曲げモーメントの断面積分によるナビエの曲げ応力式の導出",
+      "premise_node_ids": [
+        "eng.beam.n01_continuum_statics_hooke",
+        "eng.beam.n04_second_moment_of_area",
+        "eng.beam.n05_euler_bernoulli_kinematics"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "ヤング率 E は断面上で一様である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma = E\\varepsilon_x,\\quad \\varepsilon_x = \\kappa y,\\quad M = \\int_A y\\sigma\\,dA",
+          "to_latex": "M(x) = E I \\kappa(x),\\quad \\sigma(x,y) = \\frac{M(x)\\,y}{I}",
+          "operation_label": "曲げモーメントの断面積分と曲率の消去",
+          "explanation": "フックの法則と曲げひずみを曲げモーメントの定義積分 M = ∫_A yσ dA に代入し、断面二次モーメント I を用いて M = EIκ と σ = My/I を導く。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "eng.beam.n04_second_moment_of_area",
+            "eng.beam.n05_euler_bernoulli_kinematics",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma = E\\varepsilon_x,\\quad \\varepsilon_x = \\kappa(x)\\,y",
+          "to_latex": "\\sigma(x,y) = E\\kappa(x)\\,y,\\quad M(x) = \\int_A y\\big(E\\kappa(x)\\,y\\big)\\,dA",
+          "operation_label": "応力分布の曲げモーメント積分への代入",
+          "explanation": "平面保持のひずみとフックの法則から得られる線形応力分布をモーメント合力の式に代入する。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "eng.beam.n05_euler_bernoulli_kinematics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma(x,y) = E\\kappa(x)\\,y,\\quad M(x) = \\int_A y\\big(E\\kappa(x)\\,y\\big)\\,dA",
+          "to_latex": "M(x) = E\\kappa(x)\\int_A y^2\\,dA = E I \\kappa(x)",
+          "operation_label": "積分の線形性による定数括り出しと断面二次モーメントの適用",
+          "explanation": "積分の線形性により Eκ(x) を積分外に出し、断面二次モーメント I = ∫_A y^2 dA を用いて M = EIκ を得る。",
+          "used_node_ids": [
+            "eng.beam.n04_second_moment_of_area",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M(x) = E\\kappa(x)\\int_A y^2\\,dA = E I \\kappa(x)",
+          "to_latex": "M(x) = E I \\kappa(x),\\quad \\sigma(x,y) = \\frac{M(x)\\,y}{I}",
+          "operation_label": "Eκ(x) の消去による曲げ応力公式の導出",
+          "explanation": "Eκ(x) = M(x)/I を σ(x,y) = Eκ(x)y に代入し、曲げ応力公式 σ = My/I を得る。",
+          "used_node_ids": [
+            "eng.beam.n04_second_moment_of_area"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.beam.d06_beam_deflection_ode",
+      "target_node_id": "eng.beam.n07_beam_deflection_ode",
+      "route_kind": "deductive",
+      "title": "曲率・モーメント関係と釣合微分式からのたわみ微分方程式の導出",
+      "premise_node_ids": [
+        "eng.beam.n03_shear_bending_equilibrium",
+        "eng.beam.n05_euler_bernoulli_kinematics",
+        "eng.beam.n06_bending_stress_formula"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "曲げ剛性 EI は x 方向に一様（定数）とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "M(x) = EI\\kappa(x),\\quad \\kappa(x) = -\\frac{d^2 y}{dx^2},\\quad \\frac{d^2 M}{dx^2} = -w(x)",
+          "to_latex": "EI\\frac{d^2 y}{dx^2} = -M(x),\\quad EI\\frac{d^3 y}{dx^3} = -V(x),\\quad EI\\frac{d^4 y}{dx^4} = w(x)",
+          "operation_label": "弾性曲線式と釣合微分方程式の連立・逐次微分",
+          "explanation": "M = EIκ に κ = -y'' を代入して 2階式 EI y'' = -M を得て、さらに dM/dx = V と dV/dx = -w を用いて 2回微分することで EI y'''' = w(x) を導く。",
+          "used_node_ids": [
+            "eng.beam.n03_shear_bending_equilibrium",
+            "eng.beam.n05_euler_bernoulli_kinematics",
+            "eng.beam.n06_bending_stress_formula",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M(x) = EI\\kappa(x),\\quad \\kappa(x) = -\\frac{d^2 y}{dx^2}",
+          "to_latex": "EI\\frac{d^2 y}{dx^2} = -M(x)",
+          "operation_label": "曲率・たわみ関係の代入（弾性曲線式）",
+          "explanation": "微小傾斜近似による曲率式を曲げモーメント・曲率関係に代入し、2階のたわみ微分方程式を得る。",
+          "used_node_ids": [
+            "eng.beam.n05_euler_bernoulli_kinematics",
+            "eng.beam.n06_bending_stress_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "EI\\frac{d^2 y}{dx^2} = -M(x)",
+          "to_latex": "EI\\frac{d^3 y}{dx^3} = -\\frac{dM(x)}{dx} = -V(x)",
+          "operation_label": "x による1階微分と dM/dx = V の適用",
+          "explanation": "一様曲げ剛性 EI のもとで両辺を x で微分し、曲げモーメントとせん断力の関係を代入する。",
+          "used_node_ids": [
+            "eng.beam.n03_shear_bending_equilibrium",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "EI\\frac{d^3 y}{dx^3} = -\\frac{dM(x)}{dx} = -V(x)",
+          "to_latex": "EI\\frac{d^2 y}{dx^2} = -M(x),\\quad EI\\frac{d^3 y}{dx^3} = -V(x),\\quad EI\\frac{d^4 y}{dx^4} = w(x)",
+          "operation_label": "再微分と dV/dx = -w の適用",
+          "explanation": "再び x で微分し dV/dx = -w(x) を代入することで 4階たわみ微分方程式 EI y'''' = w(x) を得る。",
+          "used_node_ids": [
+            "eng.beam.n03_shear_bending_equilibrium",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.beam.d07_canonical_beam_solutions",
+      "target_node_id": "eng.beam.n08_cantilever_simply_supported_solutions",
+      "route_kind": "deductive",
+      "title": "たわみ微分方程式の境界値積分による片持ち梁・単純支持梁の最大たわみ導出",
+      "premise_node_ids": [
+        "eng.beam.n07_beam_deflection_ode"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "片持ち梁は固定端 x=0 で y(0)=0, y'(0)=0、自由端 x=L に下向き集中荷重 P を受ける",
+        "単純支持梁は両端 x=0, L で y(0)=y(L)=0, M(0)=M(L)=0、全スパンに一様下向き分布荷重 w0 を受ける"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "EI\\frac{d^2 y}{dx^2} = -M(x),\\quad EI\\frac{d^4 y}{dx^4} = w(x)",
+          "to_latex": "y_{\\max,\\text{cantilever}} = \\frac{P L^3}{3 E I},\\quad y_{\\max,\\text{simply}} = \\frac{5 w_0 L^4}{384 E I}",
+          "operation_label": "境界条件を課した逐次積分による最大たわみの評価",
+          "explanation": "各境界条件のもとでたわみ微分方程式を逐次積分し、積分定数を決定して片持ち梁先端および単純支持梁中央の最大たわみを求める。",
+          "used_node_ids": [
+            "eng.beam.n07_beam_deflection_ode",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "EI\\frac{d^2 y}{dx^2} = -M(x) = P(L - x),\\quad y(0)=0,\\; y'(0)=0",
+          "to_latex": "EI\\,y(x) = \\frac{P x^2}{6}(3L - x) \\implies y_{\\max,\\text{cantilever}} = y(L) = \\frac{P L^3}{3 E I}",
+          "operation_label": "片持ち梁の 2回積分と固定端条件の適用",
+          "explanation": "M(x) = -P(L-x) を代入して 2回積分し、y(0)=0, y'(0)=0 より積分定数を零と定めて x=L の最大たわみを求める。",
+          "used_node_ids": [
+            "eng.beam.n07_beam_deflection_ode",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": "integrate(P*(L - x), x, x).subs(x, L) / (E*I) - P*L**3/(3*E*I)"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "EI\\,y(x) = \\frac{P x^2}{6}(3L - x) \\implies y_{\\max,\\text{cantilever}} = y(L) = \\frac{P L^3}{3 E I}",
+          "to_latex": "EI\\frac{d^4 y}{dx^4} = w_0,\\quad y(0)=y(L)=0,\\; y''(0)=y''(L)=0",
+          "operation_label": "一様分布荷重を受ける単純支持梁の境界値問題定式化",
+          "explanation": "w(x) = w0 を 4階方程式に代入し、単純支持端での変位零・曲げモーメント零の 4つの境界条件を設定する。",
+          "used_node_ids": [
+            "eng.beam.n07_beam_deflection_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "EI\\frac{d^4 y}{dx^4} = w_0,\\quad y(0)=y(L)=0,\\; y''(0)=y''(L)=0",
+          "to_latex": "y_{\\max,\\text{cantilever}} = \\frac{P L^3}{3 E I},\\quad y_{\\max,\\text{simply}} = \\frac{5 w_0 L^4}{384 E I}",
+          "operation_label": "単純支持梁の 4回積分とスパン中央での最大たわみ評価",
+          "explanation": "4回積分して EI y(x) = (w0/24)(x^4 - 2Lx^3 + L^3 x) を得て、x = L/2 を代入することで 5 w0 L^4 / (384 EI) を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": "(w0/24*(x**4 - 2*L*x**3 + L**3*x)).subs(x, L/2)/(E*I) - 5*w0*L**4/(384*E*I)"
+        }
+      ]
+    }
+  ]
+}

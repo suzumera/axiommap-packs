@@ -1,0 +1,862 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.info.shannon_entropy",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "information_theory",
+    "title": "情報理論：シャノンエントロピー・相互情報量・情報源符号化・通信路容量",
+    "language": "ja",
+    "description": "自己情報量とエントロピー、KLダイバージェンス、クラフトの不等式とハフマン符号、AWGN通信路におけるシャノン＝ハートレーの通信路容量 C=B log2(1+S/N) を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.info.n01_self_information_entropy",
+      "short_code": "INFO01",
+      "kind": "definition",
+      "title": "自己情報量とシャノンエントロピーの定義",
+      "summary": "離散確率変数の事象が持つ自己情報量 I(x) = -log2 p(x) と、その期待値として定義されるシャノンエントロピー H(X) の定義。",
+      "canonical_latex": "I(x) := -\\log_2 p(x),\\qquad H(X) := \\mathbb{E}[I(X)] = -\\sum_{x\\in\\mathcal{X}} p(x)\\log_2 p(x)",
+      "aliases_latex": [
+        "H(X) = -\\sum_{i=1}^{n} p_i \\log_2 p_i",
+        "H(p) = \\sum_{x} p(x)\\log_2\\frac{1}{p(x)}"
+      ],
+      "keywords": [
+        "自己情報量",
+        "シャノンエントロピー",
+        "平均情報量",
+        "ビット"
+      ],
+      "domain_tags": [
+        "information_theory"
+      ]
+    },
+    {
+      "id": "eng.info.n02_joint_conditional_entropy",
+      "short_code": "INFO02",
+      "kind": "definition",
+      "title": "結合エントロピー・条件付きエントロピーと連鎖律",
+      "summary": "2つの離散確率変数 (X, Y) に対する結合エントロピー H(X,Y)、条件付きエントロピー H(Y|X)、およびエントロピーの連鎖律。",
+      "canonical_latex": "H(X,Y) := -\\sum_{x,y} p(x,y)\\log_2 p(x,y),\\quad H(Y|X) := -\\sum_{x,y} p(x,y)\\log_2 p(y|x),\\quad H(X,Y) = H(X) + H(Y|X)",
+      "aliases_latex": [
+        "H(Y|X) = \\sum_{x} p(x) H(Y|X=x)",
+        "H(X_1,\\dots,X_n) = \\sum_{i=1}^{n} H(X_i | X_1,\\dots,X_{i-1})"
+      ],
+      "keywords": [
+        "結合エントロピー",
+        "条件付きエントロピー",
+        "連鎖律"
+      ],
+      "domain_tags": [
+        "information_theory"
+      ]
+    },
+    {
+      "id": "eng.info.n03_kl_divergence_gibbs",
+      "short_code": "INFO03",
+      "kind": "theorem_formula",
+      "title": "KLダイバージェンス（相対エントロピー）とギブスの不等式",
+      "summary": "2つの確率分布 p, q の間のカルバック＝ライブラー・ダイバージェンス D_KL(p||q) の定義と、その非負性（ギブスの不等式）。",
+      "canonical_latex": "D_{\\mathrm{KL}}(p\\|q) := \\sum_{x\\in\\mathcal{X}} p(x)\\log_2\\frac{p(x)}{q(x)} \\ge 0,\\qquad D_{\\mathrm{KL}}(p\\|q) = 0 \\iff p = q",
+      "aliases_latex": [
+        "D(p\\|q) = \\mathbb{E}_p\\left[\\log_2\\frac{p(X)}{q(X)}\\right] \\ge 0"
+      ],
+      "keywords": [
+        "KLダイバージェンス",
+        "相対エントロピー",
+        "ギブスの不等式"
+      ],
+      "domain_tags": [
+        "information_theory"
+      ]
+    },
+    {
+      "id": "eng.info.n04_mutual_information",
+      "short_code": "INFO04",
+      "kind": "definition",
+      "title": "相互情報量の定義と非負性・エントロピー関係式",
+      "summary": "同時分布と周辺分布の積の間のKLダイバージェンスとして定義される相互情報量 I(X;Y) と、エントロピーとの基本関係式。",
+      "canonical_latex": "I(X;Y) := D_{\\mathrm{KL}}(p_{X,Y}\\|p_X p_Y) = \\sum_{x,y} p(x,y)\\log_2\\frac{p(x,y)}{p(x)p(y)} = H(X) - H(X|Y) = H(Y) - H(Y|X) \\ge 0",
+      "aliases_latex": [
+        "I(X;Y) = H(X) + H(Y) - H(X,Y)"
+      ],
+      "keywords": [
+        "相互情報量",
+        "条件付きエントロピー",
+        "独立性"
+      ],
+      "domain_tags": [
+        "information_theory"
+      ]
+    },
+    {
+      "id": "eng.info.n05_kraft_inequality",
+      "short_code": "INFO05",
+      "kind": "theorem_formula",
+      "title": "クラフトの不等式（瞬時符号の符号長条件）",
+      "summary": "D元アルファベット上の任意の語頭符号（瞬時符号）の符号長 l_1, ..., l_m が満たすべき必要十分条件。",
+      "canonical_latex": "\\sum_{i=1}^{m} D^{-l_i} \\le 1",
+      "aliases_latex": [
+        "\\sum_{i=1}^{m} 2^{-l_i} \\le 1"
+      ],
+      "keywords": [
+        "クラフトの不等式",
+        "瞬時符号",
+        "語頭符号"
+      ],
+      "domain_tags": [
+        "information_theory"
+      ]
+    },
+    {
+      "id": "eng.info.n06_source_coding_huffman",
+      "short_code": "INFO06",
+      "kind": "theorem_formula",
+      "title": "情報源符号化定理（シャノンの第1定理）とハフマン符号の最適性",
+      "summary": "任意の瞬時符号の平均符号長 L がエントロピー H_D(X) 以上であるという下界、シャノン符号による上界、およびハフマン符号の最適性。",
+      "canonical_latex": "H_D(X) \\le L = \\sum_{i=1}^{m} p_i l_i,\\qquad \\exists\\text{ prefix code: } H_D(X) \\le L_{\\mathrm{Huffman}} \\le L_{\\mathrm{Shannon}} < H_D(X) + 1",
+      "aliases_latex": [
+        "H(X) \\le \\mathbb{E}[l(X)] < H(X) + 1"
+      ],
+      "keywords": [
+        "情報源符号化定理",
+        "ハフマン符号",
+        "平均符号長",
+        "最適符号"
+      ],
+      "domain_tags": [
+        "information_theory"
+      ]
+    },
+    {
+      "id": "eng.info.n07_differential_entropy_gaussian",
+      "short_code": "INFO07",
+      "kind": "theorem_formula",
+      "title": "微分エントロピーとガウス分布の最大エントロピー性",
+      "summary": "連続確率変数の微分エントロピー h(X) の定義、分散 sigma^2 のガウス分布の微分エントロピー、および分散固定下での最大エントロピー定理。",
+      "canonical_latex": "h(X) := -\\int_{-\\infty}^{\\infty} f(x)\\log_2 f(x)\\,dx,\\qquad \\mathbb{E}[(X-\\mu)^2] = \\sigma^2 \\implies h(X) \\le \\frac{1}{2}\\log_2(2\\pi e \\sigma^2)",
+      "aliases_latex": [
+        "h(\\mathcal{N}(\\mu,\\sigma^2)) = \\frac{1}{2}\\log_2(2\\pi e \\sigma^2)"
+      ],
+      "keywords": [
+        "微分エントロピー",
+        "ガウス分布",
+        "最大エントロピー原理"
+      ],
+      "domain_tags": [
+        "information_theory"
+      ]
+    },
+    {
+      "id": "eng.info.n08_channel_capacity_def",
+      "short_code": "INFO08",
+      "kind": "definition",
+      "title": "通信路容量（Channel Capacity）の定義",
+      "summary": "離散無記憶通信路および電力制約付き連続通信路における、入力分布にわたる相互情報量の最大値としての通信路容量の定義。",
+      "canonical_latex": "C := \\max_{p(x)} I(X;Y),\\qquad C_{\\mathrm{power}} := \\max_{f(x):\\,\\mathbb{E}[X^2]\\le S} I(X;Y)",
+      "aliases_latex": [
+        "C = \\sup_{p_X} I(X;Y)"
+      ],
+      "keywords": [
+        "通信路容量",
+        "相互情報量最大化",
+        "電力制約"
+      ],
+      "domain_tags": [
+        "information_theory"
+      ]
+    },
+    {
+      "id": "eng.info.n09_shannon_hartley_awgn",
+      "short_code": "INFO09",
+      "kind": "theorem_formula",
+      "title": "AWGN通信路におけるシャノン＝ハートレーの通信路容量公式",
+      "summary": "帯域幅 B、平均送信電力 S、加法性白色ガウス雑音（AWGN）電力 N を持つ連続時間通信路の通信路容量 C = B log2(1 + S/N)。",
+      "canonical_latex": "C = B\\log_2\\left(1 + \\frac{S}{N}\\right)\\quad [\\text{bit/s}]",
+      "aliases_latex": [
+        "C = \\frac{1}{2}\\log_2\\left(1 + \\frac{S}{N}\\right)\\quad [\\text{bit/use}]",
+        "C = B\\log_2\\left(1 + \\frac{S}{N_0 B}\\right)"
+      ],
+      "keywords": [
+        "シャノン＝ハートレーの定理",
+        "AWGN通信路",
+        "通信路容量",
+        "SN比"
+      ],
+      "domain_tags": [
+        "information_theory"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_info01_self_entropy",
+      "target_node_id": "eng.info.n01_self_information_entropy",
+      "route_kind": "deductive",
+      "title": "確率の公理と独立事象の情報量加法性からのシャノンエントロピーの導出",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.info.n01_self_information_entropy"
+      ],
+      "assumptions": [
+        "独立な2事象の情報量は各事象の情報量の和になる（加法性）",
+        "確率が小さいほど情報量が大きく、p=1/2 で 1 bit となるように底を2とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p(x,y) = p(x)p(y),\\quad I(x,y) = I(x) + I(y)",
+          "to_latex": "I(x) = -\\log_2 p(x),\\quad H(X) = -\\sum_{x\\in\\mathcal{X}} p(x)\\log_2 p(x)",
+          "operation_label": "対数関数の一意決定と期待値による平均情報量の定義",
+          "explanation": "独立事象の積確率に対する加法性から自己情報量 I(x)=-log2 p(x) を導き、その確率分布 p(x) による期待値としてシャノンエントロピー H(X) を定義する。",
+          "used_node_ids": [
+            "eng.info.n01_self_information_entropy",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(x,y) = p(x)p(y),\\quad I(x,y) = I(x) + I(y)",
+          "to_latex": "g(p_1 p_2) = g(p_1) + g(p_2)\\quad (0 < p_1, p_2 \\le 1)",
+          "operation_label": "確率の関数としての関数方程式の設定",
+          "explanation": "事象の情報量が確率 p の単調減少関数 I(x)=g(p(x)) で表されるとすると、独立性 p(x,y)=p(x)p(y) から関数方程式 g(p1 p2)=g(p1)+g(p2) が得られる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g(p_1 p_2) = g(p_1) + g(p_2)\\quad (0 < p_1, p_2 \\le 1)",
+          "to_latex": "I(x) = -\\log_2 p(x)",
+          "operation_label": "関数方程式の解と単位（bit）の正規化",
+          "explanation": "単調性と g(1/2)=1 の正規化条件のもとで関数方程式の解は I(x) = -log2 p(x) に一意に定まる。",
+          "used_node_ids": [
+            "eng.info.n01_self_information_entropy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I(x) = -\\log_2 p(x)",
+          "to_latex": "I(x) = -\\log_2 p(x),\\quad H(X) = -\\sum_{x\\in\\mathcal{X}} p(x)\\log_2 p(x)",
+          "operation_label": "自己情報量の期待値としてのエントロピー定義",
+          "explanation": "確率分布 p(x) に関して自己情報量 I(X) の期待値をとることで、シャノンエントロピー H(X) が得られる（0 log2 0 = 0 と規約する）。",
+          "used_node_ids": [
+            "eng.info.n01_self_information_entropy",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_info02_chain_rule",
+      "target_node_id": "eng.info.n02_joint_conditional_entropy",
+      "route_kind": "deductive",
+      "title": "同時確率の乗法定理と対数の性質によるエントロピー連鎖律の導出",
+      "premise_node_ids": [
+        "eng.info.n01_self_information_entropy",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.info.n02_joint_conditional_entropy"
+      ],
+      "assumptions": [
+        "同時確率分布 p(x,y) と条件付き確率 p(y|x) に対し p(x,y) = p(x)p(y|x) が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "H(X,Y) = -\\sum_{x,y} p(x,y)\\log_2 p(x,y)",
+          "to_latex": "H(X,Y) = H(X) + H(Y|X)",
+          "operation_label": "乗法定理と対数の加法性による分解",
+          "explanation": "p(x,y)=p(x)p(y|x) を結合エントロピーの定義に代入し、対数を和に分解して周辺和をとることで連鎖律を得る。",
+          "used_node_ids": [
+            "eng.info.n01_self_information_entropy",
+            "eng.info.n02_joint_conditional_entropy",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(X,Y) = -\\sum_{x,y} p(x,y)\\log_2 p(x,y)",
+          "to_latex": "H(X,Y) = -\\sum_{x,y} p(x,y)\\log_2\\big(p(x)p(y|x)\\big)",
+          "operation_label": "条件付き確率の乗法定理の適用",
+          "explanation": "同時確率を p(x,y) = p(x)p(y|x) に書き換える。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(X,Y) = -\\sum_{x,y} p(x,y)\\log_2\\big(p(x)p(y|x)\\big)",
+          "to_latex": "H(X,Y) = -\\sum_{x} \\left(\\sum_{y} p(x,y)\\right)\\log_2 p(x) - \\sum_{x,y} p(x,y)\\log_2 p(y|x)",
+          "operation_label": "対数の積和分解と周辺化",
+          "explanation": "対数の積を和に分け、第1項では y について和をとって周辺確率 p(x) を得る。",
+          "used_node_ids": [
+            "eng.info.n01_self_information_entropy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(X,Y) = -\\sum_{x} \\left(\\sum_{y} p(x,y)\\right)\\log_2 p(x) - \\sum_{x,y} p(x,y)\\log_2 p(y|x)",
+          "to_latex": "H(X,Y) = H(X) + H(Y|X)",
+          "operation_label": "H(X) と H(Y|X) の定義の代入",
+          "explanation": "第1項は H(X)、第2項は条件付きエントロピー H(Y|X) の定義そのものであるから、連鎖律が成立する。",
+          "used_node_ids": [
+            "eng.info.n01_self_information_entropy",
+            "eng.info.n02_joint_conditional_entropy"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_info03_gibbs_inequality",
+      "target_node_id": "eng.info.n03_kl_divergence_gibbs",
+      "route_kind": "deductive",
+      "title": "対数不等式 ln u <= u - 1 によるギブスの不等式（KLダイバージェンス非負性）の証明",
+      "premise_node_ids": [
+        "eng.info.n01_self_information_entropy",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.info.n03_kl_divergence_gibbs",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "p(x) > 0 なるすべての x に対して q(x) > 0 かつ sum p(x) = sum q(x) = 1"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "D_{\\mathrm{KL}}(p\\|q) = \\sum_{x} p(x)\\log_2\\frac{p(x)}{q(x)}",
+          "to_latex": "D_{\\mathrm{KL}}(p\\|q) \\ge 0\\quad (\\text{equality iff } p = q)",
+          "operation_label": "対数の凹性不等式 ln u <= u - 1 の適用",
+          "explanation": "-D_KL(p||q) に ln(q(x)/p(x)) <= q(x)/p(x) - 1 を適用し、確率の総和が 1 であることを用いて非負性を示す。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "math.calc.t06_exp_power_derivatives",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D_{\\mathrm{KL}}(p\\|q) = \\sum_{x} p(x)\\log_2\\frac{p(x)}{q(x)}",
+          "to_latex": "-(\\ln 2)\\,D_{\\mathrm{KL}}(p\\|q) = \\sum_{x:p(x)>0} p(x)\\ln\\frac{q(x)}{p(x)}",
+          "operation_label": "自然対数への変換と符号反転",
+          "explanation": "底の変換公式 log2(a) = ln(a)/ln(2) と -ln(p/q) = ln(q/p) を用いて書き換える。",
+          "used_node_ids": [
+            "eng.info.n01_self_information_entropy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-(\\ln 2)\\,D_{\\mathrm{KL}}(p\\|q) = \\sum_{x:p(x)>0} p(x)\\ln\\frac{q(x)}{p(x)}",
+          "to_latex": "-(\\ln 2)\\,D_{\\mathrm{KL}}(p\\|q) \\le \\sum_{x:p(x)>0} p(x)\\left(\\frac{q(x)}{p(x)} - 1\\right) = \\sum_{x:p(x)>0} q(x) - 1 \\le 0",
+          "operation_label": "不等式 ln u <= u - 1 と確率総和の適用",
+          "explanation": "すべての u > 0 で ln u <= u - 1（等号は u=1 のみ）が成り立つため、和を評価すると sum q(x) - sum p(x) <= 1 - 1 = 0 となる。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": "ln(u) <= u - 1 for u > 0"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-(\\ln 2)\\,D_{\\mathrm{KL}}(p\\|q) \\le \\sum_{x:p(x)>0} p(x)\\left(\\frac{q(x)}{p(x)} - 1\\right) = \\sum_{x:p(x)>0} q(x) - 1 \\le 0",
+          "to_latex": "D_{\\mathrm{KL}}(p\\|q) \\ge 0\\quad (\\text{equality iff } p = q)",
+          "operation_label": "両辺を -ln 2 で割り等号条件を確認",
+          "explanation": "ln 2 > 0 より D_KL(p||q) >= 0 が得られ、等号はすべての x で q(x)/p(x)=1 すなわち p=q のときに限る。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_info04_mutual_info",
+      "target_node_id": "eng.info.n04_mutual_information",
+      "route_kind": "deductive",
+      "title": "KLダイバージェンスとエントロピー連鎖律からの相互情報量の性質導出",
+      "premise_node_ids": [
+        "eng.info.n02_joint_conditional_entropy",
+        "eng.info.n03_kl_divergence_gibbs"
+      ],
+      "required_math_node_ids": [
+        "eng.info.n04_mutual_information",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "assumptions": [
+        "同時分布 p(x,y) の周辺分布を p(x), p(y) とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I(X;Y) = D_{\\mathrm{KL}}(p_{X,Y}\\|p_X p_Y)",
+          "to_latex": "I(X;Y) = H(X) - H(X|Y) = H(Y) - H(Y|X) \\ge 0",
+          "operation_label": "ギブスの不等式と条件付きエントロピー展開",
+          "explanation": "同時分布と積分布のKLダイバージェンスとして非負性を得て、対数の分解によりエントロピーとの差に書き換える。",
+          "used_node_ids": [
+            "eng.info.n02_joint_conditional_entropy",
+            "eng.info.n03_kl_divergence_gibbs",
+            "eng.info.n04_mutual_information"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I(X;Y) = D_{\\mathrm{KL}}(p_{X,Y}\\|p_X p_Y)",
+          "to_latex": "I(X;Y) = \\sum_{x,y} p(x,y)\\log_2\\frac{p(x,y)}{p(x)p(y)} \\ge 0",
+          "operation_label": "ギブスの不等式の適用",
+          "explanation": "KLダイバージェンスの非負性より I(X;Y) >= 0（等号は X, Y が独立のとき）が直ちに導かれる。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I(X;Y) = \\sum_{x,y} p(x,y)\\log_2\\frac{p(x,y)}{p(x)p(y)} \\ge 0",
+          "to_latex": "I(X;Y) = -\\sum_{x,y} p(x,y)\\log_2 p(x) + \\sum_{x,y} p(x,y)\\log_2 p(x|y)",
+          "operation_label": "p(x,y)=p(x|y)p(y) の代入と対数分解",
+          "explanation": "p(x,y)/(p(x)p(y)) = p(x|y)/p(x) を用いて対数を2項に分離する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I(X;Y) = -\\sum_{x,y} p(x,y)\\log_2 p(x) + \\sum_{x,y} p(x,y)\\log_2 p(x|y)",
+          "to_latex": "I(X;Y) = H(X) - H(X|Y) = H(Y) - H(Y|X) \\ge 0",
+          "operation_label": "エントロピー定義の適用と対称性",
+          "explanation": "第1項は H(X)、第2項は -H(X|Y) であり、X と Y の対称性から H(Y) - H(Y|X) とも等しい。",
+          "used_node_ids": [
+            "eng.info.n02_joint_conditional_entropy",
+            "eng.info.n04_mutual_information"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_info05_kraft",
+      "target_node_id": "eng.info.n05_kraft_inequality",
+      "route_kind": "deductive",
+      "title": "D分木における部分木葉数（または区間分割）によるクラフトの不等式の導出",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.info.n05_kraft_inequality"
+      ],
+      "assumptions": [
+        "D元アルファベット上の語頭符号であり、最大符号長を l_max = max_i l_i とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\text{Prefix-free } D\\text{-ary tree with leaf depths } l_1,\\dots,l_m,\\; l_{\\max} = \\max_i l_i",
+          "to_latex": "\\sum_{i=1}^{m} D^{-l_i} \\le 1",
+          "operation_label": "深さ l_max の子孫葉の互いに素な占有数の総和評価",
+          "explanation": "深さ l_i の符号語が深さ l_max の葉を D^(l_max - l_i) 個占有し、語頭条件によりそれらが互いに素であることから総和が D^l_max 以下になることを示す。",
+          "used_node_ids": [
+            "eng.info.n05_kraft_inequality",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{Prefix-free } D\\text{-ary tree with leaf depths } l_1,\\dots,l_m,\\; l_{\\max} = \\max_i l_i",
+          "to_latex": "\\sum_{i=1}^{m} D^{l_{\\max} - l_i} \\le D^{l_{\\max}}",
+          "operation_label": "最深層の互いに素な部分木の葉数カウント",
+          "explanation": "深さ l_i の節点は深さ l_max に D^(l_max - l_i) 個の子孫を持ち、語頭条件より異なる符号語の子孫集合は交わらないため、その合計は全葉数 D^l_max を超えない。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{m} D^{l_{\\max} - l_i} \\le D^{l_{\\max}}",
+          "to_latex": "\\sum_{i=1}^{m} D^{-l_i} \\le 1",
+          "operation_label": "両辺を D^l_max で除算",
+          "explanation": "両辺を正の数 D^l_max で割ることでクラフトの不等式が得られる。",
+          "used_node_ids": [
+            "eng.info.n05_kraft_inequality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_info06_source_coding",
+      "target_node_id": "eng.info.n06_source_coding_huffman",
+      "route_kind": "deductive",
+      "title": "ギブスの不等式とクラフトの不等式からの情報源符号化定理の導出",
+      "premise_node_ids": [
+        "eng.info.n01_self_information_entropy",
+        "eng.info.n03_kl_divergence_gibbs",
+        "eng.info.n05_kraft_inequality"
+      ],
+      "required_math_node_ids": [
+        "eng.info.n06_source_coding_huffman"
+      ],
+      "assumptions": [
+        "H_D(X) = -sum_i p_i log_D p_i とし、瞬時符号はクラフトの不等式を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L = \\sum_{i=1}^{m} p_i l_i,\\quad \\sum_{i=1}^{m} D^{-l_i} \\le 1",
+          "to_latex": "H_D(X) \\le L = \\sum_{i=1}^{m} p_i l_i,\\quad H_D(X) \\le L_{\\mathrm{Huffman}} \\le L_{\\mathrm{Shannon}} < H_D(X) + 1",
+          "operation_label": "KLダイバージェンスによる下界とシャノン符号による上界評価",
+          "explanation": "正規化分布 q_i = D^(-l_i)/Z を用いて L - H_D(X) を KL ダイバージェンスと -log_D Z の和で表し下界を示し、l_i = ceil(-log_D p_i) により上界を得る。",
+          "used_node_ids": [
+            "eng.info.n01_self_information_entropy",
+            "eng.info.n03_kl_divergence_gibbs",
+            "eng.info.n05_kraft_inequality",
+            "eng.info.n06_source_coding_huffman"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L = \\sum_{i=1}^{m} p_i l_i,\\quad \\sum_{i=1}^{m} D^{-l_i} \\le 1",
+          "to_latex": "q_i := \\frac{D^{-l_i}}{Z},\\quad Z := \\sum_{j=1}^{m} D^{-l_j} \\le 1,\\quad L - H_D(X) = \\frac{D_{\\mathrm{KL}}(p\\|q)}{\\log_2 D} - \\log_D Z",
+          "operation_label": "符号長から誘導される確率分布 q_i の構成",
+          "explanation": "l_i = -log_D(Z q_i) を L - H_D(X) に代入すると、KLダイバージェンスと -log_D Z の和に変形できる。",
+          "used_node_ids": [
+            "eng.info.n01_self_information_entropy",
+            "eng.info.n05_kraft_inequality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q_i := \\frac{D^{-l_i}}{Z},\\quad Z := \\sum_{j=1}^{m} D^{-l_j} \\le 1,\\quad L - H_D(X) = \\frac{D_{\\mathrm{KL}}(p\\|q)}{\\log_2 D} - \\log_D Z",
+          "to_latex": "L - H_D(X) \\ge 0,\\quad l_i^{\\mathrm{Shannon}} := \\lceil -\\log_D p_i \\rceil \\implies \\sum_i D^{-l_i^{\\mathrm{Shannon}}} \\le 1",
+          "operation_label": "ギブスの不等式による下界とシャノン符号長の構成",
+          "explanation": "D_KL(p||q) >= 0 かつ Z <= 1 より -log_D Z >= 0 なので L >= H_D(X)。また天井関数で定めた符号長はクラフトの不等式を満たす。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "eng.info.n05_kraft_inequality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L - H_D(X) \\ge 0,\\quad l_i^{\\mathrm{Shannon}} := \\lceil -\\log_D p_i \\rceil \\implies \\sum_i D^{-l_i^{\\mathrm{Shannon}}} \\le 1",
+          "to_latex": "H_D(X) \\le L = \\sum_{i=1}^{m} p_i l_i,\\quad H_D(X) \\le L_{\\mathrm{Huffman}} \\le L_{\\mathrm{Shannon}} < H_D(X) + 1",
+          "operation_label": "シャノン符号の上界評価とハフマン符号の最適性",
+          "explanation": "l_i^Shannon < -log_D p_i + 1 の期待値をとると L_Shannon < H_D(X) + 1 となり、最小平均符号長を与えるハフマン符号はその間に収まる。",
+          "used_node_ids": [
+            "eng.info.n06_source_coding_huffman"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_info07_gaussian_max_entropy",
+      "target_node_id": "eng.info.n07_differential_entropy_gaussian",
+      "route_kind": "deductive",
+      "title": "KLダイバージェンスの非負性によるガウス分布の最大エントロピー性の導出",
+      "premise_node_ids": [
+        "eng.info.n01_self_information_entropy",
+        "eng.info.n03_kl_divergence_gibbs"
+      ],
+      "required_math_node_ids": [
+        "eng.info.n07_differential_entropy_gaussian",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "確率密度関数 f(x) は平均 mu、分散 sigma^2 を持つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbb{E}[(X-\\mu)^2] = \\sigma^2,\\quad \\phi(x) = \\frac{1}{\\sqrt{2\\pi\\sigma^2}}\\exp\\!\\left(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\right)",
+          "to_latex": "h(X) \\le h(\\phi) = \\frac{1}{2}\\log_2(2\\pi e \\sigma^2)",
+          "operation_label": "ガウス密度とのKLダイバージェンス非負性の適用",
+          "explanation": "任意の密度 f(x) と同じ平均・分散を持つガウス密度 phi(x) の間の連続版KLダイバージェンスが非負であることから、h(X) <= h(phi) を導く。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "eng.info.n07_differential_entropy_gaussian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[(X-\\mu)^2] = \\sigma^2,\\quad \\phi(x) = \\frac{1}{\\sqrt{2\\pi\\sigma^2}}\\exp\\!\\left(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\right)",
+          "to_latex": "h(\\phi) = -\\int_{-\\infty}^{\\infty} \\phi(x)\\left[-\\frac{1}{2}\\log_2(2\\pi\\sigma^2) - \\frac{(x-\\mu)^2}{2\\sigma^2\\ln 2}\\right]dx = \\frac{1}{2}\\log_2(2\\pi e\\sigma^2)",
+          "operation_label": "ガウス分布の微分エントロピーの直接計算",
+          "explanation": "log2 phi(x) を展開して期待値をとり、E[(X-mu)^2]=sigma^2 および log2 e = 1/ln 2 を用いると (1/2)log2(2 pi e sigma^2) が得られる。",
+          "used_node_ids": [
+            "eng.info.n01_self_information_entropy",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "h(\\phi) = -\\int_{-\\infty}^{\\infty} \\phi(x)\\left[-\\frac{1}{2}\\log_2(2\\pi\\sigma^2) - \\frac{(x-\\mu)^2}{2\\sigma^2\\ln 2}\\right]dx = \\frac{1}{2}\\log_2(2\\pi e\\sigma^2)",
+          "to_latex": "0 \\le \\int_{-\\infty}^{\\infty} f(x)\\log_2\\frac{f(x)}{\\phi(x)}\\,dx = -h(X) - \\int_{-\\infty}^{\\infty} f(x)\\log_2\\phi(x)\\,dx = -h(X) + h(\\phi)",
+          "operation_label": "連続KLダイバージェンスと2次モーメントの一致",
+          "explanation": "log2 phi(x) は (x-mu)^2 の1次式であるため、同じ平均・分散を持つ任意の密度 f(x) に対する -E_f[log2 phi(X)] は h(phi) に等しい。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 \\le \\int_{-\\infty}^{\\infty} f(x)\\log_2\\frac{f(x)}{\\phi(x)}\\,dx = -h(X) - \\int_{-\\infty}^{\\infty} f(x)\\log_2\\phi(x)\\,dx = -h(X) + h(\\phi)",
+          "to_latex": "h(X) \\le h(\\phi) = \\frac{1}{2}\\log_2(2\\pi e \\sigma^2)",
+          "operation_label": "微分エントロピーの上界の確定",
+          "explanation": "0 <= -h(X) + h(phi) を移項することで、分散 sigma^2 固定のもとでガウス分布が微分エントロピーを最大化することが示される。",
+          "used_node_ids": [
+            "eng.info.n07_differential_entropy_gaussian"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_info08_channel_capacity",
+      "target_node_id": "eng.info.n08_channel_capacity_def",
+      "route_kind": "reformulation",
+      "title": "相互情報量と電力制約条件による通信路容量の定式化",
+      "premise_node_ids": [
+        "eng.info.n04_mutual_information",
+        "eng.info.n07_differential_entropy_gaussian"
+      ],
+      "required_math_node_ids": [
+        "eng.info.n08_channel_capacity_def"
+      ],
+      "assumptions": [
+        "通信路の遷移確率 p(y|x) または f(y|x) は固定されており、入力分布 p(x) を設計者が選択できる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I(X;Y) = H(Y) - H(Y|X)",
+          "to_latex": "C = \\max_{p(x)} I(X;Y),\\quad C_{\\mathrm{power}} = \\max_{f(x):\\,\\mathbb{E}[X^2]\\le S} I(X;Y)",
+          "operation_label": "入力分布にわたる相互情報量の最大化としての容量定義",
+          "explanation": "通信路1回使用あたりに誤りなく伝送可能な最大情報量率（情報論的通信路容量）を、許容入力分布にわたる相互情報量の上限として定義する。",
+          "used_node_ids": [
+            "eng.info.n04_mutual_information",
+            "eng.info.n07_differential_entropy_gaussian",
+            "eng.info.n08_channel_capacity_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I(X;Y) = H(Y) - H(Y|X)",
+          "to_latex": "C = \\max_{p(x)} I(X;Y)",
+          "operation_label": "離散無記憶通信路の容量定義",
+          "explanation": "離散入力アルファベット上では制約なしで全確率分布 p(x) にわたり I(X;Y) を最大化する。",
+          "used_node_ids": [
+            "eng.info.n04_mutual_information"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C = \\max_{p(x)} I(X;Y)",
+          "to_latex": "C = \\max_{p(x)} I(X;Y),\\quad C_{\\mathrm{power}} = \\max_{f(x):\\,\\mathbb{E}[X^2]\\le S} I(X;Y)",
+          "operation_label": "連続通信路における平均電力制約の導入",
+          "explanation": "連続振幅通信路では無限容量を防ぐため平均電力制約 E[X^2] <= S を課して連続版相互情報量 h(Y)-h(Y|X) を最大化する。",
+          "used_node_ids": [
+            "eng.info.n07_differential_entropy_gaussian",
+            "eng.info.n08_channel_capacity_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_info09_shannon_hartley",
+      "target_node_id": "eng.info.n09_shannon_hartley_awgn",
+      "route_kind": "deductive",
+      "title": "ガウス最大エントロピー定理と標本化自由度からのシャノン＝ハートレー公式の導出",
+      "premise_node_ids": [
+        "eng.info.n07_differential_entropy_gaussian",
+        "eng.info.n08_channel_capacity_def",
+        "math.fourier.ft05_fourier_transform_def"
+      ],
+      "required_math_node_ids": [
+        "eng.info.n09_shannon_hartley_awgn"
+      ],
+      "assumptions": [
+        "Y = X + Z、Z ~ N(0, N) は X と独立な加法性白色ガウス雑音",
+        "帯域幅 B [Hz] の実信号は標本化定理により毎秒 2B 個の独立な実自由度（通信路使用）を持つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Y = X + Z,\\; Z\\sim\\mathcal{N}(0,N),\\; \\mathbb{E}[X^2]\\le S,\\; \\text{rate} = 2B\\text{ uses/s}",
+          "to_latex": "C = B\\log_2\\left(1 + \\frac{S}{N}\\right)\\quad [\\text{bit/s}]",
+          "operation_label": "1使用あたり容量の最大化と帯域幅自由度 2B の乗算",
+          "explanation": "h(Y) をガウス分布で最大化して1使用あたり容量 (1/2)log2(1+S/N) を求め、帯域幅 B の標本化レート 2B を掛けてシャノン＝ハートレー公式を得る。",
+          "used_node_ids": [
+            "eng.info.n07_differential_entropy_gaussian",
+            "eng.info.n08_channel_capacity_def",
+            "eng.info.n09_shannon_hartley_awgn",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y = X + Z,\\; Z\\sim\\mathcal{N}(0,N),\\; \\mathbb{E}[X^2]\\le S,\\; \\text{rate} = 2B\\text{ uses/s}",
+          "to_latex": "I(X;Y) = h(Y) - h(Y|X) = h(Y) - h(Z),\\quad \\mathbb{E}[Y^2] = \\mathbb{E}[X^2] + N \\le S + N",
+          "operation_label": "並進不変性による条件付きエントロピーの簡約と出力電力評価",
+          "explanation": "X と Z の独立性より h(X+Z|X) = h(Z) であり、無相関性より Y の2次モーメントは S+N 以下となる。",
+          "used_node_ids": [
+            "eng.info.n07_differential_entropy_gaussian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I(X;Y) = h(Y) - h(Y|X) = h(Y) - h(Z),\\quad \\mathbb{E}[Y^2] = \\mathbb{E}[X^2] + N \\le S + N",
+          "to_latex": "C_{\\mathrm{use}} = \\max_{\\mathbb{E}[X^2]\\le S}\\big(h(Y)-h(Z)\\big) = \\frac{1}{2}\\log_2\\big(2\\pi e(S+N)\\big) - \\frac{1}{2}\\log_2(2\\pi e N) = \\frac{1}{2}\\log_2\\left(1 + \\frac{S}{N}\\right)",
+          "operation_label": "ガウス最大エントロピー定理による1使用あたり容量の導出",
+          "explanation": "X ~ N(0, S) のとき Y ~ N(0, S+N) となり h(Y) が最大値 (1/2)log2(2 pi e (S+N)) をとるため、差をとって (1/2)log2(1+S/N) bit/use を得る。",
+          "used_node_ids": [
+            "eng.info.n07_differential_entropy_gaussian",
+            "eng.info.n08_channel_capacity_def"
+          ],
+          "sympy_check_hint": "log(2*pi*e*(S+N))/2 - log(2*pi*e*N)/2 == log(1 + S/N)/2"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_{\\mathrm{use}} = \\max_{\\mathbb{E}[X^2]\\le S}\\big(h(Y)-h(Z)\\big) = \\frac{1}{2}\\log_2\\big(2\\pi e(S+N)\\big) - \\frac{1}{2}\\log_2(2\\pi e N) = \\frac{1}{2}\\log_2\\left(1 + \\frac{S}{N}\\right)",
+          "to_latex": "C = 2B\\cdot C_{\\mathrm{use}} = B\\log_2\\left(1 + \\frac{S}{N}\\right)\\quad [\\text{bit/s}]",
+          "operation_label": "帯域幅 B のナイキスト標本化レート 2B の乗算",
+          "explanation": "フーリエ変換の帯域制限信号は毎秒 2B 個の独立標本で表されるため、毎秒あたりの通信路容量は 2B * C_use = B log2(1 + S/N) となる。",
+          "used_node_ids": [
+            "eng.info.n09_shannon_hartley_awgn",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": "2*B*(log(1 + S/N, 2)/2) == B*log(1 + S/N, 2)"
+        }
+      ]
+    }
+  ]
+}

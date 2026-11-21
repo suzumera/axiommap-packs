@@ -1,0 +1,814 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.ml.linear_logistic_gd",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "machine_learning",
+    "title": "機械学習の数理1：線形回帰・正則化（Ridge/Lasso）・ロジスティック回帰と勾配降下法",
+    "language": "ja",
+    "description": "最尤推定と二乗誤差・交差エントロピー損失の等価性、L2/L1正則化（MAP推定との対応）、勾配降下法の収束条件を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.ml1.n01_mle_map_framework",
+      "short_code": "ML1_01",
+      "kind": "definition",
+      "title": "最尤推定（MLE）と最大事後確率推定（MAP）の定義",
+      "summary": "独立同分布データに対する対数尤度最大化としての最尤推定と、事前分布を加えた事後確率最大化としてのMAP推定を定式化する。",
+      "canonical_latex": "\\hat{\\mathbf{w}}_{\\mathrm{MLE}} = \\arg\\max_{\\mathbf{w}} \\sum_{i=1}^{N} \\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}),\\qquad \\hat{\\mathbf{w}}_{\\mathrm{MAP}} = \\arg\\max_{\\mathbf{w}} \\left( \\sum_{i=1}^{N} \\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) + \\ln p(\\mathbf{w}) \\right)",
+      "aliases_latex": [
+        "\\hat{\\mathbf{w}}_{\\mathrm{MAP}} = \\arg\\min_{\\mathbf{w}} \\left(-\\ln p(\\mathcal{D} \\mid \\mathbf{w}) - \\ln p(\\mathbf{w})\\right)"
+      ],
+      "keywords": [
+        "最尤推定",
+        "MAP推定",
+        "対数尤度",
+        "事前分布",
+        "ベイズの定理"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "statistics"
+      ]
+    },
+    {
+      "id": "eng.ml1.n02_linear_regression_ols_mle",
+      "short_code": "ML1_02",
+      "kind": "theorem_formula",
+      "title": "線形回帰のガウス雑音下での最尤推定と最小二乗法（正規方程式）",
+      "summary": "等分散ガウス雑音を仮定した線形回帰モデルの負の対数尤度最小化が二乗誤差最小化と等価であり、正規方程式によって閉形式解が得られることを示す。",
+      "canonical_latex": "y_i = \\mathbf{w}^\\top \\mathbf{x}_i + \\varepsilon_i\\;(\\varepsilon_i \\sim \\mathcal{N}(0,\\sigma^2)) \\implies -\\ln p(\\mathbf{y} \\mid X,\\mathbf{w}) = \\frac{1}{2\\sigma^2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\mathrm{const.},\\qquad X^\\top X \\hat{\\mathbf{w}}_{\\mathrm{OLS}} = X^\\top \\mathbf{y}",
+      "aliases_latex": [
+        "\\hat{\\mathbf{w}}_{\\mathrm{OLS}} = (X^\\top X)^{-1} X^\\top \\mathbf{y}"
+      ],
+      "keywords": [
+        "線形回帰",
+        "最小二乗法",
+        "正規方程式",
+        "ガウス雑音",
+        "最尤推定"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "eng.ml1.n03_ridge_l2_map_equivalence",
+      "short_code": "ML1_03",
+      "kind": "theorem_formula",
+      "title": "Ridge回帰（L2正則化）とガウス事前分布によるMAP推定の等価性",
+      "summary": "パラメータに等方性ガウス事前分布を仮定したMAP推定がL2正則化付き最小二乗法（Ridge回帰）と一致し、常に正則な閉形式解を持つことを示す。",
+      "canonical_latex": "p(\\mathbf{w}) = \\mathcal{N}(\\mathbf{0}, \\tau^2 I) \\implies J_{\\mathrm{ridge}}(\\mathbf{w}) = \\frac{1}{2}\\|\\mathbf{y} - X\\mathbf{w}\\|_2^2 + \\frac{\\lambda}{2}\\|\\mathbf{w}\\|_2^2\\;\\left(\\lambda = \\frac{\\sigma^2}{\\tau^2}\\right),\\qquad \\hat{\\mathbf{w}}_{\\mathrm{ridge}} = (X^\\top X + \\lambda I)^{-1} X^\\top \\mathbf{y}",
+      "aliases_latex": [
+        "\\min_{\\mathbf{w}} \\left(\\|\\mathbf{y} - X\\mathbf{w}\\|_2^2 + \\lambda \\|\\mathbf{w}\\|_2^2\\right)"
+      ],
+      "keywords": [
+        "Ridge回帰",
+        "L2正則化",
+        "ガウス事前分布",
+        "MAP推定",
+        "縮小推定"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "optimization"
+      ]
+    },
+    {
+      "id": "eng.ml1.n04_lasso_l1_map_soft_threshold",
+      "short_code": "ML1_04",
+      "kind": "theorem_formula",
+      "title": "Lasso回帰（L1正則化）とラプラス事前分布のMAP推定・軟閾値解",
+      "summary": "ラプラス事前分布によるMAP推定がL1正則化（Lasso）に対応し、劣微分条件から直交計画行列の下でスパース性を生む軟閾値作用素が得られることを示す。",
+      "canonical_latex": "p(\\mathbf{w}) = \\prod_{j=1}^{d}\\frac{1}{2b}e^{-|w_j|/b} \\implies J_{\\mathrm{lasso}}(\\mathbf{w}) = \\frac{1}{2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\lambda\\|\\mathbf{w}\\|_1\\;\\left(\\lambda=\\frac{\\sigma^2}{b}\\right),\\qquad X^\\top X = I \\implies \\hat{w}_j = \\operatorname{sign}(z_j)\\max(|z_j|-\\lambda, 0)\\;(z_j = \\mathbf{x}_j^\\top \\mathbf{y})",
+      "aliases_latex": [
+        "\\hat{w}_j = \\mathcal{S}_{\\lambda}(\\mathbf{x}_j^\\top \\mathbf{y})"
+      ],
+      "keywords": [
+        "Lasso回帰",
+        "L1正則化",
+        "ラプラス事前分布",
+        "軟閾値処理",
+        "スパース推定"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "optimization"
+      ]
+    },
+    {
+      "id": "eng.ml1.n05_logistic_sigmoid_bernoulli_model",
+      "short_code": "ML1_05",
+      "kind": "definition",
+      "title": "ロジスティック回帰モデルとシグモイド関数の定義",
+      "summary": "対数オッズの線形モデルからロジスティック・シグモイド関数とその導関数性質を導き、二値分類のベルヌーイ尤度モデルを定義する。",
+      "canonical_latex": "\\sigma(z) := \\frac{1}{1+e^{-z}},\\quad \\sigma'(z) = \\sigma(z)\\big(1-\\sigma(z)\\big),\\quad p(y=1 \\mid \\mathbf{x},\\mathbf{w}) = \\sigma(\\mathbf{w}^\\top \\mathbf{x}),\\quad p(y \\mid \\mathbf{x},\\mathbf{w}) = \\hat{y}^y (1-\\hat{y})^{1-y}\\;\\big(\\hat{y}=\\sigma(\\mathbf{w}^\\top \\mathbf{x})\\big)",
+      "aliases_latex": [
+        "\\operatorname{logit}(p) = \\ln\\frac{p}{1-p} = \\mathbf{w}^\\top \\mathbf{x}"
+      ],
+      "keywords": [
+        "ロジスティック回帰",
+        "シグモイド関数",
+        "ベルヌーイ分布",
+        "対数オッズ",
+        "二値分類"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "statistics"
+      ]
+    },
+    {
+      "id": "eng.ml1.n06_cross_entropy_loss_gradient",
+      "short_code": "ML1_06",
+      "kind": "theorem_formula",
+      "title": "ロジスティック回帰の交差エントロピー損失と勾配・凸性",
+      "summary": "ベルヌーイ尤度の負の対数尤度が二値交差エントロピー損失に等価であることを示し、その勾配および半正定値なヘッセ行列（凸性）を導出する。",
+      "canonical_latex": "L_{\\mathrm{CE}}(\\mathbf{w}) = -\\sum_{i=1}^{N}\\Big(y_i\\ln\\hat{y}_i + (1-y_i)\\ln(1-\\hat{y}_i)\\Big),\\quad \\nabla_{\\mathbf{w}} L_{\\mathrm{CE}}(\\mathbf{w}) = X^\\top(\\hat{\\mathbf{y}}-\\mathbf{y}),\\quad \\nabla_{\\mathbf{w}}^2 L_{\\mathrm{CE}}(\\mathbf{w}) = X^\\top R X \\succeq 0\\;\\big(R_{ii}=\\hat{y}_i(1-\\hat{y}_i)\\big)",
+      "aliases_latex": [
+        "\\nabla_{\\mathbf{w}} L_{\\mathrm{CE}}(\\mathbf{w}) = \\sum_{i=1}^{N}(\\hat{y}_i - y_i)\\mathbf{x}_i"
+      ],
+      "keywords": [
+        "交差エントロピー損失",
+        "最尤推定",
+        "勾配",
+        "ヘッセ行列",
+        "凸最適化"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "optimization"
+      ]
+    },
+    {
+      "id": "eng.ml1.n07_gradient_descent_def",
+      "short_code": "ML1_07",
+      "kind": "definition",
+      "title": "勾配降下法（最急降下法）の更新則とL-平滑性の定義",
+      "summary": "1次近似に基づく最急降下方向への反復更新則と、収束解析の基盤となる勾配のL-リプシッツ連続性（L-平滑性・降下補題）を定義する。",
+      "canonical_latex": "\\mathbf{w}_{k+1} = \\mathbf{w}_k - \\eta \\nabla f(\\mathbf{w}_k)\\;(\\eta > 0),\\qquad \\|\\nabla f(\\mathbf{u}) - \\nabla f(\\mathbf{v})\\|_2 \\le L\\|\\mathbf{u}-\\mathbf{v}\\|_2 \\implies f(\\mathbf{u}) \\le f(\\mathbf{v}) + \\nabla f(\\mathbf{v})^\\top(\\mathbf{u}-\\mathbf{v}) + \\frac{L}{2}\\|\\mathbf{u}-\\mathbf{v}\\|_2^2",
+      "aliases_latex": [
+        "\\mathbf{w}_{k+1} = \\mathbf{w}_k - \\eta \\nabla_{\\mathbf{w}} f(\\mathbf{w}_k)"
+      ],
+      "keywords": [
+        "勾配降下法",
+        "最急降下法",
+        "学習率",
+        "L-平滑性",
+        "降下補題"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "optimization"
+      ]
+    },
+    {
+      "id": "eng.ml1.n08_gd_convergence_l_smooth",
+      "short_code": "ML1_08",
+      "kind": "theorem_formula",
+      "title": "L-平滑関数・強凸関数に対する勾配降下法の収束条件と収束率",
+      "summary": "L-平滑関数におけるステップサイズ条件 0 < η < 2/L での単調減少性、およびμ-強凸関数における指数的（線形）収束率を導出する。",
+      "canonical_latex": "0 < \\eta < \\frac{2}{L} \\implies f(\\mathbf{w}_{k+1}) - f(\\mathbf{w}_k) \\le -\\eta\\left(1-\\frac{L\\eta}{2}\\right)\\|\\nabla f(\\mathbf{w}_k)\\|_2^2 \\le 0;\\qquad \\mu I \\preceq H_f \\preceq L I,\\;\\eta=\\frac{1}{L} \\implies f(\\mathbf{w}_k)-f(\\mathbf{w}^*) \\le \\left(1-\\frac{\\mu}{L}\\right)^k\\big(f(\\mathbf{w}_0)-f(\\mathbf{w}^*)\\big)",
+      "aliases_latex": [
+        "0 < \\eta < \\frac{2}{\\lambda_{\\max}(H_f)}"
+      ],
+      "keywords": [
+        "勾配降下法",
+        "収束条件",
+        "ステップサイズ",
+        "強凸性",
+        "線形収束"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "optimization"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_ml1_01_mle_map",
+      "target_node_id": "eng.ml1.n01_mle_map_framework",
+      "route_kind": "reformulation",
+      "title": "ベイズの定理とi.i.d.仮定によるMLE・MAP推定の対数定式化",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.ml1.n01_mle_map_framework"
+      ],
+      "assumptions": [
+        "観測データ (x_i, y_i) は互いに独立同分布（i.i.d.）である",
+        "p(D) > 0 かつ尤度と事前確率は正値をとる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p(\\mathbf{w} \\mid \\mathcal{D}) = \\frac{p(\\mathcal{D} \\mid \\mathbf{w}) p(\\mathbf{w})}{p(\\mathcal{D})}",
+          "to_latex": "\\hat{\\mathbf{w}}_{\\mathrm{MLE}} = \\arg\\max_{\\mathbf{w}} \\sum_{i=1}^{N} \\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}),\\qquad \\hat{\\mathbf{w}}_{\\mathrm{MAP}} = \\arg\\max_{\\mathbf{w}} \\left( \\sum_{i=1}^{N} \\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) + \\ln p(\\mathbf{w}) \\right)",
+          "operation_label": "対数変換とi.i.d.分解",
+          "explanation": "ベイズの定理から対数事後確率の最大化問題を構成し、データの独立性により和に分解してMAP推定と一様事前分布に対応するMLEを得る。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(\\mathbf{w} \\mid \\mathcal{D}) = \\frac{p(\\mathcal{D} \\mid \\mathbf{w}) p(\\mathbf{w})}{p(\\mathcal{D})}",
+          "to_latex": "\\hat{\\mathbf{w}}_{\\mathrm{MAP}} = \\arg\\max_{\\mathbf{w}} \\ln \\big( p(\\mathcal{D} \\mid \\mathbf{w}) p(\\mathbf{w}) \\big)",
+          "operation_label": "定数分母の除外と対数単調増加性",
+          "explanation": "周辺尤度 p(D) はパラメータ w に依存しないため最大化において無視でき、対数関数 ln の単調増加性により対数積の最大化に帰着する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{w}}_{\\mathrm{MAP}} = \\arg\\max_{\\mathbf{w}} \\ln \\big( p(\\mathcal{D} \\mid \\mathbf{w}) p(\\mathbf{w}) \\big)",
+          "to_latex": "\\hat{\\mathbf{w}}_{\\mathrm{MAP}} = \\arg\\max_{\\mathbf{w}} \\left( \\sum_{i=1}^{N} \\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) + \\ln p(\\mathbf{w}) \\right)",
+          "operation_label": "i.i.d.仮定による尤度の積の分解",
+          "explanation": "i.i.d. 仮定より p(D|w) = Π_i p(y_i|x_i,w) となるため、対数をとることで各データ点の対数尤度の和と対数事前確率の和になる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{w}}_{\\mathrm{MAP}} = \\arg\\max_{\\mathbf{w}} \\left( \\sum_{i=1}^{N} \\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) + \\ln p(\\mathbf{w}) \\right)",
+          "to_latex": "\\hat{\\mathbf{w}}_{\\mathrm{MLE}} = \\arg\\max_{\\mathbf{w}} \\sum_{i=1}^{N} \\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}),\\qquad \\hat{\\mathbf{w}}_{\\mathrm{MAP}} = \\arg\\max_{\\mathbf{w}} \\left( \\sum_{i=1}^{N} \\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) + \\ln p(\\mathbf{w}) \\right)",
+          "operation_label": "一様事前分布極限としてのMLE",
+          "explanation": "事前分布 p(w) を定数とみなす（無情報事前分布）と第2項が定数となり、対数尤度のみを最大化する最尤推定（MLE）の式が得られる。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml1_02_ols_mle",
+      "target_node_id": "eng.ml1.n02_linear_regression_ols_mle",
+      "route_kind": "deductive",
+      "title": "ガウス雑音線形モデルからの二乗誤差と正規方程式の導出",
+      "premise_node_ids": [
+        "eng.ml1.n01_mle_map_framework"
+      ],
+      "required_math_node_ids": [
+        "eng.ml1.n02_linear_regression_ols_mle",
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.e05_hessian_extremum_test"
+      ],
+      "assumptions": [
+        "雑音 ε_i は平均0・分散 σ^2 の独立同分布正規分布に従う",
+        "計画行列 X は列フルランクまたは X^T X が半正定値である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) = \\frac{1}{\\sqrt{2\\pi\\sigma^2}} \\exp\\!\\left(-\\frac{(y_i - \\mathbf{w}^\\top \\mathbf{x}_i)^2}{2\\sigma^2}\\right)",
+          "to_latex": "-\\ln p(\\mathbf{y} \\mid X,\\mathbf{w}) = \\frac{1}{2\\sigma^2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\mathrm{const.},\\qquad X^\\top X \\hat{\\mathbf{w}}_{\\mathrm{OLS}} = X^\\top \\mathbf{y}",
+          "operation_label": "負の対数尤度の展開と停留点条件の適用",
+          "explanation": "ガウス尤度の負の対数をとって二乗和誤差を導き、パラメータに関する勾配を0とおくことで正規方程式を得る。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework",
+            "eng.ml1.n02_linear_regression_ols_mle",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) = \\frac{1}{\\sqrt{2\\pi\\sigma^2}} \\exp\\!\\left(-\\frac{(y_i - \\mathbf{w}^\\top \\mathbf{x}_i)^2}{2\\sigma^2}\\right)",
+          "to_latex": "-\\sum_{i=1}^{N}\\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) = \\frac{1}{2\\sigma^2}\\sum_{i=1}^{N}(y_i - \\mathbf{w}^\\top \\mathbf{x}_i)^2 + \\frac{N}{2}\\ln(2\\pi\\sigma^2)",
+          "operation_label": "負の対数尤度の計算",
+          "explanation": "MLEの最大化を負の対数尤度の最小化に書き換えると、指数部が二乗和として取り出され定数項と分離される。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\sum_{i=1}^{N}\\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) = \\frac{1}{2\\sigma^2}\\sum_{i=1}^{N}(y_i - \\mathbf{w}^\\top \\mathbf{x}_i)^2 + \\frac{N}{2}\\ln(2\\pi\\sigma^2)",
+          "to_latex": "\\nabla_{\\mathbf{w}} \\left(\\frac{1}{2}\\|\\mathbf{y} - X\\mathbf{w}\\|_2^2\\right) = X^\\top(X\\mathbf{w} - \\mathbf{y}) = \\mathbf{0},\\quad H = X^\\top X \\succeq 0",
+          "operation_label": "ベクトル表現と1階・2階条件",
+          "explanation": "w に無関係な定数と正の係数 1/σ^2 を除いた二乗誤差を w で微分して勾配を0とおき、ヘッセ行列 X^T X が半正定値であることから大域的最小解であることを確認する。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\mathbf{w}} \\left(\\frac{1}{2}\\|\\mathbf{y} - X\\mathbf{w}\\|_2^2\\right) = X^\\top(X\\mathbf{w} - \\mathbf{y}) = \\mathbf{0},\\quad H = X^\\top X \\succeq 0",
+          "to_latex": "-\\ln p(\\mathbf{y} \\mid X,\\mathbf{w}) = \\frac{1}{2\\sigma^2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\mathrm{const.},\\qquad X^\\top X \\hat{\\mathbf{w}}_{\\mathrm{OLS}} = X^\\top \\mathbf{y}",
+          "operation_label": "正規方程式への整理",
+          "explanation": "勾配方程式 X^T(Xw - y) = 0 を整理することで最小二乗法の正規方程式が得られる。",
+          "used_node_ids": [
+            "eng.ml1.n02_linear_regression_ols_mle"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml1_03_ridge_map",
+      "target_node_id": "eng.ml1.n03_ridge_l2_map_equivalence",
+      "route_kind": "deductive",
+      "title": "ガウス事前分布によるMAP推定からのRidge回帰と閉形式解の導出",
+      "premise_node_ids": [
+        "eng.ml1.n01_mle_map_framework",
+        "eng.ml1.n02_linear_regression_ols_mle"
+      ],
+      "required_math_node_ids": [
+        "eng.ml1.n03_ridge_l2_map_equivalence",
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "assumptions": [
+        "事前分布は平均0・等方分散 τ^2 I の多変量正規分布である",
+        "λ = σ^2 / τ^2 > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-\\ln p(\\mathbf{y} \\mid X,\\mathbf{w}) - \\ln p(\\mathbf{w}) = \\frac{1}{2\\sigma^2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\frac{1}{2\\tau^2}\\|\\mathbf{w}\\|_2^2 + \\mathrm{const.}",
+          "to_latex": "J_{\\mathrm{ridge}}(\\mathbf{w}) = \\frac{1}{2}\\|\\mathbf{y} - X\\mathbf{w}\\|_2^2 + \\frac{\\lambda}{2}\\|\\mathbf{w}\\|_2^2\\;\\left(\\lambda = \\frac{\\sigma^2}{\\tau^2}\\right),\\qquad \\hat{\\mathbf{w}}_{\\mathrm{ridge}} = (X^\\top X + \\lambda I)^{-1} X^\\top \\mathbf{y}",
+          "operation_label": "L2正則化目的関数の構成と正規方程式の解法",
+          "explanation": "ガウス事前分布の対数項からL2正則化項を導き、正定値なヘッセ行列 X^T X + λI により一意な閉形式解を得る。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework",
+            "eng.ml1.n02_linear_regression_ols_mle",
+            "eng.ml1.n03_ridge_l2_map_equivalence",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\ln p(\\mathbf{y} \\mid X,\\mathbf{w}) - \\ln p(\\mathbf{w}) = \\frac{1}{2\\sigma^2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\frac{1}{2\\tau^2}\\|\\mathbf{w}\\|_2^2 + \\mathrm{const.}",
+          "to_latex": "J_{\\mathrm{ridge}}(\\mathbf{w}) = \\frac{1}{2}\\|\\mathbf{y} - X\\mathbf{w}\\|_2^2 + \\frac{\\lambda}{2}\\|\\mathbf{w}\\|_2^2,\\quad \\lambda = \\frac{\\sigma^2}{\\tau^2} > 0",
+          "operation_label": "正則化パラメータの導入とスケーリング",
+          "explanation": "全体に σ^2 を掛けて定数項を除くと、λ = σ^2 / τ^2 を正則化係数とするRidge回帰の目的関数になる。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework",
+            "eng.ml1.n02_linear_regression_ols_mle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{\\mathrm{ridge}}(\\mathbf{w}) = \\frac{1}{2}\\|\\mathbf{y} - X\\mathbf{w}\\|_2^2 + \\frac{\\lambda}{2}\\|\\mathbf{w}\\|_2^2,\\quad \\lambda = \\frac{\\sigma^2}{\\tau^2} > 0",
+          "to_latex": "\\nabla_{\\mathbf{w}} J_{\\mathrm{ridge}}(\\mathbf{w}) = (X^\\top X + \\lambda I)\\mathbf{w} - X^\\top \\mathbf{y} = \\mathbf{0},\\quad H = X^\\top X + \\lambda I \\succ 0",
+          "operation_label": "勾配の零化と正定値性の確認",
+          "explanation": "勾配を0とおいた線形方程式において、X^T X が半正定値かつ λI が正定値であるため和は厳密に正定値となり可逆である。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\mathbf{w}} J_{\\mathrm{ridge}}(\\mathbf{w}) = (X^\\top X + \\lambda I)\\mathbf{w} - X^\\top \\mathbf{y} = \\mathbf{0},\\quad H = X^\\top X + \\lambda I \\succ 0",
+          "to_latex": "J_{\\mathrm{ridge}}(\\mathbf{w}) = \\frac{1}{2}\\|\\mathbf{y} - X\\mathbf{w}\\|_2^2 + \\frac{\\lambda}{2}\\|\\mathbf{w}\\|_2^2\\;\\left(\\lambda = \\frac{\\sigma^2}{\\tau^2}\\right),\\qquad \\hat{\\mathbf{w}}_{\\mathrm{ridge}} = (X^\\top X + \\lambda I)^{-1} X^\\top \\mathbf{y}",
+          "operation_label": "逆行列の乗算による閉形式解の導出",
+          "explanation": "正定値行列 X^T X + λI の逆行列を左から掛けて一意な大域的最小解を得る。",
+          "used_node_ids": [
+            "eng.ml1.n03_ridge_l2_map_equivalence"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml1_04_lasso_map",
+      "target_node_id": "eng.ml1.n04_lasso_l1_map_soft_threshold",
+      "route_kind": "deductive",
+      "title": "ラプラス事前分布によるMAP推定からのLasso目的関数と軟閾値解の導出",
+      "premise_node_ids": [
+        "eng.ml1.n01_mle_map_framework",
+        "eng.ml1.n02_linear_regression_ols_mle"
+      ],
+      "required_math_node_ids": [
+        "eng.ml1.n04_lasso_l1_map_soft_threshold"
+      ],
+      "assumptions": [
+        "各重み w_j は独立に尺度母数 b > 0 のラプラス分布に従う",
+        "閉形式解の導出では直交特徴量 X^T X = I を仮定する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-\\ln p(\\mathbf{y} \\mid X,\\mathbf{w}) - \\ln p(\\mathbf{w}) = \\frac{1}{2\\sigma^2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\frac{1}{b}\\|\\mathbf{w}\\|_1 + \\mathrm{const.}",
+          "to_latex": "J_{\\mathrm{lasso}}(\\mathbf{w}) = \\frac{1}{2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\lambda\\|\\mathbf{w}\\|_1,\\qquad X^\\top X = I \\implies \\hat{w}_j = \\operatorname{sign}(z_j)\\max(|z_j|-\\lambda, 0)\\;(z_j = \\mathbf{x}_j^\\top \\mathbf{y})",
+          "operation_label": "L1正則化と劣微分条件による軟閾値導出",
+          "explanation": "ラプラス事前分布からL1正則化目的関数を得て、直交計画の下で絶対値の劣微分最適条件を解くことで軟閾値解を導く。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework",
+            "eng.ml1.n02_linear_regression_ols_mle",
+            "eng.ml1.n04_lasso_l1_map_soft_threshold"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\ln p(\\mathbf{y} \\mid X,\\mathbf{w}) - \\ln p(\\mathbf{w}) = \\frac{1}{2\\sigma^2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\frac{1}{b}\\|\\mathbf{w}\\|_1 + \\mathrm{const.}",
+          "to_latex": "J_{\\mathrm{lasso}}(\\mathbf{w}) = \\frac{1}{2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\lambda\\|\\mathbf{w}\\|_1,\\quad \\lambda = \\frac{\\sigma^2}{b} > 0",
+          "operation_label": "Lasso目的関数の構成",
+          "explanation": "全体に σ^2 を掛けて定数項を除外すると、λ = σ^2 / b を持つL1正則化付き二乗誤差が得られる。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework",
+            "eng.ml1.n02_linear_regression_ols_mle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{\\mathrm{lasso}}(\\mathbf{w}) = \\frac{1}{2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\lambda\\|\\mathbf{w}\\|_1,\\quad \\lambda = \\frac{\\sigma^2}{b} > 0",
+          "to_latex": "0 \\in w_j - z_j + \\lambda \\partial |w_j|,\\quad \\partial |w_j| = \\begin{cases} \\{1\\} & (w_j > 0) \\\\ [-1,1] & (w_j = 0) \\\\ \\{-1\\} & (w_j < 0) \\end{cases}",
+          "operation_label": "直交条件での座標分離と劣微分最適条件",
+          "explanation": "X^T X = I のとき目的関数は各座標 w_j ごとに分離され、凸関数の1階最適条件 0 ∈ ∂J_lasso により各成分の劣微分方程式を得る。",
+          "used_node_ids": [
+            "eng.ml1.n04_lasso_l1_map_soft_threshold"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 \\in w_j - z_j + \\lambda \\partial |w_j|,\\quad \\partial |w_j| = \\begin{cases} \\{1\\} & (w_j > 0) \\\\ [-1,1] & (w_j = 0) \\\\ \\{-1\\} & (w_j < 0) \\end{cases}",
+          "to_latex": "J_{\\mathrm{lasso}}(\\mathbf{w}) = \\frac{1}{2}\\|\\mathbf{y}-X\\mathbf{w}\\|_2^2 + \\lambda\\|\\mathbf{w}\\|_1,\\qquad X^\\top X = I \\implies \\hat{w}_j = \\operatorname{sign}(z_j)\\max(|z_j|-\\lambda, 0)\\;(z_j = \\mathbf{x}_j^\\top \\mathbf{y})",
+          "operation_label": "場合分けによる軟閾値作用素の導出",
+          "explanation": "|z_j| <= λ のとき w_j = 0 が条件を満たし、z_j > λ なら z_j - λ、z_j < -λ なら z_j + λ となるため軟閾値表示に帰着する。",
+          "used_node_ids": [
+            "eng.ml1.n04_lasso_l1_map_soft_threshold"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml1_05_logistic_model",
+      "target_node_id": "eng.ml1.n05_logistic_sigmoid_bernoulli_model",
+      "route_kind": "reformulation",
+      "title": "対数オッズ線形仮定からのシグモイド関数とベルヌーイモデルの構成",
+      "premise_node_ids": [
+        "eng.ml1.n01_mle_map_framework"
+      ],
+      "required_math_node_ids": [
+        "eng.ml1.n05_logistic_sigmoid_bernoulli_model",
+        "math.calc.m01_chain_rule",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "目的変数 y は {0, 1} の2値をとる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ln \\frac{p(y=1\\mid\\mathbf{x},\\mathbf{w})}{1 - p(y=1\\mid\\mathbf{x},\\mathbf{w})} = \\mathbf{w}^\\top \\mathbf{x},\\quad y \\in \\{0,1\\}",
+          "to_latex": "\\sigma(z) := \\frac{1}{1+e^{-z}},\\quad \\sigma'(z) = \\sigma(z)\\big(1-\\sigma(z)\\big),\\quad p(y \\mid \\mathbf{x},\\mathbf{w}) = \\hat{y}^y (1-\\hat{y})^{1-y}\\;\\big(\\hat{y}=\\sigma(\\mathbf{w}^\\top \\mathbf{x})\\big)",
+          "operation_label": "ロジット逆変換と微分公式・ベルヌーイ尤度の構成",
+          "explanation": "線形対数オッズを確率について解くことでシグモイド関数を得て、その微分性質とベルヌーイ分布による尤度表示をまとめる。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework",
+            "eng.ml1.n05_logistic_sigmoid_bernoulli_model",
+            "math.calc.m01_chain_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln \\frac{p(y=1\\mid\\mathbf{x},\\mathbf{w})}{1 - p(y=1\\mid\\mathbf{x},\\mathbf{w})} = \\mathbf{w}^\\top \\mathbf{x},\\quad y \\in \\{0,1\\}",
+          "to_latex": "p(y=1\\mid\\mathbf{x},\\mathbf{w}) = \\frac{1}{1 + e^{-\\mathbf{w}^\\top \\mathbf{x}}} = \\sigma(\\mathbf{w}^\\top \\mathbf{x})",
+          "operation_label": "ロジット方程式の解法",
+          "explanation": "両辺の指数をとって p(y=1|x,w) について整理すると、シグモイド関数 σ(w^T x) が得られる。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(y=1\\mid\\mathbf{x},\\mathbf{w}) = \\frac{1}{1 + e^{-\\mathbf{w}^\\top \\mathbf{x}}} = \\sigma(\\mathbf{w}^\\top \\mathbf{x})",
+          "to_latex": "\\sigma'(z) = \\frac{e^{-z}}{(1+e^{-z})^2} = \\frac{1}{1+e^{-z}}\\left(1 - \\frac{1}{1+e^{-z}}\\right) = \\sigma(z)\\big(1-\\sigma(z)\\big)",
+          "operation_label": "連鎖律によるシグモイド関数の微分",
+          "explanation": "(1+e^{-z})^{-1} に連鎖律と指数関数の微分を適用し、σ(z) と 1-σ(z) の積に変形する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": "diff(1/(1+exp(-z)), z) - (1/(1+exp(-z)))*(1 - 1/(1+exp(-z)))"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma'(z) = \\frac{e^{-z}}{(1+e^{-z})^2} = \\frac{1}{1+e^{-z}}\\left(1 - \\frac{1}{1+e^{-z}}\\right) = \\sigma(z)\\big(1-\\sigma(z)\\big)",
+          "to_latex": "\\sigma(z) := \\frac{1}{1+e^{-z}},\\quad \\sigma'(z) = \\sigma(z)\\big(1-\\sigma(z)\\big),\\quad p(y \\mid \\mathbf{x},\\mathbf{w}) = \\hat{y}^y (1-\\hat{y})^{1-y}\\;\\big(\\hat{y}=\\sigma(\\mathbf{w}^\\top \\mathbf{x})\\big)",
+          "operation_label": "ベルヌーイ分布表現の結合",
+          "explanation": "y ∈ {0,1} を用いて p(y=1)=ŷ, p(y=0)=1-ŷ を単一の式 ŷ^y (1-ŷ)^{1-y} として表現する。",
+          "used_node_ids": [
+            "eng.ml1.n05_logistic_sigmoid_bernoulli_model"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml1_06_cross_entropy",
+      "target_node_id": "eng.ml1.n06_cross_entropy_loss_gradient",
+      "route_kind": "deductive",
+      "title": "ロジスティック回帰の負の対数尤度からの交差エントロピー損失・勾配・凸性の導出",
+      "premise_node_ids": [
+        "eng.ml1.n01_mle_map_framework",
+        "eng.ml1.n05_logistic_sigmoid_bernoulli_model"
+      ],
+      "required_math_node_ids": [
+        "eng.ml1.n06_cross_entropy_loss_gradient",
+        "math.calc.e01_hessian_matrix_def",
+        "math.calc.e04_quadratic_form_definiteness",
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "各標本は独立にベルヌーイ分布に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-\\sum_{i=1}^{N}\\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}),\\quad p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) = \\hat{y}_i^{y_i}(1-\\hat{y}_i)^{1-y_i}",
+          "to_latex": "L_{\\mathrm{CE}}(\\mathbf{w}) = -\\sum_{i=1}^{N}\\Big(y_i\\ln\\hat{y}_i + (1-y_i)\\ln(1-\\hat{y}_i)\\Big),\\quad \\nabla_{\\mathbf{w}} L_{\\mathrm{CE}}(\\mathbf{w}) = X^\\top(\\hat{\\mathbf{y}}-\\mathbf{y}),\\quad \\nabla_{\\mathbf{w}}^2 L_{\\mathrm{CE}}(\\mathbf{w}) = X^\\top R X \\succeq 0",
+          "operation_label": "負の対数尤度の展開と1階・2階微分の計算",
+          "explanation": "ベルヌーイ尤度の負の対数から交差エントロピー損失を得て、シグモイド導関数の相殺により勾配 X^T(ŷ - y) と半正定値ヘッセ行列を導出する。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework",
+            "eng.ml1.n05_logistic_sigmoid_bernoulli_model",
+            "eng.ml1.n06_cross_entropy_loss_gradient",
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.e04_quadratic_form_definiteness",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\sum_{i=1}^{N}\\ln p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}),\\quad p(y_i \\mid \\mathbf{x}_i, \\mathbf{w}) = \\hat{y}_i^{y_i}(1-\\hat{y}_i)^{1-y_i}",
+          "to_latex": "L_{\\mathrm{CE}}(\\mathbf{w}) = -\\sum_{i=1}^{N}\\Big(y_i\\ln\\hat{y}_i + (1-y_i)\\ln(1-\\hat{y}_i)\\Big)",
+          "operation_label": "対数尤度の展開",
+          "explanation": "ベルヌーイ確率の対数をとることで指数 y_i, 1-y_i が係数に降り、二値交差エントロピー損失の式が得られる。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework",
+            "eng.ml1.n05_logistic_sigmoid_bernoulli_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L_{\\mathrm{CE}}(\\mathbf{w}) = -\\sum_{i=1}^{N}\\Big(y_i\\ln\\hat{y}_i + (1-y_i)\\ln(1-\\hat{y}_i)\\Big)",
+          "to_latex": "\\nabla_{\\mathbf{w}} L_{\\mathrm{CE}}(\\mathbf{w}) = -\\sum_{i=1}^{N}\\left(\\frac{y_i}{\\hat{y}_i}-\\frac{1-y_i}{1-\\hat{y}_i}\\right)\\hat{y}_i(1-\\hat{y}_i)\\mathbf{x}_i = \\sum_{i=1}^{N}(\\hat{y}_i - y_i)\\mathbf{x}_i = X^\\top(\\hat{\\mathbf{y}}-\\mathbf{y})",
+          "operation_label": "連鎖律とシグモイド導関数による勾配計算",
+          "explanation": "∂ŷ_i/∂w = ŷ_i(1-ŷ_i)x_i を代入すると分母の ŷ_i(1-ŷ_i) が約分され、予測誤差 ŷ_i - y_i と特徴量 x_i の積に簡約される。",
+          "used_node_ids": [
+            "eng.ml1.n05_logistic_sigmoid_bernoulli_model",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\mathbf{w}} L_{\\mathrm{CE}}(\\mathbf{w}) = -\\sum_{i=1}^{N}\\left(\\frac{y_i}{\\hat{y}_i}-\\frac{1-y_i}{1-\\hat{y}_i}\\right)\\hat{y}_i(1-\\hat{y}_i)\\mathbf{x}_i = \\sum_{i=1}^{N}(\\hat{y}_i - y_i)\\mathbf{x}_i = X^\\top(\\hat{\\mathbf{y}}-\\mathbf{y})",
+          "to_latex": "L_{\\mathrm{CE}}(\\mathbf{w}) = -\\sum_{i=1}^{N}\\Big(y_i\\ln\\hat{y}_i + (1-y_i)\\ln(1-\\hat{y}_i)\\Big),\\quad \\nabla_{\\mathbf{w}} L_{\\mathrm{CE}}(\\mathbf{w}) = X^\\top(\\hat{\\mathbf{y}}-\\mathbf{y}),\\quad \\nabla_{\\mathbf{w}}^2 L_{\\mathrm{CE}}(\\mathbf{w}) = X^\\top R X \\succeq 0",
+          "operation_label": "ヘッセ行列の計算と半正定値性の証明",
+          "explanation": "勾配をさらに w で微分すると R_ii = ŷ_i(1-ŷ_i) > 0 なる対角行列 R により X^T R X となり、任意の v に対し v^T X^T R X v >= 0 が成り立つため凸関数である。",
+          "used_node_ids": [
+            "eng.ml1.n06_cross_entropy_loss_gradient",
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml1_07_gd_def",
+      "target_node_id": "eng.ml1.n07_gradient_descent_def",
+      "route_kind": "reformulation",
+      "title": "2次テイラー展開からの勾配降下法更新則とL-平滑降下補題の構成",
+      "premise_node_ids": [
+        "math.calc.e02_multivariable_taylor_2nd",
+        "math.calc.e03_stationary_point_condition"
+      ],
+      "required_math_node_ids": [
+        "eng.ml1.n07_gradient_descent_def",
+        "math.calc.e01_hessian_matrix_def"
+      ],
+      "assumptions": [
+        "目的関数 f は微分可能であり、勾配はリプシッツ定数 L で連続である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f(\\mathbf{w}+\\mathbf{h}) = f(\\mathbf{w}) + \\nabla f(\\mathbf{w})^\\top \\mathbf{h} + \\frac{1}{2}\\mathbf{h}^\\top H_f(\\mathbf{w}+\\theta\\mathbf{h})\\mathbf{h}",
+          "to_latex": "\\mathbf{w}_{k+1} = \\mathbf{w}_k - \\eta \\nabla f(\\mathbf{w}_k),\\qquad f(\\mathbf{u}) \\le f(\\mathbf{v}) + \\nabla f(\\mathbf{v})^\\top(\\mathbf{u}-\\mathbf{v}) + \\frac{L}{2}\\|\\mathbf{u}-\\mathbf{v}\\|_2^2",
+          "operation_label": "1次近似の最急降下方向選択と2次項のL上界評価",
+          "explanation": "1次近似を最も減少させる方向として負の勾配方向を選び、2次剰余項をL-平滑性で上から抑えることで降下補題を定式化する。",
+          "used_node_ids": [
+            "eng.ml1.n07_gradient_descent_def",
+            "math.calc.e01_hessian_matrix_def",
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\mathbf{w}+\\mathbf{h}) = f(\\mathbf{w}) + \\nabla f(\\mathbf{w})^\\top \\mathbf{h} + \\frac{1}{2}\\mathbf{h}^\\top H_f(\\mathbf{w}+\\theta\\mathbf{h})\\mathbf{h}",
+          "to_latex": "\\arg\\min_{\\|\\mathbf{h}\\|_2 \\le \\epsilon} \\big(f(\\mathbf{w}_k) + \\nabla f(\\mathbf{w}_k)^\\top \\mathbf{h}\\big) \\implies \\mathbf{w}_{k+1} = \\mathbf{w}_k - \\eta \\nabla f(\\mathbf{w}_k)",
+          "operation_label": "最急降下方向の決定",
+          "explanation": "コーシー＝シュワルツの不等式より、微小変位 h の中で1次近似項を最小化するのは負の勾配方向 -∇f(w_k) である。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\arg\\min_{\\|\\mathbf{h}\\|_2 \\le \\epsilon} \\big(f(\\mathbf{w}_k) + \\nabla f(\\mathbf{w}_k)^\\top \\mathbf{h}\\big) \\implies \\mathbf{w}_{k+1} = \\mathbf{w}_k - \\eta \\nabla f(\\mathbf{w}_k)",
+          "to_latex": "\\mathbf{w}_{k+1} = \\mathbf{w}_k - \\eta \\nabla f(\\mathbf{w}_k),\\qquad f(\\mathbf{u}) \\le f(\\mathbf{v}) + \\nabla f(\\mathbf{v})^\\top(\\mathbf{u}-\\mathbf{v}) + \\frac{L}{2}\\|\\mathbf{u}-\\mathbf{v}\\|_2^2",
+          "operation_label": "L-平滑性による2次上界（降下補題）の導出",
+          "explanation": "勾配のL-リプシッツ連続性（あるいはヘッセ行列の固有値上界 ||H_f|| <= L）をテイラー展開の2次項に適用すると、2次上界不等式が得られる。",
+          "used_node_ids": [
+            "eng.ml1.n07_gradient_descent_def",
+            "math.calc.e01_hessian_matrix_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml1_08_gd_convergence",
+      "target_node_id": "eng.ml1.n08_gd_convergence_l_smooth",
+      "route_kind": "deductive",
+      "title": "降下補題と強凸性からの勾配降下法収束条件・線形収束率の導出",
+      "premise_node_ids": [
+        "eng.ml1.n07_gradient_descent_def"
+      ],
+      "required_math_node_ids": [
+        "eng.ml1.n08_gd_convergence_l_smooth",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "assumptions": [
+        "f は L-平滑である（線形収束率についてはさらに μ-強凸かつ最適解 w* が存在すると仮定する）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f(\\mathbf{w}_{k+1}) \\le f(\\mathbf{w}_k) + \\nabla f(\\mathbf{w}_k)^\\top(\\mathbf{w}_{k+1}-\\mathbf{w}_k) + \\frac{L}{2}\\|\\mathbf{w}_{k+1}-\\mathbf{w}_k\\|_2^2,\\quad \\mathbf{w}_{k+1}-\\mathbf{w}_k = -\\eta\\nabla f(\\mathbf{w}_k)",
+          "to_latex": "0 < \\eta < \\frac{2}{L} \\implies f(\\mathbf{w}_{k+1}) - f(\\mathbf{w}_k) \\le -\\eta\\left(1-\\frac{L\\eta}{2}\\right)\\|\\nabla f(\\mathbf{w}_k)\\|_2^2,\\qquad f(\\mathbf{w}_k)-f(\\mathbf{w}^*) \\le \\left(1-\\frac{\\mu}{L}\\right)^k\\big(f(\\mathbf{w}_0)-f(\\mathbf{w}^*)\\big)",
+          "operation_label": "更新則の代入による単調減少条件とPL不等式による線形収束導出",
+          "explanation": "降下補題に勾配降下ステップを代入して減少条件 0 < η < 2/L を導き、μ-強凸性から得られるPL不等式と帰納法により線形収束率を得る。",
+          "used_node_ids": [
+            "eng.ml1.n07_gradient_descent_def",
+            "eng.ml1.n08_gd_convergence_l_smooth",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\mathbf{w}_{k+1}) \\le f(\\mathbf{w}_k) + \\nabla f(\\mathbf{w}_k)^\\top(\\mathbf{w}_{k+1}-\\mathbf{w}_k) + \\frac{L}{2}\\|\\mathbf{w}_{k+1}-\\mathbf{w}_k\\|_2^2,\\quad \\mathbf{w}_{k+1}-\\mathbf{w}_k = -\\eta\\nabla f(\\mathbf{w}_k)",
+          "to_latex": "f(\\mathbf{w}_{k+1}) - f(\\mathbf{w}_k) \\le -\\eta\\left(1 - \\frac{L\\eta}{2}\\right)\\|\\nabla f(\\mathbf{w}_k)\\|_2^2",
+          "operation_label": "更新則の代入と減少量の評価",
+          "explanation": "w_{k+1} - w_k = -η∇f(w_k) を降下補題に代入して整理すると、1 - Lη/2 > 0 すなわち 0 < η < 2/L で目的関数値が単調減少することがわかる。",
+          "used_node_ids": [
+            "eng.ml1.n07_gradient_descent_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\mathbf{w}_{k+1}) - f(\\mathbf{w}_k) \\le -\\eta\\left(1 - \\frac{L\\eta}{2}\\right)\\|\\nabla f(\\mathbf{w}_k)\\|_2^2",
+          "to_latex": "\\|\\nabla f(\\mathbf{w}_k)\\|_2^2 \\ge 2\\mu\\big(f(\\mathbf{w}_k) - f(\\mathbf{w}^*)\\big),\\quad \\eta = \\frac{1}{L} \\implies f(\\mathbf{w}_{k+1}) - f(\\mathbf{w}^*) \\le \\left(1 - \\frac{\\mu}{L}\\right)\\big(f(\\mathbf{w}_k) - f(\\mathbf{w}^*)\\big)",
+          "operation_label": "強凸性（PL不等式）と最適ステップサイズ η=1/L の代入",
+          "explanation": "μ-強凸性による2次下界の最小化からポリャク＝ロジャシエヴィッチ（PL）不等式が得られ、最良の η = 1/L を代入して1ステップあたりの誤差縮小率 1 - μ/L を得る。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\|\\nabla f(\\mathbf{w}_k)\\|_2^2 \\ge 2\\mu\\big(f(\\mathbf{w}_k) - f(\\mathbf{w}^*)\\big),\\quad \\eta = \\frac{1}{L} \\implies f(\\mathbf{w}_{k+1}) - f(\\mathbf{w}^*) \\le \\left(1 - \\frac{\\mu}{L}\\right)\\big(f(\\mathbf{w}_k) - f(\\mathbf{w}^*)\\big)",
+          "to_latex": "0 < \\eta < \\frac{2}{L} \\implies f(\\mathbf{w}_{k+1}) - f(\\mathbf{w}_k) \\le -\\eta\\left(1-\\frac{L\\eta}{2}\\right)\\|\\nabla f(\\mathbf{w}_k)\\|_2^2,\\qquad f(\\mathbf{w}_k)-f(\\mathbf{w}^*) \\le \\left(1-\\frac{\\mu}{L}\\right)^k\\big(f(\\mathbf{w}_0)-f(\\mathbf{w}^*)\\big)",
+          "operation_label": "k回反復に対する帰納法の適用",
+          "explanation": "1ステップごとの縮小不等式を k 回繰り返し適用することで、条件数 L/μ に応じた指数的（線形）収束率が得られる。",
+          "used_node_ids": [
+            "eng.ml1.n08_gd_convergence_l_smooth"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,711 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.ctrl.modern_state_space",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "control_engineering",
+    "title": "現代制御1：状態空間表現・可制御性・可観測性と極配置法",
+    "language": "ja",
+    "description": "状態方程式 ẋ=Ax+Bu, y=Cx の解、可制御性・可観測性行列のランク条件、状態フィードバックによる極配置、ルーエンバーガーオブザーバと分離定理を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.ctrl3.n01_state_space_model_def",
+      "short_code": "CTRL3_01",
+      "kind": "definition",
+      "title": "連続時間LTIシステムの状態空間表現",
+      "summary": "n次元状態ベクトル、m次元入力、p次元出力を用いた1階連立線形常微分方程式（状態方程式）および出力方程式によるシステム表現の定義。",
+      "canonical_latex": "\\dot{\\mathbf{x}}(t) = A\\mathbf{x}(t) + B\\mathbf{u}(t),\\qquad \\mathbf{y}(t) = C\\mathbf{x}(t) + D\\mathbf{u}(t)\\quad (\\mathbf{x}\\in\\mathbb{R}^n,\\;\\mathbf{u}\\in\\mathbb{R}^m,\\;\\mathbf{y}\\in\\mathbb{R}^p)",
+      "aliases_latex": [
+        "\\dot{x} = Ax + Bu,\\; y = Cx + Du"
+      ],
+      "keywords": [
+        "状態空間表現",
+        "状態方程式",
+        "出力方程式",
+        "LTIシステム",
+        "状態ベクトル"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "modern_control"
+      ]
+    },
+    {
+      "id": "eng.ctrl3.n02_state_transition_matrix",
+      "short_code": "CTRL3_02",
+      "kind": "theorem_formula",
+      "title": "行列指数関数と状態遷移行列",
+      "summary": "正方行列Aに対する行列指数関数e^{At}のべき級数定義と、時間微分法則および半群性（状態遷移行列としての性質）。",
+      "canonical_latex": "\\Phi(t) = e^{At} := \\sum_{k=0}^{\\infty}\\frac{A^k t^k}{k!},\\quad \\frac{d}{dt}e^{At} = A e^{At} = e^{At} A,\\quad e^{A(t_1+t_2)} = e^{At_1}e^{At_2},\\quad (e^{At})^{-1} = e^{-At}",
+      "aliases_latex": [
+        "\\Phi(t,t_0) = e^{A(t-t_0)}"
+      ],
+      "keywords": [
+        "行列指数関数",
+        "状態遷移行列",
+        "半群性",
+        "マクローリン展開"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "modern_control"
+      ]
+    },
+    {
+      "id": "eng.ctrl3.n03_state_equation_solution",
+      "short_code": "CTRL3_03",
+      "kind": "theorem_formula",
+      "title": "状態方程式の一般解（零入力応答と零状態応答）",
+      "summary": "初期状態x(0)と入力u(t)に対する線形状態方程式の時間領域一般解（畳み込み積分表示）および出力応答。",
+      "canonical_latex": "\\mathbf{x}(t) = e^{At}\\mathbf{x}(0) + \\int_{0}^{t} e^{A(t-\\tau)}B\\mathbf{u}(\\tau)\\,d\\tau,\\qquad \\mathbf{y}(t) = Ce^{At}\\mathbf{x}(0) + C\\int_{0}^{t} e^{A(t-\\tau)}B\\mathbf{u}(\\tau)\\,d\\tau + D\\mathbf{u}(t)",
+      "aliases_latex": [
+        "X(s) = (sI - A)^{-1}\\mathbf{x}(0) + (sI - A)^{-1}B U(s)"
+      ],
+      "keywords": [
+        "状態方程式の解",
+        "零入力応答",
+        "零状態応答",
+        "定数変化法"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "modern_control"
+      ]
+    },
+    {
+      "id": "eng.ctrl3.n04_controllability_rank_condition",
+      "short_code": "CTRL3_04",
+      "kind": "theorem_formula",
+      "title": "可制御性とカルマンの可制御性行列ランク条件",
+      "summary": "任意の初期状態から有限時間で原点（または任意の状態）へ遷移させる入力が存在する条件と、可制御性行列のフルランク条件。",
+      "canonical_latex": "\\mathcal{C} := \\begin{bmatrix} B & AB & A^2B & \\cdots & A^{n-1}B \\end{bmatrix} \\in \\mathbb{R}^{n\\times nm},\\qquad (A,B)\\text{ is controllable} \\iff \\operatorname{rank}(\\mathcal{C}) = n",
+      "aliases_latex": [
+        "\\operatorname{rank}[B\\; AB\\; \\cdots\\; A^{n-1}B] = n"
+      ],
+      "keywords": [
+        "可制御性",
+        "可制御性行列",
+        "ランク条件",
+        "ケイリー・ハミルトンの定理"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "modern_control"
+      ]
+    },
+    {
+      "id": "eng.ctrl3.n05_observability_rank_condition",
+      "short_code": "CTRL3_05",
+      "kind": "theorem_formula",
+      "title": "可観測性と可観測性行列ランク条件（双対性）",
+      "summary": "有限時間の入出力観測から初期状態を一意に決定できる条件と、可観測性行列のフルランク条件および可制御性との双対関係。",
+      "canonical_latex": "\\mathcal{O} := \\begin{bmatrix} C \\\\ CA \\\\ CA^2 \\\\ \\vdots \\\\ CA^{n-1} \\end{bmatrix} \\in \\mathbb{R}^{np\\times n},\\qquad (C,A)\\text{ is observable} \\iff \\operatorname{rank}(\\mathcal{O}) = n",
+      "aliases_latex": [
+        "(C,A)\\text{ observable} \\iff (A^\\top, C^\\top)\\text{ controllable}"
+      ],
+      "keywords": [
+        "可観測性",
+        "可観測性行列",
+        "双対原理",
+        "ランク条件"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "modern_control"
+      ]
+    },
+    {
+      "id": "eng.ctrl3.n06_state_feedback_pole_placement",
+      "short_code": "CTRL3_06",
+      "kind": "theorem_formula",
+      "title": "状態フィードバック制御と極配置定理",
+      "summary": "状態フィードバック則u=-Kx+rによる閉ループ系と、可制御性を必要十分条件として閉ループ極を任意に配置できる極配置定理。",
+      "canonical_latex": "\\mathbf{u}(t) = -K\\mathbf{x}(t) + \\mathbf{r}(t) \\implies \\dot{\\mathbf{x}} = (A-BK)\\mathbf{x} + B\\mathbf{r};\\quad \\operatorname{rank}(\\mathcal{C})=n \\iff \\forall \\{\\lambda_i\\}_{i=1}^n,\\;\\exists K\\text{ s.t. }\\det(sI - A + BK) = \\prod_{i=1}^{n}(s-\\lambda_i)",
+      "aliases_latex": [
+        "K = \\begin{bmatrix} 0 & \\cdots & 0 & 1 \\end{bmatrix}\\mathcal{C}^{-1}p_{\\mathrm{des}}(A)"
+      ],
+      "keywords": [
+        "状態フィードバック",
+        "極配置法",
+        "アッカーマンの公式",
+        "閉ループ極"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "modern_control"
+      ]
+    },
+    {
+      "id": "eng.ctrl3.n07_luenberger_observer",
+      "short_code": "CTRL3_07",
+      "kind": "theorem_formula",
+      "title": "ルーエンバーガー状態オブザーバと誤差ダイナミクス",
+      "summary": "出力誤差フィードバックにより状態推定値x_hatを構成するルーエンバーガーオブザーバと、可観測性下での推定誤差の指数的収束。",
+      "canonical_latex": "\\dot{\\hat{\\mathbf{x}}}(t) = A\\hat{\\mathbf{x}}(t) + B\\mathbf{u}(t) + L\\big(\\mathbf{y}(t) - C\\hat{\\mathbf{x}}(t)\\big),\\quad \\mathbf{e}(t) := \\mathbf{x}(t) - \\hat{\\mathbf{x}}(t) \\implies \\dot{\\mathbf{e}}(t) = (A - LC)\\mathbf{e}(t)",
+      "aliases_latex": [
+        "\\det(sI - A + LC) = \\prod_{i=1}^{n}(s - \\mu_i)"
+      ],
+      "keywords": [
+        "状態オブザーバ",
+        "ルーエンバーガーオブザーバ",
+        "推定誤差",
+        "オブザーバゲイン"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "modern_control"
+      ]
+    },
+    {
+      "id": "eng.ctrl3.n08_separation_principle",
+      "short_code": "CTRL3_08",
+      "kind": "theorem_formula",
+      "title": "オブザーバ併合型状態フィードバックの分離定理",
+      "summary": "推定状態を用いたフィードバック系全体の特性多項式が、状態フィードバック極とオブザーバ極の積に分離し独立設計が可能となる定理。",
+      "canonical_latex": "\\mathbf{u} = -K\\hat{\\mathbf{x}} + \\mathbf{r} \\implies \\det\\!\\begin{pmatrix} sI - (A-BK) & -BK \\\\ 0 & sI - (A-LC) \\end{pmatrix} = \\det(sI - A + BK)\\det(sI - A + LC) = 0",
+      "aliases_latex": [
+        "\\sigma(A_{\\mathrm{cl}}) = \\sigma(A-BK) \\cup \\sigma(A-LC)"
+      ],
+      "keywords": [
+        "分離定理",
+        "動的出力フィードバック",
+        "ブロック三角行列",
+        "独立設計"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "modern_control"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.ctrl3.d01_state_space_model",
+      "target_node_id": "eng.ctrl3.n01_state_space_model_def",
+      "route_kind": "reformulation",
+      "title": "高階線形常微分方程式から1階状態空間表現への変換",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "対象システムは集中定数・線形時不変（LTI）であり、因果的である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "y^{(n)} + \\sum_{k=0}^{n-1}a_k y^{(k)} = \\sum_{m=0}^{n}b_m u^{(m)}",
+          "to_latex": "\\dot{\\mathbf{x}}(t) = A\\mathbf{x}(t) + B\\mathbf{u}(t),\\qquad \\mathbf{y}(t) = C\\mathbf{x}(t) + D\\mathbf{u}(t)\\quad (\\mathbf{x}\\in\\mathbb{R}^n,\\;\\mathbf{u}\\in\\mathbb{R}^m,\\;\\mathbf{y}\\in\\mathbb{R}^p)",
+          "operation_label": "状態変数の導入による1階連立系への定式化",
+          "explanation": "高階微分方程式に対し状態変数ベクトルを導入して1階連立微分方程式と出力の線形結合に書き換える。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_define_state_vector",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y^{(n)} + \\sum_{k=0}^{n-1}a_k y^{(k)} = \\sum_{m=0}^{n}b_m u^{(m)}",
+          "to_latex": "\\mathbf{x}(t) = (x_1(t),\\dots,x_n(t))^\\top \\in \\mathbb{R}^n,\\quad \\dot{x}_i = x_{i+1}\\;(i=1,\\dots,n-1)",
+          "operation_label": "位相変数（状態変数）の定義",
+          "explanation": "出力およびその導関数の線形結合から独立なn個の状態変数をベクトル空間の元として定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_matrix_representation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}(t) = (x_1(t),\\dots,x_n(t))^\\top \\in \\mathbb{R}^n,\\quad \\dot{x}_i = x_{i+1}\\;(i=1,\\dots,n-1)",
+          "to_latex": "\\dot{\\mathbf{x}}(t) = A\\mathbf{x}(t) + B\\mathbf{u}(t),\\qquad \\mathbf{y}(t) = C\\mathbf{x}(t) + D\\mathbf{u}(t)\\quad (\\mathbf{x}\\in\\mathbb{R}^n,\\;\\mathbf{u}\\in\\mathbb{R}^m,\\;\\mathbf{y}\\in\\mathbb{R}^p)",
+          "operation_label": "係数行列による行列表現",
+          "explanation": "微分作用素の線形性を用いて、状態の時間微分および出力をシステム行列(A,B,C,D)による線形写像として表現する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ctrl3.d02_state_transition_matrix",
+      "target_node_id": "eng.ctrl3.n02_state_transition_matrix",
+      "route_kind": "deductive",
+      "title": "べき級数定義による行列指数関数と微分・半群性の導出",
+      "premise_node_ids": [
+        "eng.ctrl3.n01_state_space_model_def",
+        "math.calc.t07_maclaurin_exp",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "行列べき級数は任意の有限時間tに対して一様絶対収束し、項別微分が可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "e^x = \\sum_{k=0}^{\\infty}\\frac{x^k}{k!},\\quad \\dot{\\mathbf{x}}(t) = A\\mathbf{x}(t)",
+          "to_latex": "\\Phi(t) = e^{At} := \\sum_{k=0}^{\\infty}\\frac{A^k t^k}{k!},\\quad \\frac{d}{dt}e^{At} = A e^{At} = e^{At} A,\\quad e^{A(t_1+t_2)} = e^{At_1}e^{At_2},\\quad (e^{At})^{-1} = e^{-At}",
+          "operation_label": "行列指数関数の定義と微分・半群則の証明",
+          "explanation": "スカラー指数関数のマクローリン展開を行列に拡張し、項別微分と二項展開により微分公式と指数法則を導く。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.calc.t07_maclaurin_exp"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_define_matrix_exp",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e^x = \\sum_{k=0}^{\\infty}\\frac{x^k}{k!},\\quad \\dot{\\mathbf{x}}(t) = A\\mathbf{x}(t)",
+          "to_latex": "\\Phi(t) = e^{At} := \\sum_{k=0}^{\\infty}\\frac{A^k t^k}{k!} = I + At + \\frac{A^2 t^2}{2!} + \\cdots",
+          "operation_label": "行列指数関数の級数定義",
+          "explanation": "e^xのマクローリン級数に行列Atを代入し、A^0=Iとして状態遷移行列を定義する。",
+          "used_node_ids": [
+            "eng.ctrl3.n01_state_space_model_def",
+            "math.calc.t07_maclaurin_exp"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_termwise_diff",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Phi(t) = e^{At} := \\sum_{k=0}^{\\infty}\\frac{A^k t^k}{k!} = I + At + \\frac{A^2 t^2}{2!} + \\cdots",
+          "to_latex": "\\frac{d}{dt}e^{At} = \\sum_{k=1}^{\\infty}\\frac{A^k t^{k-1}}{(k-1)!} = A\\sum_{m=0}^{\\infty}\\frac{A^m t^m}{m!} = A e^{At} = e^{At} A",
+          "operation_label": "項別微分による微分方程式の充足",
+          "explanation": "微分作用素の線形性により項別微分を行い、Aを左または右からくくり出すことで微分関係式を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_semigroup_property",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}e^{At} = \\sum_{k=1}^{\\infty}\\frac{A^k t^{k-1}}{(k-1)!} = A\\sum_{m=0}^{\\infty}\\frac{A^m t^m}{m!} = A e^{At} = e^{At} A",
+          "to_latex": "\\Phi(t) = e^{At} := \\sum_{k=0}^{\\infty}\\frac{A^k t^k}{k!},\\quad \\frac{d}{dt}e^{At} = A e^{At} = e^{At} A,\\quad e^{A(t_1+t_2)} = e^{At_1}e^{At_2},\\quad (e^{At})^{-1} = e^{-At}",
+          "operation_label": "可換性を用いた指数法則と逆行列の導出",
+          "explanation": "At_1とAt_2が可換であることから二項定理により級数の積がe^{A(t_1+t_2)}に一致し、t_2=-t_1から逆行列も従う。",
+          "used_node_ids": [
+            "math.calc.t07_maclaurin_exp"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ctrl3.d03_state_equation_solution",
+      "target_node_id": "eng.ctrl3.n03_state_equation_solution",
+      "route_kind": "deductive",
+      "title": "積分因子法（定数変化法）による状態方程式の一般解の導出",
+      "premise_node_ids": [
+        "eng.ctrl3.n01_state_space_model_def",
+        "eng.ctrl3.n02_state_transition_matrix",
+        "math.calc.m15_product_rule",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "入力u(t)は区分的連続である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{x}}(t) - A\\mathbf{x}(t) = B\\mathbf{u}(t)",
+          "to_latex": "\\mathbf{x}(t) = e^{At}\\mathbf{x}(0) + \\int_{0}^{t} e^{A(t-\\tau)}B\\mathbf{u}(\\tau)\\,d\\tau,\\qquad \\mathbf{y}(t) = Ce^{At}\\mathbf{x}(0) + C\\int_{0}^{t} e^{A(t-\\tau)}B\\mathbf{u}(\\tau)\\,d\\tau + D\\mathbf{u}(t)",
+          "operation_label": "積分因子e^{-At}による定数変化法と積分",
+          "explanation": "状態方程式の両辺に左からe^{-At}を掛けて積の微分形にまとめ、0からtまで積分した後にe^{At}を掛ける。",
+          "used_node_ids": [
+            "eng.ctrl3.n01_state_space_model_def",
+            "eng.ctrl3.n02_state_transition_matrix",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integrating_factor",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{x}}(t) - A\\mathbf{x}(t) = B\\mathbf{u}(t)",
+          "to_latex": "\\frac{d}{dt}\\big(e^{-At}\\mathbf{x}(t)\\big) = e^{-At}\\dot{\\mathbf{x}}(t) - e^{-At}A\\mathbf{x}(t) = e^{-At}B\\mathbf{u}(t)",
+          "operation_label": "積分因子e^{-At}の乗算と積の微分法則",
+          "explanation": "状態遷移行列の微分公式と積の微分法則を用いて左辺を単一の時間微分にまとめる。",
+          "used_node_ids": [
+            "eng.ctrl3.n02_state_transition_matrix",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integrate_and_solve",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\big(e^{-At}\\mathbf{x}(t)\\big) = e^{-At}\\dot{\\mathbf{x}}(t) - e^{-At}A\\mathbf{x}(t) = e^{-At}B\\mathbf{u}(t)",
+          "to_latex": "e^{-At}\\mathbf{x}(t) - \\mathbf{x}(0) = \\int_{0}^{t} e^{-A\\tau}B\\mathbf{u}(\\tau)\\,d\\tau",
+          "operation_label": "0からtまでの定積分",
+          "explanation": "微積分学の基本定理により両辺を0からtまで積分し、e^{0}=Iを用いる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_multiply_exp_and_output",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e^{-At}\\mathbf{x}(t) - \\mathbf{x}(0) = \\int_{0}^{t} e^{-A\\tau}B\\mathbf{u}(\\tau)\\,d\\tau",
+          "to_latex": "\\mathbf{x}(t) = e^{At}\\mathbf{x}(0) + \\int_{0}^{t} e^{A(t-\\tau)}B\\mathbf{u}(\\tau)\\,d\\tau,\\qquad \\mathbf{y}(t) = Ce^{At}\\mathbf{x}(0) + C\\int_{0}^{t} e^{A(t-\\tau)}B\\mathbf{u}(\\tau)\\,d\\tau + D\\mathbf{u}(t)",
+          "operation_label": "e^{At}の乗算と出力方程式への代入",
+          "explanation": "両辺に左からe^{At}を掛け、半群性e^{At}e^{-A\\tau}=e^{A(t-\\tau)}を適用して状態解を得、出力方程式に代入する。",
+          "used_node_ids": [
+            "eng.ctrl3.n01_state_space_model_def",
+            "eng.ctrl3.n02_state_transition_matrix"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ctrl3.d04_controllability_rank",
+      "target_node_id": "eng.ctrl3.n04_controllability_rank_condition",
+      "route_kind": "deductive",
+      "title": "ケイリー・ハミルトンの定理と像空間による可制御性ランク条件の導出",
+      "premise_node_ids": [
+        "eng.ctrl3.n03_state_equation_solution",
+        "eng.ctrl3.n02_state_transition_matrix",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ケイリー・ハミルトンの定理によりA^n以降のべき乗はI, A, ..., A^{n-1}の線形結合で表される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}(t_f) - e^{At_f}\\mathbf{x}(0) = \\int_{0}^{t_f} e^{A(t_f-\\tau)}B\\mathbf{u}(\\tau)\\,d\\tau",
+          "to_latex": "\\mathcal{C} := \\begin{bmatrix} B & AB & A^2B & \\cdots & A^{n-1}B \\end{bmatrix} \\in \\mathbb{R}^{n\\times nm},\\qquad (A,B)\\text{ is controllable} \\iff \\operatorname{rank}(\\mathcal{C}) = n",
+          "operation_label": "可到達部分空間と可制御性行列の像空間の一致",
+          "explanation": "状態方程式の積分解においてe^{A(t_f-\\tau)}を有限次多項式で表すことで、可到達集合が可制御性行列の列空間に一致することを示す。",
+          "used_node_ids": [
+            "eng.ctrl3.n02_state_transition_matrix",
+            "eng.ctrl3.n03_state_equation_solution",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_cayley_hamilton_exp",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}(t_f) - e^{At_f}\\mathbf{x}(0) = \\int_{0}^{t_f} e^{A(t_f-\\tau)}B\\mathbf{u}(\\tau)\\,d\\tau",
+          "to_latex": "\\mathbf{x}(t_f) - e^{At_f}\\mathbf{x}(0) = \\sum_{k=0}^{n-1} A^k B \\int_{0}^{t_f}\\alpha_k(t_f-\\tau)\\mathbf{u}(\\tau)\\,d\\tau \\in \\operatorname{Im}(\\mathcal{C})",
+          "operation_label": "ケイリー・ハミルトン展開によるn-1次までの有限和化",
+          "explanation": "e^{At}のべき級数のn次以上の項をケイリー・ハミルトンの定理でIからA^{n-1}の線形結合に縮約し、積分解をCの列ベクトルの線形結合で表す。",
+          "used_node_ids": [
+            "eng.ctrl3.n02_state_transition_matrix",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_controllability_gramian",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}(t_f) - e^{At_f}\\mathbf{x}(0) = \\sum_{k=0}^{n-1} A^k B \\int_{0}^{t_f}\\alpha_k(t_f-\\tau)\\mathbf{u}(\\tau)\\,d\\tau \\in \\operatorname{Im}(\\mathcal{C})",
+          "to_latex": "\\mathcal{C} := \\begin{bmatrix} B & AB & A^2B & \\cdots & A^{n-1}B \\end{bmatrix} \\in \\mathbb{R}^{n\\times nm},\\qquad (A,B)\\text{ is controllable} \\iff \\operatorname{rank}(\\mathcal{C}) = n",
+          "operation_label": "可制御性グラミアンの正定値性とランク条件の同値性",
+          "explanation": "状態空間R^n全体が到達可能であるためにはIm(C)=R^nが必要であり、逆にrank(C)=nのとき可制御性グラミアンが正定値となって任意の状態遷移を実現する入力が構成できる。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ctrl3.d05_observability_rank",
+      "target_node_id": "eng.ctrl3.n05_observability_rank_condition",
+      "route_kind": "equivalence",
+      "title": "初期状態推定と双対性による可観測性ランク条件の導出",
+      "premise_node_ids": [
+        "eng.ctrl3.n03_state_equation_solution",
+        "eng.ctrl3.n04_controllability_rank_condition"
+      ],
+      "required_math_node_ids": [
+        "eng.ctrl3.n02_state_transition_matrix",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "既知の入力項は出力から差し引くことができるため、u(t)=0の零入力応答を考察すればよい。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{y}_0(t) = C e^{At}\\mathbf{x}(0)\\quad (0 \\le t \\le t_f)",
+          "to_latex": "\\mathcal{O} := \\begin{bmatrix} C \\\\ CA \\\\ CA^2 \\\\ \\vdots \\\\ CA^{n-1} \\end{bmatrix} \\in \\mathbb{R}^{np\\times n},\\qquad (C,A)\\text{ is observable} \\iff \\operatorname{rank}(\\mathcal{O}) = n",
+          "operation_label": "出力の逐次微分と双対系への帰着",
+          "explanation": "零入力応答のt=0での高階微分または可観測性グラミアンが、双対系(A^T, C^T)の可制御性と同値であることからランク条件を得る。",
+          "used_node_ids": [
+            "eng.ctrl3.n03_state_equation_solution",
+            "eng.ctrl3.n04_controllability_rank_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_output_derivatives",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{y}_0(t) = C e^{At}\\mathbf{x}(0)\\quad (0 \\le t \\le t_f)",
+          "to_latex": "\\begin{bmatrix} \\mathbf{y}_0(0) \\\\ \\dot{\\mathbf{y}}_0(0) \\\\ \\vdots \\\\ \\mathbf{y}_0^{(n-1)}(0) \\end{bmatrix} = \\begin{bmatrix} C \\\\ CA \\\\ \\vdots \\\\ CA^{n-1} \\end{bmatrix}\\mathbf{x}(0) = \\mathcal{O}\\mathbf{x}(0)",
+          "operation_label": "t=0における出力の高階微分評価",
+          "explanation": "状態遷移行列の微分公式を用いてy_0(t)をn-1階まで微分しt=0で評価すると、初期状態x(0)に行列Oを掛けた線形方程式が得られる。",
+          "used_node_ids": [
+            "eng.ctrl3.n02_state_transition_matrix"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_duality_rank",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\begin{bmatrix} \\mathbf{y}_0(0) \\\\ \\dot{\\mathbf{y}}_0(0) \\\\ \\vdots \\\\ \\mathbf{y}_0^{(n-1)}(0) \\end{bmatrix} = \\begin{bmatrix} C \\\\ CA \\\\ \\vdots \\\\ CA^{n-1} \\end{bmatrix}\\mathbf{x}(0) = \\mathcal{O}\\mathbf{x}(0)",
+          "to_latex": "\\mathcal{O} := \\begin{bmatrix} C \\\\ CA \\\\ CA^2 \\\\ \\vdots \\\\ CA^{n-1} \\end{bmatrix} \\in \\mathbb{R}^{np\\times n},\\qquad (C,A)\\text{ is observable} \\iff \\operatorname{rank}(\\mathcal{O}) = n",
+          "operation_label": "核空間の自明性と双対性の適用",
+          "explanation": "x(0)が一意に定まる条件ker(O)={0}は、転置行列O^T=[C^T, A^T C^T, ..., (A^T)^{n-1}C^T]のランクがn、すなわち双対対(A^T, C^T)が可制御であることと同値である。",
+          "used_node_ids": [
+            "eng.ctrl3.n04_controllability_rank_condition",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ctrl3.d06_state_feedback_pole_placement",
+      "target_node_id": "eng.ctrl3.n06_state_feedback_pole_placement",
+      "route_kind": "deductive",
+      "title": "可制御正準形への変換による極配置定理の導出",
+      "premise_node_ids": [
+        "eng.ctrl3.n01_state_space_model_def",
+        "eng.ctrl3.n04_controllability_rank_condition"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "1入力系(m=1)から説明し、多入力系へは巡回空間分解またはハイマン変換により一般化される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{x}} = A\\mathbf{x} + B\\mathbf{u},\\quad \\mathbf{u} = -K\\mathbf{x} + \\mathbf{r}",
+          "to_latex": "\\mathbf{u}(t) = -K\\mathbf{x}(t) + \\mathbf{r}(t) \\implies \\dot{\\mathbf{x}} = (A-BK)\\mathbf{x} + B\\mathbf{r};\\quad \\operatorname{rank}(\\mathcal{C})=n \\iff \\forall \\{\\lambda_i\\}_{i=1}^n,\\;\\exists K\\text{ s.t. }\\det(sI - A + BK) = \\prod_{i=1}^{n}(s-\\lambda_i)",
+          "operation_label": "閉ループ系の構成と可制御正準形における係数比較",
+          "explanation": "rank(C)=nならば正則座標変換により可制御正準形に変換でき、状態フィードバックにより特性多項式の全係数を任意に設定できる。",
+          "used_node_ids": [
+            "eng.ctrl3.n01_state_space_model_def",
+            "eng.ctrl3.n04_controllability_rank_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_closed_loop_eq",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{x}} = A\\mathbf{x} + B\\mathbf{u},\\quad \\mathbf{u} = -K\\mathbf{x} + \\mathbf{r}",
+          "to_latex": "\\dot{\\mathbf{x}} = (A - BK)\\mathbf{x} + B\\mathbf{r},\\quad \\det(sI - A + BK) = s^n + \\sum_{k=0}^{n-1}\\tilde{a}_k s^k",
+          "operation_label": "状態フィードバック則の代入",
+          "explanation": "状態方程式にu=-Kx+rを代入して閉ループシステム行列A-BKとその特性多項式を得る。",
+          "used_node_ids": [
+            "eng.ctrl3.n01_state_space_model_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_canonical_form_matching",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{x}} = (A - BK)\\mathbf{x} + B\\mathbf{r},\\quad \\det(sI - A + BK) = s^n + \\sum_{k=0}^{n-1}\\tilde{a}_k s^k",
+          "to_latex": "\\mathbf{u}(t) = -K\\mathbf{x}(t) + \\mathbf{r}(t) \\implies \\dot{\\mathbf{x}} = (A-BK)\\mathbf{x} + B\\mathbf{r};\\quad \\operatorname{rank}(\\mathcal{C})=n \\iff \\forall \\{\\lambda_i\\}_{i=1}^n,\\;\\exists K\\text{ s.t. }\\det(sI - A + BK) = \\prod_{i=1}^{n}(s-\\lambda_i)",
+          "operation_label": "可制御正準形への変換と目標特性多項式の係数一致",
+          "explanation": "rank(C)=nのとき正則変換z=Txで可制御正準形に移ると、フィードバックゲインKの成分が特性多項式の各係数に直接加算されるため、任意の極配置が可能となる（逆は不可制御モードの不変性から従う）。",
+          "used_node_ids": [
+            "eng.ctrl3.n04_controllability_rank_condition",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ctrl3.d07_luenberger_observer",
+      "target_node_id": "eng.ctrl3.n07_luenberger_observer",
+      "route_kind": "deductive",
+      "title": "ルーエンバーガーオブザーバの構成と誤差方程式の導出",
+      "premise_node_ids": [
+        "eng.ctrl3.n01_state_space_model_def",
+        "eng.ctrl3.n05_observability_rank_condition",
+        "eng.ctrl3.n06_state_feedback_pole_placement"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "システムの行列(A,B,C)は既知であり、出力y(t)と入力u(t)が測定可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{x}} = A\\mathbf{x} + B\\mathbf{u},\\quad \\mathbf{y} = C\\mathbf{x},\\quad \\mathbf{e} := \\mathbf{x} - \\hat{\\mathbf{x}}",
+          "to_latex": "\\dot{\\hat{\\mathbf{x}}}(t) = A\\hat{\\mathbf{x}}(t) + B\\mathbf{u}(t) + L\\big(\\mathbf{y}(t) - C\\hat{\\mathbf{x}}(t)\\big),\\quad \\mathbf{e}(t) := \\mathbf{x}(t) - \\hat{\\mathbf{x}}(t) \\implies \\dot{\\mathbf{e}}(t) = (A - LC)\\mathbf{e}(t)",
+          "operation_label": "状態方程式とオブザーバ方程式の差による誤差ダイナミクス導出",
+          "explanation": "出力推定誤差L(y-Cx_hat)を補正項とするシミュレータを構成し、真の状態との差eの微分方程式が(A-LC)で支配されることを示す。",
+          "used_node_ids": [
+            "eng.ctrl3.n01_state_space_model_def",
+            "eng.ctrl3.n05_observability_rank_condition",
+            "eng.ctrl3.n06_state_feedback_pole_placement"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_error_differentiation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{x}} = A\\mathbf{x} + B\\mathbf{u},\\quad \\mathbf{y} = C\\mathbf{x},\\quad \\mathbf{e} := \\mathbf{x} - \\hat{\\mathbf{x}}",
+          "to_latex": "\\dot{\\mathbf{e}} = \\dot{\\mathbf{x}} - \\dot{\\hat{\\mathbf{x}}} = (A\\mathbf{x} + B\\mathbf{u}) - \\big(A\\hat{\\mathbf{x}} + B\\mathbf{u} + L(C\\mathbf{x} - C\\hat{\\mathbf{x}})\\big)",
+          "operation_label": "推定誤差の時間微分とオブザーバの代入",
+          "explanation": "微分の線形性より誤差の時間微分をとり、状態方程式とオブザーバ方程式およびy=Cxを代入する。",
+          "used_node_ids": [
+            "eng.ctrl3.n01_state_space_model_def",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_observer_pole_assignment",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{e}} = \\dot{\\mathbf{x}} - \\dot{\\hat{\\mathbf{x}}} = (A\\mathbf{x} + B\\mathbf{u}) - \\big(A\\hat{\\mathbf{x}} + B\\mathbf{u} + L(C\\mathbf{x} - C\\hat{\\mathbf{x}})\\big)",
+          "to_latex": "\\dot{\\hat{\\mathbf{x}}}(t) = A\\hat{\\mathbf{x}}(t) + B\\mathbf{u}(t) + L\\big(\\mathbf{y}(t) - C\\hat{\\mathbf{x}}(t)\\big),\\quad \\mathbf{e}(t) := \\mathbf{x}(t) - \\hat{\\mathbf{x}}(t) \\implies \\dot{\\mathbf{e}}(t) = (A - LC)\\mathbf{e}(t)",
+          "operation_label": "同類項の整理と双対系による極配置",
+          "explanation": "入力項Buが相殺されてe_dot=(A-LC)eが得られ、(C,A)が可観測ならば双対対(A^T, C^T)の可制御性と極配置定理によりA-LCの固有値をすべて安定領域に配置できる。",
+          "used_node_ids": [
+            "eng.ctrl3.n05_observability_rank_condition",
+            "eng.ctrl3.n06_state_feedback_pole_placement"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ctrl3.d08_separation_principle",
+      "target_node_id": "eng.ctrl3.n08_separation_principle",
+      "route_kind": "deductive",
+      "title": "拡大系状態方程式のブロック三角化による分離定理の証明",
+      "premise_node_ids": [
+        "eng.ctrl3.n06_state_feedback_pole_placement",
+        "eng.ctrl3.n07_luenberger_observer"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "(A,B)は可制御、(C,A)は可観測である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{x}} = A\\mathbf{x} + B(-K\\hat{\\mathbf{x}} + \\mathbf{r}),\\quad \\dot{\\mathbf{e}} = (A - LC)\\mathbf{e}",
+          "to_latex": "\\mathbf{u} = -K\\hat{\\mathbf{x}} + \\mathbf{r} \\implies \\det\\!\\begin{pmatrix} sI - (A-BK) & -BK \\\\ 0 & sI - (A-LC) \\end{pmatrix} = \\det(sI - A + BK)\\det(sI - A + LC) = 0",
+          "operation_label": "拡大状態(x, e)によるブロック上三角表現と行列式の分解",
+          "explanation": "推定状態によるフィードバック則をx_hat=x-eで書き直し、(x, e)を状態とする拡大系がブロック上三角行列となることから特性多項式が分離する。",
+          "used_node_ids": [
+            "eng.ctrl3.n06_state_feedback_pole_placement",
+            "eng.ctrl3.n07_luenberger_observer"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_augmented_state_eq",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{x}} = A\\mathbf{x} + B(-K\\hat{\\mathbf{x}} + \\mathbf{r}),\\quad \\dot{\\mathbf{e}} = (A - LC)\\mathbf{e}",
+          "to_latex": "\\begin{pmatrix}\\dot{\\mathbf{x}} \\\\ \\dot{\\mathbf{e}}\\end{pmatrix} = \\begin{pmatrix} A - BK & BK \\\\ 0 & A - LC \\end{pmatrix}\\begin{pmatrix}\\mathbf{x} \\\\ \\mathbf{e}\\end{pmatrix} + \\begin{pmatrix} B \\\\ 0 \\end{pmatrix}\\mathbf{r}",
+          "operation_label": "x_hat = x - e の代入による拡大系行列の構成",
+          "explanation": "推定誤差e=x-x_hatを用いてu=-K(x-e)+rと書き換えると、eのダイナミクスがxおよびrに依存しないブロック上三角構造が得られる。",
+          "used_node_ids": [
+            "eng.ctrl3.n06_state_feedback_pole_placement",
+            "eng.ctrl3.n07_luenberger_observer"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_block_triangular_det",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\begin{pmatrix}\\dot{\\mathbf{x}} \\\\ \\dot{\\mathbf{e}}\\end{pmatrix} = \\begin{pmatrix} A - BK & BK \\\\ 0 & A - LC \\end{pmatrix}\\begin{pmatrix}\\mathbf{x} \\\\ \\mathbf{e}\\end{pmatrix} + \\begin{pmatrix} B \\\\ 0 \\end{pmatrix}\\mathbf{r}",
+          "to_latex": "\\mathbf{u} = -K\\hat{\\mathbf{x}} + \\mathbf{r} \\implies \\det\\!\\begin{pmatrix} sI - (A-BK) & -BK \\\\ 0 & sI - (A-LC) \\end{pmatrix} = \\det(sI - A + BK)\\det(sI - A + LC) = 0",
+          "operation_label": "ブロック上三角行列の行列式公式の適用",
+          "explanation": "ブロック上三角行列の行列式が対角ブロックの行列式の積に等しいことから、全体系の極はフィードバックゲインKとオブザーバゲインLを独立に設計して配置できる。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

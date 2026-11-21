@@ -1,0 +1,699 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.mech.fracture_fatigue",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mechanical_engineering",
+    "title": "破壊力学・疲労：グリフィス理論・応力拡大係数Kとパリス則",
+    "language": "ja",
+    "description": "き裂進展のエネルギー解放率（グリフィス基準）、線形破壊力学の応力拡大係数 K=Yσ√(πa)、疲労き裂進展のパリス則を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.frac.n01_elastic_strain_energy_boundary",
+      "short_code": "FRAC01",
+      "kind": "math_boundary",
+      "title": "線形弾性体のひずみエネルギー密度と自由表面エネルギー境界",
+      "summary": "線形弾性構成則（フックの法則）、弾性ひずみエネルギー密度、およびき裂表面生成に伴う表面エネルギーの境界条件。",
+      "canonical_latex": "\\sigma_{ij} = C_{ijkl}\\varepsilon_{kl},\\quad U_0 = \\frac{1}{2}\\sigma_{ij}\\varepsilon_{ij},\\quad \\Pi = U - W + \\Gamma_s,\\quad \\Gamma_s = 2\\gamma_s A_{\\text{crack}}",
+      "aliases_latex": [
+        "E' = E\\;(\\text{plane stress}),\\quad E' = \\frac{E}{1-\\nu^2}\\;(\\text{plane strain})"
+      ],
+      "keywords": [
+        "linear elasticity",
+        "strain energy",
+        "surface energy",
+        "effective modulus"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "fracture_mechanics"
+      ]
+    },
+    {
+      "id": "eng.frac.n02_griffith_potential_energy",
+      "short_code": "FRAC02",
+      "kind": "theorem_formula",
+      "title": "グリフィスき裂の全ポテンシャルエネルギー",
+      "summary": "遠方一様引張応力を受ける無限平板内の中央貫通き裂（長さ2a、板厚B）に対する全ポテンシャルエネルギーの定式化。",
+      "canonical_latex": "\\Pi(a) = \\Pi_0 - \\frac{\\pi \\sigma^2 a^2 B}{E'} + 4 a B \\gamma_s",
+      "aliases_latex": [
+        "\\Delta \\Pi(a) = -\\frac{\\pi \\sigma^2 a^2 B}{E'} + 4 a B \\gamma_s"
+      ],
+      "keywords": [
+        "Griffith crack",
+        "potential energy",
+        "strain energy release"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "fracture_mechanics"
+      ]
+    },
+    {
+      "id": "eng.frac.n03_energy_release_rate_def",
+      "short_code": "FRAC03",
+      "kind": "definition",
+      "title": "エネルギー解放率 G の定義",
+      "summary": "単位き裂面積あたりの機械的ポテンシャルエネルギーの減少率として定義されるエネルギー解放率。",
+      "canonical_latex": "G := -\\frac{\\partial \\Pi_{\\mathrm{mech}}}{\\partial A} = -\\frac{1}{2B}\\frac{\\partial (U - W)}{\\partial a}",
+      "aliases_latex": [
+        "G = -\\frac{d(U-W)}{dA}"
+      ],
+      "keywords": [
+        "energy release rate",
+        "crack driving force",
+        "fracture mechanics"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "fracture_mechanics"
+      ]
+    },
+    {
+      "id": "eng.frac.n04_griffith_fracture_criterion",
+      "short_code": "FRAC04",
+      "kind": "theorem_formula",
+      "title": "グリフィスの破壊基準と臨界破壊応力",
+      "summary": "全ポテンシャルエネルギーの停留条件から導かれるエネルギー解放率の臨界値および脆性破壊の臨界応力式。",
+      "canonical_latex": "G = \\frac{\\pi \\sigma^2 a}{E'} \\ge 2\\gamma_s = G_c \\implies \\sigma_c = \\sqrt{\\frac{2 E' \\gamma_s}{\\pi a}}",
+      "aliases_latex": [
+        "\\sigma_c = \\sqrt{\\frac{E' G_c}{\\pi a}}"
+      ],
+      "keywords": [
+        "Griffith criterion",
+        "critical stress",
+        "brittle fracture"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "fracture_mechanics"
+      ]
+    },
+    {
+      "id": "eng.frac.n05_crack_tip_stress_field",
+      "short_code": "FRAC05",
+      "kind": "theorem_formula",
+      "title": "き裂先端近傍の特異応力場とモードI応力拡大係数",
+      "summary": "線形弾性体におけるき裂先端近傍の逆平方根特異性（r^-1/2）とモードI応力拡大係数 K_I の定義式。",
+      "canonical_latex": "\\sigma_{ij}(r,\\theta) = \\frac{K_I}{\\sqrt{2\\pi r}} f_{ij}(\\theta) + \\mathcal{O}(r^0),\\quad K_I = \\lim_{r\\to 0}\\sqrt{2\\pi r}\\,\\sigma_{yy}(r,0)",
+      "aliases_latex": [
+        "\\sigma_{yy}(r,0) \\sim \\frac{K_I}{\\sqrt{2\\pi r}}"
+      ],
+      "keywords": [
+        "stress intensity factor",
+        "crack tip singularity",
+        "LEFM",
+        "Westergaard"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "fracture_mechanics"
+      ]
+    },
+    {
+      "id": "eng.frac.n06_stress_intensity_factor_formula",
+      "short_code": "FRAC06",
+      "kind": "theorem_formula",
+      "title": "応力拡大係数の一般表示 K = Yσ√(πa) とアーウィンの関係式",
+      "summary": "形状補正係数 Y を用いた応力拡大係数の一般公式、およびエネルギー解放率 G と K_I の等価関係。",
+      "canonical_latex": "K_I = Y \\sigma \\sqrt{\\pi a},\\qquad G = \\frac{K_I^2}{E'}",
+      "aliases_latex": [
+        "K_I = Y(a/W)\\sigma\\sqrt{\\pi a}"
+      ],
+      "keywords": [
+        "Irwin relation",
+        "geometry factor",
+        "stress intensity factor"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "fracture_mechanics"
+      ]
+    },
+    {
+      "id": "eng.frac.n07_lefm_fracture_toughness",
+      "short_code": "FRAC07",
+      "kind": "definition",
+      "title": "破壊靭性値 K_Ic と線形弾性破壊条件",
+      "summary": "材料固有の臨界応力拡大係数である破壊靭性値 K_Ic の定義と不安定き裂進展の判定基準。",
+      "canonical_latex": "K_{Ic} := \\sqrt{E' G_c},\\qquad K_I \\ge K_{Ic} \\iff \\text{unstable crack propagation}",
+      "aliases_latex": [
+        "K_I = K_{Ic}"
+      ],
+      "keywords": [
+        "fracture toughness",
+        "K_Ic",
+        "unstable fracture"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "fracture_mechanics"
+      ]
+    },
+    {
+      "id": "eng.frac.n08_cyclic_stress_intensity_range",
+      "short_code": "FRAC08",
+      "kind": "definition",
+      "title": "繰返し荷重下の応力拡大係数範囲 ΔK と応力比 R",
+      "summary": "疲労き裂進展を支配する1サイクルあたりの応力拡大係数範囲 ΔK および応力比 R の定義。",
+      "canonical_latex": "\\Delta K := K_{\\max} - K_{\\min} = Y \\Delta\\sigma \\sqrt{\\pi a},\\quad \\Delta\\sigma = \\sigma_{\\max} - \\sigma_{\\min},\\quad R = \\frac{K_{\\min}}{K_{\\max}}",
+      "aliases_latex": [
+        "\\Delta K = (1 - R)K_{\\max}"
+      ],
+      "keywords": [
+        "cyclic loading",
+        "stress intensity range",
+        "stress ratio",
+        "fatigue"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "fracture_mechanics",
+        "fatigue"
+      ]
+    },
+    {
+      "id": "eng.frac.n09_paris_law_fatigue_growth",
+      "short_code": "FRAC09",
+      "kind": "theorem_formula",
+      "title": "パリス則と疲労き裂進展寿命の積分公式",
+      "summary": "安定疲労き裂進展領域におけるき裂進展速度と ΔK のべき乗則（パリス則）、および初期き裂から臨界き裂までの破断繰返し数公式。",
+      "canonical_latex": "\\frac{da}{dN} = C (\\Delta K)^m,\\qquad N_f = \\int_{a_i}^{a_c} \\frac{da}{C (Y \\Delta\\sigma \\sqrt{\\pi a})^m}",
+      "aliases_latex": [
+        "\\log\\frac{da}{dN} = \\log C + m\\log(\\Delta K)"
+      ],
+      "keywords": [
+        "Paris law",
+        "fatigue crack growth",
+        "fatigue life"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "fracture_mechanics",
+        "fatigue"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.frac.n02_griffith_potential_energy",
+      "target_node_id": "eng.frac.n02_griffith_potential_energy",
+      "route_kind": "deductive",
+      "title": "無限平板中央貫通き裂に対する全ポテンシャルエネルギーの導出",
+      "premise_node_ids": [
+        "eng.frac.n01_elastic_strain_energy_boundary",
+        "phys.thermo.th03_first_law_internal_energy"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "無限遠一様引張応力 σ が作用する線形弾性平板（板厚 B）",
+        "長さ 2a の中央貫通き裂（表面積 4aB）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Pi(a) = (U_0 V - \\Delta U_{\\text{crack}} - W) + \\Gamma_s",
+          "to_latex": "\\Pi(a) = \\Pi_0 - \\frac{\\pi \\sigma^2 a^2 B}{E'} + 4 a B \\gamma_s",
+          "operation_label": "energy_balance_and_inglis_limit",
+          "explanation": "き裂導入による弾性ひずみエネルギーの減少量と表面エネルギーの増加量を合算し、全ポテンシャルエネルギーを求める。",
+          "used_node_ids": [
+            "eng.frac.n01_elastic_strain_energy_boundary",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Pi(a) = (U_0 V - \\Delta U_{\\text{crack}} - W) + \\Gamma_s",
+          "to_latex": "\\Pi(a) = \\Pi_0 - \\Delta U_{\\text{rel}}(a) + 4 a B \\gamma_s",
+          "operation_label": "separate_reference_and_surface_energy",
+          "explanation": "無き裂状態のポテンシャル Π_0 を分離し、上下2面分のき裂表面積 A_crack = 2*(2aB) に表面エネルギー密度 γ_s を掛けて 4aBγ_s を得る。",
+          "used_node_ids": [
+            "eng.frac.n01_elastic_strain_energy_boundary",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Pi(a) = \\Pi_0 - \\Delta U_{\\text{rel}}(a) + 4 a B \\gamma_s",
+          "to_latex": "\\Pi(a) = \\Pi_0 - \\frac{\\pi \\sigma^2 a^2 B}{E'} + 4 a B \\gamma_s",
+          "operation_label": "substitute_elastic_strain_energy_release",
+          "explanation": "固定荷重条件下でのイングリスの楕円孔応力解極限より、き裂形成による有効ひずみエネルギー解放量 ΔU_rel = πσ^2 a^2 B / E' を代入する。",
+          "used_node_ids": [
+            "eng.frac.n01_elastic_strain_energy_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.frac.n03_energy_release_rate_def",
+      "target_node_id": "eng.frac.n03_energy_release_rate_def",
+      "route_kind": "reformulation",
+      "title": "エネルギー解放率 G の偏微分表現の導出",
+      "premise_node_ids": [
+        "eng.frac.n01_elastic_strain_energy_boundary",
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "板厚 B は一定であり、両端き裂進展時の総き裂面積増分は ΔA = 2BΔa"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\delta \\Pi_{\\mathrm{mech}} = \\delta(U - W)",
+          "to_latex": "G := -\\frac{\\partial \\Pi_{\\mathrm{mech}}}{\\partial A} = -\\frac{1}{2B}\\frac{\\partial (U - W)}{\\partial a}",
+          "operation_label": "define_energy_release_rate",
+          "explanation": "機械的ポテンシャルエネルギーのき裂面積 A に関する負の偏導関数として G を定義し、き裂半長 a で表す。",
+          "used_node_ids": [
+            "eng.frac.n01_elastic_strain_energy_boundary",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta \\Pi_{\\mathrm{mech}} = \\delta(U - W)",
+          "to_latex": "G := -\\lim_{\\Delta A \\to 0}\\frac{\\Delta (U - W)}{\\Delta A} = -\\frac{\\partial \\Pi_{\\mathrm{mech}}}{\\partial A}",
+          "operation_label": "partial_derivative_with_respect_to_area",
+          "explanation": "偏微分の定義に従い、き裂面積増分 ΔA あたりの機械的ポテンシャルエネルギー減少量の極限をとる。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G := -\\lim_{\\Delta A \\to 0}\\frac{\\Delta (U - W)}{\\Delta A} = -\\frac{\\partial \\Pi_{\\mathrm{mech}}}{\\partial A}",
+          "to_latex": "G := -\\frac{\\partial \\Pi_{\\mathrm{mech}}}{\\partial A} = -\\frac{1}{2B}\\frac{\\partial (U - W)}{\\partial a}",
+          "operation_label": "change_variable_area_to_half_length",
+          "explanation": "中央貫通き裂の面積 A = 2aB（dA = 2B da）を代入して、き裂半長 a による微分形式に変換する。",
+          "used_node_ids": [
+            "eng.frac.n01_elastic_strain_energy_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.frac.n04_griffith_fracture_criterion",
+      "target_node_id": "eng.frac.n04_griffith_fracture_criterion",
+      "route_kind": "deductive",
+      "title": "停留点条件からのグリフィス破壊基準と臨界応力の導出",
+      "premise_node_ids": [
+        "eng.frac.n02_griffith_potential_energy",
+        "eng.frac.n03_energy_release_rate_def",
+        "math.calc.e03_stationary_point_condition"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "き裂進展の熱力学的平衡条件 ∂Π/∂a = 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial \\Pi}{\\partial a} = \\frac{\\partial}{\\partial a}\\left(\\Pi_0 - \\frac{\\pi \\sigma^2 a^2 B}{E'} + 4 a B \\gamma_s\\right) = 0",
+          "to_latex": "G = \\frac{\\pi \\sigma^2 a}{E'} \\ge 2\\gamma_s = G_c \\implies \\sigma_c = \\sqrt{\\frac{2 E' \\gamma_s}{\\pi a}}",
+          "operation_label": "griffith_equilibrium_criterion",
+          "explanation": "全ポテンシャルエネルギー Π(a) の停留条件からエネルギー解放率 G と臨界破壊応力 σ_c を導く。",
+          "used_node_ids": [
+            "eng.frac.n02_griffith_potential_energy",
+            "eng.frac.n03_energy_release_rate_def",
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": "diff(Pi0 - pi*sigma**2*a**2*B/Ep + 4*a*B*gamma_s, a)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\Pi}{\\partial a} = \\frac{\\partial}{\\partial a}\\left(\\Pi_0 - \\frac{\\pi \\sigma^2 a^2 B}{E'} + 4 a B \\gamma_s\\right) = 0",
+          "to_latex": "-\\frac{2\\pi \\sigma^2 a B}{E'} + 4 B \\gamma_s = 0",
+          "operation_label": "differentiate_total_potential",
+          "explanation": "微分の線形性を適用して Π(a) をき裂半長 a で偏微分し、停留点条件を適用する。",
+          "used_node_ids": [
+            "eng.frac.n02_griffith_potential_energy",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{2\\pi \\sigma^2 a B}{E'} + 4 B \\gamma_s = 0",
+          "to_latex": "G = \\frac{\\pi \\sigma^2 a}{E'} = 2\\gamma_s = G_c",
+          "operation_label": "identify_energy_release_rate",
+          "explanation": "両辺を 2B で割り、G の定義と比較することで G = πσ^2 a / E' および臨界エネルギー解放率 G_c = 2γ_s を同定する。",
+          "used_node_ids": [
+            "eng.frac.n03_energy_release_rate_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G = \\frac{\\pi \\sigma^2 a}{E'} = 2\\gamma_s = G_c",
+          "to_latex": "G = \\frac{\\pi \\sigma^2 a}{E'} \\ge 2\\gamma_s = G_c \\implies \\sigma_c = \\sqrt{\\frac{2 E' \\gamma_s}{\\pi a}}",
+          "operation_label": "solve_for_critical_stress",
+          "explanation": "き裂が進展する条件 G >= G_c を σ について解き、臨界破壊応力 σ_c を得る。",
+          "used_node_ids": [
+            "eng.frac.n03_energy_release_rate_def"
+          ],
+          "sympy_check_hint": "solve(pi*sigma**2*a/Ep - 2*gamma_s, sigma)"
+        }
+      ]
+    },
+    {
+      "id": "deriv.frac.n05_crack_tip_stress_field",
+      "target_node_id": "eng.frac.n05_crack_tip_stress_field",
+      "route_kind": "deductive",
+      "title": "ウェスターガード複素応力関数からのき裂先端 r^(-1/2) 特異性の導出",
+      "premise_node_ids": [
+        "eng.frac.n01_elastic_strain_energy_boundary",
+        "math.complex.lr01_laurent_series_expansion"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "モードI（開口型）のき裂面自由境界条件",
+        "き裂先端 z = a 近傍の極座標 z - a = r e^{iθ} (r << a)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Z_{\\mathrm{I}}(z) = \\frac{\\sigma z}{\\sqrt{z^2 - a^2}},\\quad z = a + r e^{i\\theta}",
+          "to_latex": "\\sigma_{ij}(r,\\theta) = \\frac{K_I}{\\sqrt{2\\pi r}} f_{ij}(\\theta) + \\mathcal{O}(r^0),\\quad K_I = \\lim_{r\\to 0}\\sqrt{2\\pi r}\\,\\sigma_{yy}(r,0)",
+          "operation_label": "asymptotic_expansion_near_crack_tip",
+          "explanation": "ウェスターガードの複素応力関数をき裂先端近傍で漸近展開し、r^(-1/2) の支配的特異項と応力拡大係数 K_I を得る。",
+          "used_node_ids": [
+            "eng.frac.n01_elastic_strain_energy_boundary",
+            "math.complex.lr01_laurent_series_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Z_{\\mathrm{I}}(z) = \\frac{\\sigma z}{\\sqrt{z^2 - a^2}},\\quad z = a + r e^{i\\theta}",
+          "to_latex": "Z_{\\mathrm{I}}(r,\\theta) = \\frac{\\sigma a}{\\sqrt{2 a r e^{i\\theta}}}\\big(1 + \\mathcal{O}(r/a)\\big) = \\frac{K_I}{\\sqrt{2\\pi r}} e^{-i\\theta/2} + \\mathcal{O}(r^{1/2})",
+          "operation_label": "expand_complex_stress_function",
+          "explanation": "z = a + r e^{iθ} を代入し、r << a の漸近展開（ローラン型特異展開）により r^(-1/2) の主要項を抽出する（ここで K_I = σ√(πa)）。",
+          "used_node_ids": [
+            "math.complex.lr01_laurent_series_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Z_{\\mathrm{I}}(r,\\theta) = \\frac{\\sigma a}{\\sqrt{2 a r e^{i\\theta}}}\\big(1 + \\mathcal{O}(r/a)\\big) = \\frac{K_I}{\\sqrt{2\\pi r}} e^{-i\\theta/2} + \\mathcal{O}(r^{1/2})",
+          "to_latex": "\\sigma_{ij}(r,\\theta) = \\frac{K_I}{\\sqrt{2\\pi r}} f_{ij}(\\theta) + \\mathcal{O}(r^0),\\quad K_I = \\lim_{r\\to 0}\\sqrt{2\\pi r}\\,\\sigma_{yy}(r,0)",
+          "operation_label": "extract_real_stress_components",
+          "explanation": "複素応力関数から実応力成分（Re Z_I 等）を構成し、角度分布関数 f_{ij}(θ) と K_I の極限定義式を得る。",
+          "used_node_ids": [
+            "eng.frac.n01_elastic_strain_energy_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.frac.n06_stress_intensity_factor_formula",
+      "target_node_id": "eng.frac.n06_stress_intensity_factor_formula",
+      "route_kind": "equivalence",
+      "title": "応力拡大係数の一般公式とアーウィンの G-K 関係式の導出",
+      "premise_node_ids": [
+        "eng.frac.n04_griffith_fracture_criterion",
+        "eng.frac.n05_crack_tip_stress_field"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "一般の有限幅・き裂形状に対する無次元形状補正係数 Y"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "K_I = \\lim_{r\\to 0}\\sqrt{2\\pi r}\\,\\sigma_{yy}(r,0),\\quad G = \\frac{\\pi \\sigma^2 a}{E'}",
+          "to_latex": "K_I = Y \\sigma \\sqrt{\\pi a},\\qquad G = \\frac{K_I^2}{E'}",
+          "operation_label": "generalize_K_and_link_to_G",
+          "explanation": "き裂先端特異応力場から得られる K_I に形状係数 Y を導入して一般化し、グリフィスのエネルギー解放率 G との等価関係を示す。",
+          "used_node_ids": [
+            "eng.frac.n04_griffith_fracture_criterion",
+            "eng.frac.n05_crack_tip_stress_field"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "K_I = \\lim_{r\\to 0}\\sqrt{2\\pi r}\\,\\sigma_{yy}(r,0),\\quad G = \\frac{\\pi \\sigma^2 a}{E'}",
+          "to_latex": "K_I = Y \\sigma \\sqrt{\\pi a},\\quad \\sigma^2 \\pi a = \\frac{K_I^2}{Y^2}",
+          "operation_label": "introduce_geometry_factor_Y",
+          "explanation": "無限平板（Y=1）の解 K_I = σ√(πa) を一般の試験片・構造物形状へ拡張し、形状補正係数 Y を導入する。",
+          "used_node_ids": [
+            "eng.frac.n05_crack_tip_stress_field"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "K_I = Y \\sigma \\sqrt{\\pi a},\\quad \\sigma^2 \\pi a = \\frac{K_I^2}{Y^2}",
+          "to_latex": "K_I = Y \\sigma \\sqrt{\\pi a},\\qquad G = \\frac{K_I^2}{E'}",
+          "operation_label": "irwin_equivalence_G_K",
+          "explanation": "局所的エネルギー解放率のき裂閉口積分（あるいは Y=1 での代入）により、一般の形状に対しても G = K_I^2 / E' が成り立つことを得る。",
+          "used_node_ids": [
+            "eng.frac.n04_griffith_fracture_criterion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.frac.n07_lefm_fracture_toughness",
+      "target_node_id": "eng.frac.n07_lefm_fracture_toughness",
+      "route_kind": "equivalence",
+      "title": "エネルギー基準から応力拡大係数基準（破壊靭性 K_Ic）への変換",
+      "premise_node_ids": [
+        "eng.frac.n04_griffith_fracture_criterion",
+        "eng.frac.n06_stress_intensity_factor_formula"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "材料の臨界エネルギー解放率 G_c が一定",
+        "小規模降伏条件（LEFM の適用範囲）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "G = \\frac{K_I^2}{E'} \\ge G_c",
+          "to_latex": "K_{Ic} := \\sqrt{E' G_c},\\qquad K_I \\ge K_{Ic} \\iff \\text{unstable crack propagation}",
+          "operation_label": "convert_energy_criterion_to_K_criterion",
+          "explanation": "アーウィンの関係式 G = K_I^2 / E' を用いてエネルギー破壊基準 G >= G_c を応力拡大係数による破壊靭性基準へ変換する。",
+          "used_node_ids": [
+            "eng.frac.n04_griffith_fracture_criterion",
+            "eng.frac.n06_stress_intensity_factor_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G = \\frac{K_I^2}{E'} \\ge G_c",
+          "to_latex": "K_I^2 \\ge E' G_c := K_{Ic}^2",
+          "operation_label": "multiply_by_effective_modulus",
+          "explanation": "不等式の両辺に正の有効ヤング率 E' を乗じ、右辺を K_{Ic}^2 と置く。",
+          "used_node_ids": [
+            "eng.frac.n06_stress_intensity_factor_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "K_I^2 \\ge E' G_c := K_{Ic}^2",
+          "to_latex": "K_{Ic} := \\sqrt{E' G_c},\\qquad K_I \\ge K_{Ic} \\iff \\text{unstable crack propagation}",
+          "operation_label": "take_positive_square_root",
+          "explanation": "K_I, K_{Ic} > 0 より正の平方根をとり、破壊靭性 K_{Ic} と不安定破壊条件 K_I >= K_{Ic} を得る。",
+          "used_node_ids": [
+            "eng.frac.n04_griffith_fracture_criterion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.frac.n08_cyclic_stress_intensity_range",
+      "target_node_id": "eng.frac.n08_cyclic_stress_intensity_range",
+      "route_kind": "reformulation",
+      "title": "繰返し応力に対する応力拡大係数範囲 ΔK の定式化",
+      "premise_node_ids": [
+        "eng.frac.n06_stress_intensity_factor_formula"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "1負荷サイクル中のき裂長さ変化 Δa は微少（da/dN << a）",
+        "正の引張サイクル（σ_min >= 0、き裂閉口効果無視）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "K_{I,\\max} = Y\\sigma_{\\max}\\sqrt{\\pi a},\\quad K_{I,\\min} = Y\\sigma_{\\min}\\sqrt{\\pi a}",
+          "to_latex": "\\Delta K := K_{\\max} - K_{\\min} = Y \\Delta\\sigma \\sqrt{\\pi a},\\quad \\Delta\\sigma = \\sigma_{\\max} - \\sigma_{\\min},\\quad R = \\frac{K_{\\min}}{K_{\\max}}",
+          "operation_label": "define_cyclic_stress_intensity_range",
+          "explanation": "最大・最小応力における K_I の差として応力拡大係数範囲 ΔK と応力比 R を定義する。",
+          "used_node_ids": [
+            "eng.frac.n06_stress_intensity_factor_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "K_{I,\\max} = Y\\sigma_{\\max}\\sqrt{\\pi a},\\quad K_{I,\\min} = Y\\sigma_{\\min}\\sqrt{\\pi a}",
+          "to_latex": "\\Delta K := K_{\\max} - K_{\\min} = Y(\\sigma_{\\max} - \\sigma_{\\min})\\sqrt{\\pi a}",
+          "operation_label": "subtract_min_from_max_K",
+          "explanation": "同一き裂長さ a における K_{max} と K_{min} の差をとり、共通因子 Y√(πa) で括る。",
+          "used_node_ids": [
+            "eng.frac.n06_stress_intensity_factor_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta K := K_{\\max} - K_{\\min} = Y(\\sigma_{\\max} - \\sigma_{\\min})\\sqrt{\\pi a}",
+          "to_latex": "\\Delta K := K_{\\max} - K_{\\min} = Y \\Delta\\sigma \\sqrt{\\pi a},\\quad \\Delta\\sigma = \\sigma_{\\max} - \\sigma_{\\min},\\quad R = \\frac{K_{\\min}}{K_{\\max}}",
+          "operation_label": "substitute_stress_range_and_ratio",
+          "explanation": "応力範囲 Δσ = σ_{max} - σ_{min} と応力比 R = K_{min}/K_{max} を導入する。",
+          "used_node_ids": [
+            "eng.frac.n06_stress_intensity_factor_formula"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.frac.n09_paris_law_fatigue_growth",
+      "target_node_id": "eng.frac.n09_paris_law_fatigue_growth",
+      "route_kind": "inductive",
+      "title": "パリス則による疲労き裂進展寿命の変数分離積分導出",
+      "premise_node_ids": [
+        "eng.frac.n08_cyclic_stress_intensity_range",
+        "eng.frac.n07_lefm_fracture_toughness",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "第II領域（安定疲労き裂進展領域）におけるパリス則 da/dN = C(ΔK)^m の成立",
+        "臨界き裂長さ a_c は K_{max}(a_c) = K_{Ic} で決定"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{da}{dN} = C (\\Delta K)^m,\\quad \\Delta K = Y\\Delta\\sigma\\sqrt{\\pi a}",
+          "to_latex": "\\frac{da}{dN} = C (\\Delta K)^m,\\qquad N_f = \\int_{a_i}^{a_c} \\frac{da}{C (Y \\Delta\\sigma \\sqrt{\\pi a})^m}",
+          "operation_label": "integrate_paris_law_for_fatigue_life",
+          "explanation": "パリス則をき裂長さ a と繰返し数 N について変数分離し、初期き裂長さ a_i から臨界き裂長さ a_c まで定積分して疲労寿命 N_f を得る。",
+          "used_node_ids": [
+            "eng.frac.n07_lefm_fracture_toughness",
+            "eng.frac.n08_cyclic_stress_intensity_range",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{da}{dN} = C (\\Delta K)^m,\\quad \\Delta K = Y\\Delta\\sigma\\sqrt{\\pi a}",
+          "to_latex": "dN = \\frac{da}{C (Y \\Delta\\sigma \\sqrt{\\pi a})^m}",
+          "operation_label": "separate_variables_N_and_a",
+          "explanation": "ΔK = YΔσ√(πa) をパリス則に代入し、dN と da の変数分離形に書き換える。",
+          "used_node_ids": [
+            "eng.frac.n08_cyclic_stress_intensity_range"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dN = \\frac{da}{C (Y \\Delta\\sigma \\sqrt{\\pi a})^m}",
+          "to_latex": "\\frac{da}{dN} = C (\\Delta K)^m,\\qquad N_f = \\int_{a_i}^{a_c} \\frac{da}{C (Y \\Delta\\sigma \\sqrt{\\pi a})^m}",
+          "operation_label": "definite_integral_to_critical_crack_length",
+          "explanation": "微積分学の基本定理に基づき、N = 0 から破断寿命 N_f、き裂長さ a_i から破壊靭性条件 K_{max}(a_c) = K_{Ic} で定まる臨界き裂長さ a_c まで定積分する。",
+          "used_node_ids": [
+            "eng.frac.n07_lefm_fracture_toughness",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

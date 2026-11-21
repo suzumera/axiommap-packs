@@ -1,0 +1,731 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.ctrl.stability_bode_nyquist",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "control_engineering",
+    "title": "古典制御2：ラウス＝フルビッツ安定判別・ボード線図・ナイキスト線図と安定余裕",
+    "language": "ja",
+    "description": "特性方程式の極配置とラウス表、偏角の原理からのナイキスト安定判別法、ゲイン余裕・位相余裕とPID制御則を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.ctrl2.n01_closed_loop_characteristic_eq",
+      "short_code": "CTRL2_01",
+      "kind": "definition",
+      "title": "閉ループ伝達関数・特性方程式と極配置による安定条件",
+      "summary": "負帰還制御系の閉ループ伝達関数と特性方程式を定義し、すべての閉ループ極が複素左半平面にあることを内部・BIBO安定条件として定式化する。",
+      "canonical_latex": "G_{\\mathrm{cl}}(s) = \\frac{L(s)}{1 + L(s)},\\quad 1 + L(s) = 0 \\iff D(s) = \\sum_{k=0}^{n} a_k s^k = 0,\\quad \\text{stable} \\iff \\forall i,\\; \\operatorname{Re}(p_i) < 0",
+      "aliases_latex": [
+        "1 + C(s)P(s) = 0",
+        "D(s) = D_L(s) + N_L(s) = 0"
+      ],
+      "keywords": [
+        "closed-loop transfer function",
+        "characteristic equation",
+        "pole placement",
+        "LHP stability"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl2.n02_routh_hurwitz_criterion",
+      "short_code": "CTRL2_02",
+      "kind": "theorem_formula",
+      "title": "ラウス＝フルビッツの安定判別法とラウス表",
+      "summary": "特性多項式の係数からラウス表を構成し、第1列の要素がすべて同符号（正）であることが、すべての根が左半平面に存在する（フルビッツ安定）ための必要十分条件であることを与える。",
+      "canonical_latex": "\\forall i,\\; \\operatorname{Re}(p_i) < 0 \\iff \\forall k \\in \\{0,\\dots,n\\},\\; r_{n-k,1} > 0\\quad \\left(r_{i,j} = -\\frac{1}{r_{i-1,1}}\\det\\begin{pmatrix} r_{i-2,1} & r_{i-2,j+1} \\\\ r_{i-1,1} & r_{i-1,j+1} \\end{pmatrix}\\right)",
+      "aliases_latex": [
+        "r_{i,j} = \\frac{r_{i-1,1}r_{i-2,j+1} - r_{i-2,1}r_{i-1,j+1}}{r_{i-1,1}}"
+      ],
+      "keywords": [
+        "Routh-Hurwitz criterion",
+        "Routh array",
+        "Hurwitz polynomial",
+        "algebraic stability"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl2.n03_argument_principle",
+      "short_code": "CTRL2_03",
+      "kind": "theorem_formula",
+      "title": "偏角の原理（コーシーの偏角原理）",
+      "summary": "閉曲線上の極や零点を通らない有理型関数の対数導関数を周回積分し、偏角の変化量が閉曲線内部の零点数と極数の差に2πを掛けた値に等しいことを示す。",
+      "canonical_latex": "\\frac{1}{2\\pi i}\\oint_C \\frac{F'(s)}{F(s)}\\,ds = Z - P,\\quad \\Delta_C \\arg F(s) = 2\\pi(Z - P)",
+      "aliases_latex": [
+        "N_{\\text{origin}} = Z - P"
+      ],
+      "keywords": [
+        "argument principle",
+        "logarithmic derivative",
+        "encirclement",
+        "complex analysis"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl2.n04_nyquist_stability_criterion",
+      "short_code": "CTRL2_04",
+      "kind": "theorem_formula",
+      "title": "ナイキストの安定判別法",
+      "summary": "開ループ伝達関数 L(s) に偏角の原理を右半平面を囲むナイキスト軌跡へ適用し、閉ループ不安定極数 Z が開ループ不安定極数 P と点 (-1, 0) の時計回り周回数 N の和で与えられることを導く。",
+      "canonical_latex": "Z = P + N,\\quad \\text{Closed-loop stable} \\iff Z = 0 \\iff N = -P",
+      "aliases_latex": [
+        "N = Z - P",
+        "\\Delta_{C_{\\mathrm{Nyq}}}\\arg(1 + L(s)) = 2\\pi(Z - P)"
+      ],
+      "keywords": [
+        "Nyquist stability criterion",
+        "Nyquist plot",
+        "critical point -1",
+        "encirclement"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl2.n05_frequency_response_bode_def",
+      "short_code": "CTRL2_05",
+      "kind": "definition",
+      "title": "周波数伝達関数とボード線図（ゲイン・位相特性）の定義",
+      "summary": "s = jω における開ループ伝達関数の極座標表示から、対数振幅（デシベル）と位相角を角周波数の対数に対して描くボード線図を定義する。",
+      "canonical_latex": "L(j\\omega) = |L(j\\omega)| e^{j\\angle L(j\\omega)},\\quad G_{\\mathrm{dB}}(\\omega) := 20\\log_{10}|L(j\\omega)|,\\quad \\phi(\\omega) := \\arg L(j\\omega)",
+      "aliases_latex": [
+        "20\\log_{10}|L(j\\omega)|\\text{ [dB]}"
+      ],
+      "keywords": [
+        "frequency response",
+        "Bode plot",
+        "gain in dB",
+        "phase response"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl2.n06_gain_phase_margin",
+      "short_code": "CTRL2_06",
+      "kind": "definition",
+      "title": "ゲイン余裕と位相余裕（安定余裕）の定義",
+      "summary": "開ループ周波数応答が臨界点 (-1, 0) にどれだけ近いかを測る指標として、ゲイン交差周波数における位相余裕（PM）と位相交差周波数におけるゲイン余裕（GM）を定義する。",
+      "canonical_latex": "\\mathrm{PM} := 180^\\circ + \\angle L(j\\omega_{gc})\\;\\big(|L(j\\omega_{gc})|=1\\big),\\quad \\mathrm{GM} := \\frac{1}{|L(j\\omega_{pc})|}\\;\\big(\\angle L(j\\omega_{pc})=-180^\\circ\\big)",
+      "aliases_latex": [
+        "\\mathrm{GM}_{\\mathrm{dB}} = -20\\log_{10}|L(j\\omega_{pc})|"
+      ],
+      "keywords": [
+        "gain margin",
+        "phase margin",
+        "stability margin",
+        "crossover frequency"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl2.n07_pid_controller_transfer_func",
+      "short_code": "CTRL2_07",
+      "kind": "definition",
+      "title": "PID制御則（比例・積分・微分制御器）の伝達関数",
+      "summary": "偏差に対する比例・積分・微分動作の和で構成される時間領域のPID制御則をラプラス変換し、制御器の伝達関数表現を定義する。",
+      "canonical_latex": "C(s) := \\frac{U(s)}{E(s)} = K_p + \\frac{K_i}{s} + K_d s = K_p\\left(1 + \\frac{1}{T_i s} + T_d s\\right)",
+      "aliases_latex": [
+        "u(t) = K_p e(t) + K_i \\int_0^t e(\\tau)\\,d\\tau + K_d \\dot{e}(t)"
+      ],
+      "keywords": [
+        "PID controller",
+        "proportional integral derivative",
+        "transfer function"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl2.n08_pid_loop_shaping_margins",
+      "short_code": "CTRL2_08",
+      "kind": "theorem_formula",
+      "title": "PID補償による開ループ周波数整形と安定余裕・定常偏差の改善",
+      "summary": "PID制御器の積分項による低周波ゲイン増大（定常ステップ偏差の零化）と、微分項による位相進み（位相余裕の増加）を通じた閉ループ性能・安定余裕の設計原理を与える。",
+      "canonical_latex": "\\lim_{\\omega\\to 0}|L(j\\omega)| = \\infty\\text{ (zero steady-state step error)},\\quad \\angle(1 + j\\omega T_d) = \\arctan(\\omega T_d) > 0\\text{ (phase lead increases }\\mathrm{PM}\\text{)}",
+      "aliases_latex": [
+        "e_{\\mathrm{ss,step}} = \\lim_{s\\to 0}\\frac{1}{1 + C(s)P(s)} = 0"
+      ],
+      "keywords": [
+        "PID loop shaping",
+        "steady-state error",
+        "phase lead",
+        "phase margin improvement"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d01_closed_loop_characteristic_eq",
+      "target_node_id": "eng.ctrl2.n01_closed_loop_characteristic_eq",
+      "route_kind": "deductive",
+      "title": "負帰還ループからの閉ループ伝達関数と特性方程式の導出",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def",
+        "math.laplace.lt02_linearity_and_shifting"
+      ],
+      "required_math_node_ids": [
+        "math.laplace.lt03_elementary_transforms"
+      ],
+      "assumptions": [
+        "単位負帰還系であり、初期値は零とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Y(s) = L(s)\\big(R(s) - Y(s)\\big)",
+          "to_latex": "G_{\\mathrm{cl}}(s) = \\frac{L(s)}{1 + L(s)},\\quad 1 + L(s) = 0 \\iff D(s) = \\sum_{k=0}^{n} a_k s^k = 0,\\quad \\text{stable} \\iff \\forall i,\\; \\operatorname{Re}(p_i) < 0",
+          "operation_label": "閉ループ整理と特性方程式の抽出",
+          "explanation": "負帰還の方程式を Y(s)/R(s) について解き、分母多項式 D(s)=0 を特性方程式、その根の左半平面配置を安定条件として得る。",
+          "used_node_ids": [
+            "math.laplace.lt01_laplace_transform_def",
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_solve_ycl",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y(s) = L(s)\\big(R(s) - Y(s)\\big)",
+          "to_latex": "\\big(1 + L(s)\\big)Y(s) = L(s)R(s) \\implies G_{\\mathrm{cl}}(s) := \\frac{Y(s)}{R(s)} = \\frac{L(s)}{1 + L(s)}",
+          "operation_label": "出力信号に関する代数整理",
+          "explanation": "ラプラス変換の線形性を用いて Y(s) の項を左辺にまとめ、閉ループ伝達関数 G_cl(s) を得る。",
+          "used_node_ids": [
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_characteristic_poly",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\big(1 + L(s)\\big)Y(s) = L(s)R(s) \\implies G_{\\mathrm{cl}}(s) := \\frac{Y(s)}{R(s)} = \\frac{L(s)}{1 + L(s)}",
+          "to_latex": "L(s) = \\frac{N_L(s)}{D_L(s)} \\implies G_{\\mathrm{cl}}(s) = \\frac{N_L(s)}{D_L(s) + N_L(s)} = \\frac{N_L(s)}{D(s)},\\quad D(s) = \\sum_{k=0}^{n} a_k s^k = 0",
+          "operation_label": "有理関数表示と特性多項式",
+          "explanation": "開ループ伝達関数 L(s) を分子・分母多項式の比として表し、閉ループ分母多項式 D(s) = D_L(s) + N_L(s) を特性多項式と定義する。",
+          "used_node_ids": [
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_pole_stability",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L(s) = \\frac{N_L(s)}{D_L(s)} \\implies G_{\\mathrm{cl}}(s) = \\frac{N_L(s)}{D_L(s) + N_L(s)} = \\frac{N_L(s)}{D(s)},\\quad D(s) = \\sum_{k=0}^{n} a_k s^k = 0",
+          "to_latex": "G_{\\mathrm{cl}}(s) = \\frac{L(s)}{1 + L(s)},\\quad 1 + L(s) = 0 \\iff D(s) = \\sum_{k=0}^{n} a_k s^k = 0,\\quad \\text{stable} \\iff \\forall i,\\; \\operatorname{Re}(p_i) < 0",
+          "operation_label": "極配置と時間応答の減衰条件",
+          "explanation": "インパルス応答の指数モード e^{p_i t} が時間とともに減衰し可積分となる条件として、すべての閉ループ極の実部が負であることを得る。",
+          "used_node_ids": [
+            "math.laplace.lt01_laplace_transform_def",
+            "math.laplace.lt03_elementary_transforms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d02_routh_hurwitz_criterion",
+      "target_node_id": "eng.ctrl2.n02_routh_hurwitz_criterion",
+      "route_kind": "deductive",
+      "title": "特性多項式の偶奇分解とラウス表による安定判別条件の導出",
+      "premise_node_ids": [
+        "eng.ctrl2.n01_closed_loop_characteristic_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "特性多項式 D(s) は実係数であり、最高次係数 a_n > 0 と正規化されている。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "D(s) = \\sum_{k=0}^{n} a_k s^k = a_n \\prod_{i=1}^{n}(s - p_i) = 0\\quad (a_n > 0)",
+          "to_latex": "\\forall i,\\; \\operatorname{Re}(p_i) < 0 \\iff \\forall k \\in \\{0,\\dots,n\\},\\; r_{n-k,1} > 0\\quad \\left(r_{i,j} = -\\frac{1}{r_{i-1,1}}\\det\\begin{pmatrix} r_{i-2,1} & r_{i-2,j+1} \\\\ r_{i-1,1} & r_{i-1,j+1} \\end{pmatrix}\\right)",
+          "operation_label": "ラウス表の構成と第1列正値条件",
+          "explanation": "多項式の偶数次・奇数次成分からシュトゥルム列（ラウス表）を逐次構成し、第1列の符号変化回数が右半平面極数に一致することから安定判別則を得る。",
+          "used_node_ids": [
+            "eng.ctrl2.n01_closed_loop_characteristic_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_even_odd_split",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D(s) = \\sum_{k=0}^{n} a_k s^k = a_n \\prod_{i=1}^{n}(s - p_i) = 0\\quad (a_n > 0)",
+          "to_latex": "\\operatorname{Re}(p_i) < 0 \\implies \\text{all } a_k > 0,\\quad D_{\\mathrm{even}}(s) = a_n s^n + a_{n-2} s^{n-2} + \\cdots,\\quad D_{\\mathrm{odd}}(s) = a_{n-1} s^{n-1} + a_{n-3} s^{n-3} + \\cdots",
+          "operation_label": "正値必要条件と偶奇成分の抽出",
+          "explanation": "全根が左半平面にあれば全係数が正となる（必要条件）。係数を偶数次行と奇数次行に分けてラウス表の第1行・第2行とする。",
+          "used_node_ids": [
+            "eng.ctrl2.n01_closed_loop_characteristic_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_routh_recurrence",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Re}(p_i) < 0 \\implies \\text{all } a_k > 0,\\quad D_{\\mathrm{even}}(s) = a_n s^n + a_{n-2} s^{n-2} + \\cdots,\\quad D_{\\mathrm{odd}}(s) = a_{n-1} s^{n-1} + a_{n-3} s^{n-3} + \\cdots",
+          "to_latex": "r_{i,j} = \\frac{r_{i-1,1} r_{i-2,j+1} - r_{i-2,1} r_{i-1,j+1}}{r_{i-1,1}} = -\\frac{1}{r_{i-1,1}}\\det\\begin{pmatrix} r_{i-2,1} & r_{i-2,j+1} \\\\ r_{i-1,1} & r_{i-1,j+1} \\end{pmatrix}",
+          "operation_label": "ユークリッド互除法に基づく漸化式",
+          "explanation": "D_even(s) と D_odd(s) に対する次数低減（剰余計算）を行列式の漸化式として整理し、ラウス表の第3行以降を計算する。",
+          "used_node_ids": [
+            "eng.ctrl2.n01_closed_loop_characteristic_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_first_column_sign",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_{i,j} = \\frac{r_{i-1,1} r_{i-2,j+1} - r_{i-2,1} r_{i-1,j+1}}{r_{i-1,1}} = -\\frac{1}{r_{i-1,1}}\\det\\begin{pmatrix} r_{i-2,1} & r_{i-2,j+1} \\\\ r_{i-1,1} & r_{i-1,j+1} \\end{pmatrix}",
+          "to_latex": "\\forall i,\\; \\operatorname{Re}(p_i) < 0 \\iff \\forall k \\in \\{0,\\dots,n\\},\\; r_{n-k,1} > 0\\quad \\left(r_{i,j} = -\\frac{1}{r_{i-1,1}}\\det\\begin{pmatrix} r_{i-2,1} & r_{i-2,j+1} \\\\ r_{i-1,1} & r_{i-1,j+1} \\end{pmatrix}\\right)",
+          "operation_label": "第1列符号変化数と右半平面極数の等価性",
+          "explanation": "虚軸に沿った偏角変化（コーシー指標）が第1列の符号変化回数と一致するため、全要素が正であることが左半平面極配置の必要十分条件となる。",
+          "used_node_ids": [
+            "eng.ctrl2.n01_closed_loop_characteristic_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d03_argument_principle",
+      "target_node_id": "eng.ctrl2.n03_argument_principle",
+      "route_kind": "deductive",
+      "title": "コーシーの留数定理からの偏角の原理の導出",
+      "premise_node_ids": [
+        "math.complex.lr05_cauchy_residue_theorem",
+        "math.complex.ca05_complex_line_integral_def"
+      ],
+      "required_math_node_ids": [
+        "math.complex.lr02_isolated_singularity_classification",
+        "math.complex.lr03_residue_definition"
+      ],
+      "assumptions": [
+        "F(s) は単純閉曲線 C の内部で有理型であり、C 上に零点および極を持たない。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F(s) = (s - z_0)^m g(s)\\text{ or }(s - p_0)^{-k} h(s)\\quad (g(z_0)\\neq 0,\\; h(p_0)\\neq 0)",
+          "to_latex": "\\frac{1}{2\\pi i}\\oint_C \\frac{F'(s)}{F(s)}\\,ds = Z - P,\\quad \\Delta_C \\arg F(s) = 2\\pi(Z - P)",
+          "operation_label": "対数導関数の留数積分と偏角変化",
+          "explanation": "F'(s)/F(s) の極における留数が零点の重複度 (+m) と極の位数 (-k) に等しいことから、留数定理により周回積分と偏角変化が Z-P に結びつく。",
+          "used_node_ids": [
+            "math.complex.ca05_complex_line_integral_def",
+            "math.complex.lr05_cauchy_residue_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_log_derivative",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F(s) = (s - z_0)^m g(s)\\text{ or }(s - p_0)^{-k} h(s)\\quad (g(z_0)\\neq 0,\\; h(p_0)\\neq 0)",
+          "to_latex": "\\frac{F'(s)}{F(s)} = \\frac{m}{s - z_0} + \\frac{g'(s)}{g(s)}\\text{ (at zero)},\\quad \\frac{F'(s)}{F(s)} = \\frac{-k}{s - p_0} + \\frac{h'(s)}{h(s)}\\text{ (at pole)}",
+          "operation_label": "対数微分の局所展開",
+          "explanation": "積・商の微分法則により対数導関数 F'(s)/F(s) を計算し、零点および極の近傍で1位の極のみが現れることを示す。",
+          "used_node_ids": [
+            "math.complex.lr02_isolated_singularity_classification"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_residue_sum",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{F'(s)}{F(s)} = \\frac{m}{s - z_0} + \\frac{g'(s)}{g(s)}\\text{ (at zero)},\\quad \\frac{F'(s)}{F(s)} = \\frac{-k}{s - p_0} + \\frac{h'(s)}{h(s)}\\text{ (at pole)}",
+          "to_latex": "\\frac{1}{2\\pi i}\\oint_C \\frac{F'(s)}{F(s)}\\,ds = \\sum_{z_j \\in \\operatorname{int}(C)} m_j - \\sum_{p_l \\in \\operatorname{int}(C)} k_l = Z - P",
+          "operation_label": "留数定理の適用",
+          "explanation": "留数定理を閉曲線 C に適用し、重複度を含めた内部の零点総数 Z と極総数 P の差を得る。",
+          "used_node_ids": [
+            "math.complex.lr03_residue_definition",
+            "math.complex.lr05_cauchy_residue_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_arg_variation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2\\pi i}\\oint_C \\frac{F'(s)}{F(s)}\\,ds = \\sum_{z_j \\in \\operatorname{int}(C)} m_j - \\sum_{p_l \\in \\operatorname{int}(C)} k_l = Z - P",
+          "to_latex": "\\frac{1}{2\\pi i}\\oint_C \\frac{F'(s)}{F(s)}\\,ds = Z - P,\\quad \\Delta_C \\arg F(s) = 2\\pi(Z - P)",
+          "operation_label": "複素対数の虚部（偏角変化）への変換",
+          "explanation": "d(ln F(s)) = d(ln|F(s)|) + i d(arg F(s)) を閉曲線に沿って積分すると実部は消滅し、偏角変化量 Δ_C arg F(s) = 2π(Z - P) が得られる。",
+          "used_node_ids": [
+            "math.complex.ca05_complex_line_integral_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d04_nyquist_stability_criterion",
+      "target_node_id": "eng.ctrl2.n04_nyquist_stability_criterion",
+      "route_kind": "deductive",
+      "title": "偏角の原理と閉ループ特性式からのナイキスト安定判別法の導出",
+      "premise_node_ids": [
+        "eng.ctrl2.n01_closed_loop_characteristic_eq",
+        "eng.ctrl2.n03_argument_principle"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "開ループ伝達関数 L(s) は厳密プロパーまたはプロパーであり、閉経路 C_Nyq 上に極・零点を持たない（虚軸上の極は微小半円で迂回する）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F(s) := 1 + L(s) = \\frac{D_L(s) + N_L(s)}{D_L(s)},\\quad C_{\\mathrm{Nyq}} = \\{j\\omega \\mid \\omega \\in (-\\infty,\\infty)\\} \\cup C_{\\infty}",
+          "to_latex": "Z = P + N,\\quad \\text{Closed-loop stable} \\iff Z = 0 \\iff N = -P",
+          "operation_label": "右半平面閉経路への偏角原理の適用",
+          "explanation": "F(s) = 1 + L(s) に対して右半平面全体を時計回りに囲むナイキスト閉経路に偏角の原理を適用し、点 (-1,0) の周回数 N から閉ループ不安定極数 Z を判定する。",
+          "used_node_ids": [
+            "eng.ctrl2.n01_closed_loop_characteristic_eq",
+            "eng.ctrl2.n03_argument_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_apply_arg_principle",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F(s) := 1 + L(s) = \\frac{D_L(s) + N_L(s)}{D_L(s)},\\quad C_{\\mathrm{Nyq}} = \\{j\\omega \\mid \\omega \\in (-\\infty,\\infty)\\} \\cup C_{\\infty}",
+          "to_latex": "\\frac{1}{2\\pi i}\\oint_{C_{\\mathrm{Nyq}}} \\frac{F'(s)}{F(s)}\\,ds = Z - P = \\frac{1}{2\\pi}\\Delta_{C_{\\mathrm{Nyq}}}\\arg(1 + L(s))",
+          "operation_label": "F(s)=1+L(s) の零点・極の同定",
+          "explanation": "1+L(s) の零点は閉ループ極（右半平面内の個数 Z）、極は開ループ極（右半平面内の個数 P）に一致する。時計回り経路での偏角変化を評価する。",
+          "used_node_ids": [
+            "eng.ctrl2.n01_closed_loop_characteristic_eq",
+            "eng.ctrl2.n03_argument_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_shift_to_minus_one",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2\\pi i}\\oint_{C_{\\mathrm{Nyq}}} \\frac{F'(s)}{F(s)}\\,ds = Z - P = \\frac{1}{2\\pi}\\Delta_{C_{\\mathrm{Nyq}}}\\arg(1 + L(s))",
+          "to_latex": "N := \\frac{1}{2\\pi}\\Delta_{C_{\\mathrm{Nyq}}}\\arg\\big(L(s) - (-1)\\big) = Z - P \\implies Z = P + N",
+          "operation_label": "原点の (-1, 0) への平行移動",
+          "explanation": "1 + L(s) の原点周りの時計回り周回数 N は、L(s) 平面における点 (-1, 0) 周りの時計回り周回数に等しいことから Z = P + N を得る。",
+          "used_node_ids": [
+            "eng.ctrl2.n03_argument_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_stability_cond",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "N := \\frac{1}{2\\pi}\\Delta_{C_{\\mathrm{Nyq}}}\\arg\\big(L(s) - (-1)\\big) = Z - P \\implies Z = P + N",
+          "to_latex": "Z = P + N,\\quad \\text{Closed-loop stable} \\iff Z = 0 \\iff N = -P",
+          "operation_label": "閉ループ安定条件の確定",
+          "explanation": "すべての閉ループ極が左半平面にある（Z = 0）ための必要十分条件として N = -P（反時計回りに P 回周回）を得る。",
+          "used_node_ids": [
+            "eng.ctrl2.n01_closed_loop_characteristic_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d05_frequency_response_bode_def",
+      "target_node_id": "eng.ctrl2.n05_frequency_response_bode_def",
+      "route_kind": "reformulation",
+      "title": "有理伝達関数の虚軸上評価とボード線図表現の導出",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def",
+        "eng.ctrl2.n01_closed_loop_characteristic_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "正弦波定常応答を考え、s = jω（ω > 0）上で評価する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L(s) = K\\frac{\\prod_m (s - z_m)}{s^q \\prod_k (s - p_k)},\\quad s = j\\omega\\;(\\omega > 0)",
+          "to_latex": "L(j\\omega) = |L(j\\omega)| e^{j\\angle L(j\\omega)},\\quad G_{\\mathrm{dB}}(\\omega) := 20\\log_{10}|L(j\\omega)|,\\quad \\phi(\\omega) := \\arg L(j\\omega)",
+          "operation_label": "極座標分解と対数振幅・位相の定義",
+          "explanation": "伝達関数を虚軸上で評価して大きさと偏角に分解し、乗除算が加減算になる対数振幅（dB）と位相角によってボード線図を定義する。",
+          "used_node_ids": [
+            "eng.ctrl2.n01_closed_loop_characteristic_eq",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_mag_phase_factors",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L(s) = K\\frac{\\prod_m (s - z_m)}{s^q \\prod_k (s - p_k)},\\quad s = j\\omega\\;(\\omega > 0)",
+          "to_latex": "|L(j\\omega)| = |K|\\frac{\\prod_m |j\\omega - z_m|}{\\omega^q \\prod_k |j\\omega - p_k|},\\quad \\arg L(j\\omega) = \\arg K + \\sum_m \\arg(j\\omega - z_m) - q\\frac{\\pi}{2} - \\sum_k \\arg(j\\omega - p_k)",
+          "operation_label": "極・零点因子ごとの絶対値と偏角分解",
+          "explanation": "s = jω を代入し、複素数の積と商の絶対値・偏角の性質を用いて各要素の寄与に分解する。",
+          "used_node_ids": [
+            "eng.ctrl2.n01_closed_loop_characteristic_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_db_definition",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|L(j\\omega)| = |K|\\frac{\\prod_m |j\\omega - z_m|}{\\omega^q \\prod_k |j\\omega - p_k|},\\quad \\arg L(j\\omega) = \\arg K + \\sum_m \\arg(j\\omega - z_m) - q\\frac{\\pi}{2} - \\sum_k \\arg(j\\omega - p_k)",
+          "to_latex": "L(j\\omega) = |L(j\\omega)| e^{j\\angle L(j\\omega)},\\quad G_{\\mathrm{dB}}(\\omega) := 20\\log_{10}|L(j\\omega)|,\\quad \\phi(\\omega) := \\arg L(j\\omega)",
+          "operation_label": "デシベル換算によるボード線図の定義",
+          "explanation": "20 log_10 を取ることで要素の積を和に変換し、ゲイン特性 G_dB(ω) と位相特性 φ(ω) の対を定義する。",
+          "used_node_ids": [
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d06_gain_phase_margin",
+      "target_node_id": "eng.ctrl2.n06_gain_phase_margin",
+      "route_kind": "deductive",
+      "title": "ナイキスト臨界点 (-1, 0) までの距離としてのゲイン余裕・位相余裕の導出",
+      "premise_node_ids": [
+        "eng.ctrl2.n04_nyquist_stability_criterion",
+        "eng.ctrl2.n05_frequency_response_bode_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "開ループ安定（P = 0）かつ最小位相的な単調交差を仮定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "1 + L(j\\omega) = 0 \\iff |L(j\\omega)| = 1 \\land \\angle L(j\\omega) = -180^\\circ",
+          "to_latex": "\\mathrm{PM} := 180^\\circ + \\angle L(j\\omega_{gc})\\;\\big(|L(j\\omega_{gc})|=1\\big),\\quad \\mathrm{GM} := \\frac{1}{|L(j\\omega_{pc})|}\\;\\big(\\angle L(j\\omega_{pc})=-180^\\circ\\big)",
+          "operation_label": "交差周波数における臨界点からの余裕の定量化",
+          "explanation": "安定限界条件 L(jω) = -1 に対し、振幅が1となる周波数での位相余裕と、位相が-180°となる周波数でのゲイン余裕を定義する。",
+          "used_node_ids": [
+            "eng.ctrl2.n04_nyquist_stability_criterion",
+            "eng.ctrl2.n05_frequency_response_bode_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_phase_margin",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "1 + L(j\\omega) = 0 \\iff |L(j\\omega)| = 1 \\land \\angle L(j\\omega) = -180^\\circ",
+          "to_latex": "|L(j\\omega_{gc})| = 1 \\implies \\text{distance to } -180^\\circ\\text{ is }\\mathrm{PM} := 180^\\circ + \\angle L(j\\omega_{gc})",
+          "operation_label": "ゲイン交差周波数での位相余裕の導出",
+          "explanation": "単位円との交点 |L(jω_gc)| = 1 において、あとどれだけ位相が遅れると臨界点 (-1, 0)（位相 -180°）に到達するかを位相余裕 PM として定める。",
+          "used_node_ids": [
+            "eng.ctrl2.n04_nyquist_stability_criterion",
+            "eng.ctrl2.n05_frequency_response_bode_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_gain_margin",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|L(j\\omega_{gc})| = 1 \\implies \\text{distance to } -180^\\circ\\text{ is }\\mathrm{PM} := 180^\\circ + \\angle L(j\\omega_{gc})",
+          "to_latex": "\\angle L(j\\omega_{pc}) = -180^\\circ \\implies \\text{allowable gain factor is }\\mathrm{GM} := \\frac{1}{|L(j\\omega_{pc})|},\\quad \\mathrm{GM}_{\\mathrm{dB}} = -20\\log_{10}|L(j\\omega_{pc})|",
+          "operation_label": "位相交差周波数でのゲイン余裕の導出",
+          "explanation": "負の実軸との交点 ∠L(jω_pc) = -180° において、ループゲインを何倍まで大きくすると (-1, 0) に達するかをゲイン余裕 GM として定める。",
+          "used_node_ids": [
+            "eng.ctrl2.n04_nyquist_stability_criterion",
+            "eng.ctrl2.n05_frequency_response_bode_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_summary_margins",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\angle L(j\\omega_{pc}) = -180^\\circ \\implies \\text{allowable gain factor is }\\mathrm{GM} := \\frac{1}{|L(j\\omega_{pc})|},\\quad \\mathrm{GM}_{\\mathrm{dB}} = -20\\log_{10}|L(j\\omega_{pc})|",
+          "to_latex": "\\mathrm{PM} := 180^\\circ + \\angle L(j\\omega_{gc})\\;\\big(|L(j\\omega_{gc})|=1\\big),\\quad \\mathrm{GM} := \\frac{1}{|L(j\\omega_{pc})|}\\;\\big(\\angle L(j\\omega_{pc})=-180^\\circ\\big)",
+          "operation_label": "安定余裕指標の統合",
+          "explanation": "位相余裕とゲイン余裕を合わせて閉ループのロバスト安定余裕指標として確定する。",
+          "used_node_ids": [
+            "eng.ctrl2.n05_frequency_response_bode_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d07_pid_controller_transfer_func",
+      "target_node_id": "eng.ctrl2.n07_pid_controller_transfer_func",
+      "route_kind": "deductive",
+      "title": "時間領域PID制御則のラプラス変換による伝達関数の導出",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def",
+        "math.laplace.lt02_linearity_and_shifting",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "初期時刻 t = 0^- における偏差は零（e(0^-) = 0）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u(t) = K_p e(t) + K_i \\int_{0}^{t} e(\\tau)\\,d\\tau + K_d \\frac{de(t)}{dt}\\quad \\big(e(0^-)=0\\big)",
+          "to_latex": "C(s) := \\frac{U(s)}{E(s)} = K_p + \\frac{K_i}{s} + K_d s = K_p\\left(1 + \\frac{1}{T_i s} + T_d s\\right)",
+          "operation_label": "積分・微分のラプラス変換と伝達関数化",
+          "explanation": "PID制御則の各項にラプラス変換の線形性と微積分法則を適用し、操作量と偏差の比として制御器伝達関数 C(s) を導出する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.laplace.lt01_laplace_transform_def",
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_laplace_terms",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(t) = K_p e(t) + K_i \\int_{0}^{t} e(\\tau)\\,d\\tau + K_d \\frac{de(t)}{dt}\\quad \\big(e(0^-)=0\\big)",
+          "to_latex": "U(s) = K_p E(s) + K_i \\frac{E(s)}{s} + K_d s E(s)",
+          "operation_label": "微積分法則と線形性の適用",
+          "explanation": "部分積分・微積分学の基本定理に基づくラプラス変換の積分則（1/s 倍）と微分則（s 倍、初期値零）および線形性を各項に適用する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.laplace.lt01_laplace_transform_def",
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_ratio_standard_form",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U(s) = K_p E(s) + K_i \\frac{E(s)}{s} + K_d s E(s)",
+          "to_latex": "C(s) := \\frac{U(s)}{E(s)} = K_p + \\frac{K_i}{s} + K_d s = K_p\\left(1 + \\frac{1}{T_i s} + T_d s\\right)",
+          "operation_label": "時定数形式への整理",
+          "explanation": "E(s) で括って伝達関数 C(s) を求め、積分時間 T_i = K_p / K_i、微分時間 T_d = K_d / K_p を用いて標準形に書き換える。",
+          "used_node_ids": [
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d08_pid_loop_shaping_margins",
+      "target_node_id": "eng.ctrl2.n08_pid_loop_shaping_margins",
+      "route_kind": "deductive",
+      "title": "PID補償による開ループ低周波ゲイン増大と高周波位相進みの導出",
+      "premise_node_ids": [
+        "eng.ctrl2.n06_gain_phase_margin",
+        "eng.ctrl2.n07_pid_controller_transfer_func"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "制御対象 P(s) は原点に零点を持たず（P(0) ≠ 0）、閉ループ系は安定化されているとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L(s) = C(s)P(s) = K_p\\left(1 + \\frac{1}{T_i s} + T_d s\\right)P(s),\\quad s = j\\omega",
+          "to_latex": "\\lim_{\\omega\\to 0}|L(j\\omega)| = \\infty\\text{ (zero steady-state step error)},\\quad \\angle(1 + j\\omega T_d) = \\arctan(\\omega T_d) > 0\\text{ (phase lead increases }\\mathrm{PM}\\text{)}",
+          "operation_label": "低周波積分効果と高周波微分位相進みの解析",
+          "explanation": "開ループ伝達関数 L(jω)=C(jω)P(jω) において、積分器が ω→0 でゲインを無限大にして定常偏差を零にし、微分器が交差周波数付近で正の位相を与えて位相余裕を拡大することを示す。",
+          "used_node_ids": [
+            "eng.ctrl2.n06_gain_phase_margin",
+            "eng.ctrl2.n07_pid_controller_transfer_func"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_steady_state_error",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L(s) = C(s)P(s) = K_p\\left(1 + \\frac{1}{T_i s} + T_d s\\right)P(s),\\quad s = j\\omega",
+          "to_latex": "e_{\\mathrm{ss,step}} = \\lim_{s\\to 0}\\frac{1}{1 + C(s)P(s)} = 0\\quad \\left(\\because \\lim_{s\\to 0}\\frac{K_p}{T_i s}P(s) = \\infty\\text{ for }P(0)\\neq 0\\right)",
+          "operation_label": "最終値定理によるステップ定常偏差の零化",
+          "explanation": "積分項 1/(T_i s) により開ループ系が1型以上となり、ω→0 での開ループゲインが発散して定常ステップ偏差が 0 になる。",
+          "used_node_ids": [
+            "eng.ctrl2.n07_pid_controller_transfer_func"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_phase_lead_margin",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e_{\\mathrm{ss,step}} = \\lim_{s\\to 0}\\frac{1}{1 + C(s)P(s)} = 0\\quad \\left(\\because \\lim_{s\\to 0}\\frac{K_p}{T_i s}P(s) = \\infty\\text{ for }P(0)\\neq 0\\right)",
+          "to_latex": "\\lim_{\\omega\\to 0}|L(j\\omega)| = \\infty\\text{ (zero steady-state step error)},\\quad \\angle(1 + j\\omega T_d) = \\arctan(\\omega T_d) > 0\\text{ (phase lead increases }\\mathrm{PM}\\text{)}",
+          "operation_label": "微分項による位相進みと位相余裕の改善",
+          "explanation": "ゲイン交差周波数 ω_gc 付近で PD 要素 (1 + jω T_d) が正の位相 arctan(ω T_d) > 0 を付加し、位相余裕 PM = 180° + ∠L(jω_gc) を増大させる。",
+          "used_node_ids": [
+            "eng.ctrl2.n06_gain_phase_margin",
+            "eng.ctrl2.n07_pid_controller_transfer_func"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

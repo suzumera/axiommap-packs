@@ -1,0 +1,823 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.ml.backprop_attention",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "machine_learning",
+    "title": "機械学習の数理2：誤差逆伝播法（自動微分）・ソフトマックス・自己注意機構(Attention)",
+    "language": "ja",
+    "description": "多層パーセプトロンへの連鎖律適用（誤差逆伝播）、ヤコビアンとソフトマックス勾配、Scaled Dot-Product Attention の数式構造を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.ml2.n01_mlp_layer_def",
+      "short_code": "ML2_01",
+      "kind": "definition",
+      "title": "多層パーセプトロン（MLP）の層順伝播の定義",
+      "summary": "線形変換（アフィン写像）と要素ごとの非線形活性化関数の合成として定義される多層パーセプトロンの第 l 層順伝播モデル。",
+      "canonical_latex": "\\mathbf{z}^{(l)} := W^{(l)}\\mathbf{a}^{(l-1)} + \\mathbf{b}^{(l)},\\quad \\mathbf{a}^{(l)} := \\sigma\\big(\\mathbf{z}^{(l)}\\big)\\quad (\\mathbf{a}^{(0)} = \\mathbf{x})",
+      "aliases_latex": [
+        "z_i^{(l)} = \\sum_j W_{ij}^{(l)} a_j^{(l-1)} + b_i^{(l)},\\; a_i^{(l)} = \\sigma(z_i^{(l)})"
+      ],
+      "keywords": [
+        "MLP",
+        "多層パーセプトロン",
+        "順伝播",
+        "活性化関数"
+      ],
+      "domain_tags": [
+        "machine_learning"
+      ]
+    },
+    {
+      "id": "eng.ml2.n02_backprop_error_signal",
+      "short_code": "ML2_02",
+      "kind": "theorem_formula",
+      "title": "誤差逆伝播法における誤差信号（デルタ）の漸化式",
+      "summary": "多変数関数の連鎖律を層構造に適用して得られる、前活性値に関する損失関数の勾配（誤差信号）の逆方向漸化式。",
+      "canonical_latex": "\\boldsymbol{\\delta}^{(l)} := \\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{z}^{(l)}} = \\left(\\big(W^{(l+1)}\\big)^\\top \\boldsymbol{\\delta}^{(l+1)}\\right) \\odot \\sigma'\\big(\\mathbf{z}^{(l)}\\big)",
+      "aliases_latex": [
+        "\\delta_i^{(l)} = \\left(\\sum_k W_{ki}^{(l+1)} \\delta_k^{(l+1)}\\right) \\sigma'(z_i^{(l)})"
+      ],
+      "keywords": [
+        "誤差逆伝播法",
+        "バックプロパゲーション",
+        "連鎖律",
+        "誤差信号"
+      ],
+      "domain_tags": [
+        "machine_learning"
+      ]
+    },
+    {
+      "id": "eng.ml2.n03_backprop_weight_grad",
+      "short_code": "ML2_03",
+      "kind": "theorem_formula",
+      "title": "誤差逆伝播法による重み・バイアス勾配の計算公式",
+      "summary": "各層の誤差信号と前層の活性値の外積および誤差信号そのものによって与えられる、重み行列とバイアスベクトルの勾配公式。",
+      "canonical_latex": "\\frac{\\partial \\mathcal{L}}{\\partial W^{(l)}} = \\boldsymbol{\\delta}^{(l)} \\big(\\mathbf{a}^{(l-1)}\\big)^\\top,\\qquad \\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{b}^{(l)}} = \\boldsymbol{\\delta}^{(l)}",
+      "aliases_latex": [
+        "\\frac{\\partial \\mathcal{L}}{\\partial W_{ij}^{(l)}} = \\delta_i^{(l)} a_j^{(l-1)}"
+      ],
+      "keywords": [
+        "重み勾配",
+        "バイアス勾配",
+        "自動微分",
+        "誤差逆伝播法"
+      ],
+      "domain_tags": [
+        "machine_learning"
+      ]
+    },
+    {
+      "id": "eng.ml2.n04_softmax_def",
+      "short_code": "ML2_04",
+      "kind": "definition",
+      "title": "ソフトマックス関数と多クラス確率分布の定義",
+      "summary": "実数ベクトル（ロジット）を指数関数によって正値化し、総和で正規化することで離散確率分布へ写像するソフトマックス関数の定義。",
+      "canonical_latex": "p_i = \\operatorname{softmax}(\\mathbf{z})_i := \\frac{e^{z_i}}{\\sum_{j=1}^{K} e^{z_j}}\\quad \\left(p_i > 0,\\; \\sum_{i=1}^{K} p_i = 1\\right)",
+      "aliases_latex": [
+        "\\operatorname{softmax}(\\mathbf{z}) = \\frac{\\exp(\\mathbf{z})}{\\mathbf{1}^\\top \\exp(\\mathbf{z})}"
+      ],
+      "keywords": [
+        "ソフトマックス関数",
+        "ロジット",
+        "確率分布",
+        "正規化"
+      ],
+      "domain_tags": [
+        "machine_learning"
+      ]
+    },
+    {
+      "id": "eng.ml2.n05_softmax_jacobian",
+      "short_code": "ML2_05",
+      "kind": "theorem_formula",
+      "title": "ソフトマックス関数のヤコビ行列",
+      "summary": "ソフトマックス出力の各成分を入力ロジットの各成分で偏微分して得られるヤコビ行列の対称行列表示。",
+      "canonical_latex": "\\frac{\\partial p_i}{\\partial z_j} = p_i(\\delta_{ij} - p_j),\\qquad J_{\\operatorname{softmax}}(\\mathbf{z}) = \\operatorname{diag}(\\mathbf{p}) - \\mathbf{p}\\mathbf{p}^\\top",
+      "aliases_latex": [
+        "\\frac{\\partial \\operatorname{softmax}(\\mathbf{z})_i}{\\partial z_j} = p_i \\delta_{ij} - p_i p_j"
+      ],
+      "keywords": [
+        "ヤコビ行列",
+        "ソフトマックス勾配",
+        "クロネッカーのデルタ"
+      ],
+      "domain_tags": [
+        "machine_learning"
+      ]
+    },
+    {
+      "id": "eng.ml2.n06_cross_entropy_softmax_grad",
+      "short_code": "ML2_06",
+      "kind": "theorem_formula",
+      "title": "交差エントロピー損失とソフトマックスの合成勾配",
+      "summary": "多クラス交差エントロピー損失とソフトマックス関数を合成した際のロジットに対する勾配が予測確率と正解ラベルの差になる基本定理。",
+      "canonical_latex": "\\mathcal{L}_{\\mathrm{CE}}(\\mathbf{y}, \\mathbf{p}) := -\\sum_{i=1}^{K} y_i \\log p_i \\implies \\frac{\\partial \\mathcal{L}_{\\mathrm{CE}}}{\\partial \\mathbf{z}} = \\mathbf{p} - \\mathbf{y}\\quad \\left(\\sum_{i=1}^{K} y_i = 1\\right)",
+      "aliases_latex": [
+        "\\frac{\\partial \\mathcal{L}_{\\mathrm{CE}}}{\\partial z_j} = p_j - y_j"
+      ],
+      "keywords": [
+        "交差エントロピー",
+        "ソフトマックス",
+        "合成勾配"
+      ],
+      "domain_tags": [
+        "machine_learning"
+      ]
+    },
+    {
+      "id": "eng.ml2.n07_scaled_dot_product_attention_def",
+      "short_code": "ML2_07",
+      "kind": "definition",
+      "title": "Scaled Dot-Product Attention の定義",
+      "summary": "Query と Key の内積を次元数の平方根でスケーリングし、行方向ソフトマックスで重み付けして Value を集約する自己注意機構の定義。",
+      "canonical_latex": "\\operatorname{Attention}(Q, K, V) := \\operatorname{softmax}\\!\\left(\\frac{QK^\\top}{\\sqrt{d_k}}\\right) V\\quad (Q\\in\\mathbb{R}^{n\\times d_k},\\; K\\in\\mathbb{R}^{m\\times d_k},\\; V\\in\\mathbb{R}^{m\\times d_v})",
+      "aliases_latex": [
+        "O = P V,\\quad P = \\operatorname{softmax}(S),\\quad S = \\frac{QK^\\top}{\\sqrt{d_k}}"
+      ],
+      "keywords": [
+        "Attention",
+        "自己注意機構",
+        "Transformer",
+        "内積注意"
+      ],
+      "domain_tags": [
+        "machine_learning"
+      ]
+    },
+    {
+      "id": "eng.ml2.n08_attention_variance_scaling",
+      "short_code": "ML2_08",
+      "kind": "theorem_formula",
+      "title": "内積スケーリング因子 1/sqrt(d_k) の分散正規化則",
+      "summary": "独立同分布な標準化 Query/Key ベクトルの内積の分散が次元数 d_k に比例することを示し、1/sqrt(d_k) による分散 1 への正規化を導く定理。",
+      "canonical_latex": "\\mathbb{E}[q_i] = \\mathbb{E}[k_i] = 0,\\; \\operatorname{Var}(q_i) = \\operatorname{Var}(k_i) = 1 \\implies \\operatorname{Var}(\\mathbf{q}\\cdot\\mathbf{k}) = d_k,\\; \\operatorname{Var}\\!\\left(\\frac{\\mathbf{q}\\cdot\\mathbf{k}}{\\sqrt{d_k}}\\right) = 1",
+      "aliases_latex": [
+        "\\mathbf{q}\\cdot\\mathbf{k} \\sim (0, d_k) \\implies \\frac{\\mathbf{q}\\cdot\\mathbf{k}}{\\sqrt{d_k}} \\sim (0, 1)"
+      ],
+      "keywords": [
+        "スケーリング因子",
+        "分散正規化",
+        "勾配消失回避"
+      ],
+      "domain_tags": [
+        "machine_learning"
+      ]
+    },
+    {
+      "id": "eng.ml2.n09_attention_gradient_backprop",
+      "short_code": "ML2_09",
+      "kind": "theorem_formula",
+      "title": "Attention 機構における勾配逆伝播公式",
+      "summary": "出力勾配から Value・注意重み行列・スコア行列・Query への連鎖律による誤差逆伝播公式。",
+      "canonical_latex": "\\frac{\\partial \\mathcal{L}}{\\partial V} = P^\\top G_O,\\quad \\frac{\\partial \\mathcal{L}}{\\partial P} = G_O V^\\top,\\quad \\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)_{i,:} = \\big(\\operatorname{diag}(\\mathbf{p}_i) - \\mathbf{p}_i\\mathbf{p}_i^\\top\\big)\\left(\\frac{\\partial \\mathcal{L}}{\\partial P}\\right)_{i,:},\\quad \\frac{\\partial \\mathcal{L}}{\\partial Q} = \\frac{1}{\\sqrt{d_k}}\\frac{\\partial \\mathcal{L}}{\\partial S} K",
+      "aliases_latex": [
+        "G_V = P^\\top G_O,\\; G_S = P \\odot (G_P - \\operatorname{rowsum}(G_P \\odot P)\\mathbf{1}^\\top),\\; G_Q = \\frac{1}{\\sqrt{d_k}} G_S K"
+      ],
+      "keywords": [
+        "Attention勾配",
+        "逆伝播",
+        "ソフトマックスヤコビアン"
+      ],
+      "domain_tags": [
+        "machine_learning"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_ml2_01_mlp_layer_def",
+      "target_node_id": "eng.ml2.n01_mlp_layer_def",
+      "route_kind": "reformulation",
+      "title": "ベクトル空間上のアフィン写像と成分ごとの非線形変換によるMLP層の構成",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "各層の活性化ベクトルは有限次元実ベクトル空間の元である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{a}^{(l-1)} \\in \\mathbb{R}^{d_{l-1}},\\; W^{(l)} \\in \\mathbb{R}^{d_l \\times d_{l-1}},\\; \\mathbf{b}^{(l)} \\in \\mathbb{R}^{d_l}",
+          "to_latex": "\\mathbf{z}^{(l)} := W^{(l)}\\mathbf{a}^{(l-1)} + \\mathbf{b}^{(l)},\\quad \\mathbf{a}^{(l)} := \\sigma\\big(\\mathbf{z}^{(l)}\\big)",
+          "operation_label": "アフィン変換と非線形活性化の合成定義",
+          "explanation": "前層出力ベクトルに対する線形変換と平行移動（アフィン変換）に、要素ごとの活性化関数を適用して次層出力を定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{a}^{(l-1)} \\in \\mathbb{R}^{d_{l-1}},\\; W^{(l)} \\in \\mathbb{R}^{d_l \\times d_{l-1}},\\; \\mathbf{b}^{(l)} \\in \\mathbb{R}^{d_l}",
+          "to_latex": "\\mathbf{z}^{(l)} := W^{(l)}\\mathbf{a}^{(l-1)} + \\mathbf{b}^{(l)} \\in \\mathbb{R}^{d_l}",
+          "operation_label": "重み行列とバイアスによるアフィン写像の定義",
+          "explanation": "ベクトル空間の線形演算とベクトル和を用いて、第 l 層の前活性値ベクトルを定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{z}^{(l)} := W^{(l)}\\mathbf{a}^{(l-1)} + \\mathbf{b}^{(l)} \\in \\mathbb{R}^{d_l}",
+          "to_latex": "\\mathbf{z}^{(l)} := W^{(l)}\\mathbf{a}^{(l-1)} + \\mathbf{b}^{(l)},\\quad \\mathbf{a}^{(l)} := \\sigma\\big(\\mathbf{z}^{(l)}\\big)",
+          "operation_label": "要素ごとの非線形活性化関数の適用",
+          "explanation": "各成分にスカラー活性化関数を作用させ、層出力ベクトルを定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml2_02_backprop_error_signal",
+      "target_node_id": "eng.ml2.n02_backprop_error_signal",
+      "route_kind": "deductive",
+      "title": "多変数連鎖律による誤差信号漸化式の導出",
+      "premise_node_ids": [
+        "eng.ml2.n01_mlp_layer_def",
+        "math.calc.m35_multivariable_chain_rule",
+        "math.calc.m01_chain_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "損失関数および活性化関数は微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\delta_i^{(l)} := \\frac{\\partial \\mathcal{L}}{\\partial z_i^{(l)}}",
+          "to_latex": "\\boldsymbol{\\delta}^{(l)} = \\left(\\big(W^{(l+1)}\\big)^\\top \\boldsymbol{\\delta}^{(l+1)}\\right) \\odot \\sigma'\\big(\\mathbf{z}^{(l)}\\big)",
+          "operation_label": "次層前活性値を介した連鎖律の適用",
+          "explanation": "次層の前活性値に関する偏微分と活性化関数の導関数を連鎖律で結び、誤差信号の逆向き漸化式を得る。",
+          "used_node_ids": [
+            "eng.ml2.n01_mlp_layer_def",
+            "math.calc.m01_chain_rule",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta_i^{(l)} := \\frac{\\partial \\mathcal{L}}{\\partial z_i^{(l)}}",
+          "to_latex": "\\delta_i^{(l)} = \\sum_{k} \\frac{\\partial \\mathcal{L}}{\\partial z_k^{(l+1)}} \\frac{\\partial z_k^{(l+1)}}{\\partial z_i^{(l)}}",
+          "operation_label": "次層の前活性値を媒介変数とする多変数連鎖律",
+          "explanation": "損失が次層の前活性値を通じて依存することから、多変数連鎖律を展開する。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta_i^{(l)} = \\sum_{k} \\frac{\\partial \\mathcal{L}}{\\partial z_k^{(l+1)}} \\frac{\\partial z_k^{(l+1)}}{\\partial z_i^{(l)}}",
+          "to_latex": "\\delta_i^{(l)} = \\sum_{k} \\delta_k^{(l+1)} W_{ki}^{(l+1)} \\sigma'\\big(z_i^{(l)}\\big)",
+          "operation_label": "層定義の偏微分と1変数連鎖律の代入",
+          "explanation": "z_k^{(l+1)} = sum_j W_{kj}^{(l+1)} sigma(z_j^{(l)}) + b_k^{(l+1)} を z_i^{(l)} で偏微分すると W_{ki}^{(l+1)} sigma'(z_i^{(l)}) となる。",
+          "used_node_ids": [
+            "eng.ml2.n01_mlp_layer_def",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta_i^{(l)} = \\sum_{k} \\delta_k^{(l+1)} W_{ki}^{(l+1)} \\sigma'\\big(z_i^{(l)}\\big)",
+          "to_latex": "\\boldsymbol{\\delta}^{(l)} = \\left(\\big(W^{(l+1)}\\big)^\\top \\boldsymbol{\\delta}^{(l+1)}\\right) \\odot \\sigma'\\big(\\mathbf{z}^{(l)}\\big)",
+          "operation_label": "転置行列積とアダマール積へのベクトル化",
+          "explanation": "成分ごとの和を転置行列と誤差信号ベクトルの積、要素積をアダマール積として行列表記にまとめる。",
+          "used_node_ids": [
+            "eng.ml2.n01_mlp_layer_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml2_03_backprop_weight_grad",
+      "target_node_id": "eng.ml2.n03_backprop_weight_grad",
+      "route_kind": "deductive",
+      "title": "誤差信号を用いた重み・バイアス勾配の導出",
+      "premise_node_ids": [
+        "eng.ml2.n01_mlp_layer_def",
+        "eng.ml2.n02_backprop_error_signal",
+        "math.calc.m35_multivariable_chain_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "各層の重み・バイアスは互いに独立なパラメータである"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial \\mathcal{L}}{\\partial W_{ij}^{(l)}},\\quad \\frac{\\partial \\mathcal{L}}{\\partial b_i^{(l)}}",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial W^{(l)}} = \\boldsymbol{\\delta}^{(l)} \\big(\\mathbf{a}^{(l-1)}\\big)^\\top,\\qquad \\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{b}^{(l)}} = \\boldsymbol{\\delta}^{(l)}",
+          "operation_label": "前活性値に関する連鎖律の適用",
+          "explanation": "重みとバイアスが当該層の前活性値のみを通じて損失に影響するため、連鎖律により誤差信号との積として勾配が得られる。",
+          "used_node_ids": [
+            "eng.ml2.n01_mlp_layer_def",
+            "eng.ml2.n02_backprop_error_signal",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathcal{L}}{\\partial W_{ij}^{(l)}},\\quad \\frac{\\partial \\mathcal{L}}{\\partial b_i^{(l)}}",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial W_{ij}^{(l)}} = \\sum_{k} \\frac{\\partial \\mathcal{L}}{\\partial z_k^{(l)}} \\frac{\\partial z_k^{(l)}}{\\partial W_{ij}^{(l)}},\\quad \\frac{\\partial \\mathcal{L}}{\\partial b_i^{(l)}} = \\sum_{k} \\frac{\\partial \\mathcal{L}}{\\partial z_k^{(l)}} \\frac{\\partial z_k^{(l)}}{\\partial b_i^{(l)}}",
+          "operation_label": "前活性値 z^{(l)} による連鎖律の展開",
+          "explanation": "同じ層の前活性値を経由する多変数連鎖律を記述する。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathcal{L}}{\\partial W_{ij}^{(l)}} = \\sum_{k} \\frac{\\partial \\mathcal{L}}{\\partial z_k^{(l)}} \\frac{\\partial z_k^{(l)}}{\\partial W_{ij}^{(l)}},\\quad \\frac{\\partial \\mathcal{L}}{\\partial b_i^{(l)}} = \\sum_{k} \\frac{\\partial \\mathcal{L}}{\\partial z_k^{(l)}} \\frac{\\partial z_k^{(l)}}{\\partial b_i^{(l)}}",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial W_{ij}^{(l)}} = \\delta_i^{(l)} a_j^{(l-1)},\\quad \\frac{\\partial \\mathcal{L}}{\\partial b_i^{(l)}} = \\delta_i^{(l)}",
+          "operation_label": "アフィン変換の偏微分の代入",
+          "explanation": "k=i の項のみが非零となり、偏微分係数はそれぞれ a_j^{(l-1)} と 1 になる。",
+          "used_node_ids": [
+            "eng.ml2.n01_mlp_layer_def",
+            "eng.ml2.n02_backprop_error_signal"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathcal{L}}{\\partial W_{ij}^{(l)}} = \\delta_i^{(l)} a_j^{(l-1)},\\quad \\frac{\\partial \\mathcal{L}}{\\partial b_i^{(l)}} = \\delta_i^{(l)}",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial W^{(l)}} = \\boldsymbol{\\delta}^{(l)} \\big(\\mathbf{a}^{(l-1)}\\big)^\\top,\\qquad \\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{b}^{(l)}} = \\boldsymbol{\\delta}^{(l)}",
+          "operation_label": "外積による行列表記への変換",
+          "explanation": "全成分をまとめて外積およびベクトルとして表す。",
+          "used_node_ids": [
+            "eng.ml2.n02_backprop_error_signal"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml2_04_softmax_def",
+      "target_node_id": "eng.ml2.n04_softmax_def",
+      "route_kind": "reformulation",
+      "title": "指数写像と総和正規化によるソフトマックス確率分布の構成",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ロジットベクトル z は有限次元実ベクトルである"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{z} = (z_1,\\dots,z_K) \\in \\mathbb{R}^K",
+          "to_latex": "p_i = \\operatorname{softmax}(\\mathbf{z})_i := \\frac{e^{z_i}}{\\sum_{j=1}^{K} e^{z_j}}\\quad \\left(p_i > 0,\\; \\sum_{i=1}^{K} p_i = 1\\right)",
+          "operation_label": "指数関数による正値化と規格化",
+          "explanation": "各ロジットを指数関数で正値に変換し、全体の和で割ることで確率公理を満たす離散確率分布を構成する。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{z} = (z_1,\\dots,z_K) \\in \\mathbb{R}^K",
+          "to_latex": "w_i := e^{z_i} > 0,\\quad Z := \\sum_{j=1}^{K} e^{z_j} > 0",
+          "operation_label": "指数関数による正の重みと分配関数の定義",
+          "explanation": "実数上の指数関数は常に正であるため、非負性と正の正規化定数 Z が保証される。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "w_i := e^{z_i} > 0,\\quad Z := \\sum_{j=1}^{K} e^{z_j} > 0",
+          "to_latex": "p_i = \\operatorname{softmax}(\\mathbf{z})_i := \\frac{e^{z_i}}{\\sum_{j=1}^{K} e^{z_j}}\\quad \\left(p_i > 0,\\; \\sum_{i=1}^{K} p_i = 1\\right)",
+          "operation_label": "正規化による確率公理の充足確認",
+          "explanation": "p_i = w_i / Z とおけばすべての i で p_i > 0 かつ総和が 1 となり、有限標本空間上の確率測度を与える。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": "Sum(exp(z_i), (i, 1, K)) / Sum(exp(z_j), (j, 1, K)) == 1"
+        }
+      ]
+    },
+    {
+      "id": "d_ml2_05_softmax_jacobian",
+      "target_node_id": "eng.ml2.n05_softmax_jacobian",
+      "route_kind": "deductive",
+      "title": "ソフトマックス関数のヤコビ行列の導出",
+      "premise_node_ids": [
+        "eng.ml2.n04_softmax_def",
+        "math.calc.mi03_jacobian_matrix_determinant",
+        "math.calc.t06_exp_power_derivatives",
+        "math.calc.m01_chain_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "p_i はソフトマックス関数の出力である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_i = \\frac{e^{z_i}}{\\sum_{k=1}^{K} e^{z_k}}",
+          "to_latex": "\\frac{\\partial p_i}{\\partial z_j} = p_i(\\delta_{ij} - p_j),\\qquad J_{\\operatorname{softmax}}(\\mathbf{z}) = \\operatorname{diag}(\\mathbf{p}) - \\mathbf{p}\\mathbf{p}^\\top",
+          "operation_label": "商の微分と対角・外積行列への整理",
+          "explanation": "指数関数の導関数と商の微分法則を用いて各偏導関数を計算し、ヤコビ行列の定義に当てはめる。",
+          "used_node_ids": [
+            "eng.ml2.n04_softmax_def",
+            "math.calc.m01_chain_rule",
+            "math.calc.mi03_jacobian_matrix_determinant",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_i = \\frac{e^{z_i}}{\\sum_{k=1}^{K} e^{z_k}}",
+          "to_latex": "\\frac{\\partial p_i}{\\partial z_j} = \\frac{\\delta_{ij} e^{z_i} \\left(\\sum_{k=1}^{K} e^{z_k}\\right) - e^{z_i} e^{z_j}}{\\left(\\sum_{k=1}^{K} e^{z_k}\\right)^2}",
+          "operation_label": "商の微分法則とクロネッカーのデルタの適用",
+          "explanation": "分子の偏微分は i=j のときのみ e^{z_i} となり、分母の偏微分は e^{z_j} となる。",
+          "used_node_ids": [
+            "eng.ml2.n04_softmax_def",
+            "math.calc.m01_chain_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial p_i}{\\partial z_j} = \\frac{\\delta_{ij} e^{z_i} \\left(\\sum_{k=1}^{K} e^{z_k}\\right) - e^{z_i} e^{z_j}}{\\left(\\sum_{k=1}^{K} e^{z_k}\\right)^2}",
+          "to_latex": "\\frac{\\partial p_i}{\\partial z_j} = \\delta_{ij} p_i - p_i p_j = p_i(\\delta_{ij} - p_j)",
+          "operation_label": "ソフトマックス確率による表現の簡約",
+          "explanation": "分母と分子を整理して p_i と p_j で書き直す。",
+          "used_node_ids": [
+            "eng.ml2.n04_softmax_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial p_i}{\\partial z_j} = \\delta_{ij} p_i - p_i p_j = p_i(\\delta_{ij} - p_j)",
+          "to_latex": "\\frac{\\partial p_i}{\\partial z_j} = p_i(\\delta_{ij} - p_j),\\qquad J_{\\operatorname{softmax}}(\\mathbf{z}) = \\operatorname{diag}(\\mathbf{p}) - \\mathbf{p}\\mathbf{p}^\\top",
+          "operation_label": "ヤコビ行列の行列表記への変換",
+          "explanation": "ヤコビ行列の (i,j) 成分が p_i delta_{ij} - p_i p_j であることから、対角行列と外積の差として表す。",
+          "used_node_ids": [
+            "math.calc.mi03_jacobian_matrix_determinant"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml2_06_cross_entropy_softmax_grad",
+      "target_node_id": "eng.ml2.n06_cross_entropy_softmax_grad",
+      "route_kind": "deductive",
+      "title": "交差エントロピーとソフトマックスの合成勾配 p - y の導出",
+      "premise_node_ids": [
+        "eng.ml2.n04_softmax_def",
+        "eng.ml2.n05_softmax_jacobian",
+        "math.calc.m35_multivariable_chain_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "正解ベクトル y は総和 1 の確率分布（または one-hot ベクトル）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{L}_{\\mathrm{CE}}(\\mathbf{y}, \\mathbf{p}) = -\\sum_{i=1}^{K} y_i \\log p_i",
+          "to_latex": "\\frac{\\partial \\mathcal{L}_{\\mathrm{CE}}}{\\partial \\mathbf{z}} = \\mathbf{p} - \\mathbf{y}",
+          "operation_label": "ソフトマックス・ヤコビアンとの合成微分",
+          "explanation": "損失の確率に対する勾配とソフトマックスのヤコビアンを連鎖律で掛け合わせ、正規化条件により p - y へ帰着させる。",
+          "used_node_ids": [
+            "eng.ml2.n04_softmax_def",
+            "eng.ml2.n05_softmax_jacobian",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}_{\\mathrm{CE}}(\\mathbf{y}, \\mathbf{p}) = -\\sum_{i=1}^{K} y_i \\log p_i",
+          "to_latex": "\\frac{\\partial \\mathcal{L}_{\\mathrm{CE}}}{\\partial z_j} = \\sum_{i=1}^{K} \\left(-\\frac{y_i}{p_i}\\right) \\frac{\\partial p_i}{\\partial z_j}",
+          "operation_label": "対数の微分と多変数連鎖律の適用",
+          "explanation": "p_i に関する偏微分 -y_i / p_i とソフトマックスの偏微分を連鎖律で結合する。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathcal{L}_{\\mathrm{CE}}}{\\partial z_j} = \\sum_{i=1}^{K} \\left(-\\frac{y_i}{p_i}\\right) \\frac{\\partial p_i}{\\partial z_j}",
+          "to_latex": "\\frac{\\partial \\mathcal{L}_{\\mathrm{CE}}}{\\partial z_j} = -\\sum_{i=1}^{K} \\frac{y_i}{p_i} p_i (\\delta_{ij} - p_j) = -y_j + p_j \\sum_{i=1}^{K} y_i",
+          "operation_label": "ソフトマックスヤコビアンの代入と約分",
+          "explanation": "p_i が約分され、クロネッカーのデルタ項から -y_j、外積項から p_j sum_i y_i が現れる。",
+          "used_node_ids": [
+            "eng.ml2.n05_softmax_jacobian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathcal{L}_{\\mathrm{CE}}}{\\partial z_j} = -y_j + p_j \\sum_{i=1}^{K} y_i",
+          "to_latex": "\\frac{\\partial \\mathcal{L}_{\\mathrm{CE}}}{\\partial \\mathbf{z}} = \\mathbf{p} - \\mathbf{y}",
+          "operation_label": "正解分布の正規化条件の適用",
+          "explanation": "sum_i y_i = 1 を代入し、全成分をベクトル表記して p - y を得る。",
+          "used_node_ids": [
+            "eng.ml2.n04_softmax_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml2_07_scaled_dot_product_attention_def",
+      "target_node_id": "eng.ml2.n07_scaled_dot_product_attention_def",
+      "route_kind": "reformulation",
+      "title": "内積類似度とソフトマックス重み付き線形和による Attention 定義の構成",
+      "premise_node_ids": [
+        "eng.ml2.n04_softmax_def",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Query と Key は同じ次元 d_k を持つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Q \\in \\mathbb{R}^{n\\times d_k},\\; K \\in \\mathbb{R}^{m\\times d_k},\\; V \\in \\mathbb{R}^{m\\times d_v}",
+          "to_latex": "\\operatorname{Attention}(Q, K, V) := \\operatorname{softmax}\\!\\left(\\frac{QK^\\top}{\\sqrt{d_k}}\\right) V",
+          "operation_label": "スケーリング内積・行方向ソフトマックス・重み付き和の合成",
+          "explanation": "Query と Key のスケーリング済み内積から行方向ソフトマックスで注意重みを求め、Value の凸結合を計算する。",
+          "used_node_ids": [
+            "eng.ml2.n04_softmax_def",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q \\in \\mathbb{R}^{n\\times d_k},\\; K \\in \\mathbb{R}^{m\\times d_k},\\; V \\in \\mathbb{R}^{m\\times d_v}",
+          "to_latex": "S := \\frac{QK^\\top}{\\sqrt{d_k}} \\in \\mathbb{R}^{n\\times m},\\quad P_{ij} := \\operatorname{softmax}(S_{i,:})_j",
+          "operation_label": "スケーリング済み注意スコアと確率重み行列の構成",
+          "explanation": "各 Query 行ベクトルと全 Key 行ベクトルの内積を 1/sqrt(d_k) 倍し、行ごとにソフトマックスで確率化する。",
+          "used_node_ids": [
+            "eng.ml2.n04_softmax_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S := \\frac{QK^\\top}{\\sqrt{d_k}} \\in \\mathbb{R}^{n\\times m},\\quad P_{ij} := \\operatorname{softmax}(S_{i,:})_j",
+          "to_latex": "\\operatorname{Attention}(Q, K, V) := \\operatorname{softmax}\\!\\left(\\frac{QK^\\top}{\\sqrt{d_k}}\\right) V",
+          "operation_label": "Value 行列との積による重み付き平均出力の定義",
+          "explanation": "確率重み行列 P と Value 行列 V の積により、各 Query に対する Value ベクトルの凸結合出力を定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml2_08_attention_variance_scaling",
+      "target_node_id": "eng.ml2.n08_attention_variance_scaling",
+      "route_kind": "deductive",
+      "title": "独立同分布な Query/Key 内積の分散評価と 1/sqrt(d_k) スケーリングの導出",
+      "premise_node_ids": [
+        "eng.ml2.n07_scaled_dot_product_attention_def",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "q_i と k_i はすべて互いに独立で平均 0、分散 1 に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbb{E}[q_i] = \\mathbb{E}[k_i] = 0,\\; \\operatorname{Var}(q_i) = \\operatorname{Var}(k_i) = 1",
+          "to_latex": "\\operatorname{Var}(\\mathbf{q}\\cdot\\mathbf{k}) = d_k,\\quad \\operatorname{Var}\\!\\left(\\frac{\\mathbf{q}\\cdot\\mathbf{k}}{\\sqrt{d_k}}\\right) = 1",
+          "operation_label": "独立和の分散加法性とスケーリング則の適用",
+          "explanation": "各成分積の期待値 0・分散 1 から内積の分散が d_k となり、1/sqrt(d_k) 倍で分散が 1 に正規化される。",
+          "used_node_ids": [
+            "eng.ml2.n07_scaled_dot_product_attention_def",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[q_i] = \\mathbb{E}[k_i] = 0,\\; \\operatorname{Var}(q_i) = \\operatorname{Var}(k_i) = 1",
+          "to_latex": "\\mathbb{E}[q_i k_i] = \\mathbb{E}[q_i]\\mathbb{E}[k_i] = 0,\\quad \\operatorname{Var}(q_i k_i) = \\mathbb{E}[q_i^2]\\mathbb{E}[k_i^2] - 0 = 1",
+          "operation_label": "独立確率変数の積の期待値と分散の計算",
+          "explanation": "q_i と k_i の独立性より積の期待値と二次モーメントが積に分解される。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[q_i k_i] = \\mathbb{E}[q_i]\\mathbb{E}[k_i] = 0,\\quad \\operatorname{Var}(q_i k_i) = \\mathbb{E}[q_i^2]\\mathbb{E}[k_i^2] - 0 = 1",
+          "to_latex": "\\operatorname{Var}\\!\\left(\\sum_{i=1}^{d_k} q_i k_i\\right) = \\sum_{i=1}^{d_k} \\operatorname{Var}(q_i k_i) = d_k",
+          "operation_label": "独立和に対する分散の加法性の適用",
+          "explanation": "各成分の積が互いに独立であるため、和の分散は各分散の和 d_k に等しい。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Var}\\!\\left(\\sum_{i=1}^{d_k} q_i k_i\\right) = \\sum_{i=1}^{d_k} \\operatorname{Var}(q_i k_i) = d_k",
+          "to_latex": "\\operatorname{Var}(\\mathbf{q}\\cdot\\mathbf{k}) = d_k,\\quad \\operatorname{Var}\\!\\left(\\frac{\\mathbf{q}\\cdot\\mathbf{k}}{\\sqrt{d_k}}\\right) = \\frac{1}{d_k}\\operatorname{Var}(\\mathbf{q}\\cdot\\mathbf{k}) = 1",
+          "operation_label": "定数倍の分散則による正規化の確認",
+          "explanation": "1/sqrt(d_k) 倍すると分散は 1/d_k 倍となり、次元に依存せず分散 1 が保たれる。",
+          "used_node_ids": [
+            "eng.ml2.n07_scaled_dot_product_attention_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ml2_09_attention_gradient_backprop",
+      "target_node_id": "eng.ml2.n09_attention_gradient_backprop",
+      "route_kind": "deductive",
+      "title": "Scaled Dot-Product Attention における連鎖律とソフトマックスヤコビアンを用いた逆伝播公式の導出",
+      "premise_node_ids": [
+        "eng.ml2.n07_scaled_dot_product_attention_def",
+        "eng.ml2.n05_softmax_jacobian",
+        "math.calc.m35_multivariable_chain_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "損失関数の Attention 出力 O = PV に対する勾配 G_O が与えられている"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "O = PV,\\quad P_{i,:} = \\operatorname{softmax}(S_{i,:}),\\quad S = \\frac{QK^\\top}{\\sqrt{d_k}},\\quad G_O := \\frac{\\partial \\mathcal{L}}{\\partial O}",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial V} = P^\\top G_O,\\quad \\frac{\\partial \\mathcal{L}}{\\partial P} = G_O V^\\top,\\quad \\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)_{i,:} = \\big(\\operatorname{diag}(\\mathbf{p}_i) - \\mathbf{p}_i\\mathbf{p}_i^\\top\\big)\\left(\\frac{\\partial \\mathcal{L}}{\\partial P}\\right)_{i,:},\\quad \\frac{\\partial \\mathcal{L}}{\\partial Q} = \\frac{1}{\\sqrt{d_k}}\\frac{\\partial \\mathcal{L}}{\\partial S} K",
+          "operation_label": "計算グラフ逆順への連鎖律およびソフトマックスヤコビアンの適用",
+          "explanation": "行列積 O=PV、行方向ソフトマックス P=softmax(S)、スケーリング内積 S=QK^T/sqrt(d_k) の各段階に連鎖律を適用して勾配を逆伝播する。",
+          "used_node_ids": [
+            "eng.ml2.n05_softmax_jacobian",
+            "eng.ml2.n07_scaled_dot_product_attention_def",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "O = PV,\\quad P_{i,:} = \\operatorname{softmax}(S_{i,:}),\\quad S = \\frac{QK^\\top}{\\sqrt{d_k}},\\quad G_O := \\frac{\\partial \\mathcal{L}}{\\partial O}",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial V} = P^\\top G_O,\\qquad \\frac{\\partial \\mathcal{L}}{\\partial P} = G_O V^\\top",
+          "operation_label": "行列積 O = PV の逆伝播勾配の導出",
+          "explanation": "O_{ik} = sum_j P_{ij} V_{jk} に多変数連鎖律を適用し、V および P への勾配を転置行列積で表す。",
+          "used_node_ids": [
+            "eng.ml2.n07_scaled_dot_product_attention_def",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathcal{L}}{\\partial V} = P^\\top G_O,\\qquad \\frac{\\partial \\mathcal{L}}{\\partial P} = G_O V^\\top",
+          "to_latex": "\\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)_{i,:} = \\big(\\operatorname{diag}(\\mathbf{p}_i) - \\mathbf{p}_i\\mathbf{p}_i^\\top\\big)\\left(\\frac{\\partial \\mathcal{L}}{\\partial P}\\right)_{i,:}",
+          "operation_label": "行ごとのソフトマックスヤコビアンの適用",
+          "explanation": "各行 i について独立にソフトマックスが作用するため、ソフトマックスのヤコビ行列を右から（列ベクトルとして）掛けてスコア勾配を得る。",
+          "used_node_ids": [
+            "eng.ml2.n05_softmax_jacobian",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)_{i,:} = \\big(\\operatorname{diag}(\\mathbf{p}_i) - \\mathbf{p}_i\\mathbf{p}_i^\\top\\big)\\left(\\frac{\\partial \\mathcal{L}}{\\partial P}\\right)_{i,:}",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial V} = P^\\top G_O,\\quad \\frac{\\partial \\mathcal{L}}{\\partial P} = G_O V^\\top,\\quad \\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)_{i,:} = \\big(\\operatorname{diag}(\\mathbf{p}_i) - \\mathbf{p}_i\\mathbf{p}_i^\\top\\big)\\left(\\frac{\\partial \\mathcal{L}}{\\partial P}\\right)_{i,:},\\quad \\frac{\\partial \\mathcal{L}}{\\partial Q} = \\frac{1}{\\sqrt{d_k}}\\frac{\\partial \\mathcal{L}}{\\partial S} K",
+          "operation_label": "スケーリング内積 S = QK^T / sqrt(d_k) への連鎖律適用",
+          "explanation": "S_{ij} = (1/sqrt(d_k)) sum_r Q_{ir} K_{jr} に対し連鎖律を適用して Q に関する勾配を導き、全逆伝播式を完成させる。",
+          "used_node_ids": [
+            "eng.ml2.n07_scaled_dot_product_attention_def",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

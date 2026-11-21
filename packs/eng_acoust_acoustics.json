@@ -1,0 +1,689 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.acoust.acoustics",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "acoustics",
+    "title": "音響工学：線形波動方程式・音響インピーダンス・デシベル・ドップラー効果と共鳴管",
+    "language": "ja",
+    "description": "流体方程式の線形化から音波の波動方程式、固有音響インピーダンス ρc、音の強さとデシベル、透過損失、開管/閉管共鳴とヘルムホルツ共鳴器を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.acst.n01_fluid_adiabatic_boundary",
+      "short_code": "ACST01",
+      "kind": "math_boundary",
+      "title": "圧縮性非粘性流体の基礎方程式と断熱状態関係",
+      "summary": "音響学の出発点となる質量保存則（連続の式）、運動量保存則（オイラー方程式）、および音波伝搬における断熱状態変化の線形応答関係。",
+      "canonical_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho \\mathbf{u}) = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p,\\quad \\frac{dp}{d\\rho} = c^2 = \\frac{\\gamma p_0}{\\rho_0}",
+      "aliases_latex": [
+        "\\partial_t \\rho + \\nabla\\cdot(\\rho\\mathbf{u}) = 0,\\quad \\rho D_t\\mathbf{u} = -\\nabla p"
+      ],
+      "keywords": [
+        "連続の式",
+        "オイラー方程式",
+        "断熱変化",
+        "流体力学"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "fluid_mechanics"
+      ]
+    },
+    {
+      "id": "eng.acst.n02_linearized_acoustic_wave_eq",
+      "short_code": "ACST02",
+      "kind": "theorem_formula",
+      "title": "線形音響波動方程式と音速",
+      "summary": "静止一様媒質周りの微小振幅摂動（音圧・密度変動・粒子速度）に対して流体方程式を線形化することで導かれる3次元スカラー波動方程式と音速の式。",
+      "canonical_latex": "\\nabla^2 p' - \\frac{1}{c^2}\\frac{\\partial^2 p'}{\\partial t^2} = 0,\\quad c = \\sqrt{\\left(\\frac{\\partial p}{\\partial \\rho}\\right)_S} = \\sqrt{\\frac{\\gamma R T}{M}}",
+      "aliases_latex": [
+        "\\Box p' = 0,\\quad \\frac{\\partial^2 p'}{\\partial t^2} = c^2 \\nabla^2 p'"
+      ],
+      "keywords": [
+        "波動方程式",
+        "音速",
+        "線形化",
+        "音圧"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "wave_physics"
+      ]
+    },
+    {
+      "id": "eng.acst.n03_specific_acoustic_impedance",
+      "short_code": "ACST03",
+      "kind": "definition",
+      "title": "固有音響インピーダンス",
+      "summary": "自由空間を伝搬する平面進行波における音圧と粒子速度の比として定義される媒質固有の物理量。",
+      "canonical_latex": "Z_0 := \\frac{p'}{u'} = \\rho_0 c",
+      "aliases_latex": [
+        "z_0 = \\rho_0 c"
+      ],
+      "keywords": [
+        "固有音響インピーダンス",
+        "平面波",
+        "粒子速度"
+      ],
+      "domain_tags": [
+        "acoustics"
+      ]
+    },
+    {
+      "id": "eng.acst.n04_sound_intensity_decibel",
+      "short_code": "ACST04",
+      "kind": "definition",
+      "title": "音の強さとデシベル（音圧レベル・音の強さのレベル）",
+      "summary": "単位面積あたりを単位時間に通過する音響エネルギー流束（音の強さ）と、基準値に対する対数比で表したデシベル尺度。",
+      "canonical_latex": "I := \\overline{p'(t)u'(t)} = \\frac{p_{\\mathrm{rms}}^2}{\\rho_0 c},\\quad L_I := 10\\log_{10}\\!\\left(\\frac{I}{I_0}\\right),\\quad L_p := 20\\log_{10}\\!\\left(\\frac{p_{\\mathrm{rms}}}{p_0}\\right)",
+      "aliases_latex": [
+        "I = \\frac{p_{\\mathrm{rms}}^2}{\\rho_0 c},\\quad L_p = 20\\log_{10}(p_{\\mathrm{rms}}/p_0)"
+      ],
+      "keywords": [
+        "音の強さ",
+        "音響インテンシティ",
+        "デシベル",
+        "音圧レベル"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "signal_measurement"
+      ]
+    },
+    {
+      "id": "eng.acst.n05_transmission_loss",
+      "short_code": "ACST05",
+      "kind": "theorem_formula",
+      "title": "境界面での音圧反射率・透過率と透過損失（TL）",
+      "summary": "異なる固有音響インピーダンスを持つ2媒質間の垂直入射平面波における反射・透過係数およびデシベル表示の透過損失。",
+      "canonical_latex": "R = \\frac{Z_2 - Z_1}{Z_2 + Z_1},\\quad T_I = \\frac{4 Z_1 Z_2}{(Z_1 + Z_2)^2},\\quad \\mathrm{TL} := 10\\log_{10}\\!\\left(\\frac{1}{T_I}\\right) = 10\\log_{10}\\!\\left(\\frac{(Z_1 + Z_2)^2}{4 Z_1 Z_2}\\right)",
+      "aliases_latex": [
+        "\\mathrm{TL} = -10\\log_{10} T_I"
+      ],
+      "keywords": [
+        "透過損失",
+        "反射率",
+        "透過率",
+        "インピーダンス整合"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "architectural_acoustics"
+      ]
+    },
+    {
+      "id": "eng.acst.n06_doppler_effect_acoustics",
+      "short_code": "ACST06",
+      "kind": "theorem_formula",
+      "title": "音響ドップラー効果",
+      "summary": "媒質に対して音源と観測者が一直線上で運動するときに観測される見かけの周波数の変化法則。",
+      "canonical_latex": "f' = \\frac{c + v_o}{c - v_s} f_0",
+      "aliases_latex": [
+        "f_{\\mathrm{obs}} = \\frac{c \\pm v_o}{c \\mp v_s} f_{\\mathrm{src}}"
+      ],
+      "keywords": [
+        "ドップラー効果",
+        "周波数シフト",
+        "音源移動"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "wave_physics"
+      ]
+    },
+    {
+      "id": "eng.acst.n07_open_closed_pipe_resonance",
+      "short_code": "ACST07",
+      "kind": "theorem_formula",
+      "title": "開管および閉管の定在波と共鳴周波数",
+      "summary": "管端における音圧節（開放端）および粒子速度節（閉端）の境界条件から定まる1次元音響管の固有共鳴周波数系列。",
+      "canonical_latex": "f_n^{\\mathrm{open}} = \\frac{n c}{2L}\\;(n \\in \\mathbb{Z}_{\\ge 1}),\\quad f_m^{\\mathrm{closed}} = \\frac{(2m - 1)c}{4L}\\;(m \\in \\mathbb{Z}_{\\ge 1})",
+      "aliases_latex": [
+        "f_n = \\frac{nc}{2L},\\quad f_m = \\frac{(2m-1)c}{4L}"
+      ],
+      "keywords": [
+        "開管",
+        "閉管",
+        "共鳴周波数",
+        "定在波",
+        "気柱共鳴"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "musical_acoustics"
+      ]
+    },
+    {
+      "id": "eng.acst.n08_helmholtz_resonator",
+      "short_code": "ACST08",
+      "kind": "theorem_formula",
+      "title": "ヘルムホルツ共鳴器の集中定数モデルと共鳴周波数",
+      "summary": "首部の空気塊を質量要素、空洞内の空気を断熱ばね要素とする集中定数系（単振動モデル）として導かれるヘルムホルツ共鳴器の固有周波数。",
+      "canonical_latex": "m_{\\mathrm{eff}}\\ddot{\\xi} + k_{\\mathrm{air}}\\xi = 0,\\quad m_{\\mathrm{eff}} = \\rho_0 S l,\\quad k_{\\mathrm{air}} = \\frac{\\rho_0 c^2 S^2}{V},\\quad f_0 = \\frac{c}{2\\pi}\\sqrt{\\frac{S}{V l}}",
+      "aliases_latex": [
+        "f_0 = \\frac{c}{2\\pi}\\sqrt{\\frac{S}{Vl}}"
+      ],
+      "keywords": [
+        "ヘルムホルツ共鳴器",
+        "集中定数",
+        "共鳴周波数",
+        "吸音"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "noise_control"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_n02_linear_wave",
+      "target_node_id": "eng.acst.n02_linearized_acoustic_wave_eq",
+      "route_kind": "deductive",
+      "title": "流体方程式の微小摂動線形化による音響波動方程式の導出",
+      "premise_node_ids": [
+        "eng.acst.n01_fluid_adiabatic_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "静止一様媒質 (u_0 = 0, p_0 = const, rho_0 = const)",
+        "微小振幅摂動 (|p'| << p_0, |rho'| << rho_0, |u'| << c)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho\\mathbf{u}) = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p,\\quad \\frac{dp}{d\\rho} = c^2",
+          "to_latex": "\\nabla^2 p' - \\frac{1}{c^2}\\frac{\\partial^2 p'}{\\partial t^2} = 0",
+          "operation_label": "線形化と速度場の消去",
+          "explanation": "連続の式、オイラー方程式、断熱状態関係を平衡状態周りで1次まで線形化し、粒子速度を消去して音圧の波動方程式を得る。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho\\mathbf{u}) = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p,\\quad \\frac{dp}{d\\rho} = c^2",
+          "to_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0\\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0\\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p',\\quad p' = c^2 \\rho'",
+          "operation_label": "微小摂動展開と1次線形化",
+          "explanation": "p = p_0 + p', rho = rho_0 + rho', u = u' を代入し、摂動量の2次以上の非線形項を無視する。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0\\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0\\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p',\\quad p' = c^2 \\rho'",
+          "to_latex": "\\frac{1}{c^2}\\frac{\\partial^2 p'}{\\partial t^2} + \\rho_0\\nabla\\cdot\\frac{\\partial \\mathbf{u}'}{\\partial t} = 0,\\quad \\nabla\\cdot\\left(\\rho_0\\frac{\\partial \\mathbf{u}'}{\\partial t}\\right) = -\\nabla^2 p'",
+          "operation_label": "時間微分と発散演算の適用",
+          "explanation": "線形化された連続の式を時間微分して状態関係 p' = c^2 rho' を代入し、運動方程式の両辺の発散をとる。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{c^2}\\frac{\\partial^2 p'}{\\partial t^2} + \\rho_0\\nabla\\cdot\\frac{\\partial \\mathbf{u}'}{\\partial t} = 0,\\quad \\nabla\\cdot\\left(\\rho_0\\frac{\\partial \\mathbf{u}'}{\\partial t}\\right) = -\\nabla^2 p'",
+          "to_latex": "\\nabla^2 p' - \\frac{1}{c^2}\\frac{\\partial^2 p'}{\\partial t^2} = 0",
+          "operation_label": "粒子速度項の消去",
+          "explanation": "2式から粒子速度の時間微分の発散項を消去し、音圧に関する線形波動方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n03_impedance",
+      "target_node_id": "eng.acst.n03_specific_acoustic_impedance",
+      "route_kind": "deductive",
+      "title": "1次元平面進行波からの固有音響インピーダンス導出",
+      "premise_node_ids": [
+        "eng.acst.n01_fluid_adiabatic_boundary",
+        "eng.acst.n02_linearized_acoustic_wave_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "+x方向への1次元平面進行波",
+        "定常成分（直流成分）は0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial^2 p'}{\\partial x^2} - \\frac{1}{c^2}\\frac{\\partial^2 p'}{\\partial t^2} = 0,\\quad \\rho_0\\frac{\\partial u'}{\\partial t} = -\\frac{\\partial p'}{\\partial x}",
+          "to_latex": "Z_0 := \\frac{p'}{u'} = \\rho_0 c",
+          "operation_label": "平面進行波解への運動方程式の適用",
+          "explanation": "1次元波動方程式の進行波解 p' = f(x - ct) を線形化オイラー方程式に代入して積分し、音圧と粒子速度の比 rho_0 c を得る。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "eng.acst.n02_linearized_acoustic_wave_eq",
+            "math.calc.m01_chain_rule",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial^2 p'}{\\partial x^2} - \\frac{1}{c^2}\\frac{\\partial^2 p'}{\\partial t^2} = 0,\\quad \\rho_0\\frac{\\partial u'}{\\partial t} = -\\frac{\\partial p'}{\\partial x}",
+          "to_latex": "p'(x,t) = f(x - ct),\\quad \\frac{\\partial p'}{\\partial x} = f'(x - ct),\\quad \\frac{\\partial p'}{\\partial t} = -c f'(x - ct)",
+          "operation_label": "進行波解の偏導関数計算",
+          "explanation": "+x方向へ伝搬するダランベール解 p' = f(x - ct) に対し、連鎖律を用いて空間微分と時間微分を計算する。",
+          "used_node_ids": [
+            "eng.acst.n02_linearized_acoustic_wave_eq",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p'(x,t) = f(x - ct),\\quad \\frac{\\partial p'}{\\partial x} = f'(x - ct),\\quad \\frac{\\partial p'}{\\partial t} = -c f'(x - ct)",
+          "to_latex": "\\rho_0\\frac{\\partial u'}{\\partial t} = -f'(x - ct) = \\frac{1}{c}\\frac{\\partial p'}{\\partial t}",
+          "operation_label": "線形化運動方程式への代入",
+          "explanation": "空間微分を時間微分で置き換えることで、粒子速度と音圧の時間微分の比例関係を得る。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho_0\\frac{\\partial u'}{\\partial t} = -f'(x - ct) = \\frac{1}{c}\\frac{\\partial p'}{\\partial t}",
+          "to_latex": "Z_0 := \\frac{p'}{u'} = \\rho_0 c",
+          "operation_label": "時間積分とインピーダンス比の算出",
+          "explanation": "両辺を時間で積分し（定常オフセット0）、音圧と粒子速度の比をとることで固有音響インピーダンス rho_0 c を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n04_intensity_db",
+      "target_node_id": "eng.acst.n04_sound_intensity_decibel",
+      "route_kind": "deductive",
+      "title": "平面波の音の強さとデシベル表示の導出",
+      "premise_node_ids": [
+        "eng.acst.n03_specific_acoustic_impedance"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "周期的または定常的な平面進行波",
+        "基準音の強さ I_0 = 10^-12 W/m^2、基準音圧 p_0 = 20 uPa"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u'(t) = \\frac{p'(t)}{\\rho_0 c},\\quad I := \\frac{1}{T}\\int_0^T p'(t)u'(t)\\,dt",
+          "to_latex": "I = \\frac{p_{\\mathrm{rms}}^2}{\\rho_0 c},\\quad L_I = 10\\log_{10}\\!\\left(\\frac{I}{I_0}\\right),\\quad L_p = 20\\log_{10}\\!\\left(\\frac{p_{\\mathrm{rms}}}{p_0}\\right)",
+          "operation_label": "時間平均とデシベル定義の適用",
+          "explanation": "固有音響インピーダンス関係を用いて音響パワー流束を時間平均し、基準値との対数比でデシベルレベルを定義する。",
+          "used_node_ids": [
+            "eng.acst.n03_specific_acoustic_impedance",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u'(t) = \\frac{p'(t)}{\\rho_0 c},\\quad I := \\frac{1}{T}\\int_0^T p'(t)u'(t)\\,dt",
+          "to_latex": "I = \\frac{1}{\\rho_0 c}\\left(\\frac{1}{T}\\int_0^T |p'(t)|^2\\,dt\\right) = \\frac{p_{\\mathrm{rms}}^2}{\\rho_0 c}",
+          "operation_label": "実効音圧による音の強さの表現",
+          "explanation": "u' = p'/(rho_0 c) を代入し、実効音圧の定義 p_rms^2 = (1/T) int |p'|^2 dt を適用する。",
+          "used_node_ids": [
+            "eng.acst.n03_specific_acoustic_impedance",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I = \\frac{1}{\\rho_0 c}\\left(\\frac{1}{T}\\int_0^T |p'(t)|^2\\,dt\\right) = \\frac{p_{\\mathrm{rms}}^2}{\\rho_0 c}",
+          "to_latex": "I = \\frac{p_{\\mathrm{rms}}^2}{\\rho_0 c},\\quad L_I = 10\\log_{10}\\!\\left(\\frac{I}{I_0}\\right),\\quad L_p = 20\\log_{10}\\!\\left(\\frac{p_{\\mathrm{rms}}}{p_0}\\right)",
+          "operation_label": "対数尺度（デシベル）の導出",
+          "explanation": "I が p_rms^2 に比例することから、10 log10(I/I_0) の関係が音圧比では係数 20 の 20 log10(p_rms/p_0) として表される。",
+          "used_node_ids": [
+            "eng.acst.n03_specific_acoustic_impedance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n05_transmission_loss",
+      "target_node_id": "eng.acst.n05_transmission_loss",
+      "route_kind": "deductive",
+      "title": "境界連続条件からの透過率および透過損失の導出",
+      "premise_node_ids": [
+        "eng.acst.n03_specific_acoustic_impedance",
+        "eng.acst.n04_sound_intensity_decibel"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "平面波の境界面への垂直入射",
+        "境界面における音圧および粒子速度法線成分の連続性"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_i + p_r = p_t,\\quad u_i + u_r = u_t,\\quad u_i = \\frac{p_i}{Z_1},\\; u_r = -\\frac{p_r}{Z_1},\\; u_t = \\frac{p_t}{Z_2}",
+          "to_latex": "T_I = \\frac{4 Z_1 Z_2}{(Z_1 + Z_2)^2},\\quad \\mathrm{TL} = 10\\log_{10}\\!\\left(\\frac{(Z_1 + Z_2)^2}{4 Z_1 Z_2}\\right)",
+          "operation_label": "境界条件の求解と音響透過損失の計算",
+          "explanation": "音圧と粒子速度の連続条件から音圧透過率と反射率を求め、音の強さの透過率とその逆数のデシベル値（透過損失）を導く。",
+          "used_node_ids": [
+            "eng.acst.n03_specific_acoustic_impedance",
+            "eng.acst.n04_sound_intensity_decibel"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_i + p_r = p_t,\\quad u_i + u_r = u_t,\\quad u_i = \\frac{p_i}{Z_1},\\; u_r = -\\frac{p_r}{Z_1},\\; u_t = \\frac{p_t}{Z_2}",
+          "to_latex": "1 + R = T_p,\\quad \\frac{1 - R}{Z_1} = \\frac{T_p}{Z_2}\\quad \\left(R := \\frac{p_r}{p_i},\\; T_p := \\frac{p_t}{p_i}\\right)",
+          "operation_label": "反射率・透過率による無次元化",
+          "explanation": "粒子速度をインピーダンスと音圧で表して代入し、入射波音圧 p_i で割って R と T_p の連立方程式に整理する。",
+          "used_node_ids": [
+            "eng.acst.n03_specific_acoustic_impedance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "1 + R = T_p,\\quad \\frac{1 - R}{Z_1} = \\frac{T_p}{Z_2}\\quad \\left(R := \\frac{p_r}{p_i},\\; T_p := \\frac{p_t}{p_i}\\right)",
+          "to_latex": "R = \\frac{Z_2 - Z_1}{Z_2 + Z_1},\\quad T_p = \\frac{2 Z_2}{Z_1 + Z_2}",
+          "operation_label": "線形連立方程式の求解",
+          "explanation": "T_p = 1 + R を第2式に代入して R を求め、さらに T_p を算出する。",
+          "used_node_ids": [
+            "eng.acst.n03_specific_acoustic_impedance"
+          ],
+          "sympy_check_hint": "simplify((1 - (Z2-Z1)/(Z2+Z1))/Z1 - (2*Z2/(Z1+Z2))/Z2)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R = \\frac{Z_2 - Z_1}{Z_2 + Z_1},\\quad T_p = \\frac{2 Z_2}{Z_1 + Z_2}",
+          "to_latex": "T_I = \\frac{4 Z_1 Z_2}{(Z_1 + Z_2)^2},\\quad \\mathrm{TL} = 10\\log_{10}\\!\\left(\\frac{(Z_1 + Z_2)^2}{4 Z_1 Z_2}\\right)",
+          "operation_label": "インテンシティ透過率と透過損失の算出",
+          "explanation": "T_I = I_t / I_i = (Z_1 / Z_2) |T_p|^2 を計算し、透過損失 TL = 10 log10(1 / T_I) を得る。",
+          "used_node_ids": [
+            "eng.acst.n04_sound_intensity_decibel"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n06_doppler_effect",
+      "target_node_id": "eng.acst.n06_doppler_effect_acoustics",
+      "route_kind": "deductive",
+      "title": "波面の移動と相対音速による音響ドップラー効果の導出",
+      "premise_node_ids": [
+        "eng.acst.n02_linearized_acoustic_wave_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "音速 c は媒質に対して一定",
+        "音源速度 v_s と観測者速度 v_o は互いに近づく向きを正とし、|v_s| < c"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\lambda' = \\frac{c - v_s}{f_0},\\quad c_{\\mathrm{rel}} = c + v_o",
+          "to_latex": "f' = \\frac{c + v_o}{c - v_s} f_0",
+          "operation_label": "波長変化と相対速度の合成",
+          "explanation": "音源の移動による前方波長の短縮と、観測者の移動による波面との相対速度増加を組み合わせて観測振動数を求める。",
+          "used_node_ids": [
+            "eng.acst.n02_linearized_acoustic_wave_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lambda' = \\frac{c - v_s}{f_0},\\quad c_{\\mathrm{rel}} = c + v_o",
+          "to_latex": "T_0 = \\frac{1}{f_0},\\quad \\lambda' = c T_0 - v_s T_0 = \\frac{c - v_s}{f_0}",
+          "operation_label": "1周期あたりの波面間隔の算出",
+          "explanation": "音源が1周期 T_0 の間に v_s T_0 だけ前進するため、進行方向の波長は c T_0 から v_s T_0 を引いた長さに圧縮される。",
+          "used_node_ids": [
+            "eng.acst.n02_linearized_acoustic_wave_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_0 = \\frac{1}{f_0},\\quad \\lambda' = c T_0 - v_s T_0 = \\frac{c - v_s}{f_0}",
+          "to_latex": "f' = \\frac{c + v_o}{\\lambda'} = \\frac{c + v_o}{c - v_s} f_0",
+          "operation_label": "観測者が受ける単位時間あたり波数の計算",
+          "explanation": "観測者は相対速度 c + v_o で波面を横切るため、f' = c_rel / lambda' よりドップラーシフトの式が得られる。",
+          "used_node_ids": [
+            "eng.acst.n02_linearized_acoustic_wave_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n07_pipe_resonance",
+      "target_node_id": "eng.acst.n07_open_closed_pipe_resonance",
+      "route_kind": "deductive",
+      "title": "1次元定在波の境界条件による開管・閉管共鳴周波数の導出",
+      "premise_node_ids": [
+        "eng.acst.n02_linearized_acoustic_wave_eq",
+        "eng.acst.n03_specific_acoustic_impedance"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "長さ L の一様断面積1次元管",
+        "開口端補正を無視した理想開放端 (p'=0) および剛体閉端 (u'=0)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p'(x,t) = \\big(A\\cos(kx) + B\\sin(kx)\\big)e^{i\\omega t},\\quad k = \\frac{\\omega}{c} = \\frac{2\\pi f}{c}",
+          "to_latex": "f_n^{\\mathrm{open}} = \\frac{n c}{2L}\\;(n\\in\\mathbb{Z}_{\\ge 1}),\\quad f_m^{\\mathrm{closed}} = \\frac{(2m-1)c}{4L}\\;(m\\in\\mathbb{Z}_{\\ge 1})",
+          "operation_label": "管端境界条件の適用と固有波数量子化",
+          "explanation": "1次元定在波解に開管・閉管それぞれの境界条件を課して許容波数 k を決定し、分散関係から共鳴周波数を求める。",
+          "used_node_ids": [
+            "eng.acst.n02_linearized_acoustic_wave_eq",
+            "eng.acst.n03_specific_acoustic_impedance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p'(x,t) = \\big(A\\cos(kx) + B\\sin(kx)\\big)e^{i\\omega t},\\quad k = \\frac{\\omega}{c} = \\frac{2\\pi f}{c}",
+          "to_latex": "\\text{Open-open: } p'(0)=p'(L)=0 \\implies \\sin(kL)=0 \\implies k = \\frac{n\\pi}{L}",
+          "operation_label": "両端開管の境界条件適用",
+          "explanation": "p'(0)=0 より A=0 となり、さらに p'(L)=0 と非自明解条件 B != 0 から sin(kL)=0、すなわち k = n pi / L が得られる。",
+          "used_node_ids": [
+            "eng.acst.n02_linearized_acoustic_wave_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{Open-open: } p'(0)=p'(L)=0 \\implies \\sin(kL)=0 \\implies k = \\frac{n\\pi}{L}",
+          "to_latex": "\\text{Closed-open: } u'(0)=0,\\; p'(L)=0 \\implies \\cos(kL)=0 \\implies k = \\frac{(2m-1)\\pi}{2L}",
+          "operation_label": "一端閉管の境界条件適用",
+          "explanation": "閉端 x=0 では運動方程式より dp'/dx = 0 となるため B=0 となり、開端 x=L の条件 p'(L)=0 から cos(kL)=0、すなわち奇数次波数が得られる。",
+          "used_node_ids": [
+            "eng.acst.n03_specific_acoustic_impedance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{Closed-open: } u'(0)=0,\\; p'(L)=0 \\implies \\cos(kL)=0 \\implies k = \\frac{(2m-1)\\pi}{2L}",
+          "to_latex": "f_n^{\\mathrm{open}} = \\frac{n c}{2L}\\;(n\\in\\mathbb{Z}_{\\ge 1}),\\quad f_m^{\\mathrm{closed}} = \\frac{(2m-1)c}{4L}\\;(m\\in\\mathbb{Z}_{\\ge 1})",
+          "operation_label": "分散関係による周波数変換",
+          "explanation": "f = kc / (2 pi) にそれぞれの許容波数 k を代入して共鳴周波数系列を得る。",
+          "used_node_ids": [
+            "eng.acst.n02_linearized_acoustic_wave_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n08_helmholtz",
+      "target_node_id": "eng.acst.n08_helmholtz_resonator",
+      "route_kind": "deductive",
+      "title": "集中定数ばね・質量モデルによるヘルムホルツ共鳴周波数の導出",
+      "premise_node_ids": [
+        "eng.acst.n01_fluid_adiabatic_boundary",
+        "eng.acst.n02_linearized_acoustic_wave_eq",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "波長が共鳴器寸法より十分大きい（集中定数近似）",
+        "首部の空気塊が一体となって剛体的に振動する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m_{\\mathrm{eff}} = \\rho_0 S l,\\quad \\Delta V = -S\\xi,\\quad p' = -c^2 \\rho_0 \\frac{\\Delta V}{V}",
+          "to_latex": "f_0 = \\frac{c}{2\\pi}\\sqrt{\\frac{S}{Vl}}",
+          "operation_label": "断熱復元力と運動方程式からの固有周波数導出",
+          "explanation": "空洞の断熱圧縮による復元力と首部空気塊の質量から単振動の運動方程式を立て、ヘルムホルツ共鳴周波数を求める。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "eng.acst.n02_linearized_acoustic_wave_eq",
+            "math.ode.m06_linear_ode_2nd",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m_{\\mathrm{eff}} = \\rho_0 S l,\\quad \\Delta V = -S\\xi,\\quad p' = -c^2 \\rho_0 \\frac{\\Delta V}{V}",
+          "to_latex": "p' = \\frac{\\rho_0 c^2 S}{V}\\xi,\\quad F = -S p' = -\\frac{\\rho_0 c^2 S^2}{V}\\xi",
+          "operation_label": "空洞内の断熱体積変化による復元力の算出",
+          "explanation": "首部空気塊の変位 xi による空洞体積減少と断熱圧力上昇 p' を計算し、断面積 S に働く復元力 F を求める。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "eng.acst.n02_linearized_acoustic_wave_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p' = \\frac{\\rho_0 c^2 S}{V}\\xi,\\quad F = -S p' = -\\frac{\\rho_0 c^2 S^2}{V}\\xi",
+          "to_latex": "\\rho_0 S l \\ddot{\\xi} + \\frac{\\rho_0 c^2 S^2}{V}\\xi = 0 \\iff \\ddot{\\xi} + \\frac{c^2 S}{Vl}\\xi = 0",
+          "operation_label": "首部空気塊へのニュートンの運動方程式の適用",
+          "explanation": "m_eff d^2(xi)/dt^2 = F に質量と復元力を代入し、両辺を rho_0 S l で割って単振動方程式を得る。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho_0 S l \\ddot{\\xi} + \\frac{\\rho_0 c^2 S^2}{V}\\xi = 0 \\iff \\ddot{\\xi} + \\frac{c^2 S}{Vl}\\xi = 0",
+          "to_latex": "f_0 = \\frac{c}{2\\pi}\\sqrt{\\frac{S}{Vl}}",
+          "operation_label": "固有角周波数からの共鳴周波数算出",
+          "explanation": "2階定数係数線形常微分方程式の固有角周波数 omega_0 = c sqrt(S/(Vl)) を 2 pi で割り、共鳴周波数 f_0 を得る。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,709 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.ctrl.kalman_filter",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "control_engineering",
+    "title": "推定理論：カルマンフィルタと拡張カルマンフィルタ（EKF）",
+    "language": "ja",
+    "description": "線形ガウス状態空間モデルにおける予測ステップ、最小分散推定からのカルマンゲイン導出、共分散更新式、非線形系のヤコビアン線形化(EKF)を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.kf.n01_linear_gaussian_ssm",
+      "short_code": "KF01",
+      "kind": "definition",
+      "title": "線形ガウス離散時間状態空間モデルとノイズ仮定",
+      "summary": "状態遷移方程式と観測方程式が線形であり、プロセス雑音と観測雑音が互いに無相関な白色ガウス雑音である離散時間状態空間モデルを定義する。",
+      "canonical_latex": "\\mathbf{x}_{k} = F_k \\mathbf{x}_{k-1} + B_k \\mathbf{u}_k + \\mathbf{w}_k,\\quad \\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k,\\quad \\mathbf{w}_k \\sim \\mathcal{N}(\\mathbf{0}, Q_k),\\; \\mathbf{v}_k \\sim \\mathcal{N}(\\mathbf{0}, R_k)",
+      "aliases_latex": [
+        "\\mathbf{x}_{k+1} = A_k \\mathbf{x}_k + B_k \\mathbf{u}_k + \\mathbf{w}_k,\\; \\mathbf{y}_k = C_k \\mathbf{x}_k + \\mathbf{v}_k"
+      ],
+      "keywords": [
+        "線形状態空間モデル",
+        "ガウス雑音",
+        "プロセス雑音",
+        "観測雑音"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "estimation_theory"
+      ]
+    },
+    {
+      "id": "eng.kf.n02_apriori_prediction_step",
+      "short_code": "KF02",
+      "kind": "theorem_formula",
+      "title": "事前状態推定値と事前誤差共分散行列の予測ステップ",
+      "summary": "時刻 k-1 までの観測に基づく事後推定値と誤差共分散から、時刻 k の観測を得る前の事前状態推定値と事前誤差共分散行列を時間更新する。",
+      "canonical_latex": "\\hat{\\mathbf{x}}_{k|k-1} = F_k \\hat{\\mathbf{x}}_{k-1|k-1} + B_k \\mathbf{u}_k,\\quad P_{k|k-1} = F_k P_{k-1|k-1} F_k^\\top + Q_k",
+      "aliases_latex": [
+        "\\hat{\\mathbf{x}}_k^- = F_k \\hat{\\mathbf{x}}_{k-1}^+ + B_k \\mathbf{u}_k,\\; P_k^- = F_k P_{k-1}^+ F_k^\\top + Q_k"
+      ],
+      "keywords": [
+        "予測ステップ",
+        "時間更新",
+        "事前誤差共分散"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "estimation_theory"
+      ]
+    },
+    {
+      "id": "eng.kf.n03_linear_mmse_update_form",
+      "short_code": "KF03",
+      "kind": "definition",
+      "title": "線形フィルタ更新式とイノベーションの定義",
+      "summary": "観測残差（イノベーション）にゲイン行列を乗じて事前状態推定値を補正する線形更新形式を定義する。",
+      "canonical_latex": "\\tilde{\\mathbf{y}}_k := \\mathbf{y}_k - H_k \\hat{\\mathbf{x}}_{k|k-1},\\quad \\hat{\\mathbf{x}}_{k|k} := \\hat{\\mathbf{x}}_{k|k-1} + K_k \\tilde{\\mathbf{y}}_k",
+      "aliases_latex": [
+        "\\hat{\\mathbf{x}}_{k|k} = \\hat{\\mathbf{x}}_{k|k-1} + K_k(\\mathbf{y}_k - H_k\\hat{\\mathbf{x}}_{k|k-1})"
+      ],
+      "keywords": [
+        "観測更新",
+        "イノベーション",
+        "カルマンゲイン"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "estimation_theory"
+      ]
+    },
+    {
+      "id": "eng.kf.n04_joseph_covariance_update",
+      "short_code": "KF04",
+      "kind": "theorem_formula",
+      "title": "一般のゲインに対する事後誤差共分散行列（ジョセフ形式）",
+      "summary": "任意のゲイン行列 K_k に対して事後推定誤差の共分散行列を対称・半正定値性が保たれるジョセフ形式で表現する。",
+      "canonical_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1} (I - K_k H_k)^\\top + K_k R_k K_k^\\top",
+      "aliases_latex": [
+        "P_k^+ = (I - K_k H_k) P_k^- (I - K_k H_k)^\\top + K_k R_k K_k^\\top"
+      ],
+      "keywords": [
+        "ジョセフ形式",
+        "事後誤差共分散",
+        "数値安定性"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "estimation_theory"
+      ]
+    },
+    {
+      "id": "eng.kf.n05_kalman_gain_mmse",
+      "short_code": "KF05",
+      "kind": "theorem_formula",
+      "title": "最小分散（MMSE）基準からの最適カルマンゲイン",
+      "summary": "事後誤差共分散行列のトレース（平均二乗誤差の和）を K_k に関して最小化することで、最適カルマンゲインを導出する。",
+      "canonical_latex": "K_k = P_{k|k-1} H_k^\\top (H_k P_{k|k-1} H_k^\\top + R_k)^{-1}",
+      "aliases_latex": [
+        "K_k = P_{k|k-1} H_k^\\top S_k^{-1},\\quad S_k = H_k P_{k|k-1} H_k^\\top + R_k"
+      ],
+      "keywords": [
+        "カルマンゲイン",
+        "最小分散推定",
+        "MMSE"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "estimation_theory"
+      ]
+    },
+    {
+      "id": "eng.kf.n06_simplified_covariance_update",
+      "short_code": "KF06",
+      "kind": "theorem_formula",
+      "title": "最適カルマンゲインにおける簡約化事後共分散更新式",
+      "summary": "最適カルマンゲインをジョセフ形式に代入して整理することで、標準的な簡約化事後誤差共分散更新式を得る。",
+      "canonical_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1}",
+      "aliases_latex": [
+        "P_{k|k} = P_{k|k-1} - K_k H_k P_{k|k-1}"
+      ],
+      "keywords": [
+        "共分散更新",
+        "カルマンフィルタ",
+        "事後共分散"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "estimation_theory"
+      ]
+    },
+    {
+      "id": "eng.kf.n07_nonlinear_ssm_ekf_linearization",
+      "short_code": "KF07",
+      "kind": "definition",
+      "title": "非線形状態空間モデルとヤコビアンによる1次線形化",
+      "summary": "非線形状態遷移関数 f と観測関数 h を現在の推定値周りで1次テイラー展開し、ヤコビ行列 F_k, H_k による局所線形化を定義する。",
+      "canonical_latex": "F_k := \\left.\\frac{\\partial f}{\\partial \\mathbf{x}}\\right|_{\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k},\\quad H_k := \\left.\\frac{\\partial h}{\\partial \\mathbf{x}}\\right|_{\\hat{\\mathbf{x}}_{k|k-1}}",
+      "aliases_latex": [
+        "F_k = J_f(\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k),\\; H_k = J_h(\\hat{\\mathbf{x}}_{k|k-1})"
+      ],
+      "keywords": [
+        "非線形状態空間モデル",
+        "ヤコビアン",
+        "線形化",
+        "EKF"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "estimation_theory"
+      ]
+    },
+    {
+      "id": "eng.kf.n08_ekf_predict_update",
+      "short_code": "KF08",
+      "kind": "theorem_formula",
+      "title": "拡張カルマンフィルタ（EKF）の予測・更新アルゴリズム",
+      "summary": "状態平均の伝播とイノベーションには非線形関数 f, h を直接用い、共分散の伝播とカルマンゲイン計算にはヤコビアン F_k, H_k を用いるEKFの漸化式。",
+      "canonical_latex": "\\hat{\\mathbf{x}}_{k|k-1} = f(\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k),\\; P_{k|k-1} = F_k P_{k-1|k-1} F_k^\\top + Q_k,\\; K_k = P_{k|k-1} H_k^\\top (H_k P_{k|k-1} H_k^\\top + R_k)^{-1},\\; \\hat{\\mathbf{x}}_{k|k} = \\hat{\\mathbf{x}}_{k|k-1} + K_k(\\mathbf{y}_k - h(\\hat{\\mathbf{x}}_{k|k-1})),\\; P_{k|k} = (I - K_k H_k)P_{k|k-1}",
+      "aliases_latex": [
+        "\\text{EKF Predict-Update Cycle}"
+      ],
+      "keywords": [
+        "拡張カルマンフィルタ",
+        "EKF",
+        "非線形状態推定"
+      ],
+      "domain_tags": [
+        "control_engineering",
+        "estimation_theory"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_kf01",
+      "target_node_id": "eng.kf.n01_linear_gaussian_ssm",
+      "route_kind": "reformulation",
+      "title": "線形ガウス状態空間モデルの定式化",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "プロセス雑音と観測雑音は時刻間で互いに独立かつ無相関な平均零のガウス白色雑音であり、初期状態とも無相関である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}_k \\in \\mathbb{R}^n,\\; \\mathbf{y}_k \\in \\mathbb{R}^m,\\; (\\Omega, \\mathcal{F}, P)",
+          "to_latex": "\\mathbf{x}_{k} = F_k \\mathbf{x}_{k-1} + B_k \\mathbf{u}_k + \\mathbf{w}_k,\\quad \\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k,\\quad \\mathbf{w}_k \\sim \\mathcal{N}(\\mathbf{0}, Q_k),\\; \\mathbf{v}_k \\sim \\mathcal{N}(\\mathbf{0}, R_k)",
+          "operation_label": "状態空間表現とガウス雑音設定",
+          "explanation": "ベクトル空間上の状態・観測ベクトルに対し、線形遷移とガウス確率過程を付与してモデルを構成する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}_k \\in \\mathbb{R}^n,\\; \\mathbf{y}_k \\in \\mathbb{R}^m,\\; (\\Omega, \\mathcal{F}, P)",
+          "to_latex": "\\mathbf{x}_{k} = F_k \\mathbf{x}_{k-1} + B_k \\mathbf{u}_k + \\mathbf{w}_k,\\quad \\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k",
+          "operation_label": "線形写像による状態・観測方程式の設定",
+          "explanation": "状態遷移行列 F_k、入力行列 B_k、観測行列 H_k を用いて離散時間線形システムを記述する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}_{k} = F_k \\mathbf{x}_{k-1} + B_k \\mathbf{u}_k + \\mathbf{w}_k,\\quad \\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k",
+          "to_latex": "\\mathbf{x}_{k} = F_k \\mathbf{x}_{k-1} + B_k \\mathbf{u}_k + \\mathbf{w}_k,\\quad \\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k,\\quad \\mathbf{w}_k \\sim \\mathcal{N}(\\mathbf{0}, Q_k),\\; \\mathbf{v}_k \\sim \\mathcal{N}(\\mathbf{0}, R_k)",
+          "operation_label": "白色ガウス雑音分布の付与",
+          "explanation": "確率空間上で共分散行列 Q_k, R_k を持つ平均零の多変量正規分布として雑音項を定義する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_kf02",
+      "target_node_id": "eng.kf.n02_apriori_prediction_step",
+      "route_kind": "deductive",
+      "title": "事前推定値と事前誤差共分散行列の導出",
+      "premise_node_ids": [
+        "eng.kf.n01_linear_gaussian_ssm"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "事後推定誤差 e_{k-1|k-1} とプロセス雑音 w_k は無相関（直交）である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}_k = F_k \\mathbf{x}_{k-1} + B_k \\mathbf{u}_k + \\mathbf{w}_k,\\quad \\hat{\\mathbf{x}}_{k-1|k-1} = \\mathbb{E}[\\mathbf{x}_{k-1}|\\mathbf{y}_{1:k-1}],\\quad P_{k-1|k-1} = \\mathbb{E}[\\mathbf{e}_{k-1|k-1}\\mathbf{e}_{k-1|k-1}^\\top]",
+          "to_latex": "\\hat{\\mathbf{x}}_{k|k-1} = F_k \\hat{\\mathbf{x}}_{k-1|k-1} + B_k \\mathbf{u}_k,\\quad P_{k|k-1} = F_k P_{k-1|k-1} F_k^\\top + Q_k",
+          "operation_label": "期待値と共分散の時間伝播",
+          "explanation": "状態方程式の条件付き期待値と誤差共分散を計算し、予測ステップの漸化式を得る。",
+          "used_node_ids": [
+            "eng.kf.n01_linear_gaussian_ssm"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}_k = F_k \\mathbf{x}_{k-1} + B_k \\mathbf{u}_k + \\mathbf{w}_k,\\quad \\hat{\\mathbf{x}}_{k-1|k-1} = \\mathbb{E}[\\mathbf{x}_{k-1}|\\mathbf{y}_{1:k-1}],\\quad P_{k-1|k-1} = \\mathbb{E}[\\mathbf{e}_{k-1|k-1}\\mathbf{e}_{k-1|k-1}^\\top]",
+          "to_latex": "\\hat{\\mathbf{x}}_{k|k-1} = \\mathbb{E}[\\mathbf{x}_k | \\mathbf{y}_{1:k-1}] = F_k \\hat{\\mathbf{x}}_{k-1|k-1} + B_k \\mathbf{u}_k",
+          "operation_label": "条件付き期待値による事前状態予測",
+          "explanation": "E[w_k | y_{1:k-1}] = 0 および期待値の線形性により、事前状態推定値を得る。",
+          "used_node_ids": [
+            "eng.kf.n01_linear_gaussian_ssm"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{x}}_{k|k-1} = \\mathbb{E}[\\mathbf{x}_k | \\mathbf{y}_{1:k-1}] = F_k \\hat{\\mathbf{x}}_{k-1|k-1} + B_k \\mathbf{u}_k",
+          "to_latex": "\\mathbf{e}_{k|k-1} := \\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1} = F_k \\mathbf{e}_{k-1|k-1} + \\mathbf{w}_k",
+          "operation_label": "事前推定誤差の表現",
+          "explanation": "真値から事前推定値を引くことで、誤差の伝播式を導く。",
+          "used_node_ids": [
+            "eng.kf.n01_linear_gaussian_ssm"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{e}_{k|k-1} := \\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1} = F_k \\mathbf{e}_{k-1|k-1} + \\mathbf{w}_k",
+          "to_latex": "\\hat{\\mathbf{x}}_{k|k-1} = F_k \\hat{\\mathbf{x}}_{k-1|k-1} + B_k \\mathbf{u}_k,\\quad P_{k|k-1} = F_k P_{k-1|k-1} F_k^\\top + Q_k",
+          "operation_label": "事前誤差共分散の展開",
+          "explanation": "P_{k|k-1} = E[e_{k|k-1} e_{k|k-1}^T] を展開し、E[e_{k-1|k-1} w_k^T] = 0 を用いて時間更新式を得る。",
+          "used_node_ids": [
+            "eng.kf.n01_linear_gaussian_ssm"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_kf03",
+      "target_node_id": "eng.kf.n03_linear_mmse_update_form",
+      "route_kind": "reformulation",
+      "title": "線形更新則とイノベーションの定義",
+      "premise_node_ids": [
+        "eng.kf.n02_apriori_prediction_step"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "推定器は事前推定値と最新観測値の線形結合によって不偏更新される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{\\mathbf{x}}_{k|k-1},\\quad \\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k",
+          "to_latex": "\\tilde{\\mathbf{y}}_k := \\mathbf{y}_k - H_k \\hat{\\mathbf{x}}_{k|k-1},\\quad \\hat{\\mathbf{x}}_{k|k} := \\hat{\\mathbf{x}}_{k|k-1} + K_k \\tilde{\\mathbf{y}}_k",
+          "operation_label": "イノベーションに基づく線形更新",
+          "explanation": "予測観測値と実観測値の差（イノベーション）をゲイン行列 K_k で重み付けして状態を更新する。",
+          "used_node_ids": [
+            "eng.kf.n02_apriori_prediction_step"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{x}}_{k|k-1},\\quad \\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k",
+          "to_latex": "\\tilde{\\mathbf{y}}_k := \\mathbf{y}_k - H_k \\hat{\\mathbf{x}}_{k|k-1} = H_k \\mathbf{e}_{k|k-1} + \\mathbf{v}_k",
+          "operation_label": "イノベーションベクトルの定義",
+          "explanation": "観測予測誤差を定義し、事前状態誤差と観測雑音の和として表現する。",
+          "used_node_ids": [
+            "eng.kf.n02_apriori_prediction_step"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{\\mathbf{y}}_k := \\mathbf{y}_k - H_k \\hat{\\mathbf{x}}_{k|k-1} = H_k \\mathbf{e}_{k|k-1} + \\mathbf{v}_k",
+          "to_latex": "\\tilde{\\mathbf{y}}_k := \\mathbf{y}_k - H_k \\hat{\\mathbf{x}}_{k|k-1},\\quad \\hat{\\mathbf{x}}_{k|k} := \\hat{\\mathbf{x}}_{k|k-1} + K_k \\tilde{\\mathbf{y}}_k",
+          "operation_label": "事後推定値の線形補正定義",
+          "explanation": "不偏性を保つため、平均零のイノベーションにゲイン行列 K_k を乗じて事前推定値に加算する。",
+          "used_node_ids": [
+            "eng.kf.n02_apriori_prediction_step"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_kf04",
+      "target_node_id": "eng.kf.n04_joseph_covariance_update",
+      "route_kind": "deductive",
+      "title": "事後誤差共分散行列のジョセフ形式の導出",
+      "premise_node_ids": [
+        "eng.kf.n03_linear_mmse_update_form"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "事前推定誤差 e_{k|k-1} と観測雑音 v_k は無相関である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{\\mathbf{x}}_{k|k} = \\hat{\\mathbf{x}}_{k|k-1} + K_k(\\mathbf{y}_k - H_k \\hat{\\mathbf{x}}_{k|k-1}),\\quad \\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k",
+          "to_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1} (I - K_k H_k)^\\top + K_k R_k K_k^\\top",
+          "operation_label": "事後誤差の共分散計算",
+          "explanation": "事後誤差ベクトルを事前誤差と観測雑音で表し、共分散行列を対称な二次形式で導出する。",
+          "used_node_ids": [
+            "eng.kf.n03_linear_mmse_update_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{x}}_{k|k} = \\hat{\\mathbf{x}}_{k|k-1} + K_k(\\mathbf{y}_k - H_k \\hat{\\mathbf{x}}_{k|k-1}),\\quad \\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k",
+          "to_latex": "\\mathbf{e}_{k|k} := \\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k} = (I - K_k H_k)\\mathbf{e}_{k|k-1} - K_k \\mathbf{v}_k",
+          "operation_label": "事後誤差ベクトルの展開",
+          "explanation": "更新式に観測方程式を代入し、事後誤差を事前誤差と観測雑音の線形結合で表す。",
+          "used_node_ids": [
+            "eng.kf.n03_linear_mmse_update_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{e}_{k|k} := \\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k} = (I - K_k H_k)\\mathbf{e}_{k|k-1} - K_k \\mathbf{v}_k",
+          "to_latex": "P_{k|k} = \\mathbb{E}\\big[((I - K_k H_k)\\mathbf{e}_{k|k-1} - K_k \\mathbf{v}_k)((I - K_k H_k)\\mathbf{e}_{k|k-1} - K_k \\mathbf{v}_k)^\\top\\big]",
+          "operation_label": "共分散定義への代入",
+          "explanation": "P_{k|k} = E[e_{k|k} e_{k|k}^T] の定義式に事後誤差の表現を代入する。",
+          "used_node_ids": [
+            "eng.kf.n03_linear_mmse_update_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{k|k} = \\mathbb{E}\\big[((I - K_k H_k)\\mathbf{e}_{k|k-1} - K_k \\mathbf{v}_k)((I - K_k H_k)\\mathbf{e}_{k|k-1} - K_k \\mathbf{v}_k)^\\top\\big]",
+          "to_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1} (I - K_k H_k)^\\top + K_k R_k K_k^\\top",
+          "operation_label": "無相関性を用いた期待値展開",
+          "explanation": "E[e_{k|k-1} v_k^T] = 0 を用いて交差項を消去し、ジョセフ形式を得る。",
+          "used_node_ids": [
+            "eng.kf.n03_linear_mmse_update_form"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_kf05",
+      "target_node_id": "eng.kf.n05_kalman_gain_mmse",
+      "route_kind": "deductive",
+      "title": "最小分散基準による最適カルマンゲインの導出",
+      "premise_node_ids": [
+        "eng.kf.n04_joseph_covariance_update",
+        "math.calc.e03_stationary_point_condition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "イノベーション共分散行列 H_k P_{k|k-1} H_k^T + R_k は正定値であり可逆である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J(K_k) := \\operatorname{tr}(P_{k|k}) = \\operatorname{tr}\\big((I - K_k H_k) P_{k|k-1} (I - K_k H_k)^\\top + K_k R_k K_k^\\top\\big)",
+          "to_latex": "K_k = P_{k|k-1} H_k^\\top (H_k P_{k|k-1} H_k^\\top + R_k)^{-1}",
+          "operation_label": "トレース最小化の停留条件",
+          "explanation": "tr(P_{k|k}) を K_k で行列微分し、停留点条件を解いて最適カルマンゲインを得る。",
+          "used_node_ids": [
+            "eng.kf.n04_joseph_covariance_update",
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J(K_k) := \\operatorname{tr}(P_{k|k}) = \\operatorname{tr}\\big((I - K_k H_k) P_{k|k-1} (I - K_k H_k)^\\top + K_k R_k K_k^\\top\\big)",
+          "to_latex": "J(K_k) = \\operatorname{tr}(P_{k|k-1}) - 2\\operatorname{tr}(K_k H_k P_{k|k-1}) + \\operatorname{tr}\\big(K_k (H_k P_{k|k-1} H_k^\\top + R_k) K_k^\\top\\big)",
+          "operation_label": "トレースの線形性と対称性の利用",
+          "explanation": "P_{k|k-1} の対称性とトレースの巡回不変性を用いて目的関数を K_k の二次形式に整理する。",
+          "used_node_ids": [
+            "eng.kf.n04_joseph_covariance_update"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J(K_k) = \\operatorname{tr}(P_{k|k-1}) - 2\\operatorname{tr}(K_k H_k P_{k|k-1}) + \\operatorname{tr}\\big(K_k (H_k P_{k|k-1} H_k^\\top + R_k) K_k^\\top\\big)",
+          "to_latex": "\\frac{\\partial \\operatorname{tr}(P_{k|k})}{\\partial K_k} = -2 P_{k|k-1} H_k^\\top + 2 K_k (H_k P_{k|k-1} H_k^\\top + R_k) = 0",
+          "operation_label": "行列微分と1階停留条件の適用",
+          "explanation": "d tr(AB)/dA = B^T および対称行列 S に対する d tr(ASA^T)/dA = 2AS を適用し、勾配を零とおく。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\operatorname{tr}(P_{k|k})}{\\partial K_k} = -2 P_{k|k-1} H_k^\\top + 2 K_k (H_k P_{k|k-1} H_k^\\top + R_k) = 0",
+          "to_latex": "K_k = P_{k|k-1} H_k^\\top (H_k P_{k|k-1} H_k^\\top + R_k)^{-1}",
+          "operation_label": "最適ゲインの陽的解",
+          "explanation": "正定値行列 (H_k P_{k|k-1} H_k^T + R_k) の逆行列を右から掛けて最適カルマンゲインを得る。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_kf06",
+      "target_node_id": "eng.kf.n06_simplified_covariance_update",
+      "route_kind": "deductive",
+      "title": "簡約化事後誤差共分散更新式の導出",
+      "premise_node_ids": [
+        "eng.kf.n04_joseph_covariance_update",
+        "eng.kf.n05_kalman_gain_mmse"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "K_k は MMSE 最適カルマンゲインである。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1} (I - K_k H_k)^\\top + K_k R_k K_k^\\top,\\quad K_k S_k = P_{k|k-1} H_k^\\top",
+          "to_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1}",
+          "operation_label": "最適ゲイン代入による簡約",
+          "explanation": "ジョセフ形式を展開し、最適カルマンゲインの正規方程式を用いて余剰項を相殺する。",
+          "used_node_ids": [
+            "eng.kf.n04_joseph_covariance_update",
+            "eng.kf.n05_kalman_gain_mmse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1} (I - K_k H_k)^\\top + K_k R_k K_k^\\top,\\quad K_k S_k = P_{k|k-1} H_k^\\top",
+          "to_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1} - (I - K_k H_k) P_{k|k-1} H_k^\\top K_k^\\top + K_k R_k K_k^\\top",
+          "operation_label": "右辺の (I - K_k H_k)^T の展開",
+          "explanation": "右側の括弧を展開して (I - K_k H_k) P_{k|k-1} を分離する。",
+          "used_node_ids": [
+            "eng.kf.n04_joseph_covariance_update"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1} - (I - K_k H_k) P_{k|k-1} H_k^\\top K_k^\\top + K_k R_k K_k^\\top",
+          "to_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1} + \\big(K_k (H_k P_{k|k-1} H_k^\\top + R_k) - P_{k|k-1} H_k^\\top\\big) K_k^\\top",
+          "operation_label": "K_k^T に関する項の整理",
+          "explanation": "K_k^T を右から括り出し、イノベーション共分散 S_k = H_k P_{k|k-1} H_k^T + R_k をまとめる。",
+          "used_node_ids": [
+            "eng.kf.n04_joseph_covariance_update"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1} + \\big(K_k (H_k P_{k|k-1} H_k^\\top + R_k) - P_{k|k-1} H_k^\\top\\big) K_k^\\top",
+          "to_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1}",
+          "operation_label": "最適ゲイン条件の代入",
+          "explanation": "K_k(H_k P_{k|k-1} H_k^T + R_k) = P_{k|k-1} H_k^T より第2項が零となり、簡約化更新式を得る。",
+          "used_node_ids": [
+            "eng.kf.n05_kalman_gain_mmse"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_kf07",
+      "target_node_id": "eng.kf.n07_nonlinear_ssm_ekf_linearization",
+      "route_kind": "reformulation",
+      "title": "非線形状態空間モデルの1次テイラー線形化",
+      "premise_node_ids": [
+        "eng.kf.n01_linear_gaussian_ssm",
+        "math.calc.mi03_jacobian_matrix_determinant",
+        "math.calc.e02_multivariable_taylor_2nd"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "非線形関数 f および h は推定点近傍で C1 級（連続微分可能）である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}_k = f(\\mathbf{x}_{k-1}, \\mathbf{u}_k) + \\mathbf{w}_k,\\quad \\mathbf{y}_k = h(\\mathbf{x}_k) + \\mathbf{v}_k",
+          "to_latex": "F_k := \\left.\\frac{\\partial f}{\\partial \\mathbf{x}}\\right|_{\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k},\\quad H_k := \\left.\\frac{\\partial h}{\\partial \\mathbf{x}}\\right|_{\\hat{\\mathbf{x}}_{k|k-1}}",
+          "operation_label": "推定値周りでのヤコビアン線形化",
+          "explanation": "非線形状態遷移関数と観測関数をそれぞれの最新推定値周りで1次テイラー展開し、局所線形行列を定義する。",
+          "used_node_ids": [
+            "eng.kf.n01_linear_gaussian_ssm",
+            "math.calc.e02_multivariable_taylor_2nd",
+            "math.calc.mi03_jacobian_matrix_determinant"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}_k = f(\\mathbf{x}_{k-1}, \\mathbf{u}_k) + \\mathbf{w}_k,\\quad \\mathbf{y}_k = h(\\mathbf{x}_k) + \\mathbf{v}_k",
+          "to_latex": "f(\\mathbf{x}_{k-1}, \\mathbf{u}_k) \\approx f(\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k) + F_k (\\mathbf{x}_{k-1} - \\hat{\\mathbf{x}}_{k-1|k-1}),\\quad h(\\mathbf{x}_k) \\approx h(\\hat{\\mathbf{x}}_{k|k-1}) + H_k (\\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1})",
+          "operation_label": "1次テイラー展開による近似",
+          "explanation": "多変数テイラー展開の1次項までを残し、2次以上の高次項を無視してアフィン近似する。",
+          "used_node_ids": [
+            "math.calc.e02_multivariable_taylor_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\mathbf{x}_{k-1}, \\mathbf{u}_k) \\approx f(\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k) + F_k (\\mathbf{x}_{k-1} - \\hat{\\mathbf{x}}_{k-1|k-1}),\\quad h(\\mathbf{x}_k) \\approx h(\\hat{\\mathbf{x}}_{k|k-1}) + H_k (\\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1})",
+          "to_latex": "F_k := \\left.\\frac{\\partial f}{\\partial \\mathbf{x}}\\right|_{\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k},\\quad H_k := \\left.\\frac{\\partial h}{\\partial \\mathbf{x}}\\right|_{\\hat{\\mathbf{x}}_{k|k-1}}",
+          "operation_label": "ヤコビ行列の同定",
+          "explanation": "1次近似の係数行列として各推定点におけるヤコビ行列 F_k, H_k を定義する。",
+          "used_node_ids": [
+            "eng.kf.n01_linear_gaussian_ssm",
+            "math.calc.mi03_jacobian_matrix_determinant"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_kf08",
+      "target_node_id": "eng.kf.n08_ekf_predict_update",
+      "route_kind": "deductive",
+      "title": "拡張カルマンフィルタ（EKF）アルゴリズムの構成",
+      "premise_node_ids": [
+        "eng.kf.n07_nonlinear_ssm_ekf_linearization",
+        "eng.kf.n02_apriori_prediction_step",
+        "eng.kf.n05_kalman_gain_mmse",
+        "eng.kf.n06_simplified_covariance_update"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "推定誤差は十分に小さく、1次線形化近似が誤差共分散の伝播に対して妥当である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F_k = \\left.\\frac{\\partial f}{\\partial \\mathbf{x}}\\right|_{\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k},\\quad H_k = \\left.\\frac{\\partial h}{\\partial \\mathbf{x}}\\right|_{\\hat{\\mathbf{x}}_{k|k-1}}",
+          "to_latex": "\\hat{\\mathbf{x}}_{k|k-1} = f(\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k),\\; P_{k|k-1} = F_k P_{k-1|k-1} F_k^\\top + Q_k,\\; K_k = P_{k|k-1} H_k^\\top (H_k P_{k|k-1} H_k^\\top + R_k)^{-1},\\; \\hat{\\mathbf{x}}_{k|k} = \\hat{\\mathbf{x}}_{k|k-1} + K_k(\\mathbf{y}_k - h(\\hat{\\mathbf{x}}_{k|k-1})),\\; P_{k|k} = (I - K_k H_k)P_{k|k-1}",
+          "operation_label": "非線形平均伝播と線形化共分散更新の統合",
+          "explanation": "状態の事前予測・イノベーション計算に非線形関数を適用し、共分散とゲイン計算に線形カルマンフィルタの式をヤコビアンで適用する。",
+          "used_node_ids": [
+            "eng.kf.n02_apriori_prediction_step",
+            "eng.kf.n05_kalman_gain_mmse",
+            "eng.kf.n06_simplified_covariance_update",
+            "eng.kf.n07_nonlinear_ssm_ekf_linearization"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F_k = \\left.\\frac{\\partial f}{\\partial \\mathbf{x}}\\right|_{\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k},\\quad H_k = \\left.\\frac{\\partial h}{\\partial \\mathbf{x}}\\right|_{\\hat{\\mathbf{x}}_{k|k-1}}",
+          "to_latex": "\\hat{\\mathbf{x}}_{k|k-1} = f(\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k),\\quad P_{k|k-1} = F_k P_{k-1|k-1} F_k^\\top + Q_k",
+          "operation_label": "EKF予測ステップの構成",
+          "explanation": "事前状態予測には f を直接用い、事前誤差共分散の伝播にはヤコビアン F_k を線形予測式に適用する。",
+          "used_node_ids": [
+            "eng.kf.n02_apriori_prediction_step",
+            "eng.kf.n07_nonlinear_ssm_ekf_linearization"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{x}}_{k|k-1} = f(\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k),\\quad P_{k|k-1} = F_k P_{k-1|k-1} F_k^\\top + Q_k",
+          "to_latex": "\\hat{\\mathbf{x}}_{k|k-1} = f(\\hat{\\mathbf{x}}_{k-1|k-1}, \\mathbf{u}_k),\\; P_{k|k-1} = F_k P_{k-1|k-1} F_k^\\top + Q_k,\\; K_k = P_{k|k-1} H_k^\\top (H_k P_{k|k-1} H_k^\\top + R_k)^{-1},\\; \\hat{\\mathbf{x}}_{k|k} = \\hat{\\mathbf{x}}_{k|k-1} + K_k(\\mathbf{y}_k - h(\\hat{\\mathbf{x}}_{k|k-1})),\\; P_{k|k} = (I - K_k H_k)P_{k|k-1}",
+          "operation_label": "EKF更新ステップの構成",
+          "explanation": "事前推定値でのヤコビアン H_k を用いてカルマンゲインと事後共分散を計算し、非線形観測モデル h によるイノベーションで状態を更新する。",
+          "used_node_ids": [
+            "eng.kf.n05_kalman_gain_mmse",
+            "eng.kf.n06_simplified_covariance_update",
+            "eng.kf.n07_nonlinear_ssm_ekf_linearization"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

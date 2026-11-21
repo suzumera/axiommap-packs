@@ -1,0 +1,773 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.ctrl.classical_transfer",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "control_engineering",
+    "title": "古典制御1：伝達関数・ブロック線図・1次/2次遅れ系のステップ応答",
+    "language": "ja",
+    "description": "ラプラス変換による伝達関数表現、フィードバック結合、2次標準系の減衰比ζ・固有角周波数ωnとオーバーシュート・整定時間を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.ctrl1.n01_transfer_function_def",
+      "short_code": "CTRL1_01",
+      "kind": "definition",
+      "title": "LTIシステムの伝達関数と初期値零の微分法則",
+      "summary": "初期状態がすべて零の線形時不変（LTI）システムにおいて、入出力のラプラス変換の比として定義される伝達関数。",
+      "canonical_latex": "G(s) := \\frac{Y(s)}{U(s)} = \\frac{\\sum_{m=0}^{M} b_m s^m}{\\sum_{k=0}^{n} a_k s^k}\\quad \\big(y^{(k)}(0^-) = u^{(m)}(0^-) = 0\\big)",
+      "aliases_latex": [
+        "G(s) = \\frac{\\mathcal{L}[y(t)]}{\\mathcal{L}[u(t)]}"
+      ],
+      "keywords": [
+        "伝達関数",
+        "ラプラス変換",
+        "LTIシステム",
+        "s領域"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl1.n02_block_diagram_reduction",
+      "short_code": "CTRL1_02",
+      "kind": "theorem_formula",
+      "title": "ブロック線図の基本結合則（直列・並列・フィードバック結合）",
+      "summary": "直列結合・並列結合およびネガティブフィードバック結合された伝達関数ブロックの等価変換公式。",
+      "canonical_latex": "G_{\\text{ser}}(s) = G_1(s)G_2(s),\\quad G_{\\text{par}}(s) = G_1(s) \\pm G_2(s),\\quad T(s) = \\frac{Y(s)}{R(s)} = \\frac{G(s)}{1 + G(s)H(s)}",
+      "aliases_latex": [
+        "T(s) = \\frac{G}{1 + GH}"
+      ],
+      "keywords": [
+        "ブロック線図",
+        "フィードバック結合",
+        "閉ループ伝達関数",
+        "開ループ伝達関数"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl1.n03_final_value_steady_state",
+      "short_code": "CTRL1_03",
+      "kind": "theorem_formula",
+      "title": "最終値定理と単位フィードバック系の定常位置偏差",
+      "summary": "sF(s)のすべての極が左半平面にあるときの最終値定理と、ステップ入力に対する定常偏差の公式。",
+      "canonical_latex": "\\lim_{t\\to\\infty} f(t) = \\lim_{s\\to 0} s F(s),\\qquad e_{ss} = \\lim_{t\\to\\infty} e(t) = \\frac{1}{1 + K_p}\\quad \\left(K_p := \\lim_{s\\to 0} G(s)\\right)",
+      "aliases_latex": [
+        "f(\\infty) = \\lim_{s\\to 0} s F(s)"
+      ],
+      "keywords": [
+        "最終値定理",
+        "定常偏差",
+        "位置偏差定数",
+        "単位フィードバック"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl1.n04_first_order_step_response",
+      "short_code": "CTRL1_04",
+      "kind": "theorem_formula",
+      "title": "1次遅れ系の伝達関数とステップ応答・時定数",
+      "summary": "1次遅れ系 G(s)=K/(Ts+1) の単位ステップ応答と、定常値の63.2%に到達する時定数 T の特徴づけ。",
+      "canonical_latex": "G(s) = \\frac{K}{Ts + 1} \\implies y(t) = K\\left(1 - e^{-t/T}\\right)u(t),\\quad y(T) = K(1 - e^{-1}) \\approx 0.632 K",
+      "aliases_latex": [
+        "y(t) = K(1 - e^{-t/T})"
+      ],
+      "keywords": [
+        "1次遅れ系",
+        "ステップ応答",
+        "時定数",
+        "ゲイン"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl1.n05_second_order_standard_form",
+      "short_code": "CTRL1_05",
+      "kind": "definition",
+      "title": "2次遅れ系の標準形（減衰比ζと固有角周波数ωn）",
+      "summary": "2次遅れ系を減衰比 ζ と固有角周波数 ωn で正規化した標準伝達関数と、特性根による減衰様式の分類。",
+      "canonical_latex": "G(s) = \\frac{K\\omega_n^2}{s^2 + 2\\zeta\\omega_n s + \\omega_n^2},\\quad s_{\\pm} = -\\zeta\\omega_n \\pm \\omega_n\\sqrt{\\zeta^2 - 1}\\quad (0<\\zeta<1:\\text{underdamped},\\; \\zeta=1:\\text{critical},\\; \\zeta>1:\\text{overdamped})",
+      "aliases_latex": [
+        "s^2 + 2\\zeta\\omega_n s + \\omega_n^2 = 0"
+      ],
+      "keywords": [
+        "2次遅れ系",
+        "減衰比",
+        "固有角周波数",
+        "不足減衰"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl1.n06_second_order_underdamped_step",
+      "short_code": "CTRL1_06",
+      "kind": "theorem_formula",
+      "title": "不足減衰2次系（0 < ζ < 1）の単位ステップ応答",
+      "summary": "減衰固有角周波数 ωd を用いた不足減衰2次標準系（K=1）の単位ステップ応答の時間領域表現。",
+      "canonical_latex": "y(t) = 1 - \\frac{e^{-\\zeta\\omega_n t}}{\\sqrt{1-\\zeta^2}}\\sin(\\omega_d t + \\phi)\\quad \\left(\\omega_d := \\omega_n\\sqrt{1-\\zeta^2},\\; \\cos\\phi = \\zeta,\\; \\sin\\phi = \\sqrt{1-\\zeta^2}\\right)",
+      "aliases_latex": [
+        "y(t) = 1 - e^{-\\zeta\\omega_n t}\\left(\\cos\\omega_d t + \\frac{\\zeta}{\\sqrt{1-\\zeta^2}}\\sin\\omega_d t\\right)"
+      ],
+      "keywords": [
+        "2次系ステップ応答",
+        "不足減衰",
+        "減衰固有角周波数",
+        "過渡応答"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl1.n07_overshoot_peak_time",
+      "short_code": "CTRL1_07",
+      "kind": "theorem_formula",
+      "title": "不足減衰2次系の行き過ぎ時間 tp と最大オーバーシュート Mp",
+      "summary": "ステップ応答が最初の極大値に達する行き過ぎ時間 tp と、定常値からの最大行き過ぎ量 Mp の公式。",
+      "canonical_latex": "t_p = \\frac{\\pi}{\\omega_d} = \\frac{\\pi}{\\omega_n\\sqrt{1-\\zeta^2}},\\qquad M_p := y(t_p) - 1 = \\exp\\!\\left(-\\frac{\\pi\\zeta}{\\sqrt{1-\\zeta^2}}\\right)",
+      "aliases_latex": [
+        "M_p = e^{-\\pi\\zeta / \\sqrt{1-\\zeta^2}}"
+      ],
+      "keywords": [
+        "最大オーバーシュート",
+        "行き過ぎ時間",
+        "ピーク時間",
+        "減衰比"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.ctrl1.n08_settling_time_approximation",
+      "short_code": "CTRL1_08",
+      "kind": "theorem_formula",
+      "title": "2次遅れ系の整定時間 ts の包絡線近似公式",
+      "summary": "減衰振動の包絡線を用いて評価される2%基準および5%基準の整定時間の近似公式。",
+      "canonical_latex": "t_s^{(2\\%)} \\approx \\frac{4}{\\zeta\\omega_n},\\qquad t_s^{(5\\%)} \\approx \\frac{3}{\\zeta\\omega_n}\\quad (0 < \\zeta \\ll 1)",
+      "aliases_latex": [
+        "t_s \\approx \\frac{4}{\\zeta\\omega_n}"
+      ],
+      "keywords": [
+        "整定時間",
+        "包絡線",
+        "過渡特性",
+        "時定数"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.ctrl1.n01_transfer_function_def",
+      "target_node_id": "eng.ctrl1.n01_transfer_function_def",
+      "route_kind": "deductive",
+      "title": "ラプラス変換の微分法則から伝達関数を導出",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def",
+        "math.laplace.lt02_linearity_and_shifting",
+        "math.calc.m10_integration_by_parts"
+      ],
+      "required_math_node_ids": [
+        "eng.ctrl1.n01_transfer_function_def"
+      ],
+      "assumptions": [
+        "すべての初期値 y^(k)(0^-)=0 および u^(m)(0^-)=0 を仮定する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum_{k=0}^{n} a_k y^{(k)}(t) = \\sum_{m=0}^{M} b_m u^{(m)}(t)",
+          "to_latex": "G(s) := \\frac{Y(s)}{U(s)} = \\frac{\\sum_{m=0}^{M} b_m s^m}{\\sum_{k=0}^{n} a_k s^k}",
+          "operation_label": "ラプラス変換と入出力比の定義",
+          "explanation": "線形定数係数微分方程式に初期値零でラプラス変換を適用し、出力と入力の比をとることで伝達関数を得る。",
+          "used_node_ids": [
+            "math.calc.m10_integration_by_parts",
+            "math.laplace.lt01_laplace_transform_def",
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{0^-}^{\\infty} f'(t) e^{-st}\\,dt",
+          "to_latex": "s F(s) - f(0^-)",
+          "operation_label": "部分積分による1階微分のラプラス変換",
+          "explanation": "ラプラス変換の定義式に部分積分を適用し、境界項の極限が Re(s)>σc で消えることから 1階微分の法則を得る。",
+          "used_node_ids": [
+            "math.calc.m10_integration_by_parts",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s F(s) - f(0^-)",
+          "to_latex": "\\mathcal{L}\\left[y^{(k)}(t)\\right] = s^k Y(s)",
+          "operation_label": "帰納法と初期値零条件の適用",
+          "explanation": "1階微分の法則を k 回反復し、初期条件 y^(j)(0^-)=0 を適用する。",
+          "used_node_ids": [
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}\\left[y^{(k)}(t)\\right] = s^k Y(s)",
+          "to_latex": "G(s) := \\frac{Y(s)}{U(s)} = \\frac{\\sum_{m=0}^{M} b_m s^m}{\\sum_{k=0}^{n} a_k s^k}",
+          "operation_label": "線形性による方程式の変換と比の計算",
+          "explanation": "微分方程式の両辺にラプラス変換の線形性を適用して代数方程式とし、Y(s)/U(s) を求める。",
+          "used_node_ids": [
+            "eng.ctrl1.n01_transfer_function_def",
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ctrl1.n02_block_diagram_reduction",
+      "target_node_id": "eng.ctrl1.n02_block_diagram_reduction",
+      "route_kind": "deductive",
+      "title": "フィードバックループの代数関係から閉ループ伝達関数を導出",
+      "premise_node_ids": [
+        "eng.ctrl1.n01_transfer_function_def",
+        "math.laplace.lt02_linearity_and_shifting"
+      ],
+      "required_math_node_ids": [
+        "eng.ctrl1.n02_block_diagram_reduction"
+      ],
+      "assumptions": [
+        "各ブロックはLTIであり、1 + G(s)H(s) ≠ 0 である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "E(s) = R(s) - H(s)Y(s),\\; Y(s) = G(s)E(s)",
+          "to_latex": "T(s) = \\frac{Y(s)}{R(s)} = \\frac{G(s)}{1 + G(s)H(s)}",
+          "operation_label": "フィードバック閉ループの消去",
+          "explanation": "加え合わせ点と前向き・帰還経路の関係式から誤差信号 E(s) を消去し、閉ループ伝達関数を導く。",
+          "used_node_ids": [
+            "eng.ctrl1.n01_transfer_function_def",
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": "simplify(solve([Eq(E, R - H*Y), Eq(Y, G*E)], [Y, E])[Y]/R)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E(s) = R(s) - H(s)Y(s),\\; Y(s) = G(s)E(s)",
+          "to_latex": "Y(s) = G(s)\\big(R(s) - H(s)Y(s)\\big)",
+          "operation_label": "誤差信号 E(s) の代入",
+          "explanation": "偏差 E(s) の式を前向き伝達関係 Y(s)=G(s)E(s) に代入する。",
+          "used_node_ids": [
+            "eng.ctrl1.n01_transfer_function_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y(s) = G(s)\\big(R(s) - H(s)Y(s)\\big)",
+          "to_latex": "\\big(1 + G(s)H(s)\\big)Y(s) = G(s)R(s)",
+          "operation_label": "Y(s) に関する整理",
+          "explanation": "右辺の G(s)H(s)Y(s) を左辺へ移項して Y(s) でくくる。",
+          "used_node_ids": [
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\big(1 + G(s)H(s)\\big)Y(s) = G(s)R(s)",
+          "to_latex": "T(s) = \\frac{Y(s)}{R(s)} = \\frac{G(s)}{1 + G(s)H(s)}",
+          "operation_label": "入出力比の算出",
+          "explanation": "両辺を (1 + G(s)H(s))R(s) で割ることで閉ループ伝達関数 T(s) を得る。",
+          "used_node_ids": [
+            "eng.ctrl1.n02_block_diagram_reduction"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ctrl1.n03_final_value_steady_state",
+      "target_node_id": "eng.ctrl1.n03_final_value_steady_state",
+      "route_kind": "deductive",
+      "title": "最終値定理と単位ステップ定常偏差の導出",
+      "premise_node_ids": [
+        "eng.ctrl1.n01_transfer_function_def",
+        "eng.ctrl1.n02_block_diagram_reduction",
+        "math.laplace.lt01_laplace_transform_def",
+        "math.laplace.lt03_elementary_transforms",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [
+        "eng.ctrl1.n03_final_value_steady_state"
+      ],
+      "assumptions": [
+        "s F(s) および s E(s) の極がすべて開左半平面 Re(s) < 0 に存在する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "s F(s) - f(0^-) = \\int_{0^-}^{\\infty} f'(t) e^{-st}\\,dt",
+          "to_latex": "\\lim_{t\\to\\infty} f(t) = \\lim_{s\\to 0} s F(s),\\qquad e_{ss} = \\frac{1}{1 + K_p}",
+          "operation_label": "s→0 極限と単位フィードバック誤差への適用",
+          "explanation": "微分のラプラス変換で s→0 の極限をとって最終値定理を導き、単位ステップ入力時の偏差 E(s) に適用する。",
+          "used_node_ids": [
+            "eng.ctrl1.n02_block_diagram_reduction",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s F(s) - f(0^-) = \\int_{0^-}^{\\infty} f'(t) e^{-st}\\,dt",
+          "to_latex": "\\lim_{s\\to 0} s F(s) - f(0^-) = \\int_{0^-}^{\\infty} f'(t)\\,dt = \\lim_{t\\to\\infty} f(t) - f(0^-)",
+          "operation_label": "s→0 極限と微積分学の基本定理",
+          "explanation": "積分と極限を交換し、e^{-st}→1 のもとで微積分学の基本定理を適用する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{s\\to 0} s F(s) - f(0^-) = \\int_{0^-}^{\\infty} f'(t)\\,dt = \\lim_{t\\to\\infty} f(t) - f(0^-)",
+          "to_latex": "\\lim_{t\\to\\infty} f(t) = \\lim_{s\\to 0} s F(s)",
+          "operation_label": "初期値 f(0^-) の消去",
+          "explanation": "両辺の -f(0^-) を相殺して最終値定理を得る。",
+          "used_node_ids": [
+            "eng.ctrl1.n03_final_value_steady_state"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{t\\to\\infty} f(t) = \\lim_{s\\to 0} s F(s)",
+          "to_latex": "\\lim_{t\\to\\infty} f(t) = \\lim_{s\\to 0} s F(s),\\qquad e_{ss} = \\frac{1}{1 + K_p}",
+          "operation_label": "単位ステップ誤差 E(s)=1/(s(1+G(s))) への代入",
+          "explanation": "H(s)=1, R(s)=1/s より E(s) = 1/(s(1+G(s))) を最終値定理に代入し、Kp = lim_{s→0} G(s) を用いて定常偏差を得る。",
+          "used_node_ids": [
+            "eng.ctrl1.n02_block_diagram_reduction",
+            "eng.ctrl1.n03_final_value_steady_state",
+            "math.laplace.lt03_elementary_transforms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ctrl1.n04_first_order_step_response",
+      "target_node_id": "eng.ctrl1.n04_first_order_step_response",
+      "route_kind": "deductive",
+      "title": "部分分数分解と逆ラプラス変換による1次遅れ系ステップ応答の導出",
+      "premise_node_ids": [
+        "eng.ctrl1.n01_transfer_function_def",
+        "math.laplace.lt02_linearity_and_shifting",
+        "math.laplace.lt03_elementary_transforms"
+      ],
+      "required_math_node_ids": [
+        "eng.ctrl1.n04_first_order_step_response"
+      ],
+      "assumptions": [
+        "T > 0, u(t) は単位ステップ関数（t >= 0 で 1）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Y(s) = \\frac{K}{Ts + 1}\\cdot\\frac{1}{s}",
+          "to_latex": "y(t) = K\\left(1 - e^{-t/T}\\right)u(t)",
+          "operation_label": "部分分数分解と逆ラプラス変換",
+          "explanation": "1次遅れ系のステップ応答のs領域表現を部分分数分解し、基本関数のラプラス変換表を逆適用する。",
+          "used_node_ids": [
+            "eng.ctrl1.n01_transfer_function_def",
+            "math.laplace.lt02_linearity_and_shifting",
+            "math.laplace.lt03_elementary_transforms"
+          ],
+          "sympy_check_hint": "apart(K/((T*s+1)*s), s)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y(s) = \\frac{K}{Ts + 1}\\cdot\\frac{1}{s}",
+          "to_latex": "Y(s) = K\\left(\\frac{1}{s} - \\frac{T}{Ts + 1}\\right) = K\\left(\\frac{1}{s} - \\frac{1}{s + 1/T}\\right)",
+          "operation_label": "部分分数分解",
+          "explanation": "1/(s(Ts+1)) を 1/s と 1/(s+1/T) の差に分解する。",
+          "used_node_ids": [
+            "eng.ctrl1.n01_transfer_function_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y(s) = K\\left(\\frac{1}{s} - \\frac{T}{Ts + 1}\\right) = K\\left(\\frac{1}{s} - \\frac{1}{s + 1/T}\\right)",
+          "to_latex": "y(t) = K\\left(1 - e^{-t/T}\\right)u(t)",
+          "operation_label": "線形性と指数関数の逆変換",
+          "explanation": "1/s の逆変換 1 と 1/(s+1/T) の逆変換 e^{-t/T} を線形性で結合し、t=T で 1-e^{-1} ≈ 0.632 を確認する。",
+          "used_node_ids": [
+            "eng.ctrl1.n04_first_order_step_response",
+            "math.laplace.lt02_linearity_and_shifting",
+            "math.laplace.lt03_elementary_transforms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ctrl1.n05_second_order_standard_form",
+      "target_node_id": "eng.ctrl1.n05_second_order_standard_form",
+      "route_kind": "reformulation",
+      "title": "2階微分方程式から2次標準形パラメータ（ζ, ωn）への書き換え",
+      "premise_node_ids": [
+        "eng.ctrl1.n01_transfer_function_def"
+      ],
+      "required_math_node_ids": [
+        "eng.ctrl1.n05_second_order_standard_form"
+      ],
+      "assumptions": [
+        "a2 > 0, a0 > 0, a1 >= 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "a_2 \\ddot{y} + a_1 \\dot{y} + a_0 y = b_0 u",
+          "to_latex": "G(s) = \\frac{K\\omega_n^2}{s^2 + 2\\zeta\\omega_n s + \\omega_n^2},\\quad s_{\\pm} = -\\zeta\\omega_n \\pm \\omega_n\\sqrt{\\zeta^2 - 1}",
+          "operation_label": "標準パラメータによる正規化と特性根",
+          "explanation": "2階定数係数系を伝達関数化し、ωn = √(a0/a2), ζ = a1/(2√(a0 a2)), K = b0/a0 で再パラメータ化して極を求める。",
+          "used_node_ids": [
+            "eng.ctrl1.n01_transfer_function_def"
+          ],
+          "sympy_check_hint": "solve(s**2 + 2*zeta*wn*s + wn**2, s)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a_2 \\ddot{y} + a_1 \\dot{y} + a_0 y = b_0 u",
+          "to_latex": "G(s) = \\frac{b_0/a_2}{s^2 + (a_1/a_2)s + (a_0/a_2)}",
+          "operation_label": "伝達関数表現とモニック化",
+          "explanation": "伝達関数の定義を適用し、分母の最高次係数 a2 で分子・分母を割る。",
+          "used_node_ids": [
+            "eng.ctrl1.n01_transfer_function_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G(s) = \\frac{b_0/a_2}{s^2 + (a_1/a_2)s + (a_0/a_2)}",
+          "to_latex": "G(s) = \\frac{K\\omega_n^2}{s^2 + 2\\zeta\\omega_n s + \\omega_n^2}",
+          "operation_label": "ωn, ζ, K の定義代入",
+          "explanation": "ωn^2 = a0/a2, 2ζωn = a1/a2, K = b0/a0 を導入して標準形に書き換える。",
+          "used_node_ids": [
+            "eng.ctrl1.n05_second_order_standard_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G(s) = \\frac{K\\omega_n^2}{s^2 + 2\\zeta\\omega_n s + \\omega_n^2}",
+          "to_latex": "G(s) = \\frac{K\\omega_n^2}{s^2 + 2\\zeta\\omega_n s + \\omega_n^2},\\quad s_{\\pm} = -\\zeta\\omega_n \\pm \\omega_n\\sqrt{\\zeta^2 - 1}",
+          "operation_label": "2次方程式の解の公式による極の分類",
+          "explanation": "分母多項式 = 0 に解の公式を適用し、判別式 ζ^2 - 1 の符号により不足減衰・臨界減衰・過減衰に分類する。",
+          "used_node_ids": [
+            "eng.ctrl1.n05_second_order_standard_form"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ctrl1.n06_second_order_underdamped_step",
+      "target_node_id": "eng.ctrl1.n06_second_order_underdamped_step",
+      "route_kind": "deductive",
+      "title": "平方完成とs領域移動則による不足減衰2次系のステップ応答導出",
+      "premise_node_ids": [
+        "eng.ctrl1.n05_second_order_standard_form",
+        "math.laplace.lt02_linearity_and_shifting",
+        "math.laplace.lt03_elementary_transforms",
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "required_math_node_ids": [
+        "eng.ctrl1.n06_second_order_underdamped_step"
+      ],
+      "assumptions": [
+        "K = 1, 0 < ζ < 1, ωn > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Y(s) = \\frac{\\omega_n^2}{s(s^2 + 2\\zeta\\omega_n s + \\omega_n^2)}\\quad (0 < \\zeta < 1)",
+          "to_latex": "y(t) = 1 - \\frac{e^{-\\zeta\\omega_n t}}{\\sqrt{1-\\zeta^2}}\\sin(\\omega_d t + \\phi)\\quad (\\omega_d = \\omega_n\\sqrt{1-\\zeta^2},\\; \\cos\\phi = \\zeta)",
+          "operation_label": "部分分数分解・平方完成・逆ラプラス変換と三角関数合成",
+          "explanation": "分母を平方完成して移動法則と正弦・余弦のラプラス変換を逆適用し、三角関数の合成公式で単一の正弦波にまとめる。",
+          "used_node_ids": [
+            "eng.ctrl1.n05_second_order_standard_form",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.laplace.lt02_linearity_and_shifting",
+            "math.laplace.lt03_elementary_transforms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y(s) = \\frac{\\omega_n^2}{s(s^2 + 2\\zeta\\omega_n s + \\omega_n^2)}\\quad (0 < \\zeta < 1)",
+          "to_latex": "Y(s) = \\frac{1}{s} - \\frac{s + 2\\zeta\\omega_n}{(s + \\zeta\\omega_n)^2 + \\omega_d^2}",
+          "operation_label": "部分分数分解と平方完成",
+          "explanation": "ωd = ωn√(1-ζ^2) とおいて分母を (s+ζωn)^2 + ωd^2 と平方完成し、1/s の項を分離する。",
+          "used_node_ids": [
+            "eng.ctrl1.n05_second_order_standard_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y(s) = \\frac{1}{s} - \\frac{s + 2\\zeta\\omega_n}{(s + \\zeta\\omega_n)^2 + \\omega_d^2}",
+          "to_latex": "Y(s) = \\frac{1}{s} - \\frac{s + \\zeta\\omega_n}{(s + \\zeta\\omega_n)^2 + \\omega_d^2} - \\frac{\\zeta}{\\sqrt{1-\\zeta^2}}\\frac{\\omega_d}{(s + \\zeta\\omega_n)^2 + \\omega_d^2}",
+          "operation_label": "cos項とsin項の分離",
+          "explanation": "分子の s + 2ζωn を (s + ζωn) と ζωn に分け、後者に ωd / ωd を掛けて標準変換形に合わせる。",
+          "used_node_ids": [
+            "math.laplace.lt02_linearity_and_shifting"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y(s) = \\frac{1}{s} - \\frac{s + \\zeta\\omega_n}{(s + \\zeta\\omega_n)^2 + \\omega_d^2} - \\frac{\\zeta}{\\sqrt{1-\\zeta^2}}\\frac{\\omega_d}{(s + \\zeta\\omega_n)^2 + \\omega_d^2}",
+          "to_latex": "y(t) = 1 - \\frac{e^{-\\zeta\\omega_n t}}{\\sqrt{1-\\zeta^2}}\\sin(\\omega_d t + \\phi)\\quad (\\omega_d = \\omega_n\\sqrt{1-\\zeta^2},\\; \\cos\\phi = \\zeta)",
+          "operation_label": "逆変換と加法定理による合成",
+          "explanation": "s移動則と基本公式で逆変換し、cosφ = ζ, sinφ = √(1-ζ^2) とおいて三角関数の加法定理で sin(ωd t + φ) にまとめる。",
+          "used_node_ids": [
+            "eng.ctrl1.n06_second_order_underdamped_step",
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.laplace.lt02_linearity_and_shifting",
+            "math.laplace.lt03_elementary_transforms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ctrl1.n07_overshoot_peak_time",
+      "target_node_id": "eng.ctrl1.n07_overshoot_peak_time",
+      "route_kind": "deductive",
+      "title": "時間微分による行き過ぎ時間 tp と最大オーバーシュート Mp の導出",
+      "premise_node_ids": [
+        "eng.ctrl1.n06_second_order_underdamped_step",
+        "math.calc.m01_chain_rule",
+        "math.calc.m15_product_rule",
+        "math.calc.m31_trig_derivatives",
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "required_math_node_ids": [
+        "eng.ctrl1.n07_overshoot_peak_time"
+      ],
+      "assumptions": [
+        "0 < ζ < 1, ωn > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "y(t) = 1 - \\frac{e^{-\\zeta\\omega_n t}}{\\sqrt{1-\\zeta^2}}\\sin(\\omega_d t + \\phi)",
+          "to_latex": "t_p = \\frac{\\pi}{\\omega_d},\\quad M_p = \\exp\\!\\left(-\\frac{\\pi\\zeta}{\\sqrt{1-\\zeta^2}}\\right)",
+          "operation_label": "極値条件 y'(t)=0 による tp と Mp の算出",
+          "explanation": "ステップ応答 y(t) を時間微分して最初の正の停留点 tp = π/ωd を求め、y(tp)-1 から最大オーバーシュート Mp を得る。",
+          "used_node_ids": [
+            "eng.ctrl1.n06_second_order_underdamped_step",
+            "math.calc.m15_product_rule",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y(t) = 1 - \\frac{e^{-\\zeta\\omega_n t}}{\\sqrt{1-\\zeta^2}}\\sin(\\omega_d t + \\phi)",
+          "to_latex": "\\dot{y}(t) = \\frac{\\omega_n}{\\sqrt{1-\\zeta^2}} e^{-\\zeta\\omega_n t}\\sin(\\omega_d t)",
+          "operation_label": "積の微分法と加法定理による整理",
+          "explanation": "積の微分法と連鎖律を適用し、ζ sin(ωd t + φ) - √(1-ζ^2) cos(ωd t + φ) = cosφ sin(ωd t + φ) - sinφ cos(ωd t + φ) = sin(ωd t) を用いる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule",
+            "math.calc.m31_trig_derivatives",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{y}(t) = \\frac{\\omega_n}{\\sqrt{1-\\zeta^2}} e^{-\\zeta\\omega_n t}\\sin(\\omega_d t)",
+          "to_latex": "t_p = \\frac{\\pi}{\\omega_d} = \\frac{\\pi}{\\omega_n\\sqrt{1-\\zeta^2}}",
+          "operation_label": "最初の極大点 tp の決定",
+          "explanation": "t > 0 で最初に y'(t)=0（sin(ωd t)=0）となる時刻として ωd tp = π を得る。",
+          "used_node_ids": [
+            "eng.ctrl1.n07_overshoot_peak_time"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "t_p = \\frac{\\pi}{\\omega_d} = \\frac{\\pi}{\\omega_n\\sqrt{1-\\zeta^2}}",
+          "to_latex": "t_p = \\frac{\\pi}{\\omega_d},\\quad M_p = \\exp\\!\\left(-\\frac{\\pi\\zeta}{\\sqrt{1-\\zeta^2}}\\right)",
+          "operation_label": "y(tp) の評価",
+          "explanation": "sin(π + φ) = -sinφ = -√(1-ζ^2) を y(tp) に代入すると分母の √(1-ζ^2) が約分され、Mp = y(tp) - 1 = exp(-πζ/√(1-ζ^2)) を得る。",
+          "used_node_ids": [
+            "eng.ctrl1.n06_second_order_underdamped_step",
+            "eng.ctrl1.n07_overshoot_peak_time"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.ctrl1.n08_settling_time_approximation",
+      "target_node_id": "eng.ctrl1.n08_settling_time_approximation",
+      "route_kind": "deductive",
+      "title": "包絡線減衰評価による整定時間 ts 近似式の導出",
+      "premise_node_ids": [
+        "eng.ctrl1.n06_second_order_underdamped_step"
+      ],
+      "required_math_node_ids": [
+        "eng.ctrl1.n08_settling_time_approximation"
+      ],
+      "assumptions": [
+        "0 < ζ ≪ 1 として √(1 - ζ^2) ≈ 1 と近似する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|y(t) - 1| \\le \\frac{e^{-\\zeta\\omega_n t}}{\\sqrt{1-\\zeta^2}} \\le \\varepsilon",
+          "to_latex": "t_s^{(2\\%)} \\approx \\frac{4}{\\zeta\\omega_n},\\qquad t_s^{(5\\%)} \\approx \\frac{3}{\\zeta\\omega_n}",
+          "operation_label": "包絡線による上界評価と対数近似",
+          "explanation": "|sin(ωd t + φ)| <= 1 を用いて応答誤差の包絡線を許容帯 ε（0.02 または 0.05）以下に抑える時刻を解く。",
+          "used_node_ids": [
+            "eng.ctrl1.n06_second_order_underdamped_step"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|y(t) - 1| \\le \\frac{e^{-\\zeta\\omega_n t}}{\\sqrt{1-\\zeta^2}} \\le \\varepsilon",
+          "to_latex": "t \\ge \\frac{-\\ln\\left(\\varepsilon\\sqrt{1-\\zeta^2}\\right)}{\\zeta\\omega_n}",
+          "operation_label": "指数不等式の対数による求解",
+          "explanation": "両辺の自然対数をとって時刻 t について解く。",
+          "used_node_ids": [
+            "eng.ctrl1.n06_second_order_underdamped_step"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "t \\ge \\frac{-\\ln\\left(\\varepsilon\\sqrt{1-\\zeta^2}\\right)}{\\zeta\\omega_n}",
+          "to_latex": "t_s^{(2\\%)} \\approx \\frac{4}{\\zeta\\omega_n},\\qquad t_s^{(5\\%)} \\approx \\frac{3}{\\zeta\\omega_n}",
+          "operation_label": "ε=0.02, 0.05 および √(1-ζ^2)≈1 の数値評価",
+          "explanation": "√(1-ζ^2) ≈ 1 とし、-ln(0.02) ≈ 3.91 ≈ 4、-ln(0.05) ≈ 3.00 ≈ 3 を代入して標準近似公式を得る。",
+          "used_node_ids": [
+            "eng.ctrl1.n08_settling_time_approximation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,977 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.comm.error_correction",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "communications",
+    "title": "符号理論：線形ブロック符号・ハミング距離・シンドローム復号と巡回符号",
+    "language": "ja",
+    "description": "ガロア体GF(2)上の生成行列・検査行列、ハミング重みと誤り訂正能力、シンドローム復号、CRCと畳み込み符号・ビタビ復号の原理を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.ecc.n01_gf2_vector_space",
+      "short_code": "ECC01",
+      "kind": "definition",
+      "title": "GF(2)上のn次元ベクトル空間とハミング重み・ハミング距離の定義",
+      "summary": "2元体GF(2)上の長さnのベクトル空間におけるXOR加算、非零成分数としてのハミング重み、および2ベクトル間のハミング距離を定義する。",
+      "canonical_latex": "\\mathbb{F}_2 = \\{0,1\\},\\; w_H(\\mathbf{x}) := |\\{i \\mid x_i \\neq 0\\}|,\\; d_H(\\mathbf{x},\\mathbf{y}) := w_H(\\mathbf{x} \\oplus \\mathbf{y})",
+      "aliases_latex": [
+        "d_H(\\mathbf{x},\\mathbf{y}) = \\sum_{i=1}^{n} (x_i \\oplus y_i)"
+      ],
+      "keywords": [
+        "GF(2)",
+        "ハミング重み",
+        "ハミング距離",
+        "ベクトル空間"
+      ],
+      "domain_tags": [
+        "communications",
+        "coding_theory"
+      ]
+    },
+    {
+      "id": "eng.ecc.n02_linear_block_code_generator",
+      "short_code": "ECC02",
+      "kind": "definition",
+      "title": "線形ブロック符号(n,k)と生成行列・組織符号の定義",
+      "summary": "GF(2)^nのk次元部分空間としての線形ブロック符号、およびk×n生成行列Gと組織形[I_k | P]を定義する。",
+      "canonical_latex": "\\mathcal{C} = \\{\\mathbf{u} G \\mid \\mathbf{u} \\in \\mathbb{F}_2^k\\} \\subseteq \\mathbb{F}_2^n,\\quad G \\in \\mathbb{F}_2^{k \\times n},\\quad G_{\\mathrm{sys}} = [I_k \\mid P]",
+      "aliases_latex": [
+        "\\mathbf{c} = \\mathbf{u} G"
+      ],
+      "keywords": [
+        "線形ブロック符号",
+        "生成行列",
+        "組織符号",
+        "符号化率"
+      ],
+      "domain_tags": [
+        "communications",
+        "coding_theory"
+      ]
+    },
+    {
+      "id": "eng.ecc.n03_parity_check_matrix",
+      "short_code": "ECC03",
+      "kind": "theorem_formula",
+      "title": "パリティ検査行列Hと直交条件 GH^T = O",
+      "summary": "線形ブロック符号Cの双対空間の基底から構成される(n-k)×nパリティ検査行列Hと、符号語判定条件cH^T=0および組織形H_sys=[P^T | I_{n-k}]を導出する。",
+      "canonical_latex": "\\mathbf{c} \\in \\mathcal{C} \\iff \\mathbf{c} H^\\top = \\mathbf{0},\\quad G H^\\top = O_{k \\times (n-k)},\\quad H_{\\mathrm{sys}} = [P^\\top \\mid I_{n-k}]",
+      "aliases_latex": [
+        "\\mathcal{C} = \\ker(H)"
+      ],
+      "keywords": [
+        "パリティ検査行列",
+        "双対符号",
+        "直交条件"
+      ],
+      "domain_tags": [
+        "communications",
+        "coding_theory"
+      ]
+    },
+    {
+      "id": "eng.ecc.n04_min_distance_weight_theorem",
+      "short_code": "ECC04",
+      "kind": "theorem_formula",
+      "title": "線形符号の最小ハミング距離と最小重み・検査行列の線形従属性",
+      "summary": "線形性により符号の最小ハミング距離が非零符号語の最小ハミング重みに一致し、さらに検査行列Hの線形従属な最小列数に等しいことを示す。",
+      "canonical_latex": "d_{\\min}(\\mathcal{C}) = \\min_{\\mathbf{c} \\in \\mathcal{C}\\setminus\\{\\mathbf{0}\\}} w_H(\\mathbf{c}) = \\min \\{d \\mid \\exists d\\text{ linearly dependent columns of } H\\}",
+      "aliases_latex": [
+        "d_{\\min}(\\mathcal{C}) = w_{\\min}(\\mathcal{C})"
+      ],
+      "keywords": [
+        "最小ハミング距離",
+        "最小重み",
+        "線形従属"
+      ],
+      "domain_tags": [
+        "communications",
+        "coding_theory"
+      ]
+    },
+    {
+      "id": "eng.ecc.n05_error_detection_correction_bound",
+      "short_code": "ECC05",
+      "kind": "theorem_formula",
+      "title": "最小距離d_minによる誤り検出・訂正能力の限界定理",
+      "summary": "ハミング空間上の三角不等式と球充填幾何から、最小距離d_minを持つ符号の最大誤り検出数d_min-1と最大誤り訂正数floor((d_min-1)/2)を導く。",
+      "canonical_latex": "t_{\\mathrm{det}} = d_{\\min} - 1,\\qquad t_{\\mathrm{corr}} = \\left\\lfloor \\frac{d_{\\min} - 1}{2} \\right\\rfloor",
+      "aliases_latex": [
+        "2 t_{\\mathrm{corr}} + 1 \\le d_{\\min}"
+      ],
+      "keywords": [
+        "誤り検出能力",
+        "誤り訂正能力",
+        "最小距離復号"
+      ],
+      "domain_tags": [
+        "communications",
+        "coding_theory"
+      ]
+    },
+    {
+      "id": "eng.ecc.n06_syndrome_decoding",
+      "short_code": "ECC06",
+      "kind": "theorem_formula",
+      "title": "シンドロームの定義とコセットリーダーによる最尤復号原理",
+      "summary": "受信語y=c+eに対するシンドロームs=yH^T=eH^Tが誤りベクトルの剰余類（コセット）のみに依存することを示し、最小重みコセットリーダーによる復号法を導出する。",
+      "canonical_latex": "\\mathbf{y} = \\mathbf{c} \\oplus \\mathbf{e} \\implies \\mathbf{s} := \\mathbf{y} H^\\top = \\mathbf{e} H^\\top,\\quad \\hat{\\mathbf{e}} = \\arg\\min_{\\mathbf{e} H^\\top = \\mathbf{s}} w_H(\\mathbf{e}),\\quad \\hat{\\mathbf{c}} = \\mathbf{y} \\oplus \\hat{\\mathbf{e}}",
+      "aliases_latex": [
+        "\\mathbf{s} = \\mathbf{y} H^\\top"
+      ],
+      "keywords": [
+        "シンドローム復号",
+        "コセットリーダー",
+        "剰余類",
+        "最尤復号"
+      ],
+      "domain_tags": [
+        "communications",
+        "coding_theory"
+      ]
+    },
+    {
+      "id": "eng.ecc.n07_cyclic_code_polynomial",
+      "short_code": "ECC07",
+      "kind": "definition",
+      "title": "巡回符号の多項式環表現と生成多項式g(x)",
+      "summary": "巡回シフト不変な線形符号を剰余環GF(2)[x]/(x^n-1)のイデアルとして定式化し、x^n-1を割り切る生成多項式g(x)による符号化を表現する。",
+      "canonical_latex": "\\mathbf{c} \\leftrightarrow c(x) \\in \\mathbb{F}_2[x]/(x^n - 1),\\quad g(x) \\mid (x^n - 1),\\quad c(x) = u(x) g(x) \\pmod{x^n - 1}",
+      "aliases_latex": [
+        "\\mathcal{C} = \\langle g(x) \\rangle \\subseteq \\mathbb{F}_2[x]/(x^n - 1)"
+      ],
+      "keywords": [
+        "巡回符号",
+        "生成多項式",
+        "剰余環",
+        "イデアル"
+      ],
+      "domain_tags": [
+        "communications",
+        "coding_theory"
+      ]
+    },
+    {
+      "id": "eng.ecc.n08_crc_error_detection",
+      "short_code": "ECC08",
+      "kind": "theorem_formula",
+      "title": "CRC（巡回冗長検査）の組織符号化と誤り検出原理",
+      "summary": "多項式除算の剰余r(x)=x^{n-k}u(x) mod g(x)を付加する組織的巡回符号化により、受信多項式のg(x)による剰余が誤り多項式のみに依存しバースト誤り等を検出できることを導出する。",
+      "canonical_latex": "r(x) = x^{n-k} u(x) \\bmod g(x),\\quad c(x) = x^{n-k} u(x) + r(x),\\quad y(x) \\bmod g(x) = e(x) \\bmod g(x)",
+      "aliases_latex": [
+        "c(x) \\equiv 0 \\pmod{g(x)}"
+      ],
+      "keywords": [
+        "CRC",
+        "巡回冗長検査",
+        "多項式除算",
+        "バースト誤り検出"
+      ],
+      "domain_tags": [
+        "communications",
+        "coding_theory"
+      ]
+    },
+    {
+      "id": "eng.ecc.n09_convolutional_code_trellis",
+      "short_code": "ECC09",
+      "kind": "definition",
+      "title": "畳み込み符号の多項式生成行列と状態遷移（トレリス）表現",
+      "summary": "拘束長Mのシフトレジスタによる入力系列の畳み込み演算を遅延演算子Dの多項式積で記述し、有限状態機械と時間展開されたトレリス線図を定義する。",
+      "canonical_latex": "c^{(j)}(D) = u(D) g^{(j)}(D)\\; (j=1,\\dots,n),\\quad s_{t+1} = \\delta(s_t, u_t),\\quad \\mathbf{c}_t = \\lambda(s_t, u_t)",
+      "aliases_latex": [
+        "\\mathbf{c}(D) = \\mathbf{u}(D) G(D)"
+      ],
+      "keywords": [
+        "畳み込み符号",
+        "生成多項式",
+        "トレリス線図",
+        "状態遷移"
+      ],
+      "domain_tags": [
+        "communications",
+        "coding_theory"
+      ]
+    },
+    {
+      "id": "eng.ecc.n10_viterbi_decoding_principle",
+      "short_code": "ECC10",
+      "kind": "theorem_formula",
+      "title": "ビタビアルゴリズム（トレリス上の動的計画法による最尤系列復号）",
+      "summary": "トレリス上の各状態に至る部分パスの累積ハミング距離（パスメトリック）を最小化する生き残りパスを逐次選択することで、最尤系列復号を線形時間計算量で実行する原理を導く。",
+      "canonical_latex": "M_{t+1}(s') = \\min_{s \\to s'} \\Big( M_t(s) + d_H\\big(\\mathbf{y}_t, \\lambda(s, u_t)\\big) \\Big),\\quad \\hat{\\mathbf{u}} = \\arg\\min_{\\mathbf{u}} \\sum_{t} d_H(\\mathbf{y}_t, \\mathbf{c}_t(\\mathbf{u}))",
+      "aliases_latex": [
+        "M_{t+1}(s') = \\min_{s} (M_t(s) + \\gamma_t(s, s'))"
+      ],
+      "keywords": [
+        "ビタビ復号",
+        "動的計画法",
+        "パスメトリック",
+        "最尤系列復号"
+      ],
+      "domain_tags": [
+        "communications",
+        "coding_theory"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.ecc.d01_gf2_vector_space",
+      "target_node_id": "eng.ecc.n01_gf2_vector_space",
+      "route_kind": "deductive",
+      "title": "GF(2)ベクトル空間とハミング計量の構成",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms",
+        "math.alg.gr01_group_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.ecc.n01_gf2_vector_space"
+      ],
+      "assumptions": [
+        "F_2 = {0, 1} is the finite field with addition and multiplication modulo 2"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(\\mathbb{F}_2, +, \\cdot),\\; V = \\mathbb{F}_2^n",
+          "to_latex": "w_H(\\mathbf{x}) := |\\{i \\mid x_i \\neq 0\\}|,\\; d_H(\\mathbf{x},\\mathbf{y}) := w_H(\\mathbf{x} \\oplus \\mathbf{y})",
+          "operation_label": "ベクトル空間公理からハミング計量の定義へ",
+          "explanation": "GF(2)上のn次元ベクトル空間においてXOR加算を定義し、非零座標数としてのハミング重みおよび差の重みとしてのハミング距離を定める。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\mathbb{F}_2, +, \\cdot),\\; V = \\mathbb{F}_2^n",
+          "to_latex": "\\mathbf{x} \\oplus \\mathbf{y} = (x_1+y_1, \\dots, x_n+y_n) \\pmod 2,\\; \\mathbf{x} \\oplus \\mathbf{x} = \\mathbf{0}",
+          "operation_label": "成分ごとのmod 2加算（XOR）と逆元",
+          "explanation": "ベクトル空間の公理に従い成分ごとのmod 2加算を定めると、標数2のため各元が自身の加法的逆元となる。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x} \\oplus \\mathbf{y} = (x_1+y_1, \\dots, x_n+y_n) \\pmod 2,\\; \\mathbf{x} \\oplus \\mathbf{x} = \\mathbf{0}",
+          "to_latex": "w_H(\\mathbf{x}) := \\sum_{i=1}^{n} x_i \\text{ (in }\\mathbb{Z}\\text{)} = |\\{i \\mid x_i \\neq 0\\}|",
+          "operation_label": "ハミング重みの定義",
+          "explanation": "ベクトルの非零成分の個数を整数値として数え、ハミング重みw_H(x)を定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "w_H(\\mathbf{x}) := \\sum_{i=1}^{n} x_i \\text{ (in }\\mathbb{Z}\\text{)} = |\\{i \\mid x_i \\neq 0\\}|",
+          "to_latex": "w_H(\\mathbf{x}) := |\\{i \\mid x_i \\neq 0\\}|,\\; d_H(\\mathbf{x},\\mathbf{y}) := w_H(\\mathbf{x} \\oplus \\mathbf{y})",
+          "operation_label": "ハミング距離の定義",
+          "explanation": "2ベクトルの差x⊕yのハミング重みとして、異なるビット位置の個数を表すハミング距離d_H(x,y)を定義する。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ecc.d02_linear_block_code_generator",
+      "target_node_id": "eng.ecc.n02_linear_block_code_generator",
+      "route_kind": "deductive",
+      "title": "部分空間としての線形ブロック符号と生成行列の導出",
+      "premise_node_ids": [
+        "eng.ecc.n01_gf2_vector_space",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.ecc.n02_linear_block_code_generator"
+      ],
+      "assumptions": [
+        "C is a k-dimensional linear subspace of F_2^n with 1 <= k <= n"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{C} \\le \\mathbb{F}_2^n,\\; \\dim(\\mathcal{C}) = k",
+          "to_latex": "\\mathcal{C} = \\{\\mathbf{u} G \\mid \\mathbf{u} \\in \\mathbb{F}_2^k\\},\\; G_{\\mathrm{sys}} = [I_k \\mid P]",
+          "operation_label": "基底の行列配列による生成行列と組織符号",
+          "explanation": "k次元部分空間Cの基底ベクトルを行に並べた生成行列Gにより情報語uの線形写像として符号語を表現し、行基本変形で組織形を得る。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{C} \\le \\mathbb{F}_2^n,\\; \\dim(\\mathcal{C}) = k",
+          "to_latex": "\\exists \\mathbf{g}_1, \\dots, \\mathbf{g}_k \\in \\mathcal{C} \\text{ linearly independent},\\; \\mathbf{c} = \\sum_{i=1}^{k} u_i \\mathbf{g}_i",
+          "operation_label": "k次元部分空間の基底展開",
+          "explanation": "任意の符号語cはk個の線形独立な基底ベクトルg_1,...,g_kのGF(2)上の線形結合として一意に表される。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists \\mathbf{g}_1, \\dots, \\mathbf{g}_k \\in \\mathcal{C} \\text{ linearly independent},\\; \\mathbf{c} = \\sum_{i=1}^{k} u_i \\mathbf{g}_i",
+          "to_latex": "G := [\\mathbf{g}_1^\\top, \\dots, \\mathbf{g}_k^\\top]^\\top \\in \\mathbb{F}_2^{k \\times n} \\implies \\mathbf{c} = \\mathbf{u} G",
+          "operation_label": "生成行列Gの構成",
+          "explanation": "基底ベクトルを行ベクトルとして縦に並べることでk×nの生成行列Gを定義し、符号化をuGと表す。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G := [\\mathbf{g}_1^\\top, \\dots, \\mathbf{g}_k^\\top]^\\top \\in \\mathbb{F}_2^{k \\times n} \\implies \\mathbf{c} = \\mathbf{u} G",
+          "to_latex": "\\mathcal{C} = \\{\\mathbf{u} G \\mid \\mathbf{u} \\in \\mathbb{F}_2^k\\},\\; G_{\\mathrm{sys}} = [I_k \\mid P]",
+          "operation_label": "行基本変形による組織符号化",
+          "explanation": "適切な列置換と行基本変形（基底の取り替え）により、情報ビットが先頭に現れる組織形G_sys=[I_k | P]が得られる。",
+          "used_node_ids": [
+            "eng.ecc.n02_linear_block_code_generator"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ecc.d03_parity_check_matrix",
+      "target_node_id": "eng.ecc.n03_parity_check_matrix",
+      "route_kind": "deductive",
+      "title": "直交補空間からのパリティ検査行列Hの導出",
+      "premise_node_ids": [
+        "eng.ecc.n02_linear_block_code_generator",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.ecc.n03_parity_check_matrix"
+      ],
+      "assumptions": [
+        "rank(G) = k and C^perp is the orthogonal complement of C under the standard dot product over F_2"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{C} = \\operatorname{row}(G) \\le \\mathbb{F}_2^n,\\; G_{\\mathrm{sys}} = [I_k \\mid P]",
+          "to_latex": "\\mathbf{c} \\in \\mathcal{C} \\iff \\mathbf{c} H^\\top = \\mathbf{0},\\; G H^\\top = O,\\; H_{\\mathrm{sys}} = [P^\\top \\mid I_{n-k}]",
+          "operation_label": "直交補空間の基底としての検査行列構成",
+          "explanation": "符号空間の直交補空間C^⊥（次元n-k）の基底から検査行列Hを構成し、組織形H_sys=[P^T | I_{n-k}]がGH^T=Oを満たすことを示す。",
+          "used_node_ids": [
+            "eng.ecc.n02_linear_block_code_generator",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{C} = \\operatorname{row}(G) \\le \\mathbb{F}_2^n,\\; G_{\\mathrm{sys}} = [I_k \\mid P]",
+          "to_latex": "\\dim(\\mathcal{C}^\\perp) = n - k,\\; \\exists H \\in \\mathbb{F}_2^{(n-k)\\times n} \\text{ s.t. } \\mathcal{C} = \\ker(H)",
+          "operation_label": "次元定理と直交補空間",
+          "explanation": "直交補空間C^⊥の次元はn-kであり、その基底を行に並べた(n-k)×n行列Hの右零空間（核）がCに一致する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dim(\\mathcal{C}^\\perp) = n - k,\\; \\exists H \\in \\mathbb{F}_2^{(n-k)\\times n} \\text{ s.t. } \\mathcal{C} = \\ker(H)",
+          "to_latex": "G_{\\mathrm{sys}} H_{\\mathrm{sys}}^\\top = [I_k \\mid P] \\begin{bmatrix} P \\\\ I_{n-k} \\end{bmatrix} = P \\oplus P = O_{k \\times (n-k)}",
+          "operation_label": "組織形での直交性検証",
+          "explanation": "H_sys=[P^T | I_{n-k}]と置くと、GF(2)ではP⊕P=Oとなるため、G_sys H_sys^T = Oが成り立つ。",
+          "used_node_ids": [
+            "eng.ecc.n02_linear_block_code_generator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G_{\\mathrm{sys}} H_{\\mathrm{sys}}^\\top = [I_k \\mid P] \\begin{bmatrix} P \\\\ I_{n-k} \\end{bmatrix} = P \\oplus P = O_{k \\times (n-k)}",
+          "to_latex": "\\mathbf{c} \\in \\mathcal{C} \\iff \\mathbf{c} H^\\top = \\mathbf{0},\\; G H^\\top = O,\\; H_{\\mathrm{sys}} = [P^\\top \\mid I_{n-k}]",
+          "operation_label": "符号語判定条件の確立",
+          "explanation": "rank(H_sys)=n-kよりH_sysの行がC^⊥を張り、任意のベクトルcが符号語であるための必要十分条件がcH^T=0となる。",
+          "used_node_ids": [
+            "eng.ecc.n03_parity_check_matrix"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ecc.d04_min_distance_weight_theorem",
+      "target_node_id": "eng.ecc.n04_min_distance_weight_theorem",
+      "route_kind": "deductive",
+      "title": "線形符号の最小距離＝最小重み＝Hの最小線形従属列数の証明",
+      "premise_node_ids": [
+        "eng.ecc.n01_gf2_vector_space",
+        "eng.ecc.n02_linear_block_code_generator",
+        "eng.ecc.n03_parity_check_matrix"
+      ],
+      "required_math_node_ids": [
+        "eng.ecc.n04_min_distance_weight_theorem"
+      ],
+      "assumptions": [
+        "C is a nontrivial linear code (k >= 1)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "d_{\\min}(\\mathcal{C}) := \\min_{\\mathbf{c}_1 \\neq \\mathbf{c}_2 \\in \\mathcal{C}} d_H(\\mathbf{c}_1, \\mathbf{c}_2)",
+          "to_latex": "d_{\\min}(\\mathcal{C}) = \\min_{\\mathbf{c} \\in \\mathcal{C}\\setminus\\{\\mathbf{0}\\}} w_H(\\mathbf{c}) = \\min \\{d \\mid \\exists d\\text{ linearly dependent columns of } H\\}",
+          "operation_label": "部分空間の閉性と検査行列の列和による特徴付け",
+          "explanation": "符号の線形性から2符号語の差も符号語となるため最小距離が最小重みに帰着し、cH^T=0よりそれがHの線形従属な列の最小個数に一致する。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space",
+            "eng.ecc.n02_linear_block_code_generator",
+            "eng.ecc.n03_parity_check_matrix"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d_{\\min}(\\mathcal{C}) := \\min_{\\mathbf{c}_1 \\neq \\mathbf{c}_2 \\in \\mathcal{C}} d_H(\\mathbf{c}_1, \\mathbf{c}_2)",
+          "to_latex": "d_H(\\mathbf{c}_1, \\mathbf{c}_2) = w_H(\\mathbf{c}_1 \\oplus \\mathbf{c}_2),\\; \\mathbf{c}_1 \\oplus \\mathbf{c}_2 \\in \\mathcal{C}\\setminus\\{\\mathbf{0}\\}",
+          "operation_label": "線形性による最小重みへの帰着",
+          "explanation": "Cが線形部分空間であるためc_1≠c_2ならばc=c_1⊕c_2は非零符号語であり、0との距離に一致する。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space",
+            "eng.ecc.n02_linear_block_code_generator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d_H(\\mathbf{c}_1, \\mathbf{c}_2) = w_H(\\mathbf{c}_1 \\oplus \\mathbf{c}_2),\\; \\mathbf{c}_1 \\oplus \\mathbf{c}_2 \\in \\mathcal{C}\\setminus\\{\\mathbf{0}\\}",
+          "to_latex": "\\mathbf{c} H^\\top = \\sum_{i:\\, c_i = 1} \\mathbf{h}_i^\\top = \\mathbf{0} \\iff \\{\\mathbf{h}_i\\}_{c_i=1} \\text{ linearly dependent}",
+          "operation_label": "パリティ検査式の列ベクトル表現",
+          "explanation": "cH^T=0はHの列ベクトルのうちc_i=1に対応する列の和が零ベクトルになることと等価であり、重みdの非零符号語はd本の線形従属な列の存在と同値。",
+          "used_node_ids": [
+            "eng.ecc.n03_parity_check_matrix"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{c} H^\\top = \\sum_{i:\\, c_i = 1} \\mathbf{h}_i^\\top = \\mathbf{0} \\iff \\{\\mathbf{h}_i\\}_{c_i=1} \\text{ linearly dependent}",
+          "to_latex": "d_{\\min}(\\mathcal{C}) = \\min_{\\mathbf{c} \\in \\mathcal{C}\\setminus\\{\\mathbf{0}\\}} w_H(\\mathbf{c}) = \\min \\{d \\mid \\exists d\\text{ linearly dependent columns of } H\\}",
+          "operation_label": "最小重みと最小列数の等式",
+          "explanation": "非零符号語の最小重み、すなわち最小距離d_minが、Hの線形従属な列集合の最小サイズに一致する。",
+          "used_node_ids": [
+            "eng.ecc.n04_min_distance_weight_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ecc.d05_error_detection_correction_bound",
+      "target_node_id": "eng.ecc.n05_error_detection_correction_bound",
+      "route_kind": "deductive",
+      "title": "三角不等式による誤り検出・訂正限界の証明",
+      "premise_node_ids": [
+        "eng.ecc.n01_gf2_vector_space",
+        "eng.ecc.n04_min_distance_weight_theorem"
+      ],
+      "required_math_node_ids": [
+        "eng.ecc.n05_error_detection_correction_bound"
+      ],
+      "assumptions": [
+        "Minimum distance decoding selects the unique codeword closest in Hamming distance"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{y} = \\mathbf{c} \\oplus \\mathbf{e},\\; d_{\\min} = \\min_{\\mathbf{c}_1 \\neq \\mathbf{c}_2} d_H(\\mathbf{c}_1, \\mathbf{c}_2)",
+          "to_latex": "t_{\\mathrm{det}} = d_{\\min} - 1,\\; t_{\\mathrm{corr}} = \\lfloor (d_{\\min} - 1)/2 \\rfloor",
+          "operation_label": "ハミング球の非交差条件からの限界導出",
+          "explanation": "d_min未満の誤りは他の符号語に到達せず検出可能であり、各符号語を中心とする半径tのハミング球が互いに交わらない条件2t<d_minから訂正限界が定まる。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space",
+            "eng.ecc.n04_min_distance_weight_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{y} = \\mathbf{c} \\oplus \\mathbf{e},\\; d_{\\min} = \\min_{\\mathbf{c}_1 \\neq \\mathbf{c}_2} d_H(\\mathbf{c}_1, \\mathbf{c}_2)",
+          "to_latex": "1 \\le w_H(\\mathbf{e}) \\le d_{\\min} - 1 \\implies d_H(\\mathbf{y}, \\mathbf{c}) < d_{\\min} \\implies \\mathbf{y} \\notin \\mathcal{C}",
+          "operation_label": "誤り検出能力の証明",
+          "explanation": "非零かつ重みd_min-1以下の誤りでは受信語yが元の符号語cからd_min未満の距離にあり、他のいかなる符号語とも一致しない。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "1 \\le w_H(\\mathbf{e}) \\le d_{\\min} - 1 \\implies d_H(\\mathbf{y}, \\mathbf{c}) < d_{\\min} \\implies \\mathbf{y} \\notin \\mathcal{C}",
+          "to_latex": "w_H(\\mathbf{e}) \\le t,\\; 2t < d_{\\min} \\implies \\forall \\mathbf{c}' \\neq \\mathbf{c},\\; d_H(\\mathbf{y}, \\mathbf{c}') \\ge d_{\\min} - t > t \\ge d_H(\\mathbf{y}, \\mathbf{c})",
+          "operation_label": "三角不等式による一意最尤復号条件",
+          "explanation": "三角不等式d_H(c,c')<=d_H(c,y)+d_H(y,c')より、2t<d_minならば元の符号語cが受信語yに厳密に最も近い。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space",
+            "eng.ecc.n04_min_distance_weight_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "w_H(\\mathbf{e}) \\le t,\\; 2t < d_{\\min} \\implies \\forall \\mathbf{c}' \\neq \\mathbf{c},\\; d_H(\\mathbf{y}, \\mathbf{c}') \\ge d_{\\min} - t > t \\ge d_H(\\mathbf{y}, \\mathbf{c})",
+          "to_latex": "t_{\\mathrm{det}} = d_{\\min} - 1,\\; t_{\\mathrm{corr}} = \\lfloor (d_{\\min} - 1)/2 \\rfloor",
+          "operation_label": "整数値への切り捨てによる限界式",
+          "explanation": "2t <= d_min - 1を満たす最大の整数tとして誤り訂正能力floor((d_min-1)/2)を得る。",
+          "used_node_ids": [
+            "eng.ecc.n05_error_detection_correction_bound"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ecc.d06_syndrome_decoding",
+      "target_node_id": "eng.ecc.n06_syndrome_decoding",
+      "route_kind": "deductive",
+      "title": "準同型写像の核と剰余類によるシンドローム復号の導出",
+      "premise_node_ids": [
+        "eng.ecc.n03_parity_check_matrix",
+        "math.alg.gr01_group_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.ecc.n06_syndrome_decoding"
+      ],
+      "assumptions": [
+        "BSC (Binary Symmetric Channel) with crossover probability p < 1/2"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{y} = \\mathbf{c} \\oplus \\mathbf{e},\\; \\mathbf{c} H^\\top = \\mathbf{0}",
+          "to_latex": "\\mathbf{s} := \\mathbf{y} H^\\top = \\mathbf{e} H^\\top,\\; \\hat{\\mathbf{e}} = \\arg\\min_{\\mathbf{e} H^\\top = \\mathbf{s}} w_H(\\mathbf{e}),\\; \\hat{\\mathbf{c}} = \\mathbf{y} \\oplus \\hat{\\mathbf{e}}",
+          "operation_label": "シンドローム写像とコセットリーダー復号",
+          "explanation": "受信語にH^Tを掛ける準同型写像により符号語成分が消去されて誤りベクトルのみの像（シンドローム）が得られ、同一剰余類内の最小重み元で訂正を行う。",
+          "used_node_ids": [
+            "eng.ecc.n03_parity_check_matrix",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{y} = \\mathbf{c} \\oplus \\mathbf{e},\\; \\mathbf{c} H^\\top = \\mathbf{0}",
+          "to_latex": "\\mathbf{s} := \\mathbf{y} H^\\top = (\\mathbf{c} \\oplus \\mathbf{e}) H^\\top = \\mathbf{c} H^\\top \\oplus \\mathbf{e} H^\\top = \\mathbf{e} H^\\top",
+          "operation_label": "シンドロームの線形計算",
+          "explanation": "符号語cはcH^T=0を満たすため、受信語yのシンドロームs=yH^Tは誤りベクトルeのみに依存する。",
+          "used_node_ids": [
+            "eng.ecc.n03_parity_check_matrix"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{s} := \\mathbf{y} H^\\top = (\\mathbf{c} \\oplus \\mathbf{e}) H^\\top = \\mathbf{c} H^\\top \\oplus \\mathbf{e} H^\\top = \\mathbf{e} H^\\top",
+          "to_latex": "\\ker(H) = \\mathcal{C} \\implies \\mathbf{y} \\oplus \\mathcal{C} = \\{\\mathbf{e}' \\in \\mathbb{F}_2^n \\mid \\mathbf{e}' H^\\top = \\mathbf{s}\\}",
+          "operation_label": "準同型定理による剰余類（コセット）の同定",
+          "explanation": "線形写像x↦xH^Tの核がCであるため、同じシンドロームsを持つベクトル全体はCの剰余類y⊕Cと一致する。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ker(H) = \\mathcal{C} \\implies \\mathbf{y} \\oplus \\mathcal{C} = \\{\\mathbf{e}' \\in \\mathbb{F}_2^n \\mid \\mathbf{e}' H^\\top = \\mathbf{s}\\}",
+          "to_latex": "\\mathbf{s} := \\mathbf{y} H^\\top = \\mathbf{e} H^\\top,\\; \\hat{\\mathbf{e}} = \\arg\\min_{\\mathbf{e} H^\\top = \\mathbf{s}} w_H(\\mathbf{e}),\\; \\hat{\\mathbf{c}} = \\mathbf{y} \\oplus \\hat{\\mathbf{e}}",
+          "operation_label": "最尤誤りパターンの推定と復号",
+          "explanation": "2元対称通信路では重みが最小の誤りが最も生起確率が高いため、コセット内で最小重みの元（コセットリーダー）e_hatを選びy⊕e_hatを復号語とする。",
+          "used_node_ids": [
+            "eng.ecc.n06_syndrome_decoding"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ecc.d07_cyclic_code_polynomial",
+      "target_node_id": "eng.ecc.n07_cyclic_code_polynomial",
+      "route_kind": "reformulation",
+      "title": "巡回符号の多項式環イデアルとしての定式化",
+      "premise_node_ids": [
+        "eng.ecc.n02_linear_block_code_generator",
+        "math.alg.gr01_group_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.ecc.n07_cyclic_code_polynomial"
+      ],
+      "assumptions": [
+        "F_2[x]/(x^n - 1) is a principal ideal ring"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{c} = (c_0, c_1, \\dots, c_{n-1}) \\in \\mathcal{C},\\; (c_{n-1}, c_0, \\dots, c_{n-2}) \\in \\mathcal{C}",
+          "to_latex": "c(x) \\in \\mathcal{C} \\subseteq \\mathbb{F}_2[x]/(x^n - 1),\\; g(x) \\mid (x^n - 1),\\; c(x) = u(x) g(x) \\pmod{x^n - 1}",
+          "operation_label": "巡回シフトから多項式環イデアルへの変換",
+          "explanation": "符号語を多項式に対応させると巡回シフトがx倍(mod x^n-1)に対応し、巡回符号は単項イデアル<g(x)>として表される。",
+          "used_node_ids": [
+            "eng.ecc.n02_linear_block_code_generator",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{c} = (c_0, c_1, \\dots, c_{n-1}) \\in \\mathcal{C},\\; (c_{n-1}, c_0, \\dots, c_{n-2}) \\in \\mathcal{C}",
+          "to_latex": "c(x) := \\sum_{i=0}^{n-1} c_i x^i \\in R_n := \\mathbb{F}_2[x]/(x^n - 1),\\; x c(x) \\equiv \\sum_{i=0}^{n-1} c_{i-1 \\bmod n} x^i \\pmod{x^n - 1}",
+          "operation_label": "剰余環における巡回シフトの表現",
+          "explanation": "x^n≡1 (mod x^n-1)の関係により、多項式にxを掛ける操作がベクトルの右巡回シフトに一致する。",
+          "used_node_ids": [
+            "eng.ecc.n02_linear_block_code_generator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c(x) := \\sum_{i=0}^{n-1} c_i x^i \\in R_n := \\mathbb{F}_2[x]/(x^n - 1),\\; x c(x) \\equiv \\sum_{i=0}^{n-1} c_{i-1 \\bmod n} x^i \\pmod{x^n - 1}",
+          "to_latex": "\\mathcal{C} \\text{ is an ideal of } R_n \\implies \\exists \\text{ unique monic } g(x) \\text{ of min deg } n-k \\text{ s.t. } \\mathcal{C} = \\langle g(x) \\rangle",
+          "operation_label": "単項イデアルの生成元g(x)の存在",
+          "explanation": "線形性と巡回シフト不変性よりCはR_nのイデアルとなり、最小次数の非零多項式g(x)が生成元かつx^n-1の約数となる。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{C} \\text{ is an ideal of } R_n \\implies \\exists \\text{ unique monic } g(x) \\text{ of min deg } n-k \\text{ s.t. } \\mathcal{C} = \\langle g(x) \\rangle",
+          "to_latex": "c(x) \\in \\mathcal{C} \\subseteq \\mathbb{F}_2[x]/(x^n - 1),\\; g(x) \\mid (x^n - 1),\\; c(x) = u(x) g(x) \\pmod{x^n - 1}",
+          "operation_label": "生成多項式による符号化表現",
+          "explanation": "任意の符号語多項式c(x)は情報多項式u(x)（次数<k）と生成多項式g(x)の積として表される。",
+          "used_node_ids": [
+            "eng.ecc.n07_cyclic_code_polynomial"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ecc.d08_crc_error_detection",
+      "target_node_id": "eng.ecc.n08_crc_error_detection",
+      "route_kind": "deductive",
+      "title": "多項式除算によるCRC組織符号化と誤り検出の導出",
+      "premise_node_ids": [
+        "eng.ecc.n07_cyclic_code_polynomial"
+      ],
+      "required_math_node_ids": [
+        "eng.ecc.n08_crc_error_detection"
+      ],
+      "assumptions": [
+        "CRC generator polynomial g(x) has degree n - k"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u(x) \\in \\mathbb{F}_2[x],\\; \\deg u < k,\\; \\deg g = n - k",
+          "to_latex": "r(x) = x^{n-k} u(x) \\bmod g(x),\\; c(x) = x^{n-k} u(x) + r(x),\\; y(x) \\bmod g(x) = e(x) \\bmod g(x)",
+          "operation_label": "剰余付加による組織符号化とシンドローム検査",
+          "explanation": "x^{n-k}u(x)をg(x)で割った剰余r(x)を検査ビットとして付加すると符号語がg(x)で割り切れ、受信側での剰余が誤り多項式の剰余に一致する。",
+          "used_node_ids": [
+            "eng.ecc.n07_cyclic_code_polynomial"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(x) \\in \\mathbb{F}_2[x],\\; \\deg u < k,\\; \\deg g = n - k",
+          "to_latex": "x^{n-k} u(x) = q(x) g(x) + r(x),\\; \\deg r < n - k",
+          "operation_label": "多項式のユークリッド除法",
+          "explanation": "情報多項式をn-kビット上位シフトしたx^{n-k}u(x)をg(x)で割り、商q(x)と次数n-k未満の剰余r(x)を求める。",
+          "used_node_ids": [
+            "eng.ecc.n07_cyclic_code_polynomial"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x^{n-k} u(x) = q(x) g(x) + r(x),\\; \\deg r < n - k",
+          "to_latex": "c(x) := x^{n-k} u(x) + r(x) = q(x) g(x) \\equiv 0 \\pmod{g(x)}",
+          "operation_label": "GF(2)での剰余加算による割り切り構成",
+          "explanation": "GF(2)では減算と加算が一致するため、r(x)を加えたc(x)はq(x)g(x)に等しくなり、組織形の符号語となる。",
+          "used_node_ids": [
+            "eng.ecc.n07_cyclic_code_polynomial"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c(x) := x^{n-k} u(x) + r(x) = q(x) g(x) \\equiv 0 \\pmod{g(x)}",
+          "to_latex": "r(x) = x^{n-k} u(x) \\bmod g(x),\\; c(x) = x^{n-k} u(x) + r(x),\\; y(x) \\bmod g(x) = e(x) \\bmod g(x)",
+          "operation_label": "受信多項式の除算による誤り検出",
+          "explanation": "y(x)=c(x)+e(x)をg(x)で割るとc(x)が割り切れるため剰余はe(x) mod g(x)のみとなり、g(x)の倍数でない誤りを100%検出できる。",
+          "used_node_ids": [
+            "eng.ecc.n08_crc_error_detection"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ecc.d09_convolutional_code_trellis",
+      "target_node_id": "eng.ecc.n09_convolutional_code_trellis",
+      "route_kind": "deductive",
+      "title": "シフトレジスタ畳み込み演算から状態遷移トレリスへの定式化",
+      "premise_node_ids": [
+        "eng.ecc.n01_gf2_vector_space",
+        "eng.ecc.n02_linear_block_code_generator"
+      ],
+      "required_math_node_ids": [
+        "eng.ecc.n09_convolutional_code_trellis"
+      ],
+      "assumptions": [
+        "Rate 1/n convolutional encoder with memory order M"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u(D) = \\sum_{t=0}^{\\infty} u_t D^t,\\; g^{(j)}(D) = \\sum_{m=0}^{M} g_m^{(j)} D^m",
+          "to_latex": "c^{(j)}(D) = u(D) g^{(j)}(D),\\; s_{t+1} = \\delta(s_t, u_t),\\; \\mathbf{c}_t = \\lambda(s_t, u_t)",
+          "operation_label": "遅延多項式積と有限状態トレリス表現の導出",
+          "explanation": "入力系列と生成多項式の畳み込み積をD変換で記述し、過去Mビットの記憶を状態s_tとして時間展開したトレリス表現を得る。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space",
+            "eng.ecc.n02_linear_block_code_generator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(D) = \\sum_{t=0}^{\\infty} u_t D^t,\\; g^{(j)}(D) = \\sum_{m=0}^{M} g_m^{(j)} D^m",
+          "to_latex": "c_t^{(j)} = \\sum_{m=0}^{M} g_m^{(j)} u_{t-m} \\pmod 2 \\iff c^{(j)}(D) = u(D) g^{(j)}(D)",
+          "operation_label": "D変換による畳み込み和の表現",
+          "explanation": "時刻tにおける出力ビットは入力系列とインパルス応答g^{(j)}のGF(2)上の畳み込み和であり、D領域では多項式積となる。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_t^{(j)} = \\sum_{m=0}^{M} g_m^{(j)} u_{t-m} \\pmod 2 \\iff c^{(j)}(D) = u(D) g^{(j)}(D)",
+          "to_latex": "s_t := (u_{t-1}, \\dots, u_{t-M}) \\in \\mathbb{F}_2^M,\\; s_{t+1} = (u_t, u_{t-1}, \\dots, u_{t-M+1})",
+          "operation_label": "シフトレジスタ状態空間の定義",
+          "explanation": "出力の決定に必要な過去M個の入力ビットを状態s_tとして定義すると、状態数は2^M個の有限集合となる。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space",
+            "eng.ecc.n02_linear_block_code_generator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s_t := (u_{t-1}, \\dots, u_{t-M}) \\in \\mathbb{F}_2^M,\\; s_{t+1} = (u_t, u_{t-1}, \\dots, u_{t-M+1})",
+          "to_latex": "c^{(j)}(D) = u(D) g^{(j)}(D),\\; s_{t+1} = \\delta(s_t, u_t),\\; \\mathbf{c}_t = \\lambda(s_t, u_t)",
+          "operation_label": "トレリス遷移・出力関数の確立",
+          "explanation": "次状態遷移関数δと出力関数λを時間軸に沿って展開することで、符号語がトレリス上のパスと1対1に対応する。",
+          "used_node_ids": [
+            "eng.ecc.n09_convolutional_code_trellis"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ecc.d10_viterbi_decoding_principle",
+      "target_node_id": "eng.ecc.n10_viterbi_decoding_principle",
+      "route_kind": "deductive",
+      "title": "最適性原理（動的計画法）に基づくビタビ復号の導出",
+      "premise_node_ids": [
+        "eng.ecc.n01_gf2_vector_space",
+        "eng.ecc.n09_convolutional_code_trellis"
+      ],
+      "required_math_node_ids": [
+        "eng.ecc.n10_viterbi_decoding_principle"
+      ],
+      "assumptions": [
+        "Memoryless BSC channel so path log-likelihood is proportional to negative cumulative Hamming distance"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{\\mathbf{u}} = \\arg\\min_{\\mathbf{u}} \\sum_{t=0}^{T-1} d_H(\\mathbf{y}_t, \\mathbf{c}_t(\\mathbf{u}))",
+          "to_latex": "M_{t+1}(s') = \\min_{s \\to s'} \\Big( M_t(s) + d_H\\big(\\mathbf{y}_t, \\lambda(s, u_t)\\big) \\Big),\\; \\hat{\\mathbf{u}} = \\arg\\min_{\\mathbf{u}} \\sum_{t} d_H(\\mathbf{y}_t, \\mathbf{c}_t(\\mathbf{u}))",
+          "operation_label": "累積距離の加法性による動的計画法（ACS演算）",
+          "explanation": "無記憶通信路では系列全体のハミング距離が各時刻の枝メトリックの和となるため、最適性原理により各状態で最小メトリックの生き残りパスのみを保持すれば大域最適解が得られる。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space",
+            "eng.ecc.n09_convolutional_code_trellis"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{u}} = \\arg\\min_{\\mathbf{u}} \\sum_{t=0}^{T-1} d_H(\\mathbf{y}_t, \\mathbf{c}_t(\\mathbf{u}))",
+          "to_latex": "M_t(s) := \\min_{\\text{path } s_0 \\to s_t=s} \\sum_{\\tau=0}^{t-1} d_H(\\mathbf{y}_\\tau, \\mathbf{c}_\\tau)",
+          "operation_label": "状態ごとの最小パスメトリックの定義",
+          "explanation": "時刻tに状態sに到達する全パスのうち、受信系列との累積ハミング距離が最小となる値（パスメトリック）M_t(s)を定義する。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space",
+            "eng.ecc.n09_convolutional_code_trellis"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M_t(s) := \\min_{\\text{path } s_0 \\to s_t=s} \\sum_{\\tau=0}^{t-1} d_H(\\mathbf{y}_\\tau, \\mathbf{c}_\\tau)",
+          "to_latex": "M_{t+1}(s') = \\min_{s:\\, \\exists u_t,\\, \\delta(s,u_t)=s'} \\big( M_t(s) + d_H(\\mathbf{y}_t, \\lambda(s, u_t)) \\big)",
+          "operation_label": "ベルマン最適性原理による漸化式（ACS）",
+          "explanation": "最適パスの部分パスも最適であるという原理により、次状態s'のメトリックは前状態sのメトリックに枝メトリックを加算して最小値をとる漸化式で更新される。",
+          "used_node_ids": [
+            "eng.ecc.n09_convolutional_code_trellis"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M_{t+1}(s') = \\min_{s:\\, \\exists u_t,\\, \\delta(s,u_t)=s'} \\big( M_t(s) + d_H(\\mathbf{y}_t, \\lambda(s, u_t)) \\big)",
+          "to_latex": "M_{t+1}(s') = \\min_{s \\to s'} \\Big( M_t(s) + d_H\\big(\\mathbf{y}_t, \\lambda(s, u_t)\\big) \\Big),\\; \\hat{\\mathbf{u}} = \\arg\\min_{\\mathbf{u}} \\sum_{t} d_H(\\mathbf{y}_t, \\mathbf{c}_t(\\mathbf{u}))",
+          "operation_label": "トレースバックによる最尤復号完了",
+          "explanation": "終端状態から生き残りパスを逆追跡（トレースバック）することで、2^T通りを全探索することなくO(T·2^M)の計算量で最尤系列復号が達成される。",
+          "used_node_ids": [
+            "eng.ecc.n10_viterbi_decoding_principle"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

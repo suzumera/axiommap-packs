@@ -1,0 +1,748 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.ctrl.optimal_lqr_lyapunov",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "control_engineering",
+    "title": "最適制御・非線形安定性：リアプノフの安定定理・LQRとリカッチ方程式",
+    "language": "ja",
+    "description": "リアプノフの直接法、2次形式評価関数の変分またはベルマン最適性原理から代数リカッチ方程式(ARE)と最適レギュレータ(LQR)を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.lqr.n01_autonomous_system_stability",
+      "short_code": "LQR01",
+      "kind": "definition",
+      "title": "自律非線形システムと平衡点のリアプノフ安定・漸近安定の定義",
+      "summary": "時間不変の自律非線形システムにおける平衡点のリアプノフ安定（ε-δ論法）および漸近安定の定義。",
+      "canonical_latex": "\\dot{\\mathbf{x}} = \\mathbf{f}(\\mathbf{x}),\\; \\mathbf{f}(\\mathbf{0})=\\mathbf{0}:\\quad \\text{Stable} \\iff \\forall \\varepsilon>0\\,\\exists \\delta>0:\\;\\|\\mathbf{x}_0\\|<\\delta \\implies \\|\\mathbf{x}(t)\\|<\\varepsilon\\;(\\forall t\\ge 0);\\quad \\text{Asymp. Stable} \\iff \\text{Stable} \\land \\lim_{t\\to\\infty}\\mathbf{x}(t)=\\mathbf{0}",
+      "aliases_latex": [
+        "\\dot{\\mathbf{x}} = \\mathbf{f}(\\mathbf{x}),\\quad \\|\\mathbf{x}(0)\\| < \\delta \\implies \\|\\mathbf{x}(t)\\| < \\varepsilon,\\; \\lim_{t\\to\\infty}\\|\\mathbf{x}(t)\\| = 0"
+      ],
+      "keywords": [
+        "リアプノフ安定",
+        "漸近安定",
+        "平衡点",
+        "自律システム",
+        "非線形制御"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.lqr.n02_lyapunov_direct_method",
+      "short_code": "LQR02",
+      "kind": "theorem_formula",
+      "title": "リアプノフの直接法（第2法）と安定・漸近安定定理",
+      "summary": "正定値リアプノフ候補関数 V(x) の軌道に沿う時間微分が半負定値であれば安定、負定値であれば漸近安定であることを保証する定理。",
+      "canonical_latex": "V(\\mathbf{0})=0,\\; V(\\mathbf{x})>0\\;(\\mathbf{x}\\neq\\mathbf{0}):\\quad \\dot{V}(\\mathbf{x})=\\nabla V(\\mathbf{x})\\cdot\\mathbf{f}(\\mathbf{x}) \\le 0 \\implies \\text{stable};\\qquad \\dot{V}(\\mathbf{x}) < 0\\;(\\mathbf{x}\\neq\\mathbf{0}) \\implies \\text{asymptotically stable}",
+      "aliases_latex": [
+        "V(\\mathbf{x}) \\succ 0,\\; \\dot{V}(\\mathbf{x}) \\preceq 0 \\implies \\text{Lyapunov stable}"
+      ],
+      "keywords": [
+        "リアプノフの直接法",
+        "リアプノフ関数",
+        "正定値関数",
+        "負定値",
+        "安定性解析"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.lqr.n03_linear_lyapunov_equation",
+      "short_code": "LQR03",
+      "kind": "theorem_formula",
+      "title": "線形時不変システムのリアプノフ方程式と漸近安定条件",
+      "summary": "線形システム dx/dt = Ax に対して2次形式リアプノフ関数を適用して導かれる行列方程式（リアプノフ方程式）とその正定値解による安定条件。",
+      "canonical_latex": "\\dot{\\mathbf{x}} = A\\mathbf{x},\\quad V(\\mathbf{x}) = \\mathbf{x}^\\top P \\mathbf{x}\\;(P = P^\\top \\succ 0),\\quad A^\\top P + P A = -Q\\;(Q \\succ 0) \\implies \\dot{V}(\\mathbf{x}) = -\\mathbf{x}^\\top Q \\mathbf{x} < 0\\;(\\mathbf{x}\\neq\\mathbf{0})",
+      "aliases_latex": [
+        "A^\\top P + P A + Q = 0"
+      ],
+      "keywords": [
+        "リアプノフ方程式",
+        "線形時不変システム",
+        "2次形式",
+        "漸近安定"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.lqr.n04_lqr_problem_formulation",
+      "short_code": "LQR04",
+      "kind": "definition",
+      "title": "無限時間最適レギュレータ（LQR）問題の定式化",
+      "summary": "線形時不変システムに対して状態と入力の重み付き2次形式評価関数を無限時間区間で最小化する最適制御問題の定義。",
+      "canonical_latex": "\\min_{\\mathbf{u}(\\cdot)} J(\\mathbf{x}_0, \\mathbf{u}) := \\int_0^\\infty \\big(\\mathbf{x}(t)^\\top Q \\mathbf{x}(t) + \\mathbf{u}(t)^\\top R \\mathbf{u}(t)\\big)\\,dt\\quad \\text{s.t. } \\dot{\\mathbf{x}} = A\\mathbf{x} + B\\mathbf{u},\\; \\mathbf{x}(0)=\\mathbf{x}_0,\\; Q \\succeq 0,\\; R \\succ 0",
+      "aliases_latex": [
+        "J = \\int_0^\\infty (\\mathbf{x}^\\top Q \\mathbf{x} + \\mathbf{u}^\\top R \\mathbf{u})\\,dt"
+      ],
+      "keywords": [
+        "LQR",
+        "最適レギュレータ",
+        "2次形式評価関数",
+        "最適制御"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.lqr.n05_hjb_equation_bellman",
+      "short_code": "LQR05",
+      "kind": "theorem_formula",
+      "title": "ベルマンの最適性原理とハミルトン＝ヤコビ＝ベルマン（HJB）方程式",
+      "summary": "最適価値関数に対する動的計画法の無限小極限から導かれる定常ハミルトン＝ヤコビ＝ベルマン方程式。",
+      "canonical_latex": "V^*(\\mathbf{x}) := \\inf_{\\mathbf{u}(\\cdot)} \\int_0^\\infty \\ell(\\mathbf{x}(t), \\mathbf{u}(t))\\,dt \\implies \\min_{\\mathbf{u}} \\Big\\{\\ell(\\mathbf{x}, \\mathbf{u}) + \\nabla V^*(\\mathbf{x})^\\top \\mathbf{f}(\\mathbf{x}, \\mathbf{u})\\Big\\} = 0",
+      "aliases_latex": [
+        "0 = \\min_{\\mathbf{u}} \\{\\ell(\\mathbf{x}, \\mathbf{u}) + (\\partial V^* / \\partial \\mathbf{x}) \\mathbf{f}(\\mathbf{x}, \\mathbf{u})\\}"
+      ],
+      "keywords": [
+        "HJB方程式",
+        "ベルマンの最適性原理",
+        "動的計画法",
+        "最適価値関数"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.lqr.n06_lqr_optimal_feedback_law",
+      "short_code": "LQR06",
+      "kind": "theorem_formula",
+      "title": "LQR最適状態フィードバック則の導出",
+      "summary": "2次形式価値関数 V*(x) = x^T P x をHJB方程式に適用し、入力 u に関する最小化から得られる線形状態フィードバック制御則。",
+      "canonical_latex": "\\mathbf{u}^*(\\mathbf{x}) = -R^{-1} B^\\top P \\mathbf{x} = -K\\mathbf{x}\\quad \\big(K := R^{-1} B^\\top P,\\; V^*(\\mathbf{x}) = \\mathbf{x}^\\top P \\mathbf{x}\\big)",
+      "aliases_latex": [
+        "\\mathbf{u}^* = -K\\mathbf{x},\\quad K = R^{-1} B^\\top P"
+      ],
+      "keywords": [
+        "最適フィードバックゲイン",
+        "状態フィードバック",
+        "LQR",
+        "HJB方程式"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.lqr.n07_algebraic_riccati_equation",
+      "short_code": "LQR07",
+      "kind": "theorem_formula",
+      "title": "代数リカッチ方程式（ARE）の導出",
+      "summary": "LQRの最適制御入力をHJB方程式へ代入し、任意の状態に対する2次形式恒等式として得られる代数リカッチ方程式。",
+      "canonical_latex": "A^\\top P + P A - P B R^{-1} B^\\top P + Q = 0\\quad (P = P^\\top \\succeq 0)",
+      "aliases_latex": [
+        "A^\\top P + P A - P B R^{-1} B^\\top P + Q = 0"
+      ],
+      "keywords": [
+        "代数リカッチ方程式",
+        "ARE",
+        "LQR",
+        "最適制御"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    },
+    {
+      "id": "eng.lqr.n08_lqr_closed_loop_stability",
+      "short_code": "LQR08",
+      "kind": "theorem_formula",
+      "title": "LQR閉ループ系のリアプノフ安定性と最適コスト",
+      "summary": "AREの正定値解 P による2次形式をリアプノフ関数としてLQR閉ループ系の漸近安定性と最適評価値 J* を示す定理。",
+      "canonical_latex": "\\dot{\\mathbf{x}} = (A - B K)\\mathbf{x},\\; V(\\mathbf{x}) = \\mathbf{x}^\\top P \\mathbf{x}\\;(P \\succ 0) \\implies \\dot{V}(\\mathbf{x}) = -\\mathbf{x}^\\top (Q + K^\\top R K)\\mathbf{x} < 0\\;(\\mathbf{x}\\neq\\mathbf{0}),\\quad J^*(\\mathbf{x}_0) = \\mathbf{x}_0^\\top P \\mathbf{x}_0",
+      "aliases_latex": [
+        "(A - B K)^\\top P + P (A - B K) = -(Q + K^\\top R K)"
+      ],
+      "keywords": [
+        "閉ループ安定性",
+        "LQR",
+        "リアプノフ安定",
+        "最適コスト"
+      ],
+      "domain_tags": [
+        "control_engineering"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.lqr.d01_autonomous_system_stability",
+      "target_node_id": "eng.lqr.n01_autonomous_system_stability",
+      "route_kind": "reformulation",
+      "title": "状態空間における自律システムの平衡点とリアプノフ安定・漸近安定の定式化",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.lqr.n01_autonomous_system_stability"
+      ],
+      "assumptions": [
+        "状態空間はノルムを備えた n 次元実ベクトル空間 R^n である",
+        "ベクトル場 f(x) は局所リプシッツ連続であり、解の一意存在性が保証される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{x}}(t) = \\mathbf{f}(\\mathbf{x}(t)),\\quad \\mathbf{x}(0) = \\mathbf{x}_0 \\in \\mathbb{R}^n,\\quad \\mathbf{f}(\\mathbf{0}) = \\mathbf{0}",
+          "to_latex": "\\forall \\varepsilon > 0\\,\\exists \\delta > 0:\\;\\|\\mathbf{x}_0\\|<\\delta \\implies \\|\\mathbf{x}(t)\\|<\\varepsilon\\;(\\forall t\\ge 0),\\qquad \\lim_{t\\to\\infty}\\mathbf{x}(t)=\\mathbf{0}",
+          "operation_label": "自律系平衡点の安定性定義",
+          "explanation": "ベクトル空間上の状態軌道に対し、初期摂動が時刻を通じて有界に留まるリアプノフ安定と、さらに原点へ収束する漸近安定をε-δ条件で定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{x}}(t) = \\mathbf{f}(\\mathbf{x}(t)),\\quad \\mathbf{x}(0) = \\mathbf{x}_0 \\in \\mathbb{R}^n,\\quad \\mathbf{f}(\\mathbf{0}) = \\mathbf{0}",
+          "to_latex": "\\forall \\varepsilon > 0,\\;\\exists \\delta(\\varepsilon) > 0\\text{ s.t. }\\|\\mathbf{x}_0\\| < \\delta \\implies \\forall t \\ge 0,\\;\\|\\mathbf{x}(t)\\| < \\varepsilon",
+          "operation_label": "リアプノフ安定の定式化",
+          "explanation": "任意の許容半径 ε に対して適切な初期球半径 δ を選ぶことで、すべての時刻 t >= 0 で軌道が ε-球内に留まる条件をリアプノフ安定と定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall \\varepsilon > 0,\\;\\exists \\delta(\\varepsilon) > 0\\text{ s.t. }\\|\\mathbf{x}_0\\| < \\delta \\implies \\forall t \\ge 0,\\;\\|\\mathbf{x}(t)\\| < \\varepsilon",
+          "to_latex": "\\forall \\varepsilon > 0\\,\\exists \\delta > 0:\\;\\|\\mathbf{x}_0\\|<\\delta \\implies \\|\\mathbf{x}(t)\\|<\\varepsilon\\;(\\forall t\\ge 0),\\qquad \\lim_{t\\to\\infty}\\mathbf{x}(t)=\\mathbf{0}",
+          "operation_label": "漸近安定条件の追加",
+          "explanation": "リアプノフ安定性に加えて、ある近傍内の初期値からの軌道が時刻無限大で平衡点に収束する吸引性（attractivity）を課し、漸近安定を定義する。",
+          "used_node_ids": [
+            "eng.lqr.n01_autonomous_system_stability"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.lqr.d02_lyapunov_direct_method",
+      "target_node_id": "eng.lqr.n02_lyapunov_direct_method",
+      "route_kind": "deductive",
+      "title": "リアプノフ候補関数の時間微分と軌道積分による直接法の導出",
+      "premise_node_ids": [
+        "eng.lqr.n01_autonomous_system_stability",
+        "math.calc.m35_multivariable_chain_rule",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [
+        "eng.lqr.n02_lyapunov_direct_method"
+      ],
+      "assumptions": [
+        "リアプノフ候補関数 V(x) は原点を含む領域 D 上で C1 級かつ正定値である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V(\\mathbf{0}) = 0,\\quad V(\\mathbf{x}) > 0\\;(\\mathbf{x} \\neq \\mathbf{0}),\\quad \\dot{V}(\\mathbf{x}) = \\nabla V(\\mathbf{x}) \\cdot \\mathbf{f}(\\mathbf{x})",
+          "to_latex": "\\dot{V}(\\mathbf{x}) \\le 0 \\implies \\text{stable};\\qquad \\dot{V}(\\mathbf{x}) < 0\\;(\\mathbf{x}\\neq\\mathbf{0}) \\implies \\text{asymptotically stable}",
+          "operation_label": "リアプノフ直接法の証明概略",
+          "explanation": "正定値関数 V(x) の軌道に沿う時間微分を連鎖律で評価し、非増加性からレベル集合の不変性を示してリアプノフ安定・漸近安定を導く。",
+          "used_node_ids": [
+            "eng.lqr.n01_autonomous_system_stability",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(\\mathbf{0}) = 0,\\quad V(\\mathbf{x}) > 0\\;(\\mathbf{x} \\neq \\mathbf{0}),\\quad \\dot{V}(\\mathbf{x}) = \\nabla V(\\mathbf{x}) \\cdot \\mathbf{f}(\\mathbf{x})",
+          "to_latex": "V(\\mathbf{x}(t)) - V(\\mathbf{x}_0) = \\int_0^t \\dot{V}(\\mathbf{x}(\\tau))\\,d\\tau \\le 0 \\implies V(\\mathbf{x}(t)) \\le V(\\mathbf{x}_0)",
+          "operation_label": "連鎖律と微積分学の基本定理の適用",
+          "explanation": "多変数連鎖律により dV/dt = grad V · f(x) を得て、dV/dt <= 0 の仮定と微積分学の基本定理から V(x(t)) の単調非増加性を示す。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(\\mathbf{x}(t)) - V(\\mathbf{x}_0) = \\int_0^t \\dot{V}(\\mathbf{x}(\\tau))\\,d\\tau \\le 0 \\implies V(\\mathbf{x}(t)) \\le V(\\mathbf{x}_0)",
+          "to_latex": "\\|\\mathbf{x}_0\\| < \\delta \\implies V(\\mathbf{x}(t)) \\le V(\\mathbf{x}_0) < \\min_{\\|\\mathbf{x}\\|=\\varepsilon} V(\\mathbf{x}) \\implies \\|\\mathbf{x}(t)\\| < \\varepsilon",
+          "operation_label": "レベル集合による有界性評価",
+          "explanation": "半径 ε の球面上の V の最小値より小さい値をとる初期近傍 δ を選べば、V の単調非増加性により軌道が ε-球面を越えないことが従う。",
+          "used_node_ids": [
+            "eng.lqr.n01_autonomous_system_stability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\|\\mathbf{x}_0\\| < \\delta \\implies V(\\mathbf{x}(t)) \\le V(\\mathbf{x}_0) < \\min_{\\|\\mathbf{x}\\|=\\varepsilon} V(\\mathbf{x}) \\implies \\|\\mathbf{x}(t)\\| < \\varepsilon",
+          "to_latex": "\\dot{V}(\\mathbf{x}) \\le 0 \\implies \\text{stable};\\qquad \\dot{V}(\\mathbf{x}) < 0\\;(\\mathbf{x}\\neq\\mathbf{0}) \\implies \\text{asymptotically stable}",
+          "operation_label": "狭義負定値条件による漸近安定の導出",
+          "explanation": "dV/dt が原点以外で狭義負定値ならば、有界かつ単調減少な V(x(t)) の極限が 0 以外になり得ない（もし正の極限 c>0 があれば dV/dt <= -γ < 0 となり矛盾）ため、x(t) -> 0 が導かれる。",
+          "used_node_ids": [
+            "eng.lqr.n02_lyapunov_direct_method"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.lqr.d03_linear_lyapunov_equation",
+      "target_node_id": "eng.lqr.n03_linear_lyapunov_equation",
+      "route_kind": "deductive",
+      "title": "2次形式リアプノフ関数からの線形リアプノフ方程式の導出",
+      "premise_node_ids": [
+        "eng.lqr.n02_lyapunov_direct_method",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "A は n×n 実定数行列であり、P と Q は実対称正定値行列である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{x}} = A\\mathbf{x},\\quad V(\\mathbf{x}) = \\mathbf{x}^\\top P \\mathbf{x}\\;(P = P^\\top \\succ 0)",
+          "to_latex": "A^\\top P + P A = -Q\\;(Q \\succ 0) \\implies \\dot{V}(\\mathbf{x}) = -\\mathbf{x}^\\top Q \\mathbf{x} < 0\\;(\\mathbf{x} \\neq \\mathbf{0})",
+          "operation_label": "2次形式微分によるリアプノフ方程式導出",
+          "explanation": "2次形式 V(x) = x^T P x を線形系 dx/dt = Ax に沿って時間微分し、負定値条件 -x^T Q x と比較することでリアプノフ方程式を得る。",
+          "used_node_ids": [
+            "eng.lqr.n02_lyapunov_direct_method",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{x}} = A\\mathbf{x},\\quad V(\\mathbf{x}) = \\mathbf{x}^\\top P \\mathbf{x}\\;(P = P^\\top \\succ 0)",
+          "to_latex": "\\dot{V}(\\mathbf{x}) = \\dot{\\mathbf{x}}^\\top P \\mathbf{x} + \\mathbf{x}^\\top P \\dot{\\mathbf{x}} = \\mathbf{x}^\\top (A^\\top P + P A) \\mathbf{x}",
+          "operation_label": "2次形式の時間微分",
+          "explanation": "積の微分則と状態方程式 dx/dt = Ax を用いて、V(x) の時間微分を行列の2次形式として展開する。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{V}(\\mathbf{x}) = \\dot{\\mathbf{x}}^\\top P \\mathbf{x} + \\mathbf{x}^\\top P \\dot{\\mathbf{x}} = \\mathbf{x}^\\top (A^\\top P + P A) \\mathbf{x}",
+          "to_latex": "A^\\top P + P A = -Q\\;(Q \\succ 0) \\implies \\dot{V}(\\mathbf{x}) = -\\mathbf{x}^\\top Q \\mathbf{x} < 0\\;(\\mathbf{x} \\neq \\mathbf{0})",
+          "operation_label": "リアプノフ方程式の同定と安定性判定",
+          "explanation": "A^T P + P A = -Q を満たす正定値対称行列 P, Q が存在すれば dV/dt < 0 となり、リアプノフの直接法から漸近安定が保証される。",
+          "used_node_ids": [
+            "eng.lqr.n02_lyapunov_direct_method",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.lqr.d04_lqr_problem_formulation",
+      "target_node_id": "eng.lqr.n04_lqr_problem_formulation",
+      "route_kind": "reformulation",
+      "title": "線形状態方程式と2次形式重み行列によるLQR評価関数の定式化",
+      "premise_node_ids": [
+        "eng.lqr.n03_linear_lyapunov_equation",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "required_math_node_ids": [
+        "eng.lqr.n04_lqr_problem_formulation"
+      ],
+      "assumptions": [
+        "対 (A, B) は可安定であり、対 (Q^(1/2), A) は可検出である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{x}} = A\\mathbf{x} + B\\mathbf{u},\\quad \\mathbf{x}(0) = \\mathbf{x}_0,\\quad Q = Q^\\top \\succeq 0,\\; R = R^\\top \\succ 0",
+          "to_latex": "\\min_{\\mathbf{u}(\\cdot)} J(\\mathbf{x}_0, \\mathbf{u}) := \\int_0^\\infty \\big(\\mathbf{x}(t)^\\top Q \\mathbf{x}(t) + \\mathbf{u}(t)^\\top R \\mathbf{u}(t)\\big)\\,dt",
+          "operation_label": "LQR最適制御問題の定式化",
+          "explanation": "線形制御系に対し、状態の収束誤差エネルギーと制御入力エネルギーの重み付き無限時間積分を最小化する最適レギュレータ問題を定義する。",
+          "used_node_ids": [
+            "eng.lqr.n03_linear_lyapunov_equation",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{x}} = A\\mathbf{x} + B\\mathbf{u},\\quad \\mathbf{x}(0) = \\mathbf{x}_0,\\quad Q = Q^\\top \\succeq 0,\\; R = R^\\top \\succ 0",
+          "to_latex": "\\ell(\\mathbf{x}, \\mathbf{u}) := \\mathbf{x}^\\top Q \\mathbf{x} + \\mathbf{u}^\\top R \\mathbf{u} \\ge 0,\\quad \\mathbf{u}^\\top R \\mathbf{u} > 0\\;(\\mathbf{u} \\neq \\mathbf{0})",
+          "operation_label": "ステージコストの定値性設定",
+          "explanation": "半正定値行列 Q と正定値行列 R を用いて、非負かつ入力に関して狭義凸な2次形式ステージコスト l(x, u) を定義する。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ell(\\mathbf{x}, \\mathbf{u}) := \\mathbf{x}^\\top Q \\mathbf{x} + \\mathbf{u}^\\top R \\mathbf{u} \\ge 0,\\quad \\mathbf{u}^\\top R \\mathbf{u} > 0\\;(\\mathbf{u} \\neq \\mathbf{0})",
+          "to_latex": "\\min_{\\mathbf{u}(\\cdot)} J(\\mathbf{x}_0, \\mathbf{u}) := \\int_0^\\infty \\big(\\mathbf{x}(t)^\\top Q \\mathbf{x}(t) + \\mathbf{u}(t)^\\top R \\mathbf{u}(t)\\big)\\,dt",
+          "operation_label": "無限時間評価汎関数の構築",
+          "explanation": "ステージコストを時刻 0 から無限大まで積分した評価汎関数 J を定義し、その最小化問題としてLQRを定式化する。",
+          "used_node_ids": [
+            "eng.lqr.n04_lqr_problem_formulation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.lqr.d05_hjb_equation_bellman",
+      "target_node_id": "eng.lqr.n05_hjb_equation_bellman",
+      "route_kind": "deductive",
+      "title": "ベルマン最適性原理の無限小極限によるHJB方程式の導出",
+      "premise_node_ids": [
+        "eng.lqr.n04_lqr_problem_formulation",
+        "math.calc.m35_multivariable_chain_rule",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [
+        "eng.lqr.n05_hjb_equation_bellman"
+      ],
+      "assumptions": [
+        "最適価値関数 V*(x) は C1 級で存在し、無限時間定常問題である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V^*(\\mathbf{x}) := \\inf_{\\mathbf{u}(\\cdot)} \\int_0^\\infty \\ell(\\mathbf{x}(t), \\mathbf{u}(t))\\,dt,\\quad \\dot{\\mathbf{x}} = \\mathbf{f}(\\mathbf{x}, \\mathbf{u})",
+          "to_latex": "\\min_{\\mathbf{u}} \\Big\\{\\ell(\\mathbf{x}, \\mathbf{u}) + \\nabla V^*(\\mathbf{x})^\\top \\mathbf{f}(\\mathbf{x}, \\mathbf{u})\\Big\\} = 0",
+          "operation_label": "ベルマン最適性からHJB方程式を導出",
+          "explanation": "最適価値関数を微小時間区間 [0, Δt] と [Δt, ∞) に分割して1次テイラー展開し、Δt -> 0 の極限をとることで定常HJB方程式を導く。",
+          "used_node_ids": [
+            "eng.lqr.n04_lqr_problem_formulation",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V^*(\\mathbf{x}) := \\inf_{\\mathbf{u}(\\cdot)} \\int_0^\\infty \\ell(\\mathbf{x}(t), \\mathbf{u}(t))\\,dt,\\quad \\dot{\\mathbf{x}} = \\mathbf{f}(\\mathbf{x}, \\mathbf{u})",
+          "to_latex": "V^*(\\mathbf{x}) = \\inf_{\\mathbf{u}[0,\\Delta t]} \\left\\{\\int_0^{\\Delta t} \\ell(\\mathbf{x}(t), \\mathbf{u}(t))\\,dt + V^*(\\mathbf{x}(\\Delta t))\\right\\}",
+          "operation_label": "ベルマンの最適性原理の適用",
+          "explanation": "評価積分を区間 [0, Δt] と残り区間 [Δt, ∞) に分け、残り区間の最小値が V*(x(Δt)) となることを用いる。",
+          "used_node_ids": [
+            "eng.lqr.n04_lqr_problem_formulation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V^*(\\mathbf{x}) = \\inf_{\\mathbf{u}[0,\\Delta t]} \\left\\{\\int_0^{\\Delta t} \\ell(\\mathbf{x}(t), \\mathbf{u}(t))\\,dt + V^*(\\mathbf{x}(\\Delta t))\\right\\}",
+          "to_latex": "V^*(\\mathbf{x}) = \\inf_{\\mathbf{u}} \\Big\\{\\ell(\\mathbf{x}, \\mathbf{u})\\Delta t + V^*(\\mathbf{x}) + \\nabla V^*(\\mathbf{x})^\\top \\mathbf{f}(\\mathbf{x}, \\mathbf{u})\\Delta t + o(\\Delta t)\\Big\\}",
+          "operation_label": "積分近似と連鎖律による1次展開",
+          "explanation": "微小時間 Δt における積分を l(x, u)Δt で近似し、V*(x(Δt)) を多変数連鎖律により Δt の1次まで展開する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V^*(\\mathbf{x}) = \\inf_{\\mathbf{u}} \\Big\\{\\ell(\\mathbf{x}, \\mathbf{u})\\Delta t + V^*(\\mathbf{x}) + \\nabla V^*(\\mathbf{x})^\\top \\mathbf{f}(\\mathbf{x}, \\mathbf{u})\\Delta t + o(\\Delta t)\\Big\\}",
+          "to_latex": "\\min_{\\mathbf{u}} \\Big\\{\\ell(\\mathbf{x}, \\mathbf{u}) + \\nabla V^*(\\mathbf{x})^\\top \\mathbf{f}(\\mathbf{x}, \\mathbf{u})\\Big\\} = 0",
+          "operation_label": "両辺の相殺と Δt → 0 の極限",
+          "explanation": "両辺から V*(x) を引き、Δt で割って Δt -> 0 の極限をとることで定常ハミルトン＝ヤコビ＝ベルマン方程式を得る。",
+          "used_node_ids": [
+            "eng.lqr.n05_hjb_equation_bellman"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.lqr.d06_lqr_optimal_feedback_law",
+      "target_node_id": "eng.lqr.n06_lqr_optimal_feedback_law",
+      "route_kind": "deductive",
+      "title": "2次形式価値関数のHJB最小化によるLQR最適フィードバック則の導出",
+      "premise_node_ids": [
+        "eng.lqr.n05_hjb_equation_bellman",
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.e05_hessian_extremum_test"
+      ],
+      "required_math_node_ids": [
+        "eng.lqr.n06_lqr_optimal_feedback_law"
+      ],
+      "assumptions": [
+        "LQRの最適価値関数は対称行列 P を用いて V*(x) = x^T P x の形をとる",
+        "R は対称正定値行列である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V^*(\\mathbf{x}) = \\mathbf{x}^\\top P \\mathbf{x}\\;(P=P^\\top),\\quad \\min_{\\mathbf{u}}\\Big\\{\\mathbf{x}^\\top Q \\mathbf{x} + \\mathbf{u}^\\top R \\mathbf{u} + 2\\mathbf{x}^\\top P (A\\mathbf{x} + B\\mathbf{u})\\Big\\} = 0",
+          "to_latex": "\\mathbf{u}^*(\\mathbf{x}) = -R^{-1} B^\\top P \\mathbf{x} = -K\\mathbf{x}\\quad (K := R^{-1} B^\\top P)",
+          "operation_label": "HJBハミルトニアンの u に関する最小化",
+          "explanation": "2次形式価値関数を代入したHJB方程式の右辺について、u に関する1階停留条件とヘッセ行列の正定値性から一意の最適状態フィードバック則を得る。",
+          "used_node_ids": [
+            "eng.lqr.n05_hjb_equation_bellman",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V^*(\\mathbf{x}) = \\mathbf{x}^\\top P \\mathbf{x}\\;(P=P^\\top),\\quad \\min_{\\mathbf{u}}\\Big\\{\\mathbf{x}^\\top Q \\mathbf{x} + \\mathbf{u}^\\top R \\mathbf{u} + 2\\mathbf{x}^\\top P (A\\mathbf{x} + B\\mathbf{u})\\Big\\} = 0",
+          "to_latex": "\\mathcal{H}(\\mathbf{x}, \\mathbf{u}) := \\mathbf{x}^\\top Q \\mathbf{x} + \\mathbf{u}^\\top R \\mathbf{u} + 2\\mathbf{x}^\\top P (A\\mathbf{x} + B\\mathbf{u}),\\quad \\nabla_{\\mathbf{u}}\\mathcal{H} = 2R\\mathbf{u} + 2B^\\top P \\mathbf{x} = \\mathbf{0}",
+          "operation_label": "入力に関する1階停留点条件",
+          "explanation": "∇V*(x) = 2Px を代入したハミルトニアン H(x, u) を制御入力 u で偏微分し、停留点条件を立式する。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{H}(\\mathbf{x}, \\mathbf{u}) := \\mathbf{x}^\\top Q \\mathbf{x} + \\mathbf{u}^\\top R \\mathbf{u} + 2\\mathbf{x}^\\top P (A\\mathbf{x} + B\\mathbf{u}),\\quad \\nabla_{\\mathbf{u}}\\mathcal{H} = 2R\\mathbf{u} + 2B^\\top P \\mathbf{x} = \\mathbf{0}",
+          "to_latex": "\\nabla_{\\mathbf{u}\\mathbf{u}}^2 \\mathcal{H} = 2R \\succ 0 \\implies \\mathbf{u}^* = -R^{-1}B^\\top P \\mathbf{x}",
+          "operation_label": "2階ヘッセ判定と最適解の求解",
+          "explanation": "u に関するヘッセ行列が 2R ≻ 0 であることから停留点は大域最小点となり、R の可逆性から最適入力 u* が求まる。",
+          "used_node_ids": [
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\mathbf{u}\\mathbf{u}}^2 \\mathcal{H} = 2R \\succ 0 \\implies \\mathbf{u}^* = -R^{-1}B^\\top P \\mathbf{x}",
+          "to_latex": "\\mathbf{u}^*(\\mathbf{x}) = -R^{-1} B^\\top P \\mathbf{x} = -K\\mathbf{x}\\quad (K := R^{-1} B^\\top P)",
+          "operation_label": "フィードバックゲイン行列の定義",
+          "explanation": "最適フィードバックゲイン K = R^(-1) B^T P を定義し、線形状態フィードバック則として表す。",
+          "used_node_ids": [
+            "eng.lqr.n06_lqr_optimal_feedback_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.lqr.d07_algebraic_riccati_equation",
+      "target_node_id": "eng.lqr.n07_algebraic_riccati_equation",
+      "route_kind": "deductive",
+      "title": "最適入力のHJB方程式への代入による代数リカッチ方程式の導出",
+      "premise_node_ids": [
+        "eng.lqr.n05_hjb_equation_bellman",
+        "eng.lqr.n06_lqr_optimal_feedback_law"
+      ],
+      "required_math_node_ids": [
+        "eng.lqr.n07_algebraic_riccati_equation"
+      ],
+      "assumptions": [
+        "P は実対称行列である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}^\\top Q \\mathbf{x} + (\\mathbf{u}^*)^\\top R \\mathbf{u}^* + 2\\mathbf{x}^\\top P (A\\mathbf{x} + B\\mathbf{u}^*) = 0,\\quad \\mathbf{u}^* = -R^{-1}B^\\top P \\mathbf{x}",
+          "to_latex": "A^\\top P + P A - P B R^{-1} B^\\top P + Q = 0",
+          "operation_label": "最適入力の書き戻しと対称2次形式の整理",
+          "explanation": "u* = -R^(-1) B^T P x をHJB方程式に代入し、任意の状態 x に対して2次形式が 0 となる行列恒等式として代数リカッチ方程式を導出する。",
+          "used_node_ids": [
+            "eng.lqr.n05_hjb_equation_bellman",
+            "eng.lqr.n06_lqr_optimal_feedback_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}^\\top Q \\mathbf{x} + (\\mathbf{u}^*)^\\top R \\mathbf{u}^* + 2\\mathbf{x}^\\top P (A\\mathbf{x} + B\\mathbf{u}^*) = 0,\\quad \\mathbf{u}^* = -R^{-1}B^\\top P \\mathbf{x}",
+          "to_latex": "\\mathbf{x}^\\top Q \\mathbf{x} + \\mathbf{x}^\\top P B R^{-1} B^\\top P \\mathbf{x} + \\mathbf{x}^\\top (A^\\top P + P A) \\mathbf{x} - 2\\mathbf{x}^\\top P B R^{-1} B^\\top P \\mathbf{x} = 0",
+          "operation_label": "最適制御入力の代入と転置対称化",
+          "explanation": "u* を代入し、2x^T P A x = x^T (A^T P + P A) x の対称化を行ってすべての項を x の2次形式で表す。",
+          "used_node_ids": [
+            "eng.lqr.n06_lqr_optimal_feedback_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}^\\top Q \\mathbf{x} + \\mathbf{x}^\\top P B R^{-1} B^\\top P \\mathbf{x} + \\mathbf{x}^\\top (A^\\top P + P A) \\mathbf{x} - 2\\mathbf{x}^\\top P B R^{-1} B^\\top P \\mathbf{x} = 0",
+          "to_latex": "\\forall \\mathbf{x} \\in \\mathbb{R}^n,\\quad \\mathbf{x}^\\top \\big(A^\\top P + P A - P B R^{-1} B^\\top P + Q\\big) \\mathbf{x} = 0",
+          "operation_label": "同類項の整理",
+          "explanation": "P B R^(-1) B^T P の係数をまとめ、対称行列による2次形式として整理する。",
+          "used_node_ids": [
+            "eng.lqr.n05_hjb_equation_bellman"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall \\mathbf{x} \\in \\mathbb{R}^n,\\quad \\mathbf{x}^\\top \\big(A^\\top P + P A - P B R^{-1} B^\\top P + Q\\big) \\mathbf{x} = 0",
+          "to_latex": "A^\\top P + P A - P B R^{-1} B^\\top P + Q = 0",
+          "operation_label": "任意の状態に対する対称行列恒等式",
+          "explanation": "括弧内の行列が対称であり、任意の x に対して2次形式が 0 となることから、行列自体が零行列であること（代数リカッチ方程式）が導かれる。",
+          "used_node_ids": [
+            "eng.lqr.n07_algebraic_riccati_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.lqr.d08_lqr_closed_loop_stability",
+      "target_node_id": "eng.lqr.n08_lqr_closed_loop_stability",
+      "route_kind": "deductive",
+      "title": "代数リカッチ方程式とリアプノフ直接法によるLQR閉ループ系の漸近安定性証明",
+      "premise_node_ids": [
+        "eng.lqr.n02_lyapunov_direct_method",
+        "eng.lqr.n06_lqr_optimal_feedback_law",
+        "eng.lqr.n07_algebraic_riccati_equation",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "required_math_node_ids": [
+        "eng.lqr.n08_lqr_closed_loop_stability"
+      ],
+      "assumptions": [
+        "Q は正定値（または (Q^(1/2), A) が可観測）であり、P は ARE の一意正定値解である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{x}} = (A - B K)\\mathbf{x},\\quad K = R^{-1}B^\\top P,\\quad V(\\mathbf{x}) = \\mathbf{x}^\\top P \\mathbf{x}\\;(P \\succ 0)",
+          "to_latex": "\\dot{V}(\\mathbf{x}) = -\\mathbf{x}^\\top (Q + K^\\top R K)\\mathbf{x} < 0\\;(\\mathbf{x}\\neq\\mathbf{0}),\\qquad J^*(\\mathbf{x}_0) = \\mathbf{x}_0^\\top P \\mathbf{x}_0",
+          "operation_label": "AREを用いた閉ループ系のリアプノフ安定性証明",
+          "explanation": "V(x) = x^T P x の閉ループ系に沿う時間微分をAREで書き換えることで負定値性を示し、リアプノフ直接法により漸近安定性と最適コストを確立する。",
+          "used_node_ids": [
+            "eng.lqr.n02_lyapunov_direct_method",
+            "eng.lqr.n06_lqr_optimal_feedback_law",
+            "eng.lqr.n07_algebraic_riccati_equation",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{x}} = (A - B K)\\mathbf{x},\\quad K = R^{-1}B^\\top P,\\quad V(\\mathbf{x}) = \\mathbf{x}^\\top P \\mathbf{x}\\;(P \\succ 0)",
+          "to_latex": "\\dot{V}(\\mathbf{x}) = \\mathbf{x}^\\top \\big((A - B K)^\\top P + P (A - B K)\\big)\\mathbf{x} = \\mathbf{x}^\\top \\big(A^\\top P + P A - 2 P B R^{-1} B^\\top P\\big)\\mathbf{x}",
+          "operation_label": "閉ループ系に沿った V(x) の時間微分",
+          "explanation": "閉ループ状態方程式 dx/dt = (A - BK)x と K = R^(-1) B^T P を用いて dV/dt を計算する。",
+          "used_node_ids": [
+            "eng.lqr.n06_lqr_optimal_feedback_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{V}(\\mathbf{x}) = \\mathbf{x}^\\top \\big((A - B K)^\\top P + P (A - B K)\\big)\\mathbf{x} = \\mathbf{x}^\\top \\big(A^\\top P + P A - 2 P B R^{-1} B^\\top P\\big)\\mathbf{x}",
+          "to_latex": "\\dot{V}(\\mathbf{x}) = -\\mathbf{x}^\\top (Q + P B R^{-1} B^\\top P)\\mathbf{x} = -\\mathbf{x}^\\top (Q + K^\\top R K)\\mathbf{x}",
+          "operation_label": "代数リカッチ方程式の代入",
+          "explanation": "ARE より A^T P + P A = P B R^(-1) B^T P - Q を代入し、P B R^(-1) B^T P = K^T R K を用いて負の2次形式へ変形する。",
+          "used_node_ids": [
+            "eng.lqr.n07_algebraic_riccati_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{V}(\\mathbf{x}) = -\\mathbf{x}^\\top (Q + P B R^{-1} B^\\top P)\\mathbf{x} = -\\mathbf{x}^\\top (Q + K^\\top R K)\\mathbf{x}",
+          "to_latex": "\\dot{V}(\\mathbf{x}) = -\\mathbf{x}^\\top (Q + K^\\top R K)\\mathbf{x} < 0\\;(\\mathbf{x}\\neq\\mathbf{0}),\\qquad J^*(\\mathbf{x}_0) = \\mathbf{x}_0^\\top P \\mathbf{x}_0",
+          "operation_label": "漸近安定性の結論と最適コストの評価",
+          "explanation": "Q + K^T R K ≻ 0 より dV/dt < 0 となりリアプノフの直接法から閉ループ系の漸近安定性が従う。さらに -dV/dt がステージコストに等しいため、0 から ∞ まで積分すると J*(x0) = V(x0) = x0^T P x0 を得る。",
+          "used_node_ids": [
+            "eng.lqr.n02_lyapunov_direct_method",
+            "eng.lqr.n08_lqr_closed_loop_stability",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

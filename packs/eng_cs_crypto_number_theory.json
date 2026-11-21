@@ -1,0 +1,671 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.cs.crypto_number_theory",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "computer_science",
+    "title": "暗号と数論：ユークリッド互除法・オイラーの定理・RSA暗号と楕円曲線暗号の入口",
+    "language": "ja",
+    "description": "合同式とフェルマーの小定理、オイラーのφ関数とオイラーの定理、RSA暗号の復号正当性証明、離散対数問題とディフィー＝ヘルマン鍵交換を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.crypto.n01_euclidean_division_gcd",
+      "short_code": "CR01",
+      "kind": "math_boundary",
+      "title": "整数の除法・ユークリッドの互除法とベズーの等式",
+      "summary": "任意の整数に対する除法の原理、最大公約数（GCD）を求めるユークリッドの互除法、および一次不定方程式の整数解の存在を保証するベズーの等式。",
+      "canonical_latex": "a = q b + r\\;(0 \\le r < |b|),\\quad \\gcd(a,b) = \\gcd(b, r),\\quad \\exists x,y \\in \\mathbb{Z}\\text{ s.t. } ax + by = \\gcd(a,b)",
+      "aliases_latex": [
+        "\\gcd(a,n) = 1 \\iff \\exists x,y \\in \\mathbb{Z},\\; ax + ny = 1"
+      ],
+      "keywords": [
+        "ユークリッドの互除法",
+        "最大公約数",
+        "ベズーの等式",
+        "拡張ユークリッド互除法"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "cryptography",
+        "number_theory"
+      ]
+    },
+    {
+      "id": "eng.crypto.n02_modular_arithmetic_zn",
+      "short_code": "CR02",
+      "kind": "definition",
+      "title": "合同式・剰余環 Z/nZ および既約剰余類群 (Z/nZ)^×",
+      "summary": "法 n に関する合同関係と同値類による剰余環、ならびに法 n と互いに素な剰余類がなす乗法可換群の定義。",
+      "canonical_latex": "a \\equiv b \\pmod{n} \\iff n \\mid (a - b),\\qquad (\\mathbb{Z}/n\\mathbb{Z})^\\times := \\{ [a]_n \\in \\mathbb{Z}/n\\mathbb{Z} \\mid \\gcd(a, n) = 1 \\}",
+      "aliases_latex": [
+        "\\mathbb{Z}_n^* = \\{ a \\bmod n \\mid \\gcd(a,n)=1 \\}"
+      ],
+      "keywords": [
+        "合同式",
+        "剰余環",
+        "既約剰余類群",
+        "モジュラ逆元"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "cryptography",
+        "number_theory"
+      ]
+    },
+    {
+      "id": "eng.crypto.n03_euler_totient_function",
+      "short_code": "CR03",
+      "kind": "definition",
+      "title": "オイラーの φ 関数と素数積に対する公式",
+      "summary": "1 以上 n 以下の整数のうち n と互いに素なものの個数を表すオイラーのトーシェント関数 φ(n) と、異なる素数 p, q の積 n=pq に対する計数公式。",
+      "canonical_latex": "\\varphi(n) := \\left|(\\mathbb{Z}/n\\mathbb{Z})^\\times\\right| = \\#\\{ k \\in \\{1,\\dots,n\\} \\mid \\gcd(k,n)=1 \\},\\qquad \\varphi(pq) = (p-1)(q-1)\\;(p \\neq q \\text{ prime})",
+      "aliases_latex": [
+        "\\varphi(p) = p - 1,\\quad \\varphi(p^k) = p^k - p^{k-1}"
+      ],
+      "keywords": [
+        "オイラーのφ関数",
+        "トーシェント関数",
+        "互いに素"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "cryptography",
+        "number_theory"
+      ]
+    },
+    {
+      "id": "eng.crypto.n04_euler_fermat_theorem",
+      "short_code": "CR04",
+      "kind": "theorem_formula",
+      "title": "オイラーの定理とフェルマーの小定理",
+      "summary": "法 n と互いに素な整数 a を φ(n) 乗すると法 n で 1 に合同になるというオイラーの定理、および素数法 p に対する特殊ケースであるフェルマーの小定理。",
+      "canonical_latex": "\\gcd(a, n) = 1 \\implies a^{\\varphi(n)} \\equiv 1 \\pmod{n},\\qquad p \\text{ prime},\\; p \\nmid a \\implies a^{p-1} \\equiv 1 \\pmod{p}",
+      "aliases_latex": [
+        "a^p \\equiv a \\pmod{p}"
+      ],
+      "keywords": [
+        "オイラーの定理",
+        "フェルマーの小定理",
+        "べき剰余"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "cryptography",
+        "number_theory"
+      ]
+    },
+    {
+      "id": "eng.crypto.n05_rsa_cryptosystem_correctness",
+      "short_code": "CR05",
+      "kind": "theorem_formula",
+      "title": "RSA暗号の鍵生成と復号正当性定理",
+      "summary": "2つの異なる素数 p, q の積 n=pq と ed ≡ 1 (mod φ(n)) を満たす公開鍵 e・秘密鍵 d に対し、任意の平文 M で復号 (M^e)^d ≡ M (mod n) が成立する定理。",
+      "canonical_latex": "n = pq,\\; ed \\equiv 1 \\pmod{\\varphi(n)} \\implies \\forall M \\in \\mathbb{Z},\\; (M^e)^d \\equiv M \\pmod{n}",
+      "aliases_latex": [
+        "C \\equiv M^e \\pmod{n},\\quad M \\equiv C^d \\pmod{n}"
+      ],
+      "keywords": [
+        "RSA暗号",
+        "公開鍵暗号",
+        "復号正当性",
+        "秘密鍵"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "cryptography",
+        "number_theory"
+      ]
+    },
+    {
+      "id": "eng.crypto.n06_discrete_logarithm_problem",
+      "short_code": "CR06",
+      "kind": "definition",
+      "title": "巡回群における離散対数問題（DLP）の定義",
+      "summary": "有限巡回群 G = <g> における指数写像 x ↦ g^x の逆写像として定義される離散対数、およびその計算困難性に基づく離散対数問題。",
+      "canonical_latex": "G = \\langle g \\rangle,\\; |G| = N,\\quad h = g^x \\in G \\implies x = \\log_g(h) \\in \\mathbb{Z}/N\\mathbb{Z}",
+      "aliases_latex": [
+        "h \\equiv g^x \\pmod{p} \\implies x = \\operatorname{ind}_g(h)"
+      ],
+      "keywords": [
+        "離散対数問題",
+        "DLP",
+        "巡回群",
+        "一方向性関数"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "cryptography",
+        "number_theory"
+      ]
+    },
+    {
+      "id": "eng.crypto.n07_diffie_hellman_key_exchange",
+      "short_code": "CR07",
+      "kind": "theorem_formula",
+      "title": "ディフィー＝ヘルマン（DH）鍵交換と共有鍵の一致定理",
+      "summary": "公開パラメータ (G, g) と各自の秘密鍵 a, b から公開鍵 A=g^a, B=g^b を交換し、通信路上で同一の共有秘密鍵 K = g^{ab} を合意するプロトコルとその正当性。",
+      "canonical_latex": "A = g^a,\\; B = g^b \\implies K_A = B^a = (g^b)^a = g^{ab} = (g^a)^b = A^b = K_B",
+      "aliases_latex": [
+        "K \\equiv (g^b)^a \\equiv (g^a)^b \\equiv g^{ab} \\pmod{p}"
+      ],
+      "keywords": [
+        "ディフィー・ヘルマン鍵交換",
+        "DH鍵共有",
+        "離散対数問題",
+        "公開鍵暗号"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "cryptography"
+      ]
+    },
+    {
+      "id": "eng.crypto.n08_elliptic_curve_group_intro",
+      "short_code": "CR08",
+      "kind": "definition",
+      "title": "有限体上の楕円曲線群と楕円曲線離散対数問題（ECDLP）",
+      "summary": "素体 F_p 上の非特異ワイエルシュトラス曲線と無限遠点 O が弦・接線法によりなす可換群 E(F_p)、およびその上の離散対数問題（ECDLP）の定義。",
+      "canonical_latex": "E(\\mathbb{F}_p) := \\{(x,y)\\in\\mathbb{F}_p^2 \\mid y^2 \\equiv x^3 + ax + b \\pmod{p}\\} \\cup \\{\\mathcal{O}\\}\\;(4a^3+27b^2 \\not\\equiv 0 \\pmod{p}),\\quad Q = [k]P \\implies k = \\log_P Q",
+      "aliases_latex": [
+        "P + Q + R = \\mathcal{O},\\quad [k]P = P + \\cdots + P"
+      ],
+      "keywords": [
+        "楕円曲線暗号",
+        "ECC",
+        "ECDLP",
+        "ECDH",
+        "ワイエルシュトラス方程式"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "cryptography",
+        "number_theory"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_cr02_unit_group",
+      "target_node_id": "eng.crypto.n02_modular_arithmetic_zn",
+      "route_kind": "deductive",
+      "title": "ベズーの等式と群の公理による既約剰余類群 (Z/nZ)^× の構成",
+      "premise_node_ids": [
+        "eng.crypto.n01_euclidean_division_gcd",
+        "math.alg.gr01_group_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "n \\in \\mathbb{Z}_{\\ge 2}"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\gcd(a, n) = 1 \\land \\gcd(b, n) = 1",
+          "to_latex": "(\\mathbb{Z}/n\\mathbb{Z})^\\times = \\{ [a]_n \\mid \\gcd(a,n)=1 \\} \\text{ is an abelian group under multiplication}",
+          "operation_label": "既約剰余類群の構成",
+          "explanation": "ベズーの等式により互いに素な剰余類の積閉性と逆元存在を示し、乗法可換群を構成する。",
+          "used_node_ids": [
+            "eng.crypto.n01_euclidean_division_gcd",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\gcd(a, n) = 1 \\land \\gcd(b, n) = 1",
+          "to_latex": "\\exists x,y,u,v \\in \\mathbb{Z}:\\; (ax+ny=1) \\land (bu+nv=1)",
+          "operation_label": "ベズーの等式の適用",
+          "explanation": "a, b がともに n と互いに素であることから、ベズーの等式を満たす整数 x, y, u, v が存在する。",
+          "used_node_ids": [
+            "eng.crypto.n01_euclidean_division_gcd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists x,y,u,v \\in \\mathbb{Z}:\\; (ax+ny=1) \\land (bu+nv=1)",
+          "to_latex": "\\gcd(ab, n) = 1 \\land ax \\equiv 1 \\pmod{n}",
+          "operation_label": "積の互いに素性と乗法逆元",
+          "explanation": "2式を掛け合わせて (ab)(xu) + n(axv + byu + nyv) = 1 を得るため gcd(ab,n)=1 であり、また ax ≡ 1 (mod n) より [x]_n が [a]_n の逆元となる。",
+          "used_node_ids": [
+            "eng.crypto.n01_euclidean_division_gcd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\gcd(ab, n) = 1 \\land ax \\equiv 1 \\pmod{n}",
+          "to_latex": "(\\mathbb{Z}/n\\mathbb{Z})^\\times = \\{ [a]_n \\mid \\gcd(a,n)=1 \\} \\text{ is an abelian group under multiplication}",
+          "operation_label": "群の公理の充足",
+          "explanation": "単位元 [1]_n の存在、結合法則・交換法則および逆元の存在により、既約剰余類群が可換群をなすことが従う。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cr03_totient_pq",
+      "target_node_id": "eng.crypto.n03_euler_totient_function",
+      "route_kind": "deductive",
+      "title": "既約剰余類群の位数としての φ(n) と φ(pq)=(p-1)(q-1) の導出",
+      "premise_node_ids": [
+        "eng.crypto.n01_euclidean_division_gcd",
+        "eng.crypto.n02_modular_arithmetic_zn"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "p, q \\text{ are distinct primes},\\; n = pq"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\varphi(n) := \\left|(\\mathbb{Z}/n\\mathbb{Z})^\\times\\right|,\\quad n = pq",
+          "to_latex": "\\varphi(pq) = (p-1)(q-1)",
+          "operation_label": "包除原理による φ(pq) の導出",
+          "explanation": "1 から pq までの整数から p の倍数と q の倍数を包除原理で除き、φ(pq) = (p-1)(q-1) を得る。",
+          "used_node_ids": [
+            "eng.crypto.n01_euclidean_division_gcd",
+            "eng.crypto.n02_modular_arithmetic_zn"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varphi(n) := \\left|(\\mathbb{Z}/n\\mathbb{Z})^\\times\\right|,\\quad n = pq",
+          "to_latex": "\\varphi(pq) = pq - |\\{k \\le pq : p \\mid k\\} \\cup \\{k \\le pq : q \\mid k\\}|",
+          "operation_label": "互いに素でない元の除外",
+          "explanation": "gcd(k, pq) > 1 となる k (1 <= k <= pq) は p または q で割り切れる整数全体である。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varphi(pq) = pq - |\\{k \\le pq : p \\mid k\\} \\cup \\{k \\le pq : q \\mid k\\}|",
+          "to_latex": "\\varphi(pq) = pq - (q + p - 1)",
+          "operation_label": "包除原理の計算",
+          "explanation": "p の倍数は q 個、q の倍数は p 個、公倍数 pq は 1 個であるため、和集合の濃度は q + p - 1 となる。",
+          "used_node_ids": [
+            "eng.crypto.n01_euclidean_division_gcd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\varphi(pq) = pq - (q + p - 1)",
+          "to_latex": "\\varphi(pq) = (p-1)(q-1)",
+          "operation_label": "因数分解",
+          "explanation": "式を整理して因数分解することで φ(pq) = (p-1)(q-1) が得られる。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn"
+          ],
+          "sympy_check_hint": "p*q - (q + p - 1) - (p - 1)*(q - 1)"
+        }
+      ]
+    },
+    {
+      "id": "deriv_cr04_euler_fermat",
+      "target_node_id": "eng.crypto.n04_euler_fermat_theorem",
+      "route_kind": "deductive",
+      "title": "既約剰余類群上の乗法全単射不変性によるオイラーの定理とフェルマーの小定理の証明",
+      "premise_node_ids": [
+        "eng.crypto.n02_modular_arithmetic_zn",
+        "eng.crypto.n03_euler_totient_function",
+        "math.alg.gr01_group_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "\\gcd(a,n) = 1,\\; n \\ge 2"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "[a]_n \\in (\\mathbb{Z}/n\\mathbb{Z})^\\times = \\{ [r_1]_n, \\dots, [r_{\\varphi(n)}]_n \\}",
+          "to_latex": "a^{\\varphi(n)} \\equiv 1 \\pmod{n} \\quad \\text{and} \\quad a^{p-1} \\equiv 1 \\pmod{p}\\;(p \\text{ prime}, p \\nmid a)",
+          "operation_label": "群の左移動による総積不変性",
+          "explanation": "既約剰余類群の元全体への [a]_n の左乗算が全単射であることを用い、総積を比較してオイラーの定理およびフェルマーの小定理を導く。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn",
+            "eng.crypto.n03_euler_totient_function",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[a]_n \\in (\\mathbb{Z}/n\\mathbb{Z})^\\times = \\{ [r_1]_n, \\dots, [r_{\\varphi(n)}]_n \\}",
+          "to_latex": "\\{ [a r_1]_n, \\dots, [a r_{\\varphi(n)}]_n \\} = \\{ [r_1]_n, \\dots, [r_{\\varphi(n)}]_n \\}",
+          "operation_label": "群上の左移動の全単射性",
+          "explanation": "[a]_n が可逆元であるため、左乗算写像 x ↦ [a]_n x は有限群 (Z/nZ)^× 上の全単射（置換）となる。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\{ [a r_1]_n, \\dots, [a r_{\\varphi(n)}]_n \\} = \\{ [r_1]_n, \\dots, [r_{\\varphi(n)}]_n \\}",
+          "to_latex": "a^{\\varphi(n)} \\prod_{i=1}^{\\varphi(n)} r_i \\equiv \\prod_{i=1}^{\\varphi(n)} r_i \\pmod{n}",
+          "operation_label": "全元の総積の比較",
+          "explanation": "集合が一致するためすべての元の積も法 n で合同となり、a が φ(n) 個くくり出される。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn",
+            "eng.crypto.n03_euler_totient_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a^{\\varphi(n)} \\prod_{i=1}^{\\varphi(n)} r_i \\equiv \\prod_{i=1}^{\\varphi(n)} r_i \\pmod{n}",
+          "to_latex": "a^{\\varphi(n)} \\equiv 1 \\pmod{n} \\quad \\text{and} \\quad a^{p-1} \\equiv 1 \\pmod{p}\\;(p \\text{ prime}, p \\nmid a)",
+          "operation_label": "可逆元の消約と素数法への適用",
+          "explanation": "総積 ∏ r_i は可逆元なので両辺から消約できオイラーの定理が成立する。n=p（素数）のとき φ(p)=p-1 よりフェルマーの小定理を得る。",
+          "used_node_ids": [
+            "eng.crypto.n03_euler_totient_function",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cr05_rsa_correctness",
+      "target_node_id": "eng.crypto.n05_rsa_cryptosystem_correctness",
+      "route_kind": "deductive",
+      "title": "フェルマーの小定理を用いた RSA 復号正当性の証明",
+      "premise_node_ids": [
+        "eng.crypto.n01_euclidean_division_gcd",
+        "eng.crypto.n03_euler_totient_function",
+        "eng.crypto.n04_euler_fermat_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "p, q \\text{ distinct primes},\\; n = pq,\\; \\gcd(e, \\varphi(n)) = 1,\\; ed = 1 + k\\varphi(n)\\;(k \\in \\mathbb{Z}_{\\ge 1})"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "ed = 1 + k(p-1)(q-1),\\quad M \\in \\mathbb{Z}",
+          "to_latex": "(M^e)^d \\equiv M \\pmod{n}",
+          "operation_label": "素因数 p, q ごとの合同評価による RSA 正当性証明",
+          "explanation": "p と q のそれぞれを法として M^{ed} ≡ M をフェルマーの小定理で示し、n=pq を法とする合同性を導く。",
+          "used_node_ids": [
+            "eng.crypto.n01_euclidean_division_gcd",
+            "eng.crypto.n03_euler_totient_function",
+            "eng.crypto.n04_euler_fermat_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "ed = 1 + k(p-1)(q-1),\\quad M \\in \\mathbb{Z}",
+          "to_latex": "M^{ed} = M \\cdot \\big(M^{p-1}\\big)^{k(q-1)} \\equiv M \\pmod{p}",
+          "operation_label": "法 p における評価",
+          "explanation": "p ∤ M ならフェルマーの小定理より M^{p-1} ≡ 1 (mod p)、p | M なら両辺 0 (mod p) であるため、いずれの場合も M^{ed} ≡ M (mod p) が成立する。",
+          "used_node_ids": [
+            "eng.crypto.n03_euler_totient_function",
+            "eng.crypto.n04_euler_fermat_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M^{ed} = M \\cdot \\big(M^{p-1}\\big)^{k(q-1)} \\equiv M \\pmod{p}",
+          "to_latex": "p \\mid (M^{ed} - M) \\land q \\mid (M^{ed} - M)",
+          "operation_label": "法 q における同様の評価",
+          "explanation": "p と q の対称性より、同様に M^{ed} ≡ M (mod q) も成立するため、p と q の双方が M^{ed} - M を割り切る。",
+          "used_node_ids": [
+            "eng.crypto.n04_euler_fermat_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p \\mid (M^{ed} - M) \\land q \\mid (M^{ed} - M)",
+          "to_latex": "(M^e)^d \\equiv M \\pmod{n}",
+          "operation_label": "互いに素な素数積による結合",
+          "explanation": "異なる素数 p, q は互いに素であるため、pq = n も M^{ed} - M を割り切り、(M^e)^d ≡ M (mod n) が示される。",
+          "used_node_ids": [
+            "eng.crypto.n01_euclidean_division_gcd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cr06_dlp_def",
+      "target_node_id": "eng.crypto.n06_discrete_logarithm_problem",
+      "route_kind": "deductive",
+      "title": "群準同型写像としてのべき乗と離散対数問題の定式化",
+      "premise_node_ids": [
+        "math.alg.gr01_group_axioms",
+        "eng.crypto.n02_modular_arithmetic_zn"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "G = \\langle g \\rangle \\text{ is a finite cyclic group of order } N"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\phi: (\\mathbb{Z}, +) \\to G,\\quad \\phi(x) = g^x",
+          "to_latex": "G = \\langle g \\rangle,\\; |G| = N,\\quad h = g^x \\in G \\implies x = \\log_g(h) \\in \\mathbb{Z}/N\\mathbb{Z}",
+          "operation_label": "準同型定理による離散対数のwell-defined性",
+          "explanation": "べき乗写像の核が N Z となることから Z/NZ との同型を導き、離散対数を定義する。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\phi: (\\mathbb{Z}, +) \\to G,\\quad \\phi(x) = g^x",
+          "to_latex": "\\phi(x+y) = g^{x+y} = g^x g^y = \\phi(x)\\phi(y),\\quad \\ker\\phi = N\\mathbb{Z}",
+          "operation_label": "群準同型性と核の特定",
+          "explanation": "指数法則により φ は全射群準同型であり、生成元 g の位数が N であることから ker φ = N Z となる。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\phi(x+y) = g^{x+y} = g^x g^y = \\phi(x)\\phi(y),\\quad \\ker\\phi = N\\mathbb{Z}",
+          "to_latex": "G = \\langle g \\rangle,\\; |G| = N,\\quad h = g^x \\in G \\implies x = \\log_g(h) \\in \\mathbb{Z}/N\\mathbb{Z}",
+          "operation_label": "同型定理と逆写像の定義",
+          "explanation": "第一同型定理により Z/NZ ≅ G となり、任意の h ∈ G に対して x mod N が一意に定まり、これを見つける問題が離散対数問題となる。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cr07_dh_correctness",
+      "target_node_id": "eng.crypto.n07_diffie_hellman_key_exchange",
+      "route_kind": "deductive",
+      "title": "群の結合法則による DH 共有鍵一致の証明",
+      "premise_node_ids": [
+        "math.alg.gr01_group_axioms",
+        "eng.crypto.n06_discrete_logarithm_problem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "G = \\langle g \\rangle \\text{ finite cyclic group},\\; a,b \\in \\mathbb{Z}_{\\ge 1}"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A = g^a \\in G,\\quad B = g^b \\in G",
+          "to_latex": "K_A = B^a = g^{ab} = A^b = K_B",
+          "operation_label": "指数法則による共有鍵の一致",
+          "explanation": "公開鍵 A, B に対する相手の秘密鍵でのべき乗が群の結合法則により g^{ab} で一致することを示す。",
+          "used_node_ids": [
+            "eng.crypto.n06_discrete_logarithm_problem",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A = g^a \\in G,\\quad B = g^b \\in G",
+          "to_latex": "K_A = B^a = (g^b)^a = g^{ba}",
+          "operation_label": "アリス側の鍵計算",
+          "explanation": "アリスは受け取った B = g^b を自身の秘密鍵 a でべき乗し、結合法則より g^{ba} を得る。",
+          "used_node_ids": [
+            "eng.crypto.n06_discrete_logarithm_problem",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "K_A = B^a = (g^b)^a = g^{ba}",
+          "to_latex": "K_A = g^{ab} = (g^a)^b = A^b = K_B",
+          "operation_label": "整数乗の可換性とボブ側の鍵一致",
+          "explanation": "整数の積の可換性 ba = ab と結合法則により (g^a)^b = A^b = K_B と一致する。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cr08_ecc_group",
+      "target_node_id": "eng.crypto.n08_elliptic_curve_group_intro",
+      "route_kind": "deductive",
+      "title": "楕円曲線上の弦・接線法による群構造と ECDLP の定式化",
+      "premise_node_ids": [
+        "math.alg.gr01_group_axioms",
+        "eng.crypto.n02_modular_arithmetic_zn",
+        "eng.crypto.n06_discrete_logarithm_problem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "p > 3 \\text{ prime},\\; 4a^3 + 27b^2 \\not\\equiv 0 \\pmod{p}"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "E(\\mathbb{F}_p) := \\{(x,y)\\in\\mathbb{F}_p^2 \\mid y^2 \\equiv x^3 + ax + b \\pmod{p}\\} \\cup \\{\\mathcal{O}\\}",
+          "to_latex": "(E(\\mathbb{F}_p), +) \\text{ is an abelian group with identity }\\mathcal{O},\\quad Q = [k]P \\implies k = \\log_P Q",
+          "operation_label": "楕円曲線群の構成と ECDLP への帰着",
+          "explanation": "法 p の体演算上で弦・接線法による点加算を定義して可換群を構成し、スカラー倍に基づく ECDLP を定義する。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn",
+            "eng.crypto.n06_discrete_logarithm_problem",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E(\\mathbb{F}_p) := \\{(x,y)\\in\\mathbb{F}_p^2 \\mid y^2 \\equiv x^3 + ax + b \\pmod{p}\\} \\cup \\{\\mathcal{O}\\}",
+          "to_latex": "P=(x_1,y_1),\\, Q=(x_2,y_2),\\; -P=(x_1,-y_1),\\; P+(-P)=\\mathcal{O},\\; \\lambda = \\frac{y_2-y_1}{x_2-x_1} \\pmod{p}\\;(P\\neq\\pm Q)",
+          "operation_label": "逆元と弦の傾きの定義",
+          "explanation": "x軸対称点 (x_1, -y_1 mod p) を逆元とし、異なる2点を通る直線の傾き λ を F_p 上の乗法逆元を用いて定義する。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P=(x_1,y_1),\\, Q=(x_2,y_2),\\; -P=(x_1,-y_1),\\; P+(-P)=\\mathcal{O},\\; \\lambda = \\frac{y_2-y_1}{x_2-x_1} \\pmod{p}\\;(P\\neq\\pm Q)",
+          "to_latex": "(E(\\mathbb{F}_p), +) \\text{ is an abelian group with identity }\\mathcal{O},\\quad Q = [k]P \\implies k = \\log_P Q",
+          "operation_label": "可換群の成立と ECDLP の定式化",
+          "explanation": "非特異条件のもとで結合法則を含む群の公理が満たされ、この可換群上の離散対数問題として ECDLP（および ECDH）が定義される。",
+          "used_node_ids": [
+            "eng.crypto.n06_discrete_logarithm_problem",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,685 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.mech.buckling_mohr_yield",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mechanical_engineering",
+    "title": "材料力学2：モールの応力円・降伏条件（フォン・ミーゼス）・オイラー座屈",
+    "language": "ja",
+    "description": "2次元応力変換と主応力（モールの応力円）、トレスカおよびフォン・ミーゼス降伏条件、長柱のオイラー座屈荷重 Pcr=π²EI/L² を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.yield.n01_stress_beam_boundary",
+      "short_code": "YM01",
+      "kind": "math_boundary",
+      "title": "微小応力要素の静的釣合いとオイラー＝ベルヌーイ梁の曲げ基礎式",
+      "summary": "連続体における微小要素の力の釣合いと応力テンソルの対称性、および細長い梁の曲げモーメントと曲率の線形弾性関係。",
+      "canonical_latex": "\\sum \\mathbf{F} = \\mathbf{0},\\quad \\tau_{xy} = \\tau_{yx},\\quad EI\\frac{d^2 w}{dx^2} = -M(x) ",
+      "aliases_latex": [
+        "\\sigma_{ij} = \\sigma_{ji},\\quad EI w''(x) = -M(x)"
+      ],
+      "keywords": [
+        "equilibrium",
+        "cauchy_stress",
+        "euler_bernoulli_beam",
+        "bending_moment"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.yield.n02_plane_stress_transformation",
+      "short_code": "YM02",
+      "kind": "theorem_formula",
+      "title": "2次元平面応力変換公式",
+      "summary": "座標軸を角度 θ 回転させたときの垂直応力とせん断応力の変換式。",
+      "canonical_latex": "\\sigma_{x'} = \\frac{\\sigma_x + \\sigma_y}{2} + \\frac{\\sigma_x - \\sigma_y}{2}\\cos 2\\theta + \\tau_{xy}\\sin 2\\theta,\\quad \\tau_{x'y'} = -\\frac{\\sigma_x - \\sigma_y}{2}\\sin 2\\theta + \\tau_{xy}\\cos 2\\theta",
+      "aliases_latex": [
+        "\\sigma_{x'}=\\sigma_x\\cos^2\\theta+\\sigma_y\\sin^2\\theta+2\\tau_{xy}\\sin\\theta\\cos\\theta"
+      ],
+      "keywords": [
+        "plane_stress",
+        "stress_transformation",
+        "mohr"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.yield.n03_principal_stresses_mohr_circle",
+      "short_code": "YM03",
+      "kind": "theorem_formula",
+      "title": "主応力・最大せん断応力とモールの応力円の方程式",
+      "summary": "2次元応力変換式から角度 θ を消去して得られるモールの応力円の方程式、主応力および最大せん断応力。",
+      "canonical_latex": "\\left(\\sigma_{x'} - \\frac{\\sigma_x + \\sigma_y}{2}\\right)^2 + \\tau_{x'y'}^2 = \\left(\\frac{\\sigma_x - \\sigma_y}{2}\\right)^2 + \\tau_{xy}^2,\\quad \\sigma_{1,2} = \\frac{\\sigma_x + \\sigma_y}{2} \\pm \\sqrt{\\left(\\frac{\\sigma_x - \\sigma_y}{2}\\right)^2 + \\tau_{xy}^2},\\quad \\tau_{\\max} = \\frac{\\sigma_1 - \\sigma_2}{2} ",
+      "aliases_latex": [
+        "(\\sigma_{x'}-\\sigma_{\\text{avg}})^2+\\tau_{x'y'}^2=R^2"
+      ],
+      "keywords": [
+        "mohr_circle",
+        "principal_stress",
+        "maximum_shear_stress"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.yield.n04_deviatoric_stress_j2_def",
+      "short_code": "YM04",
+      "kind": "definition",
+      "title": "静水圧応力・偏差応力テンソルと第2不変量 J2 の定義",
+      "summary": "3次元応力テンソルを等方的な静水圧応力成分と形状変化に寄与する偏差応力成分に分解し、偏差応力第2不変量 J2 を定義する。",
+      "canonical_latex": "\\sigma_m = \\frac{1}{3}\\operatorname{tr}(\\boldsymbol{\\sigma}),\\quad \\mathbf{s} = \\boldsymbol{\\sigma} - \\sigma_m \\mathbf{I},\\quad J_2 := \\frac{1}{2}\\operatorname{tr}(\\mathbf{s}^2) = \\frac{1}{6}\\big[(\\sigma_1-\\sigma_2)^2 + (\\sigma_2-\\sigma_3)^2 + (\\sigma_3-\\sigma_1)^2\\big]",
+      "aliases_latex": [
+        "J_2 = \\frac{1}{2} s_{ij}s_{ij}"
+      ],
+      "keywords": [
+        "deviatoric_stress",
+        "hydrostatic_stress",
+        "J2_invariant"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.yield.n05_tresca_yield_criterion",
+      "short_code": "YM05",
+      "kind": "theorem_formula",
+      "title": "トレスカの降伏条件（最大せん断応力説）",
+      "summary": "材料内の最大せん断応力が単軸引張降伏時の最大せん断応力に達したときに降伏が生じるという降伏条件。",
+      "canonical_latex": "\\tau_{\\max} = \\frac{\\sigma_{\\max} - \\sigma_{\\min}}{2} \\le \\frac{\\sigma_Y}{2} \\iff \\max\\big(|\\sigma_1-\\sigma_2|, |\\sigma_2-\\sigma_3|, |\\sigma_3-\\sigma_1|\\big) \\le \\sigma_Y",
+      "aliases_latex": [
+        "|\\sigma_1 - \\sigma_3| \\le \\sigma_Y"
+      ],
+      "keywords": [
+        "tresca",
+        "yield_criterion",
+        "maximum_shear_stress"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.yield.n06_von_mises_yield_criterion",
+      "short_code": "YM06",
+      "kind": "theorem_formula",
+      "title": "フォン・ミーゼスの降伏条件（せん断ひずみエネルギー説）",
+      "summary": "偏差応力第2不変量 J2（せん断ひずみエネルギー）が単軸降伏時の臨界値に達したときに降伏が生じるという降伏条件と相当応力。",
+      "canonical_latex": "\\sigma_{\\mathrm{eq}} := \\sqrt{3 J_2} = \\sqrt{\\frac{1}{2}\\big[(\\sigma_1-\\sigma_2)^2 + (\\sigma_2-\\sigma_3)^2 + (\\sigma_3-\\sigma_1)^2\\big]} \\le \\sigma_Y",
+      "aliases_latex": [
+        "(\\sigma_1-\\sigma_2)^2 + (\\sigma_2-\\sigma_3)^2 + (\\sigma_3-\\sigma_1)^2 \\le 2\\sigma_Y^2"
+      ],
+      "keywords": [
+        "von_mises",
+        "yield_criterion",
+        "equivalent_stress",
+        "distortion_energy"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.yield.n07_euler_buckling_ode",
+      "short_code": "YM07",
+      "kind": "theorem_formula",
+      "title": "両端ピン支持長柱の座屈微分方程式と境界条件",
+      "summary": "軸圧縮荷重 P を受ける長柱のたわみと曲げモーメントの釣合いから導かれる2階線形常微分方程式と境界値問題。",
+      "canonical_latex": "\\frac{d^2 w}{dx^2} + k^2 w = 0\\quad \\left(k^2 := \\frac{P}{EI}\\right),\\qquad w(0) = w(L) = 0",
+      "aliases_latex": [
+        "EI w''(x) + P w(x) = 0"
+      ],
+      "keywords": [
+        "buckling",
+        "differential_equation",
+        "boundary_value_problem"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    },
+    {
+      "id": "eng.yield.n08_euler_critical_buckling_load",
+      "short_code": "YM08",
+      "kind": "theorem_formula",
+      "title": "オイラーの座屈荷重公式（臨界荷重）",
+      "summary": "座屈微分方程式の非自明解の存在条件（最小固有値）から得られる両端ピン支持長柱の最小座屈荷重。",
+      "canonical_latex": "P_{\\mathrm{cr}} = \\frac{\\pi^2 E I}{L^2} ",
+      "aliases_latex": [
+        "P_{\\text{Euler}} = \\pi^2 EI / L^2"
+      ],
+      "keywords": [
+        "euler_buckling",
+        "critical_load",
+        "column_stability"
+      ],
+      "domain_tags": [
+        "mechanical_engineering",
+        "mechanics_of_materials"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_n02_plane_stress_transformation",
+      "target_node_id": "eng.yield.n02_plane_stress_transformation",
+      "route_kind": "deductive",
+      "title": "微小くさび要素の力の釣合いからの2次元応力変換式の導出",
+      "premise_node_ids": [
+        "eng.yield.n01_stress_beam_boundary",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "2次元平面応力状態かつ一様な応力場",
+        "微小三角くさび要素の静的平衡"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma_{x'} = \\sigma_x \\cos^2\\theta + \\sigma_y \\sin^2\\theta + 2\\tau_{xy}\\sin\\theta\\cos\\theta,\\quad \\tau_{x'y'} = -(\\sigma_x - \\sigma_y)\\sin\\theta\\cos\\theta + \\tau_{xy}(\\cos^2\\theta - \\sin^2\\theta) ",
+          "to_latex": "\\sigma_{x'} = \\frac{\\sigma_x + \\sigma_y}{2} + \\frac{\\sigma_x - \\sigma_y}{2}\\cos 2\\theta + \\tau_{xy}\\sin 2\\theta,\\quad \\tau_{x'y'} = -\\frac{\\sigma_x - \\sigma_y}{2}\\sin 2\\theta + \\tau_{xy}\\cos 2\\theta",
+          "operation_label": "力の釣合いと倍角公式",
+          "explanation": "斜面に沿った微小要素の法線・接線方向の力の釣合い式に三角関数の倍角公式を適用し、2θ を用いた応力変換公式を得る。",
+          "used_node_ids": [
+            "eng.yield.n01_stress_beam_boundary",
+            "math.calc.m37_trig_pythagorean_addition",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum F_{x'} = \\sigma_{x'} dA - (\\sigma_x \\cos\\theta + \\tau_{xy}\\sin\\theta)dA\\cos\\theta - (\\sigma_y \\sin\\theta + \\tau_{xy}\\cos\\theta)dA\\sin\\theta = 0",
+          "to_latex": "\\sigma_{x'} = \\sigma_x \\cos^2\\theta + \\sigma_y \\sin^2\\theta + 2\\tau_{xy}\\sin\\theta\\cos\\theta",
+          "operation_label": "法線方向力の釣合い",
+          "explanation": "角度 θ の斜面を持つ微小三角要素について x' 方向の力の和を零とおき、τ_xy = τ_yx を用いて整理する。",
+          "used_node_ids": [
+            "eng.yield.n01_stress_beam_boundary",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{x'} = \\sigma_x \\cos^2\\theta + \\sigma_y \\sin^2\\theta + 2\\tau_{xy}\\sin\\theta\\cos\\theta",
+          "to_latex": "\\sigma_{x'} = \\frac{\\sigma_x + \\sigma_y}{2} + \\frac{\\sigma_x - \\sigma_y}{2}\\cos 2\\theta + \\tau_{xy}\\sin 2\\theta",
+          "operation_label": "倍角公式の適用",
+          "explanation": "cos^2θ = (1+cos2θ)/2、sin^2θ = (1-cos2θ)/2、2sinθcosθ = sin2θ を代入して整理する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "simplify(sx*cos(t)**2 + sy*sin(t)**2 + 2*txy*sin(t)*cos(t) - ((sx+sy)/2 + (sx-sy)/2*cos(2*t) + txy*sin(2*t)))"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{x'} = \\frac{\\sigma_x + \\sigma_y}{2} + \\frac{\\sigma_x - \\sigma_y}{2}\\cos 2\\theta + \\tau_{xy}\\sin 2\\theta",
+          "to_latex": "\\sigma_{x'} = \\frac{\\sigma_x + \\sigma_y}{2} + \\frac{\\sigma_x - \\sigma_y}{2}\\cos 2\\theta + \\tau_{xy}\\sin 2\\theta,\\quad \\tau_{x'y'} = -\\frac{\\sigma_x - \\sigma_y}{2}\\sin 2\\theta + \\tau_{xy}\\cos 2\\theta",
+          "operation_label": "接線方向力の釣合いと倍角公式",
+          "explanation": "同様に y' 方向の力の釣合い ∑F_{y'}=0 から τ_{x'y'} を求め、cos^2θ - sin^2θ = cos2θ を適用して変換式一式を得る。",
+          "used_node_ids": [
+            "eng.yield.n01_stress_beam_boundary",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n03_principal_stresses_mohr_circle",
+      "target_node_id": "eng.yield.n03_principal_stresses_mohr_circle",
+      "route_kind": "deductive",
+      "title": "応力変換式からのモールの応力円と主応力・最大せん断応力の導出",
+      "premise_node_ids": [
+        "eng.yield.n02_plane_stress_transformation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "2次元平面応力変換式の成立"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma_{x'} - \\frac{\\sigma_x + \\sigma_y}{2} = \\frac{\\sigma_x - \\sigma_y}{2}\\cos 2\\theta + \\tau_{xy}\\sin 2\\theta,\\quad \\tau_{x'y'} = -\\frac{\\sigma_x - \\sigma_y}{2}\\sin 2\\theta + \\tau_{xy}\\cos 2\\theta",
+          "to_latex": "\\left(\\sigma_{x'} - \\frac{\\sigma_x + \\sigma_y}{2}\\right)^2 + \\tau_{x'y'}^2 = \\left(\\frac{\\sigma_x - \\sigma_y}{2}\\right)^2 + \\tau_{xy}^2,\\quad \\sigma_{1,2} = \\frac{\\sigma_x + \\sigma_y}{2} \\pm \\sqrt{\\left(\\frac{\\sigma_x - \\sigma_y}{2}\\right)^2 + \\tau_{xy}^2},\\quad \\tau_{\\max} = \\frac{\\sigma_1 - \\sigma_2}{2} ",
+          "operation_label": "パラメータ消去と幾何的解釈",
+          "explanation": "2乗和をとって角 2θ を消去することでモールの応力円の方程式を導き、円の中心と半径から主応力と最大せん断応力を得る。",
+          "used_node_ids": [
+            "eng.yield.n02_plane_stress_transformation",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{x'} - \\frac{\\sigma_x + \\sigma_y}{2} = \\frac{\\sigma_x - \\sigma_y}{2}\\cos 2\\theta + \\tau_{xy}\\sin 2\\theta,\\quad \\tau_{x'y'} = -\\frac{\\sigma_x - \\sigma_y}{2}\\sin 2\\theta + \\tau_{xy}\\cos 2\\theta",
+          "to_latex": "\\left(\\sigma_{x'} - \\frac{\\sigma_x + \\sigma_y}{2}\\right)^2 + \\tau_{x'y'}^2 = \\left(\\frac{\\sigma_x - \\sigma_y}{2}\\right)^2 + \\tau_{xy}^2",
+          "operation_label": "2乗和による媒介変数消去",
+          "explanation": "両辺をそれぞれ2乗して足し合わせ、cos^2(2θ) + sin^2(2θ) = 1 を用いて θ を消去する。",
+          "used_node_ids": [
+            "eng.yield.n02_plane_stress_transformation",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "simplify(((sx-sy)/2*cos(2*t)+txy*sin(2*t))**2 + (-(sx-sy)/2*sin(2*t)+txy*cos(2*t))**2 - (((sx-sy)/2)**2 + txy**2))"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\sigma_{x'} - \\frac{\\sigma_x + \\sigma_y}{2}\\right)^2 + \\tau_{x'y'}^2 = \\left(\\frac{\\sigma_x - \\sigma_y}{2}\\right)^2 + \\tau_{xy}^2",
+          "to_latex": "\\sigma_{1,2} = \\frac{\\sigma_x + \\sigma_y}{2} \\pm \\sqrt{\\left(\\frac{\\sigma_x - \\sigma_y}{2}\\right)^2 + \\tau_{xy}^2},\\quad \\tau_{\\max} = R = \\frac{\\sigma_1 - \\sigma_2}{2} ",
+          "operation_label": "主応力と最大せん断応力の決定",
+          "explanation": "τ_{x'y'} = 0 となる両端の点が主応力 σ_1, σ_2 であり、円の半径 R が最大せん断応力 τ_max を与える。",
+          "used_node_ids": [
+            "eng.yield.n02_plane_stress_transformation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{1,2} = \\frac{\\sigma_x + \\sigma_y}{2} \\pm \\sqrt{\\left(\\frac{\\sigma_x - \\sigma_y}{2}\\right)^2 + \\tau_{xy}^2},\\quad \\tau_{\\max} = R = \\frac{\\sigma_1 - \\sigma_2}{2} ",
+          "to_latex": "\\left(\\sigma_{x'} - \\frac{\\sigma_x + \\sigma_y}{2}\\right)^2 + \\tau_{x'y'}^2 = \\left(\\frac{\\sigma_x - \\sigma_y}{2}\\right)^2 + \\tau_{xy}^2,\\quad \\sigma_{1,2} = \\frac{\\sigma_x + \\sigma_y}{2} \\pm \\sqrt{\\left(\\frac{\\sigma_x - \\sigma_y}{2}\\right)^2 + \\tau_{xy}^2},\\quad \\tau_{\\max} = \\frac{\\sigma_1 - \\sigma_2}{2} ",
+          "operation_label": "定理の統合表示",
+          "explanation": "モールの応力円の方程式と主応力・最大せん断応力の公式を統合して示す。",
+          "used_node_ids": [
+            "eng.yield.n02_plane_stress_transformation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n04_deviatoric_stress_j2_def",
+      "target_node_id": "eng.yield.n04_deviatoric_stress_j2_def",
+      "route_kind": "deductive",
+      "title": "実対称応力テンソルのスペクトル分解による偏差応力と J2 の定義導出",
+      "premise_node_ids": [
+        "eng.yield.n03_principal_stresses_mohr_circle"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.eig07_spectral_theorem"
+      ],
+      "assumptions": [
+        "3次元応力テンソルが実対称行列であること"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\boldsymbol{\\sigma} = \\operatorname{diag}(\\sigma_1, \\sigma_2, \\sigma_3),\\quad \\sigma_m = \\frac{\\sigma_1 + \\sigma_2 + \\sigma_3}{3},\\quad \\mathbf{s} = \\boldsymbol{\\sigma} - \\sigma_m \\mathbf{I} ",
+          "to_latex": "\\sigma_m = \\frac{1}{3}\\operatorname{tr}(\\boldsymbol{\\sigma}),\\quad \\mathbf{s} = \\boldsymbol{\\sigma} - \\sigma_m \\mathbf{I},\\quad J_2 := \\frac{1}{2}\\operatorname{tr}(\\mathbf{s}^2) = \\frac{1}{6}\\big[(\\sigma_1-\\sigma_2)^2 + (\\sigma_2-\\sigma_3)^2 + (\\sigma_3-\\sigma_1)^2\\big]",
+          "operation_label": "主軸表示と不変量 J2 の展開",
+          "explanation": "スペクトル定理により応力テンソルを主応力対角形に直交対角化し、偏差応力の2乗トレースを計算して J2 の主応力表示を得る。",
+          "used_node_ids": [
+            "eng.yield.n03_principal_stresses_mohr_circle",
+            "math.linalg.eig07_spectral_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\boldsymbol{\\sigma} = Q \\operatorname{diag}(\\sigma_1, \\sigma_2, \\sigma_3) Q^\\top,\\quad \\sigma_m := \\frac{1}{3}\\operatorname{tr}(\\boldsymbol{\\sigma}) = \\frac{\\sigma_1 + \\sigma_2 + \\sigma_3}{3} ",
+          "to_latex": "\\mathbf{s} := \\boldsymbol{\\sigma} - \\sigma_m \\mathbf{I} = Q \\operatorname{diag}(\\sigma_1 - \\sigma_m,\\, \\sigma_2 - \\sigma_m,\\, \\sigma_3 - \\sigma_m) Q^\\top",
+          "operation_label": "スペクトル分解と偏差応力定義",
+          "explanation": "実対称行列の直交対角化を用いて、偏差応力テンソル s を主応力空間で表示する。",
+          "used_node_ids": [
+            "math.linalg.eig07_spectral_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{s} := \\boldsymbol{\\sigma} - \\sigma_m \\mathbf{I} = Q \\operatorname{diag}(\\sigma_1 - \\sigma_m,\\, \\sigma_2 - \\sigma_m,\\, \\sigma_3 - \\sigma_m) Q^\\top",
+          "to_latex": "J_2 := \\frac{1}{2}\\operatorname{tr}(\\mathbf{s}^2) = \\frac{1}{2}\\sum_{i=1}^{3} \\left(\\sigma_i - \\frac{\\sigma_1+\\sigma_2+\\sigma_3}{3}\\right)^2",
+          "operation_label": "トレースの直交不変性",
+          "explanation": "トレースが直交変換で不変であることから、J2 を主偏差応力の2乗和として表す。",
+          "used_node_ids": [
+            "math.linalg.eig07_spectral_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_2 := \\frac{1}{2}\\operatorname{tr}(\\mathbf{s}^2) = \\frac{1}{2}\\sum_{i=1}^{3} \\left(\\sigma_i - \\frac{\\sigma_1+\\sigma_2+\\sigma_3}{3}\\right)^2",
+          "to_latex": "\\sigma_m = \\frac{1}{3}\\operatorname{tr}(\\boldsymbol{\\sigma}),\\quad \\mathbf{s} = \\boldsymbol{\\sigma} - \\sigma_m \\mathbf{I},\\quad J_2 := \\frac{1}{2}\\operatorname{tr}(\\mathbf{s}^2) = \\frac{1}{6}\\big[(\\sigma_1-\\sigma_2)^2 + (\\sigma_2-\\sigma_3)^2 + (\\sigma_3-\\sigma_1)^2\\big]",
+          "operation_label": "代数展開による整理",
+          "explanation": "平方和を展開して整理することで、主応力差の2乗和による J2 の標準表現を得る。",
+          "used_node_ids": [
+            "eng.yield.n03_principal_stresses_mohr_circle"
+          ],
+          "sympy_check_hint": "simplify(Rational(1,2)*((s1-(s1+s2+s3)/3)**2 + (s2-(s1+s2+s3)/3)**2 + (s3-(s1+s2+s3)/3)**2) - Rational(1,6)*((s1-s2)**2 + (s2-s3)**2 + (s3-s1)**2))"
+        }
+      ]
+    },
+    {
+      "id": "d_n05_tresca_yield_criterion",
+      "target_node_id": "eng.yield.n05_tresca_yield_criterion",
+      "route_kind": "deductive",
+      "title": "最大せん断応力と単軸降伏応力の比較によるトレスカ降伏条件の導出",
+      "premise_node_ids": [
+        "eng.yield.n03_principal_stresses_mohr_circle"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "等方性延性材料",
+        "単軸引張試験での降伏応力が σ_Y である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\tau_{\\max} = \\frac{\\sigma_{\\max} - \\sigma_{\\min}}{2},\\quad \\tau_{Y,\\text{uniaxial}} = \\frac{\\sigma_Y - 0}{2} = \\frac{\\sigma_Y}{2} ",
+          "to_latex": "\\tau_{\\max} = \\frac{\\sigma_{\\max} - \\sigma_{\\min}}{2} \\le \\frac{\\sigma_Y}{2} \\iff \\max\\big(|\\sigma_1-\\sigma_2|, |\\sigma_2-\\sigma_3|, |\\sigma_3-\\sigma_1|\\big) \\le \\sigma_Y",
+          "operation_label": "最大せん断応力の比較",
+          "explanation": "3次元主応力空間での最大せん断応力を単軸引張降伏時の最大せん断応力 σ_Y/2 と等置し、トレスカの降伏条件を得る。",
+          "used_node_ids": [
+            "eng.yield.n03_principal_stresses_mohr_circle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tau_{\\max} = \\frac{\\sigma_{\\max} - \\sigma_{\\min}}{2},\\quad \\sigma_{\\max} = \\max(\\sigma_1,\\sigma_2,\\sigma_3),\\quad \\sigma_{\\min} = \\min(\\sigma_1,\\sigma_2,\\sigma_3) ",
+          "to_latex": "\\tau_{\\max} = \\frac{1}{2}\\max\\big(|\\sigma_1-\\sigma_2|, |\\sigma_2-\\sigma_3|, |\\sigma_3-\\sigma_1|\\big) ",
+          "operation_label": "3主応力差の最大値表現",
+          "explanation": "最大主応力と最小主応力の差は、3つの主応力差の絶対値の最大値に一致する。",
+          "used_node_ids": [
+            "eng.yield.n03_principal_stresses_mohr_circle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tau_{\\max} = \\frac{1}{2}\\max\\big(|\\sigma_1-\\sigma_2|, |\\sigma_2-\\sigma_3|, |\\sigma_3-\\sigma_1|\\big) ",
+          "to_latex": "\\tau_{\\max} = \\frac{\\sigma_{\\max} - \\sigma_{\\min}}{2} \\le \\frac{\\sigma_Y}{2} \\iff \\max\\big(|\\sigma_1-\\sigma_2|, |\\sigma_2-\\sigma_3|, |\\sigma_3-\\sigma_1|\\big) \\le \\sigma_Y",
+          "operation_label": "単軸降伏条件との照合",
+          "explanation": "単軸引張 (σ_1=σ_Y, σ_2=σ_3=0) で τ_max = σ_Y/2 となるため、両辺を2倍してトレスカの降伏条件を得る。",
+          "used_node_ids": [
+            "eng.yield.n03_principal_stresses_mohr_circle"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n06_von_mises_yield_criterion",
+      "target_node_id": "eng.yield.n06_von_mises_yield_criterion",
+      "route_kind": "deductive",
+      "title": "J2 不変量と単軸降伏状態の比較によるフォン・ミーゼス降伏条件の導出",
+      "premise_node_ids": [
+        "eng.yield.n04_deviatoric_stress_j2_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "等方性延性材料",
+        "静水圧応力は降伏に寄与しない"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J_2 = \\frac{1}{6}\\big[(\\sigma_1-\\sigma_2)^2 + (\\sigma_2-\\sigma_3)^2 + (\\sigma_3-\\sigma_1)^2\\big],\\quad J_{2,\\text{uniaxial}} = \\frac{\\sigma_Y^2}{3} ",
+          "to_latex": "\\sigma_{\\mathrm{eq}} := \\sqrt{3 J_2} = \\sqrt{\\frac{1}{2}\\big[(\\sigma_1-\\sigma_2)^2 + (\\sigma_2-\\sigma_3)^2 + (\\sigma_3-\\sigma_1)^2\\big]} \\le \\sigma_Y",
+          "operation_label": "J2 臨界値の単軸同定",
+          "explanation": "偏差応力第2不変量 J2 に単軸降伏状態を代入して臨界値を定め、相当応力 σ_eq <= σ_Y を得る。",
+          "used_node_ids": [
+            "eng.yield.n04_deviatoric_stress_j2_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_2 = \\frac{1}{6}\\big[(\\sigma_1-\\sigma_2)^2 + (\\sigma_2-\\sigma_3)^2 + (\\sigma_3-\\sigma_1)^2\\big]",
+          "to_latex": "J_{2,\\text{uniaxial}}(\\sigma_1 = \\sigma_Y, \\sigma_2 = \\sigma_3 = 0) = \\frac{1}{6}(\\sigma_Y^2 + 0 + \\sigma_Y^2) = \\frac{\\sigma_Y^2}{3} ",
+          "operation_label": "単軸引張降伏時の J2 評価",
+          "explanation": "単軸引張状態 σ_1 = σ_Y, σ_2 = σ_3 = 0 における J2 の値を計算する。",
+          "used_node_ids": [
+            "eng.yield.n04_deviatoric_stress_j2_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{2,\\text{uniaxial}}(\\sigma_1 = \\sigma_Y, \\sigma_2 = \\sigma_3 = 0) = \\frac{1}{6}(\\sigma_Y^2 + 0 + \\sigma_Y^2) = \\frac{\\sigma_Y^2}{3} ",
+          "to_latex": "\\sigma_{\\mathrm{eq}} := \\sqrt{3 J_2} = \\sqrt{\\frac{1}{2}\\big[(\\sigma_1-\\sigma_2)^2 + (\\sigma_2-\\sigma_3)^2 + (\\sigma_3-\\sigma_1)^2\\big]} \\le \\sigma_Y",
+          "operation_label": "相当応力による降伏条件表現",
+          "explanation": "J2 <= σ_Y^2 / 3 の両辺に 3 を掛けて平方根をとり、フォン・ミーゼス相当応力による降伏条件を得る。",
+          "used_node_ids": [
+            "eng.yield.n04_deviatoric_stress_j2_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n07_euler_buckling_ode",
+      "target_node_id": "eng.yield.n07_euler_buckling_ode",
+      "route_kind": "deductive",
+      "title": "モーメント釣合いと曲げ基礎式からの座屈微分方程式の導出",
+      "premise_node_ids": [
+        "eng.yield.n01_stress_beam_boundary",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "微小たわみ線形弾性理論",
+        "一様断面 EI の長柱で両端ピン支持"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "M(x) = P w(x),\\quad EI\\frac{d^2 w}{dx^2} = -M(x),\\quad w(0) = w(L) = 0",
+          "to_latex": "\\frac{d^2 w}{dx^2} + k^2 w = 0\\quad \\left(k^2 := \\frac{P}{EI}\\right),\\qquad w(0) = w(L) = 0",
+          "operation_label": "モーメント釣合いと曲げ式の連立",
+          "explanation": "圧縮軸力 P による曲げモーメント M(x)=Pw(x) をオイラー＝ベルヌーイ梁の式に代入し、座屈微分方程式を得る。",
+          "used_node_ids": [
+            "eng.yield.n01_stress_beam_boundary",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum M_{\\text{cut}} = M(x) - P w(x) = 0",
+          "to_latex": "M(x) = P w(x) ",
+          "operation_label": "断面におけるモーメントの釣合い",
+          "explanation": "たわみ w(x) が生じた長柱の任意断面 x における曲げモーメントの静的釣合いから M(x) を求める。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M(x) = P w(x) ",
+          "to_latex": "EI\\frac{d^2 w}{dx^2} + P w(x) = 0",
+          "operation_label": "曲げモーメント-曲率関係への代入",
+          "explanation": "EI w''(x) = -M(x) に M(x) = P w(x) を代入する。",
+          "used_node_ids": [
+            "eng.yield.n01_stress_beam_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "EI\\frac{d^2 w}{dx^2} + P w(x) = 0",
+          "to_latex": "\\frac{d^2 w}{dx^2} + k^2 w = 0\\quad \\left(k^2 := \\frac{P}{EI}\\right),\\qquad w(0) = w(L) = 0",
+          "operation_label": "標準形への整理と境界条件付与",
+          "explanation": "両辺を EI で割り、k^2 = P/(EI) とおいて両端ピン支持の境界条件 w(0)=w(L)=0 を付与する。",
+          "used_node_ids": [
+            "eng.yield.n01_stress_beam_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n08_euler_critical_buckling_load",
+      "target_node_id": "eng.yield.n08_euler_critical_buckling_load",
+      "route_kind": "deductive",
+      "title": "2階線形ODEの境界値問題の固有値解法によるオイラー座屈荷重の導出",
+      "premise_node_ids": [
+        "eng.yield.n07_euler_buckling_ode"
+      ],
+      "required_math_node_ids": [
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "非自明なたわみ解の存在（C2 ≠ 0）",
+        "最小固有値 n=1 に対応する座屈モード"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d^2 w}{dx^2} + k^2 w = 0\\quad \\left(k^2 = \\frac{P}{EI}\\right),\\quad w(0) = w(L) = 0",
+          "to_latex": "P_{\\mathrm{cr}} = \\frac{\\pi^2 E I}{L^2} ",
+          "operation_label": "一般解の導出と境界条件による固有値決定",
+          "explanation": "2階定数係数線形ODEの一般解に境界条件を課し、非自明解が存在する最小固有値 n=1 から臨界座屈荷重 P_cr を得る。",
+          "used_node_ids": [
+            "eng.yield.n07_euler_buckling_ode",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 w}{dx^2} + k^2 w = 0\\quad \\left(k^2 = \\frac{P}{EI}\\right) ",
+          "to_latex": "w(x) = C_1 \\cos(kx) + C_2 \\sin(kx) ",
+          "operation_label": "2階定数係数線形ODEの一般解",
+          "explanation": "単振動型常微分方程式の公式を用いて一般解を記述する。",
+          "used_node_ids": [
+            "eng.yield.n07_euler_buckling_ode",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "w(x) = C_1 \\cos(kx) + C_2 \\sin(kx) ",
+          "to_latex": "w(0) = C_1 = 0,\\quad w(L) = C_2 \\sin(kL) = 0",
+          "operation_label": "境界条件の適用",
+          "explanation": "x=0 と x=L におけるピン支持条件 w(0)=w(L)=0 を代入する。",
+          "used_node_ids": [
+            "eng.yield.n07_euler_buckling_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "w(0) = C_1 = 0,\\quad w(L) = C_2 \\sin(kL) = 0",
+          "to_latex": "kL = n\\pi\\;(n = 1, 2, \\dots) \\implies P_n = \\frac{n^2 \\pi^2 E I}{L^2} ",
+          "operation_label": "非自明解条件と座屈固有値",
+          "explanation": "たわみが生じる条件 C2 ≠ 0 より sin(kL)=0 すなわち kL = nπ を得て、各モードの座屈荷重 P_n を求める。",
+          "used_node_ids": [
+            "eng.yield.n07_euler_buckling_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "kL = n\\pi\\;(n = 1, 2, \\dots) \\implies P_n = \\frac{n^2 \\pi^2 E I}{L^2} ",
+          "to_latex": "P_{\\mathrm{cr}} = \\frac{\\pi^2 E I}{L^2} ",
+          "operation_label": "最小座屈荷重の特定",
+          "explanation": "最小の座屈モード n=1 が最初に不安定化するため、臨界座屈荷重 P_cr = π^2 EI / L^2 を得る。",
+          "used_node_ids": [
+            "eng.yield.n07_euler_buckling_ode"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,853 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.comm.modulation_ofdm",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "communications",
+    "title": "デジタル通信工学：ASK/PSK/QAMの誤り率解析・直交周波数分割多重(OFDM)",
+    "language": "ja",
+    "description": "信号空間ダイヤグラム、AWGN下でのBPSK/QPSKビット誤り率(Q関数)、ナイキスト符号間干渉ゼロ基準、DFTによるOFDMとサイクリックプレフィックスを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.mod.n01_signal_space_constellation",
+      "short_code": "MOD01",
+      "kind": "definition",
+      "title": "信号空間表現とコンステレーション（ASK/PSK/QAM）の定義",
+      "summary": "正規直交基底関数系を用いて変調波形の集合をN次元ユークリッド空間内の信号点ベクトル（コンステレーション）として表現する。",
+      "canonical_latex": "s_m(t) = \\sum_{k=1}^{N} s_{mk}\\phi_k(t),\\quad \\langle \\phi_j, \\phi_k \\rangle = \\delta_{jk},\\quad E_m = \\|\\mathbf{s}_m\\|^2 = \\sum_{k=1}^{N} |s_{mk}|^2",
+      "aliases_latex": [
+        "s_m(t) = \\operatorname{Re}\\left\\{\\tilde{s}_m g(t) e^{j2\\pi f_c t}\\right\\}",
+        "s_m = \\sqrt{E_s} e^{j2\\pi m/M}"
+      ],
+      "keywords": [
+        "信号空間",
+        "コンステレーション",
+        "ASK",
+        "PSK",
+        "QAM",
+        "正規直交基底"
+      ],
+      "domain_tags": [
+        "communications",
+        "digital_modulation"
+      ]
+    },
+    {
+      "id": "eng.mod.n02_awgn_q_function",
+      "short_code": "MOD02",
+      "kind": "definition",
+      "title": "AWGNチャネルモデルとQ関数（ガウス裾確率）の定義",
+      "summary": "両側電力スペクトル密度N0/2の加法性白色ガウス雑音（AWGN）を正規直交基底へ射影した等価ベクトル雑音モデルと、標準正規分布の右側裾確率を表すQ関数を定義する。",
+      "canonical_latex": "\\mathbf{r} = \\mathbf{s}_m + \\mathbf{n},\\quad \\mathbf{n} \\sim \\mathcal{N}\\!\\left(\\mathbf{0}, \\frac{N_0}{2}I_N\\right),\\quad Q(x) := \\frac{1}{\\sqrt{2\\pi}}\\int_{x}^{\\infty} e^{-t^2/2}\\,dt",
+      "aliases_latex": [
+        "Q(x) = \\frac{1}{2}\\operatorname{erfc}\\!\\left(\\frac{x}{\\sqrt{2}}\\right)"
+      ],
+      "keywords": [
+        "AWGN",
+        "Q関数",
+        "白色ガウス雑音",
+        "相関受信機",
+        "尤度"
+      ],
+      "domain_tags": [
+        "communications",
+        "information_theory"
+      ]
+    },
+    {
+      "id": "eng.mod.n03_bpsk_ber",
+      "short_code": "MOD03",
+      "kind": "theorem_formula",
+      "title": "AWGN下におけるBPSKのビット誤り率（BER）公式",
+      "summary": "対蹠信号点を持つ2相位相偏移変調（BPSK）について、AWGNチャネル下での最適硬判定受信におけるビット誤り率を与える。",
+      "canonical_latex": "P_b^{\\mathrm{BPSK}} = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)",
+      "aliases_latex": [
+        "P_b = \\frac{1}{2}\\operatorname{erfc}\\!\\left(\\sqrt{\\frac{E_b}{N_0}}\\right)"
+      ],
+      "keywords": [
+        "BPSK",
+        "ビット誤り率",
+        "BER",
+        "Eb/N0",
+        "Q関数"
+      ],
+      "domain_tags": [
+        "communications",
+        "error_analysis"
+      ]
+    },
+    {
+      "id": "eng.mod.n04_qpsk_ber",
+      "short_code": "MOD04",
+      "kind": "theorem_formula",
+      "title": "AWGN下におけるQPSKのシンボル誤り率とビット誤り率（グレイ符号化）",
+      "summary": "QPSKを直交するI/Qの独立な2つのBPSKチャネルに分解することで、グレイ符号化時のBERがBPSKと一致すること、およびSERの厳密式を導く。",
+      "canonical_latex": "P_b^{\\mathrm{QPSK}} = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right),\\qquad P_s^{\\mathrm{QPSK}} = 2Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right) - Q^2\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)",
+      "aliases_latex": [
+        "P_s^{\\mathrm{QPSK}} \\approx 2Q\\!\\left(\\sqrt{\\frac{E_s}{N_0}}\\right)"
+      ],
+      "keywords": [
+        "QPSK",
+        "グレイ符号",
+        "シンボル誤り率",
+        "SER",
+        "BER"
+      ],
+      "domain_tags": [
+        "communications",
+        "error_analysis"
+      ]
+    },
+    {
+      "id": "eng.mod.n05_mqam_ser_bound",
+      "short_code": "MOD05",
+      "kind": "theorem_formula",
+      "title": "正方M-QAMのシンボル誤り率公式",
+      "summary": "正方格子状のM-QAM（M=2^{2k}）をI/Q独立な2つの√M-PAMへ分解し、平均シンボルエネルギーEsと最小ユークリッド距離から厳密なシンボル誤り率を導く。",
+      "canonical_latex": "P_s^{M\\text{-QAM}} = 4\\left(1 - \\frac{1}{\\sqrt{M}}\\right)Q\\!\\left(\\sqrt{\\frac{3E_s}{(M-1)N_0}}\\right) - 4\\left(1 - \\frac{1}{\\sqrt{M}}\\right)^2 Q^2\\!\\left(\\sqrt{\\frac{3E_s}{(M-1)N_0}}\\right)",
+      "aliases_latex": [
+        "P_s^{M\\text{-QAM}} \\le 4\\left(1 - \\frac{1}{\\sqrt{M}}\\right)Q\\!\\left(\\sqrt{\\frac{3E_s}{(M-1)N_0}}\\right)"
+      ],
+      "keywords": [
+        "M-QAM",
+        "PAM",
+        "シンボル誤り率",
+        "多値変調",
+        "ユニオン境界"
+      ],
+      "domain_tags": [
+        "communications",
+        "error_analysis"
+      ]
+    },
+    {
+      "id": "eng.mod.n06_nyquist_isi_criterion",
+      "short_code": "MOD06",
+      "kind": "theorem_formula",
+      "title": "ナイキストの符号間干渉（ISI）ゼロ基準",
+      "summary": "シンボル周期Tsでの標本化時に符号間干渉（ISI）がゼロとなるための時間領域条件と、折り返しスペクトルの和が一定となる周波数領域の等価条件（ナイキスト第1基準）を示す。",
+      "canonical_latex": "p(nT_s) = \\delta_{n,0} \\iff \\frac{1}{T_s}\\sum_{k=-\\infty}^{\\infty} P\\!\\left(f - \\frac{k}{T_s}\\right) = 1",
+      "aliases_latex": [
+        "\\sum_{k=-\\infty}^{\\infty} P\\!\\left(\\Omega - k\\Omega_s\\right) = T_s"
+      ],
+      "keywords": [
+        "符号間干渉",
+        "ISI",
+        "ナイキスト基準",
+        "ロールオフフィルタ",
+        "波形整形"
+      ],
+      "domain_tags": [
+        "communications",
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.mod.n07_ofdm_subcarrier_orthogonality",
+      "short_code": "MOD07",
+      "kind": "definition",
+      "title": "OFDMマルチキャリア変調とサブキャリア直交条件",
+      "summary": "シンボル長T_symの逆数に等しいサブキャリア間隔Δf=1/T_symを選ぶことで、スペクトルが重なり合いながらも各サブキャリアが積分内積において直交するOFDM信号モデルを定義する。",
+      "canonical_latex": "x(t) = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] e^{j 2\\pi k \\Delta f t},\\quad \\Delta f = \\frac{1}{T_{\\mathrm{sym}}},\\quad \\frac{1}{T_{\\mathrm{sym}}}\\int_{0}^{T_{\\mathrm{sym}}} e^{j 2\\pi (k-m)\\Delta f t}\\,dt = \\delta_{km}",
+      "aliases_latex": [
+        "\\langle \\phi_k, \\phi_m \\rangle = \\delta_{km}"
+      ],
+      "keywords": [
+        "OFDM",
+        "サブキャリア",
+        "直交性",
+        "マルチキャリア変調"
+      ],
+      "domain_tags": [
+        "communications",
+        "ofdm"
+      ]
+    },
+    {
+      "id": "eng.mod.n08_ofdm_idft_dft_realization",
+      "short_code": "MOD08",
+      "kind": "theorem_formula",
+      "title": "IDFT/DFTによるOFDMベースバンド変復調の実現",
+      "summary": "連続時間OFDM信号をN点離散サンプリングすることで送信変調が逆離散フーリエ変換（IDFT/IFFT）、受信復調が離散フーリエ変換（DFT/FFT）と等価になることを示す。",
+      "canonical_latex": "x[n] = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] e^{j\\frac{2\\pi kn}{N}},\\qquad \\hat{X}[k] = \\frac{1}{\\sqrt{N}}\\sum_{n=0}^{N-1} x[n] e^{-j\\frac{2\\pi kn}{N}} = X[k]",
+      "aliases_latex": [
+        "\\mathbf{x} = \\mathbf{F}_N^H \\mathbf{X},\\quad \\hat{\\mathbf{X}} = \\mathbf{F}_N \\mathbf{x}"
+      ],
+      "keywords": [
+        "OFDM",
+        "IDFT",
+        "DFT",
+        "FFT",
+        "ベースバンド変復調"
+      ],
+      "domain_tags": [
+        "communications",
+        "ofdm",
+        "dsp"
+      ]
+    },
+    {
+      "id": "eng.mod.n09_ofdm_cyclic_prefix_diagonalization",
+      "short_code": "MOD09",
+      "kind": "theorem_formula",
+      "title": "サイクリックプレフィックス（CP）による巡回畳み込みと周波数領域等化",
+      "summary": "チャネルの遅延広がり（インパルス応答長L）以上のサイクリックプレフィックスを付加することで、線形畳み込みを巡回畳み込みへ変換し、DFTにより周波数領域で1タップ乗算（対角化）へ帰着させる。",
+      "canonical_latex": "N_{\\mathrm{CP}} \\ge L - 1 \\implies y_{\\mathrm{rem}}[n] = (h \\circledast_N x)[n] + w[n] \\implies Y[k] = H[k] X[k] + W[k]",
+      "aliases_latex": [
+        "\\mathbf{H}_{\\mathrm{circ}} = \\mathbf{F}_N^H \\operatorname{diag}(H[0],\\dots,H[N-1]) \\mathbf{F}_N"
+      ],
+      "keywords": [
+        "サイクリックプレフィックス",
+        "CP",
+        "巡回畳み込み",
+        "周波数領域等化",
+        "ISI回避"
+      ],
+      "domain_tags": [
+        "communications",
+        "ofdm"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_mod01_signal_space",
+      "target_node_id": "eng.mod.n01_signal_space_constellation",
+      "route_kind": "reformulation",
+      "title": "有限エネルギー変調波形の正規直交展開による信号空間ベクトル表現",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms",
+        "math.fourier.ft09_plancherel_parseval_transform"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "送信波形集合 {s_m(t)} はL^2(R)のN次元部分空間に含まれる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\{s_m(t)\\}_{m=0}^{M-1} \\subset L^2(\\mathbb{R})",
+          "to_latex": "s_m(t) = \\sum_{k=1}^{N} s_{mk}\\phi_k(t),\\quad \\mathbf{s}_m \\in \\mathbb{R}^N\\text{ (ASK/PSK/QAM)}",
+          "operation_label": "正規直交基底展開による信号空間表現",
+          "explanation": "変調波形の集合をグラム・シュミット直交化法で得たN個の正規直交基底関数で展開し、座標ベクトルを信号点（コンステレーション）として定義する。",
+          "used_node_ids": [
+            "math.fourier.ft09_plancherel_parseval_transform",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\{s_m(t)\\}_{m=0}^{M-1} \\subset L^2(\\mathbb{R})",
+          "to_latex": "s_m(t) = \\sum_{k=1}^{N} s_{mk}\\phi_k(t),\\quad \\langle \\phi_j, \\phi_k \\rangle = \\int_{-\\infty}^{\\infty}\\phi_j(t)\\phi_k(t)\\,dt = \\delta_{jk}",
+          "operation_label": "正規直交基底の構築",
+          "explanation": "有限エネルギー波形が張る空間に内積を導入し、正規直交基底 {φ_k(t)} を選んで各波形を線形結合で表す。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s_m(t) = \\sum_{k=1}^{N} s_{mk}\\phi_k(t),\\quad \\langle \\phi_j, \\phi_k \\rangle = \\int_{-\\infty}^{\\infty}\\phi_j(t)\\phi_k(t)\\,dt = \\delta_{jk}",
+          "to_latex": "E_m = \\int_{-\\infty}^{\\infty} |s_m(t)|^2\\,dt = \\sum_{k=1}^{N} |s_{mk}|^2 = \\|\\mathbf{s}_m\\|^2",
+          "operation_label": "パーセバルの等式によるエネルギー保存",
+          "explanation": "基底の正規直交性により、時間領域の信号エネルギーが信号空間ベクトルのユークリッドノルム二乗に一致する。",
+          "used_node_ids": [
+            "math.fourier.ft09_plancherel_parseval_transform"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E_m = \\int_{-\\infty}^{\\infty} |s_m(t)|^2\\,dt = \\sum_{k=1}^{N} |s_{mk}|^2 = \\|\\mathbf{s}_m\\|^2",
+          "to_latex": "s_m(t) = \\sum_{k=1}^{N} s_{mk}\\phi_k(t),\\quad \\mathbf{s}_m \\in \\mathbb{R}^N\\text{ (ASK/PSK/QAM)}",
+          "operation_label": "標準変調方式の配置定義",
+          "explanation": "N=1の同相基底でASK、N=2の直交搬送波基底の単位円上でPSK、直交格子上でQAMの信号空間コンステレーションを得る。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_mod02_awgn_q_func",
+      "target_node_id": "eng.mod.n02_awgn_q_function",
+      "route_kind": "deductive",
+      "title": "AWGN受信信号の基底射影による等価ベクトル雑音とQ関数の導入",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms",
+        "eng.dsp3.n06_matched_filter_snr",
+        "eng.mod.n01_signal_space_constellation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "白色ガウス雑音w(t)は平均0、両側電力スペクトル密度N_0/2を持つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r(t) = s_m(t) + w(t),\\quad S_w(f) = \\frac{N_0}{2}",
+          "to_latex": "\\mathbf{r} = \\mathbf{s}_m + \\mathbf{n},\\quad \\mathbf{n} \\sim \\mathcal{N}\\!\\left(\\mathbf{0}, \\frac{N_0}{2}I_N\\right),\\quad Q(x) := \\frac{1}{\\sqrt{2\\pi}}\\int_{x}^{\\infty} e^{-t^2/2}\\,dt",
+          "operation_label": "相関受信機による等価AWGNベクトルモデル",
+          "explanation": "受信波形を正規直交基底に射影すると各成分の雑音は独立同分布な分散N0/2のガウス確率変数となり、その閾値超過確率がQ関数で表される。",
+          "used_node_ids": [
+            "eng.dsp3.n06_matched_filter_snr",
+            "eng.mod.n01_signal_space_constellation",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r(t) = s_m(t) + w(t),\\quad S_w(f) = \\frac{N_0}{2}",
+          "to_latex": "r_k = \\int_{-\\infty}^{\\infty} r(t)\\phi_k(t)\\,dt = s_{mk} + n_k,\\quad n_k := \\int_{-\\infty}^{\\infty} w(t)\\phi_k(t)\\,dt",
+          "operation_label": "基底関数との相関積分",
+          "explanation": "受信信号r(t)と各正規直交基底φ_k(t)の内積をとることで、N次元の観測ベクトル成分r_kを得る。",
+          "used_node_ids": [
+            "eng.dsp3.n06_matched_filter_snr",
+            "eng.mod.n01_signal_space_constellation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_k = \\int_{-\\infty}^{\\infty} r(t)\\phi_k(t)\\,dt = s_{mk} + n_k,\\quad n_k := \\int_{-\\infty}^{\\infty} w(t)\\phi_k(t)\\,dt",
+          "to_latex": "\\mathbb{E}[n_j n_k] = \\frac{N_0}{2}\\int_{-\\infty}^{\\infty}\\phi_j(t)\\phi_k(t)\\,dt = \\frac{N_0}{2}\\delta_{jk}",
+          "operation_label": "雑音成分の無相関性と分散導出",
+          "explanation": "白色雑音の自己相関 R_w(τ)=(N_0/2)δ(τ) と基底の正規直交性から、各軸の雑音成分は独立かつ分散N_0/2の正規分布に従う。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[n_j n_k] = \\frac{N_0}{2}\\int_{-\\infty}^{\\infty}\\phi_j(t)\\phi_k(t)\\,dt = \\frac{N_0}{2}\\delta_{jk}",
+          "to_latex": "\\mathbf{r} = \\mathbf{s}_m + \\mathbf{n},\\quad \\mathbf{n} \\sim \\mathcal{N}\\!\\left(\\mathbf{0}, \\frac{N_0}{2}I_N\\right),\\quad Q(x) := \\frac{1}{\\sqrt{2\\pi}}\\int_{x}^{\\infty} e^{-t^2/2}\\,dt",
+          "operation_label": "標準正規裾確率Q関数の定義",
+          "explanation": "雑音n_kが閾値γを超える確率を標準正規変数の積分Q(γ/√(N_0/2))で表現するためにQ関数を定義する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_mod03_bpsk_ber",
+      "target_node_id": "eng.mod.n03_bpsk_ber",
+      "route_kind": "deductive",
+      "title": "BPSKの信号点間距離とAWGN分散からのBER公式導出",
+      "premise_node_ids": [
+        "eng.mod.n01_signal_space_constellation",
+        "eng.mod.n02_awgn_q_function"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "assumptions": [
+        "送信シンボル0, 1は等確率で発生し、しきい値0で最尤判定を行う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "s_0 = -\\sqrt{E_b},\\quad s_1 = +\\sqrt{E_b},\\quad r = s_m + n,\\quad n \\sim \\mathcal{N}\\!\\left(0, \\frac{N_0}{2}\\right)",
+          "to_latex": "P_b^{\\mathrm{BPSK}} = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)",
+          "operation_label": "1次元対蹠信号の誤り率計算",
+          "explanation": "対蹠信号点±√E_bの中点0を判定境界とするとき、雑音nが√E_bを超える確率をQ関数で評価してBPSKのBER公式を得る。",
+          "used_node_ids": [
+            "eng.mod.n01_signal_space_constellation",
+            "eng.mod.n02_awgn_q_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s_0 = -\\sqrt{E_b},\\quad s_1 = +\\sqrt{E_b},\\quad r = s_m + n,\\quad n \\sim \\mathcal{N}\\!\\left(0, \\frac{N_0}{2}\\right)",
+          "to_latex": "P(e \\mid s_0) = P(r > 0 \\mid s_0) = P\\left(n > \\sqrt{E_b}\\right)",
+          "operation_label": "誤り事象の定式化",
+          "explanation": "s_0=-√E_b送信時に受信値r=s_0+nが判定境界0を上回る事象がビット誤りとなる。",
+          "used_node_ids": [
+            "eng.mod.n01_signal_space_constellation",
+            "eng.mod.n02_awgn_q_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P(e \\mid s_0) = P(r > 0 \\mid s_0) = P\\left(n > \\sqrt{E_b}\\right)",
+          "to_latex": "P\\left(n > \\sqrt{E_b}\\right) = \\frac{1}{\\sqrt{\\pi N_0}}\\int_{\\sqrt{E_b}}^{\\infty} e^{-n^2/N_0}\\,dn = Q\\!\\left(\\frac{\\sqrt{E_b}}{\\sqrt{N_0/2}}\\right)",
+          "operation_label": "標準正規化とQ関数への置換",
+          "explanation": "t = n/√(N_0/2) と変数変換することで、分散N_0/2のガウス裾積分をQ関数に帰着させる。",
+          "used_node_ids": [
+            "eng.mod.n02_awgn_q_function",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P\\left(n > \\sqrt{E_b}\\right) = \\frac{1}{\\sqrt{\\pi N_0}}\\int_{\\sqrt{E_b}}^{\\infty} e^{-n^2/N_0}\\,dn = Q\\!\\left(\\frac{\\sqrt{E_b}}{\\sqrt{N_0/2}}\\right)",
+          "to_latex": "P_b^{\\mathrm{BPSK}} = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)",
+          "operation_label": "対称性による平均BERの確定",
+          "explanation": "s_1送信時の誤り率も対称性から同一であるため、平均ビット誤り率P_b = Q(√(2E_b/N_0))を得る。",
+          "used_node_ids": [
+            "eng.mod.n02_awgn_q_function"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_mod04_qpsk_ber",
+      "target_node_id": "eng.mod.n04_qpsk_ber",
+      "route_kind": "deductive",
+      "title": "QPSKの直交I/Q分解によるBER・SER導出",
+      "premise_node_ids": [
+        "eng.mod.n01_signal_space_constellation",
+        "eng.mod.n02_awgn_q_function",
+        "eng.mod.n03_bpsk_ber"
+      ],
+      "required_math_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "assumptions": [
+        "4つの信号点には隣接点間のハミング距離が1となるグレイ符号を割り当てる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{s}_m = \\left(\\pm\\sqrt{\\frac{E_s}{2}},\\, \\pm\\sqrt{\\frac{E_s}{2}}\\right),\\quad E_s = 2E_b",
+          "to_latex": "P_b^{\\mathrm{QPSK}} = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right),\\qquad P_s^{\\mathrm{QPSK}} = 2Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right) - Q^2\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)",
+          "operation_label": "直交2次元BPSKへの分解",
+          "explanation": "QPSKのI成分・Q成分がそれぞれエネルギーE_bの独立なBPSKを構成することを利用し、BERとSERを導出する。",
+          "used_node_ids": [
+            "eng.mod.n01_signal_space_constellation",
+            "eng.mod.n03_bpsk_ber"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{s}_m = \\left(\\pm\\sqrt{\\frac{E_s}{2}},\\, \\pm\\sqrt{\\frac{E_s}{2}}\\right),\\quad E_s = 2E_b",
+          "to_latex": "s_{m,I} = \\pm\\sqrt{E_b},\\quad s_{m,Q} = \\pm\\sqrt{E_b},\\quad n_I, n_Q \\stackrel{\\text{i.i.d.}}{\\sim} \\mathcal{N}\\!\\left(0,\\frac{N_0}{2}\\right)",
+          "operation_label": "I/Q成分へのエネルギー配分と雑音の独立性",
+          "explanation": "1シンボルあたり2ビットよりE_s=2E_bであるため、I軸とQ軸の振幅はそれぞれ±√E_bとなり、雑音成分も互いに独立である。",
+          "used_node_ids": [
+            "eng.mod.n01_signal_space_constellation",
+            "eng.mod.n02_awgn_q_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s_{m,I} = \\pm\\sqrt{E_b},\\quad s_{m,Q} = \\pm\\sqrt{E_b},\\quad n_I, n_Q \\stackrel{\\text{i.i.d.}}{\\sim} \\mathcal{N}\\!\\left(0,\\frac{N_0}{2}\\right)",
+          "to_latex": "P_b^{\\mathrm{QPSK}} = P_{b,I} = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)",
+          "operation_label": "グレイ符号化によるBERのBPSK帰着",
+          "explanation": "グレイ符号化によりI軸のビットとQ軸のビットが独立に復調されるため、1ビットあたりの誤り率はBPSKと等しくなる。",
+          "used_node_ids": [
+            "eng.mod.n03_bpsk_ber"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_b^{\\mathrm{QPSK}} = P_{b,I} = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)",
+          "to_latex": "P_s^{\\mathrm{QPSK}} = Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)\\text{より}\\; P_s^{\\mathrm{QPSK}} = 1 - (1 - P_b^{\\mathrm{QPSK}})^2 = 2Q\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right) - Q^2\\!\\left(\\sqrt{\\frac{2E_b}{N_0}}\\right)",
+          "operation_label": "正答事象の積によるSER導出",
+          "explanation": "シンボルが正しく判定される確率はI軸・Q軸の両方が正しい確率(1-P_b)^2であるため、その余事象としてSERが得られる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_mod05_mqam_ser",
+      "target_node_id": "eng.mod.n05_mqam_ser_bound",
+      "route_kind": "deductive",
+      "title": "正方M-QAMの直交PAM分解によるSER導出",
+      "premise_node_ids": [
+        "eng.mod.n01_signal_space_constellation",
+        "eng.mod.n02_awgn_q_function"
+      ],
+      "required_math_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "assumptions": [
+        "Mは2の偶数乗（√Mは整数）であり、すべての信号点は等確率で送信される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{s}_{i,j} = \\big((2i - 1 - \\sqrt{M})a,\\, (2j - 1 - \\sqrt{M})a\\big),\\quad i,j \\in \\{1,\\dots,\\sqrt{M}\\}",
+          "to_latex": "P_s^{M\\text{-QAM}} = 4\\left(1 - \\frac{1}{\\sqrt{M}}\\right)Q\\!\\left(\\sqrt{\\frac{3E_s}{(M-1)N_0}}\\right) - 4\\left(1 - \\frac{1}{\\sqrt{M}}\\right)^2 Q^2\\!\\left(\\sqrt{\\frac{3E_s}{(M-1)N_0}}\\right)",
+          "operation_label": "√M-PAM直交積としてのSER導出",
+          "explanation": "正方M-QAMの平均エネルギーEsと格子間隔2aの関係を求め、I/Q各軸の√M-PAMの誤り率から厳密なSERを導く。",
+          "used_node_ids": [
+            "eng.mod.n01_signal_space_constellation",
+            "eng.mod.n02_awgn_q_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{s}_{i,j} = \\big((2i - 1 - \\sqrt{M})a,\\, (2j - 1 - \\sqrt{M})a\\big),\\quad i,j \\in \\{1,\\dots,\\sqrt{M}\\}",
+          "to_latex": "E_s = 2\\cdot\\frac{2}{\\sqrt{M}}\\sum_{k=1}^{\\sqrt{M}/2}(2k-1)^2 a^2 = \\frac{2(M-1)}{3}a^2",
+          "operation_label": "正方格子の平均シンボルエネルギー計算",
+          "explanation": "奇数の二乗和の公式を用いて、I/Q両軸の座標二乗平均から平均シンボルエネルギーE_sを格子半間隔aで表す。",
+          "used_node_ids": [
+            "eng.mod.n01_signal_space_constellation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E_s = 2\\cdot\\frac{2}{\\sqrt{M}}\\sum_{k=1}^{\\sqrt{M}/2}(2k-1)^2 a^2 = \\frac{2(M-1)}{3}a^2",
+          "to_latex": "P_{\\sqrt{M}\\text{-PAM}} = 2\\left(1 - \\frac{1}{\\sqrt{M}}\\right)Q\\!\\left(\\frac{a}{\\sqrt{N_0/2}}\\right) = 2\\left(1 - \\frac{1}{\\sqrt{M}}\\right)Q\\!\\left(\\sqrt{\\frac{3E_s}{(M-1)N_0}}\\right)",
+          "operation_label": "1次元√M-PAMのシンボル誤り率",
+          "explanation": "内側√M-2点は左右2方向、外側2点は内側1方向に誤り領域を持つため平均して2(1-1/√M)倍のQ関数値となる。",
+          "used_node_ids": [
+            "eng.mod.n02_awgn_q_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\sqrt{M}\\text{-PAM}} = 2\\left(1 - \\frac{1}{\\sqrt{M}}\\right)Q\\!\\left(\\frac{a}{\\sqrt{N_0/2}}\\right) = 2\\left(1 - \\frac{1}{\\sqrt{M}}\\right)Q\\!\\left(\\sqrt{\\frac{3E_s}{(M-1)N_0}}\\right)",
+          "to_latex": "P_s^{M\\text{-QAM}} = 4\\left(1 - \\frac{1}{\\sqrt{M}}\\right)Q\\!\\left(\\sqrt{\\frac{3E_s}{(M-1)N_0}}\\right) - 4\\left(1 - \\frac{1}{\\sqrt{M}}\\right)^2 Q^2\\!\\left(\\sqrt{\\frac{3E_s}{(M-1)N_0}}\\right)",
+          "operation_label": "I/Q独立性による2次元SER結合",
+          "explanation": "P_s^{M-QAM} = 1 - (1 - P_{√M-PAM})^2 を展開することで、正方M-QAMの厳密なシンボル誤り率公式を得る。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_mod06_nyquist_isi",
+      "target_node_id": "eng.mod.n06_nyquist_isi_criterion",
+      "route_kind": "equivalence",
+      "title": "時間領域のISIゼロ条件と周波数領域折り返しスペクトル条件の等価性",
+      "premise_node_ids": [
+        "math.fourier.ft05_fourier_transform_def",
+        "eng.dsp1.n03_nyquist_shannon_sampling"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "送受信総合インパルス応答p(t)のフーリエ変換P(f)が存在する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "y(nT_s) = a_n p(0) + \\sum_{m \\neq n} a_m p\\big((n-m)T_s\\big) = a_n",
+          "to_latex": "p(nT_s) = \\delta_{n,0} \\iff \\frac{1}{T_s}\\sum_{k=-\\infty}^{\\infty} P\\!\\left(f - \\frac{k}{T_s}\\right) = 1",
+          "operation_label": "標本化パルスのフーリエ変換による等価表現",
+          "explanation": "時刻nT_sにおける標本値列p(nT_s)=δ_{n,0}をインパルス列としてフーリエ変換し、周波数領域の折り返し和が定数1になる等価条件を導く。",
+          "used_node_ids": [
+            "eng.dsp1.n03_nyquist_shannon_sampling",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y(nT_s) = a_n p(0) + \\sum_{m \\neq n} a_m p\\big((n-m)T_s\\big) = a_n",
+          "to_latex": "p_s(t) := \\sum_{n=-\\infty}^{\\infty} p(nT_s)\\delta(t - nT_s) = \\delta(t)",
+          "operation_label": "ISIゼロ条件のインパルス列表示",
+          "explanation": "任意の送信シンボル列{a_m}に対してy(nT_s)=a_nとなる必要十分条件はp(nT_s)=δ_{n,0}であり、標本化信号p_s(t)はδ(t)に一致する。",
+          "used_node_ids": [
+            "eng.dsp1.n03_nyquist_shannon_sampling"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_s(t) := \\sum_{n=-\\infty}^{\\infty} p(nT_s)\\delta(t - nT_s) = \\delta(t)",
+          "to_latex": "\\mathcal{F}[p_s](f) = \\frac{1}{T_s}\\sum_{k=-\\infty}^{\\infty} P\\!\\left(f - \\frac{k}{T_s}\\right)",
+          "operation_label": "標本化スペクトルの周期折り返し",
+          "explanation": "くし型関数との積のフーリエ変換より、p_s(t)のスペクトルはP(f)を1/T_sごとにシフト加算した和となる。",
+          "used_node_ids": [
+            "eng.dsp1.n03_nyquist_shannon_sampling",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{F}[p_s](f) = \\frac{1}{T_s}\\sum_{k=-\\infty}^{\\infty} P\\!\\left(f - \\frac{k}{T_s}\\right)",
+          "to_latex": "p(nT_s) = \\delta_{n,0} \\iff \\frac{1}{T_s}\\sum_{k=-\\infty}^{\\infty} P\\!\\left(f - \\frac{k}{T_s}\\right) = 1",
+          "operation_label": "ディラックδのフーリエ変換との等置",
+          "explanation": "F[δ](f)=1であるため、p_s(t)=δ(t)は折り返しスペクトル和が全周波数で1に等しいことと同値となる。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_mod07_ofdm_orthogonality",
+      "target_node_id": "eng.mod.n07_ofdm_subcarrier_orthogonality",
+      "route_kind": "deductive",
+      "title": "OFDMサブキャリア基底の正規直交性の証明",
+      "premise_node_ids": [
+        "eng.mod.n01_signal_space_constellation",
+        "eng.dsp1.n07_dft_definition"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "サブキャリア間隔Δfと有効シンボル長T_symは Δf T_sym = 1 を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\phi_k(t) = \\frac{1}{\\sqrt{T_{\\mathrm{sym}}}} e^{j 2\\pi k \\Delta f t}\\;\\left(0 \\le t < T_{\\mathrm{sym}},\\; \\Delta f = \\frac{1}{T_{\\mathrm{sym}}}\\right)",
+          "to_latex": "x(t) = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] e^{j 2\\pi k \\Delta f t},\\quad \\Delta f = \\frac{1}{T_{\\mathrm{sym}}},\\quad \\frac{1}{T_{\\mathrm{sym}}}\\int_{0}^{T_{\\mathrm{sym}}} e^{j 2\\pi (k-m)\\Delta f t}\\,dt = \\delta_{km}",
+          "operation_label": "複素指数基底の積分内積評価",
+          "explanation": "シンボル区間[0, T_sym]上で複素正弦波の積分内積を計算し、Δf=1/T_symのとき異なるサブキャリア間で厳密に直交することを示す。",
+          "used_node_ids": [
+            "eng.mod.n01_signal_space_constellation",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\phi_k(t) = \\frac{1}{\\sqrt{T_{\\mathrm{sym}}}} e^{j 2\\pi k \\Delta f t}\\;\\left(0 \\le t < T_{\\mathrm{sym}},\\; \\Delta f = \\frac{1}{T_{\\mathrm{sym}}}\\right)",
+          "to_latex": "\\langle \\phi_k, \\phi_m \\rangle = \\frac{1}{T_{\\mathrm{sym}}}\\int_{0}^{T_{\\mathrm{sym}}} e^{j 2\\pi (k-m)\\Delta f t}\\,dt",
+          "operation_label": "内積の積分表示",
+          "explanation": "区間[0, T_sym]における複素内積 ∫ φ_k(t) φ_m^*(t) dt を書き下す。",
+          "used_node_ids": [
+            "eng.mod.n01_signal_space_constellation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle \\phi_k, \\phi_m \\rangle = \\frac{1}{T_{\\mathrm{sym}}}\\int_{0}^{T_{\\mathrm{sym}}} e^{j 2\\pi (k-m)\\Delta f t}\\,dt",
+          "to_latex": "x(t) = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] e^{j 2\\pi k \\Delta f t},\\quad \\Delta f = \\frac{1}{T_{\\mathrm{sym}}},\\quad \\frac{1}{T_{\\mathrm{sym}}}\\int_{0}^{T_{\\mathrm{sym}}} e^{j 2\\pi (k-m)\\Delta f t}\\,dt = \\delta_{km}",
+          "operation_label": "整数周期条件によるクロネッカーδの導出",
+          "explanation": "k=mでは被積分関数が1となり積分値が1、k≠mでは(k-m)Δf T_sym = k-m ∈ Z\\{0}より積分区間で複素指数関数が整数周期回転して0となる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_mod08_ofdm_idft_dft",
+      "target_node_id": "eng.mod.n08_ofdm_idft_dft_realization",
+      "route_kind": "deductive",
+      "title": "OFDM連続時間波形のサンプリングによるIDFT/DFT変復調の導出",
+      "premise_node_ids": [
+        "eng.mod.n07_ofdm_subcarrier_orthogonality",
+        "eng.dsp1.n07_dft_definition",
+        "eng.dsp1.n08_fft_cooley_tukey_butterfly"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "OFDMベースバンド信号を間隔 T_s = T_sym / N で一様サンプリングする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "x(t) = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] e^{j 2\\pi k \\Delta f t},\\quad t_n = n\\frac{T_{\\mathrm{sym}}}{N}",
+          "to_latex": "x[n] = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] e^{j\\frac{2\\pi kn}{N}},\\qquad \\hat{X}[k] = \\frac{1}{\\sqrt{N}}\\sum_{n=0}^{N-1} x[n] e^{-j\\frac{2\\pi kn}{N}} = X[k]",
+          "operation_label": "離散サンプリングによるIDFT/DFT対応",
+          "explanation": "t = n T_sym / N を代入すると変調波形がIDFTに一致し、受信側でのDFTにより各サブキャリアシンボルが完全に分離復調される。",
+          "used_node_ids": [
+            "eng.dsp1.n07_dft_definition",
+            "eng.dsp1.n08_fft_cooley_tukey_butterfly",
+            "eng.mod.n07_ofdm_subcarrier_orthogonality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x(t) = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] e^{j 2\\pi k \\Delta f t},\\quad t_n = n\\frac{T_{\\mathrm{sym}}}{N}",
+          "to_latex": "x[n] := x(t_n) = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] e^{j\\frac{2\\pi kn}{N}} = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] W_N^{-kn}",
+          "operation_label": "IDFT表現の導出",
+          "explanation": "Δf T_sym = 1 を用いて指数部を整理すると、x[n]はユニタリ正規化されたN点IDFT（回転因子W_N^{-kn}）に等しい。",
+          "used_node_ids": [
+            "eng.dsp1.n07_dft_definition",
+            "eng.mod.n07_ofdm_subcarrier_orthogonality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x[n] := x(t_n) = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] e^{j\\frac{2\\pi kn}{N}} = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] W_N^{-kn}",
+          "to_latex": "x[n] = \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} X[k] e^{j\\frac{2\\pi kn}{N}},\\qquad \\hat{X}[k] = \\frac{1}{\\sqrt{N}}\\sum_{n=0}^{N-1} x[n] e^{-j\\frac{2\\pi kn}{N}} = X[k]",
+          "operation_label": "DFTによる直交復調の検証",
+          "explanation": "等比数列の和 ∑_{n=0}^{N-1} e^{j 2π(m-k)n/N} = N δ_{mk} より、受信系列のDFTが元の周波数領域シンボルX[k]を復元し、FFTによりO(N log N)で実装できる。",
+          "used_node_ids": [
+            "eng.dsp1.n07_dft_definition",
+            "eng.dsp1.n08_fft_cooley_tukey_butterfly"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_mod09_ofdm_cp_diag",
+      "target_node_id": "eng.mod.n09_ofdm_cyclic_prefix_diagonalization",
+      "route_kind": "deductive",
+      "title": "サイクリックプレフィックス付加とDFTによるマルチパスチャネルの対角化",
+      "premise_node_ids": [
+        "eng.mod.n08_ofdm_idft_dft_realization",
+        "eng.dsp1.n07_dft_definition",
+        "math.fourier.ft08_convolution_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "離散チャネルインパルス応答h[l]は長さL（0 <= l <= L-1）の因果的FIRフィルタであり、CP長N_CP >= L-1を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "x_{\\mathrm{CP}}[n] = x[n \\bmod N]\\;(-N_{\\mathrm{CP}} \\le n < N),\\quad y[n] = \\sum_{l=0}^{L-1} h[l] x_{\\mathrm{CP}}[n-l] + w[n]",
+          "to_latex": "N_{\\mathrm{CP}} \\ge L - 1 \\implies y_{\\mathrm{rem}}[n] = (h \\circledast_N x)[n] + w[n] \\implies Y[k] = H[k] X[k] + W[k]",
+          "operation_label": "CPによる巡回畳み込み化とDFT対角化",
+          "explanation": "N_CP >= L-1のもとでCP部分を除去すると線形畳み込みがN点巡回畳み込みとなり、DFTの畳み込み定理からサブキャリア間の干渉（ICI）のない1タップ積Y[k]=H[k]X[k]+W[k]を得る。",
+          "used_node_ids": [
+            "eng.dsp1.n07_dft_definition",
+            "eng.mod.n08_ofdm_idft_dft_realization",
+            "math.fourier.ft08_convolution_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x_{\\mathrm{CP}}[n] = x[n \\bmod N]\\;(-N_{\\mathrm{CP}} \\le n < N),\\quad y[n] = \\sum_{l=0}^{L-1} h[l] x_{\\mathrm{CP}}[n-l] + w[n]",
+          "to_latex": "N_{\\mathrm{CP}} \\ge L - 1 \\implies y_{\\mathrm{rem}}[n] = \\sum_{l=0}^{L-1} h[l] x[(n-l) \\bmod N] + w[n] = (h \\circledast_N x)[n] + w[n]",
+          "operation_label": "CP除去後の巡回畳み込み帰着",
+          "explanation": "0 <= n < N かつ 0 <= l <= L-1 <= N_CP の範囲で -N_CP <= n-l < N が成り立つため、x_CP[n-l] = x[(n-l) mod N] となりN点巡回畳み込みが成立する。",
+          "used_node_ids": [
+            "eng.mod.n08_ofdm_idft_dft_realization"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "N_{\\mathrm{CP}} \\ge L - 1 \\implies y_{\\mathrm{rem}}[n] = \\sum_{l=0}^{L-1} h[l] x[(n-l) \\bmod N] + w[n] = (h \\circledast_N x)[n] + w[n]",
+          "to_latex": "N_{\\mathrm{CP}} \\ge L - 1 \\implies y_{\\mathrm{rem}}[n] = (h \\circledast_N x)[n] + w[n] \\implies Y[k] = H[k] X[k] + W[k]",
+          "operation_label": "DFTの巡回畳み込み定理の適用",
+          "explanation": "y_rem[n]にN点DFTを適用すると巡回畳み込みが周波数応答H[k]=∑ h[l]W_N^{kl}との各サブキャリアごとの積へ変換され、ISIおよびICIが完全に解消される。",
+          "used_node_ids": [
+            "eng.dsp1.n07_dft_definition",
+            "math.fourier.ft08_convolution_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

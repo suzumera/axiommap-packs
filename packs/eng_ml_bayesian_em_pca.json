@@ -1,0 +1,768 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.ml.bayesian_em_pca",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "machine_learning",
+    "title": "確率的機械学習：主成分分析(PCA)・混合ガウスモデルとEMアルゴリズム",
+    "language": "ja",
+    "description": "分散最大化と共分散行列固有値問題(PCA)、イェンセンの不等式を用いた変分下界(ELBO)とEMアルゴリズムのE/Mステップを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.ml3.n01_sample_covariance_def",
+      "short_code": "ML3_01",
+      "kind": "definition",
+      "title": "標本平均と標本共分散行列の定義",
+      "summary": "D次元データ集合に対する標本平均ベクトルおよび中心化データから構成される標本共分散行列の定義。",
+      "canonical_latex": "\\bar{\\mathbf{x}} := \\frac{1}{N}\\sum_{n=1}^{N}\\mathbf{x}_n,\\quad \\mathbf{S} := \\frac{1}{N}\\sum_{n=1}^{N}(\\mathbf{x}_n - \\bar{\\mathbf{x}})(\\mathbf{x}_n - \\bar{\\mathbf{x}})^\\top",
+      "aliases_latex": [
+        "\\mathbf{S} = \\frac{1}{N}\\tilde{\\mathbf{X}}\\tilde{\\mathbf{X}}^\\top"
+      ],
+      "keywords": [
+        "sample mean",
+        "covariance matrix",
+        "centering",
+        "PCA"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "statistics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "eng.ml3.n02_pca_variance_maximization",
+      "short_code": "ML3_02",
+      "kind": "theorem_formula",
+      "title": "主成分分析（PCA）の分散最大化と固有値問題",
+      "summary": "射影後の分散を単位ノルム制約の下で最大化する問題が、標本共分散行列の固有値問題に帰着することを示す定理。",
+      "canonical_latex": "\\max_{\\|\\mathbf{u}_1\\|_2=1} \\mathbf{u}_1^\\top \\mathbf{S}\\mathbf{u}_1 \\iff \\mathbf{S}\\mathbf{u}_1 = \\lambda_1 \\mathbf{u}_1,\\quad \\max \\mathrm{Var} = \\lambda_1",
+      "aliases_latex": [
+        "\\mathbf{S}\\mathbf{u}_i = \\lambda_i\\mathbf{u}_i"
+      ],
+      "keywords": [
+        "PCA",
+        "principal component analysis",
+        "variance maximization",
+        "eigenvalue problem"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "linear_algebra",
+        "optimization"
+      ]
+    },
+    {
+      "id": "eng.ml3.n03_pca_reconstruction_error",
+      "short_code": "ML3_03",
+      "kind": "theorem_formula",
+      "title": "PCAにおける再構成誤差最小化と分散最大化の等価性",
+      "summary": "M次元正規直交部分空間への射影による平均二乗再構成誤差の最小化が、上位M個の固有値に対応する主成分の選択と等価であるという定理。",
+      "canonical_latex": "\\min_{\\mathbf{U}_M^\\top\\mathbf{U}_M=I_M} \\frac{1}{N}\\sum_{n=1}^{N}\\|\\tilde{\\mathbf{x}}_n - \\mathbf{U}_M\\mathbf{U}_M^\\top\\tilde{\\mathbf{x}}_n\\|_2^2 = \\operatorname{tr}(\\mathbf{S}) - \\max \\operatorname{tr}(\\mathbf{U}_M^\\top\\mathbf{S}\\mathbf{U}_M) = \\sum_{i=M+1}^{D}\\lambda_i",
+      "aliases_latex": [
+        "J_{\\mathrm{rec}}(\\mathbf{U}_M) = \\sum_{i=M+1}^{D}\\lambda_i"
+      ],
+      "keywords": [
+        "reconstruction error",
+        "orthogonal projection",
+        "PCA",
+        "Frobenius norm"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "eng.ml3.n04_gmm_latent_variable_def",
+      "short_code": "ML3_04",
+      "kind": "definition",
+      "title": "混合ガウスモデル（GMM）と潜在変数による周辺尤度の定義",
+      "summary": "K個の正規分布の混合としてデータを生成する確率モデルと、1-of-K表現の潜在変数を用いた同時分布および周辺尤度の定義。",
+      "canonical_latex": "p(\\mathbf{x} \\mid \\boldsymbol{\\theta}) = \\sum_{\\mathbf{z}} p(\\mathbf{z})p(\\mathbf{x}\\mid\\mathbf{z}) = \\sum_{k=1}^{K}\\pi_k \\mathcal{N}(\\mathbf{x} \\mid \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k),\\quad \\sum_{k=1}^{K}\\pi_k = 1,\\; \\pi_k \\ge 0",
+      "aliases_latex": [
+        "p(\\mathbf{x},\\mathbf{z}) = \\prod_{k=1}^{K}[\\pi_k \\mathcal{N}(\\mathbf{x}\\mid\\boldsymbol{\\mu}_k,\\boldsymbol{\\Sigma}_k)]^{z_k}"
+      ],
+      "keywords": [
+        "Gaussian mixture model",
+        "GMM",
+        "latent variable",
+        "marginal likelihood"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "probability"
+      ]
+    },
+    {
+      "id": "eng.ml3.n05_jensen_inequality_concave",
+      "short_code": "ML3_05",
+      "kind": "math_boundary",
+      "title": "凹関数に対するイェンセンの不等式",
+      "summary": "凹関数（特に対数関数）に対して、期待値の関数値が関数値の期待値以上となる基本的凸解析・確率論の不等式。",
+      "canonical_latex": "f\\text{ concave} \\implies f(\\mathbb{E}[Y]) \\ge \\mathbb{E}[f(Y)],\\quad \\ln\\left(\\sum_k q_k y_k\\right) \\ge \\sum_k q_k \\ln y_k\\;\\left(\\sum_k q_k = 1,\\; q_k \\ge 0\\right) ",
+      "aliases_latex": [
+        "\\ln \\mathbb{E}[Y] \\ge \\mathbb{E}[\\ln Y]"
+      ],
+      "keywords": [
+        "Jensen inequality",
+        "concave function",
+        "logarithm",
+        "variational inference"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "probability",
+        "convex_analysis"
+      ]
+    },
+    {
+      "id": "eng.ml3.n06_elbo_kl_decomposition",
+      "short_code": "ML3_06",
+      "kind": "theorem_formula",
+      "title": "対数周辺尤度の変分下界（ELBO）とKLダイバージェンス分解",
+      "summary": "任意の潜在変数分布q(Z)に対して、対数周辺尤度が変分下界（ELBO）と事後分布とのKLダイバージェンスの和に分解される基本恒等式。",
+      "canonical_latex": "\\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}) = \\mathcal{L}(q, \\boldsymbol{\theta}) + \\mathrm{KL}\\big(q(\\mathbf{Z}) \\,\\|\\, p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta})\\big),\\quad \\mathcal{L}(q, \\boldsymbol{\\theta}) := \\sum_{\\mathbf{Z}} q(\\mathbf{Z}) \\ln \\frac{p(\\mathbf{X}, \\mathbf{Z} \\mid \\boldsymbol{\\theta})}{q(\\mathbf{Z})}",
+      "aliases_latex": [
+        "\\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}) \\ge \\mathcal{L}(q, \\boldsymbol{\\theta})"
+      ],
+      "keywords": [
+        "ELBO",
+        "evidence lower bound",
+        "KL divergence",
+        "variational inference"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "probability"
+      ]
+    },
+    {
+      "id": "eng.ml3.n07_em_algorithm_general",
+      "short_code": "ML3_07",
+      "kind": "theorem_formula",
+      "title": "一般のEMアルゴリズム（Eステップ・Mステップと単調増加性）",
+      "summary": "ELBOをqとパラメータについて交互に最大化することで、対数周辺尤度を単調非減少に改善する反復最適化アルゴリズム。",
+      "canonical_latex": "\\text{E-step: } q^{(t+1)}(\\mathbf{Z}) = p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta}^{(t)}),\\quad \\text{M-step: } \\boldsymbol{\\theta}^{(t+1)} = \\arg\\max_{\\boldsymbol{\\theta}} \\mathcal{Q}(\\boldsymbol{\theta}, \\boldsymbol{\\theta}^{(t)}),\\quad \\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t+1)}) \\ge \\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t)})",
+      "aliases_latex": [
+        "\\mathcal{Q}(\\boldsymbol{\theta}, \\boldsymbol{\\theta}^{(t)}) = \\mathbb{E}_{p(\\mathbf{Z}\\mid\\mathbf{X},\\boldsymbol{\\theta}^{(t)})}[\\ln p(\\mathbf{X},\\mathbf{Z}\\mid\\boldsymbol{\\theta})]"
+      ],
+      "keywords": [
+        "EM algorithm",
+        "expectation maximization",
+        "monotonicity",
+        "Q-function"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "optimization",
+        "probability"
+      ]
+    },
+    {
+      "id": "eng.ml3.n08_gmm_e_step_responsibility",
+      "short_code": "ML3_08",
+      "kind": "theorem_formula",
+      "title": "混合ガウスモデル（GMM）のEステップ（負担率の計算）",
+      "summary": "現在のパラメータの下で各データ点が各混合要素に属する事後確率（負担率）をベイズの定理により評価する更新式。",
+      "canonical_latex": "\\gamma(z_{nk}) := p(z_{nk}=1 \\mid \\mathbf{x}_n, \\boldsymbol{\\theta}^{(t)}) = \\frac{\\pi_k^{(t)} \\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_k^{(t)}, \\boldsymbol{\\Sigma}_k^{(t)})}{\\sum_{j=1}^{K}\\pi_j^{(t)} \\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_j^{(t)}, \\boldsymbol{\\Sigma}_j^{(t)})} ",
+      "aliases_latex": [
+        "\\gamma_{nk} = p(z_{nk}=1 \\mid \\mathbf{x}_n)"
+      ],
+      "keywords": [
+        "GMM",
+        "E-step",
+        "responsibility",
+        "posterior probability"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "probability"
+      ]
+    },
+    {
+      "id": "eng.ml3.n09_gmm_m_step_updates",
+      "short_code": "ML3_09",
+      "kind": "theorem_formula",
+      "title": "混合ガウスモデル（GMM）のMステップ（パラメータ更新則）",
+      "summary": "Eステップで求めた負担率を用いて完全データ対数尤度の期待値Qを最大化する、平均・共分散行列・混合係数の閉形式更新式。",
+      "canonical_latex": "N_k = \\sum_{n=1}^{N}\\gamma(z_{nk}),\\quad \\boldsymbol{\\mu}_k^{(t+1)} = \\frac{1}{N_k}\\sum_{n=1}^{N}\\gamma(z_{nk})\\mathbf{x}_n,\\quad \\boldsymbol{\\Sigma}_k^{(t+1)} = \\frac{1}{N_k}\\sum_{n=1}^{N}\\gamma(z_{nk})(\\mathbf{x}_n-\\boldsymbol{\\mu}_k^{(t+1)})(\\mathbf{x}_n-\\boldsymbol{\\mu}_k^{(t+1)})^\\top,\\quad \\pi_k^{(t+1)} = \\frac{N_k}{N} ",
+      "aliases_latex": [
+        "\\boldsymbol{\\theta}^{(t+1)} = \\arg\\max_{\\boldsymbol{\\theta}}\\mathcal{Q}(\\boldsymbol{\\theta},\\boldsymbol{\\theta}^{(t)})"
+      ],
+      "keywords": [
+        "GMM",
+        "M-step",
+        "parameter update",
+        "maximum likelihood"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "optimization",
+        "probability"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.ml3.d01_sample_cov",
+      "target_node_id": "eng.ml3.n01_sample_covariance_def",
+      "route_kind": "reformulation",
+      "title": "データベクトル集合からの標本平均と標本共分散行列の構成",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "N個のD次元実数ベクトルが与えられている"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\{\\mathbf{x}_1,\\dots,\\mathbf{x}_N\\} \\subset \\mathbb{R}^D",
+          "to_latex": "\\bar{\\mathbf{x}} = \\frac{1}{N}\\sum_{n=1}^{N}\\mathbf{x}_n,\\quad \\mathbf{S} = \\frac{1}{N}\\sum_{n=1}^{N}(\\mathbf{x}_n - \\bar{\\mathbf{x}})(\\mathbf{x}_n - \\bar{\\mathbf{x}})^\\top",
+          "operation_label": "標本モーメントの構成",
+          "explanation": "線形空間のベクトル和と外積を用いて経験分布の1次モーメント（平均）と2次中心モーメント（共分散行列）を定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\{\\mathbf{x}_1,\\dots,\\mathbf{x}_N\\} \\subset \\mathbb{R}^D",
+          "to_latex": "\\bar{\\mathbf{x}} := \\frac{1}{N}\\sum_{n=1}^{N}\\mathbf{x}_n,\\quad \\tilde{\\mathbf{x}}_n := \\mathbf{x}_n - \\bar{\\mathbf{x}}",
+          "operation_label": "標本平均と中心化",
+          "explanation": "全データの算術平均を標本平均とし、各データから標本平均を引いて中心化データを得る。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\bar{\\mathbf{x}} := \\frac{1}{N}\\sum_{n=1}^{N}\\mathbf{x}_n,\\quad \\tilde{\\mathbf{x}}_n := \\mathbf{x}_n - \\bar{\\mathbf{x}}",
+          "to_latex": "\\mathbf{S} := \\frac{1}{N}\\sum_{n=1}^{N}\\tilde{\\mathbf{x}}_n\\tilde{\\mathbf{x}}_n^\\top = \\frac{1}{N}\\sum_{n=1}^{N}(\\mathbf{x}_n - \\bar{\\mathbf{x}})(\\mathbf{x}_n - \\bar{\\mathbf{x}})^\\top",
+          "operation_label": "外積平均による共分散行列の定義",
+          "explanation": "中心化ベクトルの外積をNで平均して対称半正定値の標本共分散行列を構成する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ml3.d02_pca_variance",
+      "target_node_id": "eng.ml3.n02_pca_variance_maximization",
+      "route_kind": "deductive",
+      "title": "ラグランジュ未定乗数法によるPCA分散最大化からの固有値問題導出",
+      "premise_node_ids": [
+        "eng.ml3.n01_sample_covariance_def",
+        "math.calc.e06_constrained_extremum_problem",
+        "math.calc.e07_lagrange_multiplier_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "射影方向ベクトルは単位長さである"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\max_{\\mathbf{u}_1 \\in \\mathbb{R}^D} \\mathbf{u}_1^\\top \\mathbf{S} \\mathbf{u}_1 \\quad \\text{s.t.}\\; \\mathbf{u}_1^\\top \\mathbf{u}_1 = 1",
+          "to_latex": "\\mathbf{S}\\mathbf{u}_1 = \\lambda_1 \\mathbf{u}_1,\\quad \\mathbf{u}_1^\\top \\mathbf{S}\\mathbf{u}_1 = \\lambda_1",
+          "operation_label": "制約付き最適化から固有値方程式へ",
+          "explanation": "単位ノルム制約下で射影分散を最大化する問題にラグランジュ未定乗数法を適用し、共分散行列の固有値問題を得る。",
+          "used_node_ids": [
+            "eng.ml3.n01_sample_covariance_def",
+            "math.calc.e06_constrained_extremum_problem",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\max_{\\mathbf{u}_1 \\in \\mathbb{R}^D} \\mathbf{u}_1^\\top \\mathbf{S} \\mathbf{u}_1 \\quad \\text{s.t.}\\; \\mathbf{u}_1^\\top \\mathbf{u}_1 = 1",
+          "to_latex": "\\mathcal{L}(\\mathbf{u}_1, \\lambda_1) = \\mathbf{u}_1^\\top \\mathbf{S} \\mathbf{u}_1 + \\lambda_1 (1 - \\mathbf{u}_1^\\top \\mathbf{u}_1) ",
+          "operation_label": "ラグランジュ関数の構成",
+          "explanation": "等式制約付き最適化問題に対し、未定乗数を用いてラグランジュ関数を定義する。",
+          "used_node_ids": [
+            "math.calc.e06_constrained_extremum_problem",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}(\\mathbf{u}_1, \\lambda_1) = \\mathbf{u}_1^\\top \\mathbf{S} \\mathbf{u}_1 + \\lambda_1 (1 - \\mathbf{u}_1^\\top \\mathbf{u}_1) ",
+          "to_latex": "\\nabla_{\\mathbf{u}_1}\\mathcal{L} = 2\\mathbf{S}\\mathbf{u}_1 - 2\\lambda_1\\mathbf{u}_1 = \\mathbf{0} \\implies \\mathbf{S}\\mathbf{u}_1 = \\lambda_1\\mathbf{u}_1",
+          "operation_label": "1階停留条件と固有値方程式",
+          "explanation": "ラグランジュ関数を方向ベクトルで偏微分して零とおくことで、共分散行列の固有値・固有ベクトル条件を導く。",
+          "used_node_ids": [
+            "eng.ml3.n01_sample_covariance_def",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\mathbf{u}_1}\\mathcal{L} = 2\\mathbf{S}\\mathbf{u}_1 - 2\\lambda_1\\mathbf{u}_1 = \\mathbf{0} \\implies \\mathbf{S}\\mathbf{u}_1 = \\lambda_1\\mathbf{u}_1",
+          "to_latex": "\\mathbf{u}_1^\\top \\mathbf{S}\\mathbf{u}_1 = \\lambda_1 \\mathbf{u}_1^\\top \\mathbf{u}_1 = \\lambda_1",
+          "operation_label": "最大分散と最大固有値の一致",
+          "explanation": "固有値方程式の左から転置ベクトルを掛け単位ノルム条件を用いると、射影分散が固有値に一致し最大固有値が最適解となることがわかる。",
+          "used_node_ids": [
+            "eng.ml3.n01_sample_covariance_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ml3.d03_pca_recon",
+      "target_node_id": "eng.ml3.n03_pca_reconstruction_error",
+      "route_kind": "equivalence",
+      "title": "再構成誤差最小化と射影分散最大化の等価性証明",
+      "premise_node_ids": [
+        "eng.ml3.n01_sample_covariance_def",
+        "eng.ml3.n02_pca_variance_maximization"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "射影行列はM本の正規直交基底列からなる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J_{\\mathrm{rec}}(\\mathbf{U}_M) = \\frac{1}{N}\\sum_{n=1}^{N}\\left\\|\\tilde{\\mathbf{x}}_n - \\mathbf{U}_M\\mathbf{U}_M^\\top\\tilde{\\mathbf{x}}_n\\right\\|_2^2",
+          "to_latex": "J_{\\mathrm{rec}}(\\mathbf{U}_M) = \\operatorname{tr}(\\mathbf{S}) - \\operatorname{tr}(\\mathbf{U}_M^\\top \\mathbf{S} \\mathbf{U}_M) = \\sum_{i=M+1}^{D}\\lambda_i",
+          "operation_label": "二乗誤差展開とトレース表現",
+          "explanation": "射影残差の二乗ノルムを展開しトレースの巡回置換不変性を適用することで、分散最大化との等価性を示す。",
+          "used_node_ids": [
+            "eng.ml3.n01_sample_covariance_def",
+            "eng.ml3.n02_pca_variance_maximization",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{\\mathrm{rec}}(\\mathbf{U}_M) = \\frac{1}{N}\\sum_{n=1}^{N}\\left\\|\\tilde{\\mathbf{x}}_n - \\mathbf{U}_M\\mathbf{U}_M^\\top\\tilde{\\mathbf{x}}_n\\right\\|_2^2",
+          "to_latex": "J_{\\mathrm{rec}}(\\mathbf{U}_M) = \\frac{1}{N}\\sum_{n=1}^{N}\\left(\\tilde{\\mathbf{x}}_n^\\top\\tilde{\\mathbf{x}}_n - \\tilde{\\mathbf{x}}_n^\\top\\mathbf{U}_M\\mathbf{U}_M^\\top\\tilde{\\mathbf{x}}_n\\right) ",
+          "operation_label": "直交射影の冪等性による展開",
+          "explanation": "正規直交性により射影行列が冪等かつ対称であることを用い、二乗ノルムを内積の差に整理する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{\\mathrm{rec}}(\\mathbf{U}_M) = \\frac{1}{N}\\sum_{n=1}^{N}\\left(\\tilde{\\mathbf{x}}_n^\\top\\tilde{\\mathbf{x}}_n - \\tilde{\\mathbf{x}}_n^\\top\\mathbf{U}_M\\mathbf{U}_M^\\top\\tilde{\\mathbf{x}}_n\\right) ",
+          "to_latex": "J_{\\mathrm{rec}}(\\mathbf{U}_M) = \\operatorname{tr}(\\mathbf{S}) - \\operatorname{tr}(\\mathbf{U}_M^\\top \\mathbf{S} \\mathbf{U}_M) ",
+          "operation_label": "標本共分散行列のトレース表示",
+          "explanation": "スカラー量のトレース巡回性を用いて標本共分散行列Sに関するトレースの差として書き換える。",
+          "used_node_ids": [
+            "eng.ml3.n01_sample_covariance_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{\\mathrm{rec}}(\\mathbf{U}_M) = \\operatorname{tr}(\\mathbf{S}) - \\operatorname{tr}(\\mathbf{U}_M^\\top \\mathbf{S} \\mathbf{U}_M) ",
+          "to_latex": "\\min_{\\mathbf{U}_M^\\top\\mathbf{U}_M=I_M} J_{\\mathrm{rec}}(\\mathbf{U}_M) = \\sum_{i=1}^{D}\\lambda_i - \\sum_{i=1}^{M}\\lambda_i = \\sum_{i=M+1}^{D}\\lambda_i",
+          "operation_label": "上位固有ベクトル選択の最適性",
+          "explanation": "総分散は一定であるため、第2項の射影分散の和を最大化すること（上位M個の固有ベクトルを選ぶこと）が最小誤差を与える。",
+          "used_node_ids": [
+            "eng.ml3.n02_pca_variance_maximization"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ml3.d04_gmm_def",
+      "target_node_id": "eng.ml3.n04_gmm_latent_variable_def",
+      "route_kind": "reformulation",
+      "title": "潜在変数の周辺化による混合ガウスモデルの定式化",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "潜在変数zは1-of-K符号化された離散確率変数である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p(\\mathbf{z}) = \\prod_{k=1}^{K} \\pi_k^{z_k},\\quad p(\\mathbf{x} \\mid z_k=1) = \\mathcal{N}(\\mathbf{x} \\mid \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k) ",
+          "to_latex": "p(\\mathbf{x} \\mid \\boldsymbol{\\theta}) = \\sum_{\\mathbf{z}} p(\\mathbf{z})p(\\mathbf{x}\\mid\\mathbf{z}) = \\sum_{k=1}^{K}\\pi_k \\mathcal{N}(\\mathbf{x} \\mid \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k) ",
+          "operation_label": "乗法定理と周辺化",
+          "explanation": "潜在変数の事前分布と条件付きガウス分布の積をとって同時分布を構成し、潜在変数について周辺和をとることでGMMの周辺尤度を得る。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(\\mathbf{z}) = \\prod_{k=1}^{K} \\pi_k^{z_k},\\quad p(\\mathbf{x} \\mid z_k=1) = \\mathcal{N}(\\mathbf{x} \\mid \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k) ",
+          "to_latex": "p(\\mathbf{x}, \\mathbf{z} \\mid \\boldsymbol{\\theta}) = \\prod_{k=1}^{K} \\big[\\pi_k \\mathcal{N}(\\mathbf{x} \\mid \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k)\\big]^{z_k} ",
+          "operation_label": "同時分布の構成",
+          "explanation": "確率の乗法定理と1-of-K表現を用いて観測変数と潜在変数の同時確率密度関数を表す。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(\\mathbf{x}, \\mathbf{z} \\mid \\boldsymbol{\\theta}) = \\prod_{k=1}^{K} \\big[\\pi_k \\mathcal{N}(\\mathbf{x} \\mid \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k)\\big]^{z_k} ",
+          "to_latex": "p(\\mathbf{x} \\mid \\boldsymbol{\\theta}) = \\sum_{\\mathbf{z}} p(\\mathbf{x}, \\mathbf{z} \\mid \\boldsymbol{\\theta}) = \\sum_{k=1}^{K}\\pi_k \\mathcal{N}(\\mathbf{x} \\mid \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k) ",
+          "operation_label": "潜在変数の周辺和",
+          "explanation": "取り得るすべての潜在変数状態（K通り）について和をとることで混合ガウス分布の周辺尤度を得る。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ml3.d05_elbo_kl",
+      "target_node_id": "eng.ml3.n06_elbo_kl_decomposition",
+      "route_kind": "deductive",
+      "title": "イェンセンの不等式と恒等式変形によるELBO・KL分解の導出",
+      "premise_node_ids": [
+        "eng.ml3.n04_gmm_latent_variable_def",
+        "eng.ml3.n05_jensen_inequality_concave",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "変分分布q(Z)は全領域で正の値をとる確率分布である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}) = \\ln \\sum_{\\mathbf{Z}} p(\\mathbf{X}, \\mathbf{Z} \\mid \\boldsymbol{\\theta})",
+          "to_latex": "\\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}) = \\mathcal{L}(q, \\boldsymbol{\\theta}) + \\mathrm{KL}\\big(q(\\mathbf{Z}) \\,\\|\\, p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta})\\big) \\ge \\mathcal{L}(q, \\boldsymbol{\\theta}) ",
+          "operation_label": "変分下界とKL項への分解",
+          "explanation": "対数周辺尤度に任意の分布q(Z)を導入し、イェンセンの不等式で下界ELBOを導出したのち、その差がKLダイバージェンスに一致することを示す。",
+          "used_node_ids": [
+            "eng.ml3.n04_gmm_latent_variable_def",
+            "eng.ml3.n05_jensen_inequality_concave",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}) = \\ln \\sum_{\\mathbf{Z}} p(\\mathbf{X}, \\mathbf{Z} \\mid \\boldsymbol{\\theta})",
+          "to_latex": "\\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}) = \\ln \\sum_{\\mathbf{Z}} q(\\mathbf{Z}) \\frac{p(\\mathbf{X}, \\mathbf{Z} \\mid \\boldsymbol{\\theta})}{q(\\mathbf{Z})} ",
+          "operation_label": "変分分布q(Z)の導入",
+          "explanation": "和の内部にq(Z)/q(Z)を挿入し、q(Z)に関する期待値の対数として表現する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}) = \\ln \\sum_{\\mathbf{Z}} q(\\mathbf{Z}) \\frac{p(\\mathbf{X}, \\mathbf{Z} \\mid \\boldsymbol{\\theta})}{q(\\mathbf{Z})} ",
+          "to_latex": "\\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}) \\ge \\sum_{\\mathbf{Z}} q(\\mathbf{Z}) \\ln \\frac{p(\\mathbf{X}, \\mathbf{Z} \\mid \\boldsymbol{\\theta})}{q(\\mathbf{Z})} =: \\mathcal{L}(q, \\boldsymbol{\\theta}) ",
+          "operation_label": "イェンセンの不等式の適用",
+          "explanation": "対数関数の凹性に対するイェンセンの不等式を適用し、変分下界（ELBO）を得る。",
+          "used_node_ids": [
+            "eng.ml3.n05_jensen_inequality_concave"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}) \\ge \\sum_{\\mathbf{Z}} q(\\mathbf{Z}) \\ln \\frac{p(\\mathbf{X}, \\mathbf{Z} \\mid \\boldsymbol{\\theta})}{q(\\mathbf{Z})} =: \\mathcal{L}(q, \\boldsymbol{\\theta}) ",
+          "to_latex": "\\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}) - \\mathcal{L}(q, \\boldsymbol{\\theta}) = -\\sum_{\\mathbf{Z}} q(\\mathbf{Z}) \\ln \\frac{p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta})}{q(\\mathbf{Z})} = \\mathrm{KL}\\big(q(\\mathbf{Z}) \\,\\|\\, p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta})\\big) ",
+          "operation_label": "事後分布とのKLダイバージェンスの抽出",
+          "explanation": "乗法定理p(X,Z)=p(Z|X)p(X)を用いて対数周辺尤度とELBOの差を整理すると、事後分布とのKLダイバージェンスに一致する。",
+          "used_node_ids": [
+            "eng.ml3.n04_gmm_latent_variable_def",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ml3.d06_em_general",
+      "target_node_id": "eng.ml3.n07_em_algorithm_general",
+      "route_kind": "deductive",
+      "title": "ELBO分解からの一般EMアルゴリズムの導出",
+      "premise_node_ids": [
+        "eng.ml3.n06_elbo_kl_decomposition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "MステップでQ関数の大域的または局所的増加が得られる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}) = \\mathcal{L}(q, \\boldsymbol{\\theta}) + \\mathrm{KL}\\big(q(\\mathbf{Z}) \\,\\|\\, p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta})\\big) ",
+          "to_latex": "q^{(t+1)}(\\mathbf{Z}) = p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta}^{(t)}),\\quad \\boldsymbol{\\theta}^{(t+1)} = \\arg\\max_{\\boldsymbol{\\theta}} \\mathcal{Q}(\\boldsymbol{\theta}, \\boldsymbol{\\theta}^{(t)}) ",
+          "operation_label": "EステップとMステップの座標上昇",
+          "explanation": "KLダイバージェンスが非負であることから、qを事後分布に一致させて下界をタイトにするEステップと、下界をパラメータについて最大化するMステップを導く。",
+          "used_node_ids": [
+            "eng.ml3.n06_elbo_kl_decomposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}) = \\mathcal{L}(q, \\boldsymbol{\\theta}) + \\mathrm{KL}\\big(q(\\mathbf{Z}) \\,\\|\\, p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta})\\big) ",
+          "to_latex": "q^{(t+1)}(\\mathbf{Z}) = \\arg\\max_{q} \\mathcal{L}(q, \\boldsymbol{\\theta}^{(t)}) = p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta}^{(t)}) ",
+          "operation_label": "Eステップ（KL=0の実現）",
+          "explanation": "パラメータを固定した状態でKL項を最小値0にするため、変分分布を真の事後分布に設定する。",
+          "used_node_ids": [
+            "eng.ml3.n06_elbo_kl_decomposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q^{(t+1)}(\\mathbf{Z}) = \\arg\\max_{q} \\mathcal{L}(q, \\boldsymbol{\\theta}^{(t)}) = p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta}^{(t)}) ",
+          "to_latex": "\\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}) = \\mathbb{E}_{p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta}^{(t)})}[\\ln p(\\mathbf{X}, \\mathbf{Z} \\mid \\boldsymbol{\\theta})] + \\mathcal{H}(q^{(t+1)}) ",
+          "operation_label": "Q関数と定数エントロピー項の分離",
+          "explanation": "得られた事後分布をELBOに代入すると、パラメータに依存するQ関数と依存しないエントロピー項に分かれる。",
+          "used_node_ids": [
+            "eng.ml3.n06_elbo_kl_decomposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}) = \\mathbb{E}_{p(\\mathbf{Z} \\mid \\mathbf{X}, \\boldsymbol{\\theta}^{(t)})}[\\ln p(\\mathbf{X}, \\mathbf{Z} \\mid \\boldsymbol{\\theta})] + \\mathcal{H}(q^{(t+1)}) ",
+          "to_latex": "\\boldsymbol{\\theta}^{(t+1)} = \\arg\\max_{\\boldsymbol{\\theta}} \\mathcal{Q}(\\boldsymbol{\theta}, \\boldsymbol{\\theta}^{(t)}),\\quad \\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}^{(t+1)}) \\ge \\ln p(\\mathbf{X} \\mid \\boldsymbol{\\theta}^{(t)}) ",
+          "operation_label": "Mステップと尤度単調増加保証",
+          "explanation": "Q関数を最大化することでELBOが増加し、KL>=0とEステップでの等号成立により対数周辺尤度の単調非減少性が保証される。",
+          "used_node_ids": [
+            "eng.ml3.n06_elbo_kl_decomposition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ml3.d07_gmm_e_step",
+      "target_node_id": "eng.ml3.n08_gmm_e_step_responsibility",
+      "route_kind": "deductive",
+      "title": "GMMにおけるEステップ（負担率）の導出",
+      "premise_node_ids": [
+        "eng.ml3.n04_gmm_latent_variable_def",
+        "eng.ml3.n07_em_algorithm_general"
+      ],
+      "required_math_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "assumptions": [
+        "データ点は独立同分布（i.i.d.）に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p(\\mathbf{z}_n) = \\prod_{k=1}^{K}\\pi_k^{z_{nk}},\\quad p(\\mathbf{x}_n \\mid \\mathbf{z}_n) = \\prod_{k=1}^{K}\\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k)^{z_{nk}} ",
+          "to_latex": "\\gamma(z_{nk}) := p(z_{nk}=1 \\mid \\mathbf{x}_n, \\boldsymbol{\\theta}^{(t)}) = \\frac{\\pi_k^{(t)} \\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_k^{(t)}, \\boldsymbol{\\Sigma}_k^{(t)})}{\\sum_{j=1}^{K}\\pi_j^{(t)} \\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_j^{(t)}, \\boldsymbol{\\Sigma}_j^{(t)})} ",
+          "operation_label": "ベイズの定理による負担率計算",
+          "explanation": "一般のEステップをGMMに適用し、各クラスタへの帰属確率である負担率をベイズの定理から計算する。",
+          "used_node_ids": [
+            "eng.ml3.n04_gmm_latent_variable_def",
+            "eng.ml3.n07_em_algorithm_general",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(\\mathbf{z}_n) = \\prod_{k=1}^{K}\\pi_k^{z_{nk}},\\quad p(\\mathbf{x}_n \\mid \\mathbf{z}_n) = \\prod_{k=1}^{K}\\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k)^{z_{nk}} ",
+          "to_latex": "p(z_{nk}=1, \\mathbf{x}_n \\mid \\boldsymbol{\theta}^{(t)}) = \\pi_k^{(t)} \\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_k^{(t)}, \\boldsymbol{\\Sigma}_k^{(t)}) ",
+          "operation_label": "第kクラスタの同時確率の評価",
+          "explanation": "現在のパラメータにおける第k要素の事前確率とガウス尤度の積をとる。",
+          "used_node_ids": [
+            "eng.ml3.n04_gmm_latent_variable_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(z_{nk}=1, \\mathbf{x}_n \\mid \\boldsymbol{\\theta}^{(t)}) = \\pi_k^{(t)} \\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_k^{(t)}, \\boldsymbol{\\Sigma}_k^{(t)}) ",
+          "to_latex": "\\gamma(z_{nk}) = \\frac{p(z_{nk}=1, \\mathbf{x}_n \\mid \\boldsymbol{\\theta}^{(t)})}{p(\\mathbf{x}_n \\mid \\boldsymbol{\\theta}^{(t)})} = \\frac{\\pi_k^{(t)} \\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_k^{(t)}, \\boldsymbol{\\Sigma}_k^{(t)})}{\\sum_{j=1}^{K}\\pi_j^{(t)} \\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_j^{(t)}, \\boldsymbol{\\Sigma}_j^{(t)})} ",
+          "operation_label": "周辺尤度による正規化",
+          "explanation": "Eステップの定義に従い、周辺尤度で正規化して事後確率（負担率）を得る。",
+          "used_node_ids": [
+            "eng.ml3.n07_em_algorithm_general",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ml3.d08_gmm_m_step",
+      "target_node_id": "eng.ml3.n09_gmm_m_step_updates",
+      "route_kind": "deductive",
+      "title": "GMMにおけるMステップ更新則の導出",
+      "premise_node_ids": [
+        "eng.ml3.n04_gmm_latent_variable_def",
+        "eng.ml3.n07_em_algorithm_general",
+        "eng.ml3.n08_gmm_e_step_responsibility",
+        "math.calc.e07_lagrange_multiplier_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "共分散行列は正定値対称行列である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{Q}(\\boldsymbol{\theta}, \\boldsymbol{\theta}^{(t)}) = \\sum_{n=1}^{N}\\sum_{k=1}^{K}\\gamma(z_{nk})\\left(\\ln\\pi_k + \\ln\\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k)\\right) ",
+          "to_latex": "\\boldsymbol{\\mu}_k^{(t+1)} = \\frac{1}{N_k}\\sum_{n=1}^{N}\\gamma(z_{nk})\\mathbf{x}_n,\\quad \\boldsymbol{\\Sigma}_k^{(t+1)} = \\frac{1}{N_k}\\sum_{n=1}^{N}\\gamma(z_{nk})(\\mathbf{x}_n-\\boldsymbol{\\mu}_k^{(t+1)})(\\mathbf{x}_n-\\boldsymbol{\\mu}_k^{(t+1)})^\\top,\\quad \\pi_k^{(t+1)} = \\frac{N_k}{N} ",
+          "operation_label": "Q関数の最大化による閉形式解",
+          "explanation": "完全データ対数尤度の期待値Qを各パラメータで偏微分して零とおき（混合係数は和が1の制約付きでラグランジュ法を適用）、閉形式の更新則を導く。",
+          "used_node_ids": [
+            "eng.ml3.n04_gmm_latent_variable_def",
+            "eng.ml3.n07_em_algorithm_general",
+            "eng.ml3.n08_gmm_e_step_responsibility",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{Q}(\\boldsymbol{\theta}, \\boldsymbol{\\theta}^{(t)}) = \\sum_{n=1}^{N}\\sum_{k=1}^{K}\\gamma(z_{nk})\\left(\\ln\\pi_k + \\ln\\mathcal{N}(\\mathbf{x}_n \\mid \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k)\\right) ",
+          "to_latex": "\\nabla_{\\boldsymbol{\\mu}_k}\\mathcal{Q} = \\sum_{n=1}^{N}\\gamma(z_{nk})\\boldsymbol{\\Sigma}_k^{-1}(\\mathbf{x}_n - \\boldsymbol{\\mu}_k) = \\mathbf{0} \\implies \\boldsymbol{\\mu}_k^{(t+1)} = \\frac{1}{N_k}\\sum_{n=1}^{N}\\gamma(z_{nk})\\mathbf{x}_n",
+          "operation_label": "平均ベクトルの更新式導出",
+          "explanation": "Q関数を平均ベクトルで偏微分して停留条件を解き、負担率で重み付けされた平均を得る。",
+          "used_node_ids": [
+            "eng.ml3.n07_em_algorithm_general",
+            "eng.ml3.n08_gmm_e_step_responsibility"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\boldsymbol{\\mu}_k}\\mathcal{Q} = \\sum_{n=1}^{N}\\gamma(z_{nk})\\boldsymbol{\\Sigma}_k^{-1}(\\mathbf{x}_n - \\boldsymbol{\\mu}_k) = \\mathbf{0} \\implies \\boldsymbol{\\mu}_k^{(t+1)} = \\frac{1}{N_k}\\sum_{n=1}^{N}\\gamma(z_{nk})\\mathbf{x}_n",
+          "to_latex": "\\nabla_{\\boldsymbol{\\Sigma}_k^{-1}}\\mathcal{Q} = \\mathbf{0} \\implies \\boldsymbol{\\Sigma}_k^{(t+1)} = \\frac{1}{N_k}\\sum_{n=1}^{N}\\gamma(z_{nk})(\\mathbf{x}_n-\\boldsymbol{\\mu}_k^{(t+1)})(\\mathbf{x}_n-\\boldsymbol{\\mu}_k^{(t+1)})^\\top",
+          "operation_label": "共分散行列の更新式導出",
+          "explanation": "更新された平均を用いてQ関数を精度行列について微分して零とおき、重み付き共分散行列の更新式を得る。",
+          "used_node_ids": [
+            "eng.ml3.n04_gmm_latent_variable_def",
+            "eng.ml3.n07_em_algorithm_general"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\boldsymbol{\\Sigma}_k^{-1}}\\mathcal{Q} = \\mathbf{0} \\implies \\boldsymbol{\\Sigma}_k^{(t+1)} = \\frac{1}{N_k}\\sum_{n=1}^{N}\\gamma(z_{nk})(\\mathbf{x}_n-\\boldsymbol{\\mu}_k^{(t+1)})(\\mathbf{x}_n-\\boldsymbol{\\mu}_k^{(t+1)})^\\top",
+          "to_latex": "\\frac{\\partial}{\\partial \\pi_k}\\left[\\mathcal{Q} + \\lambda\\left(\\sum_{j=1}^{K}\\pi_j - 1\\right)\\right] = 0 \\implies \\pi_k^{(t+1)} = \\frac{N_k}{N}\\;\\left(N_k := \\sum_{n=1}^{N}\\gamma(z_{nk})\\right) ",
+          "operation_label": "混合係数の制約付き更新式導出",
+          "explanation": "混合係数の正規化制約に対してラグランジュの未定乗数法を適用し、有効データ数比としての更新式を得る。",
+          "used_node_ids": [
+            "eng.ml3.n08_gmm_e_step_responsibility",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

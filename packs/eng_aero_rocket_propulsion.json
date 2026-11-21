@@ -1,0 +1,702 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.aero.rocket_propulsion",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "ロケット推進工学：推力方程式・比推力・ノズル膨張比と特性排気速度 c*",
+    "language": "ja",
+    "description": "検査体積の運動量保存からロケット推力方程式 F=ṁve+(pe-pa)Ae、比推力Isp、最適膨張条件、特性排気速度c*と推力係数CFを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.rock.n01_rocket_thrust_equation",
+      "short_code": "RK01",
+      "kind": "theorem_formula",
+      "title": "ロケット推力方程式（運動量推力と圧力推力）",
+      "summary": "検査体積に対する定常1次元運動量保存則から導かれる、運動量推力とノズル出口圧力差による圧力推力の和としてのロケット推力式。",
+      "canonical_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e",
+      "aliases_latex": [
+        "F = \\dot{m} v_e + (p_e - p_a) A_e = \\dot{m} c_{\\mathrm{eff}}"
+      ],
+      "keywords": [
+        "rocket thrust",
+        "momentum thrust",
+        "pressure thrust",
+        "control volume"
+      ],
+      "domain_tags": [
+        "aerospace_engineering"
+      ]
+    },
+    {
+      "id": "eng.rock.n02_effective_exhaust_velocity_isp",
+      "short_code": "RK02",
+      "kind": "definition",
+      "title": "有効排気速度と比推力 I_sp の定義",
+      "summary": "推進剤単位質量流量あたりの推力である有効排気速度と、それを標準重力加速度で無次元化した時間次元の推進性能指標である比推力の定義。",
+      "canonical_latex": "c_{\\mathrm{eff}} := \\frac{F}{\\dot{m}} = v_e + \\frac{(p_e - p_a)A_e}{\\dot{m}},\\quad I_{\\mathrm{sp}} := \\frac{F}{\\dot{m} g_0} = \\frac{c_{\\mathrm{eff}}}{g_0}",
+      "aliases_latex": [
+        "I_{\\mathrm{sp}} = \\frac{F}{\\dot{m}g_0}"
+      ],
+      "keywords": [
+        "effective exhaust velocity",
+        "specific impulse",
+        "Isp"
+      ],
+      "domain_tags": [
+        "aerospace_engineering"
+      ]
+    },
+    {
+      "id": "eng.rock.n03_optimal_expansion_condition",
+      "short_code": "RK03",
+      "kind": "theorem_formula",
+      "title": "ラバールノズルの最適膨張条件",
+      "summary": "与えられた燃焼室条件と背圧に対してノズル出口面積を変化させたとき、出口静圧と大気圧が一致する条件で推力が極大となる最適膨張条件。",
+      "canonical_latex": "\\frac{dF}{dA_e} = 0 \\iff p_e = p_a \\implies F_{\\max} = \\dot{m} v_e,\\quad c_{\\mathrm{eff}} = v_e",
+      "aliases_latex": [
+        "p_e = p_a"
+      ],
+      "keywords": [
+        "optimal expansion",
+        "matched nozzle",
+        "maximum thrust"
+      ],
+      "domain_tags": [
+        "aerospace_engineering"
+      ]
+    },
+    {
+      "id": "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+      "short_code": "RK04",
+      "kind": "theorem_formula",
+      "title": "等エントロピー1次元ノズル流の排気速度",
+      "summary": "理想気体の定常・断熱・可逆な1次元ノズル膨張におけるエネルギー保存と等エントロピー関係から導かれる排気速度公式（サン・ブナン＝ワンツェルの式）。",
+      "canonical_latex": "v_e = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
+      "aliases_latex": [
+        "v_e = \\sqrt{\\frac{2\\gamma}{\\gamma - 1}\\frac{R T_c}{M}\\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}"
+      ],
+      "keywords": [
+        "isentropic flow",
+        "exhaust velocity",
+        "Saint-Venant Wantzel"
+      ],
+      "domain_tags": [
+        "aerospace_engineering"
+      ]
+    },
+    {
+      "id": "eng.rock.n05_choked_mass_flow_rate",
+      "short_code": "RK05",
+      "kind": "theorem_formula",
+      "title": "スロートチョーク条件と質量流量公式",
+      "summary": "ノズルスロートで音速（マッハ数1）に達するチョーク流における質量流量と燃焼室圧力・スロート面積の関係式。",
+      "canonical_latex": "\\dot{m} = \\Gamma(\\gamma)\\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}},\\quad \\Gamma(\\gamma) := \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{\\gamma + 1}{2(\\gamma - 1)}}",
+      "aliases_latex": [
+        "\\dot{m} = \\frac{p_c A_t}{c^*}"
+      ],
+      "keywords": [
+        "choked flow",
+        "throat",
+        "mass flow rate",
+        "Vandenkerckhove function"
+      ],
+      "domain_tags": [
+        "aerospace_engineering"
+      ]
+    },
+    {
+      "id": "eng.rock.n06_characteristic_velocity_c_star",
+      "short_code": "RK06",
+      "kind": "definition",
+      "title": "特性排気速度 c* の定義と燃焼室性能表示",
+      "summary": "ノズル膨張形状に依存せず燃焼室圧力・スロート面積・質量流量のみから決まる推進剤と燃焼室の効率指標である特性排気速度の定義。",
+      "canonical_latex": "c^* := \\frac{p_c A_t}{\\dot{m}} = \\frac{\\sqrt{R_{\\mathrm{sp}} T_c}}{\\Gamma(\\gamma)}",
+      "aliases_latex": [
+        "c^* = \\frac{p_c A_t}{\\dot{m}}"
+      ],
+      "keywords": [
+        "characteristic velocity",
+        "c-star",
+        "combustion efficiency"
+      ],
+      "domain_tags": [
+        "aerospace_engineering"
+      ]
+    },
+    {
+      "id": "eng.rock.n07_thrust_coefficient_cf",
+      "short_code": "RK07",
+      "kind": "definition",
+      "title": "推力係数 C_F の定義と無次元表示",
+      "summary": "推力を燃焼室圧力とスロート面積の積で無次元化したノズル膨張性能の指標であり、圧力比と開口比の関数として表される推力係数。",
+      "canonical_latex": "C_F := \\frac{F}{p_c A_t} = \\frac{c_{\\mathrm{eff}}}{c^*} = \\Gamma(\\gamma)\\sqrt{\\frac{2\\gamma}{\\gamma - 1}\\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]} + \\frac{p_e - p_a}{p_c}\\varepsilon",
+      "aliases_latex": [
+        "F = C_F p_c A_t = \\dot{m} c^* C_F"
+      ],
+      "keywords": [
+        "thrust coefficient",
+        "nozzle performance",
+        "dimensionless thrust"
+      ],
+      "domain_tags": [
+        "aerospace_engineering"
+      ]
+    },
+    {
+      "id": "eng.rock.n08_nozzle_area_expansion_ratio",
+      "short_code": "RK08",
+      "kind": "theorem_formula",
+      "title": "ノズル開口比（膨張比）と圧力比の関係",
+      "summary": "スロートと出口間の質量流量保存則および等エントロピー膨張関係から導かれる、ノズル開口比と圧力比の解析的関係式。",
+      "canonical_latex": "\\frac{1}{\\varepsilon} = \\frac{A_t}{A_e} = \\left(\\frac{\\gamma + 1}{2}\\right)^{\\frac{1}{\\gamma - 1}}\\left(\\frac{p_e}{p_c}\\right)^{\\frac{1}{\\gamma}}\\sqrt{\\frac{\\gamma + 1}{\\gamma - 1}\\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
+      "aliases_latex": [
+        "\\varepsilon = \\frac{A_e}{A_t}"
+      ],
+      "keywords": [
+        "expansion ratio",
+        "area ratio",
+        "pressure ratio"
+      ],
+      "domain_tags": [
+        "aerospace_engineering"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.rock.d01_thrust_equation",
+      "target_node_id": "eng.rock.n01_rocket_thrust_equation",
+      "route_kind": "deductive",
+      "title": "検査体積の運動量保存からのロケット推力方程式の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "phys.mech.p03_action_reaction",
+        "astro.orbit.mt01_variable_mass_rocket_eom"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "エンジン内部の定常流",
+        "ノズル出口面での一様1次元流",
+        "ノズル外部全体への大気圧作用"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\frac{d}{dt}\\int_{\\mathrm{CV}} \\rho\\mathbf{v}\\,dV + \\int_{\\mathrm{CS}} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "to_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e",
+          "operation_label": "検査体積運動量収支の適用",
+          "explanation": "ロケットエンジンを囲む検査体積に運動量保存則と作用・反作用の法則を適用し、推力を運動量流束と圧力差の和として得る。",
+          "used_node_ids": [
+            "astro.orbit.mt01_variable_mass_rocket_eom",
+            "phys.mech.p02_newton_second_law",
+            "phys.mech.p03_action_reaction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\frac{d}{dt}\\int_{\\mathrm{CV}} \\rho\\mathbf{v}\\,dV + \\int_{\\mathrm{CS}} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "to_latex": "R_x + p_a A_e - p_e A_e = \\dot{m} v_e",
+          "operation_label": "定常1次元流と圧力合力の評価",
+          "explanation": "定常流の仮定により体積積分時間微分を零とし、機体からの構造反力と検査表面の圧力差（大気圧と出口静圧の差）を出口運動量流束と等置する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_x + p_a A_e - p_e A_e = \\dot{m} v_e",
+          "to_latex": "F = R_x = \\dot{m} v_e + (p_e - p_a) A_e",
+          "operation_label": "作用・反作用による推力の整理",
+          "explanation": "作用・反作用の法則からエンジンが機体に及ぼす推力 F は構造反力 R_x に等しいため、移項してロケット推力方程式を得る。",
+          "used_node_ids": [
+            "astro.orbit.mt01_variable_mass_rocket_eom",
+            "phys.mech.p03_action_reaction"
+          ],
+          "sympy_check_hint": "Eq(F, mdot*v_e + (p_e - p_a)*A_e)"
+        }
+      ]
+    },
+    {
+      "id": "eng.rock.d02_effective_velocity_isp",
+      "target_node_id": "eng.rock.n02_effective_exhaust_velocity_isp",
+      "route_kind": "reformulation",
+      "title": "推力方程式からの有効排気速度と比推力の定義導出",
+      "premise_node_ids": [
+        "eng.rock.n01_rocket_thrust_equation",
+        "astro.orbit.mt02_tsiolkovsky_rocket_equation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "推進剤質量流量 mdot > 0",
+        "標準重力加速度 g_0 の一定性"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e",
+          "to_latex": "c_{\\mathrm{eff}} := \\frac{F}{\\dot{m}} = v_e + \\frac{(p_e - p_a)A_e}{\\dot{m}},\\quad I_{\\mathrm{sp}} := \\frac{F}{\\dot{m} g_0} = \\frac{c_{\\mathrm{eff}}}{g_0}",
+          "operation_label": "質量流量による正規化と定義",
+          "explanation": "推力方程式を質量流量および重量流量で除して有効排気速度と比推力を定義する。",
+          "used_node_ids": [
+            "astro.orbit.mt02_tsiolkovsky_rocket_equation",
+            "eng.rock.n01_rocket_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e",
+          "to_latex": "c_{\\mathrm{eff}} := \\frac{F}{\\dot{m}} = v_e + \\frac{(p_e - p_a)A_e}{\\dot{m}}",
+          "operation_label": "有効排気速度の導入",
+          "explanation": "推力を質量流量で除すことで、圧力推力項を含めた等価な排気速度 c_eff を定義する。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_{\\mathrm{eff}} := \\frac{F}{\\dot{m}} = v_e + \\frac{(p_e - p_a)A_e}{\\dot{m}}",
+          "to_latex": "c_{\\mathrm{eff}} := \\frac{F}{\\dot{m}} = v_e + \\frac{(p_e - p_a)A_e}{\\dot{m}},\\quad I_{\\mathrm{sp}} := \\frac{F}{\\dot{m} g_0} = \\frac{c_{\\mathrm{eff}}}{g_0}",
+          "operation_label": "比推力の定義",
+          "explanation": "さらに標準重力加速度 g_0 で除し、ツィオルコフスキー方程式とも整合する時間次元の比推力 I_sp を定義する。",
+          "used_node_ids": [
+            "astro.orbit.mt02_tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": "Eq(I_sp, c_eff/g_0)"
+        }
+      ]
+    },
+    {
+      "id": "eng.rock.d03_optimal_expansion",
+      "target_node_id": "eng.rock.n03_optimal_expansion_condition",
+      "route_kind": "deductive",
+      "title": "推力の出口面積微分による最適膨張条件の導出",
+      "premise_node_ids": [
+        "eng.rock.n01_rocket_thrust_equation",
+        "phys.thermo.th03_first_law_internal_energy"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "固定された質量流量 mdot と燃焼室状態",
+        "断熱可逆（等エントロピー）な1次元膨張流"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F(A_e) = \\dot{m} v_e + (p_e - p_a) A_e",
+          "to_latex": "\\frac{dF}{dA_e} = 0 \\iff p_e = p_a \\implies F_{\\max} = \\dot{m} v_e,\\quad c_{\\mathrm{eff}} = v_e",
+          "operation_label": "停留点条件と等エントロピー関係式",
+          "explanation": "推力を出口面積で微分し、等エントロピー流の微分運動方程式を用いて p_e = p_a が最大推力条件であることを示す。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation",
+            "math.calc.e03_stationary_point_condition",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F(A_e) = \\dot{m} v_e + (p_e - p_a) A_e",
+          "to_latex": "\\frac{dF}{dA_e} = \\dot{m}\\frac{dv_e}{dA_e} + A_e\\frac{dp_e}{dA_e} + (p_e - p_a)",
+          "operation_label": "出口面積による微分",
+          "explanation": "積の微分法を用いて推力方程式を出口面積 A_e で微分する。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dF}{dA_e} = \\dot{m}\\frac{dv_e}{dA_e} + A_e\\frac{dp_e}{dA_e} + (p_e - p_a)",
+          "to_latex": "\\frac{dF}{dA_e} = p_e - p_a",
+          "operation_label": "オイラーの流線方向運動方程式の代入",
+          "explanation": "質量流量関係 mdot = rho_e A_e v_e と断熱可逆流のオイラー方程式 rho_e v_e dv_e + dp_e = 0 により、前の2項が相殺する。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dF}{dA_e} = p_e - p_a",
+          "to_latex": "\\frac{dF}{dA_e} = 0 \\iff p_e = p_a \\implies F_{\\max} = \\dot{m} v_e,\\quad c_{\\mathrm{eff}} = v_e",
+          "operation_label": "極値条件の適用",
+          "explanation": "停留点条件 dF/dA_e = 0 から最適膨張条件 p_e = p_a が導かれ、このとき圧力推力項が消えて推力が最大となる。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": "Eq(p_e, p_a)"
+        }
+      ]
+    },
+    {
+      "id": "eng.rock.d04_isentropic_exhaust_velocity",
+      "target_node_id": "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+      "route_kind": "deductive",
+      "title": "定常エネルギー保存と等エントロピー関係からの排気速度導出",
+      "premise_node_ids": [
+        "phys.thermo.th01_zeroth_law_state_eq",
+        "phys.thermo.th03_first_law_internal_energy"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "比熱一定の理想気体",
+        "燃焼室内の流速無視（よどみ点温度 T_c, よどみ点圧力 p_c）",
+        "断熱可逆過程"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "h_c = h_e + \\frac{1}{2}v_e^2,\\quad p\\rho^{-\\gamma} = \\mathrm{const.}",
+          "to_latex": "v_e = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
+          "operation_label": "エネルギー保存とポアソン関係式の結合",
+          "explanation": "全エンタルピー保存と等エントロピー膨張の圧力・温度関係からノズル出口の排気速度を求める。",
+          "used_node_ids": [
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "h_c = h_e + \\frac{1}{2}v_e^2,\\quad p\\rho^{-\\gamma} = \\mathrm{const.}",
+          "to_latex": "v_e = \\sqrt{2 c_p (T_c - T_e)} = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left(1 - \\frac{T_e}{T_c}\\right)}",
+          "operation_label": "定圧比熱と気体定数の関係代入",
+          "explanation": "理想気体のエンタルピー差 h_c - h_e = c_p(T_c - T_e) およびマイヤーの関係 c_p = gamma R_sp / (gamma - 1) を代入して v_e を温度比で表す。",
+          "used_node_ids": [
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_e = \\sqrt{2 c_p (T_c - T_e)} = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left(1 - \\frac{T_e}{T_c}\\right)}",
+          "to_latex": "v_e = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
+          "operation_label": "等エントロピー温度圧力比の代入",
+          "explanation": "等エントロピー関係 T_e/T_c = (p_e/p_c)^((gamma-1)/gamma) を代入し、排気速度の圧力比表示を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.rock.d05_choked_mass_flow",
+      "target_node_id": "eng.rock.n05_choked_mass_flow_rate",
+      "route_kind": "deductive",
+      "title": "スロート音速条件からのチョーク質量流量公式の導出",
+      "premise_node_ids": [
+        "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "スロートでの臨界状態（M_t = 1）",
+        "等エントロピー理想気体流"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{m} = \\rho_t A_t v_t,\\quad M_t = 1",
+          "to_latex": "\\dot{m} = \\Gamma(\\gamma)\\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}},\\quad \\Gamma(\\gamma) := \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{\\gamma + 1}{2(\\gamma - 1)}}",
+          "operation_label": "臨界状態量の代入",
+          "explanation": "スロートにおける臨界密度・臨界温度・音速を連続の式に代入し、チョーク質量流量を得る。",
+          "used_node_ids": [
+            "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{m} = \\rho_t A_t v_t,\\quad M_t = 1",
+          "to_latex": "\\frac{T_t}{T_c} = \\frac{2}{\\gamma + 1},\\quad \\frac{\\rho_t}{\\rho_c} = \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\gamma R_{\\mathrm{sp}} T_t}",
+          "operation_label": "臨界比とスロート音速の評価",
+          "explanation": "M_t = 1 のとき v_t^2 = gamma R_sp T_t となり、エネルギー保存式から臨界温度比と臨界密度比が求まる。",
+          "used_node_ids": [
+            "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{T_t}{T_c} = \\frac{2}{\\gamma + 1},\\quad \\frac{\\rho_t}{\\rho_c} = \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\gamma R_{\\mathrm{sp}} T_t}",
+          "to_latex": "\\dot{m} = \\Gamma(\\gamma)\\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}},\\quad \\Gamma(\\gamma) := \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{\\gamma + 1}{2(\\gamma - 1)}}",
+          "operation_label": "状態方程式と質量流量の整理",
+          "explanation": "理想気体の状態方程式 rho_c = p_c/(R_sp T_c) を用いて mdot = rho_t A_t v_t を整理し、Gamma(gamma) による公式を得る。",
+          "used_node_ids": [
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.rock.d06_characteristic_velocity",
+      "target_node_id": "eng.rock.n06_characteristic_velocity_c_star",
+      "route_kind": "reformulation",
+      "title": "チョーク質量流量公式からの特性排気速度 c* の導出",
+      "premise_node_ids": [
+        "eng.rock.n05_choked_mass_flow_rate"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "チョークした定常1次元ノズル流"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{m} = \\Gamma(\\gamma)\\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}}",
+          "to_latex": "c^* := \\frac{p_c A_t}{\\dot{m}} = \\frac{\\sqrt{R_{\\mathrm{sp}} T_c}}{\\Gamma(\\gamma)}",
+          "operation_label": "燃焼室条件の分離と定義",
+          "explanation": "質量流量公式を p_c A_t / mdot について解き、燃焼室気体物性のみに依存する特性排気速度 c* を定義する。",
+          "used_node_ids": [
+            "eng.rock.n05_choked_mass_flow_rate"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{m} = \\Gamma(\\gamma)\\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}}",
+          "to_latex": "\\frac{p_c A_t}{\\dot{m}} = \\frac{\\sqrt{R_{\\mathrm{sp}} T_c}}{\\Gamma(\\gamma)}",
+          "operation_label": "代数変形",
+          "explanation": "チョーク質量流量公式の両辺を整理して、スロート圧力面積積と質量流量の比を抽出する。",
+          "used_node_ids": [
+            "eng.rock.n05_choked_mass_flow_rate"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{p_c A_t}{\\dot{m}} = \\frac{\\sqrt{R_{\\mathrm{sp}} T_c}}{\\Gamma(\\gamma)}",
+          "to_latex": "c^* := \\frac{p_c A_t}{\\dot{m}} = \\frac{\\sqrt{R_{\\mathrm{sp}} T_c}}{\\Gamma(\\gamma)}",
+          "operation_label": "c* の定義",
+          "explanation": "この比を特性排気速度 c* と定義し、推進剤の燃焼エネルギーと燃焼室効率の指標とする。",
+          "used_node_ids": [
+            "eng.rock.n05_choked_mass_flow_rate"
+          ],
+          "sympy_check_hint": "Eq(c_star, p_c*A_t/mdot)"
+        }
+      ]
+    },
+    {
+      "id": "eng.rock.d07_thrust_coefficient",
+      "target_node_id": "eng.rock.n07_thrust_coefficient_cf",
+      "route_kind": "deductive",
+      "title": "推力方程式と排気速度・特性排気速度からの推力係数 C_F の導出",
+      "premise_node_ids": [
+        "eng.rock.n01_rocket_thrust_equation",
+        "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+        "eng.rock.n05_choked_mass_flow_rate",
+        "eng.rock.n06_characteristic_velocity_c_star"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "スロートでのチョーク流",
+        "定常等エントロピーノズル膨張"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e,\\quad \\dot{m} = \\frac{p_c A_t}{c^*}",
+          "to_latex": "C_F := \\frac{F}{p_c A_t} = \\frac{c_{\\mathrm{eff}}}{c^*} = \\Gamma(\\gamma)\\sqrt{\\frac{2\\gamma}{\\gamma - 1}\\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]} + \\frac{p_e - p_a}{p_c}\\varepsilon",
+          "operation_label": "無次元化と等エントロピー式の代入",
+          "explanation": "推力を p_c A_t で無次元化して推力係数 C_F を定義し、排気速度と特性排気速度の式を代入する。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation",
+            "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+            "eng.rock.n05_choked_mass_flow_rate",
+            "eng.rock.n06_characteristic_velocity_c_star"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e,\\quad \\dot{m} = \\frac{p_c A_t}{c^*}",
+          "to_latex": "C_F := \\frac{F}{p_c A_t} = \\frac{v_e}{c^*} + \\frac{p_e - p_a}{p_c}\\frac{A_e}{A_t} = \\frac{c_{\\mathrm{eff}}}{c^*}",
+          "operation_label": "p_c A_t による除算",
+          "explanation": "推力方程式の両辺を p_c A_t で割り、mdot/(p_c A_t) = 1/c* および開口比 epsilon = A_e/A_t を用いて整理する。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation",
+            "eng.rock.n06_characteristic_velocity_c_star"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_F := \\frac{F}{p_c A_t} = \\frac{v_e}{c^*} + \\frac{p_e - p_a}{p_c}\\frac{A_e}{A_t} = \\frac{c_{\\mathrm{eff}}}{c^*}",
+          "to_latex": "C_F := \\frac{F}{p_c A_t} = \\frac{c_{\\mathrm{eff}}}{c^*} = \\Gamma(\\gamma)\\sqrt{\\frac{2\\gamma}{\\gamma - 1}\\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]} + \\frac{p_e - p_a}{p_c}\\varepsilon",
+          "operation_label": "v_e/c* の展開",
+          "explanation": "排気速度 v_e と特性排気速度 c* の表式を代入すると sqrt(R_sp T_c) が消去され、C_F が比熱比・圧力比・開口比のみで表される。",
+          "used_node_ids": [
+            "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+            "eng.rock.n05_choked_mass_flow_rate",
+            "eng.rock.n06_characteristic_velocity_c_star"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.rock.d08_nozzle_expansion_ratio",
+      "target_node_id": "eng.rock.n08_nozzle_area_expansion_ratio",
+      "route_kind": "deductive",
+      "title": "質量流量保存と等エントロピー関係からのノズル開口比の導出",
+      "premise_node_ids": [
+        "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+        "eng.rock.n05_choked_mass_flow_rate",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "スロートと出口間の質量保存",
+        "定常等エントロピー1次元流"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{m} = \\rho_t A_t v_t = \\rho_e A_e v_e",
+          "to_latex": "\\frac{1}{\\varepsilon} = \\frac{A_t}{A_e} = \\left(\\frac{\\gamma + 1}{2}\\right)^{\\frac{1}{\\gamma - 1}}\\left(\\frac{p_e}{p_c}\\right)^{\\frac{1}{\\gamma}}\\sqrt{\\frac{\\gamma + 1}{\\gamma - 1}\\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
+          "operation_label": "連続の式への等エントロピー関係代入",
+          "explanation": "スロートと出口での質量流量一致にチョーク条件と等エントロピー排気速度を代入し、開口比と圧力比の関係式を導出する。",
+          "used_node_ids": [
+            "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+            "eng.rock.n05_choked_mass_flow_rate",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{m} = \\rho_t A_t v_t = \\rho_e A_e v_e",
+          "to_latex": "\\frac{A_t}{A_e} = \\frac{\\rho_e v_e}{\\rho_t v_t} = \\frac{\\rho_e v_e}{\\Gamma(\\gamma) p_c / \\sqrt{R_{\\mathrm{sp}} T_c}}",
+          "operation_label": "面積比の質量流束比表示",
+          "explanation": "質量保存式を A_t/A_e について解き、分母にチョーク質量流束の表式を代入する。",
+          "used_node_ids": [
+            "eng.rock.n05_choked_mass_flow_rate"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{A_t}{A_e} = \\frac{\\rho_e v_e}{\\rho_t v_t} = \\frac{\\rho_e v_e}{\\Gamma(\\gamma) p_c / \\sqrt{R_{\\mathrm{sp}} T_c}}",
+          "to_latex": "\\frac{A_t}{A_e} = \\frac{1}{\\Gamma(\\gamma)}\\left(\\frac{p_e}{p_c}\\right)^{\\frac{1}{\\gamma}}\\sqrt{\\frac{2\\gamma}{\\gamma - 1}\\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
+          "operation_label": "出口密度と排気速度の代入",
+          "explanation": "等エントロピー密度比 rho_e = rho_c (p_e/p_c)^(1/gamma) と排気速度 v_e を代入して燃焼室温度・圧力を消去する。",
+          "used_node_ids": [
+            "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{A_t}{A_e} = \\frac{1}{\\Gamma(\\gamma)}\\left(\\frac{p_e}{p_c}\\right)^{\\frac{1}{\\gamma}}\\sqrt{\\frac{2\\gamma}{\\gamma - 1}\\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
+          "to_latex": "\\frac{1}{\\varepsilon} = \\frac{A_t}{A_e} = \\left(\\frac{\\gamma + 1}{2}\\right)^{\\frac{1}{\\gamma - 1}}\\left(\\frac{p_e}{p_c}\\right)^{\\frac{1}{\\gamma}}\\sqrt{\\frac{\\gamma + 1}{\\gamma - 1}\\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
+          "operation_label": "Gamma(gamma) の展開整理",
+          "explanation": "Gamma(gamma) の定義を代入して係数を約分・整理し、開口比 epsilon の逆数公式を得る。",
+          "used_node_ids": [
+            "eng.rock.n05_choked_mass_flow_rate"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
