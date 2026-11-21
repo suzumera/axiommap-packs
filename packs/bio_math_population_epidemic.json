@@ -188,7 +188,7 @@
           "parent_step_id": null,
           "from_latex": "\\frac{dN}{dt} = r(N)N,\\quad r(N) = r_0\\left(1 - \\frac{N}{K}\\right)",
           "to_latex": "\\frac{dN}{dt} = r_0 N\\left(1 - \\frac{N}{K}\\right),\\quad N(0) = N_0 > 0",
-          "operation_label": "substitute_growth_rate",
+          "operation_label": "密度依存増加率の代入",
           "explanation": "一人当たり増殖率の線形減少モデルを個体群成長方程式に代入し、初期条件を付与してロジスティック方程式を定義する。",
           "used_node_ids": [
             "bio.pop.n01_population_mass_action_boundary"
@@ -202,7 +202,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dN}{dt} = r(N)N,\\quad r(N) = r_0\\left(1 - \\frac{N}{K}\\right)",
           "to_latex": "\\frac{dN}{dt} = r_0\\left(1 - \\frac{N}{K}\\right)N",
-          "operation_label": "substitute_rN",
+          "operation_label": "増加率 r(N) の代入",
           "explanation": "r(N) の定義式を dN/dt = r(N)N に代入する。",
           "used_node_ids": [
             "bio.pop.n01_population_mass_action_boundary"
@@ -216,7 +216,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dN}{dt} = r_0\\left(1 - \\frac{N}{K}\\right)N",
           "to_latex": "\\frac{dN}{dt} = r_0 N\\left(1 - \\frac{N}{K}\\right),\\quad N(0) = N_0 > 0",
-          "operation_label": "attach_initial_condition",
+          "operation_label": "初期条件の付与",
           "explanation": "乗法の交換則により標準形に整理し、正の初期個体数 N(0)=N_0 を設定する。",
           "used_node_ids": [
             "bio.pop.n02_logistic_ode_def"
@@ -250,7 +250,7 @@
           "parent_step_id": null,
           "from_latex": "\\frac{dN}{dt} = r N\\left(1 - \\frac{N}{K}\\right),\\quad N(0) = N_0",
           "to_latex": "N(t) = \\frac{K}{1 + \\left(\\frac{K}{N_0} - 1\\right)e^{-rt}}",
-          "operation_label": "separate_and_integrate",
+          "operation_label": "変数分離と積分の実行",
           "explanation": "変数分離・部分分数分解・定積分を実行し、N(t) について代数的に解くことでシグモイド型の厳密解を得る。",
           "used_node_ids": [
             "bio.pop.n02_logistic_ode_def",
@@ -267,7 +267,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dN}{dt} = r N\\left(1 - \\frac{N}{K}\\right),\\quad N(0) = N_0",
           "to_latex": "\\int_{N_0}^{N(t)} \\frac{K}{N'(K - N')}\\,dN' = \\int_{0}^{t} r\\,d\\tau",
-          "operation_label": "separation_of_variables",
+          "operation_label": "変数分離",
           "explanation": "N(K-N) != 0 の領域で変数を分離し、0 から t まで定積分する。",
           "used_node_ids": [
             "bio.pop.n02_logistic_ode_def",
@@ -282,7 +282,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\int_{N_0}^{N(t)} \\frac{K}{N'(K - N')}\\,dN' = \\int_{0}^{t} r\\,d\\tau",
           "to_latex": "\\int_{N_0}^{N(t)} \\left(\\frac{1}{N'} + \\frac{1}{K - N'}\\right)dN' = rt",
-          "operation_label": "partial_fraction_decomposition",
+          "operation_label": "部分分数分解",
           "explanation": "被積分関数を K/(N'(K-N')) = 1/N' + 1/(K-N') と部分分数分解する。",
           "used_node_ids": [
             "math.calc.m02_fundamental_theorem_calc"
@@ -296,7 +296,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\int_{N_0}^{N(t)} \\left(\\frac{1}{N'} + \\frac{1}{K - N'}\\right)dN' = rt",
           "to_latex": "\\ln\\left|\\frac{N(t)}{K - N(t)}\\right| - \\ln\\left|\\frac{N_0}{K - N_0}\\right| = rt",
-          "operation_label": "evaluate_logarithmic_integral",
+          "operation_label": "対数積分の評価",
           "explanation": "微積分学の基本定理により対数積分を評価する。",
           "used_node_ids": [
             "math.calc.m02_fundamental_theorem_calc",
@@ -311,7 +311,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\ln\\left|\\frac{N(t)}{K - N(t)}\\right| - \\ln\\left|\\frac{N_0}{K - N_0}\\right| = rt",
           "to_latex": "N(t) = \\frac{K}{1 + \\left(\\frac{K}{N_0} - 1\\right)e^{-rt}}",
-          "operation_label": "invert_exponential_solve_N",
+          "operation_label": "指数変換して N(t) について解く",
           "explanation": "両辺の指数をとって絶対値を外し（N と K-N の符号は初期時刻から不変）、N(t) について整理する。",
           "used_node_ids": [
             "bio.pop.n03_logistic_exact_solution",
@@ -343,7 +343,7 @@
           "parent_step_id": null,
           "from_latex": "\\frac{dx}{dt} = \\alpha x - \\text{loss}(x,y),\\quad \\frac{dy}{dt} = \\text{gain}(x,y) - \\gamma y",
           "to_latex": "\\frac{dx}{dt} = \\alpha x - \\beta xy,\\quad \\frac{dy}{dt} = \\delta xy - \\gamma y",
-          "operation_label": "apply_mass_action_predation",
+          "operation_label": "質量作用型捕食項の適用",
           "explanation": "捕食による被食者減少率と捕食者増殖率を質量作用積 xy に比例させてロトカ＝ヴォルテラ系を得る。",
           "used_node_ids": [
             "bio.pop.n01_population_mass_action_boundary"
@@ -357,7 +357,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dx}{dt} = \\alpha x - \\text{loss}(x,y),\\quad \\frac{dy}{dt} = \\text{gain}(x,y) - \\gamma y",
           "to_latex": "\\text{loss}(x,y) = \\beta xy,\\quad \\text{gain}(x,y) = \\delta xy",
-          "operation_label": "model_bilinear_encounter",
+          "operation_label": "双線形遭遇項による捕食のモデル化",
           "explanation": "ランダム混合仮定より遭遇頻度を xy に比例させ、捕食係数 beta と変換効率を含む係数 delta を導入する。",
           "used_node_ids": [
             "bio.pop.n01_population_mass_action_boundary"
@@ -371,7 +371,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\text{loss}(x,y) = \\beta xy,\\quad \\text{gain}(x,y) = \\delta xy",
           "to_latex": "\\frac{dx}{dt} = \\alpha x - \\beta xy,\\quad \\frac{dy}{dt} = \\delta xy - \\gamma y",
-          "operation_label": "assemble_coupled_odes",
+          "operation_label": "連立常微分方程式系の組み立て",
           "explanation": "相互作用項を収支式に代入して2次元連立常微分方程式系を完成させる。",
           "used_node_ids": [
             "bio.pop.n04_lotka_volterra_system_def"
@@ -404,7 +404,7 @@
           "parent_step_id": null,
           "from_latex": "\\frac{dx}{dt} = x(\\alpha - \\beta y),\\quad \\frac{dy}{dt} = y(\\delta x - \\gamma)",
           "to_latex": "V(x,y) := \\delta x - \\gamma\\ln x + \\beta y - \\alpha\\ln y = \\text{const.}",
-          "operation_label": "derive_first_integral",
+          "operation_label": "第一積分（保存量）の導出",
           "explanation": "時間 t を消去して変数分離形にし、積分することで軌道上の保存量 V(x,y) を得る。",
           "used_node_ids": [
             "bio.pop.n04_lotka_volterra_system_def",
@@ -420,7 +420,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dx}{dt} = x(\\alpha - \\beta y),\\quad \\frac{dy}{dt} = y(\\delta x - \\gamma)",
           "to_latex": "\\frac{dy}{dx} = \\frac{y(\\delta x - \\gamma)}{x(\\alpha - \\beta y)}",
-          "operation_label": "eliminate_time_chain_rule",
+          "operation_label": "連鎖律による時間 t の消去",
           "explanation": "連鎖律 (dy/dt)/(dx/dt) = dy/dx を用いて相空間 (x,y) 上の微分方程式を得る。",
           "used_node_ids": [
             "bio.pop.n04_lotka_volterra_system_def",
@@ -435,7 +435,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dy}{dx} = \\frac{y(\\delta x - \\gamma)}{x(\\alpha - \\beta y)}",
           "to_latex": "\\left(\\frac{\\alpha}{y} - \\beta\\right)\\frac{dy}{dt} = \\left(\\delta - \\frac{\\gamma}{x}\\right)\\frac{dx}{dt}",
-          "operation_label": "separate_variables_time_form",
+          "operation_label": "変数分離形への変形",
           "explanation": "両辺を x, y で分離し、dx/dt と dy/dt の形に戻す。",
           "used_node_ids": [
             "math.calc.m01_chain_rule"
@@ -449,7 +449,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\left(\\frac{\\alpha}{y} - \\beta\\right)\\frac{dy}{dt} = \\left(\\delta - \\frac{\\gamma}{x}\\right)\\frac{dx}{dt}",
           "to_latex": "V(x,y) := \\delta x - \\gamma\\ln x + \\beta y - \\alpha\\ln y = \\text{const.}",
-          "operation_label": "integrate_to_conserved_quantity",
+          "operation_label": "積分による保存量の導出",
           "explanation": "両辺を t について積分（原始関数をとる）すると時間微分が 0 となる保存量 V(x,y) が得られる。",
           "used_node_ids": [
             "bio.pop.n05_lotka_volterra_conserved_quantity",
@@ -482,7 +482,7 @@
           "parent_step_id": null,
           "from_latex": "\\text{Incidence} = \\beta S I,\\quad \\text{Recovery} = \\gamma I",
           "to_latex": "\\frac{dS}{dt} = -\\beta SI,\\quad \\frac{dI}{dt} = \\beta SI - \\gamma I,\\quad \\frac{dR}{dt} = \\gamma I,\\quad S+I+R = N",
-          "operation_label": "formulate_sir_conservation",
+          "operation_label": "SIR モデルの立式と総人口保存の確認",
           "explanation": "S -> I -> R の遷移流量からSIR連立方程式を構成し、3式の和が0であることから総人口保存則を導く。",
           "used_node_ids": [
             "bio.pop.n01_population_mass_action_boundary",
@@ -497,7 +497,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\text{Incidence} = \\beta S I,\\quad \\text{Recovery} = \\gamma I",
           "to_latex": "\\frac{dS}{dt} = -\\beta SI,\\quad \\frac{dI}{dt} = \\beta SI - \\gamma I,\\quad \\frac{dR}{dt} = \\gamma I",
-          "operation_label": "write_compartment_balances",
+          "operation_label": "各コンパートメント（S, I, R）の収支式",
           "explanation": "各コンパートメントへの流入・流出を質量作用の感染率 beta*S*I と回復率 gamma*I で記述する。",
           "used_node_ids": [
             "bio.pop.n01_population_mass_action_boundary"
@@ -511,7 +511,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dS}{dt} = -\\beta SI,\\quad \\frac{dI}{dt} = \\beta SI - \\gamma I,\\quad \\frac{dR}{dt} = \\gamma I",
           "to_latex": "\\frac{d}{dt}(S+I+R) = 0 \\implies S(t)+I(t)+R(t) = N",
-          "operation_label": "sum_derivatives_conservation",
+          "operation_label": "微分方程式の和から総人口保存を確認",
           "explanation": "微分の線形性を用いて3式を加えると右辺が相殺し、総人口 S+I+R=N の保存が従う。",
           "used_node_ids": [
             "bio.pop.n06_sir_model_def",
@@ -543,7 +543,7 @@
           "parent_step_id": null,
           "from_latex": "\\frac{dI}{dt} = \\beta SI - \\gamma I",
           "to_latex": "R_0 := \\frac{\\beta S_0}{\\gamma},\\quad R_e(t) := \\frac{\\beta S(t)}{\\gamma},\\quad \\frac{dI}{dt} = \\gamma I\\big(R_e(t) - 1\\big)",
-          "operation_label": "factor_gamma_define_r0",
+          "operation_label": "γI をくくり出し基本再生産数 R0 を定義",
           "explanation": "dI/dt の右辺を gamma*I で括り、無次元比 beta*S(t)/gamma を実効再生産数 Re(t)、初期値を基本再生産数 R0 として定義する。",
           "used_node_ids": [
             "bio.pop.n06_sir_model_def"
@@ -557,7 +557,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dI}{dt} = \\beta SI - \\gamma I",
           "to_latex": "\\frac{dI}{dt} = \\gamma I\\left(\\frac{\\beta S(t)}{\\gamma} - 1\\right)",
-          "operation_label": "factor_out_gamma_I",
+          "operation_label": "γI でくくり出す",
           "explanation": "感染者数の時間変化率から共通因子 gamma*I を括り出す。",
           "used_node_ids": [
             "bio.pop.n06_sir_model_def"
@@ -571,7 +571,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dI}{dt} = \\gamma I\\left(\\frac{\\beta S(t)}{\\gamma} - 1\\right)",
           "to_latex": "R_0 := \\frac{\\beta S_0}{\\gamma},\\quad R_e(t) := \\frac{\\beta S(t)}{\\gamma},\\quad \\frac{dI}{dt} = \\gamma I\\big(R_e(t) - 1\\big)",
-          "operation_label": "define_R0_and_Re",
+          "operation_label": "基本再生産数 R0 と実効再生産数 Re の定義",
           "explanation": "t=0 における無次元比を R0、時刻 t の無次元比を Re(t) と定義する。",
           "used_node_ids": [
             "bio.pop.n07_basic_reproduction_number_r0"
@@ -605,7 +605,7 @@
           "parent_step_id": null,
           "from_latex": "\\frac{dS}{dt} = -\\beta SI,\\quad \\frac{dI}{dt} = \\gamma I(R_e(t)-1),\\quad \\frac{dR}{dt} = \\gamma I",
           "to_latex": "R_0 > 1 \\iff \\left.\\frac{dI}{dt}\\right|_{t=0} > 0,\\quad S_{\\mathrm{crit}} = \\frac{\\gamma}{\\beta} = \\frac{S_0}{R_0},\\quad \\ln\\frac{S_\\infty}{S_0} = \\frac{\\beta}{\\gamma}(S_\\infty - N)",
-          "operation_label": "derive_threshold_and_final_size",
+          "operation_label": "流行閾値条件と最終規模方程式の導出",
           "explanation": "Re(t) の符号条件から閾値定理と臨界感受性者数を示し、dS/dR の積分と終息極限から最終規模方程式を導く。",
           "used_node_ids": [
             "bio.pop.n06_sir_model_def",
@@ -622,7 +622,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dS}{dt} = -\\beta SI,\\quad \\frac{dI}{dt} = \\gamma I(R_e(t)-1),\\quad \\frac{dR}{dt} = \\gamma I",
           "to_latex": "R_0 > 1 \\iff R_e(0) > 1 \\iff \\left.\\frac{dI}{dt}\\right|_{t=0} > 0,\\quad R_e(t)=1 \\iff S_{\\mathrm{crit}} = \\frac{\\gamma}{\\beta}",
-          "operation_label": "threshold_and_peak_condition",
+          "operation_label": "流行閾値および感染ピーク条件の導出",
           "explanation": "I > 0, gamma > 0 より dI/dt の符号は Re(t)-1 の符号と一致し、R0 > 1 で初期流行、Re=1 で感染ピーク S_crit = gamma/beta となる。",
           "used_node_ids": [
             "bio.pop.n07_basic_reproduction_number_r0"
@@ -636,7 +636,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "R_0 > 1 \\iff R_e(0) > 1 \\iff \\left.\\frac{dI}{dt}\\right|_{t=0} > 0,\\quad R_e(t)=1 \\iff S_{\\mathrm{crit}} = \\frac{\\gamma}{\\beta}",
           "to_latex": "\\frac{dS}{dR} = \\frac{-\\beta SI}{\\gamma I} = -\\frac{\\beta}{\\gamma}S",
-          "operation_label": "chain_rule_S_vs_R",
+          "operation_label": "連鎖律による dS/dR の計算",
           "explanation": "連鎖律により dS/dR = (dS/dt)/(dR/dt) を計算し、I を約分する。",
           "used_node_ids": [
             "bio.pop.n06_sir_model_def",
@@ -651,7 +651,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dS}{dR} = \\frac{-\\beta SI}{\\gamma I} = -\\frac{\\beta}{\\gamma}S",
           "to_latex": "\\ln\\frac{S(t)}{S_0} = -\\frac{\\beta}{\\gamma}\\big(R(t) - R(0)\\big)",
-          "operation_label": "integrate_S_over_R",
+          "operation_label": "S を R に関して積分",
           "explanation": "(1/S) dS/dR = -beta/gamma を積分し、初期値 S(0)=S_0, R(0) を代入する。",
           "used_node_ids": [
             "math.calc.m02_fundamental_theorem_calc"
@@ -665,7 +665,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\ln\\frac{S(t)}{S_0} = -\\frac{\\beta}{\\gamma}\\big(R(t) - R(0)\\big)",
           "to_latex": "\\ln\\frac{S_\\infty}{S_0} = \\frac{\\beta}{\\gamma}(S_\\infty - N)",
-          "operation_label": "take_asymptotic_limit",
+          "operation_label": "t → ∞ の漸近極限をとる",
           "explanation": "R(0)=0 および t -> infinity で I_infinity = 0 より R_infinity = N - S_infinity となることを代入して最終規模方程式を得る。",
           "used_node_ids": [
             "bio.pop.n06_sir_model_def",
