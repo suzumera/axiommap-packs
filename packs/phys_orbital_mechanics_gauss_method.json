@@ -191,6 +191,49 @@
       "domain_tags": [
         "orbital_mechanics"
       ]
+    },
+    {
+      "id": "astro.orbit.gm01_d_matrix_constants",
+      "short_code": "GM01",
+      "kind": "definition",
+      "title": "視線方向スカラー三重積と観測局幾何定数（D行列）",
+      "summary": "3時刻の視線単位ベクトルと観測局位置ベクトルから計算されるスカラー三重積 D0 および D_ij の定義。視線ベクトルが一次独立（D0 ≠ 0）であるとき、共面条件から各時刻の視線距離 ρ1, ρ2, ρ3 を幾何定数 D_ij と共面係数 c1, c3 の関数として陽に解くための基礎量となる。",
+      "canonical_latex": "D_0 = \\hat{\\boldsymbol{\\rho}}_1 \\cdot (\\hat{\\boldsymbol{\\rho}}_2 \\times \\hat{\\boldsymbol{\\rho}}_3),\\quad D_{ij} = (\\mathbf{R}_i \\times \\hat{\\boldsymbol{\\rho}}_2)\\cdot\\hat{\\boldsymbol{\\rho}}_3 \\text{ etc.}",
+      "aliases_latex": [
+        "D_0 = \\det[\\hat{\\boldsymbol{\\rho}}_1, \\hat{\\boldsymbol{\\rho}}_2, \\hat{\\boldsymbol{\\rho}}_3]"
+      ],
+      "keywords": [
+        "スカラー三重積",
+        "ガウス法",
+        "視線単位ベクトル",
+        "D行列",
+        "観測幾何"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "astピrodynamics"
+      ]
+    },
+    {
+      "id": "astro.orbit.gm02_gauss_iterative_refinement",
+      "short_code": "GM02",
+      "kind": "theorem_formula",
+      "title": "ユニバーサル変数・厳密 f, g 係数によるガウス法の反復改良",
+      "summary": "時間べき級数近似で得た初期状態ベクトル (r2, v2) を出発点とし、ケプラー方程式に基づく厳密なラグランジュ係数 f_i, g_i と光行時間補正を用いて共面係数 c1, c3 および視線距離 ρ1, ρ2, ρ3 を反復更新し、真の軌道へ収束させるアルゴリズム。",
+      "canonical_latex": "c_1 = \\frac{g_3}{f_1 g_3 - f_3 g_1},\\quad c_3 = \\frac{-g_1}{f_1 g_3 - f_3 g_1} \\implies \\rho_i^{(k+1)} \\to (\\mathbf{r}_2^{(k+1)}, \\mathbf{v}_2^{(k+1)})",
+      "aliases_latex": [
+        "f_i = 1 - \\frac{\\chi_i^2}{r_2}C(z_i),\\quad g_i = \\tau_i - \\frac{1}{\\sqrt{\\mu}}\\chi_i^3 S(z_i)"
+      ],
+      "keywords": [
+        "ガウス法の反復改良",
+        "ラグランジュのf,g係数",
+        "ユニバーサル変数",
+        "初期軌道決定"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "numerical_methods"
+      ]
     }
   ],
   "derivations": [
@@ -587,6 +630,872 @@
             "phys.mech.p11_angular_momentum_conservation",
             "phys.mech.p15_kepler_first_law",
             "phys.mech.p18_effective_potential"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.phys.orbit.g03_coplanarity_condition.deductive",
+      "target_node_id": "phys.orbit.g03_coplanarity_condition",
+      "route_kind": "deductive",
+      "title": "角運動量保存（面積速度一定）からの軌道面共面条件と三角形面積比係数 (c1, c3) の導出",
+      "premise_node_ids": [
+        "phys.mech.p11_angular_momentum_conservation",
+        "phys.mech.p13_kepler_second_law",
+        "phys.orbit.g01_two_body_eom"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product",
+        "math.vec.m14_scalar_triple_product"
+      ],
+      "assumptions": [
+        "中心天体からの重力のみが働く2体問題であり、角運動量ベクトル h = r × v が一定（軌道面が不変）であること",
+        "時刻 t1, t3 の位置ベクトル r1, r3 が同一直線上になく（r1 × r3 ≠ 0）、軌道面の基底をなすこと"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{h} = \\mathbf{r}_i \\times \\mathbf{v}_i = \\text{const.}",
+          "to_latex": "c_1\\mathbf{r}_1 - \\mathbf{r}_2 + c_3\\mathbf{r}_3 = \\mathbf{0},\\quad c_1 = \\frac{(\\mathbf{r}_2\\times\\mathbf{r}_3)\\cdot\\hat{\\mathbf{h}}}{(\\mathbf{r}_1\\times\\mathbf{r}_3)\\cdot\\hat{\\mathbf{h}}},\\quad c_3 = \\frac{(\\mathbf{r}_1\\times\\mathbf{r}_2)\\cdot\\hat{\\mathbf{h}}}{(\\mathbf{r}_1\\times\\mathbf{r}_3)\\cdot\\hat{\\mathbf{h}}}",
+          "operation_label": "角運動量保存による同一平面条件と外積による係数決定",
+          "explanation": "中心力場では角運動量ベクトルが一定であるため、3時刻の位置ベクトル r1, r2, r3 はすべて同一軌道面内にある。したがって線形従属関係 c1 r1 - r2 + c3 r3 = 0 が成り立ち、r3 および r1 との外積をとることで三角形面積比としての係数 c1, c3 が得られる。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "math.vec.m14_scalar_triple_product",
+            "phys.mech.p11_angular_momentum_conservation",
+            "phys.mech.p13_kepler_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r} \\implies \\mathbf{h} = \\mathbf{r}\\times\\dot{\\mathbf{r}} = h\\hat{\\mathbf{h}} = \\text{const.}",
+          "to_latex": "\\mathbf{r}_i \\cdot \\hat{\\mathbf{h}} = 0 \\quad (i=1,2,3) \\implies c_1\\mathbf{r}_1 - \\mathbf{r}_2 + c_3\\mathbf{r}_3 = \\mathbf{0}",
+          "operation_label": "軌道面の不変性と3ベクトルの線形従属性",
+          "explanation": "2体問題の運動方程式より比角運動量ベクトル h は定ベクトルであり、任意時刻の位置ベクトル r_i は常に h に直交する同一平面内にある。同一平面上の3つのベクトル r1, r2, r3 は一次従属であるため、c1 r1 - r2 + c3 r3 = 0 と表せる。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p11_angular_momentum_conservation",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1\\mathbf{r}_1 - \\mathbf{r}_2 + c_3\\mathbf{r}_3 = \\mathbf{0}",
+          "to_latex": "c_1(\\mathbf{r}_1\\times\\mathbf{r}_3) = \\mathbf{r}_2\\times\\mathbf{r}_3,\\quad c_3(\\mathbf{r}_1\\times\\mathbf{r}_3) = \\mathbf{r}_1\\times\\mathbf{r}_2",
+          "operation_label": "r3 および r1 との外積による未知ベクトルの消去",
+          "explanation": "共面条件式の両辺に右から ×r3 を作用させると r3×r3=0 より c1(r1×r3) = r2×r3 を得る。同様に左から r1× を作用させると r1×r1=0 より c3(r1×r3) = r1×r2 を得る。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1(\\mathbf{r}_1\\times\\mathbf{r}_3) = \\mathbf{r}_2\\times\\mathbf{r}_3,\\quad c_3(\\mathbf{r}_1\\times\\mathbf{r}_3) = \\mathbf{r}_1\\times\\mathbf{r}_2",
+          "to_latex": "c_1 = \\frac{(\\mathbf{r}_2\\times\\mathbf{r}_3)\\cdot\\hat{\\mathbf{h}}}{(\\mathbf{r}_1\\times\\mathbf{r}_3)\\cdot\\hat{\\mathbf{h}}} = \\frac{\\Delta_{23}}{\\Delta_{13}},\\quad c_3 = \\frac{(\\mathbf{r}_1\\times\\mathbf{r}_2)\\cdot\\hat{\\mathbf{h}}}{(\\mathbf{r}_1\\times\\mathbf{r}_3)\\cdot\\hat{\\mathbf{h}}} = \\frac{\\Delta_{12}}{\\Delta_{13}}",
+          "operation_label": "軌道面法線ベクトルとの内積（三角形の符号付き面積比）",
+          "explanation": "軌道面法線単位ベクトル h_hat との内積をとって比をとることで、c1, c3 が中心天体と各位置ベクトルが張る三角形の面積比として表される。",
+          "used_node_ids": [
+            "math.vec.m14_scalar_triple_product",
+            "phys.mech.p13_kepler_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.phys.orbit.g04_lagrange_fg_series.deductive",
+      "target_node_id": "phys.orbit.g04_lagrange_fg_series",
+      "route_kind": "deductive",
+      "title": "2体運動方程式とテイラー展開からのラグランジュ f, g 級数展開の導出",
+      "premise_node_ids": [
+        "phys.orbit.g01_two_body_eom"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m13_taylor_expansion",
+        "math.calc.m15_product_rule",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "観測時間間隔 τ_i = t_i - t_2 が軌道周期に比べて十分小さく、t_2 周りのテイラー級数が収束すること"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r},\\quad \\mathbf{r}(t_2 + \\tau_i) = \\mathbf{r}_2 + \\mathbf{v}_2\\tau_i + \\frac{1}{2}\\ddot{\\mathbf{r}}_2\\tau_i^2 + \\frac{1}{6}\\dddot{\\mathbf{r}}_2\\tau_i^3 + \\mathcal{O}(\\tau_i^4)",
+          "to_latex": "\\mathbf{r}_i = f_i\\mathbf{r}_2 + g_i\\mathbf{v}_2,\\quad f_i \\approx 1 - \\frac{\\mu}{2r_2^3}\\tau_i^2,\\quad g_i \\approx \\tau_i - \\frac{\\mu}{6r_2^3}\\tau_i^3",
+          "operation_label": "高階時間導関数の r2, v2 への帰着と級数整理",
+          "explanation": "位置ベクトルを中央時刻 t2 の周りでテイラー展開し、2階以上の時間微分を重力2体問題の運動方程式によって r2 と v2 の線形結合で順次置き換えることで、ラグランジュの f, g 級数を得る。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion",
+            "math.calc.m15_product_rule",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r}",
+          "to_latex": "\\dddot{\\mathbf{r}} = \\frac{d}{dt}\\left(-\\frac{\\mu}{r^3}\\mathbf{r}\\right) = \\frac{3\\mu\\dot{r}}{r^4}\\mathbf{r} - \\frac{\\mu}{r^3}\\mathbf{v}",
+          "operation_label": "運動方程式の時間微分による3階導関数の導出",
+          "explanation": "運動方程式を時間 t で微分し、積の微分法を適用することで3階微分（躍度）を位置ベクトル r と速度ベクトル v の線形結合として表す。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.vec.m03_dot_cross_product",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}(t_2 + \\tau_i) = \\mathbf{r}_2 + \\mathbf{v}_2\\tau_i + \\frac{1}{2}\\ddot{\\mathbf{r}}_2\\tau_i^2 + \\frac{1}{6}\\dddot{\\mathbf{r}}_2\\tau_i^3 + \\mathcal{O}(\\tau_i^4)",
+          "to_latex": "\\mathbf{r}_i = \\left(1 - \\frac{\\mu}{2r_2^3}\\tau_i^2 + \\frac{\\mu\\dot{r}_2}{2r_2^4}\\tau_i^3 + \\dots\\right)\\mathbf{r}_2 + \\left(\\tau_i - \\frac{\\mu}{6r_2^3}\\tau_i^3 + \\dots\\right)\\mathbf{v}_2",
+          "operation_label": "テイラー展開への2階・3階導関数の代入と r2, v2 での整理",
+          "explanation": "t2 周りの3次までのテイラー展開式に 2階微分と 3階微分の式を代入し、r2 の係数 f_i と v2 の係数 g_i にまとめる（初期近似では r2 の τ^3 項を省略する）。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.phys.orbit.g05_c1_c3_approximation.deductive",
+      "target_node_id": "phys.orbit.g05_c1_c3_approximation",
+      "route_kind": "deductive",
+      "title": "ラグランジュの f, g 級数と共面条件からの係数 c1, c3 の時間間隔近似式の導出",
+      "premise_node_ids": [
+        "phys.orbit.g03_coplanarity_condition",
+        "phys.orbit.g04_lagrange_fg_series"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m13_taylor_expansion",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "時間間隔 τ_1, τ_3 が小さく、O(τ^4) 以上の高次項を無視できること"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "c_1 = \\frac{(\\mathbf{r}_2\\times\\mathbf{r}_3)\\cdot\\hat{\\mathbf{h}}}{(\\mathbf{r}_1\\times\\mathbf{r}_3)\\cdot\\hat{\\mathbf{h}}},\\quad \\mathbf{r}_i = f_i\\mathbf{r}_2 + g_i\\mathbf{v}_2",
+          "to_latex": "c_1 \\approx \\frac{\\tau_3}{\\tau}\\left[1 + \\frac{\\mu}{6r_2^3}(\\tau^2 - \\tau_3^2)\\right],\\quad c_3 \\approx -\\frac{\\tau_1}{\\tau}\\left[1 + \\frac{\\mu}{6r_2^3}(\\tau^2 - \\tau_1^2)\\right]\\quad (\\tau = \\tau_3 - \\tau_1)",
+          "operation_label": "外積への f, g 級数代入と1次テイラー展開による近似",
+          "explanation": "r1, r3 の f, g 級数表現を面積比係数 c1, c3 の外積式に代入すると c1 = g3/(f1 g3 - f3 g1), c3 = -g1/(f1 g3 - f3 g1) となり、f_i, g_i の時間べき級数を代入して τ の3次まで展開することで r2 のみに依存する近似式が得られる。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion",
+            "math.vec.m03_dot_cross_product",
+            "phys.orbit.g03_coplanarity_condition",
+            "phys.orbit.g04_lagrange_fg_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_i = f_i\\mathbf{r}_2 + g_i\\mathbf{v}_2,\\quad c_1 = \\frac{(\\mathbf{r}_2\\times\\mathbf{r}_3)\\cdot\\hat{\\mathbf{h}}}{(\\mathbf{r}_1\\times\\mathbf{r}_3)\\cdot\\hat{\\mathbf{h}}}",
+          "to_latex": "\\mathbf{r}_2\\times\\mathbf{r}_3 = g_3(\\mathbf{r}_2\\times\\mathbf{v}_2),\\; \\mathbf{r}_1\\times\\mathbf{r}_3 = (f_1 g_3 - f_3 g_1)(\\mathbf{r}_2\\times\\mathbf{v}_2) \\implies c_1 = \\frac{g_3}{f_1 g_3 - f_3 g_1},\\; c_3 = \\frac{-g_1}{f_1 g_3 - f_3 g_1}",
+          "operation_label": "f, g 係数による外積の計算と c1, c3 の厳密表現",
+          "explanation": "r_i = f_i r2 + g_i v2 を各外積に代入し、r2×r2 = 0, v2×v2 = 0, v2×r2 = -r2×v2 を用いると、共通の角運動量ベクトル h = r2×v2 が約分され、c1, c3 が f_i, g_i の有理式で表される。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.orbit.g03_coplanarity_condition",
+            "phys.orbit.g04_lagrange_fg_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f_i \\approx 1 - \\frac{\\mu}{2r_2^3}\\tau_i^2,\\quad g_i \\approx \\tau_i - \\frac{\\mu}{6r_2^3}\\tau_i^3",
+          "to_latex": "f_1 g_3 - f_3 g_1 \\approx (\\tau_3 - \\tau_1)\\left[1 - \\frac{\\mu}{6r_2^3}(\\tau_3 - \\tau_1)^2\\right] = \\tau\\left(1 - \\frac{\\mu}{6r_2^3}\\tau^2\\right)",
+          "operation_label": "分母 f1*g3 - f3*g1 の3次までの展開と因数分解",
+          "explanation": "f_i, g_i の近似式を f1 g3 - f3 g1 に代入し、τ の3次の項まで整理して τ = τ3 - τ1 で因数分解する。",
+          "used_node_ids": [
+            "phys.orbit.g04_lagrange_fg_series"
+          ],
+          "sympy_check_hint": "expand((1 - u*t1**2/2)*(t3 - u*t3**3/6) - (1 - u*t3**2/2)*(t1 - u*t1**3/6))"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1 \\approx \\frac{\\tau_3(1 - \\frac{\\mu}{6r_2^3}\\tau_3^2)}{\\tau(1 - \\frac{\\mu}{6r_2^3}\\tau^2)},\\quad c_3 \\approx \\frac{-\\tau_1(1 - \\frac{\\mu}{6r_2^3}\\tau_1^2)}{\\tau(1 - \\frac{\\mu}{6r_2^3}\\tau^2)}",
+          "to_latex": "c_1 \\approx \\frac{\\tau_3}{\\tau}\\left[1 + \\frac{\\mu}{6r_2^3}(\\tau^2 - \\tau_3^2)\\right],\\quad c_3 \\approx -\\frac{\\tau_1}{\\tau}\\left[1 + \\frac{\\mu}{6r_2^3}(\\tau^2 - \\tau_1^2)\\right]",
+          "operation_label": "幾何級数近似 (1 - x)^(-1) ≈ 1 + x による分母の展開",
+          "explanation": "1/(1 - μτ^2/(6r2^3)) ≈ 1 + μτ^2/(6r2^3) と1次近似し、高次項を落とすことで c1, c3 の近似式を得る。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.phys.orbit.g06_slant_range_polynomial.deductive",
+      "target_node_id": "phys.orbit.g06_slant_range_polynomial",
+      "route_kind": "deductive",
+      "title": "観測幾何関係と共面条件からの視線距離 ρ2 およびガウスの8次方程式の導出",
+      "premise_node_ids": [
+        "phys.orbit.g02_topocentric_geometry",
+        "phys.orbit.g03_coplanarity_condition",
+        "phys.orbit.g05_c1_c3_approximation",
+        "astro.orbit.gm01_d_matrix_constants"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product",
+        "math.vec.m14_scalar_triple_product"
+      ],
+      "assumptions": [
+        "3時刻の視線単位ベクトルが一次独立であり、スカラー三重積 D0 = ρ_hat_1 ⋅ (ρ_hat_2 × ρ_hat_3) ≠ 0 であること"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "c_1(\\mathbf{R}_1 + \\rho_1\\hat{\\boldsymbol{\\rho}}_1) - (\\mathbf{R}_2 + \\rho_2\\hat{\\boldsymbol{\\rho}}_2) + c_3(\\mathbf{R}_3 + \\rho_3\\hat{\\boldsymbol{\\rho}}_3) = \\mathbf{0}",
+          "to_latex": "\\rho_2 = A + \\frac{\\mu B}{r_2^3},\\quad r_2^2 = \\|\\mathbf{R}_2 + \\rho_2\\hat{\\boldsymbol{\\rho}}_2\\|^2 \\implies r_2^8 + a\\,r_2^6 + b\\,r_2^3 + c = 0",
+          "operation_label": "スカラー三重積による ρ2 の分離と余弦定理からの8次多項式化",
+          "explanation": "観測局位置と視線ベクトルの関係式を共面条件に代入し、ρ_hat_1 × ρ_hat_3 との内積をとって ρ1, ρ3 を消去したのち、c1, c3 の近似式を代入して ρ2 = A + μB/r2^3 を得る。これを r2 の余弦定理（ノルム二乗）と連立して分母を払うことでガウスの8次方程式が導かれる。",
+          "used_node_ids": [
+            "astro.orbit.gm01_d_matrix_constants",
+            "math.vec.m14_scalar_triple_product",
+            "phys.orbit.g02_topocentric_geometry",
+            "phys.orbit.g03_coplanarity_condition",
+            "phys.orbit.g05_c1_c3_approximation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1\\mathbf{r}_1 - \\mathbf{r}_2 + c_3\\mathbf{r}_3 = \\mathbf{0},\\quad \\mathbf{r}_i = \\mathbf{R}_i + \\rho_i\\hat{\\boldsymbol{\\rho}}_i",
+          "to_latex": "c_1\\rho_1\\hat{\\boldsymbol{\\rho}}_1 - \\rho_2\\hat{\\boldsymbol{\\rho}}_2 + c_3\\rho_3\\hat{\\boldsymbol{\\rho}}_3 = -c_1\\mathbf{R}_1 + \\mathbf{R}_2 - c_3\\mathbf{R}_3",
+          "operation_label": "共面条件への観測幾何関係の代入",
+          "explanation": "各時刻の地心（または日心）位置ベクトル r_i = R_i + ρ_i ρ_hat_i を共面条件に代入し、視線距離 ρ_i を含む項を左辺に、既知の観測局位置 R_i を右辺に移項する。",
+          "used_node_ids": [
+            "phys.orbit.g02_topocentric_geometry",
+            "phys.orbit.g03_coplanarity_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1\\rho_1\\hat{\\boldsymbol{\\rho}}_1 - \\rho_2\\hat{\\boldsymbol{\\rho}}_2 + c_3\\rho_3\\hat{\\boldsymbol{\\rho}}_3 = -c_1\\mathbf{R}_1 + \\mathbf{R}_2 - c_3\\mathbf{R}_3",
+          "to_latex": "\\rho_2 = \\frac{-c_1 D_{12} + D_{22} - c_3 D_{32}}{D_0} = A + \\frac{\\mu B}{r_2^3}",
+          "operation_label": "スカラー三重積（クラメル公式）による ρ2 の解法と c1, c3 近似式の代入",
+          "explanation": "両辺と (ρ_hat_1 × ρ_hat_3) の内積をとることで ρ1, ρ3 の項を消去し、D0 = ρ_hat_1⋅(ρ_hat_2×ρ_hat_3) で割って ρ2 を求める。さらに c1, c3 の近似式を代入して定数項 A と r2^(-3) の係数 μB に整理する。",
+          "used_node_ids": [
+            "astro.orbit.gm01_d_matrix_constants",
+            "math.vec.m14_scalar_triple_product",
+            "phys.orbit.g05_c1_c3_approximation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho_2 = A + \\frac{\\mu B}{r_2^3},\\quad r_2^2 = \\|\\mathbf{R}_2 + \\rho_2\\hat{\\boldsymbol{\\rho}}_2\\|^2 = \\rho_2^2 + 2(\\mathbf{R}_2\\cdot\\hat{\\boldsymbol{\\rho}}_2)\\rho_2 + R_2^2",
+          "to_latex": "r_2^2 = \\left(A + \\frac{\\mu B}{r_2^3}\\right)^2 + 2(\\mathbf{R}_2\\cdot\\hat{\\boldsymbol{\\rho}}_2)\\left(A + \\frac{\\mu B}{r_2^3}\\right) + R_2^2 \\implies r_2^8 + a\\,r_2^6 + b\\,r_2^3 + c = 0",
+          "operation_label": "時刻 t2 の幾何学的余弦定理への代入と8次多項式への展開",
+          "explanation": "r2 = R2 + ρ2 ρ_hat_2 の両辺の2乗ノルムをとった式に ρ2 = A + μB/r2^3 を代入し、両辺に r2^6 を掛けて展開・整理することで r2 に関するガウスの8次方程式を得る。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.orbit.g02_topocentric_geometry"
+          ],
+          "sympy_check_hint": "expand(r2**6 * (r2**2 - (A + u*B/r2**3)**2 - 2*dotR*(A + u*B/r2**3) - R2sq))"
+        }
+      ]
+    },
+    {
+      "id": "deriv.phys.orbit.g07_state_vector_to_elements.deductive",
+      "target_node_id": "phys.orbit.g07_state_vector_to_elements",
+      "route_kind": "deductive",
+      "title": "視線距離の確定からの状態ベクトル (r2, v2) 算出とケプラー軌道6要素への変換",
+      "premise_node_ids": [
+        "phys.orbit.g02_topocentric_geometry",
+        "phys.orbit.g04_lagrange_fg_series",
+        "phys.orbit.g06_slant_range_polynomial",
+        "astro.orbit.gm01_d_matrix_constants",
+        "phys.mech.p09_mechanical_energy_conservation",
+        "phys.mech.p11_angular_momentum_conservation",
+        "phys.mech.p15_kepler_first_law",
+        "phys.mech.p18_effective_potential"
+      ],
+      "required_math_node_ids": [
+        "math.geom.m07_conic_polar",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "ガウスの8次方程式の物理的に妥当な正の実根 r2 > 0 が選択されていること"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r_2 \\implies \\rho_1, \\rho_2, \\rho_3 \\implies \\mathbf{r}_1, \\mathbf{r}_2, \\mathbf{r}_3",
+          "to_latex": "\\mathbf{v}_2 = \\frac{f_1\\mathbf{r}_3 - f_3\\mathbf{r}_1}{f_1 g_3 - f_3 g_1} \\implies \\mathbf{h} = \\mathbf{r}_2\\times\\mathbf{v}_2,\\; a = -\\frac{\\mu}{2(\\frac{1}{2}v_2^2 - \\frac{\\mu}{r_2})},\\; \\mathbf{e} = \\frac{\\mathbf{v}_2\\times\\mathbf{h}}{\\mu} - \\frac{\\mathbf{r}_2}{r_2}",
+          "operation_label": "3点位置の確定、f,g展開からの速度 v2 算出、および保存量からの軌道要素決定",
+          "explanation": "8次方程式の解 r2 から c1, c3 および各時刻の視線距離 ρ1, ρ2, ρ3 と位置ベクトル r1, r2, r3 を確定し、ラグランジュの f, g 関係式を連立して速度ベクトル v2 を求める。得られた状態ベクトル (r2, v2) から比角運動量ベクトル h、比力学的エネルギー（軌道長半径 a）、離心率ベクトル e を計算して軌道6要素へ変換する。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p09_mechanical_energy_conservation",
+            "phys.mech.p11_angular_momentum_conservation",
+            "phys.mech.p18_effective_potential",
+            "phys.orbit.g02_topocentric_geometry",
+            "phys.orbit.g04_lagrange_fg_series",
+            "phys.orbit.g06_slant_range_polynomial"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_2 \\implies c_1, c_3 \\implies \\rho_1, \\rho_2, \\rho_3 \\implies \\mathbf{r}_i = \\mathbf{R}_i + \\rho_i\\hat{\\boldsymbol{\\rho}}_i",
+          "to_latex": "\\begin{cases} \\mathbf{r}_1 = f_1\\mathbf{r}_2 + g_1\\mathbf{v}_2 \\\\ \\mathbf{r}_3 = f_3\\mathbf{r}_2 + g_3\\mathbf{v}_2 \\end{cases} \\implies \\mathbf{v}_2 = \\frac{f_1\\mathbf{r}_3 - f_3\\mathbf{r}_1}{f_1 g_3 - f_3 g_1}",
+          "operation_label": "位置ベクトル r1, r2, r3 の確定と f, g 連立方程式からの v2 の導出",
+          "explanation": "r2 から c1, c3 を計算してスカラー三重積の式から ρ1, ρ2, ρ3 を求め、3時刻の位置ベクトル r1, r2, r3 を確定する。次に r1 と r3 の f, g 展開式から r2 を消去（f1 r3 - f3 r1 を計算）して中央時刻の速度ベクトル v2 を得る。",
+          "used_node_ids": [
+            "astro.orbit.gm01_d_matrix_constants",
+            "phys.orbit.g02_topocentric_geometry",
+            "phys.orbit.g04_lagrange_fg_series",
+            "phys.orbit.g06_slant_range_polynomial"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\mathbf{r}_2, \\mathbf{v}_2)",
+          "to_latex": "\\mathbf{h} = \\mathbf{r}_2\\times\\mathbf{v}_2,\\quad \\mathcal{E} = \\frac{1}{2}v_2^2 - \\frac{\\mu}{r_2} = -\\frac{\\mu}{2a} \\implies a = -\\frac{\\mu}{2\\mathcal{E}},\\quad \\mathbf{e} = \\frac{\\mathbf{v}_2\\times\\mathbf{h}}{\\mu} - \\frac{\\mathbf{r}_2}{r_2}",
+          "operation_label": "状態ベクトルからの比角運動量 h・軌道長半径 a・離心率ベクトル e の計算",
+          "explanation": "位置 r2 と速度 v2 から比角運動量ベクトル h = r2 × v2、比力学的エネルギー E から軌道長半径 a、ラプラス・ルンゲ・レンツベクトル（離心率ベクトル e）を計算し、さらに軌道傾斜角 i、昇交点赤経 Ω、近点引数 ω、真近点角 ν を決定する。",
+          "used_node_ids": [
+            "math.geom.m07_conic_polar",
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p09_mechanical_energy_conservation",
+            "phys.mech.p11_angular_momentum_conservation",
+            "phys.mech.p15_kepler_first_law",
+            "phys.mech.p18_effective_potential"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.astro.orbit.gm02_gauss_iterative_refinement.deductive",
+      "target_node_id": "astro.orbit.gm02_gauss_iterative_refinement",
+      "route_kind": "deductive",
+      "title": "初期状態ベクトル (r2, v2) からの厳密ラグランジュ係数を用いたガウス法反復改良",
+      "premise_node_ids": [
+        "phys.orbit.g03_coplanarity_condition",
+        "phys.orbit.g04_lagrange_fg_series",
+        "phys.orbit.g07_state_vector_to_elements",
+        "astro.orbit.gm01_d_matrix_constants"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.det01_alternating_multilinear_def",
+        "math.linalg.det02_leibniz_formula",
+        "math.linalg.det08_cramers_rule",
+        "math.linalg.vs01_vector_space_axioms",
+        "math.linalg.vs03_linear_independence_span",
+        "math.num.ni01_fixed_point_convergence_def",
+        "math.vec.m14_scalar_triple_product",
+        "phys.orbit.g02_topocentric_geometry"
+      ],
+      "assumptions": [
+        "初期近似で得られた (r2^(0), v2^(0)) が真の解の収束半径内にあること",
+        "観測時間間隔における運動は保存力中心のケプラー2体運動に従い、状態ベクトル (r2^(k), v2^(k)) と τ_i = t_i - t_2 から厳密なラグランジュ係数 f_i^(k), g_i^(k) が一意に評価できること",
+        "軌道が直線退化しておらず角運動量 h^(k) = r2^(k) × v2^(k) != 0 が成り立つため、r2^(k) と v2^(k) が線形独立であること",
+        "時間間隔に関するラグランジュ係数の行列式 f1^(k) g3^(k) - f3^(k) g1^(k) != 0 であること",
+        "3時刻の視線単位ベクトルが共面でなく D0 = ρ_hat_1 · (ρ_hat_2 × ρ_hat_3) != 0 であること",
+        "更新された共面係数が c1^(k+1) != 0 かつ c3^(k+1) != 0（すなわち g3^(k) != 0 かつ g1^(k) != 0）を満たすこと"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(\\mathbf{r}_2^{(k)}, \\mathbf{v}_2^{(k)}),\\; \\tau_1, \\tau_3,\\; c_1^{(k+1)}\\mathbf{r}_1 - \\mathbf{r}_2 + c_3^{(k+1)}\\mathbf{r}_3 = \\mathbf{0}",
+          "to_latex": "c_1^{(k+1)} = \\frac{g_3^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}},\\quad c_3^{(k+1)} = \\frac{-g_1^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}} \\implies \\rho_i^{(k+1)} \\to \\big(\\mathbf{r}_2^{(k+1)}, \\mathbf{v}_2^{(k+1)}\\big)",
+          "operation_label": "厳密な f, g 係数による共面係数 c1, c3 と状態ベクトルの不動点反復更新",
+          "explanation": "第k近似の状態ベクトル (r2^(k), v2^(k)) からケプラー運動の厳密なラグランジュ係数 f_i^(k), g_i^(k) を評価し、共面条件から c1^(k+1), c3^(k+1) を求め、D行列を介して視線距離 ρ_i^(k+1) と位置・速度状態ベクトル (r2^(k+1), v2^(k+1)) を順次更新して収束させる。",
+          "used_node_ids": [
+            "astro.orbit.gm01_d_matrix_constants",
+            "math.linalg.det08_cramers_rule",
+            "math.num.ni01_fixed_point_convergence_def",
+            "math.vec.m14_scalar_triple_product",
+            "phys.orbit.g02_topocentric_geometry",
+            "phys.orbit.g03_coplanarity_condition",
+            "phys.orbit.g04_lagrange_fg_series",
+            "phys.orbit.g07_state_vector_to_elements"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\mathbf{r}_2^{(k)}, \\mathbf{v}_2^{(k)}),\\; \\tau_1, \\tau_3",
+          "to_latex": "\\begin{pmatrix} f_1^{(k)} & f_3^{(k)} \\\\ g_1^{(k)} & g_3^{(k)} \\end{pmatrix}\\begin{pmatrix} c_1^{(k+1)} \\\\ c_3^{(k+1)} \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix}",
+          "operation_label": "ラグランジュ f, g 展開の代入と線形独立性による c1, c3 連立方程式の導出",
+          "explanation": "現在の状態ベクトル (r2^(k), v2^(k)) から評価した f_i^(k), g_i^(k) による位置表示を共面条件式へ代入し、r2^(k) と v2^(k) の線形独立性から c1^(k+1), c3^(k+1) に関する2元連立1次方程式を得る。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.linalg.vs03_linear_independence_span",
+            "phys.orbit.g03_coplanarity_condition",
+            "phys.orbit.g04_lagrange_fg_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "(\\mathbf{r}_2^{(k)}, \\mathbf{v}_2^{(k)}),\\; \\tau_1, \\tau_3",
+          "to_latex": "\\mathbf{r}_1 = f_1^{(k)}\\mathbf{r}_2^{(k)} + g_1^{(k)}\\mathbf{v}_2^{(k)},\\quad \\mathbf{r}_3 = f_3^{(k)}\\mathbf{r}_2^{(k)} + g_3^{(k)}\\mathbf{v}_2^{(k)}",
+          "operation_label": "G04のラグランジュ表現により r1, r3 を (r2^(k), v2^(k)) で表す",
+          "explanation": "時間間隔 τ_1 = t_1 - t_2, τ_3 = t_3 - t_2 と第k近似の状態ベクトル (r2^(k), v2^(k)) に対して評価された厳密なラグランジュ係数 f_i^(k), g_i^(k) (i=1,3) を用い、G04の線形結合表示を書き下す。",
+          "used_node_ids": [
+            "phys.orbit.g04_lagrange_fg_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\mathbf{r}_1 = f_1^{(k)}\\mathbf{r}_2^{(k)} + g_1^{(k)}\\mathbf{v}_2^{(k)},\\quad \\mathbf{r}_3 = f_3^{(k)}\\mathbf{r}_2^{(k)} + g_3^{(k)}\\mathbf{v}_2^{(k)}",
+          "to_latex": "c_1^{(k+1)}\\big(f_1^{(k)}\\mathbf{r}_2^{(k)} + g_1^{(k)}\\mathbf{v}_2^{(k)}\\big) - \\mathbf{r}_2^{(k)} + c_3^{(k+1)}\\big(f_3^{(k)}\\mathbf{r}_2^{(k)} + g_3^{(k)}\\mathbf{v}_2^{(k)}\\big) = \\mathbf{0}",
+          "operation_label": "G03の共面条件を導入し r1, r2^(k), r3 を代入",
+          "explanation": "G03の共面条件式 c1^(k+1) r1 - r2 + c3^(k+1) r3 = 0 に、r2 = r2^(k) および前段で得た r1, r3 のラグランジュ展開式を代入する。",
+          "used_node_ids": [
+            "phys.orbit.g03_coplanarity_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "c_1^{(k+1)}\\big(f_1^{(k)}\\mathbf{r}_2^{(k)} + g_1^{(k)}\\mathbf{v}_2^{(k)}\\big) - \\mathbf{r}_2^{(k)} + c_3^{(k+1)}\\big(f_3^{(k)}\\mathbf{r}_2^{(k)} + g_3^{(k)}\\mathbf{v}_2^{(k)}\\big) = \\mathbf{0}",
+          "to_latex": "\\big(c_1^{(k+1)} f_1^{(k)} + c_3^{(k+1)} f_3^{(k)} - 1\\big)\\mathbf{r}_2^{(k)} + \\big(c_1^{(k+1)} g_1^{(k)} + c_3^{(k+1)} g_3^{(k)}\\big)\\mathbf{v}_2^{(k)} = \\mathbf{0}",
+          "operation_label": "分配法則と結合法則により r2^(k) と v2^(k) の係数でくくる",
+          "explanation": "ベクトル空間の公理（スカラー倍の分配法則と加法の交換・結合法則）を用いて左辺を展開し、r2^(k) の項と v2^(k) の項をそれぞれ1つのスカラー係数でまとめる。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": "c1*(f1*r2 + g1*v2) - r2 + c3*(f3*r2 + g3*v2) == (c1*f1 + c3*f3 - 1)*r2 + (c1*g1 + c3*g3)*v2"
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\big(c_1^{(k+1)} f_1^{(k)} + c_3^{(k+1)} f_3^{(k)} - 1\\big)\\mathbf{r}_2^{(k)} + \\big(c_1^{(k+1)} g_1^{(k)} + c_3^{(k+1)} g_3^{(k)}\\big)\\mathbf{v}_2^{(k)} = \\mathbf{0}",
+          "to_latex": "\\begin{pmatrix} f_1^{(k)} & f_3^{(k)} \\\\ g_1^{(k)} & g_3^{(k)} \\end{pmatrix}\\begin{pmatrix} c_1^{(k+1)} \\\\ c_3^{(k+1)} \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix}",
+          "operation_label": "r2^(k), v2^(k) の線形独立性から両係数を零と置き行列表現へ書き換える",
+          "explanation": "h^(k) = r2^(k) × v2^(k) != 0 より r2^(k) と v2^(k) は線形独立であるため、両ベクトルのスカラー係数はともに0となる。第1式の -1 を右辺へ移項し、c1^(k+1), c3^(k+1) に関する2×2行列方程式にまとめる。",
+          "used_node_ids": [
+            "math.linalg.vs03_linear_independence_span"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 7,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\begin{pmatrix} f_1^{(k)} & f_3^{(k)} \\\\ g_1^{(k)} & g_3^{(k)} \\end{pmatrix}\\begin{pmatrix} c_1^{(k+1)} \\\\ c_3^{(k+1)} \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix}",
+          "to_latex": "c_1^{(k+1)} = \\frac{g_3^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}},\\quad c_3^{(k+1)} = \\frac{-g_1^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}}",
+          "operation_label": "クラメルの公式による共面係数 c1^(k+1), c3^(k+1) の解法",
+          "explanation": "f1^(k) g3^(k) - f3^(k) g1^(k) != 0 の下で2元連立1次方程式にクラメルの公式を適用し、共面係数 c1^(k+1), c3^(k+1) の厳密更新式を導く。",
+          "used_node_ids": [
+            "math.linalg.det02_leibniz_formula",
+            "math.linalg.det08_cramers_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\begin{pmatrix} f_1^{(k)} & f_3^{(k)} \\\\ g_1^{(k)} & g_3^{(k)} \\end{pmatrix}\\begin{pmatrix} c_1^{(k+1)} \\\\ c_3^{(k+1)} \\end{pmatrix} = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix}",
+          "to_latex": "c_1^{(k+1)} = \\frac{\\det\\begin{pmatrix} 1 & f_3^{(k)} \\\\ 0 & g_3^{(k)} \\end{pmatrix}}{\\det\\begin{pmatrix} f_1^{(k)} & f_3^{(k)} \\\\ g_1^{(k)} & g_3^{(k)} \\end{pmatrix}},\\quad c_3^{(k+1)} = \\frac{\\det\\begin{pmatrix} f_1^{(k)} & 1 \\\\ g_1^{(k)} & 0 \\end{pmatrix}}{\\det\\begin{pmatrix} f_1^{(k)} & f_3^{(k)} \\\\ g_1^{(k)} & g_3^{(k)} \\end{pmatrix}}",
+          "operation_label": "2×2連立方程式にクラメルの公式を適用",
+          "explanation": "係数行列の行列式が非零である仮定のもと、右辺ベクトル (1, 0)^T を第1列および第2列に置き換えた行列式の比として c1^(k+1), c3^(k+1) を表す。",
+          "used_node_ids": [
+            "math.linalg.det08_cramers_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "c_1^{(k+1)} = \\frac{\\det\\begin{pmatrix} 1 & f_3^{(k)} \\\\ 0 & g_3^{(k)} \\end{pmatrix}}{\\det\\begin{pmatrix} f_1^{(k)} & f_3^{(k)} \\\\ g_1^{(k)} & g_3^{(k)} \\end{pmatrix}},\\quad c_3^{(k+1)} = \\frac{\\det\\begin{pmatrix} f_1^{(k)} & 1 \\\\ g_1^{(k)} & 0 \\end{pmatrix}}{\\det\\begin{pmatrix} f_1^{(k)} & f_3^{(k)} \\\\ g_1^{(k)} & g_3^{(k)} \\end{pmatrix}}",
+          "to_latex": "c_1^{(k+1)} = \\frac{1\\cdot g_3^{(k)} - f_3^{(k)}\\cdot 0}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}},\\quad c_3^{(k+1)} = \\frac{f_1^{(k)}\\cdot 0 - 1\\cdot g_1^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}}",
+          "operation_label": "ライプニッツの公式により各2×2行列式を展開",
+          "explanation": "2次行列式の展開公式 ad - bc を分母および2つの分子の行列式にそれぞれ適用する。",
+          "used_node_ids": [
+            "math.linalg.det02_leibniz_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "c_1^{(k+1)} = \\frac{1\\cdot g_3^{(k)} - f_3^{(k)}\\cdot 0}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}},\\quad c_3^{(k+1)} = \\frac{f_1^{(k)}\\cdot 0 - 1\\cdot g_1^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}}",
+          "to_latex": "c_1^{(k+1)} = \\frac{g_3^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}},\\quad c_3^{(k+1)} = \\frac{-g_1^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}}",
+          "operation_label": "分子の零項を消去して c1^(k+1), c3^(k+1) の更新式を得る",
+          "explanation": "分子の0を掛ける項と1を掛ける簡約を実行し、厳密な f, g 係数による共面係数 c1^(k+1), c3^(k+1) の更新公式を得る。",
+          "used_node_ids": [
+            "math.linalg.det02_leibniz_formula"
+          ],
+          "sympy_check_hint": "(1*g3 - f3*0)/(f1*g3 - f3*g1) == g3/(f1*g3 - f3*g1)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 11,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1^{(k+1)}\\mathbf{r}_1^{(k+1)} - \\mathbf{r}_2^{(k+1)} + c_3^{(k+1)}\\mathbf{r}_3^{(k+1)} = \\mathbf{0}",
+          "to_latex": "c_1^{(k+1)}\\rho_1^{(k+1)} = \\frac{\\det\\big[-c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]},\\quad -\\rho_2^{(k+1)} = \\frac{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; -c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]},\\quad c_3^{(k+1)}\\rho_3^{(k+1)} = \\frac{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; -c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}",
+          "operation_label": "視線幾何 G02 の代入とクラメルの公式による視線距離連立系の表現",
+          "explanation": "更新後の共面条件に観測局位置と視線距離の関係式 G02 を代入し、視線単位ベクトルを列とする3×3行列方程式をクラメルの公式で行列式の比として表す。",
+          "used_node_ids": [
+            "math.linalg.det08_cramers_rule",
+            "math.linalg.vs01_vector_space_axioms",
+            "phys.orbit.g02_topocentric_geometry",
+            "phys.orbit.g03_coplanarity_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "c_1^{(k+1)}\\mathbf{r}_1^{(k+1)} - \\mathbf{r}_2^{(k+1)} + c_3^{(k+1)}\\mathbf{r}_3^{(k+1)} = \\mathbf{0}",
+          "to_latex": "c_1^{(k+1)}\\big(\\mathbf{R}_1 + \\rho_1^{(k+1)}\\hat{\\boldsymbol{\\rho}}_1\\big) - \\big(\\mathbf{R}_2 + \\rho_2^{(k+1)}\\hat{\\boldsymbol{\\rho}}_2\\big) + c_3^{(k+1)}\\big(\\mathbf{R}_3 + \\rho_3^{(k+1)}\\hat{\\boldsymbol{\\rho}}_3\\big) = \\mathbf{0}",
+          "operation_label": "G02の視線幾何関係式を第(k+1)反復の共面条件に代入・導入",
+          "explanation": "更新された共面係数 c1^(k+1), c3^(k+1) に対する共面条件式に、G02の定義 r_i^(k+1) = R_i + ρ_i^(k+1) ρ_hat_i (i=1,2,3) を代入する。",
+          "used_node_ids": [
+            "phys.orbit.g02_topocentric_geometry",
+            "phys.orbit.g03_coplanarity_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "c_1^{(k+1)}\\big(\\mathbf{R}_1 + \\rho_1^{(k+1)}\\hat{\\boldsymbol{\\rho}}_1\\big) - \\big(\\mathbf{R}_2 + \\rho_2^{(k+1)}\\hat{\\boldsymbol{\\rho}}_2\\big) + c_3^{(k+1)}\\big(\\mathbf{R}_3 + \\rho_3^{(k+1)}\\hat{\\boldsymbol{\\rho}}_3\\big) = \\mathbf{0}",
+          "to_latex": "\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]\\begin{pmatrix} c_1^{(k+1)}\\rho_1^{(k+1)} \\\\ -\\rho_2^{(k+1)} \\\\ c_3^{(k+1)}\\rho_3^{(k+1)} \\end{pmatrix} = -c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3",
+          "operation_label": "観測局位置ベクトルを右辺へ移項し3×3列ベクトル行列方程式に書き換える",
+          "explanation": "既知の観測局位置ベクトルを含む項 c1^(k+1) R_1, -R_2, c3^(k+1) R_3 を符号反転して右辺へ移項し、未知量 (c1^(k+1) ρ_1^(k+1), -ρ_2^(k+1), c3^(k+1) ρ_3^(k+1))^T に対する3×3線形方程式として表す。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]\\begin{pmatrix} c_1^{(k+1)}\\rho_1^{(k+1)} \\\\ -\\rho_2^{(k+1)} \\\\ c_3^{(k+1)}\\rho_3^{(k+1)} \\end{pmatrix} = -c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3",
+          "to_latex": "c_1^{(k+1)}\\rho_1^{(k+1)} = \\frac{\\det\\big[-c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]},\\quad -\\rho_2^{(k+1)} = \\frac{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; -c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]},\\quad c_3^{(k+1)}\\rho_3^{(k+1)} = \\frac{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; -c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}",
+          "operation_label": "3×3線形方程式にクラメルの公式を適用",
+          "explanation": "視線単位ベクトルが非共面（det[ρ_hat_1, ρ_hat_2, ρ_hat_3] != 0）である仮定のもと、クラメルの公式を用いて各列を右辺ベクトルで置換した行列式の比で3つの未知数を表す。",
+          "used_node_ids": [
+            "math.linalg.det08_cramers_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 15,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1^{(k+1)}\\rho_1^{(k+1)} = \\frac{\\det\\big[-c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]},\\quad -\\rho_2^{(k+1)} = \\frac{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; -c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]},\\quad c_3^{(k+1)}\\rho_3^{(k+1)} = \\frac{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\rho}}_2,\\; -c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}",
+          "to_latex": "\\mathbf{r}_1^{(k+1)} = \\mathbf{R}_1 + \\rho_1^{(k+1)}\\hat{\\boldsymbol{\\rho}}_1,\\quad \\mathbf{r}_2^{(k+1)} = \\mathbf{R}_2 + \\rho_2^{(k+1)}\\hat{\\boldsymbol{\\rho}}_2,\\quad \\mathbf{r}_3^{(k+1)} = \\mathbf{R}_3 + \\rho_3^{(k+1)}\\hat{\\boldsymbol{\\rho}}_3",
+          "operation_label": "D行列定数による視線距離 ρ_i^(k+1) と位置ベクトル r_i^(k+1) の更新",
+          "explanation": "分子の行列式を多重線形性とスカラー三重積により GM01 の幾何定数 D0, D_ij で表し、c1^(k+1), -1, c3^(k+1) で割って視線距離 ρ_i^(k+1) および位置ベクトル r_i^(k+1) を更新する。",
+          "used_node_ids": [
+            "astro.orbit.gm01_d_matrix_constants",
+            "math.linalg.det01_alternating_multilinear_def",
+            "math.linalg.vs01_vector_space_axioms",
+            "math.vec.m14_scalar_triple_product",
+            "phys.orbit.g02_topocentric_geometry"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "c_1^{(k+1)}\\rho_1^{(k+1)} = \\frac{\\det\\big[-c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]},\\quad -\\rho_2^{(k+1)} = \\frac{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; -c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]},\\quad c_3^{(k+1)}\\rho_3^{(k+1)} = \\frac{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; -c_1^{(k+1)}\\mathbf{R}_1 + \\mathbf{R}_2 - c_3^{(k+1)}\\mathbf{R}_3\\big]}{\\det\\big[\\hat{\\boldsymbol{\\rho}}_1,\\; \\hat{\\boldsymbol{\\rho}}_2,\\; \\hat{\\boldsymbol{\\rho}}_3\\big]}",
+          "to_latex": "c_1^{(k+1)}\\rho_1^{(k+1)} = \\frac{-c_1^{(k+1)}\\det[\\mathbf{R}_1,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3] + \\det[\\mathbf{R}_2,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3] - c_3^{(k+1)}\\det[\\mathbf{R}_3,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3]}{\\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3]},\\quad -\\rho_2^{(k+1)} = \\frac{-c_1^{(k+1)}\\det[\\hat{\\boldsymbol{\\rho}}_1,\\mathbf{R}_1,\\hat{\\boldsymbol{\\rho}}_3] + \\det[\\hat{\\boldsymbol{\\rho}}_1,\\mathbf{R}_2,\\hat{\\boldsymbol{\\rho}}_3] - c_3^{(k+1)}\\det[\\hat{\\boldsymbol{\\rho}}_1,\\mathbf{R}_3,\\hat{\\boldsymbol{\\rho}}_3]}{\\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3]},\\quad c_3^{(k+1)}\\rho_3^{(k+1)} = \\frac{-c_1^{(k+1)}\\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\mathbf{R}_1] + \\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\mathbf{R}_2] - c_3^{(k+1)}\\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\mathbf{R}_3]}{\\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3]}",
+          "operation_label": "行列式の多重線形性により各分子の行列式を観測局ごとの行列式和へ展開",
+          "explanation": "行列式が各列に関して線形である公理（DET01）を用い、置換された列の線形結合 -c1^(k+1) R_1 + R_2 - c3^(k+1) R_3 を各 R_i ごとの行列式の線形結合に展開する。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "c_1^{(k+1)}\\rho_1^{(k+1)} = \\frac{-c_1^{(k+1)}\\det[\\mathbf{R}_1,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3] + \\det[\\mathbf{R}_2,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3] - c_3^{(k+1)}\\det[\\mathbf{R}_3,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3]}{\\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3]},\\quad -\\rho_2^{(k+1)} = \\frac{-c_1^{(k+1)}\\det[\\hat{\\boldsymbol{\\rho}}_1,\\mathbf{R}_1,\\hat{\\boldsymbol{\\rho}}_3] + \\det[\\hat{\\boldsymbol{\\rho}}_1,\\mathbf{R}_2,\\hat{\\boldsymbol{\\rho}}_3] - c_3^{(k+1)}\\det[\\hat{\\boldsymbol{\\rho}}_1,\\mathbf{R}_3,\\hat{\\boldsymbol{\\rho}}_3]}{\\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3]},\\quad c_3^{(k+1)}\\rho_3^{(k+1)} = \\frac{-c_1^{(k+1)}\\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\mathbf{R}_1] + \\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\mathbf{R}_2] - c_3^{(k+1)}\\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\mathbf{R}_3]}{\\det[\\hat{\\boldsymbol{\\rho}}_1,\\hat{\\boldsymbol{\\rho}}_2,\\hat{\\boldsymbol{\\rho}}_3]}",
+          "to_latex": "c_1^{(k+1)}\\rho_1^{(k+1)} = \\frac{-c_1^{(k+1)} D_{11} + D_{21} - c_3^{(k+1)} D_{31}}{D_0},\\quad -\\rho_2^{(k+1)} = \\frac{-c_1^{(k+1)} D_{12} + D_{22} - c_3^{(k+1)} D_{32}}{D_0},\\quad c_3^{(k+1)}\\rho_3^{(k+1)} = \\frac{-c_1^{(k+1)} D_{13} + D_{23} - c_3^{(k+1)} D_{33}}{D_0}",
+          "operation_label": "スカラー三重積恒等式とGM01のD行列定数 D_0, D_{ij} を代入・導入",
+          "explanation": "M14の恒等式 det[a,b,c] = a·(b×c) = (a×b)·c と GM01 の定義 D0 = ρ_hat_1·(ρ_hat_2×ρ_hat_3), D_i1 = (R_i×ρ_hat_2)·ρ_hat_3, D_i2 = (ρ_hat_1×R_i)·ρ_hat_3, D_i3 = (ρ_hat_1×ρ_hat_2)·R_i を代入する。",
+          "used_node_ids": [
+            "astro.orbit.gm01_d_matrix_constants",
+            "math.vec.m14_scalar_triple_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "c_1^{(k+1)}\\rho_1^{(k+1)} = \\frac{-c_1^{(k+1)} D_{11} + D_{21} - c_3^{(k+1)} D_{31}}{D_0},\\quad -\\rho_2^{(k+1)} = \\frac{-c_1^{(k+1)} D_{12} + D_{22} - c_3^{(k+1)} D_{32}}{D_0},\\quad c_3^{(k+1)}\\rho_3^{(k+1)} = \\frac{-c_1^{(k+1)} D_{13} + D_{23} - c_3^{(k+1)} D_{33}}{D_0}",
+          "to_latex": "\\rho_1^{(k+1)} = \\frac{-c_1^{(k+1)} D_{11} + D_{21} - c_3^{(k+1)} D_{31}}{c_1^{(k+1)} D_0},\\quad \\rho_2^{(k+1)} = \\frac{c_1^{(k+1)} D_{12} - D_{22} + c_3^{(k+1)} D_{32}}{D_0},\\quad \\rho_3^{(k+1)} = \\frac{-c_1^{(k+1)} D_{13} + D_{23} - c_3^{(k+1)} D_{33}}{c_3^{(k+1)} D_0}",
+          "operation_label": "両辺をそれぞれ c1^(k+1), -1, c3^(k+1) で割り視線距離 ρ_i^(k+1) を確定",
+          "explanation": "c1^(k+1) != 0, c3^(k+1) != 0 の下で第1式の両辺を c1^(k+1) で割り、第2式の両辺に -1 を掛けて符号を反転し、第3式の両辺を c3^(k+1) で割る。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": "-(-c1*D12 + D22 - c3*D32)/D0 == (c1*D12 - D22 + c3*D32)/D0"
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 19,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\rho_1^{(k+1)} = \\frac{-c_1^{(k+1)} D_{11} + D_{21} - c_3^{(k+1)} D_{31}}{c_1^{(k+1)} D_0},\\quad \\rho_2^{(k+1)} = \\frac{c_1^{(k+1)} D_{12} - D_{22} + c_3^{(k+1)} D_{32}}{D_0},\\quad \\rho_3^{(k+1)} = \\frac{-c_1^{(k+1)} D_{13} + D_{23} - c_3^{(k+1)} D_{33}}{c_3^{(k+1)} D_0}",
+          "to_latex": "\\mathbf{r}_1^{(k+1)} = \\mathbf{R}_1 + \\rho_1^{(k+1)}\\hat{\\boldsymbol{\\rho}}_1,\\quad \\mathbf{r}_2^{(k+1)} = \\mathbf{R}_2 + \\rho_2^{(k+1)}\\hat{\\boldsymbol{\\rho}}_2,\\quad \\mathbf{r}_3^{(k+1)} = \\mathbf{R}_3 + \\rho_3^{(k+1)}\\hat{\\boldsymbol{\\rho}}_3",
+          "operation_label": "G02の視線幾何関係式に ρ_i^(k+1) を代入し位置ベクトル r_i^(k+1) を更新",
+          "explanation": "算出された3時刻の視線距離 ρ_1^(k+1), ρ_2^(k+1), ρ_3^(k+1) を G02 の定義式へ代入し、更新された地心（または太陽中心）位置ベクトル r_1^(k+1), r_2^(k+1), r_3^(k+1) を得る。",
+          "used_node_ids": [
+            "phys.orbit.g02_topocentric_geometry"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_5",
+          "order": 20,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_1^{(k+1)} = \\mathbf{R}_1 + \\rho_1^{(k+1)}\\hat{\\boldsymbol{\\rho}}_1,\\quad \\mathbf{r}_2^{(k+1)} = \\mathbf{R}_2 + \\rho_2^{(k+1)}\\hat{\\boldsymbol{\\rho}}_2,\\quad \\mathbf{r}_3^{(k+1)} = \\mathbf{R}_3 + \\rho_3^{(k+1)}\\hat{\\boldsymbol{\\rho}}_3",
+          "to_latex": "c_1^{(k+1)} = \\frac{g_3^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}},\\quad c_3^{(k+1)} = \\frac{-g_1^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}} \\implies \\rho_i^{(k+1)} \\to \\big(\\mathbf{r}_2^{(k+1)}, \\mathbf{v}_2^{(k+1)}\\big)",
+          "operation_label": "速度ベクトル v2^(k+1) の更新と反復改良ループの統合",
+          "explanation": "更新された r1^(k+1), r3^(k+1) にラグランジュ係数 f_i^(k), g_i^(k) を用いて r2^(k+1) を消去し v2^(k+1) を確定させ、|ρ2^(k+1) - ρ2^(k)| < ε を満たすまで反復更新を実行する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.num.ni01_fixed_point_convergence_def",
+            "phys.orbit.g04_lagrange_fg_series",
+            "phys.orbit.g07_state_vector_to_elements"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_1",
+          "order": 21,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\mathbf{r}_1^{(k+1)} = \\mathbf{R}_1 + \\rho_1^{(k+1)}\\hat{\\boldsymbol{\\rho}}_1,\\quad \\mathbf{r}_2^{(k+1)} = \\mathbf{R}_2 + \\rho_2^{(k+1)}\\hat{\\boldsymbol{\\rho}}_2,\\quad \\mathbf{r}_3^{(k+1)} = \\mathbf{R}_3 + \\rho_3^{(k+1)}\\hat{\\boldsymbol{\\rho}}_3",
+          "to_latex": "\\mathbf{r}_1^{(k+1)} = f_1^{(k)}\\mathbf{r}_2^{(k+1)} + g_1^{(k)}\\mathbf{v}_2^{(k+1)},\\quad \\mathbf{r}_3^{(k+1)} = f_3^{(k)}\\mathbf{r}_2^{(k+1)} + g_3^{(k)}\\mathbf{v}_2^{(k+1)}",
+          "operation_label": "更新された r1^(k+1), r3^(k+1) にG04のラグランジュ展開を導入",
+          "explanation": "第(k+1)更新の位置ベクトル r1^(k+1), r3^(k+1) を、f_i^(k), g_i^(k) を用いた r2^(k+1), v2^(k+1) のG04線形結合として表現する。",
+          "used_node_ids": [
+            "phys.orbit.g04_lagrange_fg_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_2",
+          "order": 22,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\mathbf{r}_1^{(k+1)} = f_1^{(k)}\\mathbf{r}_2^{(k+1)} + g_1^{(k)}\\mathbf{v}_2^{(k+1)},\\quad \\mathbf{r}_3^{(k+1)} = f_3^{(k)}\\mathbf{r}_2^{(k+1)} + g_3^{(k)}\\mathbf{v}_2^{(k+1)}",
+          "to_latex": "f_1^{(k)}\\mathbf{r}_3^{(k+1)} - f_3^{(k)}\\mathbf{r}_1^{(k+1)} = \\big(f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}\\big)\\mathbf{v}_2^{(k+1)}",
+          "operation_label": "線形結合 f1^(k) r3^(k+1) - f3^(k) r1^(k+1) を作り r2^(k+1) を消去",
+          "explanation": "第2式に f1^(k) を掛け、第1式に f3^(k) を掛けて辺々引くことで、f1^(k) f3^(k) r2^(k+1) の項を相殺して v2^(k+1) のみの式にする。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": "f1*(f3*r2 + g3*v2) - f3*(f1*r2 + g1*v2) == (f1*g3 - f3*g1)*v2"
+        },
+        {
+          "step_id": "s3_5_3",
+          "order": 23,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "f_1^{(k)}\\mathbf{r}_3^{(k+1)} - f_3^{(k)}\\mathbf{r}_1^{(k+1)} = \\big(f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}\\big)\\mathbf{v}_2^{(k+1)}",
+          "to_latex": "\\mathbf{r}_2^{(k+1)} = \\mathbf{R}_2 + \\rho_2^{(k+1)}\\hat{\\boldsymbol{\\rho}}_2,\\quad \\mathbf{v}_2^{(k+1)} = \\frac{f_1^{(k)}\\mathbf{r}_3^{(k+1)} - f_3^{(k)}\\mathbf{r}_1^{(k+1)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}}",
+          "operation_label": "両辺を f1^(k) g3^(k) - f3^(k) g1^(k) で割り状態ベクトル (r2^(k+1), v2^(k+1)) を確定（G07）",
+          "explanation": "非零の仮定 f1^(k) g3^(k) - f3^(k) g1^(k) != 0 により両辺を割り、G07の速度ベクトル算定式に従って v2^(k+1) を確定させ、r2^(k+1) と組にする。",
+          "used_node_ids": [
+            "phys.orbit.g07_state_vector_to_elements"
+          ],
+          "sympy_check_hint": "((f1*g3 - f3*g1)*v2)/(f1*g3 - f3*g1) == v2"
+        },
+        {
+          "step_id": "s3_5_4",
+          "order": 24,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\mathbf{r}_2^{(k+1)} = \\mathbf{R}_2 + \\rho_2^{(k+1)}\\hat{\\boldsymbol{\\rho}}_2,\\quad \\mathbf{v}_2^{(k+1)} = \\frac{f_1^{(k)}\\mathbf{r}_3^{(k+1)} - f_3^{(k)}\\mathbf{r}_1^{(k+1)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}}",
+          "to_latex": "c_1^{(k+1)} = \\frac{g_3^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}},\\quad c_3^{(k+1)} = \\frac{-g_1^{(k)}}{f_1^{(k)} g_3^{(k)} - f_3^{(k)} g_1^{(k)}} \\implies \\rho_i^{(k+1)} \\to \\big(\\mathbf{r}_2^{(k+1)}, \\mathbf{v}_2^{(k+1)}\\big)",
+          "operation_label": "不動点反復の収束判定 |ρ2^(k+1) - ρ2^(k)| < ε により反復更新写像を統合",
+          "explanation": "得られた (r2^(k+1), v2^(k+1)) と前回の視線距離 ρ2^(k) との差 |ρ2^(k+1) - ρ2^(k)| を評価し、許容誤差 ε 未満となるまで k <- k+1 として厳密な f_i, g_i 係数・c1, c3・ρ_i の更新反復を繰り返す不動点スキームを得る。",
+          "used_node_ids": [
+            "math.num.ni01_fixed_point_convergence_def",
+            "phys.orbit.g07_state_vector_to_elements"
+          ],
+          "sympy_check_hint": null
+        }
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-20T12:44:55.412989+00:00"
+    },
+    {
+      "id": "drv.link_gm01",
+      "target_node_id": "astro.orbit.gm01_d_matrix_constants",
+      "route_kind": "deductive",
+      "title": "観測幾何関係と共面条件からのD行列・スカラー三重積定数の導入",
+      "premise_node_ids": [
+        "phys.orbit.g02_topocentric_geometry",
+        "phys.orbit.g03_coplanarity_condition",
+        "math.vec.m14_scalar_triple_product"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "3時刻の視線単位ベクトルが一次独立であること（D0 ≠ 0）",
+        "3時刻の地心位置ベクトルが同一軌道面上に存在すること"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}_i = \\mathbf{R}_i + \\rho_i\\hat{\\boldsymbol{\\rho}}_i,\\quad c_1\\mathbf{r}_1 - \\mathbf{r}_2 + c_3\\mathbf{r}_3 = \\mathbf{0} \\quad (i=1,2,3)",
+          "to_latex": "D_0 = \\hat{\\boldsymbol{\\rho}}_1 \\cdot (\\hat{\\boldsymbol{\\rho}}_2 \\times \\hat{\\boldsymbol{\\rho}}_3),\\quad D_{ij} = (\\mathbf{R}_i \\times \\hat{\\boldsymbol{\\rho}}_2)\\cdot\\hat{\\boldsymbol{\\rho}}_3 \\text{ etc.}",
+          "operation_label": "共面ベクトル方程式の視線距離に関する線形系化と三重積定数の定義",
+          "explanation": "観測局・視線幾何関係と共面条件を結合して未知の視線距離に関する3次元線形方程式を立て、スカラー三重積およびクラメルの公式を適用するために必要な幾何定数 D0 と D_ij を導入する。",
+          "used_node_ids": [
+            "math.vec.m14_scalar_triple_product",
+            "phys.orbit.g02_topocentric_geometry",
+            "phys.orbit.g03_coplanarity_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_geometry",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1\\mathbf{r}_1 - \\mathbf{r}_2 + c_3\\mathbf{r}_3 = \\mathbf{0},\\quad \\mathbf{r}_i = \\mathbf{R}_i + \\rho_i\\hat{\\boldsymbol{\\rho}}_i",
+          "to_latex": "c_1\\rho_1\\hat{\\boldsymbol{\\rho}}_1 - \\rho_2\\hat{\\boldsymbol{\\rho}}_2 + c_3\\rho_3\\hat{\\boldsymbol{\\rho}}_3 = -c_1\\mathbf{R}_1 + \\mathbf{R}_2 - c_3\\mathbf{R}_3",
+          "operation_label": "共面条件への観測幾何関係の代入と未知量・既知量の分離",
+          "explanation": "各時刻の地心位置ベクトルを観測局位置ベクトルと視線ベクトルで表して共面条件式に代入し、未知の視線距離を含む項を左辺に、既知の観測局位置ベクトルを含む項を右辺に整理する。",
+          "used_node_ids": [
+            "phys.orbit.g02_topocentric_geometry",
+            "phys.orbit.g03_coplanarity_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_cramer_triple_product",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1\\rho_1\\hat{\\boldsymbol{\\rho}}_1 - \\rho_2\\hat{\\boldsymbol{\\rho}}_2 + c_3\\rho_3\\hat{\\boldsymbol{\\rho}}_3 = -c_1\\mathbf{R}_1 + \\mathbf{R}_2 - c_3\\mathbf{R}_3",
+          "to_latex": "c_1\\rho_1\\big[\\hat{\\boldsymbol{\\rho}}_1\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3)\\big] = -c_1\\big[\\mathbf{R}_1\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3)\\big] + \\big[\\mathbf{R}_2\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3)\\big] - c_3\\big[\\mathbf{R}_3\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3)\\big]",
+          "operation_label": "外積ベクトルとの内積（スカラー三重積・クラメル解法）による視線距離の分離",
+          "explanation": "スカラー三重積の性質 a·(a×c)=0 を用いて、2つの視線ベクトルの外積（例：ρ2_hat × ρ3_hat）を両辺に内積することで他の未知視線距離を消去し、3次元線形方程式をスカラー三重積の比として解く形に導く。",
+          "used_node_ids": [
+            "math.vec.m14_scalar_triple_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_define_d_constants",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\boldsymbol{\\rho}}_1\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3),\\quad \\mathbf{R}_i\\cdot(\\hat{\\boldsymbol{\\rho}}_2\\times\\hat{\\boldsymbol{\\rho}}_3)\\text{ etc.}",
+          "to_latex": "D_0 = \\hat{\\boldsymbol{\\rho}}_1 \\cdot (\\hat{\\boldsymbol{\\rho}}_2 \\times \\hat{\\boldsymbol{\\rho}}_3),\\quad D_{ij} = (\\mathbf{R}_i \\times \\hat{\\boldsymbol{\\rho}}_2)\\cdot\\hat{\\boldsymbol{\\rho}}_3 \\text{ etc.}",
+          "operation_label": "観測データのみから定まる幾何定数 D0 および D_ij の定義",
+          "explanation": "左辺に現れる3時刻の視線単位ベクトルのスカラー三重積を D0、右辺に現れる観測局位置ベクトルと2つの視線単位ベクトルのスカラー三重積（巡回置換により (R_i × ρ2_hat)·ρ3_hat 等と表される）を幾何定数 D_ij として定義する。",
+          "used_node_ids": [
+            "math.vec.m14_scalar_triple_product"
           ],
           "sympy_check_hint": null
         }
