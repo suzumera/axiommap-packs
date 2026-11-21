@@ -1,0 +1,625 @@
+{
+  "pack_meta": {
+    "pack_id": "bio.genetics.population_genetics",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematical_biology",
+    "title": "集団遺伝学：ハーディ＝ワインベルグ平衡・ライト＝フィッシャーモデルと固定確率（木村モデル）",
+    "language": "ja",
+    "description": "確率論と拡散近似からハーディ＝ワインベルグ平衡、遺伝的浮動によるヘテロ接合度の減衰、中立進化の置換速度k=μと木村の固定確率式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "bio.gen.n01_allele_genotype_freq_def",
+      "short_code": "GEN01",
+      "kind": "definition",
+      "title": "二倍体集団における対立遺伝子頻度と遺伝子型頻度の定義",
+      "summary": "2対立遺伝子座（A, a）を持つ二倍体集団における3種の遺伝子型頻度（AA, Aa, aa）と、そこから定まる対立遺伝子頻度 p, q の定義。",
+      "canonical_latex": "P_{AA} + P_{Aa} + P_{aa} = 1,\\quad p = P_{AA} + \\frac{1}{2}P_{Aa},\\quad q = 1 - p = P_{aa} + \\frac{1}{2}P_{Aa}",
+      "aliases_latex": [
+        "p = \\frac{2N_{AA} + N_{Aa}}{2N},\\quad q = \\frac{2N_{aa} + N_{Aa}}{2N}"
+      ],
+      "keywords": [
+        "対立遺伝子頻度",
+        "遺伝子型頻度",
+        "二倍体集団",
+        "集団遺伝学"
+      ],
+      "domain_tags": [
+        "mathematical_biology",
+        "population_genetics"
+      ]
+    },
+    {
+      "id": "bio.gen.n02_hardy_weinberg_equilibrium",
+      "short_code": "GEN02",
+      "kind": "theorem_formula",
+      "title": "ハーディ＝ワインベルグ平衡（HWE）",
+      "summary": "任意交配・無限大集団・突然変異や自然選択や移住がない条件下で、次世代の遺伝子型頻度が p^2, 2pq, q^2 となり、対立遺伝子頻度および遺伝子型頻度が世代間で保存される定理。",
+      "canonical_latex": "P'_{AA} = p^2,\\quad P'_{Aa} = 2pq,\\quad P'_{aa} = q^2,\\quad p' = p",
+      "aliases_latex": [
+        "(p + q)^2 = p^2 + 2pq + q^2 = 1"
+      ],
+      "keywords": [
+        "ハーディ＝ワインベルグ平衡",
+        "任意交配",
+        "遺伝子型頻度保存"
+      ],
+      "domain_tags": [
+        "mathematical_biology",
+        "population_genetics"
+      ]
+    },
+    {
+      "id": "bio.gen.n03_wright_fisher_model",
+      "short_code": "GEN03",
+      "kind": "definition",
+      "title": "ライト＝フィッシャーモデル（二項サンプリングと遺伝的浮動）",
+      "summary": "有効集団サイズ N（総対立遺伝子数 2N）の有限二倍体集団において、次世代の対立遺伝子数が二項分布に従って抽出されるマルコフ連鎖モデルとその1次・2次モーメント。",
+      "canonical_latex": "P(X_{t+1}=j \\mid X_t=i) = \\binom{2N}{j}p_t^j(1-p_t)^{2N-j},\\quad \\mathbb{E}[\\Delta p_t \\mid p_t] = 0,\\quad \\operatorname{Var}(\\Delta p_t \\mid p_t) = \\frac{p_t(1-p_t)}{2N}",
+      "aliases_latex": [
+        "X_{t+1} \\mid X_t \\sim \\mathrm{Binomial}(2N, p_t),\\quad p_t = \\frac{X_t}{2N}"
+      ],
+      "keywords": [
+        "ライト＝フィッシャーモデル",
+        "遺伝的浮動",
+        "二項サンプリング",
+        "マルコフ連鎖"
+      ],
+      "domain_tags": [
+        "mathematical_biology",
+        "population_genetics"
+      ]
+    },
+    {
+      "id": "bio.gen.n04_heterozygosity_decay",
+      "short_code": "GEN04",
+      "kind": "theorem_formula",
+      "title": "遺伝的浮動によるヘテロ接合度の減衰",
+      "summary": "ライト＝フィッシャーモデルにおいて、期待ヘテロ接合度 H_t が毎世代 1 - 1/(2N) 倍で減少し、大集団極限では時定数 2N で指数関数的に減衰する定理。",
+      "canonical_latex": "H_t = H_0 \\left(1 - \\frac{1}{2N}\\right)^t \\approx H_0 \\exp\\!\\left(-\\frac{t}{2N}\\right)",
+      "aliases_latex": [
+        "H_{t+1} = \\left(1 - \\frac{1}{2N}\\right)H_t"
+      ],
+      "keywords": [
+        "ヘテロ接合度",
+        "遺伝的多様性",
+        "遺伝的浮動",
+        "指数減衰"
+      ],
+      "domain_tags": [
+        "mathematical_biology",
+        "population_genetics"
+      ]
+    },
+    {
+      "id": "bio.gen.n05_neutral_substitution_rate",
+      "short_code": "GEN05",
+      "kind": "theorem_formula",
+      "title": "中立進化における分子置換速度 k = μ",
+      "summary": "中立突然変異の固定確率が初期頻度 1/(2N) に等しいことから、1世代あたりの集団全体の置換速度 k が集団サイズ N に依存せず突然変異率 μ に等しくなる木村の中立説の基本定理。",
+      "canonical_latex": "u_{\\mathrm{neutral}} = \\frac{1}{2N},\\quad k = (2N\\mu) \\cdot u_{\\mathrm{neutral}} = \\mu",
+      "aliases_latex": [
+        "k = 2N\\mu \\cdot \\frac{1}{2N} = \\mu"
+      ],
+      "keywords": [
+        "分子進化の中立説",
+        "置換速度",
+        "中立突然変異",
+        "固定確率"
+      ],
+      "domain_tags": [
+        "mathematical_biology",
+        "population_genetics"
+      ]
+    },
+    {
+      "id": "bio.gen.n06_kimura_diffusion_boundary",
+      "short_code": "GEN06",
+      "kind": "math_boundary",
+      "title": "選択を伴うライト＝フィッシャー過程の拡散近似とコルモゴロフ後向き方程式",
+      "summary": "相加的選択係数 s（適応度 1+2s, 1+s, 1）を伴う有限集団の対立遺伝子頻度変化を連続時間拡散過程で近似したドリフト係数・拡散係数と、固定確率 u(p) が満たす定常コルモゴロフ後向き方程式の境界値問題。",
+      "canonical_latex": "M_{\\delta p} = s p(1-p),\\quad V_{\\delta p} = \\frac{p(1-p)}{2N},\\quad \\frac{1}{2}V_{\\delta p}\\frac{d^2 u}{dp^2} + M_{\\delta p}\\frac{du}{dp} = 0,\\quad u(0)=0,\\; u(1)=1",
+      "aliases_latex": [
+        "\\frac{p(1-p)}{4N}u''(p) + s p(1-p)u'(p) = 0"
+      ],
+      "keywords": [
+        "拡散近似",
+        "コルモゴロフ後向き方程式",
+        "自然選択",
+        "ドリフト拡散"
+      ],
+      "domain_tags": [
+        "mathematical_biology",
+        "population_genetics"
+      ]
+    },
+    {
+      "id": "bio.gen.n07_kimura_fixation_probability",
+      "short_code": "GEN07",
+      "kind": "theorem_formula",
+      "title": "木村の固定確率式",
+      "summary": "拡散近似のコルモゴロフ後向き方程式を解いて得られる、初期頻度 p および単一新規突然変異 p = 1/(2N) に対する対立遺伝子の固定確率の厳密な漸近公式。",
+      "canonical_latex": "u(p) = \\frac{1 - e^{-4Nsp}}{1 - e^{-4Ns}},\\qquad u\\!\\left(\\frac{1}{2N}\\right) = \\frac{1 - e^{-2s}}{1 - e^{-4Ns}}",
+      "aliases_latex": [
+        "u(p) = \\frac{1 - \\exp(-4Nsp)}{1 - \\exp(-4Ns)}"
+      ],
+      "keywords": [
+        "木村の固定確率",
+        "拡散近似",
+        "自然選択",
+        "遺伝的浮動"
+      ],
+      "domain_tags": [
+        "mathematical_biology",
+        "population_genetics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "der.bio.gen.n01_from_pr01",
+      "target_node_id": "bio.gen.n01_allele_genotype_freq_def",
+      "route_kind": "deductive",
+      "title": "確率公理系に基づく遺伝子型頻度と対立遺伝子頻度の定式化",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "常染色体上の1遺伝子座に2つの対立遺伝子 A, a のみが存在する",
+        "各個体は二倍体であり、遺伝子型は排反事象 AA, Aa, aa のいずれかに属する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P(\\Omega) = 1,\\quad \\sum_{i} P(E_i) = 1",
+          "to_latex": "P_{AA} + P_{Aa} + P_{aa} = 1,\\quad p = P_{AA} + \\frac{1}{2}P_{Aa},\\quad q = 1 - p = P_{aa} + \\frac{1}{2}P_{Aa}",
+          "operation_label": "確率の規格化と周辺化",
+          "explanation": "二倍体個体の遺伝子型を排反事象として確率空間上で規格化し、ランダムに1本の染色体を抽出した際の対立遺伝子確率として p, q を定義する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P(\\Omega) = 1,\\quad \\sum_{i} P(E_i) = 1",
+          "to_latex": "P_{AA} + P_{Aa} + P_{aa} = 1,\\quad P_{AA}, P_{Aa}, P_{aa} \\ge 0",
+          "operation_label": "遺伝子型事象の規格化",
+          "explanation": "標本空間を遺伝子型 AA, Aa, aa の排反分割とみなし、コルモゴロフの公理より非負性と総和1を適用する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{AA} + P_{Aa} + P_{aa} = 1,\\quad P_{AA}, P_{Aa}, P_{aa} \\ge 0",
+          "to_latex": "p = P_{AA} + \\frac{1}{2}P_{Aa},\\quad q = P_{aa} + \\frac{1}{2}P_{Aa},\\quad p + q = P_{AA} + P_{Aa} + P_{aa} = 1",
+          "operation_label": "対立遺伝子頻度の定義",
+          "explanation": "各個体が2本の相同染色体を持つことから、ホモ接合体からは確率1、ヘテロ接合体からは確率1/2で各対立遺伝子が選ばれるとして p, q を定義する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p = P_{AA} + \\frac{1}{2}P_{Aa},\\quad q = P_{aa} + \\frac{1}{2}P_{Aa},\\quad p + q = P_{AA} + P_{Aa} + P_{aa} = 1",
+          "to_latex": "P_{AA} + P_{Aa} + P_{aa} = 1,\\quad p = P_{AA} + \\frac{1}{2}P_{Aa},\\quad q = 1 - p = P_{aa} + \\frac{1}{2}P_{Aa}",
+          "operation_label": "補余事象による整理",
+          "explanation": "p + q = 1 より q = 1 - p と表せ、遺伝子型頻度と対立遺伝子頻度の基本関係式が得られる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.bio.gen.n02_from_n01",
+      "target_node_id": "bio.gen.n02_hardy_weinberg_equilibrium",
+      "route_kind": "deductive",
+      "title": "任意交配下の配偶子結合によるハーディ＝ワインベルグ平衡の導出",
+      "premise_node_ids": [
+        "bio.gen.n01_allele_genotype_freq_def",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "無限大集団であり、任意交配（配偶子のランダム結合）が行われる",
+        "自然選択、突然変異、移住が存在しない"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p = P_{AA} + \\frac{1}{2}P_{Aa},\\quad q = 1 - p",
+          "to_latex": "P'_{AA} = p^2,\\quad P'_{Aa} = 2pq,\\quad P'_{aa} = q^2,\\quad p' = p",
+          "operation_label": "独立配偶子結合と頻度保存",
+          "explanation": "配偶子プールから独立に2つの配偶子が選ばれる確率積により次世代の遺伝子型頻度が p^2, 2pq, q^2 となり、対立遺伝子頻度も不変に保たれる。",
+          "used_node_ids": [
+            "bio.gen.n01_allele_genotype_freq_def",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": "p**2 + 2*p*(1-p) + (1-p)**2 - 1"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p = P_{AA} + \\frac{1}{2}P_{Aa},\\quad q = 1 - p",
+          "to_latex": "P(\\text{gamete } A) = p,\\quad P(\\text{gamete } a) = q",
+          "operation_label": "配偶子プールの確率",
+          "explanation": "メンデル分離の法則と突然変異・選択の不在により、配偶子プール中の A と a の割合は親世代の対立遺伝子頻度 p, q に等しい。",
+          "used_node_ids": [
+            "bio.gen.n01_allele_genotype_freq_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P(\\text{gamete } A) = p,\\quad P(\\text{gamete } a) = q",
+          "to_latex": "P'_{AA} = p^2,\\quad P'_{Aa} = pq + qp = 2pq,\\quad P'_{aa} = q^2",
+          "operation_label": "任意交配による積事象確率",
+          "explanation": "任意交配は2つの配偶子の独立抽出に相当するため、結合確率が積で与えられる。Aa は (A,a) と (a,A) の排反和となる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P'_{AA} = p^2,\\quad P'_{Aa} = pq + qp = 2pq,\\quad P'_{aa} = q^2",
+          "to_latex": "p' = P'_{AA} + \\frac{1}{2}P'_{Aa} = p^2 + pq = p(p + q) = p",
+          "operation_label": "次世代対立遺伝子頻度の計算",
+          "explanation": "次世代の遺伝子型頻度を対立遺伝子頻度の定義式に代入し、p + q = 1 を用いると p' = p が得られる。",
+          "used_node_ids": [
+            "bio.gen.n01_allele_genotype_freq_def"
+          ],
+          "sympy_check_hint": "p**2 + p*(1-p) - p"
+        },
+        {
+          "step_id": "s2_4",
+          "order": 5,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p' = P'_{AA} + \\frac{1}{2}P'_{Aa} = p^2 + pq = p(p + q) = p",
+          "to_latex": "P'_{AA} = p^2,\\quad P'_{Aa} = 2pq,\\quad P'_{aa} = q^2,\\quad p' = p",
+          "operation_label": "平衡状態の確定",
+          "explanation": "対立遺伝子頻度が不変であるため、以降の世代でも遺伝子型頻度は p^2, 2pq, q^2 に保たれる。",
+          "used_node_ids": [
+            "bio.gen.n01_allele_genotype_freq_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.bio.gen.n03_from_n01_pr01",
+      "target_node_id": "bio.gen.n03_wright_fisher_model",
+      "route_kind": "deductive",
+      "title": "有限集団における二項サンプリングと頻度変化モーメントの導出",
+      "premise_node_ids": [
+        "bio.gen.n01_allele_genotype_freq_def",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "世代が重複しない一定サイズ N の二倍体集団（対立遺伝子数 2N）を考える",
+        "各対立遺伝子は選択や突然変異なしに次世代の 2N 個の遺伝子座へ独立・等確率に複製される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_t = \\frac{X_t}{2N},\\quad p_t + q_t = 1",
+          "to_latex": "P(X_{t+1}=j \\mid X_t=i) = \\binom{2N}{j}p_t^j(1-p_t)^{2N-j},\\quad \\mathbb{E}[\\Delta p_t \\mid p_t] = 0,\\quad \\operatorname{Var}(\\Delta p_t \\mid p_t) = \\frac{p_t(1-p_t)}{2N}",
+          "operation_label": "二項分布の適用とモーメント評価",
+          "explanation": "次世代の 2N 本の染色体を親の配偶子プールから復元抽出する二項分布モデルを定義し、頻度変化の平均が0、分散が p_t(1-p_t)/(2N) であることを導く。",
+          "used_node_ids": [
+            "bio.gen.n01_allele_genotype_freq_def",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_t = \\frac{X_t}{2N},\\quad p_t + q_t = 1",
+          "to_latex": "X_{t+1} \\mid X_t=i \\sim \\mathrm{Binomial}(2N, p_t),\\quad P(X_{t+1}=j \\mid X_t=i) = \\binom{2N}{j}p_t^j(1-p_t)^{2N-j}",
+          "operation_label": "二項遷移確率の定式化",
+          "explanation": "2N 回の独立なベルヌーイ試行（成功確率 p_t = i/(2N)）の和として次世代の対立遺伝子数 X_{t+1} の遷移確率を与える。",
+          "used_node_ids": [
+            "bio.gen.n01_allele_genotype_freq_def",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X_{t+1} \\mid X_t=i \\sim \\mathrm{Binomial}(2N, p_t),\\quad P(X_{t+1}=j \\mid X_t=i) = \\binom{2N}{j}p_t^j(1-p_t)^{2N-j}",
+          "to_latex": "\\mathbb{E}[X_{t+1} \\mid p_t] = 2N p_t,\\quad \\operatorname{Var}(X_{t+1} \\mid p_t) = 2N p_t(1-p_t)",
+          "operation_label": "二項分布の期待値と分散",
+          "explanation": "試行回数 2N、成功確率 p_t の二項分布の標準的な期待値と分散の公式を適用する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[X_{t+1} \\mid p_t] = 2N p_t,\\quad \\operatorname{Var}(X_{t+1} \\mid p_t) = 2N p_t(1-p_t)",
+          "to_latex": "P(X_{t+1}=j \\mid X_t=i) = \\binom{2N}{j}p_t^j(1-p_t)^{2N-j},\\quad \\mathbb{E}[\\Delta p_t \\mid p_t] = 0,\\quad \\operatorname{Var}(\\Delta p_t \\mid p_t) = \\frac{p_t(1-p_t)}{2N}",
+          "operation_label": "頻度変化量 Δp_t への規格化",
+          "explanation": "p_{t+1} = X_{t+1}/(2N) および Δp_t = p_{t+1} - p_t を用いると、期待値は 0、分散は (2N)^2 で割られて p_t(1-p_t)/(2N) となる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": "2*N*p*(1-p)/(2*N)**2 - p*(1-p)/(2*N)"
+        }
+      ]
+    },
+    {
+      "id": "der.bio.gen.n04_from_n03",
+      "target_node_id": "bio.gen.n04_heterozygosity_decay",
+      "route_kind": "deductive",
+      "title": "ライト＝フィッシャーモデルの2次モーメントからのヘテロ接合度減衰の導出",
+      "premise_node_ids": [
+        "bio.gen.n03_wright_fisher_model",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "required_math_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "assumptions": [
+        "各世代の期待ヘテロ接合度は H_t = 2 E[p_t(1 - p_t)] で定義される",
+        "大集団極限 N >> 1 において ln(1 - 1/(2N)) ≈ -1/(2N) と近似できる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbb{E}[p_{t+1} \\mid p_t] = p_t,\\quad \\operatorname{Var}(p_{t+1} \\mid p_t) = \\frac{p_t(1-p_t)}{2N}",
+          "to_latex": "H_t = H_0 \\left(1 - \\frac{1}{2N}\\right)^t \\approx H_0 \\exp\\!\\left(-\\frac{t}{2N}\\right)",
+          "operation_label": "条件付き期待値の反復と指数近似",
+          "explanation": "p_{t+1}(1-p_{t+1}) の条件付き期待値から漸化式 H_{t+1} = (1 - 1/(2N))H_t を導き、指数関数で近似する。",
+          "used_node_ids": [
+            "bio.gen.n03_wright_fisher_model",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[p_{t+1} \\mid p_t] = p_t,\\quad \\operatorname{Var}(p_{t+1} \\mid p_t) = \\frac{p_t(1-p_t)}{2N}",
+          "to_latex": "\\mathbb{E}[p_{t+1}(1 - p_{t+1}) \\mid p_t] = p_t - \\left(\\operatorname{Var}(p_{t+1} \\mid p_t) + (\\mathbb{E}[p_{t+1} \\mid p_t])^2\\right) = p_t(1-p_t)\\left(1 - \\frac{1}{2N}\\right)",
+          "operation_label": "条件付き2次モーメントの展開",
+          "explanation": "E[p_{t+1}^2 | p_t] = Var(p_{t+1} | p_t) + (E[p_{t+1} | p_t])^2 を用いて、E[p_{t+1}(1-p_{t+1}) | p_t] を計算する。",
+          "used_node_ids": [
+            "bio.gen.n03_wright_fisher_model"
+          ],
+          "sympy_check_hint": "p - (p*(1-p)/(2*N) + p**2) - p*(1-p)*(1 - 1/(2*N))"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[p_{t+1}(1 - p_{t+1}) \\mid p_t] = p_t - \\left(\\operatorname{Var}(p_{t+1} \\mid p_t) + (\\mathbb{E}[p_{t+1} \\mid p_t])^2\\right) = p_t(1-p_t)\\left(1 - \\frac{1}{2N}\\right)",
+          "to_latex": "H_{t+1} = 2\\mathbb{E}[p_{t+1}(1 - p_{t+1})] = \\left(1 - \\frac{1}{2N}\\right) H_t",
+          "operation_label": "全期待値の法則による漸化式化",
+          "explanation": "両辺の期待値を取り 2 倍することで、期待ヘテロ接合度 H_t に関する1階線形漸化式を得る。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H_{t+1} = 2\\mathbb{E}[p_{t+1}(1 - p_{t+1})] = \\left(1 - \\frac{1}{2N}\\right) H_t",
+          "to_latex": "H_t = H_0 \\left(1 - \\frac{1}{2N}\\right)^t \\approx H_0 \\exp\\!\\left(-\\frac{t}{2N}\\right)",
+          "operation_label": "漸化式の解と1次漸近近似",
+          "explanation": "漸化式を t 回反復し、1/(2N) << 1 に対するテイラー1次近似 1 - x ≈ e^{-x} を適用して指数減衰形を得る。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.bio.gen.n05_from_n03",
+      "target_node_id": "bio.gen.n05_neutral_substitution_rate",
+      "route_kind": "deductive",
+      "title": "マルチンゲール性を用いた中立固定確率と置換速度 k = μ の導出",
+      "premise_node_ids": [
+        "bio.gen.n03_wright_fisher_model",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "1遺伝子座あたりの1世代あたりの突然変異率を μ とし、集団全体で毎世代 2Nμ 個の中立突然変異が生じる",
+        "新奇突然変異は集団中に1コピー（初期頻度 p_0 = 1/(2N)）として出現する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbb{E}[p_{t+1} \\mid p_t] = p_t,\\quad p_0 = \\frac{1}{2N}",
+          "to_latex": "u_{\\mathrm{neutral}} = \\frac{1}{2N},\\quad k = (2N\\mu) \\cdot u_{\\mathrm{neutral}} = \\mu",
+          "operation_label": "期待頻度保存と置換速度の積",
+          "explanation": "期待頻度の保存（マルチンゲール性）より中立固定確率が 1/(2N) に等しくなり、1世代の突然変異発生数 2Nμ との積から k = μ を得る。",
+          "used_node_ids": [
+            "bio.gen.n03_wright_fisher_model",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": "2*N*mu*(1/(2*N)) - mu"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[p_{t+1} \\mid p_t] = p_t,\\quad p_0 = \\frac{1}{2N}",
+          "to_latex": "p_0 = \\lim_{t\\to\\infty}\\mathbb{E}[p_t] = 1 \\cdot u(p_0) + 0 \\cdot (1 - u(p_0)) = u(p_0)",
+          "operation_label": "吸収状態における期待値評価",
+          "explanation": "E[p_t] = p_0 が全時刻で保存され、十分時間経過後には確率 u(p_0) で1（固定）、1-u(p_0) で0（消失）に吸収されるため u(p_0) = p_0 となる。",
+          "used_node_ids": [
+            "bio.gen.n03_wright_fisher_model",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_0 = \\lim_{t\\to\\infty}\\mathbb{E}[p_t] = 1 \\cdot u(p_0) + 0 \\cdot (1 - u(p_0)) = u(p_0)",
+          "to_latex": "u_{\\mathrm{neutral}} = u\\!\\left(\\frac{1}{2N}\\right) = \\frac{1}{2N}",
+          "operation_label": "初期頻度の代入",
+          "explanation": "単一の新規突然変異の初期頻度 p_0 = 1/(2N) を代入し、固定確率 u_neutral = 1/(2N) を得る。",
+          "used_node_ids": [
+            "bio.gen.n03_wright_fisher_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_{\\mathrm{neutral}} = u\\!\\left(\\frac{1}{2N}\\right) = \\frac{1}{2N}",
+          "to_latex": "u_{\\mathrm{neutral}} = \\frac{1}{2N},\\quad k = (2N\\mu) \\cdot u_{\\mathrm{neutral}} = \\mu",
+          "operation_label": "集団突然変異率との乗算",
+          "explanation": "1世代に集団全体で生じる中立突然変異の期待個数 2Nμ に固定確率 1/(2N) を掛けることで、集団サイズ N が相殺され k = μ が導かれる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": "2*N*mu*(1/(2*N)) - mu"
+        }
+      ]
+    },
+    {
+      "id": "der.bio.gen.n07_from_n06",
+      "target_node_id": "bio.gen.n07_kimura_fixation_probability",
+      "route_kind": "deductive",
+      "title": "コルモゴロフ後向き方程式の積分による木村の固定確率式の導出",
+      "premise_node_ids": [
+        "bio.gen.n06_kimura_diffusion_boundary",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m01_chain_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "選択係数 s != 0 かつ |s| << 1、有効集団サイズ N >> 1 として拡散近似が成り立つ",
+        "境界条件 u(0) = 0, u(1) = 1 を満たす C^2 級解を求める"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{1}{2}V_{\\delta p} u''(p) + M_{\\delta p} u'(p) = 0,\\quad u(0)=0,\\; u(1)=1",
+          "to_latex": "u(p) = \\frac{1 - e^{-4Nsp}}{1 - e^{-4Ns}},\\qquad u\\!\\left(\\frac{1}{2N}\\right) = \\frac{1 - e^{-2s}}{1 - e^{-4Ns}}",
+          "operation_label": "2階線形常微分方程式の積分",
+          "explanation": "コルモゴロフ後向き方程式を u'(p) に関する1階方程式に帰着させて2回積分し、境界条件 u(0)=0, u(1)=1 から木村の固定確率式を求める。",
+          "used_node_ids": [
+            "bio.gen.n06_kimura_diffusion_boundary",
+            "math.calc.m01_chain_rule",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2}V_{\\delta p} u''(p) + M_{\\delta p} u'(p) = 0,\\quad u(0)=0,\\; u(1)=1",
+          "to_latex": "\\frac{u''(p)}{u'(p)} = -\\frac{2 M_{\\delta p}}{V_{\\delta p}} = -\\frac{2 s p(1-p)}{p(1-p)/(2N)} = -4Ns",
+          "operation_label": "ドリフト・拡散係数の代入と変数分離",
+          "explanation": "M_{δp} = sp(1-p) と V_{δp} = p(1-p)/(2N) を代入して p(1-p) を約分し、対数微分の形に整理する。",
+          "used_node_ids": [
+            "bio.gen.n06_kimura_diffusion_boundary"
+          ],
+          "sympy_check_hint": "-2*s*p*(1-p)/(p*(1-p)/(2*N)) + 4*N*s"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{u''(p)}{u'(p)} = -\\frac{2 M_{\\delta p}}{V_{\\delta p}} = -\\frac{2 s p(1-p)}{p(1-p)/(2N)} = -4Ns",
+          "to_latex": "u'(p) = C_1 e^{-4Nsp} \\implies u(p) = C_1 \\int_0^p e^{-4Nsx}\\,dx + C_2",
+          "operation_label": "微積分学の基本定理による2段階積分",
+          "explanation": "両辺を積分して u'(p) = C_1 e^{-4Nsp} を得た後、さらに 0 から p まで定積分して一般解を構成する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u'(p) = C_1 e^{-4Nsp} \\implies u(p) = C_1 \\int_0^p e^{-4Nsx}\\,dx + C_2",
+          "to_latex": "u(p) = \\frac{1 - e^{-4Nsp}}{1 - e^{-4Ns}},\\qquad u\\!\\left(\\frac{1}{2N}\\right) = \\frac{1 - e^{-2s}}{1 - e^{-4Ns}}",
+          "operation_label": "境界条件の適用と単一変異への評価",
+          "explanation": "u(0)=0 より C_2=0、u(1)=1 より積分定数 C_1 を決定し、さらに p = 1/(2N) を代入して単一新規突然変異の固定確率を得る。",
+          "used_node_ids": [
+            "bio.gen.n06_kimura_diffusion_boundary",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

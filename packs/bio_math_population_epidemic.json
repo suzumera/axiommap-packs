@@ -1,0 +1,679 @@
+{
+  "pack_meta": {
+    "pack_id": "bio.math.population_epidemic",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "mathematical_biology",
+    "title": "数理生態・感染症モデル：ロジスティック方程式・ロトカ＝ヴォルテラとSIRモデル（基本再生産数R0）",
+    "language": "ja",
+    "description": "常微分方程式からロジスティック方程式の厳密解、ロトカ＝ヴォルテラ捕食者・被食者系の保存量、SIRモデルの閾値定理と基本再生産数R0を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "bio.pop.n01_population_mass_action_boundary",
+      "short_code": "POP01",
+      "kind": "math_boundary",
+      "title": "個体群成長と質量作用の法則の基礎境界",
+      "summary": "連続時間個体群モデルにおける一人当たり増殖率と、種間・状態間の接触頻度に関する質量作用の法則（双線形相互作用）を与える。",
+      "canonical_latex": "\\frac{dN}{dt} = r(N)N,\\quad r(N) = r_0\\left(1 - \\frac{N}{K}\\right),\\quad \\text{Interaction rate} = \\beta X Y",
+      "aliases_latex": [
+        "\\dot{N} = r(N)N",
+        "\\text{Incidence} = \\beta S I"
+      ],
+      "keywords": [
+        "population dynamics",
+        "per-capita growth rate",
+        "carrying capacity",
+        "mass action"
+      ],
+      "domain_tags": [
+        "mathematical_biology"
+      ]
+    },
+    {
+      "id": "bio.pop.n02_logistic_ode_def",
+      "short_code": "POP02",
+      "kind": "definition",
+      "title": "ロジスティック微分方程式の定義",
+      "summary": "環境収容力 K と内的自然増加率 r を持つ単一種個体群の密度依存成長を記述する非線形1階常微分方程式。",
+      "canonical_latex": "\\frac{dN}{dt} = r N\\left(1 - \\frac{N}{K}\\right),\\quad N(0) = N_0 > 0\\quad (r > 0,\\; K > 0)",
+      "aliases_latex": [
+        "\\dot{N} = rN(1 - N/K)"
+      ],
+      "keywords": [
+        "logistic equation",
+        "carrying capacity",
+        "verhulst model"
+      ],
+      "domain_tags": [
+        "mathematical_biology"
+      ]
+    },
+    {
+      "id": "bio.pop.n03_logistic_exact_solution",
+      "short_code": "POP03",
+      "kind": "theorem_formula",
+      "title": "ロジスティック方程式の厳密解（シグモイド成長曲線）",
+      "summary": "変数分離と部分分数分解により得られるロジスティック方程式の陽的厳密解であり、t -> infinity で環境収容力 K に漸近する。",
+      "canonical_latex": "N(t) = \\frac{K}{1 + \\left(\\frac{K}{N_0} - 1\\right)e^{-rt}}",
+      "aliases_latex": [
+        "N(t) = \\frac{K N_0 e^{rt}}{K + N_0(e^{rt} - 1)}"
+      ],
+      "keywords": [
+        "logistic function",
+        "sigmoid curve",
+        "exact solution"
+      ],
+      "domain_tags": [
+        "mathematical_biology"
+      ]
+    },
+    {
+      "id": "bio.pop.n04_lotka_volterra_system_def",
+      "short_code": "POP04",
+      "kind": "definition",
+      "title": "ロトカ＝ヴォルテラ捕食者・被食者系の定義",
+      "summary": "被食者 x と捕食者 y の個体数動態を質量作用型の捕食・増殖項で結合した2次元連立非線形常微分方程式系。",
+      "canonical_latex": "\\frac{dx}{dt} = \\alpha x - \\beta x y,\\quad \\frac{dy}{dt} = \\delta x y - \\gamma y\\quad (\\alpha,\\beta,\\gamma,\\delta > 0)",
+      "aliases_latex": [
+        "\\dot{x} = x(\\alpha - \\beta y),\\; \\dot{y} = y(\\delta x - \\gamma)"
+      ],
+      "keywords": [
+        "lotka-volterra",
+        "predator-prey",
+        "coupled ode"
+      ],
+      "domain_tags": [
+        "mathematical_biology"
+      ]
+    },
+    {
+      "id": "bio.pop.n05_lotka_volterra_conserved_quantity",
+      "short_code": "POP05",
+      "kind": "theorem_formula",
+      "title": "ロトカ＝ヴォルテラ系の保存量（第一積分）",
+      "summary": "ロトカ＝ヴォルテラ方程式の解軌道に沿って時間不変となる保存量であり、共存平衡点周囲の閉軌道（周期振動）を保証する。",
+      "canonical_latex": "V(x,y) := \\delta x - \\gamma\\ln x + \\beta y - \\alpha\\ln y = \\text{const.}",
+      "aliases_latex": [
+        "x^{-\\gamma} e^{\\delta x} y^{-\\alpha} e^{\\beta y} = C"
+      ],
+      "keywords": [
+        "first integral",
+        "conserved quantity",
+        "periodic orbit"
+      ],
+      "domain_tags": [
+        "mathematical_biology"
+      ]
+    },
+    {
+      "id": "bio.pop.n06_sir_model_def",
+      "short_code": "POP06",
+      "kind": "definition",
+      "title": "SIR感染症モデルの定義と総人口保存則",
+      "summary": "集団を感受性者 S・感染者 I・回復者 R の3コンパートメントに分割し、質量作用の感染率と一定回復率で記述する基本感染症モデル。",
+      "canonical_latex": "\\frac{dS}{dt} = -\\beta S I,\\quad \\frac{dI}{dt} = \\beta S I - \\gamma I,\\quad \\frac{dR}{dt} = \\gamma I,\\quad S(t)+I(t)+R(t)=N",
+      "aliases_latex": [
+        "\\dot{S}=-\\beta SI,\\; \\dot{I}=\\beta SI-\\gamma I,\\; \\dot{R}=\\gamma I"
+      ],
+      "keywords": [
+        "SIR model",
+        "compartmental model",
+        "epidemiology"
+      ],
+      "domain_tags": [
+        "mathematical_biology"
+      ]
+    },
+    {
+      "id": "bio.pop.n07_basic_reproduction_number_r0",
+      "short_code": "POP07",
+      "kind": "definition",
+      "title": "基本再生産数 R0 と実効再生産数 Re の定義",
+      "summary": "全集団が感受性の初期状態において1人の感染者が感染期間中に生み出す平均二次感染者数 R0 と、時刻 t の実効再生産数 Re。",
+      "canonical_latex": "R_0 := \\frac{\\beta S_0}{\\gamma},\\quad R_e(t) := \\frac{\\beta S(t)}{\\gamma},\\quad \\frac{dI}{dt} = \\gamma I\\big(R_e(t) - 1\\big)",
+      "aliases_latex": [
+        "\\mathcal{R}_0 = \\frac{\\beta N}{\\gamma}"
+      ],
+      "keywords": [
+        "basic reproduction number",
+        "effective reproduction number",
+        "R0"
+      ],
+      "domain_tags": [
+        "mathematical_biology"
+      ]
+    },
+    {
+      "id": "bio.pop.n08_sir_threshold_final_size",
+      "short_code": "POP08",
+      "kind": "theorem_formula",
+      "title": "SIRモデルの閾値定理と最終規模方程式",
+      "summary": "流行発生条件 R0 > 1 と感染ピーク時の臨界感受性者数（集団免疫閾値）、および終息時の最終感受性者数 S_infinity を定める超越方程式。",
+      "canonical_latex": "R_0 > 1 \\iff \\left.\\frac{dI}{dt}\\right|_{t=0} > 0,\\quad S_{\\mathrm{crit}} = \\frac{\\gamma}{\\beta} = \\frac{S_0}{R_0},\\quad \\ln\\frac{S_\\infty}{S_0} = \\frac{\\beta}{\\gamma}(S_\\infty - N)",
+      "aliases_latex": [
+        "p_c = 1 - \\frac{1}{R_0}",
+        "S_\\infty = S_0 \\exp\\big(-R_0(1 - S_\\infty/N)\\big)"
+      ],
+      "keywords": [
+        "epidemic threshold",
+        "herd immunity",
+        "final size relation"
+      ],
+      "domain_tags": [
+        "mathematical_biology"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d01_logistic_ode_def",
+      "target_node_id": "bio.pop.n02_logistic_ode_def",
+      "route_kind": "reformulation",
+      "title": "密度依存成長境界からのロジスティック方程式の定式化",
+      "premise_node_ids": [
+        "bio.pop.n01_population_mass_action_boundary"
+      ],
+      "required_math_node_ids": [
+        "bio.pop.n02_logistic_ode_def"
+      ],
+      "assumptions": [
+        "環境は均質であり、環境収容力 K と内的自然増加率 r_0 は正の定数とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dN}{dt} = r(N)N,\\quad r(N) = r_0\\left(1 - \\frac{N}{K}\\right)",
+          "to_latex": "\\frac{dN}{dt} = r_0 N\\left(1 - \\frac{N}{K}\\right),\\quad N(0) = N_0 > 0",
+          "operation_label": "substitute_growth_rate",
+          "explanation": "一人当たり増殖率の線形減少モデルを個体群成長方程式に代入し、初期条件を付与してロジスティック方程式を定義する。",
+          "used_node_ids": [
+            "bio.pop.n01_population_mass_action_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dN}{dt} = r(N)N,\\quad r(N) = r_0\\left(1 - \\frac{N}{K}\\right)",
+          "to_latex": "\\frac{dN}{dt} = r_0\\left(1 - \\frac{N}{K}\\right)N",
+          "operation_label": "substitute_rN",
+          "explanation": "r(N) の定義式を dN/dt = r(N)N に代入する。",
+          "used_node_ids": [
+            "bio.pop.n01_population_mass_action_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dN}{dt} = r_0\\left(1 - \\frac{N}{K}\\right)N",
+          "to_latex": "\\frac{dN}{dt} = r_0 N\\left(1 - \\frac{N}{K}\\right),\\quad N(0) = N_0 > 0",
+          "operation_label": "attach_initial_condition",
+          "explanation": "乗法の交換則により標準形に整理し、正の初期個体数 N(0)=N_0 を設定する。",
+          "used_node_ids": [
+            "bio.pop.n02_logistic_ode_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d02_logistic_exact_solution",
+      "target_node_id": "bio.pop.n03_logistic_exact_solution",
+      "route_kind": "deductive",
+      "title": "変数分離と部分分数分解によるロジスティック方程式の厳密解の導出",
+      "premise_node_ids": [
+        "bio.pop.n02_logistic_ode_def"
+      ],
+      "required_math_node_ids": [
+        "bio.pop.n03_logistic_exact_solution",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m43_definite_integral_substitution",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "0 < N_0 < K または N_0 > K であり、解は N=0, K を横切らない。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dN}{dt} = r N\\left(1 - \\frac{N}{K}\\right),\\quad N(0) = N_0",
+          "to_latex": "N(t) = \\frac{K}{1 + \\left(\\frac{K}{N_0} - 1\\right)e^{-rt}}",
+          "operation_label": "separate_and_integrate",
+          "explanation": "変数分離・部分分数分解・定積分を実行し、N(t) について代数的に解くことでシグモイド型の厳密解を得る。",
+          "used_node_ids": [
+            "bio.pop.n02_logistic_ode_def",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m43_definite_integral_substitution",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": "dsolve(Eq(N(t).diff(t), r*N(t)*(1 - N(t)/K)), N(t))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dN}{dt} = r N\\left(1 - \\frac{N}{K}\\right),\\quad N(0) = N_0",
+          "to_latex": "\\int_{N_0}^{N(t)} \\frac{K}{N'(K - N')}\\,dN' = \\int_{0}^{t} r\\,d\\tau",
+          "operation_label": "separation_of_variables",
+          "explanation": "N(K-N) != 0 の領域で変数を分離し、0 から t まで定積分する。",
+          "used_node_ids": [
+            "bio.pop.n02_logistic_ode_def",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{N_0}^{N(t)} \\frac{K}{N'(K - N')}\\,dN' = \\int_{0}^{t} r\\,d\\tau",
+          "to_latex": "\\int_{N_0}^{N(t)} \\left(\\frac{1}{N'} + \\frac{1}{K - N'}\\right)dN' = rt",
+          "operation_label": "partial_fraction_decomposition",
+          "explanation": "被積分関数を K/(N'(K-N')) = 1/N' + 1/(K-N') と部分分数分解する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": "apart(K/(N*(K - N)), N)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{N_0}^{N(t)} \\left(\\frac{1}{N'} + \\frac{1}{K - N'}\\right)dN' = rt",
+          "to_latex": "\\ln\\left|\\frac{N(t)}{K - N(t)}\\right| - \\ln\\left|\\frac{N_0}{K - N_0}\\right| = rt",
+          "operation_label": "evaluate_logarithmic_integral",
+          "explanation": "微積分学の基本定理により対数積分を評価する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln\\left|\\frac{N(t)}{K - N(t)}\\right| - \\ln\\left|\\frac{N_0}{K - N_0}\\right| = rt",
+          "to_latex": "N(t) = \\frac{K}{1 + \\left(\\frac{K}{N_0} - 1\\right)e^{-rt}}",
+          "operation_label": "invert_exponential_solve_N",
+          "explanation": "両辺の指数をとって絶対値を外し（N と K-N の符号は初期時刻から不変）、N(t) について整理する。",
+          "used_node_ids": [
+            "bio.pop.n03_logistic_exact_solution",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d03_lotka_volterra_system_def",
+      "target_node_id": "bio.pop.n04_lotka_volterra_system_def",
+      "route_kind": "reformulation",
+      "title": "質量作用の法則に基づくロトカ＝ヴォルテラ系の定式化",
+      "premise_node_ids": [
+        "bio.pop.n01_population_mass_action_boundary"
+      ],
+      "required_math_node_ids": [
+        "bio.pop.n04_lotka_volterra_system_def"
+      ],
+      "assumptions": [
+        "被食者の自然増殖率 alpha と捕食者の自然死亡率 gamma は正の定数とし、捕食による相互作用は質量作用に従う。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dx}{dt} = \\alpha x - \\text{loss}(x,y),\\quad \\frac{dy}{dt} = \\text{gain}(x,y) - \\gamma y",
+          "to_latex": "\\frac{dx}{dt} = \\alpha x - \\beta xy,\\quad \\frac{dy}{dt} = \\delta xy - \\gamma y",
+          "operation_label": "apply_mass_action_predation",
+          "explanation": "捕食による被食者減少率と捕食者増殖率を質量作用積 xy に比例させてロトカ＝ヴォルテラ系を得る。",
+          "used_node_ids": [
+            "bio.pop.n01_population_mass_action_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dx}{dt} = \\alpha x - \\text{loss}(x,y),\\quad \\frac{dy}{dt} = \\text{gain}(x,y) - \\gamma y",
+          "to_latex": "\\text{loss}(x,y) = \\beta xy,\\quad \\text{gain}(x,y) = \\delta xy",
+          "operation_label": "model_bilinear_encounter",
+          "explanation": "ランダム混合仮定より遭遇頻度を xy に比例させ、捕食係数 beta と変換効率を含む係数 delta を導入する。",
+          "used_node_ids": [
+            "bio.pop.n01_population_mass_action_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{loss}(x,y) = \\beta xy,\\quad \\text{gain}(x,y) = \\delta xy",
+          "to_latex": "\\frac{dx}{dt} = \\alpha x - \\beta xy,\\quad \\frac{dy}{dt} = \\delta xy - \\gamma y",
+          "operation_label": "assemble_coupled_odes",
+          "explanation": "相互作用項を収支式に代入して2次元連立常微分方程式系を完成させる。",
+          "used_node_ids": [
+            "bio.pop.n04_lotka_volterra_system_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d04_lotka_volterra_conserved_quantity",
+      "target_node_id": "bio.pop.n05_lotka_volterra_conserved_quantity",
+      "route_kind": "deductive",
+      "title": "ロトカ＝ヴォルテラ捕食者・被食者系の保存量の導出",
+      "premise_node_ids": [
+        "bio.pop.n04_lotka_volterra_system_def"
+      ],
+      "required_math_node_ids": [
+        "bio.pop.n05_lotka_volterra_conserved_quantity",
+        "math.calc.m01_chain_rule",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "第一象限 x > 0, y > 0 上の解を考える。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dx}{dt} = x(\\alpha - \\beta y),\\quad \\frac{dy}{dt} = y(\\delta x - \\gamma)",
+          "to_latex": "V(x,y) := \\delta x - \\gamma\\ln x + \\beta y - \\alpha\\ln y = \\text{const.}",
+          "operation_label": "derive_first_integral",
+          "explanation": "時間 t を消去して変数分離形にし、積分することで軌道上の保存量 V(x,y) を得る。",
+          "used_node_ids": [
+            "bio.pop.n04_lotka_volterra_system_def",
+            "math.calc.m01_chain_rule",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": "simplify(diff(delta*x(t) - gamma*log(x(t)) + beta*y(t) - alpha*log(y(t)), t).subs({x(t).diff(t): x(t)*(alpha-beta*y(t)), y(t).diff(t): y(t)*(delta*x(t)-gamma)}))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dx}{dt} = x(\\alpha - \\beta y),\\quad \\frac{dy}{dt} = y(\\delta x - \\gamma)",
+          "to_latex": "\\frac{dy}{dx} = \\frac{y(\\delta x - \\gamma)}{x(\\alpha - \\beta y)}",
+          "operation_label": "eliminate_time_chain_rule",
+          "explanation": "連鎖律 (dy/dt)/(dx/dt) = dy/dx を用いて相空間 (x,y) 上の微分方程式を得る。",
+          "used_node_ids": [
+            "bio.pop.n04_lotka_volterra_system_def",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dy}{dx} = \\frac{y(\\delta x - \\gamma)}{x(\\alpha - \\beta y)}",
+          "to_latex": "\\left(\\frac{\\alpha}{y} - \\beta\\right)\\frac{dy}{dt} = \\left(\\delta - \\frac{\\gamma}{x}\\right)\\frac{dx}{dt}",
+          "operation_label": "separate_variables_time_form",
+          "explanation": "両辺を x, y で分離し、dx/dt と dy/dt の形に戻す。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{\\alpha}{y} - \\beta\\right)\\frac{dy}{dt} = \\left(\\delta - \\frac{\\gamma}{x}\\right)\\frac{dx}{dt}",
+          "to_latex": "V(x,y) := \\delta x - \\gamma\\ln x + \\beta y - \\alpha\\ln y = \\text{const.}",
+          "operation_label": "integrate_to_conserved_quantity",
+          "explanation": "両辺を t について積分（原始関数をとる）すると時間微分が 0 となる保存量 V(x,y) が得られる。",
+          "used_node_ids": [
+            "bio.pop.n05_lotka_volterra_conserved_quantity",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d05_sir_model_def",
+      "target_node_id": "bio.pop.n06_sir_model_def",
+      "route_kind": "deductive",
+      "title": "質量作用の感染率からのSIRモデルと総人口保存則の導出",
+      "premise_node_ids": [
+        "bio.pop.n01_population_mass_action_boundary"
+      ],
+      "required_math_node_ids": [
+        "bio.pop.n06_sir_model_def",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "出生・自然死亡は無視できる時間スケールとし、総人口 N は一定である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\text{Incidence} = \\beta S I,\\quad \\text{Recovery} = \\gamma I",
+          "to_latex": "\\frac{dS}{dt} = -\\beta SI,\\quad \\frac{dI}{dt} = \\beta SI - \\gamma I,\\quad \\frac{dR}{dt} = \\gamma I,\\quad S+I+R = N",
+          "operation_label": "formulate_sir_conservation",
+          "explanation": "S -> I -> R の遷移流量からSIR連立方程式を構成し、3式の和が0であることから総人口保存則を導く。",
+          "used_node_ids": [
+            "bio.pop.n01_population_mass_action_boundary",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{Incidence} = \\beta S I,\\quad \\text{Recovery} = \\gamma I",
+          "to_latex": "\\frac{dS}{dt} = -\\beta SI,\\quad \\frac{dI}{dt} = \\beta SI - \\gamma I,\\quad \\frac{dR}{dt} = \\gamma I",
+          "operation_label": "write_compartment_balances",
+          "explanation": "各コンパートメントへの流入・流出を質量作用の感染率 beta*S*I と回復率 gamma*I で記述する。",
+          "used_node_ids": [
+            "bio.pop.n01_population_mass_action_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dS}{dt} = -\\beta SI,\\quad \\frac{dI}{dt} = \\beta SI - \\gamma I,\\quad \\frac{dR}{dt} = \\gamma I",
+          "to_latex": "\\frac{d}{dt}(S+I+R) = 0 \\implies S(t)+I(t)+R(t) = N",
+          "operation_label": "sum_derivatives_conservation",
+          "explanation": "微分の線形性を用いて3式を加えると右辺が相殺し、総人口 S+I+R=N の保存が従う。",
+          "used_node_ids": [
+            "bio.pop.n06_sir_model_def",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d06_basic_reproduction_number_r0",
+      "target_node_id": "bio.pop.n07_basic_reproduction_number_r0",
+      "route_kind": "reformulation",
+      "title": "感染者方程式の無次元化による基本再生産数 R0 の導入",
+      "premise_node_ids": [
+        "bio.pop.n06_sir_model_def"
+      ],
+      "required_math_node_ids": [
+        "bio.pop.n07_basic_reproduction_number_r0"
+      ],
+      "assumptions": [
+        "回復率 gamma > 0 であり、平均感染期間は 1/gamma である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dI}{dt} = \\beta SI - \\gamma I",
+          "to_latex": "R_0 := \\frac{\\beta S_0}{\\gamma},\\quad R_e(t) := \\frac{\\beta S(t)}{\\gamma},\\quad \\frac{dI}{dt} = \\gamma I\\big(R_e(t) - 1\\big)",
+          "operation_label": "factor_gamma_define_r0",
+          "explanation": "dI/dt の右辺を gamma*I で括り、無次元比 beta*S(t)/gamma を実効再生産数 Re(t)、初期値を基本再生産数 R0 として定義する。",
+          "used_node_ids": [
+            "bio.pop.n06_sir_model_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dI}{dt} = \\beta SI - \\gamma I",
+          "to_latex": "\\frac{dI}{dt} = \\gamma I\\left(\\frac{\\beta S(t)}{\\gamma} - 1\\right)",
+          "operation_label": "factor_out_gamma_I",
+          "explanation": "感染者数の時間変化率から共通因子 gamma*I を括り出す。",
+          "used_node_ids": [
+            "bio.pop.n06_sir_model_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dI}{dt} = \\gamma I\\left(\\frac{\\beta S(t)}{\\gamma} - 1\\right)",
+          "to_latex": "R_0 := \\frac{\\beta S_0}{\\gamma},\\quad R_e(t) := \\frac{\\beta S(t)}{\\gamma},\\quad \\frac{dI}{dt} = \\gamma I\\big(R_e(t) - 1\\big)",
+          "operation_label": "define_R0_and_Re",
+          "explanation": "t=0 における無次元比を R0、時刻 t の無次元比を Re(t) と定義する。",
+          "used_node_ids": [
+            "bio.pop.n07_basic_reproduction_number_r0"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d07_sir_threshold_final_size",
+      "target_node_id": "bio.pop.n08_sir_threshold_final_size",
+      "route_kind": "deductive",
+      "title": "SIRモデルの閾値定理と最終規模方程式の導出",
+      "premise_node_ids": [
+        "bio.pop.n06_sir_model_def",
+        "bio.pop.n07_basic_reproduction_number_r0"
+      ],
+      "required_math_node_ids": [
+        "bio.pop.n08_sir_threshold_final_size",
+        "math.calc.m01_chain_rule",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "初期状態は S(0)=S_0 > 0, I(0)=I_0 > 0, R(0)=0 であり、t -> infinity で I_infinity = 0 に収束する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dS}{dt} = -\\beta SI,\\quad \\frac{dI}{dt} = \\gamma I(R_e(t)-1),\\quad \\frac{dR}{dt} = \\gamma I",
+          "to_latex": "R_0 > 1 \\iff \\left.\\frac{dI}{dt}\\right|_{t=0} > 0,\\quad S_{\\mathrm{crit}} = \\frac{\\gamma}{\\beta} = \\frac{S_0}{R_0},\\quad \\ln\\frac{S_\\infty}{S_0} = \\frac{\\beta}{\\gamma}(S_\\infty - N)",
+          "operation_label": "derive_threshold_and_final_size",
+          "explanation": "Re(t) の符号条件から閾値定理と臨界感受性者数を示し、dS/dR の積分と終息極限から最終規模方程式を導く。",
+          "used_node_ids": [
+            "bio.pop.n06_sir_model_def",
+            "bio.pop.n07_basic_reproduction_number_r0",
+            "math.calc.m01_chain_rule",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dS}{dt} = -\\beta SI,\\quad \\frac{dI}{dt} = \\gamma I(R_e(t)-1),\\quad \\frac{dR}{dt} = \\gamma I",
+          "to_latex": "R_0 > 1 \\iff R_e(0) > 1 \\iff \\left.\\frac{dI}{dt}\\right|_{t=0} > 0,\\quad R_e(t)=1 \\iff S_{\\mathrm{crit}} = \\frac{\\gamma}{\\beta}",
+          "operation_label": "threshold_and_peak_condition",
+          "explanation": "I > 0, gamma > 0 より dI/dt の符号は Re(t)-1 の符号と一致し、R0 > 1 で初期流行、Re=1 で感染ピーク S_crit = gamma/beta となる。",
+          "used_node_ids": [
+            "bio.pop.n07_basic_reproduction_number_r0"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_0 > 1 \\iff R_e(0) > 1 \\iff \\left.\\frac{dI}{dt}\\right|_{t=0} > 0,\\quad R_e(t)=1 \\iff S_{\\mathrm{crit}} = \\frac{\\gamma}{\\beta}",
+          "to_latex": "\\frac{dS}{dR} = \\frac{-\\beta SI}{\\gamma I} = -\\frac{\\beta}{\\gamma}S",
+          "operation_label": "chain_rule_S_vs_R",
+          "explanation": "連鎖律により dS/dR = (dS/dt)/(dR/dt) を計算し、I を約分する。",
+          "used_node_ids": [
+            "bio.pop.n06_sir_model_def",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dS}{dR} = \\frac{-\\beta SI}{\\gamma I} = -\\frac{\\beta}{\\gamma}S",
+          "to_latex": "\\ln\\frac{S(t)}{S_0} = -\\frac{\\beta}{\\gamma}\\big(R(t) - R(0)\\big)",
+          "operation_label": "integrate_S_over_R",
+          "explanation": "(1/S) dS/dR = -beta/gamma を積分し、初期値 S(0)=S_0, R(0) を代入する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln\\frac{S(t)}{S_0} = -\\frac{\\beta}{\\gamma}\\big(R(t) - R(0)\\big)",
+          "to_latex": "\\ln\\frac{S_\\infty}{S_0} = \\frac{\\beta}{\\gamma}(S_\\infty - N)",
+          "operation_label": "take_asymptotic_limit",
+          "explanation": "R(0)=0 および t -> infinity で I_infinity = 0 より R_infinity = N - S_infinity となることを代入して最終規模方程式を得る。",
+          "used_node_ids": [
+            "bio.pop.n06_sir_model_def",
+            "bio.pop.n08_sir_threshold_final_size"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

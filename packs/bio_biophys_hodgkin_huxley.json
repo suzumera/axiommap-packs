@@ -1,0 +1,692 @@
+{
+  "pack_meta": {
+    "pack_id": "bio.biophys.hodgkin_huxley",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "biophysics",
+    "title": "神経生物物理：ゴールドマン＝ホジキン＝カッツ式・ケーブル方程式とホジキン＝ハクスレーモデル",
+    "language": "ja",
+    "description": "ネルンスト＝プランク方程式から静止膜電位（GHK式）、軸索の受動ケーブル方程式（長さ定数・時定数）、活動電位のホジキン＝ハクスレー方程式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "bio.neuro.n01_nernst_planck_boundary",
+      "short_code": "NEURO01",
+      "kind": "math_boundary",
+      "title": "ネルンスト＝プランクの電気拡散方程式とイオン流束境界",
+      "summary": "濃度勾配によるフィック拡散と電位勾配による電気泳動ドリフトを統合したイオン流束方程式、および定電場仮定における膜透過係数の定義。",
+      "canonical_latex": "J_i = -D_i\\left(\\frac{dc_i}{dx} + \\frac{z_i F}{RT} c_i \\frac{d\\phi}{dx}\\right),\\quad I_i = z_i F J_i,\\quad P_i = \\frac{\\beta_i D_i}{d} \\quad \\left(\\frac{d\\phi}{dx} = -\\frac{V_m}{d}\\right)`",
+      "aliases_latex": [
+        "J_i = -D_i\\nabla c_i - u_i z_i F c_i \\nabla\\phi"
+      ],
+      "keywords": [
+        "Nernst-Planck equation",
+        "electrodiffusion",
+        "ion flux",
+        "permeability",
+        "constant field approximation"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "neuroscience"
+      ]
+    },
+    {
+      "id": "bio.neuro.n02_nernst_equilibrium_potential",
+      "short_code": "NEURO02",
+      "kind": "theorem_formula",
+      "title": "ネルンストの平衡電位式",
+      "summary": "単一イオン種に対して正味流束が零となる熱平衡条件から導かれる膜内外の平衡電位差。",
+      "canonical_latex": "E_i := \\phi_{\\mathrm{in}} - \\phi_{\\mathrm{out}} = \\frac{RT}{z_i F}\\ln\\frac{[i]_o}{[i]_i}`",
+      "aliases_latex": [
+        "E_i = \\frac{RT}{z_i F}\\ln\\frac{c_{i,\\mathrm{out}}}{c_{i,\\mathrm{in}}}"
+      ],
+      "keywords": [
+        "Nernst potential",
+        "equilibrium potential",
+        "reversal potential",
+        "ion balance"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "neuroscience"
+      ]
+    },
+    {
+      "id": "bio.neuro.n03_ghk_voltage_equation",
+      "short_code": "NEURO03",
+      "kind": "theorem_formula",
+      "title": "ゴールドマン＝ホジキン＝カッツ（GHK）の電位式",
+      "summary": "複数の1価イオンが透過する生体膜において、定電場仮定と定常ゼロ正味電流条件から導かれる静止膜電位の表式。",
+      "canonical_latex": "V_m = \\frac{RT}{F}\\ln\\frac{P_{\\mathrm{K}}[\\mathrm{K}^+]_o + P_{\\mathrm{Na}}[\\mathrm{Na}^+]_o + P_{\\mathrm{Cl}}[\\mathrm{Cl}^-]_i}{P_{\\mathrm{K}}[\\mathrm{K}^+]_i + P_{\\mathrm{Na}}[\\mathrm{Na}^+]_i + P_{\\mathrm{Cl}}[\\mathrm{Cl}^-]_o}`",
+      "aliases_latex": [
+        "V_m = \\frac{RT}{F}\\ln\\frac{\\sum P_M[M^+]_o + \\sum P_A[A^-]_i}{\\sum P_M[M^+]_i + \\sum P_A[A^-]_o}"
+      ],
+      "keywords": [
+        "Goldman-Hodgkin-Katz equation",
+        "resting membrane potential",
+        "constant field theory"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "neuroscience"
+      ]
+    },
+    {
+      "id": "bio.neuro.n04_membrane_rc_circuit_def",
+      "short_code": "NEURO04",
+      "kind": "definition",
+      "title": "生体膜の並列RC等価回路と軸索の単位長分布定数モデル",
+      "summary": "脂質二重層の膜容量とイオンチャネルの漏洩抵抗を並列RC回路として表し、半径aの円筒軸索に対する単位長あたりの膜容量・膜抵抗・軸索内部抵抗を定義する。",
+      "canonical_latex": "I_m = C_m\\frac{\\partial V}{\\partial t} + \\frac{V - E_{\\mathrm{rest}}}{R_m},\\quad c_m = 2\\pi a C_m,\\quad r_m = \\frac{R_m}{2\\pi a},\\quad r_i = \\frac{\\rho_i}{\\pi a^2}`",
+      "aliases_latex": [
+        "i_m = c_m\\frac{\\partial v}{\\partial t} + \\frac{v}{r_m}"
+      ],
+      "keywords": [
+        "membrane equivalent circuit",
+        "membrane capacitance",
+        "axial resistance",
+        "cable parameters"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "neuroscience"
+      ]
+    },
+    {
+      "id": "bio.neuro.n05_passive_cable_equation",
+      "short_code": "NEURO05",
+      "kind": "theorem_formula",
+      "title": "軸索の受動ケーブル方程式",
+      "summary": "円筒軸索の微小長要素に対するKVLとKCLから導かれる膜電位変位の1次元反応拡散型偏微分方程式、および長さ定数と時定数の定義。",
+      "canonical_latex": "\\lambda^2 \\frac{\\partial^2 v}{\\partial x^2} = \\tau_m \\frac{\\partial v}{\\partial t} + v,\\quad \\lambda := \\sqrt{\\frac{r_m}{r_i}},\\quad \\tau_m := r_m c_m = R_m C_m`",
+      "aliases_latex": [
+        "\\frac{1}{r_i}\\frac{\\partial^2 v}{\\partial x^2} = c_m\\frac{\\partial v}{\\partial t} + \\frac{v}{r_m}"
+      ],
+      "keywords": [
+        "cable equation",
+        "length constant",
+        "time constant",
+        "passive membrane",
+        "axon"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "neuroscience"
+      ]
+    },
+    {
+      "id": "bio.neuro.n06_cable_steady_state_decay",
+      "short_code": "NEURO06",
+      "kind": "theorem_formula",
+      "title": "ケーブル方程式の定常解と空間減衰",
+      "summary": "半無限長ケーブルにおける定常電流注入時の膜電位分布であり、長さ定数λを特性スケールとして指数関数的に減衰する。",
+      "canonical_latex": "v(x) = v_0 e^{-|x|/\\lambda}\\quad (v(0)=v_0,\\; \\lim_{|x|\\to\\infty} v(x)=0)`",
+      "aliases_latex": [
+        "v(x) = v_0 \\exp(-|x|/\\lambda)"
+      ],
+      "keywords": [
+        "steady-state cable",
+        "exponential decay",
+        "electrotonic length",
+        "space constant"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "neuroscience"
+      ]
+    },
+    {
+      "id": "bio.neuro.n07_hh_gating_kinetics_def",
+      "short_code": "NEURO07",
+      "kind": "definition",
+      "title": "ホジキン＝ハクスレーモデルのイオンチャネル・ゲート変数動力学の定義",
+      "summary": "電位依存性チャネルの開閉サブユニットの開確率m, h, nに対する1次可逆反応速度論に基づく時間発展方程式。",
+      "canonical_latex": "\\frac{dp}{dt} = \\alpha_p(V)(1-p) - \\beta_p(V)p\\quad (p \\in \\{m, h, n\\})`",
+      "aliases_latex": [
+        "\\tau_p(V)\\frac{dp}{dt} = p_\\infty(V) - p"
+      ],
+      "keywords": [
+        "gating variable",
+        "Hodgkin-Huxley kinetics",
+        "activation",
+        "inactivation",
+        "ion channel"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "neuroscience"
+      ]
+    },
+    {
+      "id": "bio.neuro.n08_hodgkin_huxley_equation",
+      "short_code": "NEURO08",
+      "kind": "theorem_formula",
+      "title": "ホジキン＝ハクスレー方程式（活動電位の膜電位方程式）",
+      "summary": "電位依存性ナトリウム・カリウムコンダクタンスと漏洩コンダクタンスおよび膜容量の並列回路に対するKCLから定式化される活動電位の基礎方程式。",
+      "canonical_latex": "C_m \\frac{dV}{dt} = I_{\\mathrm{ext}} - \\bar{g}_{\\mathrm{Na}} m^3 h (V - E_{\\mathrm{Na}}) - \\bar{g}_{\\mathrm{K}} n^4 (V - E_{\\mathrm{K}}) - \\bar{g}_L (V - E_L)`",
+      "aliases_latex": [
+        "C_m\\dot{V} + I_{\\mathrm{Na}} + I_{\\mathrm{K}} + I_L = I_{\\mathrm{ext}}"
+      ],
+      "keywords": [
+        "Hodgkin-Huxley model",
+        "action potential",
+        "excitable membrane",
+        "nonlinear conductance"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "neuroscience"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_nernst_equilibrium",
+      "target_node_id": "bio.neuro.n02_nernst_equilibrium_potential",
+      "route_kind": "deductive",
+      "title": "ネルンスト＝プランク方程式の零流束平衡条件からのネルンスト電位式の導出",
+      "premise_node_ids": [
+        "bio.neuro.n01_nernst_planck_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "イオン種iに対して膜は半透性かつ熱平衡状態にあり正味流束が零（J_i=0）である。",
+        "x=0を細胞内側（in）、x=dを細胞外側（out）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J_i = -D_i\\left(\\frac{dc_i}{dx} + \\frac{z_i F}{RT} c_i \\frac{d\\phi}{dx}\\right) = 0",
+          "to_latex": "E_i := \\phi_{\\mathrm{in}} - \\phi_{\\mathrm{out}} = \\frac{RT}{z_i F}\\ln\\frac{[i]_o}{[i]_i}`",
+          "operation_label": "零流束条件の変数分離と膜横断積分",
+          "explanation": "ネルンスト＝プランク方程式でJ_i=0とおき、濃度と電位を分離して膜厚0からdまで積分することでネルンストの平衡電位を得る。",
+          "used_node_ids": [
+            "bio.neuro.n01_nernst_planck_boundary",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_i = -D_i\\left(\\frac{dc_i}{dx} + \\frac{z_i F}{RT} c_i \\frac{d\\phi}{dx}\\right) = 0",
+          "to_latex": "\\frac{1}{c_i}\\frac{dc_i}{dx} = -\\frac{z_i F}{RT}\\frac{d\\phi}{dx}`",
+          "operation_label": "拡散係数による除算と変数分離",
+          "explanation": "D_i > 0およびc_i > 0を用いて両辺を整理し、濃度項と電位勾配項を左右に分離する。",
+          "used_node_ids": [
+            "bio.neuro.n01_nernst_planck_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{c_i}\\frac{dc_i}{dx} = -\\frac{z_i F}{RT}\\frac{d\\phi}{dx}`",
+          "to_latex": "\\int_{0}^{d} \\frac{1}{c_i}\\frac{dc_i}{dx}\\,dx = -\\frac{z_i F}{RT}\\int_{0}^{d} \\frac{d\\phi}{dx}\\,dx`",
+          "operation_label": "膜厚区間にわたる定積分",
+          "explanation": "細胞内界面x=0から細胞外界面x=dまで両辺をxに関して定積分する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{0}^{d} \\frac{1}{c_i}\\frac{dc_i}{dx}\\,dx = -\\frac{z_i F}{RT}\\int_{0}^{d} \\frac{d\\phi}{dx}\\,dx`",
+          "to_latex": "\\ln\\frac{[i]_o}{[i]_i} = -\\frac{z_i F}{RT}(\\phi_{\\mathrm{out}} - \\phi_{\\mathrm{in}})`",
+          "operation_label": "微積分学の基本定理の適用",
+          "explanation": "各辺の不定積分（ln c_iおよび\\phi）に境界値c_i(0)=[i]_i, c_i(d)=[i]_oを代入する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln\\frac{[i]_o}{[i]_i} = -\\frac{z_i F}{RT}(\\phi_{\\mathrm{out}} - \\phi_{\\mathrm{in}})`",
+          "to_latex": "E_i := \\phi_{\\mathrm{in}} - \\phi_{\\mathrm{out}} = \\frac{RT}{z_i F}\\ln\\frac{[i]_o}{[i]_i}`",
+          "operation_label": "電位差E_iに関する整理",
+          "explanation": "細胞外を基準とした細胞内電位E_i = \\phi_{\\mathrm{in}} - \\phi_{\\mathrm{out}}について解く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ghk_voltage",
+      "target_node_id": "bio.neuro.n03_ghk_voltage_equation",
+      "route_kind": "deductive",
+      "title": "定電場仮定とゼロ正味電流条件からのGHK電位式の導出",
+      "premise_node_ids": [
+        "bio.neuro.n01_nernst_planck_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "膜内の電位勾配は一様である（d\\phi/dx = -V_m/d、定電場仮定）。",
+        "透過イオンはK+, Na+, Cl-の1価イオン（z=\\pm 1）であり、定常状態で正味膜電流は零である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J_i = -D_i\\left(\\frac{dc_i}{dx} - \\frac{z_i F V_m}{RT d} c_i\\right),\\quad \\sum_{i} z_i J_i = 0",
+          "to_latex": "V_m = \\frac{RT}{F}\\ln\\frac{P_{\\mathrm{K}}[\\mathrm{K}^+]_o + P_{\\mathrm{Na}}[\\mathrm{Na}^+]_o + P_{\\mathrm{Cl}}[\\mathrm{Cl}^-]_i}{P_{\\mathrm{K}}[\\mathrm{K}^+]_i + P_{\\mathrm{Na}}[\\mathrm{Na}^+]_i + P_{\\mathrm{Cl}}[\\mathrm{Cl}^-]_o}`",
+          "operation_label": "定電場ODEの積分とゼロ正味電流条件の適用",
+          "explanation": "定電場仮定の下で各イオンのGHK流束式を積分により求め、K+, Na+, Cl-の電流総和が零となる条件からV_mを解く。",
+          "used_node_ids": [
+            "bio.neuro.n01_nernst_planck_boundary",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_i = -D_i\\left(\\frac{dc_i}{dx} - \\frac{z_i F V_m}{RT d} c_i\\right),\\quad \\sum_{i} z_i J_i = 0",
+          "to_latex": "\\frac{d}{dx}\\left(c_i(x) e^{-\\alpha_i x/d}\\right) = -\\frac{J_i}{D_i} e^{-\\alpha_i x/d},\\quad \\alpha_i := \\frac{z_i F V_m}{RT}`",
+          "operation_label": "積分因子による1階線形ODEの変形",
+          "explanation": "無次元電位パラメータ\\alpha_iを導入し、積分因子e^{-\\alpha_i x/d}を乗じて全微分形にまとめる。",
+          "used_node_ids": [
+            "bio.neuro.n01_nernst_planck_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dx}\\left(c_i(x) e^{-\\alpha_i x/d}\\right) = -\\frac{J_i}{D_i} e^{-\\alpha_i x/d},\\quad \\alpha_i := \\frac{z_i F V_m}{RT}`",
+          "to_latex": "J_i = P_i \\frac{z_i F V_m}{RT}\\frac{[i]_i - [i]_o e^{-z_i F V_m/(RT)}}{1 - e^{-z_i F V_m/(RT)}},\\quad P_i := \\frac{\\beta_i D_i}{d}`",
+          "operation_label": "膜厚[0, d]での積分と分配係数\\beta_iの適用",
+          "explanation": "x=0からdまで積分し、境界濃度c_i(0)=\\beta_i [i]_i, c_i(d)=\\beta_i [i]_oと透過係数P_iを用いてJ_iを得る。",
+          "used_node_ids": [
+            "bio.neuro.n01_nernst_planck_boundary",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_i = P_i \\frac{z_i F V_m}{RT}\\frac{[i]_i - [i]_o e^{-z_i F V_m/(RT)}}{1 - e^{-z_i F V_m/(RT)}},\\quad P_i := \\frac{\\beta_i D_i}{d}`",
+          "to_latex": "e^{F V_m/(RT)}\\left(P_{\\mathrm{K}}[\\mathrm{K}^+]_i + P_{\\mathrm{Na}}[\\mathrm{Na}^+]_i + P_{\\mathrm{Cl}}[\\mathrm{Cl}^-]_o\\right) = P_{\\mathrm{K}}[\\mathrm{K}^+]_o + P_{\\mathrm{Na}}[\\mathrm{Na}^+]_o + P_{\\mathrm{Cl}}[\\mathrm{Cl}^-]_i`",
+          "operation_label": "K+, Na+, Cl-に対するゼロ正味電流条件の展開",
+          "explanation": "\\sum z_i J_i = 0にz_{\\mathrm{K}}=z_{\\mathrm{Na}}=+1, z_{\\mathrm{Cl}}=-1を代入し、共通因子を整理して指数関数項をまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e^{F V_m/(RT)}\\left(P_{\\mathrm{K}}[\\mathrm{K}^+]_i + P_{\\mathrm{Na}}[\\mathrm{Na}^+]_i + P_{\\mathrm{Cl}}[\\mathrm{Cl}^-]_o\\right) = P_{\\mathrm{K}}[\\mathrm{K}^+]_o + P_{\\mathrm{Na}}[\\mathrm{Na}^+]_o + P_{\\mathrm{Cl}}[\\mathrm{Cl}^-]_i`",
+          "to_latex": "V_m = \\frac{RT}{F}\\ln\\frac{P_{\\mathrm{K}}[\\mathrm{K}^+]_o + P_{\\mathrm{Na}}[\\mathrm{Na}^+]_o + P_{\\mathrm{Cl}}[\\mathrm{Cl}^-]_i}{P_{\\mathrm{K}}[\\mathrm{K}^+]_i + P_{\\mathrm{Na}}[\\mathrm{Na}^+]_i + P_{\\mathrm{Cl}}[\\mathrm{Cl}^-]_o}`",
+          "operation_label": "自然対数によるV_mの陽的解法",
+          "explanation": "両辺の自然対数をとり、RT/Fを乗じてGHKの電位式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_membrane_rc_circuit",
+      "target_node_id": "bio.neuro.n04_membrane_rc_circuit_def",
+      "route_kind": "reformulation",
+      "title": "集中定数素子と円筒幾何学による生体膜RC分布定数モデルの定式化",
+      "premise_node_ids": [
+        "eng.dc.dc01_kcl_kvl_lumped_axioms",
+        "eng.tline.tl01_distributed_circuit_model"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "軸索は半径aの一様な円筒であり、膜のインダクタンスは無視できる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "i_C = C\\frac{dv}{dt},\\quad v_R = R i,\\quad \\sum_{k\\in\\text{node}} i_k = 0",
+          "to_latex": "I_m = C_m\\frac{\\partial V}{\\partial t} + \\frac{V - E_{\\mathrm{rest}}}{R_m},\\quad c_m = 2\\pi a C_m,\\quad r_m = \\frac{R_m}{2\\pi a},\\quad r_i = \\frac{\\rho_i}{\\pi a^2}`",
+          "operation_label": "KCLと円筒表面積・断面積スケーリングの適用",
+          "explanation": "単位面積あたりの膜容量C_mと膜抵抗R_mを並列接続したKCLに、円筒軸索の周長2\\pi aと断面積\\pi a^2を適用して分布定数を定義する。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms",
+            "eng.tline.tl01_distributed_circuit_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "i_C = C\\frac{dv}{dt},\\quad v_R = R i,\\quad \\sum_{k\\in\\text{node}} i_k = 0",
+          "to_latex": "I_m = I_C + I_L = C_m\\frac{\\partial V}{\n\\partial t} + \\frac{V - E_{\\mathrm{rest}}}{R_m}`",
+          "operation_label": "並列容量電流と漏洩抵抗電流の合成（KCL）",
+          "explanation": "全膜電流密度I_mを容量性電流I_Cと静止膜電位E_{\\mathrm{rest}}を起電力とするイオン漏洩電流I_Lの和として表す。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_m = I_C + I_L = C_m\\frac{\\partial V}{\\partial t} + \\frac{V - E_{\\mathrm{rest}}}{R_m}`",
+          "to_latex": "I_m = C_m\\frac{\\partial V}{\\partial t} + \\frac{V - E_{\\mathrm{rest}}}{R_m},\\quad c_m = 2\\pi a C_m,\\quad r_m = \\frac{R_m}{2\\pi a},\\quad r_i = \\frac{\\rho_i}{\\pi a^2}`",
+          "operation_label": "円筒軸索の単位長パラメータへの換算",
+          "explanation": "単位長さあたりの膜面積2\\pi aおよび軸索断面積\\pi a^2（細胞内抵抗率\\rho_i）を用いてc_m, r_m, r_iを定義する。",
+          "used_node_ids": [
+            "eng.tline.tl01_distributed_circuit_model"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_passive_cable_equation",
+      "target_node_id": "bio.neuro.n05_passive_cable_equation",
+      "route_kind": "deductive",
+      "title": "分布定数線路のKVL・KCLからの受動ケーブル方程式の導出",
+      "premise_node_ids": [
+        "bio.neuro.n04_membrane_rc_circuit_def",
+        "eng.tline.tl01_distributed_circuit_model"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "軸索外液の抵抗は無視できるほど小さく、細胞内電位変位v(x,t) = V(x,t) - E_{\\mathrm{rest}}を考える。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta v(x,t) = -r_i \\Delta x\\, i_i,\\quad \\Delta i_i(x,t) = -\\left(\\frac{v}{r_m} + c_m\\frac{\\partial v}{\\partial t}\\right)\\Delta x",
+          "to_latex": "\\lambda^2 \\frac{\\partial^2 v}{\\partial x^2} = \\tau_m \\frac{\\partial v}{\\partial t} + v,\\quad \\lambda := \\sqrt{\\frac{r_m}{r_i}},\\quad \\tau_m := r_m c_m = R_m C_m`",
+          "operation_label": "微小長極限におけるKVL・KCLの連立消去",
+          "explanation": "軸索微小区間\\Delta xの電圧降下と膜流出電流を\\Delta x\\to 0で偏微分方程式とし、軸索内電流i_iを消去してケーブル方程式を導く。",
+          "used_node_ids": [
+            "bio.neuro.n04_membrane_rc_circuit_def",
+            "eng.tline.tl01_distributed_circuit_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta v(x,t) = -r_i \\Delta x\\, i_i,\\quad \\Delta i_i(x,t) = -\\left(\\frac{v}{r_m} + c_m\\frac{\\partial v}{\\partial t}\\right)\\Delta x",
+          "to_latex": "\\frac{\\partial v}{\\partial x} = -r_i i_i,\\quad \\frac{\\partial i_i}{\\partial x} = -\\left(\\frac{v}{r_m} + c_m\\frac{\\partial v}{\\partial t}\\right)`",
+          "operation_label": "\\Delta xで除した極限操作（\\Delta x \\to 0）",
+          "explanation": "分布定数モデルの差分式を\\Delta xで割り極限をとることで電位と軸索電流の1階連立偏微分方程式を得る。",
+          "used_node_ids": [
+            "eng.tline.tl01_distributed_circuit_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial v}{\\partial x} = -r_i i_i,\\quad \\frac{\\partial i_i}{\\partial x} = -\\left(\\frac{v}{r_m} + c_m\\frac{\\partial v}{\\partial t}\\right)`",
+          "to_latex": "\\frac{1}{r_i}\\frac{\\partial^2 v}{\\partial x^2} = \\frac{v}{r_m} + c_m\\frac{\\partial v}{\\partial t}`",
+          "operation_label": "x偏微分による軸索電流i_iの消去",
+          "explanation": "第1式をxで偏微分し、第2式を代入して軸索内電流i_iを消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{r_i}\\frac{\\partial^2 v}{\\partial x^2} = \\frac{v}{r_m} + c_m\\frac{\\partial v}{\\partial t}`",
+          "to_latex": "\\lambda^2 \\frac{\\partial^2 v}{\\partial x^2} = \\tau_m \\frac{\\partial v}{\\partial t} + v,\\quad \\lambda := \\sqrt{\\frac{r_m}{r_i}},\\quad \\tau_m := r_m c_m = R_m C_m`",
+          "operation_label": "長さ定数\\lambdaと時定数\\tau_mによる無次元化整理",
+          "explanation": "両辺にr_mを乗じ、\\lambda = \\sqrt{r_m/r_i}および\\tau_m = r_m c_mを定義して標準形を得る。",
+          "used_node_ids": [
+            "bio.neuro.n04_membrane_rc_circuit_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_cable_steady_state",
+      "target_node_id": "bio.neuro.n06_cable_steady_state_decay",
+      "route_kind": "deductive",
+      "title": "ケーブル方程式の定常条件と境界条件からの空間減衰解の導出",
+      "premise_node_ids": [
+        "bio.neuro.n05_passive_cable_equation"
+      ],
+      "required_math_node_ids": [
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "時間微分が零の定常状態（\\partial v/\\partial t = 0）であり、x=0で電位v_0、無限遠で零に収束する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\lambda^2 \\frac{\\partial^2 v}{\\partial x^2} = \\tau_m \\frac{\\partial v}{\\partial t} + v,\\quad \\frac{\\partial v}{\n\\partial t} = 0",
+          "to_latex": "v(x) = v_0 e^{-|x|/\\lambda}\\quad (v(0)=v_0,\\; \\lim_{|x|\\to\\infty} v(x)=0)`",
+          "operation_label": "2階定数係数線形ODEの一般解と境界条件の適用",
+          "explanation": "定常条件により2階線形常微分方程式に帰着させ、無限遠での有界性とx=0の連続性から指数減衰解を得る。",
+          "used_node_ids": [
+            "bio.neuro.n05_passive_cable_equation",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lambda^2 \\frac{\\partial^2 v}{\\partial x^2} = \\tau_m \\frac{\\partial v}{\n\\partial t} + v,\\quad \\frac{\\partial v}{\\partial t} = 0",
+          "to_latex": "\\frac{d^2 v}{dx^2} - \\frac{1}{\\lambda^2} v = 0`",
+          "operation_label": "定常条件の代入による常微分方程式化",
+          "explanation": "\\partial v/\\partial t = 0を代入し、\\lambda^2で割ることで2階同次線形常微分方程式を得る。",
+          "used_node_ids": [
+            "bio.neuro.n05_passive_cable_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 v}{dx^2} - \\frac{1}{\\lambda^2} v = 0`",
+          "to_latex": "v(x) = C_1 e^{-x/\\lambda} + C_2 e^{x/\\lambda}\\quad (x \\ge 0)`",
+          "operation_label": "特性方程式の解による一般解の構成",
+          "explanation": "特性方程式r^2 - 1/\\lambda^2 = 0の2実根r = \\pm 1/\\lambdaより指数関数の線形結合として一般解を求める。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v(x) = C_1 e^{-x/\\lambda} + C_2 e^{x/\\lambda}\\quad (x \\ge 0)`",
+          "to_latex": "v(x) = v_0 e^{-|x|/\\lambda}\\quad (v(0)=v_0,\\; \\lim_{|x|\\to\\infty} v(x)=0)`",
+          "operation_label": "境界条件と左右対称性の適用",
+          "explanation": "x\\to +\\inftyで発散しない条件からC_2=0、v(0)=v_0からC_1=v_0を得て、x<0側への対称性を合わせて|x|で表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_hh_gating_kinetics",
+      "target_node_id": "bio.neuro.n07_hh_gating_kinetics_def",
+      "route_kind": "deductive",
+      "title": "1次可逆反応速度論からのイオンチャネル・ゲート動力学の導出",
+      "premise_node_ids": [
+        "eng.kin.n01_kinetics_diffusion_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "各ゲートサブユニットは閉状態と開状態の2状態間を電位依存的な1次遷移速度定数\\alpha_p(V), \\beta_p(V)で遷移する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\text{Closed }(1-p) \\underset{\\beta_p(V)}{\\overset{\\alpha_p(V)}{\\rightleftharpoons}} \\text{Open }(p),\\quad r = k C`",
+          "to_latex": "\\frac{dp}{dt} = \\alpha_p(V)(1-p) - \\beta_p(V)p\\quad (p \\in \\{m, h, n\\})`",
+          "operation_label": "可逆1次反応の正味生成速度の立式",
+          "explanation": "質量作用の反応速度則を閉・開の2状態確率に適用し、開確率pの時間変化率を定式化する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{Closed }(1-p) \\underset{\\beta_p(V)}{\\overset{\\alpha_p(V)}{\\rightleftharpoons}} \\text{Open }(p),\\quad r = k C`",
+          "to_latex": "r_{\\mathrm{open}} = \\alpha_p(V)(1-p),\\quad r_{\\mathrm{close}} = \\beta_p(V)p`",
+          "operation_label": "正方向・逆方向遷移速度の定義",
+          "explanation": "開状態への遷移速度を\\alpha_p(V)(1-p)、閉状態への遷移速度を\\beta_p(V)pと表す。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_{\\mathrm{open}} = \\alpha_p(V)(1-p),\\quad r_{\\mathrm{close}} = \\beta_p(V)p`",
+          "to_latex": "\\frac{dp}{dt} = \\alpha_p(V)(1-p) - \\beta_p(V)p\\quad (p \\in \\{m, h, n\\})`",
+          "operation_label": "確率収支式の整理",
+          "explanation": "開確率pの増加率をr_{\\mathrm{open}} - r_{\\mathrm{close}}としてゲート変数の常微分方程式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_hodgkin_huxley_eq",
+      "target_node_id": "bio.neuro.n08_hodgkin_huxley_equation",
+      "route_kind": "deductive",
+      "title": "並列イオンコンダクタンス回路のKCLからのホジキン＝ハクスレー方程式の導出",
+      "premise_node_ids": [
+        "bio.neuro.n04_membrane_rc_circuit_def",
+        "bio.neuro.n02_nernst_equilibrium_potential",
+        "bio.neuro.n07_hh_gating_kinetics_def",
+        "eng.dc.dc01_kcl_kvl_lumped_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Na+チャネルは3つの独立な活性化ゲートmと1つの不活性化ゲートh（確率m^3 h）で、K+チャネルは4つの活性化ゲートn（確率n^4）で開閉する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_{\\mathrm{ext}} = I_C + I_{\\mathrm{Na}} + I_{\\mathrm{K}} + I_L`",
+          "to_latex": "C_m \\frac{dV}{dt} = I_{\\mathrm{ext}} - \\bar{g}_{\\mathrm{Na}} m^3 h (V - E_{\\mathrm{Na}}) - \\bar{g}_{\\mathrm{K}} n^4 (V - E_{\\mathrm{K}}) - \\bar{g}_L (V - E_L)`",
+          "operation_label": "KCLへの容量電流とゲート依存イオン電流の代入",
+          "explanation": "膜への注入電流I_{\\mathrm{ext}}に対するKCLに容量電流および各イオン種のオーム則・ゲート開確率を代入してHH方程式を導く。",
+          "used_node_ids": [
+            "bio.neuro.n02_nernst_equilibrium_potential",
+            "bio.neuro.n04_membrane_rc_circuit_def",
+            "bio.neuro.n07_hh_gating_kinetics_def",
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{\\mathrm{ext}} = I_C + I_{\\mathrm{Na}} + I_{\\mathrm{K}} + I_L`",
+          "to_latex": "I_{\\mathrm{ext}} = C_m\\frac{dV}{dt} + g_{\\mathrm{Na}}(V - E_{\\mathrm{Na}}) + g_{\\mathrm{K}}(V - E_{\\mathrm{K}}) + \\bar{g}_L(V - E_L)`",
+          "operation_label": "膜容量電流とネルンスト起電力に基づくオーム則の代入",
+          "explanation": "容量電流C_m dV/dtと、各イオンの平衡電位E_iを起電力とするコンダクタンス電流g_i(V - E_i)を代入する。",
+          "used_node_ids": [
+            "bio.neuro.n02_nernst_equilibrium_potential",
+            "bio.neuro.n04_membrane_rc_circuit_def",
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{\\mathrm{ext}} = C_m\\frac{dV}{dt} + g_{\\mathrm{Na}}(V - E_{\\mathrm{Na}}) + g_{\\mathrm{K}}(V - E_{\\mathrm{K}}) + \\bar{g}_L(V - E_L)`",
+          "to_latex": "I_{\\mathrm{ext}} = C_m\\frac{dV}{dt} + \\bar{g}_{\\mathrm{Na}} m^3 h (V - E_{\\mathrm{Na}}) + \\bar{g}_{\\mathrm{K}} n^4 (V - E_{\\mathrm{K}}) + \\bar{g}_L (V - E_L)`",
+          "operation_label": "ゲート開確率による実効コンダクタンスの代入",
+          "explanation": "最大コンダクタンス\\bar{g}_{\\mathrm{Na}}, \\bar{g}_{\\mathrm{K}}にそれぞれ独立サブユニット開確率m^3 hおよびn^4を乗じた実効コンダクタンスを代入する。",
+          "used_node_ids": [
+            "bio.neuro.n07_hh_gating_kinetics_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{\\mathrm{ext}} = C_m\\frac{dV}{dt} + \\bar{g}_{\\mathrm{Na}} m^3 h (V - E_{\\mathrm{Na}}) + \\bar{g}_{\\mathrm{K}} n^4 (V - E_{\\mathrm{K}}) + \\bar{g}_L (V - E_L)`",
+          "to_latex": "C_m \\frac{dV}{dt} = I_{\\mathrm{ext}} - \\bar{g}_{\\mathrm{Na}} m^3 h (V - E_{\\mathrm{Na}}) - \\bar{g}_{\\mathrm{K}} n^4 (V - E_{\\mathrm{K}}) - \\bar{g}_L (V - E_L)`",
+          "operation_label": "時間微分項C_m dV/dtに関する整理",
+          "explanation": "イオン電流項を右辺へ移項し、膜電位Vの時間発展方程式として整理する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

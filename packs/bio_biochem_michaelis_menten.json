@@ -1,0 +1,646 @@
+{
+  "pack_meta": {
+    "pack_id": "bio.biochem.michaelis_menten",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "biophysics",
+    "title": "酵素反応速度論：ミカエリス＝メンテン式・ラインウィーバー＝バークとヒル方程式",
+    "language": "ja",
+    "description": "酵素-基質複合体の擬定常状態近似からミカエリス＝メンテン式、競争阻害、協同結合のヒル方程式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "bio.enz.n01_enzyme_substrate_ode",
+      "short_code": "ENZ01",
+      "kind": "definition",
+      "title": "酵素-基質複合体反応系と総酵素保存則の定義",
+      "summary": "酵素Eと基質Sの可逆的結合による複合体ESの形成、不可逆な生成物Pへの触媒段階、および総酵素濃度の保存則を常微分方程式系として定式化する。",
+      "canonical_latex": "\\frac{d[ES]}{dt} = k_1[E][S] - (k_{-1} + k_2)[ES],\\quad v = \\frac{d[P]}{dt} = k_2[ES],\\quad [E]_T = [E] + [ES]",
+      "aliases_latex": [
+        "E + S \\underset{k_{-1}}{\\overset{k_1}{\\rightleftharpoons}} ES \\overset{k_2}{\\rightarrow} E + P"
+      ],
+      "keywords": [
+        "enzyme-substrate complex",
+        "mass action",
+        "enzyme conservation",
+        "reaction rate"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "biochemistry",
+        "chemical_kinetics"
+      ]
+    },
+    {
+      "id": "bio.enz.n02_qssa_michaelis_menten",
+      "short_code": "ENZ02",
+      "kind": "theorem_formula",
+      "title": "擬定常状態近似（QSSA）とミカエリス＝メンテン式",
+      "summary": "酵素-基質複合体濃度の時間変化を零とみなす擬定常状態近似（d[ES]/dt ≈ 0）の下で、初期反応速度vを基質濃度[S]の双曲線関数として導出する。",
+      "canonical_latex": "v = \\frac{V_{\\max}[S]}{K_M + [S]},\\quad K_M := \\frac{k_{-1} + k_2}{k_1},\\quad V_{\\max} := k_2[E]_T",
+      "aliases_latex": [
+        "v_0 = \\frac{k_2[E]_T[S]}{K_M + [S]}"
+      ],
+      "keywords": [
+        "Michaelis-Menten equation",
+        "quasi-steady-state approximation",
+        "QSSA",
+        "Michaelis constant"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "biochemistry"
+      ]
+    },
+    {
+      "id": "bio.enz.n03_catalytic_efficiency",
+      "short_code": "ENZ03",
+      "kind": "definition",
+      "title": "代謝回転数 k_cat と触媒効率（特異性定数）",
+      "summary": "最大反応速度を総酵素濃度で割った代謝回転数k_catと、低基質濃度極限における2次反応速度定数に相当する触媒効率k_cat/K_Mを定義する。",
+      "canonical_latex": "k_{\\mathrm{cat}} := \\frac{V_{\\max}}{[E]_T} = k_2,\\quad \\eta_{\\mathrm{cat}} := \\frac{k_{\\mathrm{cat}}}{K_M},\\quad v \\approx \\frac{k_{\\mathrm{cat}}}{K_M}[E]_T[S]\\;([S]\\ll K_M)",
+      "aliases_latex": [
+        "v = \\frac{k_{\\mathrm{cat}}[E]_T[S]}{K_M + [S]}"
+      ],
+      "keywords": [
+        "turnover number",
+        "catalytic efficiency",
+        "specificity constant",
+        "kcat"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "biochemistry"
+      ]
+    },
+    {
+      "id": "bio.enz.n04_lineweaver_burk_plot",
+      "short_code": "ENZ04",
+      "kind": "theorem_formula",
+      "title": "ラインウィーバー＝バークの二重逆数式",
+      "summary": "ミカエリス＝メンテン式の両辺の逆数をとることで、1/vを1/[S]の線形関数として表現し、実験データからV_maxとK_Mを線形回帰で決定する式を得る。",
+      "canonical_latex": "\\frac{1}{v} = \\frac{K_M}{V_{\\max}}\\frac{1}{[S]} + \\frac{1}{V_{\\max}}",
+      "aliases_latex": [
+        "\\frac{1}{v_0} = \\frac{K_M}{V_{\\max}[S]} + \\frac{1}{V_{\\max}}"
+      ],
+      "keywords": [
+        "Lineweaver-Burk plot",
+        "double reciprocal plot",
+        "enzyme kinetics linearization"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "biochemistry"
+      ]
+    },
+    {
+      "id": "bio.enz.n05_competitive_inhibition",
+      "short_code": "ENZ05",
+      "kind": "theorem_formula",
+      "title": "競争阻害のミカエリス＝メンテン式",
+      "summary": "阻害剤Iが基質Sと遊離酵素Eの活性部位を競合して不活性複合体EIを形成する場合、最大速度V_maxは不変で見かけのミカエリス定数がαK_Mに増大する。",
+      "canonical_latex": "v = \\frac{V_{\\max}[S]}{\\alpha K_M + [S]},\\quad \\alpha := 1 + \\frac{[I]}{K_I},\\quad K_I := \\frac{[E][I]}{[EI]}",
+      "aliases_latex": [
+        "K_M^{\\mathrm{app}} = \\left(1 + \\frac{[I]}{K_I}\\right)K_M"
+      ],
+      "keywords": [
+        "competitive inhibition",
+        "inhibitor constant",
+        "apparent Km"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "biochemistry",
+        "pharmacology"
+      ]
+    },
+    {
+      "id": "bio.enz.n06_cooperative_binding_system",
+      "short_code": "ENZ06",
+      "kind": "definition",
+      "title": "多座協同結合モデル（協調的n分子結合平衡）の定義",
+      "summary": "n個の結合部位を持つ高分子Eに基質Sが極めて高い協同性で一斉に結合し中間体濃度が無視できる極限における質量作用平衡と総濃度保存則を定義する。",
+      "canonical_latex": "K_d = \\frac{[E][S]^n}{[ES_n]} = K_{0.5}^n,\\quad [E]_T = [E] + [ES_n]",
+      "aliases_latex": [
+        "E + nS \\rightleftharpoons ES_n"
+      ],
+      "keywords": [
+        "cooperative binding",
+        "allosteric enzyme",
+        "Adair-Hill limit"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "biochemistry"
+      ]
+    },
+    {
+      "id": "bio.enz.n07_hill_equation",
+      "short_code": "ENZ07",
+      "kind": "theorem_formula",
+      "title": "ヒル方程式とヒルプロット（協同性指数 n_H）",
+      "summary": "協同結合モデルから結合飽和度θおよび反応速度vのシグモイド型依存性を導出し、対数比による線形化（ヒルプロット）でヒル係数n_Hを評価する。",
+      "canonical_latex": "\\theta = \\frac{[S]^{n_H}}{K_{0.5}^{n_H} + [S]^{n_H}},\\quad v = \\frac{V_{\\max}[S]^{n_H}}{K_{0.5}^{n_H} + [S]^{n_H}},\\quad \\ln\\frac{\\theta}{1-\\theta} = n_H\\ln[S] - n_H\\ln K_{0.5}",
+      "aliases_latex": [
+        "\\log_{10}\\frac{v}{V_{\\max} - v} = n_H\\log_{10}[S] - n_H\\log_{10}K_{0.5}"
+      ],
+      "keywords": [
+        "Hill equation",
+        "Hill coefficient",
+        "Hill plot",
+        "cooperativity",
+        "sigmoidal kinetics"
+      ],
+      "domain_tags": [
+        "biophysics",
+        "biochemistry",
+        "systems_biology"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_enz01_from_kinetics",
+      "target_node_id": "bio.enz.n01_enzyme_substrate_ode",
+      "route_kind": "deductive",
+      "title": "質量作用の法則と酵素保存則からの酵素-基質ODE導出",
+      "premise_node_ids": [
+        "eng.kin.n01_kinetics_diffusion_boundary"
+      ],
+      "required_math_node_ids": [
+        "bio.enz.n01_enzyme_substrate_ode"
+      ],
+      "assumptions": [
+        "酵素総量[E]_Tは反応時間を通じて一定である",
+        "各素反応は質量作用の法則に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "E + S \\underset{k_{-1}}{\\overset{k_1}{\\rightleftharpoons}} ES \\overset{k_2}{\\rightarrow} E + P,\\quad r = k\\prod_i C_i^{\\nu_i}",
+          "to_latex": "\\frac{d[ES]}{dt} = k_1[E][S] - (k_{-1} + k_2)[ES],\\quad v = \\frac{d[P]}{dt} = k_2[ES],\\quad [E]_T = [E] + [ES]",
+          "operation_label": "mass_action_and_conservation",
+          "explanation": "酵素反応の素過程に質量作用の法則を適用して複合体ESと生成物Pの速度式を立て、総酵素濃度の保存則を加える。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E + S \\underset{k_{-1}}{\\overset{k_1}{\\rightleftharpoons}} ES \\overset{k_2}{\\rightarrow} E + P,\\quad r = k\\prod_i C_i^{\\nu_i}",
+          "to_latex": "r_1 = k_1[E][S],\\quad r_{-1} = k_{-1}[ES],\\quad r_2 = k_2[ES]",
+          "operation_label": "elementary_reaction_rates",
+          "explanation": "結合段階・解離段階・触媒段階の3つの素反応それぞれに質量作用の法則を適用する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_1 = k_1[E][S],\\quad r_{-1} = k_{-1}[ES],\\quad r_2 = k_2[ES]",
+          "to_latex": "\\frac{d[ES]}{dt} = k_1[E][S] - (k_{-1} + k_2)[ES],\\quad v = \\frac{d[P]}{dt} = k_2[ES]",
+          "operation_label": "species_balance_ode",
+          "explanation": "ESの生成速度と消費速度の収支からd[ES]/dtを求め、Pの生成速度をvとして定義する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d[ES]}{dt} = k_1[E][S] - (k_{-1} + k_2)[ES],\\quad v = \\frac{d[P]}{dt} = k_2[ES]",
+          "to_latex": "\\frac{d[ES]}{dt} = k_1[E][S] - (k_{-1} + k_2)[ES],\\quad v = \\frac{d[P]}{dt} = k_2[ES],\\quad [E]_T = [E] + [ES]",
+          "operation_label": "add_enzyme_conservation",
+          "explanation": "酵素は遊離型Eと複合体型ESの2状態のみをとるため、その和が総酵素濃度[E]_Tに等しいことを付与する。",
+          "used_node_ids": [
+            "bio.enz.n01_enzyme_substrate_ode"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_enz02_qssa_mm",
+      "target_node_id": "bio.enz.n02_qssa_michaelis_menten",
+      "route_kind": "deductive",
+      "title": "擬定常状態近似（QSSA）によるミカエリス＝メンテン式の導出",
+      "premise_node_ids": [
+        "bio.enz.n01_enzyme_substrate_ode"
+      ],
+      "required_math_node_ids": [
+        "bio.enz.n02_qssa_michaelis_menten"
+      ],
+      "assumptions": [
+        "基質が大過剰（[S] >> [E]_T）であり、初期定常状態において d[ES]/dt ≈ 0 が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d[ES]}{dt} = k_1[E][S] - (k_{-1} + k_2)[ES],\\quad [E]_T = [E] + [ES],\\quad v = k_2[ES]",
+          "to_latex": "v = \\frac{V_{\\max}[S]}{K_M + [S]},\\quad K_M := \\frac{k_{-1}+k_2}{k_1},\\quad V_{\\max} := k_2[E]_T",
+          "operation_label": "apply_qssa",
+          "explanation": "d[ES]/dt = 0 とおいて酵素保存則から遊離酵素[E]を消去し、[ES]を[S]と[E]_Tで表して反応速度vに代入する。",
+          "used_node_ids": [
+            "bio.enz.n01_enzyme_substrate_ode"
+          ],
+          "sympy_check_hint": "solve(k1*(E_T - ES)*S - (km1 + k2)*ES, ES)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d[ES]}{dt} = k_1[E][S] - (k_{-1} + k_2)[ES],\\quad [E]_T = [E] + [ES],\\quad v = k_2[ES]",
+          "to_latex": "k_1([E]_T - [ES])[S] - (k_{-1} + k_2)[ES] = 0",
+          "operation_label": "set_des_dt_zero_and_substitute_e",
+          "explanation": "擬定常状態近似 d[ES]/dt = 0 を課し、[E] = [E]_T - [ES] を代入する。",
+          "used_node_ids": [
+            "bio.enz.n01_enzyme_substrate_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_1([E]_T - [ES])[S] - (k_{-1} + k_2)[ES] = 0",
+          "to_latex": "[ES]\\left([S] + \\frac{k_{-1}+k_2}{k_1}\\right) = [E]_T[S] \\implies [ES] = \\frac{[E]_T[S]}{K_M + [S]}",
+          "operation_label": "solve_for_es_and_define_km",
+          "explanation": "両辺をk_1で割り、ミカエリス定数 K_M := (k_{-1} + k_2)/k_1 を定義して[ES]について解く。",
+          "used_node_ids": [
+            "bio.enz.n02_qssa_michaelis_menten"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[ES]\\left([S] + \\frac{k_{-1}+k_2}{k_1}\\right) = [E]_T[S] \\implies [ES] = \\frac{[E]_T[S]}{K_M + [S]}",
+          "to_latex": "v = k_2[ES] = \\frac{V_{\\max}[S]}{K_M + [S]},\\quad K_M := \\frac{k_{-1}+k_2}{k_1},\\quad V_{\\max} := k_2[E]_T",
+          "operation_label": "substitute_into_velocity",
+          "explanation": "v = k_2[ES] に代入し、最大反応速度 V_max := k_2[E]_T を導入してミカエリス＝メンテン式を得る。",
+          "used_node_ids": [
+            "bio.enz.n01_enzyme_substrate_ode",
+            "bio.enz.n02_qssa_michaelis_menten"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_enz03_catalytic_efficiency",
+      "target_node_id": "bio.enz.n03_catalytic_efficiency",
+      "route_kind": "reformulation",
+      "title": "ミカエリス＝メンテン式からの代謝回転数と触媒効率の導出",
+      "premise_node_ids": [
+        "bio.enz.n02_qssa_michaelis_menten"
+      ],
+      "required_math_node_ids": [
+        "bio.enz.n03_catalytic_efficiency"
+      ],
+      "assumptions": [
+        "総酵素濃度[E]_Tが既知である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "v = \\frac{V_{\\max}[S]}{K_M + [S]},\\quad V_{\\max} = k_2[E]_T",
+          "to_latex": "k_{\\mathrm{cat}} := \\frac{V_{\\max}}{[E]_T} = k_2,\\quad \\eta_{\\mathrm{cat}} := \\frac{k_{\\mathrm{cat}}}{K_M},\\quad v \\approx \\frac{k_{\\mathrm{cat}}}{K_M}[E]_T[S]\\;([S]\\ll K_M)",
+          "operation_label": "define_kcat_and_low_s_limit",
+          "explanation": "V_maxを[E]_Tで正規化してk_catを定義し、低基質濃度極限から触媒効率k_cat/K_Mの意味を導く。",
+          "used_node_ids": [
+            "bio.enz.n02_qssa_michaelis_menten"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v = \\frac{V_{\\max}[S]}{K_M + [S]},\\quad V_{\\max} = k_2[E]_T",
+          "to_latex": "k_{\\mathrm{cat}} := \\frac{V_{\\max}}{[E]_T} = k_2,\\quad v = \\frac{k_{\\mathrm{cat}}[E]_T[S]}{K_M + [S]}",
+          "operation_label": "normalize_vmax_by_et",
+          "explanation": "最大反応速度を総酵素濃度で割って代謝回転数k_catを定義し、ミカエリス＝メンテン式を書き換える。",
+          "used_node_ids": [
+            "bio.enz.n02_qssa_michaelis_menten"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_{\\mathrm{cat}} := \\frac{V_{\\max}}{[E]_T} = k_2,\\quad v = \\frac{k_{\\mathrm{cat}}[E]_T[S]}{K_M + [S]}",
+          "to_latex": "k_{\\mathrm{cat}} := \\frac{V_{\\max}}{[E]_T} = k_2,\\quad \\eta_{\\mathrm{cat}} := \\frac{k_{\\mathrm{cat}}}{K_M},\\quad v \\approx \\frac{k_{\\mathrm{cat}}}{K_M}[E]_T[S]\\;([S]\\ll K_M)",
+          "operation_label": "take_low_substrate_limit",
+          "explanation": "[S] << K_M の極限をとることで、2次反応速度定数としての触媒効率 k_cat/K_M を得る。",
+          "used_node_ids": [
+            "bio.enz.n03_catalytic_efficiency"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_enz04_lineweaver_burk",
+      "target_node_id": "bio.enz.n04_lineweaver_burk_plot",
+      "route_kind": "equivalence",
+      "title": "ミカエリス＝メンテン式の逆数変換によるラインウィーバー＝バーク式",
+      "premise_node_ids": [
+        "bio.enz.n02_qssa_michaelis_menten"
+      ],
+      "required_math_node_ids": [
+        "bio.enz.n04_lineweaver_burk_plot"
+      ],
+      "assumptions": [
+        "[S] > 0, v > 0, V_max > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "v = \\frac{V_{\\max}[S]}{K_M + [S]}",
+          "to_latex": "\\frac{1}{v} = \\frac{K_M}{V_{\\max}}\\frac{1}{[S]} + \\frac{1}{V_{\\max}}",
+          "operation_label": "reciprocal_linearization",
+          "explanation": "ミカエリス＝メンテン式の両辺の逆数をとり、分数を通分・分解して1/[S]の1次式に整理する。",
+          "used_node_ids": [
+            "bio.enz.n02_qssa_michaelis_menten"
+          ],
+          "sympy_check_hint": "simplify((K_M + S)/(V_max*S) - (K_M/(V_max*S) + 1/V_max))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v = \\frac{V_{\\max}[S]}{K_M + [S]}",
+          "to_latex": "\\frac{1}{v} = \\frac{K_M + [S]}{V_{\\max}[S]}",
+          "operation_label": "invert_both_sides",
+          "explanation": "両辺の逆数をとる。",
+          "used_node_ids": [
+            "bio.enz.n02_qssa_michaelis_menten"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{v} = \\frac{K_M + [S]}{V_{\\max}[S]}",
+          "to_latex": "\\frac{1}{v} = \\frac{K_M}{V_{\\max}}\\frac{1}{[S]} + \\frac{1}{V_{\\max}}",
+          "operation_label": "split_numerator_terms",
+          "explanation": "分子の和を2つの項に分解し、[S]を約分して線形形式を得る。",
+          "used_node_ids": [
+            "bio.enz.n04_lineweaver_burk_plot"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_enz05_competitive_inhibition",
+      "target_node_id": "bio.enz.n05_competitive_inhibition",
+      "route_kind": "deductive",
+      "title": "酵素保存則へのEI複合体追加による競争阻害式の導出",
+      "premise_node_ids": [
+        "bio.enz.n01_enzyme_substrate_ode",
+        "bio.enz.n02_qssa_michaelis_menten",
+        "eng.kin.n01_kinetics_diffusion_boundary"
+      ],
+      "required_math_node_ids": [
+        "bio.enz.n05_competitive_inhibition"
+      ],
+      "assumptions": [
+        "阻害剤結合 E + I <-> EI は迅速平衡にあり、EIは生成物を生じない",
+        "ESに対して擬定常状態近似が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "[E]_T = [E] + [ES] + [EI],\\quad K_I = \\frac{[E][I]}{[EI]},\\quad K_M = \\frac{[E][S]}{[ES]}",
+          "to_latex": "v = \\frac{V_{\\max}[S]}{\\alpha K_M + [S]},\\quad \\alpha := 1 + \\frac{[I]}{K_I}",
+          "operation_label": "solve_with_inhibitor_balance",
+          "explanation": "EIの平衡関係を用いて総酵素保存則から[E]と[EI]を消去し、[ES]を求めて反応速度式を得る。",
+          "used_node_ids": [
+            "bio.enz.n01_enzyme_substrate_ode",
+            "bio.enz.n02_qssa_michaelis_menten",
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": "solve([E_T - E - ES - EI, K_I - E*I/EI, K_M - E*S/ES], [E, EI, ES])"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[E]_T = [E] + [ES] + [EI],\\quad K_I = \\frac{[E][I]}{[EI]},\\quad K_M = \\frac{[E][S]}{[ES]}",
+          "to_latex": "[E]_T = [E]\\left(1 + \\frac{[I]}{K_I}\\right) + [ES] = \\alpha\\frac{K_M[ES]}{[S]} + [ES]",
+          "operation_label": "eliminate_ei_and_e",
+          "explanation": "[EI] = [E][I]/K_I および [E] = K_M[ES]/[S] を酵素保存則に代入し、α := 1 + [I]/K_I で括る。",
+          "used_node_ids": [
+            "bio.enz.n01_enzyme_substrate_ode",
+            "bio.enz.n02_qssa_michaelis_menten",
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[E]_T = [E]\\left(1 + \\frac{[I]}{K_I}\\right) + [ES] = \\alpha\\frac{K_M[ES]}{[S]} + [ES]",
+          "to_latex": "[ES] = \\frac{[E]_T[S]}{\\alpha K_M + [S]},\\quad \\alpha := 1 + \\frac{[I]}{K_I}",
+          "operation_label": "solve_for_es",
+          "explanation": "[ES]について解く。",
+          "used_node_ids": [
+            "bio.enz.n05_competitive_inhibition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[ES] = \\frac{[E]_T[S]}{\\alpha K_M + [S]},\\quad \\alpha := 1 + \\frac{[I]}{K_I}",
+          "to_latex": "v = k_2[ES] = \\frac{V_{\\max}[S]}{\\alpha K_M + [S]},\\quad \\alpha := 1 + \\frac{[I]}{K_I}",
+          "operation_label": "compute_reaction_velocity",
+          "explanation": "v = k_2[ES] と V_max = k_2[E]_T を適用して競争阻害のミカエリス＝メンテン式を得る。",
+          "used_node_ids": [
+            "bio.enz.n01_enzyme_substrate_ode",
+            "bio.enz.n05_competitive_inhibition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_enz06_cooperative_binding",
+      "target_node_id": "bio.enz.n06_cooperative_binding_system",
+      "route_kind": "deductive",
+      "title": "協調的多座結合平衡への質量作用則の適用",
+      "premise_node_ids": [
+        "eng.kin.n01_kinetics_diffusion_boundary"
+      ],
+      "required_math_node_ids": [
+        "bio.enz.n06_cooperative_binding_system"
+      ],
+      "assumptions": [
+        "中間結合種 ES_1, ..., ES_{n-1} の濃度は無限大協同性極限において無視できる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "E + nS \\underset{k_-}{\\overset{k_+}{\\rightleftharpoons}} ES_n,\\quad r = k\\prod_i C_i^{\\nu_i}",
+          "to_latex": "K_d = \\frac{[E][S]^n}{[ES_n]} = K_{0.5}^n,\\quad [E]_T = [E] + [ES_n]",
+          "operation_label": "concerted_mass_action_equilibrium",
+          "explanation": "n分子の基質が一斉に結合する反応に質量作用の法則と平衡条件を適用し、解離定数K_dと保存則を定める。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E + nS \\underset{k_-}{\\overset{k_+}{\\rightleftharpoons}} ES_n,\\quad r = k\\prod_i C_i^{\\nu_i}",
+          "to_latex": "k_+[E][S]^n = k_-[ES_n]",
+          "operation_label": "equate_forward_reverse_rates",
+          "explanation": "化学平衡において正反応速度と逆反応速度が等しいとおく。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_+[E][S]^n = k_-[ES_n]",
+          "to_latex": "K_d = \\frac{k_-}{k_+} = \\frac{[E][S]^n}{[ES_n]} = K_{0.5}^n,\\quad [E]_T = [E] + [ES_n]",
+          "operation_label": "define_kd_and_conservation",
+          "explanation": "解離定数 K_d = K_{0.5}^n を定義し、中間体を無視した総酵素保存則を併記する。",
+          "used_node_ids": [
+            "bio.enz.n06_cooperative_binding_system"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_enz07_hill_equation",
+      "target_node_id": "bio.enz.n07_hill_equation",
+      "route_kind": "deductive",
+      "title": "協同結合平衡からのヒル方程式とヒルプロットの導出",
+      "premise_node_ids": [
+        "bio.enz.n06_cooperative_binding_system",
+        "bio.enz.n02_qssa_michaelis_menten"
+      ],
+      "required_math_node_ids": [
+        "bio.enz.n07_hill_equation"
+      ],
+      "assumptions": [
+        "反応速度vは結合飽和度θに比例する（v = V_max θ）",
+        "見かけの協同性指数をヒル係数 n_H とおく"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "K_{0.5}^{n_H} = \\frac{[E][S]^{n_H}}{[ES_{n_H}]},\\quad [E]_T = [E] + [ES_{n_H}]",
+          "to_latex": "\\theta = \\frac{[S]^{n_H}}{K_{0.5}^{n_H} + [S]^{n_H}},\\quad v = \\frac{V_{\\max}[S]^{n_H}}{K_{0.5}^{n_H} + [S]^{n_H}},\\quad \\ln\\frac{\\theta}{1-\\theta} = n_H\\ln[S] - n_H\\ln K_{0.5}",
+          "operation_label": "derive_hill_fraction_and_plot",
+          "explanation": "結合飽和度θを[S]で表してヒル方程式を導き、さらに比θ/(1-θ)の対数をとってヒルプロットを得る。",
+          "used_node_ids": [
+            "bio.enz.n02_qssa_michaelis_menten",
+            "bio.enz.n06_cooperative_binding_system"
+          ],
+          "sympy_check_hint": "simplify(ES / (E + ES)) where ES = E*(S/K)**n"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "K_{0.5}^{n_H} = \\frac{[E][S]^{n_H}}{[ES_{n_H}]},\\quad [E]_T = [E] + [ES_{n_H}]",
+          "to_latex": "[ES_{n_H}] = \\frac{[E][S]^{n_H}}{K_{0.5}^{n_H}},\\quad \\theta := \\frac{[ES_{n_H}]}{[E] + [ES_{n_H}]} = \\frac{[S]^{n_H}}{K_{0.5}^{n_H} + [S]^{n_H}}",
+          "operation_label": "compute_binding_saturation",
+          "explanation": "平衡式から[ES_{n_H}]を[E]で表し、総酵素濃度に対する占有率θを計算する。",
+          "used_node_ids": [
+            "bio.enz.n06_cooperative_binding_system"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[ES_{n_H}] = \\frac{[E][S]^{n_H}}{K_{0.5}^{n_H}},\\quad \\theta := \\frac{[ES_{n_H}]}{[E] + [ES_{n_H}]} = \\frac{[S]^{n_H}}{K_{0.5}^{n_H} + [S]^{n_H}}",
+          "to_latex": "v = V_{\\max}\\theta = \\frac{V_{\\max}[S]^{n_H}}{K_{0.5}^{n_H} + [S]^{n_H}},\\quad \\frac{\\theta}{1-\\theta} = \\left(\\frac{[S]}{K_{0.5}}\\right)^{n_H}",
+          "operation_label": "velocity_and_odds_ratio",
+          "explanation": "反応速度v = V_max θ を構成し、結合状態と非結合状態の比 θ/(1-θ) を整理する。",
+          "used_node_ids": [
+            "bio.enz.n02_qssa_michaelis_menten",
+            "bio.enz.n07_hill_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v = V_{\\max}\\theta = \\frac{V_{\\max}[S]^{n_H}}{K_{0.5}^{n_H} + [S]^{n_H}},\\quad \\frac{\\theta}{1-\\theta} = \\left(\\frac{[S]}{K_{0.5}}\\right)^{n_H}",
+          "to_latex": "\\theta = \\frac{[S]^{n_H}}{K_{0.5}^{n_H} + [S]^{n_H}},\\quad v = \\frac{V_{\\max}[S]^{n_H}}{K_{0.5}^{n_H} + [S]^{n_H}},\\quad \\ln\\frac{\\theta}{1-\\theta} = n_H\\ln[S] - n_H\\ln K_{0.5}",
+          "operation_label": "logarithmic_linearization",
+          "explanation": "両辺の自然対数をとり、傾きn_Hを与えるヒルプロットの線形関係式を導く。",
+          "used_node_ids": [
+            "bio.enz.n07_hill_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

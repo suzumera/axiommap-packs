@@ -1,0 +1,652 @@
+{
+  "pack_meta": {
+    "pack_id": "med.pkpd.compartment_models",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "pharmacology",
+    "title": "薬物動態学（PK/PD）：1コンパートメントモデル・半減期・クリアランスと定常状態血中濃度",
+    "language": "ja",
+    "description": "線形常微分方程式とラプラス変換から急速静注・経口投与（ベイトマン関数）の血中濃度推移、分布容積、クリアランス、反復投与の定常状態Cssを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "med.pk.n01_pk_mass_balance_boundary",
+      "short_code": "PK01",
+      "kind": "math_boundary",
+      "title": "薬物動態の物質収支と線形1次速度過程・ラプラス変換の基礎境界",
+      "summary": "均一に攪拌された分布容積 Vd のコンパートメントにおける薬物量 X(t) の物質収支式、血中濃度 C(t) = X(t)/Vd、および線形常微分方程式解法に用いるラプラス変換の基本性質。",
+      "canonical_latex": "\\frac{dX(t)}{dt} = R_{\\text{in}}(t) - k_e X(t),\\quad C(t) = \\frac{X(t)}{V_d},\\quad \\mathcal{L}\\{f'(t)\\} = s\\tilde{f}(s) - f(0),\\quad \\mathcal{L}\\{e^{-at}\\} = \\frac{1}{s+a}",
+      "aliases_latex": [
+        "\\frac{dC}{dt} = \\frac{R_{\\text{in}}(t)}{V_d} - k_e C"
+      ],
+      "keywords": [
+        "pharmacokinetics",
+        "one-compartment model",
+        "mass balance",
+        "Laplace transform",
+        "volume of distribution"
+      ],
+      "domain_tags": [
+        "pharmacology",
+        "pharmacokinetics"
+      ]
+    },
+    {
+      "id": "med.pk.n02_iv_bolus_one_compartment",
+      "short_code": "PK02",
+      "kind": "theorem_formula",
+      "title": "急速静注（IVボーラス）1コンパートメントモデルと血中濃度推移",
+      "summary": "投与量 D を時刻 0 に急速静注したときの1コンパートメントモデルにおける血中薬物濃度の指数関数的減衰式。",
+      "canonical_latex": "C(t) = \\frac{D}{V_d} e^{-k_e t} = C_0 e^{-k_e t}\\quad \\left(C_0 := \\frac{D}{V_d}\\right)",
+      "aliases_latex": [
+        "X(t) = D e^{-k_e t}"
+      ],
+      "keywords": [
+        "IV bolus",
+        "one-compartment model",
+        "exponential decay",
+        "elimination rate constant"
+      ],
+      "domain_tags": [
+        "pharmacology",
+        "pharmacokinetics"
+      ]
+    },
+    {
+      "id": "med.pk.n03_half_life_elimination",
+      "short_code": "PK03",
+      "kind": "theorem_formula",
+      "title": "消失半減期（t1/2）と消失速度定数の関係",
+      "summary": "1次消失過程において血中薬物濃度が初期値の半分に減少するまでに要する時間（消失半減期）の公式。",
+      "canonical_latex": "t_{1/2} = \\frac{\\ln 2}{k_e} \\approx \\frac{0.693}{k_e}",
+      "aliases_latex": [
+        "k_e = \\frac{\\ln 2}{t_{1/2}}"
+      ],
+      "keywords": [
+        "half-life",
+        "elimination rate constant",
+        "first-order kinetics"
+      ],
+      "domain_tags": [
+        "pharmacology",
+        "pharmacokinetics"
+      ]
+    },
+    {
+      "id": "med.pk.n04_clearance_auc_relationship",
+      "short_code": "PK04",
+      "kind": "theorem_formula",
+      "title": "全身クリアランス（CL）と血中濃度時間曲線下面積（AUC）の関係",
+      "summary": "単位時間あたりに薬物が完全に除去される仮想体積である全身クリアランス CL = ke Vd と、無限時間までの血中濃度時間曲線下面積 AUC = D / CL の関係式。",
+      "canonical_latex": "CL := k_e V_d,\\quad AUC_{0\\to\\infty} := \\int_{0}^{\\infty} C(t)\\,dt = \\frac{D}{CL}",
+      "aliases_latex": [
+        "CL = \\frac{D}{AUC_{0\\to\\infty}}"
+      ],
+      "keywords": [
+        "clearance",
+        "AUC",
+        "area under the curve",
+        "volume of distribution"
+      ],
+      "domain_tags": [
+        "pharmacology",
+        "pharmacokinetics"
+      ]
+    },
+    {
+      "id": "med.pk.n05_oral_one_compartment_ode",
+      "short_code": "PK05",
+      "kind": "definition",
+      "title": "経口投与（1次吸収・1次消失）1コンパートメントモデルの連立線形ODE",
+      "summary": "消化管（吸収部位）薬物量 Xg(t) が1次吸収速度定数 ka で体循環へ移行し、体循環中薬物量 X(t) が消失速度定数 ke で消失する連立常微分方程式と初期条件。",
+      "canonical_latex": "\\frac{dX_g}{dt} = -k_a X_g,\\quad \\frac{dX}{dt} = k_a X_g - k_e X,\\quad X_g(0) = F D,\\quad X(0) = 0",
+      "aliases_latex": [
+        "\\frac{dX}{dt} + k_e X = k_a F D e^{-k_a t}"
+      ],
+      "keywords": [
+        "oral administration",
+        "first-order absorption",
+        "bioavailability",
+        "compartment model"
+      ],
+      "domain_tags": [
+        "pharmacology",
+        "pharmacokinetics"
+      ]
+    },
+    {
+      "id": "med.pk.n06_bateman_equation",
+      "short_code": "PK06",
+      "kind": "theorem_formula",
+      "title": "経口投与時の血中濃度推移（ベイトマン関数）と最高血中濃度到達時間 tmax",
+      "summary": "1次吸収・1次消失1コンパートメントモデルをラプラス変換等で解いて得られる経口投与時の血中濃度式（Bateman関数）および最高血中濃度到達時間 tmax。",
+      "canonical_latex": "C(t) = \\frac{F D k_a}{V_d (k_a - k_e)}\\left(e^{-k_e t} - e^{-k_a t}\\right),\\quad t_{\\max} = \\frac{\\ln(k_a / k_e)}{k_a - k_e}\\quad (k_a \\neq k_e)",
+      "aliases_latex": [
+        "C_{\\max} = \\frac{F D}{V_d} \\left(\\frac{k_e}{k_a}\\right)^{\\frac{k_e}{k_a - k_e}}"
+      ],
+      "keywords": [
+        "Bateman equation",
+        "oral pharmacokinetics",
+        "tmax",
+        "Cmax",
+        "Laplace transform"
+      ],
+      "domain_tags": [
+        "pharmacology",
+        "pharmacokinetics"
+      ]
+    },
+    {
+      "id": "med.pk.n07_multiple_dosing_superposition",
+      "short_code": "PK07",
+      "kind": "theorem_formula",
+      "title": "等間隔反復静脈内投与における血中濃度推移と蓄積係数",
+      "summary": "投与間隔 tau ごとに同一投与量 D を急速静注したときの n 回目投与後経過時間 t' における血中濃度式と蓄積係数 Racc。",
+      "canonical_latex": "C_n(t') = C_0 \\frac{1 - e^{-n k_e \\tau}}{1 - e^{-k_e \\tau}} e^{-k_e t'},\\quad R_{\\mathrm{acc}} := \\frac{1}{1 - e^{-k_e \\tau}}\\quad (0 \\le t' < \\tau)",
+      "aliases_latex": [
+        "C_{n,\\max} = C_0 \\frac{1 - e^{-n k_e \\tau}}{1 - e^{-k_e \\tau}}"
+      ],
+      "keywords": [
+        "multiple dosing",
+        "superposition principle",
+        "accumulation index",
+        "geometric series"
+      ],
+      "domain_tags": [
+        "pharmacology",
+        "pharmacokinetics"
+      ]
+    },
+    {
+      "id": "med.pk.n08_steady_state_css",
+      "short_code": "PK08",
+      "kind": "theorem_formula",
+      "title": "定常状態血中濃度（Css,max, Css,min, Css,avg）",
+      "summary": "反復投与において n → ∞ の極限で到達する定常状態の最高・最低・平均血中濃度とクリアランスによる表示。",
+      "canonical_latex": "C_{ss,\\max} = \\frac{C_0}{1 - e^{-k_e \\tau}},\\quad C_{ss,\\min} = \\frac{C_0 e^{-k_e \\tau}}{1 - e^{-k_e \\tau}},\\quad C_{ss,\\mathrm{avg}} = \\frac{AUC_{\\tau}}{\\tau} = \\frac{D}{CL \\cdot \\tau}",
+      "aliases_latex": [
+        "C_{ss,\\mathrm{avg}} = \\frac{D}{k_e V_d \\tau}"
+      ],
+      "keywords": [
+        "steady state",
+        "Css",
+        "peak concentration",
+        "trough concentration",
+        "average concentration"
+      ],
+      "domain_tags": [
+        "pharmacology",
+        "pharmacokinetics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_pk02_iv_bolus",
+      "target_node_id": "med.pk.n02_iv_bolus_one_compartment",
+      "route_kind": "deductive",
+      "title": "1次消失物質収支ODEの変数分離積分による急速静注血中濃度式の導出",
+      "premise_node_ids": [
+        "med.pk.n01_pk_mass_balance_boundary",
+        "eng.kin.n01_kinetics_diffusion_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "投与は時刻 t=0 に瞬間的に完了し Rin(t)=0 (t>0)",
+        "分布容積 Vd および消失速度定数 ke は一定（線形薬物動態）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dX}{dt} = -k_e X,\\quad X(0) = D,\\quad C(t) = \\frac{X(t)}{V_d}",
+          "to_latex": "C(t) = \\frac{D}{V_d} e^{-k_e t} = C_0 e^{-k_e t}",
+          "operation_label": "1階線形ODEの積分と分布容積での除算",
+          "explanation": "1次消失過程の微分方程式を変数分離して初期条件 X(0)=D のもとで解き、分布容積 Vd で割ることで血中濃度の指数減衰式を得る。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.t06_exp_power_derivatives",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_separate_variables",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dX}{dt} = -k_e X,\\quad X(0) = D",
+          "to_latex": "\\int_{D}^{X(t)} \\frac{dX'}{X'} = -k_e \\int_{0}^{t} dt'",
+          "operation_label": "変数分離と定積分の設定",
+          "explanation": "Rin(t)=0 とした物質収支式の両辺を X で割り、時刻 0 から t まで定積分する形に整理する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_integrate_solve",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{D}^{X(t)} \\frac{dX'}{X'} = -k_e \\int_{0}^{t} dt'",
+          "to_latex": "\\ln\\frac{X(t)}{D} = -k_e t \\implies X(t) = D e^{-k_e t}",
+          "operation_label": "対数積分と指数関数による解の表示",
+          "explanation": "微積分学の基本定理により両辺を積分し、指数関数をとって体内薬物量 X(t) を求める。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_divide_vd",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln\\frac{X(t)}{D} = -k_e t \\implies X(t) = D e^{-k_e t}",
+          "to_latex": "C(t) = \\frac{X(t)}{V_d} = \\frac{D}{V_d} e^{-k_e t} = C_0 e^{-k_e t}",
+          "operation_label": "分布容積による濃度変換",
+          "explanation": "C(t) = X(t)/Vd の定義を適用し、C0 := D/Vd とおいて急速静注1コンパートメントモデルの式を得る。",
+          "used_node_ids": [
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_pk03_half_life",
+      "target_node_id": "med.pk.n03_half_life_elimination",
+      "route_kind": "deductive",
+      "title": "急速静注血中濃度式からの消失半減期 t1/2 の導出",
+      "premise_node_ids": [
+        "med.pk.n02_iv_bolus_one_compartment"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "消失速度定数 ke > 0",
+        "初期濃度 C0 > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "C(t_{1/2}) = \\frac{1}{2} C_0,\\quad C(t) = C_0 e^{-k_e t}",
+          "to_latex": "t_{1/2} = \\frac{\\ln 2}{k_e}",
+          "operation_label": "半減条件の代入と対数解法",
+          "explanation": "血中濃度が初期値 C0 の半分になる時刻 t1/2 を指数減衰式に代入し、自然対数をとって t1/2 を解く。",
+          "used_node_ids": [
+            "med.pk.n02_iv_bolus_one_compartment"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_half",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C(t_{1/2}) = \\frac{1}{2} C_0,\\quad C(t) = C_0 e^{-k_e t}",
+          "to_latex": "C_0 e^{-k_e t_{1/2}} = \\frac{1}{2} C_0 \\implies e^{-k_e t_{1/2}} = \\frac{1}{2}",
+          "operation_label": "半減条件の代入と C0 の約分",
+          "explanation": "C(t1/2) = C0/2 を C(t) の式に代入し、両辺を C0 で割る。",
+          "used_node_ids": [
+            "med.pk.n02_iv_bolus_one_compartment"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_take_log",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_0 e^{-k_e t_{1/2}} = \\frac{1}{2} C_0 \\implies e^{-k_e t_{1/2}} = \\frac{1}{2}",
+          "to_latex": "-k_e t_{1/2} = -\\ln 2 \\implies t_{1/2} = \\frac{\\ln 2}{k_e}",
+          "operation_label": "自然対数による t1/2 の求解",
+          "explanation": "両辺の自然対数をとり、-ke で割ることで消失半減期の公式を得る。",
+          "used_node_ids": [
+            "med.pk.n02_iv_bolus_one_compartment"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_pk04_clearance_auc",
+      "target_node_id": "med.pk.n04_clearance_auc_relationship",
+      "route_kind": "deductive",
+      "title": "血中濃度時間曲線下面積（AUC）の広義積分と全身クリアランスの導出",
+      "premise_node_ids": [
+        "med.pk.n02_iv_bolus_one_compartment",
+        "med.pk.n01_pk_mass_balance_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "ke > 0, Vd > 0 であり無限時間で血中濃度は 0 に収束する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "CL := k_e V_d,\\quad AUC_{0\\to\\infty} = \\int_{0}^{\\infty} \\frac{D}{V_d} e^{-k_e t}\\,dt",
+          "to_latex": "AUC_{0\\to\\infty} = \\frac{D}{k_e V_d} = \\frac{D}{CL}",
+          "operation_label": "指数関数の広義積分とクリアランス定義の適用",
+          "explanation": "急速静注の血中濃度式を 0 から無限大まで積分し、CL = ke Vd を用いて AUC = D / CL を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.t06_exp_power_derivatives",
+            "med.pk.n01_pk_mass_balance_boundary",
+            "med.pk.n02_iv_bolus_one_compartment"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_auc_integral",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "AUC_{0\\to\\infty} = \\int_{0}^{\\infty} \\frac{D}{V_d} e^{-k_e t}\\,dt",
+          "to_latex": "AUC_{0\\to\\infty} = \\frac{D}{V_d} \\left[-\\frac{1}{k_e} e^{-k_e t}\\right]_{0}^{\\infty} = \\frac{D}{k_e V_d}",
+          "operation_label": "指数関数の定積分評価",
+          "explanation": "微積分学の基本定理と指数関数の導関数公式を用いて、0 から ∞ までの広義積分を実行する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.t06_exp_power_derivatives",
+            "med.pk.n02_iv_bolus_one_compartment"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_substitute_cl",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "AUC_{0\\to\\infty} = \\frac{D}{V_d} \\left[-\\frac{1}{k_e} e^{-k_e t}\\right]_{0}^{\\infty} = \\frac{D}{k_e V_d}",
+          "to_latex": "AUC_{0\\to\\infty} = \\frac{D}{CL}\\quad (CL := k_e V_d)",
+          "operation_label": "全身クリアランス CL の代入",
+          "explanation": "全身クリアランスを CL := ke Vd と定義することで、AUC = D / CL の基本関係式が定まる。",
+          "used_node_ids": [
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_pk05_oral_ode",
+      "target_node_id": "med.pk.n05_oral_one_compartment_ode",
+      "route_kind": "deductive",
+      "title": "消化管デポと体循環コンパートメントの物質収支からの経口投与連立ODEの定式化",
+      "premise_node_ids": [
+        "med.pk.n01_pk_mass_balance_boundary",
+        "eng.kin.n01_kinetics_diffusion_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "経口投与量 D のうち生物学的利用率 F の割合だけが吸収部位から1次速度定数 ka で吸収される",
+        "時刻 t=0 では体循環中の薬物量は 0 である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dX}{dt} = R_{\\text{in}}(t) - k_e X,\\quad R_{\\text{in}}(t) = k_a X_g(t)",
+          "to_latex": "\\frac{dX_g}{dt} = -k_a X_g,\\quad \\frac{dX}{dt} = k_a X_g - k_e X,\\quad X_g(0) = F D,\\quad X(0) = 0",
+          "operation_label": "吸収部位デポの1次減衰と体循環への流入結合",
+          "explanation": "吸収部位の薬物量 Xg が1次速度で減少してそのまま体循環コンパートメントへの入力速度 Rin(t) となる連立ODEを構成する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_gi_depot",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{Bioavailable dose } F D \\text{ in absorption depot } X_g(t)",
+          "to_latex": "\\frac{dX_g}{dt} = -k_a X_g,\\quad X_g(0) = F D,\\quad R_{\\text{in}}(t) = k_a X_g(t)",
+          "operation_label": "消化管デポの1次吸収速度式",
+          "explanation": "吸収可能な薬物量 FD が時刻 0 に吸収部位にあり、速度定数 ka の1次反応で消失して体循環へ移行する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_central_comp",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dX_g}{dt} = -k_a X_g,\\quad X_g(0) = F D,\\quad R_{\\text{in}}(t) = k_a X_g(t)",
+          "to_latex": "\\frac{dX_g}{dt} = -k_a X_g,\\quad \\frac{dX}{dt} = k_a X_g - k_e X,\\quad X_g(0) = F D,\\quad X(0) = 0",
+          "operation_label": "体循環コンパートメント物質収支への代入",
+          "explanation": "流入速度 Rin(t) = ka Xg(t) を物質収支式に代入し、初期条件 X(0)=0 と合わせて連立ODEを得る。",
+          "used_node_ids": [
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_pk06_bateman",
+      "target_node_id": "med.pk.n06_bateman_equation",
+      "route_kind": "deductive",
+      "title": "ラプラス変換と部分分数分解によるベイトマン関数および tmax の導出",
+      "premise_node_ids": [
+        "med.pk.n05_oral_one_compartment_ode",
+        "med.pk.n01_pk_mass_balance_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "ka ≠ ke, ka > 0, ke > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dX_g}{dt} = -k_a X_g,\\quad \\frac{dX}{dt} = k_a X_g - k_e X,\\quad X_g(0) = F D,\\quad X(0) = 0",
+          "to_latex": "C(t) = \\frac{F D k_a}{V_d (k_a - k_e)}\\left(e^{-k_e t} - e^{-k_a t}\\right),\\quad t_{\\max} = \\frac{\\ln(k_a / k_e)}{k_a - k_e}",
+          "operation_label": "ラプラス変換・部分分数分解・逆変換と極大時刻の決定",
+          "explanation": "連立線形ODEをラプラス変換して代数的に解き、部分分数分解と逆変換でベイトマン関数を得たのち、dC/dt=0 から tmax を求める。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "med.pk.n01_pk_mass_balance_boundary",
+            "med.pk.n05_oral_one_compartment_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_laplace_transform",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dX_g}{dt} = -k_a X_g,\\quad \\frac{dX}{dt} = k_a X_g - k_e X,\\quad X_g(0) = F D,\\quad X(0) = 0",
+          "to_latex": "s\\tilde{X}_g(s) - F D = -k_a \\tilde{X}_g(s),\\quad s\\tilde{X}(s) = k_a \\tilde{X}_g(s) - k_e \\tilde{X}(s)",
+          "operation_label": "連立ODEのラプラス変換",
+          "explanation": "初期条件 Xg(0)=FD, X(0)=0 を用いて連立微分方程式の両辺をラプラス変換する。",
+          "used_node_ids": [
+            "med.pk.n01_pk_mass_balance_boundary",
+            "med.pk.n05_oral_one_compartment_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_partial_fraction",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s\\tilde{X}_g(s) - F D = -k_a \\tilde{X}_g(s),\\quad s\\tilde{X}(s) = k_a \\tilde{X}_g(s) - k_e \\tilde{X}(s)",
+          "to_latex": "\\tilde{X}(s) = \\frac{F D k_a}{(s + k_a)(s + k_e)} = \\frac{F D k_a}{k_a - k_e}\\left(\\frac{1}{s + k_e} - \\frac{1}{s + k_a}\\right)",
+          "operation_label": "像関数の求解と部分分数分解",
+          "explanation": "Xg の像関数を代入して X(s) を求め、ka ≠ ke のもとで部分分数に分解する。",
+          "used_node_ids": [
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_inverse_laplace_tmax",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{X}(s) = \\frac{F D k_a}{(s + k_a)(s + k_e)} = \\frac{F D k_a}{k_a - k_e}\\left(\\frac{1}{s + k_e} - \\frac{1}{s + k_a}\\right)",
+          "to_latex": "C(t) = \\frac{F D k_a}{V_d (k_a - k_e)}\\left(e^{-k_e t} - e^{-k_a t}\\right),\\quad \\frac{dC}{dt}(t_{\\max}) = 0 \\implies t_{\\max} = \\frac{\\ln(k_a / k_e)}{k_a - k_e}",
+          "operation_label": "逆ラプラス変換と停留点条件による tmax の導出",
+          "explanation": "L{e^(-at)} = 1/(s+a) を用いて逆変換し Vd で割ることで C(t) を得て、さらに C'(tmax)=0 すなわち ke e^(-ke tmax) = ka e^(-ka tmax) から tmax を解く。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_pk07_multiple_dosing",
+      "target_node_id": "med.pk.n07_multiple_dosing_superposition",
+      "route_kind": "deductive",
+      "title": "線形性と重ね合わせの原理・等比級数和による反復投与血中濃度式の導出",
+      "premise_node_ids": [
+        "med.pk.n02_iv_bolus_one_compartment",
+        "med.pk.n01_pk_mass_balance_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "線形薬物動態により重ね合わせの原理が成立する",
+        "投与間隔 tau > 0, ke > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "C_{\\text{single}}(t) = C_0 e^{-k_e t},\\quad t = (n-1)\\tau + t'\\;(0 \\le t' < \\tau)",
+          "to_latex": "C_n(t') = C_0 \\frac{1 - e^{-n k_e \\tau}}{1 - e^{-k_e \\tau}} e^{-k_e t'},\\quad R_{\\mathrm{acc}} = \\frac{1}{1 - e^{-k_e \\tau}}",
+          "operation_label": "重ね合わせの原理と等比数列の和",
+          "explanation": "過去 n 回の投与による血中濃度寄与を重ね合わせ、有限等比級数の和の公式を適用して Cn(t') と蓄積係数 Racc を得る。",
+          "used_node_ids": [
+            "med.pk.n01_pk_mass_balance_boundary",
+            "med.pk.n02_iv_bolus_one_compartment"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_superposition_sum",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_{\\text{single}}(t) = C_0 e^{-k_e t},\\quad t = (n-1)\\tau + t'",
+          "to_latex": "C_n(t') = \\sum_{j=0}^{n-1} C_0 e^{-k_e (j\\tau + t')} = C_0 e^{-k_e t'} \\sum_{j=0}^{n-1} \\left(e^{-k_e \\tau}\\right)^j",
+          "operation_label": "n 回投与の重ね合わせ級数表現",
+          "explanation": "n 回目投与後経過時間 t' における各前回投与からの経過時間 j*tau + t' (j=0,...,n-1) を合計する。",
+          "used_node_ids": [
+            "med.pk.n01_pk_mass_balance_boundary",
+            "med.pk.n02_iv_bolus_one_compartment"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_geometric_series",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_n(t') = \\sum_{j=0}^{n-1} C_0 e^{-k_e (j\\tau + t')} = C_0 e^{-k_e t'} \\sum_{j=0}^{n-1} \\left(e^{-k_e \\tau}\\right)^j",
+          "to_latex": "C_n(t') = C_0 \\frac{1 - e^{-n k_e \\tau}}{1 - e^{-k_e \\tau}} e^{-k_e t'},\\quad R_{\\mathrm{acc}} = \\lim_{n\\to\\infty}\\frac{C_n(0)}{C_0} = \\frac{1}{1 - e^{-k_e \\tau}}",
+          "operation_label": "等比級数の和と蓄積係数の導出",
+          "explanation": "公比 r = e^(-ke tau) (< 1) の等比級数の和を計算し、n → ∞ における初回最高濃度比として蓄積係数 Racc を得る。",
+          "used_node_ids": [
+            "med.pk.n02_iv_bolus_one_compartment"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_pk08_steady_state_css",
+      "target_node_id": "med.pk.n08_steady_state_css",
+      "route_kind": "deductive",
+      "title": "反復投与の定常状態極限による Css,max, Css,min, Css,avg の導出",
+      "premise_node_ids": [
+        "med.pk.n07_multiple_dosing_superposition",
+        "med.pk.n04_clearance_auc_relationship"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "e^(-ke tau) < 1 より n → ∞ で e^(-n ke tau) → 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "C_n(t') = C_0 \\frac{1 - e^{-n k_e \\tau}}{1 - e^{-k_e \\tau}} e^{-k_e t'},\\quad CL = k_e V_d",
+          "to_latex": "C_{ss,\\max} = \\frac{C_0}{1 - e^{-k_e \\tau}},\\quad C_{ss,\\min} = \\frac{C_0 e^{-k_e \\tau}}{1 - e^{-k_e \\tau}},\\quad C_{ss,\\mathrm{avg}} = \\frac{D}{CL \\cdot \\tau}",
+          "operation_label": "定常状態極限の取得と1投与間隔での平均化",
+          "explanation": "n → ∞ の極限で定常状態濃度 Css(t') を求め、t'=0, tau の評価および1投与間隔 [0, tau] の積分平均により Css,max, Css,min, Css,avg を導出する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "med.pk.n04_clearance_auc_relationship",
+            "med.pk.n07_multiple_dosing_superposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_limit_n_infinity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_{ss}(t') = \\lim_{n \\to \\infty} C_0 \\frac{1 - e^{-n k_e \\tau}}{1 - e^{-k_e \\tau}} e^{-k_e t'}",
+          "to_latex": "C_{ss}(t') = \\frac{C_0 e^{-k_e t'}}{1 - e^{-k_e \\tau}} \\implies C_{ss,\\max} = C_{ss}(0) = \\frac{C_0}{1 - e^{-k_e \\tau}},\\; C_{ss,\\min} = C_{ss}(\\tau) = \\frac{C_0 e^{-k_e \\tau}}{1 - e^{-k_e \\tau}}",
+          "operation_label": "n → ∞ 極限とピーク・トラフ濃度の評価",
+          "explanation": "e^(-n ke tau) → 0 を用いて Css(t') を得て、投与直後 t'=0 で最大値 Css,max、次回投与直前 t'=tau で最小値 Css,min を評価する。",
+          "used_node_ids": [
+            "med.pk.n07_multiple_dosing_superposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_css_avg_auc",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_{ss}(t') = \\frac{C_0 e^{-k_e t'}}{1 - e^{-k_e \\tau}} \\implies C_{ss,\\max} = C_{ss}(0) = \\frac{C_0}{1 - e^{-k_e \\tau}},\\; C_{ss,\\min} = C_{ss}(\\tau) = \\frac{C_0 e^{-k_e \\tau}}{1 - e^{-k_e \\tau}}",
+          "to_latex": "C_{ss,\\mathrm{avg}} = \\frac{1}{\\tau}\\int_{0}^{\\tau} C_{ss}(t')\\,dt' = \\frac{C_0}{k_e \\tau} = \\frac{D}{CL \\cdot \\tau}",
+          "operation_label": "1投与間隔での定積分平均とクリアランス表示",
+          "explanation": "Css(t') を 0 から tau まで積分すると (1 - e^(-ke tau)) が約分されて AUCtau = C0/ke = D/CL となり、tau で割ることで Css,avg = D/(CL tau) を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "med.pk.n04_clearance_auc_relationship"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
