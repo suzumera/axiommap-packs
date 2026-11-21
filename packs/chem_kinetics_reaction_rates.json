@@ -1,0 +1,731 @@
+{
+  "pack_meta": {
+    "pack_id": "chem.kinetics.reaction_rates",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physical_chemistry",
+    "title": "反応速度論：次数反応・アレニウスの式・遷移状態理論（アイリングの式）",
+    "language": "ja",
+    "description": "1次・2次反応の積分速度式と半減期、定常状態近似、アレニウスの式、遷移状態理論のアイリングの式を微分方程式と統計力学から導出する。"
+  },
+  "nodes": [
+    {
+      "id": "chem.kin.n01_statmech_tst_boundary",
+      "short_code": "CK01",
+      "kind": "math_boundary",
+      "title": "遷移状態理論の統計力学的基礎境界（分配関数と反応座標の振動極限）",
+      "summary": "カノニカル分配関数による平衡定数表示、活性錯合体の反応座標振動モード分離、および高温古典極限における調和振動子分配関数を与える統計力学的境界。",
+      "canonical_latex": "K^\\ddagger_{\\mathrm{stat}} = \\frac{Q^\\ddagger}{Q_A Q_B} e^{-E_0/(k_B T)},\\quad Q^\\ddagger = q_{\\mathrm{RC}} Q^\\ddagger_{\\neq},\\quad q_{\\mathrm{RC}} = \\frac{1}{1 - e^{-h\\nu^\\ddagger/(k_B T)}} \\xrightarrow{h\\nu^\\ddagger \\ll k_B T} \\frac{k_B T}{h\\nu^\\ddagger}",
+      "aliases_latex": [
+        "Q^\\ddagger = \\frac{k_B T}{h\\nu^\\ddagger} Q^\\ddagger_{\\neq}"
+      ],
+      "keywords": [
+        "transition state theory",
+        "partition function",
+        "activated complex",
+        "reaction coordinate"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_kinetics",
+        "statistical_mechanics"
+      ]
+    },
+    {
+      "id": "chem.kin.n02_elementary_reaction_molecularity",
+      "short_code": "CK02",
+      "kind": "definition",
+      "title": "素反応の反応分子数と質量作用の法則・詳細釣り合い",
+      "summary": "単一ステップで進行する素反応の速度が化学量論係数に等しい次数を持つ質量作用の法則、および平衡状態における詳細釣り合いによる平衡定数と速度定数の関係。",
+      "canonical_latex": "r_{\\mathrm{elem}} = k \\prod_{i} [A_i]^{\\nu_i},\\qquad K_c = \\frac{k_f}{k_r} \\quad (r_f = r_r \\text{ at equilibrium})",
+      "aliases_latex": [
+        "r_f = k_f \\prod [A_i]^{\\nu_i},\\quad r_r = k_r \\prod [B_j]^{\\mu_j}"
+      ],
+      "keywords": [
+        "elementary reaction",
+        "molecularity",
+        "law of mass action",
+        "detailed balance"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_kinetics"
+      ]
+    },
+    {
+      "id": "chem.kin.n03_steady_state_approximation",
+      "short_code": "CK03",
+      "kind": "theorem_formula",
+      "title": "反応中間体に対する定常状態近似（SSA）",
+      "summary": "寿命の短い反応中間体の生成速度と消費速度がほぼ釣り合い時間変化が零とみなせる条件のもとで、中間体濃度を反応物濃度で代数的に表す近似法則。",
+      "canonical_latex": "\\frac{d[I]}{dt} = r_{\\mathrm{form}}(I) - r_{\\mathrm{cons}}(I) \\approx 0 \\implies [I]_{\\mathrm{ss}} = \\frac{r_{\\mathrm{form}}(I)}{k_{\\mathrm{cons}}}",
+      "aliases_latex": [
+        "\\frac{d[I]}{dt} \\approx 0"
+      ],
+      "keywords": [
+        "steady-state approximation",
+        "reaction intermediate",
+        "quasi-steady state"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_kinetics"
+      ]
+    },
+    {
+      "id": "chem.kin.n04_lindemann_hinshelwood_mechanism",
+      "short_code": "CK04",
+      "kind": "theorem_formula",
+      "title": "リンデマン＝ヒンシェルウッド機構と単分子反応の圧力依存性",
+      "summary": "衝突活性化と脱活性化および単分子分解の素反応に定常状態近似を適用して導かれる、単分子反応速度定数の高圧1次極限・低圧2次極限の表式。",
+      "canonical_latex": "r = \\frac{k_1 k_2 [A][M]}{k_{-1}[M] + k_2},\\qquad r \\xrightarrow{[M]\\to\\infty} k_{\\infty}[A]\\;\\left(k_\\infty = \\frac{k_1 k_2}{k_{-1}}\\right),\\qquad r \\xrightarrow{[M]\\to 0} k_1[A][M]",
+      "aliases_latex": [
+        "k_{\\mathrm{uni}} = \\frac{k_1 k_2 [M]}{k_{-1}[M] + k_2}"
+      ],
+      "keywords": [
+        "Lindemann-Hinshelwood mechanism",
+        "unimolecular reaction",
+        "falloff curve"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_kinetics"
+      ]
+    },
+    {
+      "id": "chem.kin.n05_reversible_first_order_kinetics",
+      "short_code": "CK05",
+      "kind": "theorem_formula",
+      "title": "可逆1次反応の積分速度式と緩和時間",
+      "summary": "正逆両方向に1次で進行する可逆反応において、平衡濃度への指数関数的緩和を記述する積分速度式と化学緩和時間。",
+      "canonical_latex": "[A](t) = [A]_{\\mathrm{eq}} + \\big([A]_0 - [A]_{\\mathrm{eq}}\\big)e^{-(k_1 + k_{-1})t},\\qquad [A]_{\\mathrm{eq}} = \\frac{k_{-1}}{k_1 + k_{-1}}[A]_0,\\qquad \\tau = \\frac{1}{k_1 + k_{-1}}",
+      "aliases_latex": [
+        "\\frac{[A](t) - [A]_{\\mathrm{eq}}}{[A]_0 - [A]_{\\mathrm{eq}}} = e^{-(k_1+k_{-1})t}"
+      ],
+      "keywords": [
+        "reversible first-order reaction",
+        "relaxation time",
+        "chemical equilibrium"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_kinetics"
+      ]
+    },
+    {
+      "id": "chem.kin.n06_consecutive_first_order_kinetics",
+      "short_code": "CK06",
+      "kind": "theorem_formula",
+      "title": "逐次1次反応の積分速度式と中間体極大時刻",
+      "summary": "2段階の逐次1次反応 A -> B -> C における中間体濃度の時間発展式と、中間体濃度が最大値に達する時刻の表式。",
+      "canonical_latex": "[B](t) = \\frac{k_1 [A]_0}{k_2 - k_1}\\left(e^{-k_1 t} - e^{-k_2 t}\\right)\\;(k_1 \\neq k_2),\\qquad t_{\\max} = \\frac{1}{k_2 - k_1}\\ln\\frac{k_2}{k_1}",
+      "aliases_latex": [
+        "[C](t) = [A]_0\\left(1 + \\frac{k_1 e^{-k_2 t} - k_2 e^{-k_1 t}}{k_2 - k_1}\\right)"
+      ],
+      "keywords": [
+        "consecutive reaction",
+        "sequential reaction",
+        "intermediate maximum"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_kinetics"
+      ]
+    },
+    {
+      "id": "chem.kin.n07_eyring_tst_equation",
+      "short_code": "CK07",
+      "kind": "theorem_formula",
+      "title": "遷移状態理論のアイリングの式（Eyring Equation）",
+      "summary": "反応物と遷移状態の準平衡仮定および反応座標の古典振動極限から導かれる、活性化ギブズエネルギー・活性化エンタルピー・活性化エントロピーによる速度定数の表式。",
+      "canonical_latex": "k(T) = \\kappa \\frac{k_B T}{h} K^\\ddagger = \\kappa \\frac{k_B T}{h} \\exp\\!\\left(-\\frac{\\Delta^\\ddagger G^\\circ}{RT}\\right) = \\kappa \\frac{k_B T}{h} \\exp\\!\\left(\\frac{\\Delta^\\ddagger S^\\circ}{R}\\right)\\exp\\!\\left(-\\frac{\\Delta^\\ddagger H^\\circ}{RT}\\right)",
+      "aliases_latex": [
+        "\\ln\\frac{k}{T} = -\\frac{\\Delta^\\ddagger H^\\circ}{R}\\frac{1}{T} + \\ln\\frac{\\kappa k_B}{h} + \\frac{\\Delta^\\ddagger S^\\circ}{R}"
+      ],
+      "keywords": [
+        "Eyring equation",
+        "transition state theory",
+        "enthalpy of activation",
+        "entropy of activation"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_kinetics",
+        "statistical_mechanics"
+      ]
+    },
+    {
+      "id": "chem.kin.n08_arrhenius_eyring_relation",
+      "short_code": "CK08",
+      "kind": "theorem_formula",
+      "title": "アレニウスの活性化エネルギーと活性化エンタルピーの関係式",
+      "summary": "アレニウスの式の活性化エネルギーの定義とアイリングの式の温度微分を比較することで得られる、実験的活性化エネルギーと活性化エンタルピーの変換関係。",
+      "canonical_latex": "E_a = \\Delta^\\ddagger H^\\circ + RT \\quad (\\text{unimolecular / solution}),\\qquad E_a = \\Delta^\\ddagger H^\\circ + (1 - \\Delta^\\ddagger n_{\\mathrm{gas}})RT \\quad (\\text{ideal gas})",
+      "aliases_latex": [
+        "A = e \\kappa \\frac{k_B T}{h} \\exp\\!\\left(\\frac{\\Delta^\\ddagger S^\\circ}{R}\\right)"
+      ],
+      "keywords": [
+        "activation energy",
+        "enthalpy of activation",
+        "Arrhenius pre-exponential factor"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_kinetics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_ck02_from_kin01_kin02",
+      "target_node_id": "chem.kin.n02_elementary_reaction_molecularity",
+      "route_kind": "reformulation",
+      "title": "一般速度式と化学平衡条件からの素反応質量作用則と詳細釣り合いの導出",
+      "premise_node_ids": [
+        "eng.kin.n01_kinetics_diffusion_boundary",
+        "eng.kin.n02_reaction_rate_order_def",
+        "eng.cth.n07_equilibrium_constant_gibbs"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "単一の衝突・解離事象で進行する素反応であり、反応次数が化学量論係数に一致する",
+        "平衡状態において正反応速度と逆反応速度が等しい（詳細釣り合いの原理）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r = k \\prod_i C_i^{\\nu_i}",
+          "to_latex": "r_{\\mathrm{elem}} = k \\prod_{i} [A_i]^{\\nu_i},\\qquad K_c = \\frac{k_f}{k_r}",
+          "operation_label": "素反応への質量作用則と平衡条件の適用",
+          "explanation": "素反応の速度式を正逆反応に適用し、平衡時の速度等置から平衡定数と速度定数比の関係を得る。",
+          "used_node_ids": [
+            "eng.cth.n07_equilibrium_constant_gibbs",
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "eng.kin.n02_reaction_rate_order_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r = k \\prod_i C_i^{\\nu_i}",
+          "to_latex": "r_f = k_f \\prod_{\\text{react}} [A_i]^{\\nu_i},\\quad r_r = k_r \\prod_{\\text{prod}} [B_j]^{\\mu_j}",
+          "operation_label": "正逆素反応の速度式定式化",
+          "explanation": "素反応の反応分子数に基づき、正反応および逆反応の速度式をモル濃度で表す。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "eng.kin.n02_reaction_rate_order_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_f = k_f \\prod_{\\text{react}} [A_i]^{\\nu_i},\\quad r_r = k_r \\prod_{\\text{prod}} [B_j]^{\\mu_j}",
+          "to_latex": "k_f \\prod_{\\text{react}} [A_i]_{\\mathrm{eq}}^{\\nu_i} = k_r \\prod_{\\text{prod}} [B_j]_{\\mathrm{eq}}^{\\mu_j}",
+          "operation_label": "平衡状態での詳細釣り合い",
+          "explanation": "化学平衡状態では正味の変化が零となるため、正反応速度と逆反応速度を等置する。",
+          "used_node_ids": [
+            "eng.cth.n07_equilibrium_constant_gibbs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_f \\prod_{\\text{react}} [A_i]_{\\mathrm{eq}}^{\\nu_i} = k_r \\prod_{\\text{prod}} [B_j]_{\\mathrm{eq}}^{\\mu_j}",
+          "to_latex": "r_{\\mathrm{elem}} = k \\prod_{i} [A_i]^{\\nu_i},\\qquad K_c = \\frac{k_f}{k_r}",
+          "operation_label": "濃度平衡定数比への整理",
+          "explanation": "生成物と反応物の平衡濃度比が濃度平衡定数 Kc に等しいことから K_c = k_f / k_r を得る。",
+          "used_node_ids": [
+            "eng.cth.n07_equilibrium_constant_gibbs"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ck03_from_ck02_kin02",
+      "target_node_id": "chem.kin.n03_steady_state_approximation",
+      "route_kind": "deductive",
+      "title": "中間体の物質収支式からの定常状態近似の導出",
+      "premise_node_ids": [
+        "chem.kin.n02_elementary_reaction_molecularity",
+        "eng.kin.n02_reaction_rate_order_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "反応中間体 I の濃度は反応物・生成物に比べて十分に小さく、時間変化率が生成・消費の各項に比べて無視できる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d[I]}{dt} = r_{\\mathrm{form}}(I) - r_{\\mathrm{cons}}(I)",
+          "to_latex": "[I]_{\\mathrm{ss}} = \\frac{r_{\\mathrm{form}}(I)}{k_{\\mathrm{cons}}}",
+          "operation_label": "定常条件による中間体濃度の代数解",
+          "explanation": "中間体の時間微分を零と近似し、1次消費速度に対する定常濃度を求める。",
+          "used_node_ids": [
+            "chem.kin.n02_elementary_reaction_molecularity",
+            "eng.kin.n02_reaction_rate_order_def",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d[I]}{dt} = r_{\\mathrm{form}}(I) - r_{\\mathrm{cons}}(I)",
+          "to_latex": "\\frac{d[I]}{dt} = r_{\\mathrm{form}}(I) - k_{\\mathrm{cons}}[I]",
+          "operation_label": "消費速度の1次反応表現の代入",
+          "explanation": "中間体 I の消費が有効速度定数 k_cons の1次過程で表されるとする。",
+          "used_node_ids": [
+            "chem.kin.n02_elementary_reaction_molecularity",
+            "eng.kin.n02_reaction_rate_order_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d[I]}{dt} = r_{\\mathrm{form}}(I) - k_{\\mathrm{cons}}[I]",
+          "to_latex": "0 \\approx r_{\\mathrm{form}}(I) - k_{\\mathrm{cons}}[I]_{\\mathrm{ss}}",
+          "operation_label": "定常状態近似の適用",
+          "explanation": "高反応性中間体に対して d[I]/dt ≈ 0 を課し、微分方程式を代数方程式に帰着させる。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 \\approx r_{\\mathrm{form}}(I) - k_{\\mathrm{cons}}[I]_{\\mathrm{ss}}",
+          "to_latex": "[I]_{\\mathrm{ss}} = \\frac{r_{\\mathrm{form}}(I)}{k_{\\mathrm{cons}}}",
+          "operation_label": "定常状態濃度の求解",
+          "explanation": "代数式を [I]_ss について解くことで定常状態濃度の表式を得る。",
+          "used_node_ids": [
+            "chem.kin.n02_elementary_reaction_molecularity"
+          ],
+          "sympy_check_hint": "Eq(r_form - k_cons * I_ss, 0)"
+        }
+      ]
+    },
+    {
+      "id": "d_ck04_from_ck02_ck03",
+      "target_node_id": "chem.kin.n04_lindemann_hinshelwood_mechanism",
+      "route_kind": "deductive",
+      "title": "励起中間体への定常状態近似によるリンデマン機構速度式の導出",
+      "premise_node_ids": [
+        "chem.kin.n02_elementary_reaction_molecularity",
+        "chem.kin.n03_steady_state_approximation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "励起分子 A* の濃度は十分に低く定常状態近似が成り立つ",
+        "衝突分子 M の濃度は反応中一定である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d[A^*]}{dt} = k_1[A][M] - k_{-1}[A^*][M] - k_2[A^*]",
+          "to_latex": "r = \\frac{k_1 k_2 [A][M]}{k_{-1}[M] + k_2}",
+          "operation_label": "励起分子 A* への定常状態近似の適用",
+          "explanation": "A* の定常濃度を求めて生成物への分解速度 r = k2[A*] に代入する。",
+          "used_node_ids": [
+            "chem.kin.n02_elementary_reaction_molecularity",
+            "chem.kin.n03_steady_state_approximation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d[A^*]}{dt} = k_1[A][M] - k_{-1}[A^*][M] - k_2[A^*]",
+          "to_latex": "0 \\approx k_1[A][M] - (k_{-1}[M] + k_2)[A^*]_{\\mathrm{ss}}",
+          "operation_label": "A* に対する定常状態条件の設定",
+          "explanation": "素反応の速度式から構成した d[A*]/dt を零とおき、[A*]_ss について整理する。",
+          "used_node_ids": [
+            "chem.kin.n02_elementary_reaction_molecularity",
+            "chem.kin.n03_steady_state_approximation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 \\approx k_1[A][M] - (k_{-1}[M] + k_2)[A^*]_{\\mathrm{ss}}",
+          "to_latex": "[A^*]_{\\mathrm{ss}} = \\frac{k_1[A][M]}{k_{-1}[M] + k_2}",
+          "operation_label": "定常状態濃度 [A*]_ss の求解",
+          "explanation": "1次方程式を [A*]_ss について解く。",
+          "used_node_ids": [
+            "chem.kin.n03_steady_state_approximation"
+          ],
+          "sympy_check_hint": "Eq(k1*A*M - (k_1m*M + k2)*A_star, 0)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[A^*]_{\\mathrm{ss}} = \\frac{k_1[A][M]}{k_{-1}[M] + k_2}",
+          "to_latex": "r = \\frac{k_1 k_2 [A][M]}{k_{-1}[M] + k_2}",
+          "operation_label": "生成物生成速度への代入",
+          "explanation": "r = k2[A*]_ss に代入することで圧力（[M]）依存性を含むリンデマン＝ヒンシェルウッド式を得る。",
+          "used_node_ids": [
+            "chem.kin.n02_elementary_reaction_molecularity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ck05_from_ck02_kin03",
+      "target_node_id": "chem.kin.n05_reversible_first_order_kinetics",
+      "route_kind": "deductive",
+      "title": "平衡濃度からの偏差変数を用いた可逆1次反応の積分速度式の導出",
+      "premise_node_ids": [
+        "chem.kin.n02_elementary_reaction_molecularity",
+        "eng.kin.n03_first_order_integrated_rate"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "初期濃度は [A](0) = [A]_0, [B](0) = 0 とし、物質保存 [A](t) + [B](t) = [A]_0 が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d[A]}{dt} = -k_1[A] + k_{-1}[B]",
+          "to_latex": "[A](t) = [A]_{\\mathrm{eq}} + \\big([A]_0 - [A]_{\\mathrm{eq}}\\big)e^{-(k_1 + k_{-1})t}",
+          "operation_label": "物質保存と変数変換による1階線形常微分方程式の積分",
+          "explanation": "平衡濃度からの差を変数として1次反応の積分速度式に帰着させ、時間発展式を導く。",
+          "used_node_ids": [
+            "chem.kin.n02_elementary_reaction_molecularity",
+            "eng.kin.n03_first_order_integrated_rate",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d[A]}{dt} = -k_1[A] + k_{-1}[B]",
+          "to_latex": "\\frac{d[A]}{dt} = -(k_1 + k_{-1})[A] + k_{-1}[A]_0",
+          "operation_label": "物質保存則の代入",
+          "explanation": "[B] = [A]_0 - [A] を代入して [A] のみの1階線形微分方程式にする。",
+          "used_node_ids": [
+            "chem.kin.n02_elementary_reaction_molecularity",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d[A]}{dt} = -(k_1 + k_{-1})[A] + k_{-1}[A]_0",
+          "to_latex": "\\frac{d([A] - [A]_{\\mathrm{eq}})}{dt} = -(k_1 + k_{-1})([A] - [A]_{\\mathrm{eq}})",
+          "operation_label": "平衡濃度による斉次化",
+          "explanation": "k_{-1}[A]_0 = (k_1 + k_{-1})[A]_eq を用いて平衡濃度からの偏差の斉次方程式に書き換える。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d([A] - [A]_{\\mathrm{eq}})}{dt} = -(k_1 + k_{-1})([A] - [A]_{\\mathrm{eq}})",
+          "to_latex": "[A](t) = [A]_{\\mathrm{eq}} + \\big([A]_0 - [A]_{\\mathrm{eq}}\\big)e^{-(k_1 + k_{-1})t}",
+          "operation_label": "1次反応積分式の適用",
+          "explanation": "見かけの速度定数 k_1 + k_{-1} の1次減衰解を適用し、[A](t) の表式を得る。",
+          "used_node_ids": [
+            "eng.kin.n03_first_order_integrated_rate",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ck06_from_kin03_ck02",
+      "target_node_id": "chem.kin.n06_consecutive_first_order_kinetics",
+      "route_kind": "deductive",
+      "title": "積分因子法による逐次1次反応の中間体濃度式と極大時刻の導出",
+      "premise_node_ids": [
+        "eng.kin.n03_first_order_integrated_rate",
+        "chem.kin.n02_elementary_reaction_molecularity"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "初期条件は [A](0) = [A]_0, [B](0) = 0 とし、k_1 != k_2 とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d[B]}{dt} = k_1[A] - k_2[B]",
+          "to_latex": "[B](t) = \\frac{k_1 [A]_0}{k_2 - k_1}\\left(e^{-k_1 t} - e^{-k_2 t}\\right),\\quad t_{\\max} = \\frac{1}{k_2 - k_1}\\ln\\frac{k_2}{k_1}",
+          "operation_label": "積分因子法による積分と停留条件による極大時刻の決定",
+          "explanation": "A(t) の1次減衰解を代入して積分因子法で [B](t) を解き、時間微分が零となる時刻から t_max を求める。",
+          "used_node_ids": [
+            "chem.kin.n02_elementary_reaction_molecularity",
+            "eng.kin.n03_first_order_integrated_rate",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d[B]}{dt} = k_1[A] - k_2[B]",
+          "to_latex": "\\frac{d}{dt}\\big([B]e^{k_2 t}\\big) = k_1 [A]_0 e^{(k_2 - k_1)t}",
+          "operation_label": "[A](t) の代入と積分因子 e^{k2 t} の乗算",
+          "explanation": "[A](t) = [A]_0 e^{-k1 t} を代入し、積の微分法則を用いて左辺を完全微分形にまとめる。",
+          "used_node_ids": [
+            "eng.kin.n03_first_order_integrated_rate",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\big([B]e^{k_2 t}\\big) = k_1 [A]_0 e^{(k_2 - k_1)t}",
+          "to_latex": "[B](t) = \\frac{k_1 [A]_0}{k_2 - k_1}\\left(e^{-k_1 t} - e^{-k_2 t}\\right)",
+          "operation_label": "0 から t までの定積分と初期条件の適用",
+          "explanation": "微積分学の基本定理により両辺を積分し、[B](0) = 0 を用いて [B](t) を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[B](t) = \\frac{k_1 [A]_0}{k_2 - k_1}\\left(e^{-k_1 t} - e^{-k_2 t}\\right)",
+          "to_latex": "[B](t) = \\frac{k_1 [A]_0}{k_2 - k_1}\\left(e^{-k_1 t} - e^{-k_2 t}\\right),\\quad t_{\\max} = \\frac{1}{k_2 - k_1}\\ln\\frac{k_2}{k_1}",
+          "operation_label": "極値の1階必要条件による t_max の求解",
+          "explanation": "d[B]/dt = 0 より k1 e^{-k1 t} = k2 e^{-k2 t} を解き、中間体濃度の極大時刻を得る。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": "solve(Eq(-k1*exp(-k1*t) + k2*exp(-k2*t), 0), t)"
+        }
+      ]
+    },
+    {
+      "id": "d_ck07_from_ck01_cth07",
+      "target_node_id": "chem.kin.n07_eyring_tst_equation",
+      "route_kind": "deductive",
+      "title": "統計力学的遷移状態境界と熱力学的平衡定数からのアイリングの式の導出",
+      "premise_node_ids": [
+        "chem.kin.n01_statmech_tst_boundary",
+        "eng.cth.n07_equilibrium_constant_gibbs",
+        "eng.cth.n01_gibbs_free_energy_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "反応物と活性錯合体の間に準平衡が成立する",
+        "反応座標に沿う振動モードが古典極限 hν‡ << k_B T を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "k = \\kappa \\nu^\\ddagger K^\\ddagger_{\\mathrm{stat}}",
+          "to_latex": "k(T) = \\kappa \\frac{k_B T}{h} \\exp\\!\\left(\\frac{\\Delta^\\ddagger S^\\circ}{R}\\right)\\exp\\!\\left(-\\frac{\\Delta^\\ddagger H^\\circ}{RT}\\right)",
+          "operation_label": "振動分配関数の古典極限と活性化ギブズエネルギー表示の統合",
+          "explanation": "反応座標の振動因子を k_B T / h と消去して疑似平衡定数 K‡ を導入し、熱力学関係式で書き換える。",
+          "used_node_ids": [
+            "chem.kin.n01_statmech_tst_boundary",
+            "eng.cth.n01_gibbs_free_energy_def",
+            "eng.cth.n07_equilibrium_constant_gibbs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k = \\kappa \\nu^\\ddagger K^\\ddagger_{\\mathrm{stat}}",
+          "to_latex": "k = \\kappa \\frac{k_B T}{h} K^\\ddagger",
+          "operation_label": "反応座標振動モードの古典極限分離",
+          "explanation": "q_RC -> k_B T / (h ν‡) を代入すると ν‡ が相殺し、周波数因子 k_B T / h と自由度1つを減じた平衡定数 K‡ が得られる。",
+          "used_node_ids": [
+            "chem.kin.n01_statmech_tst_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k = \\kappa \\frac{k_B T}{h} K^\\ddagger",
+          "to_latex": "k(T) = \\kappa \\frac{k_B T}{h} \\exp\\!\\left(-\\frac{\\Delta^\\ddagger G^\\circ}{RT}\\right)",
+          "operation_label": "標準反応ギブズエネルギーによる平衡定数変換",
+          "explanation": "Δ‡G° = -RT ln K‡ を用いて K‡ を活性化ギブズエネルギーの指数関数で表す。",
+          "used_node_ids": [
+            "eng.cth.n07_equilibrium_constant_gibbs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k(T) = \\kappa \\frac{k_B T}{h} \\exp\\!\\left(-\\frac{\\Delta^\\ddagger G^\\circ}{RT}\\right)",
+          "to_latex": "k(T) = \\kappa \\frac{k_B T}{h} \\exp\\!\\left(\\frac{\\Delta^\\ddagger S^\\circ}{R}\\right)\\exp\\!\\left(-\\frac{\\Delta^\\ddagger H^\\circ}{RT}\\right)",
+          "operation_label": "活性化エンタルピー・活性化エントロピーへの分解",
+          "explanation": "Δ‡G° = Δ‡H° - TΔ‡S° を代入してアイリングの式の熱力学表示を得る。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ck08_from_kin05_ck07",
+      "target_node_id": "chem.kin.n08_arrhenius_eyring_relation",
+      "route_kind": "deductive",
+      "title": "アイリングの式の温度対数微分とファントホッフの式による活性化エネルギー関係式の導出",
+      "premise_node_ids": [
+        "eng.kin.n01_kinetics_diffusion_boundary",
+        "eng.kin.n05_arrhenius_equation",
+        "chem.kin.n07_eyring_tst_equation",
+        "eng.cth.n09_vant_hoff_equation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "透過係数 κ は温度に依存しない定数とする",
+        "単分子反応または凝縮相反応（標準状態濃度の変化がない場合）を基本とし、理想気相では Δ‡n_gas による補正を加える"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d\\ln k}{dT} = \\frac{E_a}{RT^2}",
+          "to_latex": "E_a = \\Delta^\\ddagger H^\\circ + RT",
+          "operation_label": "アイリングの式の対数温度微分とファントホッフの式の適用",
+          "explanation": "アレニウスの活性化エネルギーの微分定義にアイリングの式を代入し、ファントホッフの式で d(ln K‡)/dT を置換する。",
+          "used_node_ids": [
+            "chem.kin.n07_eyring_tst_equation",
+            "eng.cth.n09_vant_hoff_equation",
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "eng.kin.n05_arrhenius_equation",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\ln k}{dT} = \\frac{E_a}{RT^2}",
+          "to_latex": "\\frac{1}{T} + \\frac{d\\ln K^\\ddagger}{dT} = \\frac{E_a}{RT^2}",
+          "operation_label": "アイリングの式の対数微分",
+          "explanation": "ln k = ln(κ k_B / h) + ln T + ln K‡ を T で微分し、アレニウスの定義式と等置する。",
+          "used_node_ids": [
+            "chem.kin.n07_eyring_tst_equation",
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "eng.kin.n05_arrhenius_equation",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{T} + \\frac{d\\ln K^\\ddagger}{dT} = \\frac{E_a}{RT^2}",
+          "to_latex": "\\frac{1}{T} + \\frac{\\Delta^\\ddagger H^\\circ}{RT^2} = \\frac{E_a}{RT^2}",
+          "operation_label": "ファントホッフの式の適用",
+          "explanation": "平衡定数 K‡ の温度微分にファントホッフの式 d(ln K‡)/dT = Δ‡H° / (R T^2) を代入する。",
+          "used_node_ids": [
+            "eng.cth.n09_vant_hoff_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{T} + \\frac{\\Delta^\\ddagger H^\\circ}{RT^2} = \\frac{E_a}{RT^2}",
+          "to_latex": "E_a = \\Delta^\\ddagger H^\\circ + RT",
+          "operation_label": "RT^2 の乗算による E_a の求解",
+          "explanation": "両辺に RT^2 を掛けることで E_a = Δ‡H° + RT を得る。",
+          "used_node_ids": [
+            "chem.kin.n07_eyring_tst_equation",
+            "eng.kin.n05_arrhenius_equation"
+          ],
+          "sympy_check_hint": "Eq(1/T + dH/(R*T**2), Ea/(R*T**2))"
+        }
+      ]
+    }
+  ]
+}

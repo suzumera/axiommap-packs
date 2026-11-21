@@ -1,0 +1,885 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.chem.chemical_thermo",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "chemical_engineering",
+    "title": "化学熱力学：化学ポテンシャル・ギブズ＝デュエム式・平衡定数とファントホッフの式",
+    "language": "ja",
+    "description": "多成分系の化学ポテンシャル、ギブズ＝デュエムの式、反応ギブズエネルギーと平衡定数 ΔG°=-RT ln K、ファントホッフ方程式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.cth.n01_gibbs_free_energy_def",
+      "short_code": "CTH01",
+      "kind": "definition",
+      "title": "ギブズ自由エネルギーと閉鎖系の基本熱力学関係式",
+      "summary": "内部エネルギー・エンタルピー・エントロピーのルジャンドル変換によりギブズ自由エネルギー G = U + pV - TS を定義し、閉鎖系の基本式と等温定圧下での自発変化条件を与える。",
+      "canonical_latex": "G := U + pV - TS,\\qquad dG = -S\\,dT + V\\,dp\\;\\text{ (closed, reversible)},\\qquad dG \\le 0\\;\\text{ (const. }T,p\\text{)}",
+      "aliases_latex": [
+        "G = H - TS",
+        "dG = V\\,dp - S\\,dT"
+      ],
+      "keywords": [
+        "Gibbs free energy",
+        "Legendre transform",
+        "fundamental thermodynamic relation",
+        "spontaneity"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "eng.cth.n02_chemical_potential_open_system",
+      "short_code": "CTH02",
+      "kind": "definition",
+      "title": "多成分開放系の化学ポテンシャルとギブズの基本式",
+      "summary": "物質量 n_i が変化する多成分系において、ギブズエネルギーの偏微分係数として化学ポテンシャル mu_i を定義し、開放系の基本関係式を与える。",
+      "canonical_latex": "\\mu_i := \\left(\\frac{\\partial G}{\\partial n_i}\\right)_{T,p,n_{j\\neq i}},\\qquad dG = -S\\,dT + V\\,dp + \\sum_{i=1}^{C} \\mu_i\\,dn_i",
+      "aliases_latex": [
+        "dG = -S\\,dT + V\\,dp + \\sum_i \\mu_i\\,dn_i"
+      ],
+      "keywords": [
+        "chemical potential",
+        "open system",
+        "multicomponent",
+        "partial molar Gibbs energy"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "eng.cth.n03_euler_gibbs_molar_relation",
+      "short_code": "CTH03",
+      "kind": "theorem_formula",
+      "title": "示量性に基づくギブズエネルギーのオイラー積分式",
+      "summary": "一定の温度・圧力におけるギブズエネルギーの1次同次性（示量性）から、G が各成分の物質量と化学ポテンシャルの積和で表されることを示す。",
+      "canonical_latex": "G(T,p,\\lambda n_1,\\dots,\\lambda n_C) = \\lambda G(T,p,n_1,\\dots,n_C) \\implies G = \\sum_{i=1}^{C} n_i \\mu_i",
+      "aliases_latex": [
+        "G = \\sum_i n_i \\mu_i"
+      ],
+      "keywords": [
+        "Euler homogeneous function",
+        "extensive property",
+        "chemical potential",
+        "integral form"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "eng.cth.n04_gibbs_duhem_equation",
+      "short_code": "CTH04",
+      "kind": "theorem_formula",
+      "title": "ギブズ＝デュエムの式（Gibbs-Duhem Equation）",
+      "summary": "オイラー積分式の全微分と開放系の基本式を比較することで、示強変数 T, p, mu_i 間の従属関係であるギブズ＝デュエムの式を導出する。",
+      "canonical_latex": "S\\,dT - V\\,dp + \\sum_{i=1}^{C} n_i\\,d\\mu_i = 0,\\qquad \\sum_{i=1}^{C} x_i\\,d\\mu_i = 0\\;\\text{ (const. }T,p\\text{)}",
+      "aliases_latex": [
+        "\\sum_{i=1}^{C} n_i\\,d\\mu_i = -S\\,dT + V\\,dp"
+      ],
+      "keywords": [
+        "Gibbs-Duhem equation",
+        "intensive variables",
+        "multicomponent thermodynamics"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "eng.cth.n05_chemical_potential_ideal_activity",
+      "short_code": "CTH05",
+      "kind": "theorem_formula",
+      "title": "理想気体・溶液における化学ポテンシャルの活量表示",
+      "summary": "等温下での圧力積分と理想気体の状態方程式から、化学ポテンシャルの標準状態と分圧または活量を用いた対数表現を導出する。",
+      "canonical_latex": "\\mu_i(T,p,\\{x_j\\}) = \\mu_i^\\circ(T) + RT\\ln a_i,\\qquad a_i^{\\mathrm{ideal\\ gas}} = \\frac{p_i}{p^\\circ}",
+      "aliases_latex": [
+        "\\mu_i = \\mu_i^\\circ + RT\\ln(p_i/p^\\circ)"
+      ],
+      "keywords": [
+        "activity",
+        "standard chemical potential",
+        "ideal gas",
+        "fugacity"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "eng.cth.n06_reaction_gibbs_energy_extent",
+      "short_code": "CTH06",
+      "kind": "definition",
+      "title": "反応進行度と反応ギブズエネルギー・反応商",
+      "summary": "化学反応の反応進行度 xi に伴うギブズエネルギー変化率として反応ギブズエネルギーを定義し、標準反応ギブズエネルギーと反応商 Q による表現を得る。",
+      "canonical_latex": "\\Delta_r G := \\left(\\frac{\\partial G}{\\partial \\xi}\\right)_{T,p} = \\sum_{i=1}^{C} \\nu_i \\mu_i = \\Delta_r G^\\circ(T) + RT\\ln Q,\\qquad Q := \\prod_{i=1}^{C} a_i^{\\nu_i}",
+      "aliases_latex": [
+        "\\Delta_r G = \\Delta_r G^\\circ + RT\\ln Q"
+      ],
+      "keywords": [
+        "extent of reaction",
+        "reaction Gibbs energy",
+        "reaction quotient"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "reaction_engineering"
+      ]
+    },
+    {
+      "id": "eng.cth.n07_equilibrium_constant_gibbs",
+      "short_code": "CTH07",
+      "kind": "theorem_formula",
+      "title": "化学平衡条件と平衡定数（ΔG° = -RT ln K）",
+      "summary": "等温定圧下の化学平衡条件 ΔrG = 0 から、熱力学的平衡定数 K と標準反応ギブズエネルギーの関係式 ΔrG° = -RT ln K を導出する。",
+      "canonical_latex": "\\Delta_r G = 0 \\implies \\Delta_r G^\\circ(T) = -RT \\ln K(T),\\qquad K(T) := \\left(\\prod_{i=1}^{C} a_i^{\\nu_i}\\right)_{\\mathrm{eq}}",
+      "aliases_latex": [
+        "\\Delta G^\\circ = -RT\\ln K"
+      ],
+      "keywords": [
+        "chemical equilibrium",
+        "equilibrium constant",
+        "standard reaction Gibbs energy"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "reaction_engineering"
+      ]
+    },
+    {
+      "id": "eng.cth.n08_gibbs_helmholtz_equation",
+      "short_code": "CTH08",
+      "kind": "theorem_formula",
+      "title": "ギブズ＝ヘルムホルツの式（Gibbs-Helmholtz Equation）",
+      "summary": "G = H - TS と (∂G/∂T)_p = -S を用いて、G/T の温度微分がエンタルピーと結びつくギブズ＝ヘルムホルツの式を導出する。",
+      "canonical_latex": "\\left(\\frac{\\partial (G/T)}{\\partial T}\\right)_p = -\\frac{H}{T^2},\\qquad \\frac{d(\\Delta_r G^\\circ / T)}{dT} = -\\frac{\\Delta_r H^\\circ}{T^2}",
+      "aliases_latex": [
+        "\\left(\\frac{\\partial (\\Delta G/T)}{\\partial T}\\right)_p = -\\frac{\\Delta H}{T^2}"
+      ],
+      "keywords": [
+        "Gibbs-Helmholtz equation",
+        "enthalpy",
+        "temperature dependence"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "eng.cth.n09_vant_hoff_equation",
+      "short_code": "CTH09",
+      "kind": "theorem_formula",
+      "title": "ファントホッフの式（van 't Hoff Equation）と平衡定数の温度依存性",
+      "summary": "平衡定数と標準反応ギブズエネルギーの関係にギブズ＝ヘルムホルツの式を適用し、平衡定数の温度依存性を記述するファントホッフの式を導出する。",
+      "canonical_latex": "\\frac{d\\ln K}{dT} = \\frac{\\Delta_r H^\\circ(T)}{RT^2},\\qquad \\ln\\frac{K(T_2)}{K(T_1)} = -\\frac{\\Delta_r H^\\circ}{R}\\left(\\frac{1}{T_2} - \\frac{1}{T_1}\\right)\\;\\text{ (const. }\\Delta_r H^\\circ\\text{)}",
+      "aliases_latex": [
+        "\\frac{d\\ln K}{dT} = \\frac{\\Delta H^\\circ}{RT^2}"
+      ],
+      "keywords": [
+        "van 't Hoff equation",
+        "equilibrium constant",
+        "reaction enthalpy"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "reaction_engineering"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.cth.d01_gibbs_free_energy_def",
+      "target_node_id": "eng.cth.n01_gibbs_free_energy_def",
+      "route_kind": "deductive",
+      "title": "第1・第2法則とルジャンドル変換によるギブズ自由エネルギーの導出",
+      "premise_node_ids": [
+        "phys.thermo.th03_first_law_internal_energy",
+        "phys.thermo.th06_second_law_principles"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m11_legendre_transform",
+        "math.calc.m19_differential_linearity_leibniz"
+      ],
+      "assumptions": [
+        "閉鎖系・準静的過程（pV仕事のみ）を仮定する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dU = \\delta Q - p\\,dV,\\quad \\delta Q \\le T\\,dS,\\quad G := U + pV - TS",
+          "to_latex": "dG = -S\\,dT + V\\,dp\\;\\text{ (closed, reversible)},\\quad dG \\le 0\\;\\text{ (const. }T,p\\text{)}",
+          "operation_label": "ルジャンドル変換と熱力学第1・第2法則の結合",
+          "explanation": "内部エネルギーの結合式 dU <= TdS - pdV に対して G = U + pV - TS の全微分をとることで、閉鎖系の基本式および等温定圧での自発変化条件 dG <= 0 を得る。",
+          "used_node_ids": [
+            "math.calc.m11_legendre_transform",
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = \\delta Q - p\\,dV,\\quad \\delta Q_{\\mathrm{rev}} = T\\,dS",
+          "to_latex": "dU = T\\,dS - p\\,dV,\\quad G := U + pV - TS",
+          "operation_label": "可逆熱量とギブズエネルギー定義の導入",
+          "explanation": "熱力学第1法則と第2法則から可逆過程の基本式 dU = TdS - pdV を得て、ルジャンドル変換により G := U + pV - TS を定義する。",
+          "used_node_ids": [
+            "math.calc.m11_legendre_transform",
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = T\\,dS - p\\,dV,\\quad G := U + pV - TS",
+          "to_latex": "dG = dU + p\\,dV + V\\,dp - T\\,dS - S\\,dT",
+          "operation_label": "全微分のライプニッツ則の適用",
+          "explanation": "G = U + pV - TS に対して全微分の線形性と積の法則を適用する。",
+          "used_node_ids": [
+            "math.calc.m19_differential_linearity_leibniz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dG = dU + p\\,dV + V\\,dp - T\\,dS - S\\,dT",
+          "to_latex": "dG = -S\\,dT + V\\,dp,\\quad dG \\le 0\\;\\text{ (const. }T,p\\text{)}",
+          "operation_label": "dU の代入と不可逆不等式の適用",
+          "explanation": "dU = TdS - pdV を代入して相殺すると dG = -SdT + Vdp を得る。不可逆過程では dU <= TdS - pdV となるため、等温定圧下では dG <= 0 となる。",
+          "used_node_ids": [
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.cth.d02_chemical_potential_open_system",
+      "target_node_id": "eng.cth.n02_chemical_potential_open_system",
+      "route_kind": "deductive",
+      "title": "全微分展開による多成分開放系の基本関係式と化学ポテンシャルの導入",
+      "premise_node_ids": [
+        "eng.cth.n01_gibbs_free_energy_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "系は局所熱平衡にあり、G は T, p, n_1, ..., n_C の滑らかな関数である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "G = G(T,p,n_1,\\dots,n_C),\\quad dG|_{dn_i=0} = -S\\,dT + V\\,dp",
+          "to_latex": "\\mu_i := \\left(\\frac{\\partial G}{\\partial n_i}\\right)_{T,p,n_{j\\neq i}},\\quad dG = -S\\,dT + V\\,dp + \\sum_{i=1}^{C} \\mu_i\\,dn_i",
+          "operation_label": "全微分展開と物質量偏微分の定義",
+          "explanation": "G(T,p,n_1,...,n_C) の全微分を展開し、組成一定極限を閉鎖系基本式と同定することで開放系の基本関係式を得る。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G = G(T,p,n_1,\\dots,n_C)",
+          "to_latex": "dG = \\left(\\frac{\\partial G}{\\partial T}\\right)_{p,n}dT + \\left(\\frac{\\partial G}{\\partial p}\\right)_{T,n}dp + \\sum_{i=1}^{C}\\left(\\frac{\\partial G}{\\partial n_i}\\right)_{T,p,n_{j\\neq i}}dn_i",
+          "operation_label": "多変数関数の全微分展開",
+          "explanation": "T, p および各成分物質量 n_i に関して G の全微分を書き下す。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dG = \\left(\\frac{\\partial G}{\\partial T}\\right)_{p,n}dT + \\left(\\frac{\\partial G}{\\partial p}\\right)_{T,n}dp + \\sum_{i=1}^{C}\\left(\\frac{\\partial G}{\\partial n_i}\\right)_{T,p,n_{j\\neq i}}dn_i",
+          "to_latex": "dG = -S\\,dT + V\\,dp + \\sum_{i=1}^{C}\\left(\\frac{\\partial G}{\\partial n_i}\\right)_{T,p,n_{j\\neq i}}dn_i",
+          "operation_label": "閉鎖系極限との係数比較",
+          "explanation": "dn_i = 0 の閉鎖系では dG = -SdT + Vdp であるため、(∂G/∂T)_{p,n} = -S, (∂G/∂p)_{T,n} = V と同定される。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dG = -S\\,dT + V\\,dp + \\sum_{i=1}^{C}\\left(\\frac{\\partial G}{\\partial n_i}\\right)_{T,p,n_{j\\neq i}}dn_i",
+          "to_latex": "\\mu_i := \\left(\\frac{\\partial G}{\\partial n_i}\\right)_{T,p,n_{j\\neq i}},\\quad dG = -S\\,dT + V\\,dp + \\sum_{i=1}^{C}\\mu_i\\,dn_i",
+          "operation_label": "化学ポテンシャルの定義",
+          "explanation": "成分 i の部分モルギブズエネルギーを化学ポテンシャル mu_i と定義し、基本式を完成させる。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.cth.d03_euler_gibbs_molar_relation",
+      "target_node_id": "eng.cth.n03_euler_gibbs_molar_relation",
+      "route_kind": "deductive",
+      "title": "1次同次関数に対するオイラーの定理による G = Σ n_i μ_i の導出",
+      "premise_node_ids": [
+        "eng.cth.n02_chemical_potential_open_system"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "G は一定の T, p のもとで物質量 n_1, ..., n_C に関して1次同次（示量性）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "G(T,p,\\lambda n_1,\\dots,\\lambda n_C) = \\lambda G(T,p,n_1,\\dots,n_C)",
+          "to_latex": "G = \\sum_{i=1}^{C} n_i \\mu_i",
+          "operation_label": "スケールパラメータ λ に関する微分と λ=1 の評価",
+          "explanation": "示量性の定義式をスケール因子 λ で微分し、連鎖律を適用して λ=1 とおくことでオイラーの積分式を得る。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G(T,p,\\lambda n_1,\\dots,\\lambda n_C) = \\lambda G(T,p,n_1,\\dots,n_C)",
+          "to_latex": "\\sum_{i=1}^{C}\\left(\\frac{\\partial G}{\\partial (\\lambda n_i)}\\right)_{T,p,n_{j\\neq i}} n_i = G(T,p,n_1,\\dots,n_C)",
+          "operation_label": "両辺の λ 微分と連鎖律の適用",
+          "explanation": "左辺を λ について連鎖律で微分し、右辺を λ で微分すると G が得られる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{C}\\left(\\frac{\\partial G}{\\partial (\\lambda n_i)}\\right)_{T,p,n_{j\\neq i}} n_i = G(T,p,n_1,\\dots,n_C)",
+          "to_latex": "\\sum_{i=1}^{C}\\left(\\frac{\\partial G}{\\partial n_i}\\right)_{T,p,n_{j\\neq i}} n_i = G",
+          "operation_label": "λ = 1 における評価",
+          "explanation": "任意のスケーリング係数 λ について成立するため、λ = 1 を代入する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{C}\\left(\\frac{\\partial G}{\\partial n_i}\\right)_{T,p,n_{j\\neq i}} n_i = G",
+          "to_latex": "G = \\sum_{i=1}^{C} n_i \\mu_i",
+          "operation_label": "化学ポテンシャル定義の代入",
+          "explanation": "偏微分係数を化学ポテンシャル mu_i で置き換える。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.cth.d04_gibbs_duhem_equation",
+      "target_node_id": "eng.cth.n04_gibbs_duhem_equation",
+      "route_kind": "deductive",
+      "title": "オイラー積分式の全微分とギブズ基本式の比較によるギブズ＝デュエム式の導出",
+      "premise_node_ids": [
+        "eng.cth.n02_chemical_potential_open_system",
+        "eng.cth.n03_euler_gibbs_molar_relation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m19_differential_linearity_leibniz"
+      ],
+      "assumptions": [],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "G = \\sum_{i=1}^{C} n_i \\mu_i,\\quad dG = -S\\,dT + V\\,dp + \\sum_{i=1}^{C} \\mu_i\\,dn_i",
+          "to_latex": "S\\,dT - V\\,dp + \\sum_{i=1}^{C} n_i\\,d\\mu_i = 0",
+          "operation_label": "2通りの dG 表示の比較",
+          "explanation": "G = Σ n_i μ_i の全微分をとり、ギブズの基本式と等置して Σ μ_i dn_i を消去することでギブズ＝デュエムの式を得る。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system",
+            "eng.cth.n03_euler_gibbs_molar_relation",
+            "math.calc.m19_differential_linearity_leibniz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G = \\sum_{i=1}^{C} n_i \\mu_i",
+          "to_latex": "dG = \\sum_{i=1}^{C}\\mu_i\\,dn_i + \\sum_{i=1}^{C} n_i\\,d\\mu_i",
+          "operation_label": "積の全微分公式の適用",
+          "explanation": "オイラー積分式の両辺に全微分のライプニッツ則を適用する。",
+          "used_node_ids": [
+            "eng.cth.n03_euler_gibbs_molar_relation",
+            "math.calc.m19_differential_linearity_leibniz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dG = \\sum_{i=1}^{C}\\mu_i\\,dn_i + \\sum_{i=1}^{C} n_i\\,d\\mu_i",
+          "to_latex": "-S\\,dT + V\\,dp + \\sum_{i=1}^{C}\\mu_i\\,dn_i = \\sum_{i=1}^{C}\\mu_i\\,dn_i + \\sum_{i=1}^{C} n_i\\,d\\mu_i",
+          "operation_label": "ギブズの基本式との等置",
+          "explanation": "左辺を多成分開放系のギブズ基本式 dG = -SdT + Vdp + Σ μ_i dn_i で置き換える。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-S\\,dT + V\\,dp + \\sum_{i=1}^{C}\\mu_i\\,dn_i = \\sum_{i=1}^{C}\\mu_i\\,dn_i + \\sum_{i=1}^{C} n_i\\,d\\mu_i",
+          "to_latex": "S\\,dT - V\\,dp + \\sum_{i=1}^{C} n_i\\,d\\mu_i = 0",
+          "operation_label": "共通項の消去と整理",
+          "explanation": "両辺の Σ μ_i dn_i を消去して移項するとギブズ＝デュエムの式が得られる。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.cth.d05_chemical_potential_ideal_activity",
+      "target_node_id": "eng.cth.n05_chemical_potential_ideal_activity",
+      "route_kind": "deductive",
+      "title": "理想気体の状態方程式と圧力積分による化学ポテンシャルの対数表示",
+      "premise_node_ids": [
+        "eng.cth.n02_chemical_potential_open_system",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "標準圧力 p° における化学ポテンシャルを μ_i°(T) とし、理想気体混合では各成分が分圧 p_i に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\left(\\frac{\\partial \\mu_i}{\\partial p_i}\\right)_{T,n} = \\bar{V}_i = \\frac{RT}{p_i}",
+          "to_latex": "\\mu_i(T,p,\\{x_j\\}) = \\mu_i^\\circ(T) + RT\\ln a_i,\\quad a_i^{\\mathrm{ideal\\ gas}} = \\frac{p_i}{p^\\circ}",
+          "operation_label": "等温定積分の実行と活量の定義",
+          "explanation": "理想気体の部分モル体積 RT/p_i を標準圧力 p° から p_i まで等温積分し、一般の実在系を含めて活量 a_i により化学ポテンシャルを表す。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system",
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": "integrate(R*T/p, (p, p0, pi))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{\\partial \\mu_i}{\\partial p_i}\\right)_{T,n} = \\bar{V}_i = \\frac{RT}{p_i}",
+          "to_latex": "\\int_{p^\\circ}^{p_i} d\\mu_i = \\int_{p^\\circ}^{p_i} \\frac{RT}{p'}\\,dp'",
+          "operation_label": "標準状態から任意分圧までの等温積分設定",
+          "explanation": "マクスウェル関係式から得られる部分モル体積表示と理想気体状態方程式 pV=nRT を用い、標準状態 p° から p_i まで定積分を立てる。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{p^\\circ}^{p_i} d\\mu_i = \\int_{p^\\circ}^{p_i} \\frac{RT}{p'}\\,dp'",
+          "to_latex": "\\mu_i(T,p_i) - \\mu_i^\\circ(T) = RT\\ln\\frac{p_i}{p^\\circ}",
+          "operation_label": "対数積分の評価",
+          "explanation": "微積分学の基本定理により 1/p' の定積分を評価し、対数項を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu_i(T,p_i) - \\mu_i^\\circ(T) = RT\\ln\\frac{p_i}{p^\\circ}",
+          "to_latex": "\\mu_i(T,p,\\{x_j\\}) = \\mu_i^\\circ(T) + RT\\ln a_i",
+          "operation_label": "活量 a_i による一般化",
+          "explanation": "理想気体では a_i = p_i/p° とおき、非理想系を含めて活量 a_i を用いた統一表現へと拡張する。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.cth.d06_reaction_gibbs_energy_extent",
+      "target_node_id": "eng.cth.n06_reaction_gibbs_energy_extent",
+      "route_kind": "deductive",
+      "title": "反応進行度による反応ギブズエネルギーと反応商の導出",
+      "premise_node_ids": [
+        "eng.cth.n02_chemical_potential_open_system",
+        "eng.cth.n05_chemical_potential_ideal_activity"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "化学量論係数 ν_i は生成物で正、反応物で負とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta_r G := \\left(\\frac{\\partial G}{\\partial \\xi}\\right)_{T,p},\\quad dn_i = \\nu_i\\,d\\xi,\\quad \\mu_i = \\mu_i^\\circ(T) + RT\\ln a_i",
+          "to_latex": "\\Delta_r G = \\Delta_r G^\\circ(T) + RT\\ln Q,\\quad Q := \\prod_{i=1}^{C} a_i^{\\nu_i}",
+          "operation_label": "連鎖律と化学ポテンシャルの代入",
+          "explanation": "dn_i = ν_i dξ を用いて反応進行度微分を Σ ν_i μ_i で表し、活量表示を代入して ΔrG° と反応商 Q に分離する。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system",
+            "eng.cth.n05_chemical_potential_ideal_activity",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta_r G := \\left(\\frac{\\partial G}{\\partial \\xi}\\right)_{T,p},\\quad dn_i = \\nu_i\\,d\\xi",
+          "to_latex": "\\Delta_r G = \\sum_{i=1}^{C} \\nu_i \\mu_i",
+          "operation_label": "反応進行度に関する連鎖律の適用",
+          "explanation": "等温定圧下では dG = Σ μ_i dn_i = (Σ ν_i μ_i) dξ となるため、ΔrG = Σ ν_i μ_i が従う。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta_r G = \\sum_{i=1}^{C} \\nu_i \\mu_i",
+          "to_latex": "\\Delta_r G = \\sum_{i=1}^{C}\\nu_i\\mu_i^\\circ(T) + RT\\sum_{i=1}^{C}\\ln(a_i^{\\nu_i})",
+          "operation_label": "化学ポテンシャル活量表示の代入",
+          "explanation": "μ_i = μ_i°(T) + RT ln a_i を代入し、対数の性質 ν_i ln a_i = ln(a_i^{ν_i}) を用いる。",
+          "used_node_ids": [
+            "eng.cth.n05_chemical_potential_ideal_activity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta_r G = \\sum_{i=1}^{C}\\nu_i\\mu_i^\\circ(T) + RT\\sum_{i=1}^{C}\\ln(a_i^{\\nu_i})",
+          "to_latex": "\\Delta_r G = \\Delta_r G^\\circ(T) + RT\\ln Q,\\quad Q := \\prod_{i=1}^{C} a_i^{\\nu_i}",
+          "operation_label": "標準反応ギブズエネルギーと反応商の定義",
+          "explanation": "ΔrG°(T) := Σ ν_i μ_i°(T) および Q := Π a_i^{ν_i} とおいてまとめる。",
+          "used_node_ids": [
+            "eng.cth.n05_chemical_potential_ideal_activity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.cth.d07_equilibrium_constant_gibbs",
+      "target_node_id": "eng.cth.n07_equilibrium_constant_gibbs",
+      "route_kind": "deductive",
+      "title": "平衡停留条件 ΔrG = 0 からの ΔG° = -RT ln K の導出",
+      "premise_node_ids": [
+        "eng.cth.n01_gibbs_free_energy_def",
+        "eng.cth.n06_reaction_gibbs_energy_extent"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "等温定圧下の化学平衡ではギブズエネルギーが反応進行度 ξ に関して極小となる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta_r G = \\Delta_r G^\\circ(T) + RT\\ln Q,\\quad \\Delta_r G = 0\\;\\text{ at equilibrium}",
+          "to_latex": "\\Delta_r G^\\circ(T) = -RT \\ln K(T),\\quad K(T) := Q_{\\mathrm{eq}}",
+          "operation_label": "化学平衡条件の適用",
+          "explanation": "平衡状態における ΔrG = 0 と平衡反応商 K := Q_eq の定義を ΔrG = ΔrG° + RT ln Q に代入して ΔrG° = -RT ln K を得る。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def",
+            "eng.cth.n06_reaction_gibbs_energy_extent"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dG \\le 0\\;\\text{ (const. }T,p\\text{)},\\quad \\Delta_r G = \\left(\\frac{\\partial G}{\\partial \\xi}\\right)_{T,p}",
+          "to_latex": "\\Delta_r G = 0\\;\\text{ at equilibrium}",
+          "operation_label": "等温定圧平衡条件の適用",
+          "explanation": "自発変化が停止する極小点では (∂G/∂ξ)_{T,p} = ΔrG = 0 が成り立つ。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta_r G = 0\\;\\text{ at equilibrium}",
+          "to_latex": "\\Delta_r G^\\circ(T) + RT\\ln Q_{\\mathrm{eq}} = 0",
+          "operation_label": "反応ギブズエネルギー式の代入",
+          "explanation": "平衡組成における反応商 Q_eq を用いて ΔrG = ΔrG°(T) + RT ln Q_eq = 0 とおく。",
+          "used_node_ids": [
+            "eng.cth.n06_reaction_gibbs_energy_extent"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta_r G^\\circ(T) + RT\\ln Q_{\\mathrm{eq}} = 0",
+          "to_latex": "\\Delta_r G^\\circ(T) = -RT\\ln K(T),\\quad K(T) := Q_{\\mathrm{eq}}",
+          "operation_label": "平衡定数 K の定義と移項",
+          "explanation": "平衡時の反応商を熱力学的平衡定数 K(T) と定義し、移項して ΔrG°(T) = -RT ln K(T) を得る。",
+          "used_node_ids": [
+            "eng.cth.n06_reaction_gibbs_energy_extent"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.cth.d08_gibbs_helmholtz_equation",
+      "target_node_id": "eng.cth.n08_gibbs_helmholtz_equation",
+      "route_kind": "deductive",
+      "title": "積の微分法によるギブズ＝ヘルムホルツの式の導出",
+      "premise_node_ids": [
+        "eng.cth.n01_gibbs_free_energy_def",
+        "eng.cth.n02_chemical_potential_open_system"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "反応物・生成物の標準状態は固定された標準圧力 p° で定義されるため、ΔrG° と ΔrH° は温度のみの関数である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "G = H - TS,\\quad \\left(\\frac{\\partial G}{\\partial T}\\right)_p = -S",
+          "to_latex": "\\left(\\frac{\\partial (G/T)}{\\partial T}\\right)_p = -\\frac{H}{T^2},\\quad \\frac{d(\\Delta_r G^\\circ / T)}{dT} = -\\frac{\\Delta_r H^\\circ}{T^2}",
+          "operation_label": "G/T の温度微分とエンタルピー関係式の代入",
+          "explanation": "G/T を一定圧力下で温度微分し、(∂G/∂T)_p = -S と G + TS = H を代入することでギブズ＝ヘルムホルツの式を得る。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def",
+            "eng.cth.n02_chemical_potential_open_system",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G = H - TS,\\quad \\left(\\frac{\\partial G}{\\partial T}\\right)_p = -S",
+          "to_latex": "\\left(\\frac{\\partial (G/T)}{\\partial T}\\right)_p = \\frac{1}{T}\\left(\\frac{\\partial G}{\\partial T}\\right)_p - \\frac{G}{T^2}",
+          "operation_label": "積の微分法の適用",
+          "explanation": "G(T,p) · T^{-1} に対して積の微分法を適用し、定圧での温度微分を展開する。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{\\partial (G/T)}{\\partial T}\\right)_p = \\frac{1}{T}\\left(\\frac{\\partial G}{\\partial T}\\right)_p - \\frac{G}{T^2}",
+          "to_latex": "\\left(\\frac{\\partial (G/T)}{\\partial T}\\right)_p = \\frac{-TS - G}{T^2}",
+          "operation_label": "エントロピー関係の代入",
+          "explanation": "(∂G/∂T)_p = -S を代入して分母 T^2 で通分する。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{\\partial (G/T)}{\\partial T}\\right)_p = \\frac{-TS - G}{T^2}",
+          "to_latex": "\\left(\\frac{\\partial (G/T)}{\\partial T}\\right)_p = -\\frac{H}{T^2},\\quad \\frac{d(\\Delta_r G^\\circ / T)}{dT} = -\\frac{\\Delta_r H^\\circ}{T^2}",
+          "operation_label": "エンタルピー H = G + TS による書き換えと標準反応量への適用",
+          "explanation": "H = U + pV = G + TS を用いて分子を -H とし、さらに標準状態における反応前後の差に適用して標準反応量に対する式を得る。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.cth.d09_vant_hoff_equation",
+      "target_node_id": "eng.cth.n09_vant_hoff_equation",
+      "route_kind": "deductive",
+      "title": "ギブズ＝ヘルムホルツ式と平衡定数関係からのファントホッフ方程式の導出",
+      "premise_node_ids": [
+        "eng.cth.n07_equilibrium_constant_gibbs",
+        "eng.cth.n08_gibbs_helmholtz_equation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "積分形式では温度範囲 [T_1, T_2] において標準反応エンタルピー ΔrH° を定数とみなす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta_r G^\\circ(T) = -RT\\ln K(T),\\quad \\frac{d(\\Delta_r G^\\circ / T)}{dT} = -\\frac{\\Delta_r H^\\circ}{T^2}",
+          "to_latex": "\\frac{d\\ln K}{dT} = \\frac{\\Delta_r H^\\circ(T)}{RT^2},\\quad \\ln\\frac{K(T_2)}{K(T_1)} = -\\frac{\\Delta_r H^\\circ}{R}\\left(\\frac{1}{T_2} - \\frac{1}{T_1}\\right)",
+          "operation_label": "ギブズ＝ヘルムホルツ式の適用と温度積分",
+          "explanation": "ln K = -ΔrG°/(RT) を温度で微分してギブズ＝ヘルムホルツ式を代入し、ファントホッフの微分形および定エンタルピー近似下の積分形を導く。",
+          "used_node_ids": [
+            "eng.cth.n07_equilibrium_constant_gibbs",
+            "eng.cth.n08_gibbs_helmholtz_equation",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": "integrate(dH/(R*T**2), (T, T1, T2))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta_r G^\\circ(T) = -RT\\ln K(T)",
+          "to_latex": "\\ln K(T) = -\\frac{\\Delta_r G^\\circ(T)}{RT}",
+          "operation_label": "ln K についての整理",
+          "explanation": "平衡定数と標準反応ギブズエネルギーの関係式を -RT で割って ln K(T) を左辺に分離する。",
+          "used_node_ids": [
+            "eng.cth.n07_equilibrium_constant_gibbs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln K(T) = -\\frac{\\Delta_r G^\\circ(T)}{RT}",
+          "to_latex": "\\frac{d\\ln K}{dT} = -\\frac{1}{R}\\frac{d(\\Delta_r G^\\circ/T)}{dT} = \\frac{\\Delta_r H^\\circ(T)}{RT^2}",
+          "operation_label": "温度微分とギブズ＝ヘルムホルツ式の代入",
+          "explanation": "微分の線形性より定数 -1/R を外に出し、ギブズ＝ヘルムホルツ式を代入してファントホッフの微分方程式を得る。",
+          "used_node_ids": [
+            "eng.cth.n08_gibbs_helmholtz_equation",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\ln K}{dT} = -\\frac{1}{R}\\frac{d(\\Delta_r G^\\circ/T)}{dT} = \\frac{\\Delta_r H^\\circ(T)}{RT^2}",
+          "to_latex": "\\ln\\frac{K(T_2)}{K(T_1)} = -\\frac{\\Delta_r H^\\circ}{R}\\left(\\frac{1}{T_2} - \\frac{1}{T_1}\\right)",
+          "operation_label": "定エンタルピー仮定下での定積分",
+          "explanation": "T_1 から T_2 まで定積分を実行し、ΔrH° を定数とみなしてファントホッフの積分式を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

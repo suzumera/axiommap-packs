@@ -1,0 +1,648 @@
+{
+  "pack_meta": {
+    "pack_id": "earth.gfd.geostrophic_thermal_wind",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "meteorology",
+    "title": "地球流体力学1：静力学平衡・地衡風・傾度風と温度風の関係",
+    "language": "ja",
+    "description": "回転座標系の運動方程式（コリオリ力）と静力学平衡から、地衡風バランス、傾度風、ロスビー数、温度風方程式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "earth.gfd.n01_rotating_frame_momentum",
+      "short_code": "GFD01",
+      "kind": "theorem_formula",
+      "title": "回転座標系における流体の運動方程式（コリオリ力と有効重力）",
+      "summary": "角速度ベクトル \\boldsymbol{\\Omega} で回転する地球上の非粘性流体において、慣性系の運動方程式から見かけの力（コリオリ力と遠心力を万有引力に吸収した有効重力 \\mathbf{g}）を含む運動方程式を導く。",
+      "canonical_latex": "\\frac{D\\mathbf{u}}{Dt} + 2\\boldsymbol{\\Omega}\\times\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g}",
+      "aliases_latex": [
+        "\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u} + 2\\boldsymbol{\\Omega}\\times\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g}"
+      ],
+      "keywords": [
+        "回転座標系",
+        "コリオリ力",
+        "オイラー方程式",
+        "有効重力",
+        "地球流体力学"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "geophysical_fluid_dynamics",
+        "fluid_mechanics"
+      ]
+    },
+    {
+      "id": "earth.gfd.n02_hydrostatic_balance",
+      "short_code": "GFD02",
+      "kind": "theorem_formula",
+      "title": "静力学平衡（鉛直方向の圧力傾度力と重力の釣合い）",
+      "summary": "水平スケールに比べ鉛直スケールが十分小さい大規模大気・海洋運動において、鉛直加速度および鉛直コリオリ項を無視することで得られる圧力傾度力と重力の釣合い式。",
+      "canonical_latex": "\\frac{\\partial p}{\\partial z} = -\\rho g",
+      "aliases_latex": [
+        "\\frac{dp}{dz} = -\\rho g",
+        "\\frac{\\partial \\Phi}{\\partial z} = g"
+      ],
+      "keywords": [
+        "静力学平衡",
+        "静水圧平衡",
+        "鉛直運動方程式",
+        "スケール解析"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "geophysical_fluid_dynamics"
+      ]
+    },
+    {
+      "id": "earth.gfd.n03_rossby_number_def",
+      "short_code": "GFD03",
+      "kind": "definition",
+      "title": "コリオリパラメータとロスビー数の定義",
+      "summary": "緯度 \\varphi におけるコリオリ力の水平成分を規定するコリオリパラメータ f と、水平運動方程式における移流慣性項とコリオリ項の比を表す無次元数であるロスビー数 Ro を定義する。",
+      "canonical_latex": "f := 2\\Omega\\sin\\varphi,\\qquad \\mathrm{Ro} := \\frac{U}{f L}",
+      "aliases_latex": [
+        "\\mathrm{Ro} = \\frac{U}{f_0 L}",
+        "f = 2\\Omega\\sin\\phi"
+      ],
+      "keywords": [
+        "ロスビー数",
+        "コリオリパラメータ",
+        "スケール解析",
+        "無次元数"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "geophysical_fluid_dynamics"
+      ]
+    },
+    {
+      "id": "earth.gfd.n04_geostrophic_wind",
+      "short_code": "GFD04",
+      "kind": "theorem_formula",
+      "title": "地衡風バランスと地衡風速",
+      "summary": "ロスビー数が十分小さい (Ro \\ll 1) 大規模運動において、水平方向のコリオリ力と圧力傾度力が釣り合う地衡風バランスが成り立ち、等圧線または等高度線に平行な地衡風速が定まる。",
+      "canonical_latex": "\\mathbf{u}_g = \\frac{1}{\\rho f}\\mathbf{k}\\times\\nabla_h p = \\frac{g}{f}\\mathbf{k}\\times\\nabla_p Z",
+      "aliases_latex": [
+        "u_g = -\\frac{1}{\\rho f}\\frac{\\partial p}{\\partial y},\\; v_g = \\frac{1}{\\rho f}\\frac{\\partial p}{\\partial x}",
+        "f\\mathbf{k}\\times\\mathbf{u}_g = -\\frac{1}{\\rho}\\nabla_h p"
+      ],
+      "keywords": [
+        "地衡風",
+        "地衡風バランス",
+        "コリオリ力",
+        "圧力傾度力",
+        "ジオポテンシャル高度"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "geophysical_fluid_dynamics"
+      ]
+    },
+    {
+      "id": "earth.gfd.n05_gradient_wind",
+      "short_code": "GFD05",
+      "kind": "theorem_formula",
+      "title": "傾度風方程式（曲線等圧線に沿う定常流の釣合い）",
+      "summary": "曲率半径 R を持つ曲線等圧線に沿う定常・非粘性水平流において、流線の左向き法線方向に働く遠心力・コリオリ力・圧力傾度力の3者が釣り合う傾度風方程式。",
+      "canonical_latex": "\\frac{V^2}{R} + f V = -\\frac{1}{\\rho}\\frac{\\partial p}{\\partial n}",
+      "aliases_latex": [
+        "\\frac{V^2}{R} + f V = -g\\frac{\\partial Z}{\\partial n}",
+        "V = -\\frac{f R}{2} \\pm \\sqrt{\\left(\\frac{f R}{2}\\right)^2 - \\frac{R}{\\rho}\\frac{\\partial p}{\\partial n}}"
+      ],
+      "keywords": [
+        "傾度風",
+        "遠心力",
+        "自然座標系",
+        "低気圧",
+        "高気圧"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "geophysical_fluid_dynamics"
+      ]
+    },
+    {
+      "id": "earth.gfd.n06_pressure_coord_hydrostatic",
+      "short_code": "GFD06",
+      "kind": "theorem_formula",
+      "title": "等圧面座標系（p座標系）における静力学平衡と測高公式",
+      "summary": "鉛直座標に気圧 p を用いた p 座標系において、静力学平衡と理想気体の状態方程式からジオポテンシャル \\Phi の気圧微分が気温 T に比例する関係および2等圧面間の層厚（測高公式）を導く。",
+      "canonical_latex": "\\frac{\\partial \\Phi}{\\partial p} = -\\frac{R_d T}{p},\\qquad \\Delta Z = \\frac{R_d \\bar{T}}{g}\\ln\\!\\left(\\frac{p_1}{p_2}\\right)",
+      "aliases_latex": [
+        "\\frac{\\partial Z}{\\partial \\ln p} = -\\frac{R_d T}{g}"
+      ],
+      "keywords": [
+        "p座標系",
+        "等圧面座標",
+        "測高公式",
+        "ジオポテンシャル",
+        "層厚"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "geophysical_fluid_dynamics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "earth.gfd.n07_thermal_wind_equation",
+      "short_code": "GFD07",
+      "kind": "theorem_formula",
+      "title": "温度風の関係（地衡風の鉛直シアーと水平温度勾配）",
+      "summary": "地衡風バランスと p 座標系の静力学平衡を連立させることで、地衡風の鉛直シアー（気圧または対数気圧に対する変化率）が等圧面上の水平温度勾配に直交・比例する温度風方程式を得る。",
+      "canonical_latex": "\\frac{\\partial \\mathbf{u}_g}{\\partial \\ln p} = -\\frac{R_d}{f}\\mathbf{k}\\times\\nabla_p T",
+      "aliases_latex": [
+        "\\frac{\\partial \\mathbf{u}_g}{\\partial p} = -\\frac{R_d}{f p}\\mathbf{k}\\times\\nabla_p T",
+        "\\mathbf{u}_T = \\mathbf{u}_g(p_2) - \\mathbf{u}_g(p_1) = \\frac{g}{f}\\mathbf{k}\\times\\nabla_p(\\Delta Z)"
+      ],
+      "keywords": [
+        "温度風",
+        "温度風バランス",
+        "鉛直シアー",
+        "傾圧大気",
+        "ジェット気流"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "geophysical_fluid_dynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_gfd01",
+      "target_node_id": "earth.gfd.n01_rotating_frame_momentum",
+      "route_kind": "deductive",
+      "title": "慣性系の運動方程式から回転座標系の流体運動方程式を導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "eng.acst.n01_fluid_adiabatic_boundary",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "非粘性流体",
+        "地球の自転角速度 \\boldsymbol{\\Omega} は時間・空間に依らず一定",
+        "遠心力 -\\boldsymbol{\\Omega}\\times(\\boldsymbol{\\Omega}\\times\\mathbf{r}) は万有引力 \\mathbf{g}^* と合わせて有効重力 \\mathbf{g} に含める"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\left(\\frac{D\\mathbf{u}_I}{Dt}\\right)_I = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g}^*",
+          "to_latex": "\\frac{D\\mathbf{u}}{Dt} + 2\\boldsymbol{\\Omega}\\times\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g}",
+          "operation_label": "回転座標系への時間微分変換",
+          "explanation": "慣性系での物質微分を回転座標系の微分演算子と角速度による外積項で書き換え、遠心力を重力へ吸収することで回転座標系の運動方程式を得る。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_velocity_rel",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{D\\mathbf{u}_I}{Dt}\\right)_I = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g}^*",
+          "to_latex": "\\left(\\frac{D}{Dt} + \\boldsymbol{\\Omega}\\times\\right)(\\mathbf{u} + \\boldsymbol{\\Omega}\\times\\mathbf{r}) = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g}^*",
+          "operation_label": "慣性系速度と回転座標系微分演算子の代入",
+          "explanation": "慣性系速度 \\mathbf{u}_I = \\mathbf{u} + \\boldsymbol{\\Omega}\\times\\mathbf{r} と、任意ベクトルに対する時間微分関係 (D/Dt)_I = D/Dt + \\boldsymbol{\\Omega}\\times を適用する。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_expand_accel",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{D}{Dt} + \\boldsymbol{\\Omega}\\times\\right)(\\mathbf{u} + \\boldsymbol{\\Omega}\\times\\mathbf{r}) = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g}^*",
+          "to_latex": "\\frac{D\\mathbf{u}}{Dt} + 2\\boldsymbol{\\Omega}\\times\\mathbf{u} + \\boldsymbol{\\Omega}\\times(\\boldsymbol{\\Omega}\\times\\mathbf{r}) = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g}^*",
+          "operation_label": "加速度の展開と D\\mathbf{r}/Dt = \\mathbf{u} の適用",
+          "explanation": "\\boldsymbol{\\Omega} が定数であることと D\\mathbf{r}/Dt = \\mathbf{u} を用いて展開し、コリオリ加速度 2\\boldsymbol{\\Omega}\\times\\mathbf{u} と遠心加速度 \\boldsymbol{\\Omega}\\times(\\boldsymbol{\\Omega}\\times\\mathbf{r}) を分離する。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_effective_gravity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{D\\mathbf{u}}{Dt} + 2\\boldsymbol{\\Omega}\\times\\mathbf{u} + \\boldsymbol{\\Omega}\\times(\\boldsymbol{\\Omega}\\times\\mathbf{r}) = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g}^*",
+          "to_latex": "\\frac{D\\mathbf{u}}{Dt} + 2\\boldsymbol{\\Omega}\\times\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g}",
+          "operation_label": "遠心力の有効重力への吸収",
+          "explanation": "遠心力項を右辺に移し、\\mathbf{g} := \\mathbf{g}^* - \\boldsymbol{\\Omega}\\times(\\boldsymbol{\\Omega}\\times\\mathbf{r}) と定義して整理する。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_gfd02",
+      "target_node_id": "earth.gfd.n02_hydrostatic_balance",
+      "route_kind": "deductive",
+      "title": "回転座標系の鉛直運動方程式から静力学平衡を導出",
+      "premise_node_ids": [
+        "earth.gfd.n01_rotating_frame_momentum"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "鉛直スケール H が水平スケール L に比べて十分小さい (H/L \\ll 1)",
+        "鉛直加速度 Dw/Dt および鉛直コリオリ項 2\\Omega u \\cos\\varphi は重力加速度 g に比べ十分小さい"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{Dw}{Dt} - 2\\Omega u \\cos\\varphi = -\\frac{1}{\\rho}\\frac{\\partial p}{\\partial z} - g",
+          "to_latex": "\\frac{\\partial p}{\\partial z} = -\\rho g",
+          "operation_label": "鉛直方向のスケール近似",
+          "explanation": "鉛直運動方程式において加速度項とコリオリ項を重力項に対して無視し、静力学平衡の式を得る。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_scale_neglect",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{Dw}{Dt} - 2\\Omega u \\cos\\varphi = -\\frac{1}{\\rho}\\frac{\\partial p}{\\partial z} - g",
+          "to_latex": "0 = -\\frac{1}{\\rho}\\frac{\\partial p}{\\partial z} - g",
+          "operation_label": "微小項の省略",
+          "explanation": "大規模運動のスケール解析により Dw/Dt \\ll g および 2\\Omega u \\cos\\varphi \\ll g であるため、左辺を 0 と近似する。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_rearrange",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 = -\\frac{1}{\\rho}\\frac{\\partial p}{\\partial z} - g",
+          "to_latex": "\\frac{\\partial p}{\\partial z} = -\\rho g",
+          "operation_label": "圧力勾配についての整理",
+          "explanation": "両辺に \\rho を掛けて移項し、鉛直圧力傾度力と重力の釣合い式を得る。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum"
+          ],
+          "sympy_check_hint": "Eq(-diff(p, z)/rho - g, 0)"
+        }
+      ]
+    },
+    {
+      "id": "deriv_gfd03",
+      "target_node_id": "earth.gfd.n03_rossby_number_def",
+      "route_kind": "reformulation",
+      "title": "水平運動方程式のスケール解析によるコリオリパラメータとロスビー数の定義",
+      "premise_node_ids": [
+        "earth.gfd.n01_rotating_frame_momentum"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "水平代表速度 U、水平代表長さスケール L",
+        "鉛直速度 w は水平速度 u, v に比べ十分小さい (w \\ll U)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\left|(\\mathbf{u}_h\\cdot\\nabla_h)\\mathbf{u}_h\\right|}{\\left|(2\\boldsymbol{\\Omega}\\times\\mathbf{u})_h\\right|} \\sim \\frac{U^2/L}{(2\\Omega\\sin\\varphi) U}",
+          "to_latex": "f := 2\\Omega\\sin\\varphi,\\qquad \\mathrm{Ro} := \\frac{U}{f L}",
+          "operation_label": "無次元数とコリオリパラメータの抽出",
+          "explanation": "水平移流項と水平コリオリ項のオーダー比から、コリオリパラメータ f と無次元数のロスビー数 Ro を定義する。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_coriolis_param",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\left|(\\mathbf{u}_h\\cdot\\nabla_h)\\mathbf{u}_h\\right|}{\\left|(2\\boldsymbol{\\Omega}\\times\\mathbf{u})_h\\right|} \\sim \\frac{U^2/L}{(2\\Omega\\sin\\varphi) U}",
+          "to_latex": "f := 2\\Omega\\sin\\varphi,\\quad \\frac{\\left|(\\mathbf{u}_h\\cdot\\nabla_h)\\mathbf{u}_h\\right|}{\\left|f\\mathbf{k}\\times\\mathbf{u}_h\\right|} \\sim \\frac{U^2/L}{f U}",
+          "operation_label": "コリオリパラメータ f の定義",
+          "explanation": "自転角速度の局所鉛直成分の2倍を f := 2\\Omega\\sin\\varphi と定義し、水平コリオリ項を f\\mathbf{k}\\times\\mathbf{u}_h と表す。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_ratio",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f := 2\\Omega\\sin\\varphi,\\quad \\frac{\\left|(\\mathbf{u}_h\\cdot\\nabla_h)\\mathbf{u}_h\\right|}{\\left|f\\mathbf{k}\\times\\mathbf{u}_h\\right|} \\sim \\frac{U^2/L}{f U}",
+          "to_latex": "f := 2\\Omega\\sin\\varphi,\\qquad \\mathrm{Ro} := \\frac{U}{f L}",
+          "operation_label": "オーダー比の約分とロスビー数の定義",
+          "explanation": "代表スケールの比 (U^2/L)/(fU) を約分してロスビー数 \\mathrm{Ro} := U/(fL) を定義する。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum"
+          ],
+          "sympy_check_hint": "simplify((U**2/L)/(f*U))"
+        }
+      ]
+    },
+    {
+      "id": "deriv_gfd04",
+      "target_node_id": "earth.gfd.n04_geostrophic_wind",
+      "route_kind": "deductive",
+      "title": "低ロスビー数極限における地衡風バランスと等圧面表現の導出",
+      "premise_node_ids": [
+        "earth.gfd.n01_rotating_frame_momentum",
+        "earth.gfd.n02_hydrostatic_balance",
+        "earth.gfd.n03_rossby_number_def",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ロスビー数 \\mathrm{Ro} \\ll 1 により水平加速度 D\\mathbf{u}_h/Dt を無視",
+        "静力学平衡 \\partial p / \\partial z = -\\rho g が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{D\\mathbf{u}_h}{Dt} + f\\mathbf{k}\\times\\mathbf{u}_h = -\\frac{1}{\\rho}\\nabla_h p",
+          "to_latex": "\\mathbf{u}_g = \\frac{1}{\\rho f}\\mathbf{k}\\times\\nabla_h p = \\frac{g}{f}\\mathbf{k}\\times\\nabla_p Z",
+          "operation_label": "地衡風近似と等圧面変換",
+          "explanation": "\\mathrm{Ro} \\ll 1 の下で水平加速度を省略して地衡風速を解き、さらに静力学平衡を用いて等圧面上のジオポテンシャル高度勾配表示へ変換する。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum",
+            "earth.gfd.n02_hydrostatic_balance",
+            "earth.gfd.n03_rossby_number_def",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_small_rossby",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{D\\mathbf{u}_h}{Dt} + f\\mathbf{k}\\times\\mathbf{u}_h = -\\frac{1}{\\rho}\\nabla_h p",
+          "to_latex": "f\\mathbf{k}\\times\\mathbf{u}_g = -\\frac{1}{\\rho}\\nabla_h p",
+          "operation_label": "低ロスビー数近似 (Ro << 1)",
+          "explanation": "時間変化・移流項がコリオリ項に対し \\mathcal{O}(\\mathrm{Ro}) で小さいため無視し、地衡風バランスを得る。",
+          "used_node_ids": [
+            "earth.gfd.n03_rossby_number_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_cross_k",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f\\mathbf{k}\\times\\mathbf{u}_g = -\\frac{1}{\\rho}\\nabla_h p",
+          "to_latex": "\\mathbf{u}_g = \\frac{1}{\\rho f}\\mathbf{k}\\times\\nabla_h p",
+          "operation_label": "鉛直単位ベクトル \\mathbf{k} との外積",
+          "explanation": "両辺の左から \\mathbf{k}\\times を作用させ、\\mathbf{k}\\times(\\mathbf{k}\\times\\mathbf{u}_g) = -\\mathbf{u}_g を用いて地衡風速 \\mathbf{u}_g について解く。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_isobaric_transform",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{u}_g = \\frac{1}{\\rho f}\\mathbf{k}\\times\\nabla_h p",
+          "to_latex": "\\mathbf{u}_g = \\frac{1}{\\rho f}\\mathbf{k}\\times\\nabla_h p = \\frac{g}{f}\\mathbf{k}\\times\\nabla_p Z",
+          "operation_label": "等圧面上のジオポテンシャル高度勾配への変換",
+          "explanation": "静力学平衡より水平圧力勾配と等圧面上の高度勾配の関係 (1/\\rho)\\nabla_h p = g\\nabla_p Z が成り立つため、これを代入する。",
+          "used_node_ids": [
+            "earth.gfd.n02_hydrostatic_balance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_gfd05",
+      "target_node_id": "earth.gfd.n05_gradient_wind",
+      "route_kind": "deductive",
+      "title": "自然座標系における水平運動方程式から傾度風方程式を導出",
+      "premise_node_ids": [
+        "earth.gfd.n01_rotating_frame_momentum",
+        "earth.gfd.n03_rossby_number_def",
+        "math.vec.m04_polar_acceleration"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "流線に沿う定常・非粘性水平流",
+        "流線方向の接線単位ベクトル \\mathbf{t}、流れの左向き法線単位ベクトル \\mathbf{n} = \\mathbf{k}\\times\\mathbf{t}、曲率半径 R（左向きカーブで R > 0）をとる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{D\\mathbf{u}_h}{Dt} + f\\mathbf{k}\\times\\mathbf{u}_h = -\\frac{1}{\\rho}\\nabla_h p",
+          "to_latex": "\\frac{V^2}{R} + f V = -\\frac{1}{\\rho}\\frac{\\partial p}{\\partial n}",
+          "operation_label": "自然座標系への射影と法線成分の抽出",
+          "explanation": "水平運動方程式を自然座標系 (\\mathbf{t}, \\mathbf{n}) で展開し、流線に直交する法線方向の力の釣合いとして傾度風方程式を得る。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum",
+            "earth.gfd.n03_rossby_number_def",
+            "math.vec.m04_polar_acceleration"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_natural_coords",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{D\\mathbf{u}_h}{Dt} + f\\mathbf{k}\\times\\mathbf{u}_h = -\\frac{1}{\\rho}\\nabla_h p",
+          "to_latex": "\\frac{DV}{Dt}\\mathbf{t} + \\frac{V^2}{R}\\mathbf{n} + f V \\mathbf{n} = -\\frac{1}{\\rho}\\left(\\frac{\\partial p}{\\partial s}\\mathbf{t} + \\frac{\\partial p}{\\partial n}\\mathbf{n}\\right)",
+          "operation_label": "自然座標基底による展開",
+          "explanation": "\\mathbf{u}_h = V\\mathbf{t} に対して向心加速度 (V^2/R)\\mathbf{n} とコリオリ力 f(\\mathbf{k}\\times V\\mathbf{t}) = fV\\mathbf{n} を展開する。",
+          "used_node_ids": [
+            "earth.gfd.n03_rossby_number_def",
+            "math.vec.m04_polar_acceleration"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_normal_component",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{DV}{Dt}\\mathbf{t} + \\frac{V^2}{R}\\mathbf{n} + f V \\mathbf{n} = -\\frac{1}{\\rho}\\left(\\frac{\\partial p}{\\partial s}\\mathbf{t} + \\frac{\\partial p}{\\partial n}\\mathbf{n}\\right)",
+          "to_latex": "\\frac{V^2}{R} + f V = -\\frac{1}{\\rho}\\frac{\\partial p}{\\partial n}",
+          "operation_label": "法線ベクトル \\mathbf{n} 成分の抽出",
+          "explanation": "両辺の \\mathbf{n} 成分を比較し、遠心力・コリオリ力・圧力傾度力の釣合い式を得る。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_gfd06",
+      "target_node_id": "earth.gfd.n06_pressure_coord_hydrostatic",
+      "route_kind": "deductive",
+      "title": "静力学平衡と理想気体の状態方程式からp座標系静力学平衡と測高公式を導出",
+      "premise_node_ids": [
+        "earth.gfd.n02_hydrostatic_balance",
+        "phys.thermo.th01_zeroth_law_state_eq",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "乾燥大気の理想気体状態方程式 p = \\rho R_d T",
+        "ジオポテンシャル \\Phi は d\\Phi = g\\,dz で定義される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial p}{\\partial z} = -\\rho g,\\quad p = \\rho R_d T",
+          "to_latex": "\\frac{\\partial \\Phi}{\\partial p} = -\\frac{R_d T}{p},\\qquad \\Delta Z = \\frac{R_d \\bar{T}}{g}\\ln\\!\\left(\\frac{p_1}{p_2}\\right)",
+          "operation_label": "p座標変換と鉛直積分",
+          "explanation": "静力学平衡に理想気体の状態方程式とジオポテンシャル定義を代入して p 座標系静力学平衡を得て、さらに2等圧面間で積分し測高公式を導く。",
+          "used_node_ids": [
+            "earth.gfd.n02_hydrostatic_balance",
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_geopotential_p",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial p}{\\partial z} = -\\rho g,\\quad p = \\rho R_d T",
+          "to_latex": "\\frac{\\partial \\Phi}{\\partial p} = -\\frac{1}{\\rho} = -\\frac{R_d T}{p}",
+          "operation_label": "ジオポテンシャル定義と状態方程式の代入",
+          "explanation": "d\\Phi = g\\,dz より \\partial\\Phi/\\partial p = -1/\\rho となり、1/\\rho = R_d T / p を代入する。",
+          "used_node_ids": [
+            "earth.gfd.n02_hydrostatic_balance",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_hypsometric",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\Phi}{\\partial p} = -\\frac{1}{\\rho} = -\\frac{R_d T}{p}",
+          "to_latex": "\\frac{\\partial \\Phi}{\\partial p} = -\\frac{R_d T}{p},\\qquad \\Delta Z = \\frac{R_d \\bar{T}}{g}\\ln\\!\\left(\\frac{p_1}{p_2}\\right)",
+          "operation_label": "等圧面 p_1 から p_2 への定積分",
+          "explanation": "\\Delta\\Phi = g\\Delta Z を p_1 から p_2 まで積分し、対数気圧平均気温 \\bar{T} を用いて層厚の測高公式を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": "integrate(-R_d*T_bar/p, (p, p_1, p_2))/g"
+        }
+      ]
+    },
+    {
+      "id": "deriv_gfd07",
+      "target_node_id": "earth.gfd.n07_thermal_wind_equation",
+      "route_kind": "deductive",
+      "title": "地衡風とp座標系静力学平衡から温度風方程式を導出",
+      "premise_node_ids": [
+        "earth.gfd.n04_geostrophic_wind",
+        "earth.gfd.n06_pressure_coord_hydrostatic",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f 平面近似（コリオリパラメータ f は水平方向および鉛直方向に一定）",
+        "地衡風バランスおよび静力学平衡が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{u}_g = \\frac{1}{f}\\mathbf{k}\\times\\nabla_p \\Phi,\\quad \\frac{\\partial \\Phi}{\\partial p} = -\\frac{R_d T}{p}",
+          "to_latex": "\\frac{\\partial \\mathbf{u}_g}{\\partial \\ln p} = -\\frac{R_d}{f}\\mathbf{k}\\times\\nabla_p T",
+          "operation_label": "気圧による偏微分と静力学平衡の代入",
+          "explanation": "地衡風の等圧面表示を気圧 p で偏微分し、偏微分の順序交換と p 座標系の静力学平衡を適用して温度風方程式を得る。",
+          "used_node_ids": [
+            "earth.gfd.n04_geostrophic_wind",
+            "earth.gfd.n06_pressure_coord_hydrostatic",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_diff_p",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{u}_g = \\frac{1}{f}\\mathbf{k}\\times\\nabla_p \\Phi,\\quad \\frac{\\partial \\Phi}{\\partial p} = -\\frac{R_d T}{p}",
+          "to_latex": "\\frac{\\partial \\mathbf{u}_g}{\\partial p} = \\frac{1}{f}\\mathbf{k}\\times\\nabla_p\\left(\\frac{\\partial \\Phi}{\\partial p}\\right)",
+          "operation_label": "気圧 p による偏微分と微分順序交換",
+          "explanation": "地衡風速を p で偏微分し、p と水平座標 (x, y) が独立であるため \\partial/\\partial p と \\nabla_p を交換する。",
+          "used_node_ids": [
+            "earth.gfd.n04_geostrophic_wind",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_sub_hydrostatic",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathbf{u}_g}{\\partial p} = \\frac{1}{f}\\mathbf{k}\\times\\nabla_p\\left(\\frac{\\partial \\Phi}{\\partial p}\\right)",
+          "to_latex": "\\frac{\\partial \\mathbf{u}_g}{\\partial p} = -\\frac{R_d}{f p}\\mathbf{k}\\times\\nabla_p T",
+          "operation_label": "p座標系静力学平衡の代入",
+          "explanation": "\\partial\\Phi/\\partial p = -R_d T / p を代入し、等圧面上では p が定数として勾配の外に出ることを用いる。",
+          "used_node_ids": [
+            "earth.gfd.n06_pressure_coord_hydrostatic"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_ln_p",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathbf{u}_g}{\\partial p} = -\\frac{R_d}{f p}\\mathbf{k}\\times\\nabla_p T",
+          "to_latex": "\\frac{\\partial \\mathbf{u}_g}{\\partial \\ln p} = -\\frac{R_d}{f}\\mathbf{k}\\times\\nabla_p T",
+          "operation_label": "対数気圧座標への書き換え",
+          "explanation": "両辺に p を掛け、p(\\partial/\\partial p) = \\partial/\\partial(\\ln p) を用いて温度風方程式の標準形を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

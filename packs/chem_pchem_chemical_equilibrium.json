@@ -1,0 +1,613 @@
+{
+  "pack_meta": {
+    "pack_id": "chem.pchem.chemical_equilibrium",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physical_chemistry",
+    "title": "物理化学1：化学ポテンシャル・ギブズ自由エネルギーと化学平衡（ファントホッフの式）",
+    "language": "ja",
+    "description": "熱力学ポテンシャル（G）から化学ポテンシャル、反応ギブズエネルギーΔG=ΔG°+RT ln Q、平衡定数K、ファントホッフの式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "chem.eq.n01_reaction_quotient_spontaneity_criterion",
+      "short_code": "EQ01",
+      "kind": "theorem_formula",
+      "title": "反応商と平衡定数の比による反応自発性の判定則（Δ_r G = RT ln(Q/K)）",
+      "summary": "反応ギブズエネルギーと平衡定数の関係式を結合し、反応商 Q と平衡定数 K の大小関係から定温定圧下での化学反応の自発的進行方向を判定する。",
+      "canonical_latex": "\\Delta_r G = RT \\ln\\frac{Q}{K},\\qquad Q < K \\implies \\Delta_r G < 0\\;(\\text{forward}),\\quad Q > K \\implies \\Delta_r G > 0\\;(\\text{reverse})",
+      "aliases_latex": [
+        "\\Delta_r G = RT\\ln(Q/K)"
+      ],
+      "keywords": [
+        "reaction_quotient",
+        "equilibrium_constant",
+        "spontaneity",
+        "reaction_gibbs_energy"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_equilibrium"
+      ]
+    },
+    {
+      "id": "chem.eq.n02_standard_reaction_gibbs_formation",
+      "short_code": "EQ02",
+      "kind": "theorem_formula",
+      "title": "標準反応ギブズエネルギーの標準生成ギブズエネルギー表示",
+      "summary": "標準状態における化学反応の標準反応ギブズエネルギーを、各関与成分の標準生成ギブズエネルギーと化学量論係数の線形結合として表す関係式。",
+      "canonical_latex": "\\Delta_r G^\\circ(T) = \\sum_{i=1}^{C} \\nu_i \\Delta_f G_i^\\circ(T)",
+      "aliases_latex": [
+        "\\Delta_r G^\\circ = \\sum \\nu_i \\Delta_f G_i^\\circ"
+      ],
+      "keywords": [
+        "standard_reaction_gibbs_energy",
+        "standard_gibbs_energy_of_formation",
+        "stoichiometry"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_equilibrium"
+      ]
+    },
+    {
+      "id": "chem.eq.n03_kp_kc_kx_equilibrium_relations",
+      "short_code": "EQ03",
+      "kind": "theorem_formula",
+      "title": "理想気体反応における圧平衡定数 K_p と K_c, K_x の関係式",
+      "summary": "理想気体の状態方程式と活量の分圧表示を用いて、無次元熱力学平衡定数 K とモル濃度平衡定数 K_c、モル分率平衡定数 K_x を結びつける関係式。",
+      "canonical_latex": "K = \\prod_{i=1}^{C} \\left(\\frac{p_i}{p^\\circ}\\right)^{\\nu_i} = K_c \\left(\\frac{RT}{p^\\circ}\\right)^{\\Delta \\nu} = K_x \\left(\\frac{p}{p^\\circ}\\right)^{\\Delta \\nu},\\qquad \\Delta\\nu := \\sum_{i=1}^{C} \\nu_i",
+      "aliases_latex": [
+        "K_p = K_c (RT)^{\\Delta \\nu}",
+        "K_p = K_x p^{\\Delta \\nu}"
+      ],
+      "keywords": [
+        "pressure_equilibrium_constant",
+        "concentration_equilibrium_constant",
+        "mole_fraction_equilibrium_constant",
+        "ideal_gas_reaction"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_equilibrium"
+      ]
+    },
+    {
+      "id": "chem.eq.n04_le_chatelier_temperature_response",
+      "short_code": "EQ04",
+      "kind": "theorem_formula",
+      "title": "温度変化に対するルシャトリエの原理（吸熱・発熱反応の平衡移動）",
+      "summary": "ファントホッフの式に基づき、昇温時に吸熱反応（Δ_r H° > 0）では平衡定数 K が増大し、発熱反応（Δ_r H° < 0）では K が減少することを定式化する法則。",
+      "canonical_latex": "\\Delta_r H^\\circ > 0 \\implies \\frac{d\\ln K}{dT} > 0\\;(\\text{endothermic}),\\qquad \\Delta_r H^\\circ < 0 \\implies \\frac{d\\ln K}{dT} < 0\\;(\\text{exothermic})",
+      "aliases_latex": [
+        "\\operatorname{sgn}(d\\ln K / dT) = \\operatorname{sgn}(\\Delta_r H^\\circ)"
+      ],
+      "keywords": [
+        "le_chatelier_principle",
+        "temperature_dependence",
+        "endothermic",
+        "exothermic"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_equilibrium"
+      ]
+    },
+    {
+      "id": "chem.eq.n05_le_chatelier_pressure_response",
+      "short_code": "EQ05",
+      "kind": "theorem_formula",
+      "title": "圧力変化に対するルシャトリエの原理（K_x の圧力依存性）",
+      "summary": "熱力学平衡定数 K が圧力に依存しないことと K = K_x (p/p°)^{Δν} から、定温加圧時に気体分子数が減少する方向（Δν < 0）へ平衡が移動することを導く関係式。",
+      "canonical_latex": "\\left(\\frac{\\partial \\ln K_x}{\\partial p}\\right)_T = -\\frac{\\Delta \\nu}{p},\\qquad \\Delta\\nu < 0 \\implies \\left(\\frac{\\partial \\ln K_x}{\\partial p}\\right)_T > 0",
+      "aliases_latex": [
+        "(\\partial \\ln K_x / \\partial p)_T = -\\Delta \\nu / p"
+      ],
+      "keywords": [
+        "le_chatelier_principle",
+        "pressure_dependence",
+        "mole_fraction_equilibrium_constant"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_equilibrium"
+      ]
+    },
+    {
+      "id": "chem.eq.n06_fugacity_nonideal_chemical_potential",
+      "short_code": "EQ06",
+      "kind": "definition",
+      "title": "実在気体のフガシティーとフガシティー係数の定義",
+      "summary": "理想気体の化学ポテンシャル表示を実在気体へ拡張するために導入される有効圧力（フガシティー f_i）および無次元補正係数（フガシティー係数 φ_i）の定義。",
+      "canonical_latex": "\\mu_i(T,p) = \\mu_i^\\circ(T) + RT\\ln\\frac{f_i}{p^\\circ},\\qquad \\phi_i := \\frac{f_i}{p_i},\\qquad \\lim_{p\\to 0}\\phi_i = 1",
+      "aliases_latex": [
+        "f_i = \\phi_i p_i"
+      ],
+      "keywords": [
+        "fugacity",
+        "fugacity_coefficient",
+        "real_gas",
+        "chemical_potential"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_equilibrium"
+      ]
+    },
+    {
+      "id": "chem.eq.n07_clausius_clapeyron_phase_eq",
+      "short_code": "EQ07",
+      "kind": "theorem_formula",
+      "title": "クラペイロンおよびクラウジウス＝クラペイロンの式（相平衡の共存曲線）",
+      "summary": "2相共存条件とギブズ＝デュエムの式から導かれる相平衡曲線の傾き dp/dT の関係式、および気相を理想気体とみなした蒸気圧の温度依存式。",
+      "canonical_latex": "\\frac{dp}{dT} = \\frac{\\Delta_{\\mathrm{trs}} H_m}{T\\,\\Delta_{\\mathrm{trs}} V_m},\\qquad \\frac{d\\ln p}{dT} = \\frac{\\Delta_{\\mathrm{vap}} H_m}{R T^2}\\;\\text{ (ideal vapor)}",
+      "aliases_latex": [
+        "\\frac{dp}{dT} = \\frac{\\Delta_{\\mathrm{trs}} S_m}{\\Delta_{\\mathrm{trs}} V_m}"
+      ],
+      "keywords": [
+        "clapeyron_equation",
+        "clausius_clapeyron_equation",
+        "phase_equilibrium",
+        "vapor_pressure"
+      ],
+      "domain_tags": [
+        "physical_chemistry",
+        "chemical_equilibrium"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_chem_eq_01",
+      "target_node_id": "chem.eq.n01_reaction_quotient_spontaneity_criterion",
+      "route_kind": "deductive",
+      "title": "反応商 Q と平衡定数 K の比による反応進行方向の判定則の導出",
+      "premise_node_ids": [
+        "eng.cth.n01_gibbs_free_energy_def",
+        "eng.cth.n06_reaction_gibbs_energy_extent",
+        "eng.cth.n07_equilibrium_constant_gibbs"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Temperature T and pressure p are held constant.",
+        "Reaction mixture is treated with defined activities a_i."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta_r G = \\Delta_r G^\\circ(T) + RT\\ln Q,\\quad \\Delta_r G^\\circ(T) = -RT\\ln K(T)",
+          "to_latex": "\\Delta_r G = RT \\ln\\frac{Q}{K},\\qquad Q < K \\implies \\Delta_r G < 0,\\quad Q > K \\implies \\Delta_r G > 0",
+          "operation_label": "substitute_and_sign_analysis",
+          "explanation": "標準反応ギブズエネルギーを平衡定数表示で置き換えて Q/K の対数にまとめ、定温定圧下の自発変化条件 dG <= 0 を適用する。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def",
+            "eng.cth.n06_reaction_gibbs_energy_extent",
+            "eng.cth.n07_equilibrium_constant_gibbs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta_r G = \\Delta_r G^\\circ(T) + RT\\ln Q,\\quad \\Delta_r G^\\circ(T) = -RT\\ln K(T)",
+          "to_latex": "\\Delta_r G = -RT\\ln K + RT\\ln Q = RT\\ln\\frac{Q}{K}",
+          "operation_label": "algebraic_substitution",
+          "explanation": "反応ギブズエネルギーの式に平衡定数との関係式を代入し、対数の性質を用いて Q/K の比に整理する。",
+          "used_node_ids": [
+            "eng.cth.n06_reaction_gibbs_energy_extent",
+            "eng.cth.n07_equilibrium_constant_gibbs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta_r G = -RT\\ln K + RT\\ln Q = RT\\ln\\frac{Q}{K}",
+          "to_latex": "\\Delta_r G = RT \\ln\\frac{Q}{K},\\qquad Q < K \\implies \\Delta_r G < 0,\\quad Q > K \\implies \\Delta_r G > 0",
+          "operation_label": "apply_spontaneity_condition",
+          "explanation": "定温定圧下での自発変化条件 dG <= 0 より、Q < K のとき Δ_r G < 0（正反応が自発）、Q > K のとき Δ_r G > 0（逆反応が自発）となる。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_chem_eq_02",
+      "target_node_id": "chem.eq.n02_standard_reaction_gibbs_formation",
+      "route_kind": "deductive",
+      "title": "標準生成ギブズエネルギーの線形結合による標準反応ギブズエネルギーの導出",
+      "premise_node_ids": [
+        "eng.cth.n05_chemical_potential_ideal_activity",
+        "eng.cth.n06_reaction_gibbs_energy_extent"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Atoms of each element e are conserved in the chemical reaction."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta_r G^\\circ(T) = \\sum_{i=1}^{C} \\nu_i \\mu_i^\\circ(T),\\quad \\Delta_f G_i^\\circ(T) = \\mu_i^\\circ(T) - \\sum_{e} \\alpha_{ie} \\mu_e^\\circ(T)",
+          "to_latex": "\\Delta_r G^\\circ(T) = \\sum_{i=1}^{C} \\nu_i \\Delta_f G_i^\\circ(T)",
+          "operation_label": "element_conservation_elimination",
+          "explanation": "各成分の標準生成ギブズエネルギーを化学量論係数で重み付けして和をとり、元素保存則により単体の標準化学ポテンシャル項を消去する。",
+          "used_node_ids": [
+            "eng.cth.n05_chemical_potential_ideal_activity",
+            "eng.cth.n06_reaction_gibbs_energy_extent"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta_r G^\\circ(T) = \\sum_{i=1}^{C} \\nu_i \\mu_i^\\circ(T),\\quad \\Delta_f G_i^\\circ(T) = \\mu_i^\\circ(T) - \\sum_{e} \\alpha_{ie} \\mu_e^\\circ(T)",
+          "to_latex": "\\sum_{i=1}^{C} \\nu_i \\Delta_f G_i^\\circ(T) = \\sum_{i=1}^{C} \\nu_i \\mu_i^\\circ(T) - \\sum_{e} \\left(\\sum_{i=1}^{C} \\nu_i \\alpha_{ie}\\right)\\mu_e^\\circ(T)",
+          "operation_label": "linear_combination_expansion",
+          "explanation": "標準生成ギブズエネルギーの定義式に化学量論係数 ν_i を掛けて全成分について総和をとり、元素 e ごとに和の順序を入れ替える。",
+          "used_node_ids": [
+            "eng.cth.n05_chemical_potential_ideal_activity",
+            "eng.cth.n06_reaction_gibbs_energy_extent"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{C} \\nu_i \\Delta_f G_i^\\circ(T) = \\sum_{i=1}^{C} \\nu_i \\mu_i^\\circ(T) - \\sum_{e} \\left(\\sum_{i=1}^{C} \\nu_i \\alpha_{ie}\\right)\\mu_e^\\circ(T)",
+          "to_latex": "\\Delta_r G^\\circ(T) = \\sum_{i=1}^{C} \\nu_i \\Delta_f G_i^\\circ(T)",
+          "operation_label": "apply_atom_balance",
+          "explanation": "化学反応における元素保存則 \\sum_i \\nu_i \\alpha_{ie} = 0 を適用すると第2項が零となり、標準反応ギブズエネルギーの式が得られる。",
+          "used_node_ids": [
+            "eng.cth.n06_reaction_gibbs_energy_extent"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_chem_eq_03",
+      "target_node_id": "chem.eq.n03_kp_kc_kx_equilibrium_relations",
+      "route_kind": "deductive",
+      "title": "理想気体反応における K, K_c, K_x の換算関係式の導出",
+      "premise_node_ids": [
+        "eng.cth.n05_chemical_potential_ideal_activity",
+        "eng.cth.n07_equilibrium_constant_gibbs",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "All reacting species behave as an ideal gas mixture."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "K = \\left(\\prod_{i=1}^{C} a_i^{\\nu_i}\\right)_{\\mathrm{eq}},\\quad a_i^{\\mathrm{ideal\\ gas}} = \\frac{p_i}{p^\\circ},\\quad p_i V = n_i R T",
+          "to_latex": "K = \\prod_{i=1}^{C} \\left(\\frac{p_i}{p^\\circ}\\right)^{\\nu_i} = K_c \\left(\\frac{RT}{p^\\circ}\\right)^{\\Delta \\nu} = K_x \\left(\\frac{p}{p^\\circ}\\right)^{\\Delta \\nu},\\qquad \\Delta\\nu := \\sum_{i=1}^{C} \\nu_i",
+          "operation_label": "ideal_gas_activity_conversion",
+          "explanation": "理想気体の活量に分圧表示を代入し、状態方程式およびドルトンの分圧則を用いてモル濃度平衡定数 K_c とモル分率平衡定数 K_x へ換算する。",
+          "used_node_ids": [
+            "eng.cth.n05_chemical_potential_ideal_activity",
+            "eng.cth.n07_equilibrium_constant_gibbs",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "K = \\left(\\prod_{i=1}^{C} a_i^{\\nu_i}\\right)_{\\mathrm{eq}},\\quad a_i^{\\mathrm{ideal\\ gas}} = \\frac{p_i}{p^\\circ},\\quad p_i V = n_i R T",
+          "to_latex": "p_i = c_i R T = x_i p \\implies K = \\prod_{i=1}^{C} \\left(\\frac{c_i RT}{p^\\circ}\\right)^{\\nu_i} = \\prod_{i=1}^{C} \\left(\\frac{x_i p}{p^\\circ}\\right)^{\\nu_i}",
+          "operation_label": "substitute_partial_pressure_relations",
+          "explanation": "理想気体の分圧をモル濃度 c_i = n_i/V およびモル分率 x_i により表し、平衡定数 K の定義式に代入する。",
+          "used_node_ids": [
+            "eng.cth.n05_chemical_potential_ideal_activity",
+            "eng.cth.n07_equilibrium_constant_gibbs",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_i = c_i R T = x_i p \\implies K = \\prod_{i=1}^{C} \\left(\\frac{c_i RT}{p^\\circ}\\right)^{\\nu_i} = \\prod_{i=1}^{C} \\left(\\frac{x_i p}{p^\\circ}\\right)^{\\nu_i}",
+          "to_latex": "K = \\prod_{i=1}^{C} \\left(\\frac{p_i}{p^\\circ}\\right)^{\\nu_i} = K_c \\left(\\frac{RT}{p^\\circ}\\right)^{\\Delta \\nu} = K_x \\left(\\frac{p}{p^\\circ}\\right)^{\\Delta \\nu},\\qquad \\Delta\\nu := \\sum_{i=1}^{C} \\nu_i",
+          "operation_label": "factor_common_powers",
+          "explanation": "各成分に共通の因子 (RT/p°) および (p/p°) を総積の外にくくり出し、化学量論係数の和 Δν をべき指数として整理する。",
+          "used_node_ids": [
+            "eng.cth.n07_equilibrium_constant_gibbs"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_chem_eq_04",
+      "target_node_id": "chem.eq.n04_le_chatelier_temperature_response",
+      "route_kind": "deductive",
+      "title": "ファントホッフの式からの温度変化に対する平衡移動則の導出",
+      "premise_node_ids": [
+        "eng.cth.n09_vant_hoff_equation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Universal gas constant R > 0 and absolute temperature T > 0."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d\\ln K}{dT} = \\frac{\\Delta_r H^\\circ(T)}{RT^2}\\quad (R > 0,\\; T > 0)",
+          "to_latex": "\\Delta_r H^\\circ > 0 \\implies \\frac{d\\ln K}{dT} > 0\\;(\\text{endothermic}),\\qquad \\Delta_r H^\\circ < 0 \\implies \\frac{d\\ln K}{dT} < 0\\;(\\text{exothermic})",
+          "operation_label": "sign_evaluation_vant_hoff",
+          "explanation": "ファントホッフの式の分母 RT^2 が常に正であることから、K の温度微分の符号が標準反応エンタルピー Δ_r H° の符号と一致することを導く。",
+          "used_node_ids": [
+            "eng.cth.n09_vant_hoff_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\ln K}{dT} = \\frac{\\Delta_r H^\\circ(T)}{RT^2}\\quad (R > 0,\\; T > 0)",
+          "to_latex": "\\operatorname{sgn}\\!\\left(\\frac{d\\ln K}{dT}\\right) = \\operatorname{sgn}(\\Delta_r H^\\circ(T))",
+          "operation_label": "positive_denominator_reduction",
+          "explanation": "R > 0 かつ T^2 > 0 より RT^2 > 0 であるため、両辺の符号関係は分子 Δ_r H°(T) の符号のみによって決定される。",
+          "used_node_ids": [
+            "eng.cth.n09_vant_hoff_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{sgn}\\!\\left(\\frac{d\\ln K}{dT}\\right) = \\operatorname{sgn}(\\Delta_r H^\\circ(T))",
+          "to_latex": "\\Delta_r H^\\circ > 0 \\implies \\frac{d\\ln K}{dT} > 0\\;(\\text{endothermic}),\\qquad \\Delta_r H^\\circ < 0 \\implies \\frac{d\\ln K}{dT} < 0\\;(\\text{exothermic})",
+          "operation_label": "classify_endothermic_exothermic",
+          "explanation": "吸熱反応（Δ_r H° > 0）では昇温とともに ln K が増加して生成系へ移動し、発熱反応（Δ_r H° < 0）では ln K が減少して反応系へ移動する。",
+          "used_node_ids": [
+            "eng.cth.n09_vant_hoff_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_chem_eq_05",
+      "target_node_id": "chem.eq.n05_le_chatelier_pressure_response",
+      "route_kind": "deductive",
+      "title": "圧力変化に対する K_x の応答とルシャトリエの原理の導出",
+      "premise_node_ids": [
+        "eng.cth.n07_equilibrium_constant_gibbs",
+        "chem.eq.n03_kp_kc_kx_equilibrium_relations"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "Ideal gas mixture at constant temperature T."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "K(T) = K_x \\left(\\frac{p}{p^\\circ}\\right)^{\\Delta\\nu},\\quad \\left(\\frac{\\partial K(T)}{\\partial p}\\right)_T = 0",
+          "to_latex": "\\left(\\frac{\\partial \\ln K_x}{\\partial p}\\right)_T = -\\frac{\\Delta \\nu}{p},\\qquad \\Delta\\nu < 0 \\implies \\left(\\frac{\\partial \\ln K_x}{\\partial p}\\right)_T > 0",
+          "operation_label": "differentiate_kx_with_pressure",
+          "explanation": "熱力学平衡定数 K(T) が圧力に依存しないことを用いて、K_x と全圧 p の関係式を対数微分し、圧力変化に対する平衡移動を導く。",
+          "used_node_ids": [
+            "chem.eq.n03_kp_kc_kx_equilibrium_relations",
+            "eng.cth.n07_equilibrium_constant_gibbs",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "K(T) = K_x \\left(\\frac{p}{p^\\circ}\\right)^{\\Delta\\nu},\\quad \\left(\\frac{\\partial K(T)}{\\partial p}\\right)_T = 0",
+          "to_latex": "\\ln K_x = \\ln K(T) - \\Delta\\nu \\ln p + \\Delta\\nu \\ln p^\\circ",
+          "operation_label": "take_logarithm",
+          "explanation": "K(T) = K_x (p/p°)^{Δν} の両辺の自然対数をとり、ln K_x について解く。",
+          "used_node_ids": [
+            "chem.eq.n03_kp_kc_kx_equilibrium_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln K_x = \\ln K(T) - \\Delta\\nu \\ln p + \\Delta\\nu \\ln p^\\circ",
+          "to_latex": "\\left(\\frac{\\partial \\ln K_x}{\\partial p}\\right)_T = -\\frac{\\Delta \\nu}{p},\\qquad \\Delta\\nu < 0 \\implies \\left(\\frac{\\partial \\ln K_x}{\\partial p}\\right)_T > 0",
+          "operation_label": "partial_differentiation_wrt_p",
+          "explanation": "定温で圧力 p に関して偏微分すると K(T) および標準圧力 p° の項が消え、-Δν/p が得られる。これにより Δν < 0 で加圧時に K_x が増加する。",
+          "used_node_ids": [
+            "eng.cth.n07_equilibrium_constant_gibbs",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_chem_eq_06",
+      "target_node_id": "chem.eq.n06_fugacity_nonideal_chemical_potential",
+      "route_kind": "reformulation",
+      "title": "実在気体の化学ポテンシャルの圧力積分とフガシティーの導入",
+      "premise_node_ids": [
+        "eng.cth.n01_gibbs_free_energy_def",
+        "eng.cth.n05_chemical_potential_ideal_activity"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "Real gas approaches ideal gas behavior in the zero-pressure limit p -> 0."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mu_i^{\\mathrm{ideal}}(T,p) = \\mu_i^\\circ(T) + RT\\ln\\frac{p_i}{p^\\circ},\\quad \\left(\\frac{\\partial \\mu_i}{\\partial p}\\right)_T = V_{m,i}",
+          "to_latex": "\\mu_i(T,p) = \\mu_i^\\circ(T) + RT\\ln\\frac{f_i}{p^\\circ},\\qquad \\phi_i := \\frac{f_i}{p_i},\\qquad \\lim_{p\\to 0}\\phi_i = 1",
+          "operation_label": "define_fugacity_from_residual_integral",
+          "explanation": "実在気体と理想気体の化学ポテンシャルの差を圧力積分で表してフガシティー係数 φ_i を導入し、有効圧力としてフガシティー f_i を定義する。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def",
+            "eng.cth.n05_chemical_potential_ideal_activity",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu_i^{\\mathrm{ideal}}(T,p) = \\mu_i^\\circ(T) + RT\\ln\\frac{p_i}{p^\\circ},\\quad \\left(\\frac{\\partial \\mu_i}{\\partial p}\\right)_T = V_{m,i}",
+          "to_latex": "\\mu_i(T,p) - \\mu_i^{\\mathrm{ideal}}(T,p) = \\int_0^p \\left(V_{m,i} - \\frac{RT}{p'}\\right)dp' =: RT\\ln\\phi_i",
+          "operation_label": "integrate_chemical_potential_deviation",
+          "explanation": "実在気体と理想気体の化学ポテンシャルの圧力微分差を 0 から p まで積分し、その無次元化指数としてフガシティー係数 φ_i を定める。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu_i(T,p) - \\mu_i^{\\mathrm{ideal}}(T,p) = \\int_0^p \\left(V_{m,i} - \\frac{RT}{p'}\\right)dp' =: RT\\ln\\phi_i",
+          "to_latex": "\\mu_i(T,p) = \\mu_i^\\circ(T) + RT\\ln\\frac{f_i}{p^\\circ},\\qquad \\phi_i := \\frac{f_i}{p_i},\\qquad \\lim_{p\\to 0}\\phi_i = 1",
+          "operation_label": "combine_fugacity_expression",
+          "explanation": "理想気体の化学ポテンシャルに RT ln φ_i を加えて f_i = φ_i p_i とおくと、形式的に理想気体と同型の化学ポテンシャル表示が得られる。",
+          "used_node_ids": [
+            "eng.cth.n05_chemical_potential_ideal_activity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_chem_eq_07",
+      "target_node_id": "chem.eq.n07_clausius_clapeyron_phase_eq",
+      "route_kind": "deductive",
+      "title": "相平衡条件とギブズ＝デュエム式からのクラウジウス＝クラペイロン式の導出",
+      "premise_node_ids": [
+        "eng.cth.n01_gibbs_free_energy_def",
+        "eng.cth.n02_chemical_potential_open_system",
+        "eng.cth.n04_gibbs_duhem_equation",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "Two phases alpha and beta coexist in thermal, mechanical, and chemical equilibrium.",
+        "For Clausius-Clapeyron form, vapor phase is ideal and condensed molar volume is negligible."
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mu_\\alpha(T,p) = \\mu_\\beta(T,p),\\quad d\\mu_\\gamma = -S_{m,\\gamma}\\,dT + V_{m,\\gamma}\\,dp\\;\\;(\\gamma=\\alpha,\\beta)",
+          "to_latex": "\\frac{dp}{dT} = \\frac{\\Delta_{\\mathrm{trs}} H_m}{T\\,\\Delta_{\\mathrm{trs}} V_m},\\qquad \\frac{d\\ln p}{dT} = \\frac{\\Delta_{\\mathrm{vap}} H_m}{R T^2}\\;\\text{ (ideal vapor)}",
+          "operation_label": "phase_coexistence_differential",
+          "explanation": "2相の化学ポテンシャルの微小変化を等置してクラペイロンの式を導き、さらに理想気体近似を適用してクラウジウス＝クラペイロンの式を得る。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def",
+            "eng.cth.n02_chemical_potential_open_system",
+            "eng.cth.n04_gibbs_duhem_equation",
+            "math.calc.m01_chain_rule",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu_\\alpha(T,p) = \\mu_\\beta(T,p),\\quad d\\mu_\\gamma = -S_{m,\\gamma}\\,dT + V_{m,\\gamma}\\,dp\\;\\;(\\gamma=\\alpha,\\beta)",
+          "to_latex": "d\\mu_\\alpha = d\\mu_\\beta \\implies (S_{m,\\beta} - S_{m,\\alpha})\\,dT = (V_{m,\\beta} - V_{m,\\alpha})\\,dp \\implies \\frac{dp}{dT} = \\frac{\\Delta_{\\mathrm{trs}} S_m}{\\Delta_{\\mathrm{trs}} V_m}",
+          "operation_label": "equate_chemical_potential_differentials",
+          "explanation": "共存曲線上の移動において dμ_α = dμ_β が成り立つことから、各相のギブズ＝デュエム式を等置して dp/dT を求める。",
+          "used_node_ids": [
+            "eng.cth.n02_chemical_potential_open_system",
+            "eng.cth.n04_gibbs_duhem_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\mu_\\alpha = d\\mu_\\beta \\implies (S_{m,\\beta} - S_{m,\\alpha})\\,dT = (V_{m,\\beta} - V_{m,\\alpha})\\,dp \\implies \\frac{dp}{dT} = \\frac{\\Delta_{\\mathrm{trs}} S_m}{\\Delta_{\\mathrm{trs}} V_m}",
+          "to_latex": "\\frac{dp}{dT} = \\frac{\\Delta_{\\mathrm{trs}} H_m}{T\\,\\Delta_{\\mathrm{trs}} V_m}",
+          "operation_label": "substitute_transition_entropy",
+          "explanation": "平衡相転移では Δ_trs G_m = Δ_trs H_m - T Δ_trs S_m = 0 であるため、Δ_trs S_m = Δ_trs H_m / T を代入してクラペイロンの式を得る。",
+          "used_node_ids": [
+            "eng.cth.n01_gibbs_free_energy_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dp}{dT} = \\frac{\\Delta_{\\mathrm{trs}} H_m}{T\\,\\Delta_{\\mathrm{trs}} V_m}",
+          "to_latex": "\\frac{dp}{dT} = \\frac{\\Delta_{\\mathrm{trs}} H_m}{T\\,\\Delta_{\\mathrm{trs}} V_m},\\qquad \\frac{d\\ln p}{dT} = \\frac{\\Delta_{\\mathrm{vap}} H_m}{R T^2}\\;\\text{ (ideal vapor)}",
+          "operation_label": "apply_ideal_vapor_approximation",
+          "explanation": "蒸発過程において凝縮相のモル体積を無視し、気相を理想気体 V_{m,g} = RT/p で近似すると Δ_vap V_m ≈ RT/p となり、クラウジウス＝クラペイロンの式が得られる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

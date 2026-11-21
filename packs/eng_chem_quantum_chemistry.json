@@ -1,0 +1,680 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.chem.quantum_chemistry",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "chemistry",
+    "title": "量子化学入門：ボルン＝オッペンハイマー近似・変分法LCAO-MOとハートリー＝フォックの入口",
+    "language": "ja",
+    "description": "分子ハミルトニアンのボルン＝オッペンハイマー近似、水素分子イオンH2+のLCAO-MO結合性/反結合性軌道、スレーター行列式と交換積分の概念を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.qchem.n01_quantum_mechanics_boundary",
+      "short_code": "QC01",
+      "kind": "math_boundary",
+      "title": "分子の非相対論的ハミルトニアンとシュレーディンガー方程式・パウリの排他原理",
+      "summary": "多電子・多核分子系におけるクーロン相互作用を含む全ハミルトニアン、時間非依存シュレーディンガー方程式、および同種フェルミオンに対する波動関数の反対称性原理を境界条件として与える。",
+      "canonical_latex": "\\hat{H}\\Psi(\\mathbf{r},\\mathbf{R}) = E\\Psi(\\mathbf{r},\\mathbf{R}),\\quad \\hat{H} = \\hat{T}_N + \\hat{T}_e + \\hat{V}_{Ne} + \\hat{V}_{ee} + \\hat{V}_{NN},\\quad \\hat{P}_{ij}\\Psi = -\\Psi",
+      "aliases_latex": [
+        "\\hat{H}\\Psi = E\\Psi,\\quad \\hat{P}_{ij}\\Psi(\\dots,\\mathbf{x}_i,\\dots,\\mathbf{x}_j,\\dots) = -\\Psi(\\dots,\\mathbf{x}_j,\\dots,\\mathbf{x}_i,\\dots)"
+      ],
+      "keywords": [
+        "molecular Hamiltonian",
+        "Schrodinger equation",
+        "Pauli exclusion principle",
+        "antisymmetry"
+      ],
+      "domain_tags": [
+        "chemistry",
+        "quantum_chemistry"
+      ]
+    },
+    {
+      "id": "eng.qchem.n02_born_oppenheimer_approx",
+      "short_code": "QC02",
+      "kind": "theorem_formula",
+      "title": "ボルン＝オッペンハイマー近似と電子ハミルトニアン",
+      "summary": "原子核と電子の質量比（m_e / M_N << 1）に基づく断熱変数分離により、核座標をパラメータとする電子シュレーディンガー方程式とポテンシャルエネルギー曲面上の核運動方程式を導く。",
+      "canonical_latex": "\\Psi(\\mathbf{r},\\mathbf{R}) \\approx \\psi_e(\\mathbf{r};\\mathbf{R})\\chi_N(\\mathbf{R}),\\quad \\hat{H}_e\\psi_e(\\mathbf{r};\\mathbf{R}) = E_e(\\mathbf{R})\\psi_e(\\mathbf{r};\\mathbf{R}),\\quad \\big(\\hat{T}_N + E_e(\\mathbf{R}) + V_{NN}(\\mathbf{R})\\big)\\chi_N = E\\chi_N",
+      "aliases_latex": [
+        "\\hat{H}_e = \\hat{T}_e + \\hat{V}_{Ne} + \\hat{V}_{ee},\\quad U(\\mathbf{R}) = E_e(\\mathbf{R}) + V_{NN}(\\mathbf{R})"
+      ],
+      "keywords": [
+        "Born-Oppenheimer approximation",
+        "electronic Hamiltonian",
+        "potential energy surface",
+        "adiabatic separation"
+      ],
+      "domain_tags": [
+        "chemistry",
+        "quantum_chemistry"
+      ]
+    },
+    {
+      "id": "eng.qchem.n03_variational_principle_qm",
+      "short_code": "QC03",
+      "kind": "theorem_formula",
+      "title": "量子力学の変分原理とレイリー＝リッツ法（永年方程式）",
+      "summary": "任意の試行波動関数に対するハミルトニアンの期待値（レイリー商）が厳密な基底状態エネルギーの上界を与えることを示し、基底展開と停留条件から一般化固有値問題（永年方程式）を導く。",
+      "canonical_latex": "E[\\tilde{\\psi}] := \\frac{\\langle \\tilde{\\psi} | \\hat{H}_e | \\tilde{\\psi} \\rangle}{\\langle \\tilde{\\psi} | \\tilde{\\psi} \\rangle} \\ge E_0,\\qquad \\sum_{\\nu} (H_{\\mu\\nu} - E S_{\\mu\\nu}) c_\\nu = 0,\\quad \\det(\\mathbf{H} - E\\mathbf{S}) = 0",
+      "aliases_latex": [
+        "\\mathbf{H}\\mathbf{c} = E\\mathbf{S}\\mathbf{c},\\quad \\delta E[\\tilde{\\psi}] = 0"
+      ],
+      "keywords": [
+        "variational principle",
+        "Rayleigh-Ritz method",
+        "secular equation",
+        "upper bound"
+      ],
+      "domain_tags": [
+        "chemistry",
+        "quantum_chemistry"
+      ]
+    },
+    {
+      "id": "eng.qchem.n04_lcao_mo_ansatz",
+      "short_code": "QC04",
+      "kind": "definition",
+      "title": "LCAO-MO近似と水素分子イオン（H2+）の試行波動関数",
+      "summary": "分子軌道を各原子に局在した原子軌道の線形結合（LCAO）で表現する試行関数を定義し、H2+に対する重なり積分・クーロン積分・共鳴積分の行列表記を構成する。",
+      "canonical_latex": "\\psi_{\\mathrm{MO}} = c_A \\phi_A + c_B \\phi_B,\\quad S_{AB} := \\langle \\phi_A | \\phi_B \\rangle,\\quad H_{AA} := \\langle \\phi_A | \\hat{H}_e | \\phi_A \\rangle,\\quad H_{AB} := \\langle \\phi_A | \\hat{H}_e | \\phi_B \\rangle",
+      "aliases_latex": [
+        "\\psi_{\\mathrm{MO}} = \\sum_{\\mu} c_\\mu \\phi_\\mu,\\quad \\alpha = H_{AA},\\quad \\beta = H_{AB}"
+      ],
+      "keywords": [
+        "LCAO-MO",
+        "overlap integral",
+        "Coulomb integral",
+        "resonance integral"
+      ],
+      "domain_tags": [
+        "chemistry",
+        "quantum_chemistry"
+      ]
+    },
+    {
+      "id": "eng.qchem.n05_h2_plus_bonding_antibonding",
+      "short_code": "QC05",
+      "kind": "theorem_formula",
+      "title": "H2+の結合性軌道・反結合性軌道とエネルギー分裂",
+      "summary": "等核2原子分子イオンH2+の永年方程式を解くことで、対称な結合性軌道と反対称な反結合性軌道、およびそれぞれのエネルギー固有値と分裂幅を導く。",
+      "canonical_latex": "\\psi_{\\pm} = \\frac{\\phi_A \\pm \\phi_B}{\\sqrt{2(1 \\pm S_{AB})}},\\qquad E_{\\pm} = \\frac{H_{AA} \\pm H_{AB}}{1 \\pm S_{AB}}",
+      "aliases_latex": [
+        "\\psi_{\\sigma_g} = \\frac{\\phi_A + \\phi_B}{\\sqrt{2(1 + S_{AB})}},\\quad \\psi_{\\sigma_u^*} = \\frac{\\phi_A - \\phi_B}{\\sqrt{2(1 - S_{AB})}}"
+      ],
+      "keywords": [
+        "bonding orbital",
+        "antibonding orbital",
+        "H2+ molecular ion",
+        "energy splitting"
+      ],
+      "domain_tags": [
+        "chemistry",
+        "quantum_chemistry"
+      ]
+    },
+    {
+      "id": "eng.qchem.n06_slater_determinant_def",
+      "short_code": "QC06",
+      "kind": "definition",
+      "title": "スレーター行列式（反対称化された多電子波動関数）",
+      "summary": "独立電子近似のハートリー積を、パウリの排他原理（任意の2電子の座標・スピン交換に対する符号反転）を満たすように反対称化したN電子スピン軌道の行列式を定義する。",
+      "canonical_latex": "\\Psi_{\\mathrm{SD}}(\\mathbf{x}_1,\\dots,\\mathbf{x}_N) = \\frac{1}{\\sqrt{N!}}\\det\\begin{pmatrix} \\chi_1(\\mathbf{x}_1) & \\cdots & \\chi_N(\\mathbf{x}_1) \\\\ \\vdots & \\ddots & \\vdots \\\\ \\chi_1(\\mathbf{x}_N) & \\cdots & \\chi_N(\\mathbf{x}_N) \\end{pmatrix}",
+      "aliases_latex": [
+        "|\\Psi_{\\mathrm{SD}}\\rangle = |\\chi_1 \\chi_2 \\cdots \\chi_N\\rangle = \\frac{1}{\\sqrt{N!}}\\sum_{P \\in S_N} (-1)^P \\hat{P}\\prod_{i=1}^{N}\\chi_i(\\mathbf{x}_i)"
+      ],
+      "keywords": [
+        "Slater determinant",
+        "spin orbital",
+        "antisymmetrization",
+        "Hartree product"
+      ],
+      "domain_tags": [
+        "chemistry",
+        "quantum_chemistry"
+      ]
+    },
+    {
+      "id": "eng.qchem.n07_hartree_fock_energy_coulomb_exchange",
+      "short_code": "QC07",
+      "kind": "theorem_formula",
+      "title": "単一スレーター行列式のエネルギー期待値とクーロン積分・交換積分",
+      "summary": "正規直交スピン軌道から構成された単一スレーター行列式に対する電子ハミルトニアンの期待値を評価し、1電子積分、古典的静電反発を表すクーロン積分 J_ij、および量子力学的反対称性に由来する交換積分 K_ij を導く。",
+      "canonical_latex": "E_{\\mathrm{HF}} = \\sum_{i=1}^{N} h_{ii} + \\frac{1}{2}\\sum_{i,j=1}^{N} (J_{ij} - K_{ij}),\\quad J_{ij} := \\langle ij | ij \\rangle,\\quad K_{ij} := \\langle ij | ji \\rangle",
+      "aliases_latex": [
+        "E_{\\mathrm{HF}} = \\sum_{i} \\langle i | \\hat{h} | i \\rangle + \\frac{1}{2}\\sum_{i,j} \\big(\\langle ij | ij \\rangle - \\langle ij | ji \\rangle\\big)"
+      ],
+      "keywords": [
+        "Hartree-Fock energy",
+        "Coulomb integral",
+        "exchange integral",
+        "Slater-Condon rules"
+      ],
+      "domain_tags": [
+        "chemistry",
+        "quantum_chemistry"
+      ]
+    },
+    {
+      "id": "eng.qchem.n08_hartree_fock_roothaan_eq",
+      "short_code": "QC08",
+      "kind": "theorem_formula",
+      "title": "ハートリー＝フォック方程式（フォック演算子と自己無撞着場）",
+      "summary": "スピン軌道の正規直交制約のもとで単一スレーター行列式のエネルギー汎関数をラグランジュの未定乗数法により変分し、クーロン演算子と交換演算子を含む1電子有効ハミルトニアン（フォック演算子）の固有値方程式を導く。",
+      "canonical_latex": "\\hat{f}(1)\\chi_i(1) = \\varepsilon_i \\chi_i(1),\\qquad \\hat{f}(1) = \\hat{h}(1) + \\sum_{j=1}^{N}\\big(\\hat{J}_j(1) - \\hat{K}_j(1)\\big)",
+      "aliases_latex": [
+        "\\left[\\hat{h}(1) + \\sum_{j=1}^{N}\\big(\\hat{J}_j(1) - \\hat{K}_j(1)\\big)\\right]\\chi_i(1) = \\varepsilon_i \\chi_i(1)"
+      ],
+      "keywords": [
+        "Hartree-Fock equation",
+        "Fock operator",
+        "self-consistent field",
+        "exchange operator"
+      ],
+      "domain_tags": [
+        "chemistry",
+        "quantum_chemistry"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.qchem.d01_bo_approximation",
+      "target_node_id": "eng.qchem.n02_born_oppenheimer_approx",
+      "route_kind": "deductive",
+      "title": "全分子ハミルトニアンからのボルン＝オッペンハイマー断熱分離",
+      "premise_node_ids": [
+        "eng.qchem.n01_quantum_mechanics_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "電子質量は原子核質量に比べて十分小さい（m_e / M_N << 1）ため、核運動エネルギー演算子の電子波動関数への非断熱結合項を無視できる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\big(\\hat{T}_N + \\hat{H}_e + V_{NN}(\\mathbf{R})\\big)\\Psi(\\mathbf{r},\\mathbf{R}) = E\\Psi(\\mathbf{r},\\mathbf{R})",
+          "to_latex": "\\hat{H}_e\\psi_e(\\mathbf{r};\\mathbf{R}) = E_e(\\mathbf{R})\\psi_e(\\mathbf{r};\\mathbf{R}),\\quad \\big(\\hat{T}_N + E_e(\\mathbf{R}) + V_{NN}(\\mathbf{R})\\big)\\chi_N = E\\chi_N",
+          "operation_label": "断熱積展開と非断熱項の省略",
+          "explanation": "全波動関数を核座標をパラメータとする電子波動関数と核波動関数の積で近似し、核運動エネルギーによる電子状態の微分項を無視することで電子方程式と核方程式に分離する。",
+          "used_node_ids": [
+            "eng.qchem.n01_quantum_mechanics_boundary",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\big(\\hat{T}_N + \\hat{H}_e + V_{NN}(\\mathbf{R})\\big)\\Psi(\\mathbf{r},\\mathbf{R}) = E\\Psi(\\mathbf{r},\\mathbf{R})",
+          "to_latex": "\\Psi(\\mathbf{r},\\mathbf{R}) \\approx \\psi_e(\\mathbf{r};\\mathbf{R})\\chi_N(\\mathbf{R}),\\quad \\hat{H}_e := \\hat{T}_e + \\hat{V}_{Ne} + \\hat{V}_{ee}",
+          "operation_label": "電子ハミルトニアンの定義と変数分離仮設",
+          "explanation": "核の位置を固定パラメータ R とみなした電子ハミルトニアン H_e を定義し、全波動関数を電子部分と核部分の積で近似する。",
+          "used_node_ids": [
+            "eng.qchem.n01_quantum_mechanics_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Psi(\\mathbf{r},\\mathbf{R}) \\approx \\psi_e(\\mathbf{r};\\mathbf{R})\\chi_N(\\mathbf{R}),\\quad \\hat{H}_e := \\hat{T}_e + \\hat{V}_{Ne} + \\hat{V}_{ee}",
+          "to_latex": "\\psi_e\\hat{T}_N\\chi_N + \\chi_N\\hat{H}_e\\psi_e + V_{NN}\\psi_e\\chi_N \\approx E\\psi_e\\chi_N",
+          "operation_label": "核微分における非断熱結合項の省略",
+          "explanation": "積の微分則により現れる核運動量と電子波動関数の交差微分項は質量比 m_e/M_N に比例して微小であるため省略し、T_N が核波動関数のみに作用するとみなす。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\psi_e\\hat{T}_N\\chi_N + \\chi_N\\hat{H}_e\\psi_e + V_{NN}\\psi_e\\chi_N \\approx E\\psi_e\\chi_N",
+          "to_latex": "\\hat{H}_e\\psi_e(\\mathbf{r};\\mathbf{R}) = E_e(\\mathbf{R})\\psi_e(\\mathbf{r};\\mathbf{R}),\\quad \\big(\\hat{T}_N + E_e(\\mathbf{R}) + V_{NN}(\\mathbf{R})\\big)\\chi_N = E\\chi_N",
+          "operation_label": "電子シュレーディンガー方程式と有効ポテンシャルの導出",
+          "explanation": "各核配置 R で電子固有値方程式を解き、得られた電子エネルギー E_e(R) と核間反発 V_NN(R) の和を有効ポテンシャルとして核のシュレーディンガー方程式を得る。",
+          "used_node_ids": [
+            "eng.qchem.n01_quantum_mechanics_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.qchem.d02_variational_rayleigh_ritz",
+      "target_node_id": "eng.qchem.n03_variational_principle_qm",
+      "route_kind": "deductive",
+      "title": "固有状態展開による変分原理の証明と永年方程式の導出",
+      "premise_node_ids": [
+        "eng.qchem.n01_quantum_mechanics_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "電子ハミルトニアンはエルミート演算子であり、正規直交固有状態系が完全系をなす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\tilde{\\psi} = \\sum_{k=0}^{\\infty} a_k \\psi_k,\\quad \\hat{H}_e\\psi_k = E_k\\psi_k\\;(E_0 \\le E_1 \\le \\cdots)",
+          "to_latex": "E[\\tilde{\\psi}] \\ge E_0,\\qquad \\sum_{\\nu} (H_{\\mu\\nu} - E S_{\\mu\\nu}) c_\\nu = 0,\\quad \\det(\\mathbf{H} - E\\mathbf{S}) = 0",
+          "operation_label": "上界不等式の証明と線形展開の停留条件",
+          "explanation": "固有状態展開によりエネルギー期待値が基底エネルギー以上であることを示し、有限基底の線形結合に対する停留条件から永年方程式を導く。",
+          "used_node_ids": [
+            "eng.qchem.n01_quantum_mechanics_boundary",
+            "math.calc.e03_stationary_point_condition",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{\\psi} = \\sum_{k=0}^{\\infty} a_k \\psi_k,\\quad \\hat{H}_e\\psi_k = E_k\\psi_k\\;(E_0 \\le E_1 \\le \\cdots)",
+          "to_latex": "E[\\tilde{\\psi}] - E_0 = \\frac{\\sum_{k=0}^{\\infty} |a_k|^2 (E_k - E_0)}{\\sum_{k=0}^{\\infty} |a_k|^2} \\ge 0",
+          "operation_label": "固有状態展開によるエネルギー上界の導出",
+          "explanation": "すべての固有値について E_k - E_0 >= 0 であり、展開係数の絶対値2乗は非負であるため、レイリー商は必ず E_0 以上となる。",
+          "used_node_ids": [
+            "eng.qchem.n01_quantum_mechanics_boundary",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E[\\tilde{\\psi}] - E_0 = \\frac{\\sum_{k=0}^{\\infty} |a_k|^2 (E_k - E_0)}{\\sum_{k=0}^{\\infty} |a_k|^2} \\ge 0",
+          "to_latex": "\\tilde{\\psi} = \\sum_{\\nu} c_\\nu \\phi_\\nu \\implies E(\\mathbf{c}) = \\frac{\\sum_{\\mu,\\nu} c_\\mu^* c_\\nu H_{\\mu\\nu}}{\\sum_{\\mu,\\nu} c_\\mu^* c_\\nu S_{\\mu\\nu}}",
+          "operation_label": "有限基底展開におけるレイリー商の表示",
+          "explanation": "試行関数を基底関数の線形結合で表し、ハミルトニアン行列要素 H_munu と重なり行列要素 S_munu を用いてエネルギーを係数の2次形式比で表す。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{\\psi} = \\sum_{\\nu} c_\\nu \\phi_\\nu \\implies E(\\mathbf{c}) = \\frac{\\sum_{\\mu,\\nu} c_\\mu^* c_\\nu H_{\\mu\\nu}}{\\sum_{\\mu,\\nu} c_\\mu^* c_\\nu S_{\\mu\\nu}}",
+          "to_latex": "E[\\tilde{\\psi}] \\ge E_0,\\qquad \\sum_{\\nu} (H_{\\mu\\nu} - E S_{\\mu\\nu}) c_\\nu = 0,\\quad \\det(\\mathbf{H} - E\\mathbf{S}) = 0",
+          "operation_label": "展開係数に関する偏微分と永年行列式",
+          "explanation": "変分極値の1階必要条件 dE/dc_mu* = 0 を課すことで同次連立1次方程式（永年方程式）が得られ、非自明解の存在条件として永年行列式 det(H - ES) = 0 が従う。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.qchem.d03_lcao_mo_setup",
+      "target_node_id": "eng.qchem.n04_lcao_mo_ansatz",
+      "route_kind": "reformulation",
+      "title": "H2+電子ハミルトニアンに対する2基底LCAO-MO試行関数の定式化",
+      "premise_node_ids": [
+        "eng.qchem.n02_born_oppenheimer_approx",
+        "eng.qchem.n03_variational_principle_qm"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "2つの原子核A, B上の実原子軌道 phi_A, phi_B はそれぞれ規格化されている（<phi_A|phi_A> = <phi_B|phi_B> = 1）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{H}_e\\psi_e = E_e\\psi_e,\\quad \\tilde{\\psi} = \\sum_{\\nu} c_\\nu \\phi_\\nu",
+          "to_latex": "\\psi_{\\mathrm{MO}} = c_A \\phi_A + c_B \\phi_B,\\quad S_{AB} := \\langle \\phi_A | \\phi_B \\rangle,\\quad H_{AA} := \\langle \\phi_A | \\hat{H}_e | \\phi_A \\rangle,\\quad H_{AB} := \\langle \\phi_A | \\hat{H}_e | \\phi_B \\rangle",
+          "operation_label": "2原子軌道基底への特殊化と積分記号の定義",
+          "explanation": "ボルン＝オッペンハイマー電子ハミルトニアンに対し、分子軌道を原子A, Bの軌道線形結合で近似し、重なり積分・クーロン積分・共鳴積分を定義する。",
+          "used_node_ids": [
+            "eng.qchem.n02_born_oppenheimer_approx",
+            "eng.qchem.n03_variational_principle_qm",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H}_e\\psi_e = E_e\\psi_e,\\quad \\tilde{\\psi} = \\sum_{\\nu} c_\\nu \\phi_\\nu",
+          "to_latex": "\\psi_{\\mathrm{MO}}(\\mathbf{r}) = c_A \\phi_A(\\mathbf{r}) + c_B \\phi_B(\\mathbf{r}),\\quad \\langle \\phi_A | \\phi_A \\rangle = \\langle \\phi_B | \\phi_B \\rangle = 1",
+          "operation_label": "2軌道LCAO-MO試行関数の構成",
+          "explanation": "2原子分子の最小基底として、核Aおよび核Bに中心を持つ規格化済み原子軌道 phi_A, phi_B の線形結合を置く。",
+          "used_node_ids": [
+            "eng.qchem.n02_born_oppenheimer_approx",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\psi_{\\mathrm{MO}}(\\mathbf{r}) = c_A \\phi_A(\\mathbf{r}) + c_B \\phi_B(\\mathbf{r}),\\quad \\langle \\phi_A | \\phi_A \\rangle = \\langle \\phi_B | \\phi_B \\rangle = 1",
+          "to_latex": "\\psi_{\\mathrm{MO}} = c_A \\phi_A + c_B \\phi_B,\\quad S_{AB} := \\langle \\phi_A | \\phi_B \\rangle,\\quad H_{AA} := \\langle \\phi_A | \\hat{H}_e | \\phi_A \\rangle,\\quad H_{AB} := \\langle \\phi_A | \\hat{H}_e | \\phi_B \\rangle",
+          "operation_label": "重なり積分・クーロン積分・共鳴積分の定義",
+          "explanation": "レイリー＝リッツ法に現れる2x2行列要素を重なり積分 S_AB、クーロン積分 H_AA (= H_BB)、共鳴積分 H_AB (= H_BA) として定義する。",
+          "used_node_ids": [
+            "eng.qchem.n03_variational_principle_qm"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.qchem.d04_h2_plus_secular_solution",
+      "target_node_id": "eng.qchem.n05_h2_plus_bonding_antibonding",
+      "route_kind": "deductive",
+      "title": "H2+の2x2永年方程式の解法と結合性・反結合性軌道の導出",
+      "premise_node_ids": [
+        "eng.qchem.n03_variational_principle_qm",
+        "eng.qchem.n04_lcao_mo_ansatz"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "等核対称性により H_BB = H_AA かつ実軌道により H_BA = H_AB, S_BA = S_AB が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\det\\begin{pmatrix} H_{AA} - E & H_{AB} - E S_{AB} \\\\ H_{AB} - E S_{AB} & H_{AA} - E \\end{pmatrix} = 0",
+          "to_latex": "\\psi_{\\pm} = \\frac{\\phi_A \\pm \\phi_B}{\\sqrt{2(1 \\pm S_{AB})}},\\qquad E_{\\pm} = \\frac{H_{AA} \\pm H_{AB}}{1 \\pm S_{AB}}",
+          "operation_label": "2x2永年方程式の対角化と規格化",
+          "explanation": "等核2原子分子の2x2永年行列式を解いてエネルギー固有値 E_+ と E_- を求め、対応する係数比 c_A = +/- c_B と規格化条件から結合性・反結合性軌道を得る。",
+          "used_node_ids": [
+            "eng.qchem.n03_variational_principle_qm",
+            "eng.qchem.n04_lcao_mo_ansatz"
+          ],
+          "sympy_check_hint": "solve((H_AA - E)**2 - (H_AB - E*S_AB)**2, E)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det\\begin{pmatrix} H_{AA} - E & H_{AB} - E S_{AB} \\\\ H_{AB} - E S_{AB} & H_{AA} - E \\end{pmatrix} = 0",
+          "to_latex": "(H_{AA} - E)^2 - (H_{AB} - E S_{AB})^2 = 0 \\implies E_{\\pm} = \\frac{H_{AA} \\pm H_{AB}}{1 \\pm S_{AB}}",
+          "operation_label": "永年行列式の因数分解による固有値の決定",
+          "explanation": "2x2行列式を展開して2乗の差として因数分解し、H_AA - E = +/-(H_AB - E S_AB) を E について解くことで2つのエネルギー準位を得る。",
+          "used_node_ids": [
+            "eng.qchem.n03_variational_principle_qm",
+            "eng.qchem.n04_lcao_mo_ansatz"
+          ],
+          "sympy_check_hint": "solve((H_AA - E)**2 - (H_AB - E*S_AB)**2, E)"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(H_{AA} - E)^2 - (H_{AB} - E S_{AB})^2 = 0 \\implies E_{\\pm} = \\frac{H_{AA} \\pm H_{AB}}{1 \\pm S_{AB}}",
+          "to_latex": "(H_{AA} - E_{\\pm})c_A + (H_{AB} - E_{\\pm}S_{AB})c_B = 0 \\implies c_B = \\pm c_A",
+          "operation_label": "係数比の決定（対称・反対称組合せ）",
+          "explanation": "各固有値 E_+ および E_- を永年方程式の第1行に代入すると、対称組合せ c_B = c_A および反対称組合せ c_B = -c_A が得られる。",
+          "used_node_ids": [
+            "eng.qchem.n03_variational_principle_qm"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(H_{AA} - E_{\\pm})c_A + (H_{AB} - E_{\\pm}S_{AB})c_B = 0 \\implies c_B = \\pm c_A",
+          "to_latex": "\\psi_{\\pm} = \\frac{\\phi_A \\pm \\phi_B}{\\sqrt{2(1 \\pm S_{AB})}},\\qquad E_{\\pm} = \\frac{H_{AA} \\pm H_{AB}}{1 \\pm S_{AB}}",
+          "operation_label": "分子軌道の規格化",
+          "explanation": "規格化条件 <psi_+/- | psi_+/-> = |c_A|^2 (1 + 1 +/- 2 S_AB) = 1 より規格化定数 1/sqrt(2(1 +/- S_AB)) が定まる。",
+          "used_node_ids": [
+            "eng.qchem.n04_lcao_mo_ansatz"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.qchem.d05_slater_determinant_antisym",
+      "target_node_id": "eng.qchem.n06_slater_determinant_def",
+      "route_kind": "deductive",
+      "title": "ハートリー積の反対称化によるスレーター行列式の構成",
+      "premise_node_ids": [
+        "eng.qchem.n01_quantum_mechanics_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "1電子スピン軌道 chi_1, ..., chi_N は互いに正規直交している（<chi_i|chi_j> = delta_ij）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Phi_{\\mathrm{HP}}(\\mathbf{x}_1,\\dots,\\mathbf{x}_N) = \\prod_{i=1}^{N}\\chi_i(\\mathbf{x}_i),\\quad \\hat{P}_{ij}\\Psi = -\\Psi",
+          "to_latex": "\\Psi_{\\mathrm{SD}}(\\mathbf{x}_1,\\dots,\\mathbf{x}_N) = \\frac{1}{\\sqrt{N!}}\\det\\begin{pmatrix} \\chi_1(\\mathbf{x}_1) & \\cdots & \\chi_N(\\mathbf{x}_1) \\\\ \\vdots & \\ddots & \\vdots \\\\ \\chi_1(\\mathbf{x}_N) & \\cdots & \\chi_N(\\mathbf{x}_N) \\end{pmatrix}",
+          "operation_label": "反対称化演算子の適用と行列式表示",
+          "explanation": "独立電子のハートリー積に全置換の符号付き和である反対称化演算子を作用させ、ライプニッツの行列式公式によってスレーター行列式を構成する。",
+          "used_node_ids": [
+            "eng.qchem.n01_quantum_mechanics_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Phi_{\\mathrm{HP}}(\\mathbf{x}_1,\\dots,\\mathbf{x}_N) = \\prod_{i=1}^{N}\\chi_i(\\mathbf{x}_i),\\quad \\hat{P}_{ij}\\Psi = -\\Psi",
+          "to_latex": "\\Psi_{\\mathrm{SD}} = \\frac{1}{\\sqrt{N!}}\\sum_{P \\in S_N} \\operatorname{sgn}(P)\\,\\hat{P}\\big(\\chi_1(\\mathbf{x}_1)\\cdots\\chi_N(\\mathbf{x}_N)\\big)",
+          "operation_label": "全置換に対する反対称化和と規格化",
+          "explanation": "N! 通りの電子置換に対してパリティ符号 sgn(P) を掛けて足し合わせ、正規直交性より <Psi_SD|Psi_SD> = 1 となるよう 1/sqrt(N!) で規格化する。",
+          "used_node_ids": [
+            "eng.qchem.n01_quantum_mechanics_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Psi_{\\mathrm{SD}} = \\frac{1}{\\sqrt{N!}}\\sum_{P \\in S_N} \\operatorname{sgn}(P)\\,\\hat{P}\\big(\\chi_1(\\mathbf{x}_1)\\cdots\\chi_N(\\mathbf{x}_N)\\big)",
+          "to_latex": "\\Psi_{\\mathrm{SD}}(\\mathbf{x}_1,\\dots,\\mathbf{x}_N) = \\frac{1}{\\sqrt{N!}}\\det\\begin{pmatrix} \\chi_1(\\mathbf{x}_1) & \\cdots & \\chi_N(\\mathbf{x}_1) \\\\ \\vdots & \\ddots & \\vdots \\\\ \\chi_1(\\mathbf{x}_N) & \\cdots & \\chi_N(\\mathbf{x}_N) \\end{pmatrix}",
+          "operation_label": "行列式のライプニッツ展開への同定",
+          "explanation": "置換群上の符号付き和は行列式の定義そのものであるため、行を電子座標、列をスピン軌道とする N x N 行列の行列式として表現される。",
+          "used_node_ids": [
+            "eng.qchem.n01_quantum_mechanics_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.qchem.d06_hf_energy_expectation",
+      "target_node_id": "eng.qchem.n07_hartree_fock_energy_coulomb_exchange",
+      "route_kind": "deductive",
+      "title": "スレーター行列式に対する電子ハミルトニアン期待値（クーロン・交換積分）の導出",
+      "premise_node_ids": [
+        "eng.qchem.n02_born_oppenheimer_approx",
+        "eng.qchem.n06_slater_determinant_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "スピン軌道 chi_i は正規直交基底をなし、電子ハミルトニアンは1電子演算子の和と2電子演算子の和に分解される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{H}_e = \\sum_{a=1}^{N}\\hat{h}(a) + \\sum_{a<b}^{N}\\frac{1}{r_{ab}},\\quad E_{\\mathrm{HF}} = \\langle \\Psi_{\\mathrm{SD}} | \\hat{H}_e | \\Psi_{\\mathrm{SD}} \\rangle",
+          "to_latex": "E_{\\mathrm{HF}} = \\sum_{i=1}^{N} h_{ii} + \\frac{1}{2}\\sum_{i,j=1}^{N} (J_{ij} - K_{ij}),\\quad J_{ij} := \\langle ij | ij \\rangle,\\quad K_{ij} := \\langle ij | ji \\rangle",
+          "operation_label": "1電子項・2電子項の期待値評価とクーロン・交換積分の抽出",
+          "explanation": "スレーター行列式の反対称性と軌道の正規直交性を用いて、1電子演算子の和が対角項 h_ii の和に、2電子反発演算子の和が恒等置換のクーロン積分 J_ij と互換置換の交換積分 -K_ij の和に帰着することを示す。",
+          "used_node_ids": [
+            "eng.qchem.n02_born_oppenheimer_approx",
+            "eng.qchem.n06_slater_determinant_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H}_e = \\sum_{a=1}^{N}\\hat{h}(a) + \\sum_{a<b}^{N}\\frac{1}{r_{ab}},\\quad E_{\\mathrm{HF}} = \\langle \\Psi_{\\mathrm{SD}} | \\hat{H}_e | \\Psi_{\\mathrm{SD}} \\rangle",
+          "to_latex": "\\left\\langle \\Psi_{\\mathrm{SD}} \\left| \\sum_{a=1}^{N}\\hat{h}(a) \\right| \\Psi_{\\mathrm{SD}} \\right\\rangle = \\sum_{i=1}^{N} \\langle \\chi_i | \\hat{h} | \\chi_i \\rangle = \\sum_{i=1}^{N} h_{ii}",
+          "operation_label": "1電子演算子期待値の評価",
+          "explanation": "h(a) は1電子座標のみに作用するため、他の N-1 個の電子座標の積分から直交性により置換 P = Q の項のみが残り、各軌道期待値 h_ii の和となる。",
+          "used_node_ids": [
+            "eng.qchem.n02_born_oppenheimer_approx",
+            "eng.qchem.n06_slater_determinant_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left\\langle \\Psi_{\\mathrm{SD}} \\left| \\sum_{a=1}^{N}\\hat{h}(a) \\right| \\Psi_{\\mathrm{SD}} \\right\\rangle = \\sum_{i=1}^{N} \\langle \\chi_i | \\hat{h} | \\chi_i \\rangle = \\sum_{i=1}^{N} h_{ii}",
+          "to_latex": "\\left\\langle \\Psi_{\\mathrm{SD}} \\left| \\sum_{a<b}^{N}\\frac{1}{r_{ab}} \\right| \\Psi_{\\mathrm{SD}} \\right\\rangle = \\sum_{i<j}^{N} \\big(\\langle ij | ij \\rangle - \\langle ij | ji \\rangle\\big)",
+          "operation_label": "2電子反発項における直接項と交換項の導出",
+          "explanation": "2電子演算子 1/r_ab に対しては、N-2 個の電子の直交性から恒等置換（符号+1、クーロン積分 <ij|ij>）と電子a,bを入れ替える互換（符号-1、交換積分 <ij|ji>）の2種類のみが生き残る。",
+          "used_node_ids": [
+            "eng.qchem.n06_slater_determinant_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left\\langle \\Psi_{\\mathrm{SD}} \\left| \\sum_{a<b}^{N}\\frac{1}{r_{ab}} \\right| \\Psi_{\\mathrm{SD}} \\right\\rangle = \\sum_{i<j}^{N} \\big(\\langle ij | ij \\rangle - \\langle ij | ji \\rangle\\big)",
+          "to_latex": "E_{\\mathrm{HF}} = \\sum_{i=1}^{N} h_{ii} + \\frac{1}{2}\\sum_{i,j=1}^{N} (J_{ij} - K_{ij}),\\quad J_{ij} := \\langle ij | ij \\rangle,\\quad K_{ij} := \\langle ij | ji \\rangle",
+          "operation_label": "自己相互作用の相殺による対称和表記",
+          "explanation": "i = j のとき J_ii - K_ii = <ii|ii> - <ii|ii> = 0 で自己相互作用が厳密に相殺するため、i<j の和を 1/2 を掛けて全組 (i, j) の和に書き換えられる。",
+          "used_node_ids": [
+            "eng.qchem.n06_slater_determinant_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.qchem.d07_hf_variational_eq",
+      "target_node_id": "eng.qchem.n08_hartree_fock_roothaan_eq",
+      "route_kind": "deductive",
+      "title": "正規直交制約付き変分法によるハートリー＝フォック方程式の導出",
+      "premise_node_ids": [
+        "eng.qchem.n03_variational_principle_qm",
+        "eng.qchem.n07_hartree_fock_energy_coulomb_exchange"
+      ],
+      "required_math_node_ids": [
+        "eng.qchem.n06_slater_determinant_def",
+        "math.calc.e07_lagrange_multiplier_theorem"
+      ],
+      "assumptions": [
+        "ラグランジュ未定乗数行列 epsilon_ij はエルミートであり、ユニタリ変換によって対角形に選ぶことができる（正準軌道）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{L}[\\{\\chi_i\\}] = E_{\\mathrm{HF}}[\\{\\chi_i\\}] - \\sum_{i,j=1}^{N}\\varepsilon_{ij}\\big(\\langle \\chi_i | \\chi_j \\rangle - \\delta_{ij}\\big)",
+          "to_latex": "\\hat{f}(1)\\chi_i(1) = \\varepsilon_i \\chi_i(1),\\qquad \\hat{f}(1) = \\hat{h}(1) + \\sum_{j=1}^{N}\\big(\\hat{J}_j(1) - \\hat{K}_j(1)\\big)",
+          "operation_label": "ラグランジアンの変分と正準ユニタリ変換",
+          "explanation": "正規直交制約を課したエネルギー汎関数の1次変分をゼロと置き、クーロン・交換演算子を定義してフォック方程式を得たのち、未定乗数行列を対角化して正準ハートリー＝フォック方程式を導く。",
+          "used_node_ids": [
+            "eng.qchem.n03_variational_principle_qm",
+            "eng.qchem.n07_hartree_fock_energy_coulomb_exchange",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}[\\{\\chi_i\\}] = E_{\\mathrm{HF}}[\\{\\chi_i\\}] - \\sum_{i,j=1}^{N}\\varepsilon_{ij}\\big(\\langle \\chi_i | \\chi_j \\rangle - \\delta_{ij}\\big)",
+          "to_latex": "\\delta\\mathcal{L} = \\sum_{i=1}^{N}\\left\\langle \\delta\\chi_i \\left| \\hat{h}\\chi_i + \\sum_{j=1}^{N}(\\hat{J}_j - \\hat{K}_j)\\chi_i - \\sum_{j=1}^{N}\\varepsilon_{ji}\\chi_j \\right.\\right\\rangle + \\mathrm{c.c.} = 0",
+          "operation_label": "軌道変分とクーロン・交換演算子の導入",
+          "explanation": "軌道 chi_i^* の任意変分 delta chi_i* に対して 1/2 の因子が2倍の寄与により相殺され、1電子有効演算子 J_j と非局所交換演算子 K_j が現れる。",
+          "used_node_ids": [
+            "eng.qchem.n07_hartree_fock_energy_coulomb_exchange",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta\\mathcal{L} = \\sum_{i=1}^{N}\\left\\langle \\delta\\chi_i \\left| \\hat{h}\\chi_i + \\sum_{j=1}^{N}(\\hat{J}_j - \\hat{K}_j)\\chi_i - \\sum_{j=1}^{N}\\varepsilon_{ji}\\chi_j \\right.\\right\\rangle + \\mathrm{c.c.} = 0",
+          "to_latex": "\\hat{f}(1)\\chi_i(1) = \\sum_{j=1}^{N}\\varepsilon_{ji}\\chi_j(1),\\qquad \\hat{f}(1) := \\hat{h}(1) + \\sum_{j=1}^{N}\\big(\\hat{J}_j(1) - \\hat{K}_j(1)\\big)",
+          "operation_label": "フォック演算子の定義と一般化HF方程式",
+          "explanation": "変分 delta chi_i* の任意性より、ブラの中身が恒等的に零となる一般化ハートリー＝フォック方程式が得られる。",
+          "used_node_ids": [
+            "eng.qchem.n03_variational_principle_qm"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{f}(1)\\chi_i(1) = \\sum_{j=1}^{N}\\varepsilon_{ji}\\chi_j(1),\\qquad \\hat{f}(1) := \\hat{h}(1) + \\sum_{j=1}^{N}\\big(\\hat{J}_j(1) - \\hat{K}_j(1)\\big)",
+          "to_latex": "\\hat{f}(1)\\chi_i(1) = \\varepsilon_i \\chi_i(1),\\qquad \\hat{f}(1) = \\hat{h}(1) + \\sum_{j=1}^{N}\\big(\\hat{J}_j(1) - \\hat{K}_j(1)\\big)",
+          "operation_label": "ユニタリ変換による正準固有値方程式への帰着",
+          "explanation": "スレーター行列式およびフォック演算子は占有軌道のユニタリ変換に対して不変であるため、エルミートな未定乗数行列を対角化する基底（正準スピン軌道）を選ぶことで固有値方程式を得る。",
+          "used_node_ids": [
+            "eng.qchem.n06_slater_determinant_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

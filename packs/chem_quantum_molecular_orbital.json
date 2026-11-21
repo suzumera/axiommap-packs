@@ -1,0 +1,575 @@
+{
+  "pack_meta": {
+    "pack_id": "chem.quantum.molecular_orbital",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physical_chemistry",
+    "title": "量子化学：ボルン＝オッペンハイマー近似・変分原理とLCAO-MO（ヒュッケル法）",
+    "language": "ja",
+    "description": "多電子ハミルトニアンからボルン＝オッペンハイマー近似、リッツ変分原理、永年方程式、H2+分子イオンの結合性/反結合性軌道、ヒュッケル法を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "chem.qchem.n01_huckel_approx_def",
+      "short_code": "HMO01",
+      "kind": "definition",
+      "title": "共役π電子系に対するヒュッケル近似（Hückel MO法）の定義",
+      "summary": "平面共役炭化水素においてσ電子系とπ電子系を分離し、炭素2pz原子軌道の線形結合（LCAO-MO）に対してクーロン積分α、隣接原子間のみの共鳴積分β、および重なり積分の直交近似（S=I）を課す半経験的モデル。",
+      "canonical_latex": "\\psi_i^{\\pi} = \\sum_{\\mu=1}^{N} c_{\\mu i} \\phi_{\\mu},\\quad H_{\\mu\\mu} = \\alpha,\\quad H_{\\mu\\nu} = \\begin{cases} \\beta & (\\mu,\\nu\\text{ adjacent}) \\\\ 0 & (\\text{otherwise}) \\end{cases},\\quad S_{\\mu\\nu} = \\delta_{\\mu\\nu}",
+      "aliases_latex": [
+        "\\mathbf{H} = \\alpha\\mathbf{I} + \\beta\\mathbf{A},\\quad \\mathbf{S} = \\mathbf{I}"
+      ],
+      "keywords": [
+        "ヒュッケル法",
+        "π電子近似",
+        "クーロン積分",
+        "共鳴積分",
+        "LCAO-MO"
+      ],
+      "domain_tags": [
+        "physical_chemistry"
+      ]
+    },
+    {
+      "id": "chem.qchem.n02_huckel_secular_eq",
+      "short_code": "HMO02",
+      "kind": "theorem_formula",
+      "title": "ヒュッケル永年方程式と無次元エネルギー変数",
+      "summary": "レイリー＝リッツの永年方程式にヒュッケル近似を代入し、無次元パラメータ x = (α - E)/β を導入することで得られる、分子グラフの隣接行列 A に基づく固有値方程式。",
+      "canonical_latex": "\\det(x\\mathbf{I} + \\mathbf{A}) = 0,\\qquad x := \\frac{\\alpha - E}{\\beta},\\qquad E = \\alpha - \\beta x",
+      "aliases_latex": [
+        "\\det(\\mathbf{H} - E\\mathbf{I}) = 0",
+        "\\mathbf{A}\\mathbf{c}_i = -x_i \\mathbf{c}_i"
+      ],
+      "keywords": [
+        "永年方程式",
+        "隣接行列",
+        "固有値問題",
+        "ヒュッケル行列式"
+      ],
+      "domain_tags": [
+        "physical_chemistry"
+      ]
+    },
+    {
+      "id": "chem.qchem.n03_huckel_ethylene_mo",
+      "short_code": "HMO03",
+      "kind": "theorem_formula",
+      "title": "エチレン（C2H4）のヒュッケルπ分子軌道とエネルギー準位",
+      "summary": "2原子共役系であるエチレンにヒュッケル永年方程式を適用して得られる結合性π軌道・反結合性π*軌道のエネルギー準位、波動関数、および基底状態の全π電子エネルギー。",
+      "canonical_latex": "E_{\\pm} = \\alpha \\pm \\beta,\\quad \\psi_{\\pm} = \\frac{1}{\\sqrt{2}}(\\phi_1 \\pm \\phi_2),\\quad E_{\\pi}(\\mathrm{C_2H_4}) = 2\\alpha + 2\\beta",
+      "aliases_latex": [
+        "x^2 - 1 = 0 \\implies x = \\pm 1"
+      ],
+      "keywords": [
+        "エチレン",
+        "結合性軌道",
+        "反結合性軌道",
+        "π電子エネルギー"
+      ],
+      "domain_tags": [
+        "physical_chemistry"
+      ]
+    },
+    {
+      "id": "chem.qchem.n04_huckel_linear_polyene_chain",
+      "short_code": "HMO04",
+      "kind": "theorem_formula",
+      "title": "直鎖共役ポリエン（N原子）のヒュッケル軌道エネルギー一般式",
+      "summary": "固定端境界条件を持つN個の炭素原子からなる直鎖共役ポリエン（1,3-ブタジエン等）のπ分子軌道エネルギーおよび非局在化安定化を与える解析解。",
+      "canonical_latex": "E_k = \\alpha + 2\\beta\\cos\\left(\\frac{k\\pi}{N+1}\\right)\\quad (k = 1, 2, \\dots, N),\\qquad c_{\\mu k} = \\sqrt{\\frac{2}{N+1}}\\sin\\left(\\frac{\\mu k\\pi}{N+1}\\right)",
+      "aliases_latex": [
+        "x_k = -2\\cos\\left(\\frac{k\\pi}{N+1}\\right)"
+      ],
+      "keywords": [
+        "直鎖ポリエン",
+        "1,3-ブタジエン",
+        "非局在化エネルギー",
+        "三重対角行列"
+      ],
+      "domain_tags": [
+        "physical_chemistry"
+      ]
+    },
+    {
+      "id": "chem.qchem.n05_huckel_cyclic_frost_musulin",
+      "short_code": "HMO05",
+      "kind": "theorem_formula",
+      "title": "単環式共役ポリエンのエネルギー準位とヒュッケル則（4n+2則）",
+      "summary": "周期的境界条件を持つN員環共役系のヒュッケル軌道エネルギー一般式（フロスト円図形の基礎）と、2重縮退準位を閉殻に満たす 4n+2 個のπ電子による芳香族安定性の説明。",
+      "canonical_latex": "E_k = \\alpha + 2\\beta\\cos\\left(\\frac{2\\pi k}{N}\\right)\\quad (k = 0, 1, \\dots, N-1),\\qquad N_{\\pi,\\text{closed}} = 4n + 2\\;(n \\in \\mathbb{Z}_{\\ge 0})",
+      "aliases_latex": [
+        "x_k = -2\\cos\\left(\\frac{2\\pi k}{N}\\right)"
+      ],
+      "keywords": [
+        "環状共役系",
+        "ベンゼン",
+        "ヒュッケル則",
+        "芳香族性",
+        "フロスト円"
+      ],
+      "domain_tags": [
+        "physical_chemistry"
+      ]
+    },
+    {
+      "id": "chem.qchem.n06_pi_bond_order_charge_density",
+      "short_code": "HMO06",
+      "kind": "definition",
+      "title": "π電子密度とコールソンのπ結合次数の定義",
+      "summary": "ヒュッケル分子軌道の展開係数と電子占有数から定義される各炭素原子上のπ電子密度および隣接原子間のπ結合次数と、それらを用いた全π電子エネルギーの分解表式。",
+      "canonical_latex": "q_{\\mu} := \\sum_{i} n_i c_{\\mu i}^2,\\qquad p_{\\mu\\nu} := \\sum_{i} n_i c_{\\mu i} c_{\\nu i},\\qquad E_{\\pi} = \\sum_{\\mu=1}^{N} q_{\\mu}\\alpha + 2\\sum_{\\mu < \\nu}^{\\mathrm{adj}} p_{\\mu\\nu}\\beta",
+      "aliases_latex": [
+        "P_{\\mu\\nu} = \\sum_i n_i c_{\\mu i} c_{\\nu i}"
+      ],
+      "keywords": [
+        "π電子密度",
+        "π結合次数",
+        "コールソン結合次数",
+        "反応性指数"
+      ],
+      "domain_tags": [
+        "physical_chemistry"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.chem.qchem.n01_huckel_approx_def.1",
+      "target_node_id": "chem.qchem.n01_huckel_approx_def",
+      "route_kind": "reformulation",
+      "title": "BO近似とLCAO-MOからのヒュッケルπ電子モデルの定式化",
+      "premise_node_ids": [
+        "eng.qchem.n02_born_oppenheimer_approx",
+        "eng.qchem.n04_lcao_mo_ansatz"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "分子骨格は平面であり、対称面に対して反対称な2pz軌道のみがπ分子軌道を構成する（σ-π分離）。",
+        "電子間反発を実効的な1電子ハミルトニアンに取り込み、非隣接原子間の相互作用および異なる原子軌道間の重なりを無視する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{H}_e \\psi_e = E_e \\psi_e,\\quad \\psi_{\\mathrm{MO}} = \\sum_{\\mu=1}^{N} c_{\\mu} \\phi_{\\mu}",
+          "to_latex": "\\psi_i^{\\pi} = \\sum_{\\mu=1}^{N} c_{\\mu i} \\phi_{\\mu},\\quad H_{\\mu\\mu}=\\alpha,\\quad H_{\\mu\\nu}=\\beta\\text{ (adj.) or }0,\\quad S_{\\mu\\nu}=\\delta_{\\mu\\nu}",
+          "operation_label": "huckel_parameterization",
+          "explanation": "固定核電子ハミルトニアンにσ-π分離と炭素2pz軌道のLCAO展開を適用し、行列要素をα, β, δ_{μν}で近似する。",
+          "used_node_ids": [
+            "eng.qchem.n02_born_oppenheimer_approx",
+            "eng.qchem.n04_lcao_mo_ansatz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H}_e \\psi_e = E_e \\psi_e,\\quad \\psi_{\\mathrm{MO}} = \\sum_{\\mu=1}^{N} c_{\\mu} \\phi_{\\mu}",
+          "to_latex": "\\hat{H}_{\\mathrm{eff}}^{\\pi} \\psi_i^{\\pi} = E_i \\psi_i^{\\pi},\\quad \\psi_i^{\\pi} = \\sum_{\\mu=1}^{N} c_{\\mu i} \\phi_{\\mu}",
+          "operation_label": "sigma_pi_separation",
+          "explanation": "ボルン＝オッペンハイマー近似で固定された平面核配置において、π電子に対する有効1電子ハミルトニアンと2pz基底LCAO展開を設定する。",
+          "used_node_ids": [
+            "eng.qchem.n02_born_oppenheimer_approx",
+            "eng.qchem.n04_lcao_mo_ansatz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H}_{\\mathrm{eff}}^{\\pi} \\psi_i^{\\pi} = E_i \\psi_i^{\\pi},\\quad \\psi_i^{\\pi} = \\sum_{\\mu=1}^{N} c_{\\mu i} \\phi_{\\mu}",
+          "to_latex": "\\psi_i^{\\pi} = \\sum_{\\mu=1}^{N} c_{\\mu i} \\phi_{\\mu},\\quad H_{\\mu\\mu}=\\alpha,\\quad H_{\\mu\\nu}=\\beta\\text{ (adj.) or }0,\\quad S_{\\mu\\nu}=\\delta_{\\mu\\nu}",
+          "operation_label": "matrix_element_truncation",
+          "explanation": "対角要素をクーロン積分α、結合で隣接する非対角要素を共鳴積分β（非隣接は0）、重なり積分を直交近似δ_{μν}と置く。",
+          "used_node_ids": [
+            "eng.qchem.n04_lcao_mo_ansatz"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.chem.qchem.n02_huckel_secular_eq.1",
+      "target_node_id": "chem.qchem.n02_huckel_secular_eq",
+      "route_kind": "deductive",
+      "title": "変分原理の永年方程式からのヒュッケル永年行列式の導出",
+      "premise_node_ids": [
+        "eng.qchem.n03_variational_principle_qm",
+        "chem.qchem.n01_huckel_approx_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "共鳴積分 β < 0 であり、特に β ≠ 0 とする。",
+        "全ての共役炭素原子は等価であり、共通の α と β を持つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\det(\\mathbf{H} - E\\mathbf{S}) = 0",
+          "to_latex": "\\det(x\\mathbf{I} + \\mathbf{A}) = 0,\\quad x := \\frac{\\alpha - E}{\\beta}",
+          "operation_label": "huckel_secular_reduction",
+          "explanation": "一般の永年方程式にヒュッケル近似 H=αI+βA, S=I を代入してβで規格化し、隣接行列の固有値方程式へ帰着させる。",
+          "used_node_ids": [
+            "chem.qchem.n01_huckel_approx_def",
+            "eng.qchem.n03_variational_principle_qm"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det(\\mathbf{H} - E\\mathbf{S}) = 0",
+          "to_latex": "\\det(\\mathbf{H} - E\\mathbf{I}) = 0,\\quad \\mathbf{H} = \\alpha\\mathbf{I} + \\beta\\mathbf{A}",
+          "operation_label": "substitute_huckel_matrices",
+          "explanation": "レイリー＝リッツの永年方程式に S=I と隣接行列 A を用いたハミルトニアン表示 H = αI + βA を代入する。",
+          "used_node_ids": [
+            "chem.qchem.n01_huckel_approx_def",
+            "eng.qchem.n03_variational_principle_qm"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det(\\mathbf{H} - E\\mathbf{I}) = 0,\\quad \\mathbf{H} = \\alpha\\mathbf{I} + \\beta\\mathbf{A}",
+          "to_latex": "\\det\\big((\\alpha - E)\\mathbf{I} + \\beta\\mathbf{A}\\big) = 0",
+          "operation_label": "collect_diagonal_terms",
+          "explanation": "単位行列 I の係数を α - E としてまとめる。",
+          "used_node_ids": [
+            "chem.qchem.n01_huckel_approx_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det\\big((\\alpha - E)\\mathbf{I} + \\beta\\mathbf{A}\\big) = 0",
+          "to_latex": "\\det(x\\mathbf{I} + \\mathbf{A}) = 0,\\quad x := \\frac{\\alpha - E}{\\beta}",
+          "operation_label": "dimensionless_scaling",
+          "explanation": "行列式の多重線形性により β^N を括り出して除し、無次元エネルギー変数 x = (α - E)/β を定義する。",
+          "used_node_ids": [
+            "chem.qchem.n01_huckel_approx_def"
+          ],
+          "sympy_check_hint": "sp.Eq(sp.det((alpha - E)*sp.eye(2) + beta*A), beta**2 * sp.det(((alpha - E)/beta)*sp.eye(2) + A))"
+        }
+      ]
+    },
+    {
+      "id": "deriv.chem.qchem.n03_huckel_ethylene_mo.1",
+      "target_node_id": "chem.qchem.n03_huckel_ethylene_mo",
+      "route_kind": "deductive",
+      "title": "エチレンの2×2ヒュッケル永年方程式の解法",
+      "premise_node_ids": [
+        "chem.qchem.n02_huckel_secular_eq",
+        "eng.qchem.n05_h2_plus_bonding_antibonding",
+        "eng.qchem.n01_quantum_mechanics_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "エチレンは2個の等価な炭素原子と2個のπ電子を持つ。",
+        "パウリの排他原理により各空間軌道には逆スピンの電子が最大2個まで占有できる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\det(x\\mathbf{I}_2 + \\mathbf{A}_2) = 0,\\quad \\mathbf{A}_2 = \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}",
+          "to_latex": "E_{\\pm} = \\alpha \\pm \\beta,\\quad \\psi_{\\pm} = \\frac{1}{\\sqrt{2}}(\\phi_1 \\pm \\phi_2),\\quad E_{\\pi} = 2\\alpha + 2\\beta",
+          "operation_label": "solve_2x2_huckel",
+          "explanation": "2×2のヒュッケル行列式を解いて固有エネルギーと正規直交軌道を得て、2個のπ電子を基底状態に配置する。",
+          "used_node_ids": [
+            "chem.qchem.n02_huckel_secular_eq",
+            "eng.qchem.n01_quantum_mechanics_boundary",
+            "eng.qchem.n05_h2_plus_bonding_antibonding"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det(x\\mathbf{I}_2 + \\mathbf{A}_2) = 0,\\quad \\mathbf{A}_2 = \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}",
+          "to_latex": "x^2 - 1 = 0 \\implies x = \\mp 1 \\implies E_{\\pm} = \\alpha \\pm \\beta",
+          "operation_label": "solve_characteristic_polynomial",
+          "explanation": "行列式 x^2 - 1 = 0 を解き、E = α - βx より結合性準位 E_+ = α + β と反結合性準位 E_- = α - β を得る（β < 0）。",
+          "used_node_ids": [
+            "chem.qchem.n02_huckel_secular_eq"
+          ],
+          "sympy_check_hint": "sp.solve(sp.det(x*sp.eye(2) + sp.Matrix([[0,1],[1,0]])), x)"
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x^2 - 1 = 0 \\implies x = \\mp 1 \\implies E_{\\pm} = \\alpha \\pm \\beta",
+          "to_latex": "c_1 \\pm c_2 = 0,\\; c_1^2 + c_2^2 = 1 \\implies \\psi_{\\pm} = \\frac{1}{\\sqrt{2}}(\\phi_1 \\pm \\phi_2)",
+          "operation_label": "find_normalized_eigenvectors",
+          "explanation": "x = -1, +1 を (xI+A)c=0 に代入して規格化条件を課し、H2+と同様の対称・反対称分子軌道を求める。",
+          "used_node_ids": [
+            "chem.qchem.n02_huckel_secular_eq",
+            "eng.qchem.n05_h2_plus_bonding_antibonding"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_1 \\pm c_2 = 0,\\; c_1^2 + c_2^2 = 1 \\implies \\psi_{\\pm} = \\frac{1}{\\sqrt{2}}(\\phi_1 \\pm \\phi_2)",
+          "to_latex": "E_{\\pm} = \\alpha \\pm \\beta,\\quad \\psi_{\\pm} = \\frac{1}{\\sqrt{2}}(\\phi_1 \\pm \\phi_2),\\quad E_{\\pi} = 2\\alpha + 2\\beta",
+          "operation_label": "aufbau_ground_state_energy",
+          "explanation": "パウリの排他原理に従って2個のπ電子がエネルギーの低い ψ_+ 軌道を二重占有し、全π電子エネルギー E_π = 2(α + β) を得る。",
+          "used_node_ids": [
+            "eng.qchem.n01_quantum_mechanics_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.chem.qchem.n04_huckel_linear_polyene_chain.1",
+      "target_node_id": "chem.qchem.n04_huckel_linear_polyene_chain",
+      "route_kind": "deductive",
+      "title": "定在波試行解による直鎖共役ポリエンの固有値・固有ベクトルの導出",
+      "premise_node_ids": [
+        "chem.qchem.n02_huckel_secular_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "N個の炭素原子が非分岐の1次元鎖を形成し、両端の外側では軌道係数がゼロ（c_0 = c_{N+1} = 0）となる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "c_{\\mu-1} + x c_{\\mu} + c_{\\mu+1} = 0\\quad (\\mu=1,\\dots,N,\\; c_0 = c_{N+1} = 0)",
+          "to_latex": "E_k = \\alpha + 2\\beta\\cos\\left(\\frac{k\\pi}{N+1}\\right)\\quad (k = 1, 2, \\dots, N),\\qquad c_{\\mu k} = \\sqrt{\\frac{2}{N+1}}\\sin\\left(\\frac{\\mu k\\pi}{N+1}\\right)",
+          "operation_label": "solve_tridiagonal_difference_eq",
+          "explanation": "固定端境界条件付きの2階線形差分方程式に正弦波試行解を適用し、N原子直鎖ポリエンの軌道エネルギーと係数の一般式を導く。",
+          "used_node_ids": [
+            "chem.qchem.n02_huckel_secular_eq",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_{\\mu-1} + x c_{\\mu} + c_{\\mu+1} = 0\\quad (\\mu=1,\\dots,N,\\; c_0 = c_{N+1} = 0)",
+          "to_latex": "\\sin\\big((\\mu-1)\\theta\\big) + x\\sin(\\mu\\theta) + \\sin\\big((\\mu+1)\\theta\\big) = 0,\\quad c_{\\mu} = A\\sin(\\mu\\theta)",
+          "operation_label": "standing_wave_ansatz",
+          "explanation": "境界条件 c_0 = 0 を自動的に満たす正弦波型試行解 c_μ = A sin(μθ) を差分方程式へ代入する。",
+          "used_node_ids": [
+            "chem.qchem.n02_huckel_secular_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sin\\big((\\mu-1)\\theta\\big) + x\\sin(\\mu\\theta) + \\sin\\big((\\mu+1)\\theta\\big) = 0,\\quad c_{\\mu} = A\\sin(\\mu\\theta)",
+          "to_latex": "(2\\cos\\theta + x)\\sin(\\mu\\theta) = 0,\\quad \\sin\\big((N+1)\\theta\\big) = 0",
+          "operation_label": "trig_addition_factorization",
+          "explanation": "三角関数の加法定理により sin((μ-1)θ) + sin((μ+1)θ) = 2sin(μθ)cosθ と整理し、他端の境界条件 c_{N+1} = 0 を課す。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "sp.simplify(sp.sin((mu-1)*theta) + sp.sin((mu+1)*theta) - 2*sp.sin(mu*theta)*sp.cos(theta))"
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(2\\cos\\theta + x)\\sin(\\mu\\theta) = 0,\\quad \\sin\\big((N+1)\\theta\\big) = 0",
+          "to_latex": "E_k = \\alpha + 2\\beta\\cos\\left(\\frac{k\\pi}{N+1}\\right)\\quad (k = 1, 2, \\dots, N),\\qquad c_{\\mu k} = \\sqrt{\\frac{2}{N+1}}\\sin\\left(\\frac{\\mu k\\pi}{N+1}\\right)",
+          "operation_label": "quantize_theta_and_normalize",
+          "explanation": "非自明解より θ_k = kπ/(N+1) (k=1,...,N) および x_k = -2cosθ_k を得て、E_k = α - βx_k と規格化定数 A = sqrt(2/(N+1)) を求める。",
+          "used_node_ids": [
+            "chem.qchem.n02_huckel_secular_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.chem.qchem.n05_huckel_cyclic_frost_musulin.1",
+      "target_node_id": "chem.qchem.n05_huckel_cyclic_frost_musulin",
+      "route_kind": "deductive",
+      "title": "周期的境界条件による単環式共役系の固有エネルギーとヒュッケル則の導出",
+      "premise_node_ids": [
+        "chem.qchem.n02_huckel_secular_eq",
+        "eng.qchem.n01_quantum_mechanics_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "N個の等価な炭素原子が正N角形の単環を形成し、周期的境界条件 c_{μ+N} = c_μ を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "c_{\\mu-1} + x c_{\\mu} + c_{\\mu+1} = 0\\quad (c_{\\mu+N} = c_{\\mu})",
+          "to_latex": "E_k = \\alpha + 2\\beta\\cos\\left(\\frac{2\\pi k}{N}\\right)\\quad (k = 0, 1, \\dots, N-1),\\qquad N_{\\pi,\\text{closed}} = 4n + 2\\;(n \\in \\mathbb{Z}_{\\ge 0})",
+          "operation_label": "solve_cyclic_huckel_ring",
+          "explanation": "周期境界条件の巡回行列固有値問題を解き、最低エネルギー準位（2電子）と2重縮退準位群（各4電子）から4n+2閉殻則を導く。",
+          "used_node_ids": [
+            "chem.qchem.n02_huckel_secular_eq",
+            "eng.qchem.n01_quantum_mechanics_boundary",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_{\\mu-1} + x c_{\\mu} + c_{\\mu+1} = 0\\quad (c_{\\mu+N} = c_{\\mu})",
+          "to_latex": "e^{i(\\mu-1)\\theta} + x e^{i\\mu\\theta} + e^{i(\\mu+1)\\theta} = 0,\\quad c_{\\mu} = \\frac{1}{\\sqrt{N}} e^{i\\mu\\theta}",
+          "operation_label": "bloch_plane_wave_ansatz",
+          "explanation": "並進対称性（巡回対称性）に適した複素指数型試行解 c_μ = N^{-1/2} exp(iμθ) を差分方程式に代入する。",
+          "used_node_ids": [
+            "chem.qchem.n02_huckel_secular_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e^{i(\\mu-1)\\theta} + x e^{i\\mu\\theta} + e^{i(\\mu+1)\\theta} = 0,\\quad c_{\\mu} = \\frac{1}{\\sqrt{N}} e^{i\\mu\\theta}",
+          "to_latex": "x + 2\\cos\\theta = 0,\\quad e^{i N\\theta} = 1 \\implies \\theta_k = \\frac{2\\pi k}{N}",
+          "operation_label": "periodic_quantization",
+          "explanation": "exp(iμθ)で割りオイラーの公式を用いて x + 2cosθ = 0 を得て、周期境界条件 exp(iNθ) = 1 から θ_k = 2πk/N (k=0,...,N-1) を決定する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x + 2\\cos\\theta = 0,\\quad e^{i N\\theta} = 1 \\implies \\theta_k = \\frac{2\\pi k}{N}",
+          "to_latex": "E_k = \\alpha + 2\\beta\\cos\\left(\\frac{2\\pi k}{N}\\right)\\quad (k = 0, 1, \\dots, N-1),\\qquad N_{\\pi,\\text{closed}} = 4n + 2\\;(n \\in \\mathbb{Z}_{\\ge 0})",
+          "operation_label": "degeneracy_and_huckel_rule",
+          "explanation": "E_k = α - βx_k に代入すると、k=0の非縮退準位（2電子）と k=m, N-m の2重縮退準位対（各4電子）が現れ、閉殻電子数 4n+2 が導かれる。",
+          "used_node_ids": [
+            "chem.qchem.n02_huckel_secular_eq",
+            "eng.qchem.n01_quantum_mechanics_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.chem.qchem.n06_pi_bond_order_charge_density.1",
+      "target_node_id": "chem.qchem.n06_pi_bond_order_charge_density",
+      "route_kind": "deductive",
+      "title": "全π電子エネルギーの期待値展開によるπ電子密度・結合次数の導出",
+      "premise_node_ids": [
+        "chem.qchem.n01_huckel_approx_def",
+        "chem.qchem.n02_huckel_secular_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "各分子軌道の係数ベクトル c_i は実数で規格化（c_i^T c_i = 1）されており、占有数 n_i ∈ {0, 1, 2} を持つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "E_{\\pi} = \\sum_{i} n_i E_i = \\sum_{i} n_i \\mathbf{c}_i^{\\top} \\mathbf{H} \\mathbf{c}_i",
+          "to_latex": "q_{\\mu} := \\sum_{i} n_i c_{\\mu i}^2,\\qquad p_{\\mu\\nu} := \\sum_{i} n_i c_{\\mu i} c_{\\nu i},\\qquad E_{\\pi} = \\sum_{\\mu=1}^{N} q_{\\mu}\\alpha + 2\\sum_{\\mu < \\nu}^{\\mathrm{adj}} p_{\\mu\\nu}\\beta",
+          "operation_label": "energy_decomposition_by_atoms_and_bonds",
+          "explanation": "全π電子エネルギーを原子基底で展開し、対角項の重みをπ電子密度 q_μ、隣接非対角項の重みをπ結合次数 p_{μν} として定義する。",
+          "used_node_ids": [
+            "chem.qchem.n01_huckel_approx_def",
+            "chem.qchem.n02_huckel_secular_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E_{\\pi} = \\sum_{i} n_i E_i = \\sum_{i} n_i \\mathbf{c}_i^{\\top} \\mathbf{H} \\mathbf{c}_i",
+          "to_latex": "E_{\\pi} = \\sum_{i} n_i \\left(\\sum_{\\mu=1}^{N} c_{\\mu i}^2 H_{\\mu\\mu} + \\sum_{\\mu \\neq \\nu} c_{\\mu i} c_{\\nu i} H_{\\mu\\nu}\\right)",
+          "operation_label": "expand_quadratic_form",
+          "explanation": "固有エネルギー E_i = c_i^T H c_i を成分和で書き下し、対角成分（μ=ν）と非対角成分（μ≠ν）に分離する。",
+          "used_node_ids": [
+            "chem.qchem.n02_huckel_secular_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E_{\\pi} = \\sum_{i} n_i \\left(\\sum_{\\mu=1}^{N} c_{\\mu i}^2 H_{\\mu\\mu} + \\sum_{\\mu \\neq \\nu} c_{\\mu i} c_{\\nu i} H_{\\mu\\nu}\\right)",
+          "to_latex": "E_{\\pi} = \\sum_{\\mu=1}^{N} \\left(\\sum_i n_i c_{\\mu i}^2\\right)\\alpha + 2\\sum_{\\mu < \\nu}^{\\mathrm{adj}} \\left(\\sum_i n_i c_{\\mu i} c_{\\nu i}\\right)\\beta",
+          "operation_label": "apply_huckel_parameters_and_swap_sums",
+          "explanation": "ヒュッケル近似 H_{μμ}=α、隣接 H_{μν}=β を代入し、軌道和 i と原子和 μ,ν の順序を入れ替える（μ<ν の対称性から係数2が出る）。",
+          "used_node_ids": [
+            "chem.qchem.n01_huckel_approx_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E_{\\pi} = \\sum_{\\mu=1}^{N} \\left(\\sum_i n_i c_{\\mu i}^2\\right)\\alpha + 2\\sum_{\\mu < \\nu}^{\\mathrm{adj}} \\left(\\sum_i n_i c_{\\mu i} c_{\\nu i}\\right)\\beta",
+          "to_latex": "q_{\\mu} := \\sum_{i} n_i c_{\\mu i}^2,\\qquad p_{\\mu\\nu} := \\sum_{i} n_i c_{\\mu i} c_{\\nu i},\\qquad E_{\\pi} = \\sum_{\\mu=1}^{N} q_{\\mu}\\alpha + 2\\sum_{\\mu < \\nu}^{\\mathrm{adj}} p_{\\mu\\nu}\\beta",
+          "operation_label": "define_density_and_bond_order",
+          "explanation": "カッコ内の軌道和をそれぞれπ電子密度 q_μ およびコールソンのπ結合次数 p_{μν} として定義する。",
+          "used_node_ids": [
+            "chem.qchem.n01_huckel_approx_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

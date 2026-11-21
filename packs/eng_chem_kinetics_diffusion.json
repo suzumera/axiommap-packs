@@ -1,0 +1,744 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.chem.kinetics_diffusion",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "chemical_engineering",
+    "title": "反応速度論と拡散：アレニウス式・フィックの拡散法則・反応器設計基礎",
+    "language": "ja",
+    "description": "1次/2次反応の積分速度式、アレニウスの活性化エネルギー式、ミカエリス＝メンテン式、フィックの第1・第2拡散法則を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.kin.n01_kinetics_diffusion_boundary",
+      "short_code": "KIN01",
+      "kind": "math_boundary",
+      "title": "反応速度論と物質移動の物理的基礎境界",
+      "summary": "素反応の質量作用則、ボルツマン因子に基づく温度依存性、1次元ランダムウォークによる拡散流束、および連続体の物質収支式を統合した境界条件。",
+      "canonical_latex": "r = k \\prod_{i} C_i^{\\nu_i},\\quad \\frac{d\\ln k}{dT} = \\frac{E_a}{R T^2},\\quad J_x = \\frac{1}{2}\\nu\\lambda\\left(C\\left(x-\\frac{\\lambda}{2}\\right)-C\\left(x+\\frac{\\lambda}{2}\\right)\\right),\\quad \\frac{\\partial C}{\\partial t} + \\nabla\\cdot\\mathbf{J} = R_v",
+      "aliases_latex": [
+        "\\frac{\\partial C}{\\partial t} + \\frac{\\partial J_x}{\\partial x} = R_v"
+      ],
+      "keywords": [
+        "質量作用の法則",
+        "活性化エネルギー",
+        "ランダムウォーク",
+        "物質収支"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "kinetics",
+        "transport_phenomena"
+      ]
+    },
+    {
+      "id": "eng.kin.n02_reaction_rate_order_def",
+      "short_code": "KIN02",
+      "kind": "definition",
+      "title": "反応速度と反応次数・速度定数の定義",
+      "summary": "定容回分系における化学種Aの消費速度と、べき乗則に基づく反応次数nおよび反応速度定数kの定義。",
+      "canonical_latex": "r_A := -\\frac{dC_A}{dt} = k C_A^n \\quad (n \\in \\mathbb{R}_{\\ge 0},\\; k > 0)",
+      "aliases_latex": [
+        "\\frac{dC_A}{dt} = -k C_A^n"
+      ],
+      "keywords": [
+        "反応速度",
+        "反応次数",
+        "速度定数",
+        "べき乗則"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "kinetics"
+      ]
+    },
+    {
+      "id": "eng.kin.n03_first_order_integrated_rate",
+      "short_code": "KIN03",
+      "kind": "theorem_formula",
+      "title": "1次反応の積分速度式と半減期",
+      "summary": "反応次数n=1の反応における濃度時間変化の指数関数解と、初期濃度に依存しない半減期の公式。",
+      "canonical_latex": "C_A(t) = C_{A0} e^{-kt},\\qquad t_{1/2} = \\frac{\\ln 2}{k}",
+      "aliases_latex": [
+        "\\ln\\frac{C_A(t)}{C_{A0}} = -kt"
+      ],
+      "keywords": [
+        "1次反応",
+        "積分速度式",
+        "半減期",
+        "指数減衰"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "kinetics"
+      ]
+    },
+    {
+      "id": "eng.kin.n04_second_order_integrated_rate",
+      "short_code": "KIN04",
+      "kind": "theorem_formula",
+      "title": "2次反応の積分速度式と半減期",
+      "summary": "反応次数n=2の単一反応物反応における逆数濃度の線形時間変化と、初期濃度に反比例する半減期の公式。",
+      "canonical_latex": "\\frac{1}{C_A(t)} - \\frac{1}{C_{A0}} = kt,\\qquad t_{1/2} = \\frac{1}{k C_{A0}}",
+      "aliases_latex": [
+        "C_A(t) = \\frac{C_{A0}}{1 + k C_{A0} t}"
+      ],
+      "keywords": [
+        "2次反応",
+        "積分速度式",
+        "半減期"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "kinetics"
+      ]
+    },
+    {
+      "id": "eng.kin.n05_arrhenius_equation",
+      "short_code": "KIN05",
+      "kind": "theorem_formula",
+      "title": "アレニウスの式と活性化エネルギー",
+      "summary": "反応速度定数kの絶対温度Tに対する指数関数的依存性を表すアレニウスの式と、2温度間の関係式。",
+      "canonical_latex": "k(T) = A \\exp\\!\\left(-\\frac{E_a}{R T}\\right),\\qquad \\ln\\frac{k_2}{k_1} = -\\frac{E_a}{R}\\left(\\frac{1}{T_2} - \\frac{1}{T_1}\\right)",
+      "aliases_latex": [
+        "\\ln k = \\ln A - \\frac{E_a}{R T}"
+      ],
+      "keywords": [
+        "アレニウスの式",
+        "活性化エネルギー",
+        "頻度因子"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "kinetics"
+      ]
+    },
+    {
+      "id": "eng.kin.n06_michaelis_menten_kinetics",
+      "short_code": "KIN06",
+      "kind": "theorem_formula",
+      "title": "ミカエリス＝メンテン式（酵素反応速度式）",
+      "summary": "酵素・基質複合体に対する擬定常状態近似（QSSA）から導かれる飽和型反応速度式。",
+      "canonical_latex": "v = \\frac{V_{\\max} [S]}{K_M + [S]},\\qquad K_M := \\frac{k_{-1} + k_2}{k_1},\\qquad V_{\\max} := k_2 [E]_0",
+      "aliases_latex": [
+        "v = \\frac{k_2 [E]_0 [S]}{K_M + [S]}"
+      ],
+      "keywords": [
+        "ミカエリス・メンテン式",
+        "酵素反応",
+        "擬定常状態近似",
+        "ミカエリス定数"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "biochemical_engineering",
+        "kinetics"
+      ]
+    },
+    {
+      "id": "eng.kin.n07_fick_first_law",
+      "short_code": "KIN07",
+      "kind": "theorem_formula",
+      "title": "フィックの第1拡散法則",
+      "summary": "分子拡散による物質流束が濃度勾配に比例することを示す法則（1次元および3次元ベクトル表現）。",
+      "canonical_latex": "J_x = -D \\frac{\\partial C}{\\partial x},\\qquad \\mathbf{J} = -D \\nabla C \\quad \\left(D := \\frac{1}{2}\\nu\\lambda^2\\right)",
+      "aliases_latex": [
+        "\\mathbf{J}_A = -D_{AB} \\nabla C_A"
+      ],
+      "keywords": [
+        "フィックの第1法則",
+        "拡散係数",
+        "物質流束",
+        "濃度勾配"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "transport_phenomena",
+        "diffusion"
+      ]
+    },
+    {
+      "id": "eng.kin.n08_fick_second_law",
+      "short_code": "KIN08",
+      "kind": "theorem_formula",
+      "title": "フィックの第2拡散法則（非定常拡散方程式）",
+      "summary": "反応を伴わない等温・定拡散係数場における濃度の時間・空間発展を記述する放物型偏微分方程式。",
+      "canonical_latex": "\\frac{\\partial C}{\\partial t} = D \\frac{\\partial^2 C}{\\partial x^2},\\qquad \\frac{\\partial C}{\\partial t} = D \\nabla^2 C",
+      "aliases_latex": [
+        "\\frac{\\partial C_A}{\\partial t} = D_{AB} \\nabla^2 C_A"
+      ],
+      "keywords": [
+        "フィックの第2法則",
+        "拡散方程式",
+        "非定常拡散"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "transport_phenomena",
+        "diffusion"
+      ]
+    },
+    {
+      "id": "eng.kin.n09_ideal_reactor_design_eqs",
+      "short_code": "KIN09",
+      "kind": "theorem_formula",
+      "title": "理想反応器（CSTRおよびPFR）の設計方程式",
+      "summary": "定常操作における連続槽型反応器（CSTR）と管型流通反応器（PFR）の空間時間と転化率を結ぶ設計方程式。",
+      "canonical_latex": "\\tau_{\\mathrm{CSTR}} = \\frac{V}{v_0} = \\frac{C_{A0} X_A}{-r_A(X_A)},\\qquad \\tau_{\\mathrm{PFR}} = \\frac{V}{v_0} = C_{A0} \\int_{0}^{X_A} \\frac{dX}{-r_A(X)}",
+      "aliases_latex": [
+        "V_{\\mathrm{CSTR}} = \\frac{F_{A0} X_A}{-r_A}",
+        "V_{\\mathrm{PFR}} = F_{A0} \\int_{0}^{X_A} \\frac{dX}{-r_A}"
+      ],
+      "keywords": [
+        "反応器設計",
+        "CSTR",
+        "PFR",
+        "空間時間",
+        "転化率"
+      ],
+      "domain_tags": [
+        "chemical_engineering",
+        "reactor_design"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "der.kin.n02_rate_def",
+      "target_node_id": "eng.kin.n02_reaction_rate_order_def",
+      "route_kind": "reformulation",
+      "title": "質量作用の法則と時間微分定義からの反応速度式定式化",
+      "premise_node_ids": [
+        "eng.kin.n01_kinetics_diffusion_boundary",
+        "math.calc.m20_derivative_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "定容回分反応器（体積 V 一定）かつ等温条件",
+        "単一反応物 A に関するべき乗則近似が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r = k \\prod_i C_i^{\\nu_i},\\quad R_v = -r_A,\\quad \\frac{\\partial C_A}{\\partial t} = R_v",
+          "to_latex": "r_A := -\\frac{dC_A}{dt} = k C_A^n",
+          "operation_label": "定容物質収支とべき乗則の適用",
+          "explanation": "空間一様・定容の物質収支式に単一成分の質量作用則を適用し、反応次数 n の反応速度式を定義する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r = k \\prod_i C_i^{\\nu_i},\\quad R_v = -r_A,\\quad \\frac{\\partial C_A}{\\partial t} = R_v",
+          "to_latex": "-\\lim_{\\Delta t \\to 0} \\frac{C_A(t+\\Delta t) - C_A(t)}{\\Delta t} = -\\frac{dC_A}{dt} = r_A",
+          "operation_label": "導関数定義による消費速度表現",
+          "explanation": "流束のない完全混合・定容系では偏微分が時間常微分に帰着し、消費速度を導関数で定義する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\lim_{\\Delta t \\to 0} \\frac{C_A(t+\\Delta t) - C_A(t)}{\\Delta t} = -\\frac{dC_A}{dt} = r_A",
+          "to_latex": "r_A := -\\frac{dC_A}{dt} = k C_A^n",
+          "operation_label": "単一反応物に対するn次速度式の確定",
+          "explanation": "反応物 A のみに依存する一般次数 n のべき乗則を適用して反応速度定義を得る。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.kin.n03_first_order",
+      "target_node_id": "eng.kin.n03_first_order_integrated_rate",
+      "route_kind": "deductive",
+      "title": "1次反応微分方程式の変数分離積分と半減期の導出",
+      "premise_node_ids": [
+        "eng.kin.n02_reaction_rate_order_def",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "反応次数 n = 1、初期条件 C_A(0) = C_{A0} > 0",
+        "速度定数 k > 0 は時間に対して一定"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-\\frac{dC_A}{dt} = k C_A,\\quad C_A(0) = C_{A0}",
+          "to_latex": "C_A(t) = C_{A0} e^{-kt},\\qquad t_{1/2} = \\frac{\\ln 2}{k}",
+          "operation_label": "変数分離による定積分と半減期評価",
+          "explanation": "1次反応の常微分方程式を変数分離して時刻 0 から t まで積分し、C_A(t_{1/2}) = C_{A0}/2 を解く。",
+          "used_node_ids": [
+            "eng.kin.n02_reaction_rate_order_def",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": "integrate(-1/C, (C, C0, Ct)) - integrate(k, (tau, 0, t))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{dC_A}{dt} = k C_A,\\quad C_A(0) = C_{A0}",
+          "to_latex": "\\int_{C_{A0}}^{C_A(t)} \\frac{dC}{C} = -\\int_{0}^{t} k\\,d\\tau",
+          "operation_label": "変数分離と定積分の設定",
+          "explanation": "C_A > 0 で両辺を割り、置換積分の形として濃度と時間の定積分を設定する。",
+          "used_node_ids": [
+            "eng.kin.n02_reaction_rate_order_def",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{C_{A0}}^{C_A(t)} \\frac{dC}{C} = -\\int_{0}^{t} k\\,d\\tau",
+          "to_latex": "\\ln\\frac{C_A(t)}{C_{A0}} = -kt \\implies C_A(t) = C_{A0} e^{-kt}",
+          "operation_label": "微積分学の基本定理による積分実行",
+          "explanation": "1/C の原始関数が ln C であることを用いて定積分を評価し、指数関数表示を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": "Eq(log(C_t/C_0), -k*t)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln\\frac{C_A(t)}{C_{A0}} = -kt \\implies C_A(t) = C_{A0} e^{-kt}",
+          "to_latex": "C_A(t) = C_{A0} e^{-kt},\\qquad t_{1/2} = \\frac{\\ln 2}{k}",
+          "operation_label": "半減期条件 C_A(t_{1/2}) = C_{A0}/2 の代入",
+          "explanation": "濃度が初期値の半分になる時刻 t_{1/2} を代入して半減期を求める。",
+          "used_node_ids": [
+            "eng.kin.n02_reaction_rate_order_def"
+          ],
+          "sympy_check_hint": "solve(Eq(C0*exp(-k*t_half), C0/2), t_half)"
+        }
+      ]
+    },
+    {
+      "id": "der.kin.n04_second_order",
+      "target_node_id": "eng.kin.n04_second_order_integrated_rate",
+      "route_kind": "deductive",
+      "title": "2次反応微分方程式の積分速度式と半減期の導出",
+      "premise_node_ids": [
+        "eng.kin.n02_reaction_rate_order_def",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "反応次数 n = 2、初期条件 C_A(0) = C_{A0} > 0",
+        "速度定数 k > 0 は定数"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-\\frac{dC_A}{dt} = k C_A^2,\\quad C_A(0) = C_{A0}",
+          "to_latex": "\\frac{1}{C_A(t)} - \\frac{1}{C_{A0}} = kt,\\qquad t_{1/2} = \\frac{1}{k C_{A0}}",
+          "operation_label": "変数分離積分と半減期計算",
+          "explanation": "2次反応の常微分方程式を変数分離して積分し、さらに半減期を導く。",
+          "used_node_ids": [
+            "eng.kin.n02_reaction_rate_order_def",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": "integrate(-1/C**2, (C, C0, Ct)) - integrate(k, (tau, 0, t))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{dC_A}{dt} = k C_A^2,\\quad C_A(0) = C_{A0}",
+          "to_latex": "\\int_{C_{A0}}^{C_A(t)} \\left(-\\frac{1}{C^2}\\right) dC = \\int_{0}^{t} k\\,d\\tau",
+          "operation_label": "変数分離と定積分表現",
+          "explanation": "両辺を C_A^2 で割り、0 から t までの時間積分に変換する。",
+          "used_node_ids": [
+            "eng.kin.n02_reaction_rate_order_def",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{C_{A0}}^{C_A(t)} \\left(-\\frac{1}{C^2}\\right) dC = \\int_{0}^{t} k\\,d\\tau",
+          "to_latex": "\\frac{1}{C_A(t)} - \\frac{1}{C_{A0}} = kt",
+          "operation_label": "べき乗の定積分評価",
+          "explanation": "-1/C^2 の原始関数が 1/C であることを用いて微積分学の基本定理を適用する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{C_A(t)} - \\frac{1}{C_{A0}} = kt",
+          "to_latex": "\\frac{1}{C_A(t)} - \\frac{1}{C_{A0}} = kt,\\qquad t_{1/2} = \\frac{1}{k C_{A0}}",
+          "operation_label": "半減期条件 C_A(t_{1/2}) = C_{A0}/2 の代入",
+          "explanation": "C_A(t_{1/2}) = C_{A0}/2 を代入して 2/C_{A0} - 1/C_{A0} = k t_{1/2} より半減期を得る。",
+          "used_node_ids": [
+            "eng.kin.n02_reaction_rate_order_def"
+          ],
+          "sympy_check_hint": "solve(Eq(2/C0 - 1/C0, k*t_half), t_half)"
+        }
+      ]
+    },
+    {
+      "id": "der.kin.n05_arrhenius",
+      "target_node_id": "eng.kin.n05_arrhenius_equation",
+      "route_kind": "deductive",
+      "title": "温度依存微分式からのアレニウス式導出",
+      "premise_node_ids": [
+        "eng.kin.n01_kinetics_diffusion_boundary",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "活性化エネルギー E_a は対象温度範囲で一定",
+        "気体定数 R > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d\\ln k}{dT} = \\frac{E_a}{R T^2}",
+          "to_latex": "k(T) = A \\exp\\!\\left(-\\frac{E_a}{R T}\\right),\\qquad \\ln\\frac{k_2}{k_1} = -\\frac{E_a}{R}\\left(\\frac{1}{T_2} - \\frac{1}{T_1}\\right)",
+          "operation_label": "温度に関する不定積分および定積分",
+          "explanation": "速度定数の対数温度微分の式を積分し、頻度因子 A を用いたアレニウス式と2温度関係式を導く。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": "integrate(Ea/(R*T**2), T)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\ln k}{dT} = \\frac{E_a}{R T^2}",
+          "to_latex": "\\ln k(T) = \\ln A - \\frac{E_a}{R T} \\implies k(T) = A \\exp\\!\\left(-\\frac{E_a}{R T}\\right)",
+          "operation_label": "不定積分と積分定数 ln A の導入",
+          "explanation": "1/T^2 の原始関数 -1/T を用いて積分し、積分定数を ln A として指数形式に書き換える。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln k(T) = \\ln A - \\frac{E_a}{R T} \\implies k(T) = A \\exp\\!\\left(-\\frac{E_a}{R T}\\right)",
+          "to_latex": "k(T) = A \\exp\\!\\left(-\\frac{E_a}{R T}\\right),\\qquad \\ln\\frac{k_2}{k_1} = -\\frac{E_a}{R}\\left(\\frac{1}{T_2} - \\frac{1}{T_1}\\right)",
+          "operation_label": "2温度 T_1, T_2 での定積分評価",
+          "explanation": "温度 T_1 から T_2 まで定積分する（あるいは両辺の差を取る）ことで A を消去した2点関係式を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.kin.n06_michaelis_menten",
+      "target_node_id": "eng.kin.n06_michaelis_menten_kinetics",
+      "route_kind": "deductive",
+      "title": "擬定常状態近似によるミカエリス＝メンテン式の導出",
+      "premise_node_ids": [
+        "eng.kin.n02_reaction_rate_order_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "素反応機構 E + S <-> ES (k_1, k_{-1}) および ES -> E + P (k_2)",
+        "酵素の総濃度保存 [E]_0 = [E] + [ES]",
+        "中間体 ES に対する擬定常状態近似 d[ES]/dt ≈ 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d[ES]}{dt} = k_1[E][S] - (k_{-1} + k_2)[ES] \\approx 0,\\quad [E]_0 = [E] + [ES],\\quad v = k_2[ES]",
+          "to_latex": "v = \\frac{V_{\\max} [S]}{K_M + [S]},\\qquad K_M := \\frac{k_{-1} + k_2}{k_1},\\qquad V_{\\max} := k_2 [E]_0",
+          "operation_label": "擬定常状態近似と酵素保存則の連立解法",
+          "explanation": "ES 濃度の定常条件と総酵素濃度の保存則を連立して [ES] を求め、生成速度 v = k_2[ES] に代入する。",
+          "used_node_ids": [
+            "eng.kin.n02_reaction_rate_order_def"
+          ],
+          "sympy_check_hint": "solve([k1*(E0-ES)*S - (km1+k2)*ES], ES)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d[ES]}{dt} = k_1[E][S] - (k_{-1} + k_2)[ES] \\approx 0,\\quad [E]_0 = [E] + [ES],\\quad v = k_2[ES]",
+          "to_latex": "k_1([E]_0 - [ES])[S] = (k_{-1} + k_2)[ES]",
+          "operation_label": "遊離酵素濃度 [E] の消去",
+          "explanation": "保存則 [E] = [E]_0 - [ES] を擬定常状態条件に代入する。",
+          "used_node_ids": [
+            "eng.kin.n02_reaction_rate_order_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_1([E]_0 - [ES])[S] = (k_{-1} + k_2)[ES]",
+          "to_latex": "[ES] = \\frac{[E]_0 [S]}{K_M + [S]},\\qquad K_M := \\frac{k_{-1} + k_2}{k_1}",
+          "operation_label": "複合体濃度 [ES] の代数解と K_M の定義",
+          "explanation": "[ES] について整理し、ミカエリス定数 K_M = (k_{-1} + k_2)/k_1 を定義する。",
+          "used_node_ids": [
+            "eng.kin.n02_reaction_rate_order_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[ES] = \\frac{[E]_0 [S]}{K_M + [S]},\\qquad K_M := \\frac{k_{-1} + k_2}{k_1}",
+          "to_latex": "v = \\frac{V_{\\max} [S]}{K_M + [S]},\\qquad K_M := \\frac{k_{-1} + k_2}{k_1},\\qquad V_{\\max} := k_2 [E]_0",
+          "operation_label": "生成速度 v = k_2 [ES] への代入",
+          "explanation": "v = k_2[ES] に [ES] を代入し、最大反応速度 V_max = k_2[E]_0 を定義してミカエリス＝メンテン式を得る。",
+          "used_node_ids": [
+            "eng.kin.n02_reaction_rate_order_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.kin.n07_fick_first",
+      "target_node_id": "eng.kin.n07_fick_first_law",
+      "route_kind": "deductive",
+      "title": "ランダムウォークとテイラー展開によるフィックの第1法則導出",
+      "premise_node_ids": [
+        "eng.kin.n01_kinetics_diffusion_boundary",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "平均自由行程（跳躍距離）λ は濃度の空間変化スケールに対して十分小さい",
+        "等方的な拡散媒質（拡散係数 D が方向によらず一定）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J_x = \\frac{1}{2}\\nu\\lambda\\left(C\\left(x-\\frac{\\lambda}{2}\\right)-C\\left(x+\\frac{\\lambda}{2}\\right)\\right)",
+          "to_latex": "J_x = -D \\frac{\\partial C}{\\partial x},\\qquad \\mathbf{J} = -D \\nabla C \\quad \\left(D := \\frac{1}{2}\\nu\\lambda^2\\right)",
+          "operation_label": "1次テイラー展開と連続極限・3次元一般化",
+          "explanation": "ランダムウォークの正味流束式を λ に関してテイラー展開して第1法則を導き、等方性を仮定して3次元勾配表示へ一般化する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_x = \\frac{1}{2}\\nu\\lambda\\left(C\\left(x-\\frac{\\lambda}{2}\\right)-C\\left(x+\\frac{\\lambda}{2}\\right)\\right)",
+          "to_latex": "J_x = \\frac{1}{2}\\nu\\lambda\\left(-\\lambda\\frac{\\partial C}{\\partial x} + \\mathcal{O}(\\lambda^3)\\right)",
+          "operation_label": "C(x ± λ/2) のテイラー展開",
+          "explanation": "位置 x まわりで 1 次テイラー展開（偶数次項が相殺）を適用し、濃度勾配項を抽出する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_x = \\frac{1}{2}\\nu\\lambda\\left(-\\lambda\\frac{\\partial C}{\\partial x} + \\mathcal{O}(\\lambda^3)\\right)",
+          "to_latex": "J_x = -D \\frac{\\partial C}{\\partial x},\\qquad \\mathbf{J} = -D \\nabla C \\quad \\left(D := \\frac{1}{2}\\nu\\lambda^2\\right)",
+          "operation_label": "拡散係数 D の定義と3次元ベクトル表現",
+          "explanation": "λ→0 かつ νλ^2/2 = D を保つ連続極限を取り、各座標軸成分をまとめて ∇C 表示を得る。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.kin.n08_fick_second",
+      "target_node_id": "eng.kin.n08_fick_second_law",
+      "route_kind": "deductive",
+      "title": "物質収支式とフィックの第1法則からの第2法則導出",
+      "premise_node_ids": [
+        "eng.kin.n01_kinetics_diffusion_boundary",
+        "eng.kin.n07_fick_first_law",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "化学反応による生成・消滅がない（R_v = 0）",
+        "拡散係数 D が空間座標に対して一定"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial C}{\\partial t} + \\nabla\\cdot\\mathbf{J} = 0,\\qquad \\mathbf{J} = -D \\nabla C",
+          "to_latex": "\\frac{\\partial C}{\\partial t} = D \\frac{\\partial^2 C}{\\partial x^2},\\qquad \\frac{\\partial C}{\\partial t} = D \\nabla^2 C",
+          "operation_label": "流束則の代入と定数拡散係数の括り出し",
+          "explanation": "無反応物質収支式にフィックの第1法則を代入し、定数 D を微分作用素の外に出して第2法則を得る。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "eng.kin.n07_fick_first_law",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial C}{\\partial t} + \\nabla\\cdot\\mathbf{J} = 0,\\qquad \\mathbf{J} = -D \\nabla C",
+          "to_latex": "\\frac{\\partial C}{\\partial t} = -\\nabla\\cdot(-D \\nabla C) = \\nabla\\cdot(D \\nabla C)",
+          "operation_label": "フィックの第1法則の物質収支式への代入",
+          "explanation": "流束ベクトル J を -D ∇C で置き換えて移項する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "eng.kin.n07_fick_first_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial C}{\\partial t} = -\\nabla\\cdot(-D \\nabla C) = \\nabla\\cdot(D \\nabla C)",
+          "to_latex": "\\frac{\\partial C}{\\partial t} = D \\frac{\\partial^2 C}{\\partial x^2},\\qquad \\frac{\\partial C}{\\partial t} = D \\nabla^2 C",
+          "operation_label": "定数 D に対するラプラシアン化",
+          "explanation": "微分作用素の線形性により空間一定の D を外に出し、1次元および3次元の拡散方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.kin.n09_reactor_design",
+      "target_node_id": "eng.kin.n09_ideal_reactor_design_eqs",
+      "route_kind": "deductive",
+      "title": "定常物質収支と転化率による理想反応器設計方程式の導出",
+      "premise_node_ids": [
+        "eng.kin.n01_kinetics_diffusion_boundary",
+        "eng.kin.n02_reaction_rate_order_def",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "定常状態（∂C_A/∂t = 0）かつ体積流量 v_0 一定",
+        "CSTRは完全混合、PFRは半径方向一様・軸方向拡散無視の押し出し流れ",
+        "転化率 X_A := (F_{A0} - F_A)/F_{A0}, F_{A0} = v_0 C_{A0}"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F_{A0} - F_A + r_A V = 0\\;(\\text{CSTR}),\\qquad \\frac{dF_A}{dV} = r_A\\;(\\text{PFR}),\\qquad F_A = F_{A0}(1 - X)",
+          "to_latex": "\\tau_{\\mathrm{CSTR}} = \\frac{V}{v_0} = \\frac{C_{A0} X_A}{-r_A(X_A)},\\qquad \\tau_{\\mathrm{PFR}} = \\frac{V}{v_0} = C_{A0} \\int_{0}^{X_A} \\frac{dX}{-r_A(X)}",
+          "operation_label": "転化率変数への変換とPFRの定積分",
+          "explanation": "定常モル収支式を転化率 X で書き換え、CSTRは代数的整理、PFRは体積 0 から V までの定積分により空間時間表示を導く。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "eng.kin.n02_reaction_rate_order_def",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F_{A0} - F_A + r_A V = 0\\;(\\text{CSTR}),\\qquad \\frac{dF_A}{dV} = r_A\\;(\\text{PFR}),\\qquad F_A = F_{A0}(1 - X)",
+          "to_latex": "\\tau_{\\mathrm{CSTR}} = \\frac{V}{v_0} = \\frac{C_{A0} X_A}{-r_A(X_A)},\\qquad dV = F_{A0}\\frac{dX}{-r_A(X)}\\;(\\text{PFR})",
+          "operation_label": "CSTR設計式の整理とPFR微小体積収支の変数変換",
+          "explanation": "F_{A0} - F_A = F_{A0} X_A および dF_A = -F_{A0} dX を代入し、F_{A0} = v_0 C_{A0} で割る。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "eng.kin.n02_reaction_rate_order_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tau_{\\mathrm{CSTR}} = \\frac{V}{v_0} = \\frac{C_{A0} X_A}{-r_A(X_A)},\\qquad dV = F_{A0}\\frac{dX}{-r_A(X)}\\;(\\text{PFR})",
+          "to_latex": "\\tau_{\\mathrm{CSTR}} = \\frac{V}{v_0} = \\frac{C_{A0} X_A}{-r_A(X_A)},\\qquad \\tau_{\\mathrm{PFR}} = \\frac{V}{v_0} = C_{A0} \\int_{0}^{X_A} \\frac{dX}{-r_A(X)}",
+          "operation_label": "PFR反応器体積の定積分",
+          "explanation": "PFR の入口 (V=0, X=0) から出口 (V, X_A) まで定積分し、v_0 で割って空間時間 τ_{PFR} を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
