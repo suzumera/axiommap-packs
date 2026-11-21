@@ -1,0 +1,844 @@
+{
+  "pack_meta": {
+    "pack_id": "astro.compact.accretion_bh",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "astronomy",
+    "title": "ブラックホールと降着円盤：ISCO・シャクラ＝スニャエフ標準円盤・ホーキング放射",
+    "language": "ja",
+    "description": "シュヴァルツシルト時空の有効ポテンシャルと最内安定円軌道(ISCO)、粘性降着円盤の温度分布 T(r)∝r^(-3/4)、降着光度効率を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "astro.bh.n01_schwarzschild_metric",
+      "short_code": "BH01",
+      "kind": "definition",
+      "title": "シュヴァルツシルト計量とシュヴァルツシルト半径",
+      "summary": "静的・球対称な真空アインシュタイン方程式の厳密解として与えられるシュヴァルツシルト時空の線素と、事象の地平面を特徴づけるシュヴァルツシルト半径の定義。",
+      "canonical_latex": "ds^2 = -\\left(1 - \\frac{r_s}{r}\\right)c^2 dt^2 + \\left(1 - \\frac{r_s}{r}\\right)^{-1} dr^2 + r^2(d\\theta^2 + \\sin^2\\theta\\,d\\varphi^2),\\quad r_s := \\frac{2GM}{c^2}",
+      "aliases_latex": [
+        "ds^2 = -(1-2GM/c^2 r)c^2 dt^2 + (1-2GM/c^2 r)^{-1}dr^2 + r^2 d\\Omega^2"
+      ],
+      "keywords": [
+        "シュヴァルツシルト計量",
+        "シュヴァルツシルト半径",
+        "事象の地平面",
+        "ブラックホール",
+        "一般相対論"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "relativity"
+      ]
+    },
+    {
+      "id": "astro.bh.n02_schwarzschild_effective_potential",
+      "short_code": "BH02",
+      "kind": "theorem_formula",
+      "title": "シュヴァルツシルト時空における質点の有効ポテンシャル",
+      "summary": "赤道面内の測地線運動における保存エネルギーと比角運動量から導かれる、動径方向運動の1次元有効ポテンシャル。",
+      "canonical_latex": "\\frac{1}{2}\\dot{r}^2 + V_{\\mathrm{eff}}(r) = \\frac{E^2 - m^2 c^4}{2m^2 c^2},\\quad V_{\\mathrm{eff}}(r) := -\\frac{GM}{r} + \\frac{h^2}{2r^2} - \\frac{GM h^2}{c^2 r^3}",
+      "aliases_latex": [
+        "V_{\\mathrm{eff}}(r) = -GM/r + h^2/(2r^2) - GMh^2/(c^2 r^3)",
+        "\\dot{r}^2 + (1 - r_s/r)(c^2 + h^2/r^2) = (E/mc)^2"
+      ],
+      "keywords": [
+        "有効ポテンシャル",
+        "測地線方程式",
+        "シュヴァルツシルト時空",
+        "比角運動量"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "relativity"
+      ]
+    },
+    {
+      "id": "astro.bh.n03_isco_radius",
+      "short_code": "BH03",
+      "kind": "theorem_formula",
+      "title": "最内安定円軌道（ISCO）の半径と角運動量",
+      "summary": "有効ポテンシャルの1階微分および2階微分がともに零となる臨界点として定まる、無回転ブラックホール周りの最内安定円軌道半径。",
+      "canonical_latex": "V_{\\mathrm{eff}}'(r_{\\mathrm{ISCO}}) = 0 \\land V_{\\mathrm{eff}}''(r_{\\mathrm{ISCO}}) = 0 \\implies r_{\\mathrm{ISCO}} = 3r_s = \\frac{6GM}{c^2},\\quad h_{\\mathrm{ISCO}} = \\frac{2\\sqrt{3}GM}{c}",
+      "aliases_latex": [
+        "r_{\\mathrm{ISCO}} = 6GM/c^2",
+        "r_{\\mathrm{ISCO}} = 3r_s"
+      ],
+      "keywords": [
+        "ISCO",
+        "最内安定円軌道",
+        "安定性",
+        "ブラックホール"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "relativity"
+      ]
+    },
+    {
+      "id": "astro.bh.n04_accretion_efficiency",
+      "short_code": "BH04",
+      "kind": "theorem_formula",
+      "title": "ISCO における束縛エネルギーと降着光度効率",
+      "summary": "無回転ブラックホールの ISCO に到達した物質が解放する最大比束縛エネルギーと、降着質量エネルギーに対する放射変換効率。",
+      "canonical_latex": "\\eta := 1 - \\frac{E_{\\mathrm{ISCO}}}{mc^2} = 1 - \\frac{2\\sqrt{2}}{3} \\approx 0.0572,\\quad L_{\\mathrm{acc}} = \\eta \\dot{M} c^2",
+      "aliases_latex": [
+        "\\eta = 1 - \\sqrt{8/9}",
+        "L = \\eta \\dot{M} c^2"
+      ],
+      "keywords": [
+        "降着効率",
+        "束縛エネルギー",
+        "放射効率",
+        "ISCO"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics"
+      ]
+    },
+    {
+      "id": "astro.bh.n05_thin_disk_angular_momentum_transport",
+      "short_code": "BH05",
+      "kind": "definition",
+      "title": "幾何学的に薄い定常降着円盤の角運動量保存と粘性トルク",
+      "summary": "定常軸対称・ケプラー回転する薄い降着円盤における質量降着率と、内縁無トルク境界条件から定まる粘性トルクおよび面密度・動粘性係数の積。",
+      "canonical_latex": "\\dot{M} = -2\\pi r \\Sigma v_r = \\mathrm{const.},\\quad G(r) = 2\\pi r \\nu \\Sigma r^2 \\frac{d\\Omega}{dr},\\quad \\nu\\Sigma = \\frac{\\dot{M}}{3\\pi}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)",
+      "aliases_latex": [
+        "\\nu\\Sigma = (\\dot{M}/3\\pi)(1 - \\sqrt{r_{\\mathrm{in}}/r})"
+      ],
+      "keywords": [
+        "降着円盤",
+        "角運動量輸送",
+        "粘性トルク",
+        "定常円盤"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics"
+      ]
+    },
+    {
+      "id": "astro.bh.n06_shakura_sunyaev_alpha_viscosity",
+      "short_code": "BH06",
+      "kind": "definition",
+      "title": "シャクラ＝スニャエフの α 粘性則と粘性散逸率",
+      "summary": "乱流粘性を音速と円盤スケールハイトの積に比例する無次元パラメータ α でモデル化するシャクラ＝スニャエフ処方と、円盤片面単位面積あたりのエネルギー散逸率。",
+      "canonical_latex": "\\nu = \\alpha c_s H,\\quad D(r) = \\frac{1}{2}\\nu\\Sigma\\left(r\\frac{d\\Omega}{dr}\\right)^2 = \\frac{3GM\\dot{M}}{8\\pi r^3}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)",
+      "aliases_latex": [
+        "\\nu = \\alpha c_s H",
+        "D(r) = \\frac{3GM\\dot{M}}{8\\pi r^3}(1 - \\sqrt{r_{\\mathrm{in}}/r})"
+      ],
+      "keywords": [
+        "シャクラ＝スニャエフ",
+        "α円盤",
+        "粘性散逸",
+        "乱流粘性"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics"
+      ]
+    },
+    {
+      "id": "astro.bh.n07_standard_disk_temperature_profile",
+      "short_code": "BH07",
+      "kind": "theorem_formula",
+      "title": "標準降着円盤の有効温度分布（T ∝ r^(-3/4) 則）",
+      "summary": "光学的に厚い標準円盤において、局所的な粘性散逸率が黒体放射フラックスと釣り合う条件から導かれる動径有効温度分布。",
+      "canonical_latex": "\\sigma_{\\mathrm{SB}} T_{\\mathrm{eff}}^4(r) = D(r) \\implies T_{\\mathrm{eff}}(r) = \\left[\\frac{3GM\\dot{M}}{8\\pi \\sigma_{\\mathrm{SB}} r^3}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)\\right]^{1/4} \\propto r^{-3/4}\\quad (r \\gg r_{\\mathrm{in}})",
+      "aliases_latex": [
+        "T_{\\mathrm{eff}}(r) \\propto r^{-3/4}"
+      ],
+      "keywords": [
+        "有効温度",
+        "標準円盤",
+        "黒体放射",
+        "多色黒体スペクトル"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics"
+      ]
+    },
+    {
+      "id": "astro.bh.n08_disk_total_luminosity",
+      "short_code": "BH08",
+      "kind": "theorem_formula",
+      "title": "標準降着円盤の全放射光度とエディントン限界光度",
+      "summary": "円盤表裏の全表面にわたって散逸率を積分して得られる降着円盤の全光度と、電子散乱による放射圧と重力が釣り合うエディントン限界光度。",
+      "canonical_latex": "L_{\\mathrm{disk}} = 2\\int_{r_{\\mathrm{in}}}^{\\infty} 2\\pi r\\,D(r)\\,dr = \\frac{GM\\dot{M}}{2r_{\\mathrm{in}}},\\qquad L_{\\mathrm{Edd}} = \\frac{4\\pi G M m_p c}{\\sigma_T}",
+      "aliases_latex": [
+        "L_{\\mathrm{disk}} = GM\\dot{M}/(2r_{\\mathrm{in}})",
+        "L_{\\mathrm{Edd}} = 4\\pi GMm_p c / \\sigma_T"
+      ],
+      "keywords": [
+        "円盤光度",
+        "エディントン光度",
+        "放射圧",
+        "ビリアル定理"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics"
+      ]
+    },
+    {
+      "id": "astro.bh.n09_hawking_temperature_radiation",
+      "short_code": "BH09",
+      "kind": "theorem_formula",
+      "title": "ホーキング温度とベッケンシュタイン＝ホーキング・エントロピー",
+      "summary": "事象の地平面近傍の量子効果によるホーキング放射の黒体温度と、熱力学第1法則から整合的に定まるブラックホールの面積エントロピー。",
+      "canonical_latex": "T_H = \\frac{\\hbar c^3}{8\\pi G M k_B} = \\frac{\\hbar \\kappa}{2\\pi c k_B},\\qquad S_{\\mathrm{BH}} = \\frac{k_B c^3 A_H}{4G\\hbar} = \\frac{4\\pi G M^2 k_B}{\\hbar c}\\quad \\left(A_H = 4\\pi r_s^2\\right)",
+      "aliases_latex": [
+        "T_H = \\hbar c^3 / (8\\pi G M k_B)",
+        "S_{\\mathrm{BH}} = k_B c^3 A_H / (4G\\hbar)",
+        "S_{\\mathrm{BH}} = A_H / (4\\ell_P^2) k_B"
+      ],
+      "keywords": [
+        "ホーキング放射",
+        "ホーキング温度",
+        "ブラックホール・エントロピー",
+        "表面重力"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "relativity",
+        "thermodynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "astro.bh.d01_schwarzschild_metric",
+      "target_node_id": "astro.bh.n01_schwarzschild_metric",
+      "route_kind": "deductive",
+      "title": "静的球対称真空解とニュートン極限からのシュヴァルツシルト計量の導出",
+      "premise_node_ids": [
+        "phys.rel.gr01_equivalence_principle",
+        "phys.rel.sr01_relativity_postulates"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "時空は静的かつ球対称であり、中心質量 M の外部は真空 (R_{\\mu\\nu} = 0) である。",
+        "遠方 (r -> infinity) で平坦なミンコフスキー時空に漸近し、弱重力場でニュートン重力ポテンシャルに一致する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "ds^2 = g_{\\mu\\nu}dx^\\mu dx^\\nu = -A(r)c^2 dt^2 + B(r)dr^2 + r^2 d\\Omega^2",
+          "to_latex": "ds^2 = -\\left(1 - \\frac{r_s}{r}\\right)c^2 dt^2 + \\left(1 - \\frac{r_s}{r}\\right)^{-1} dr^2 + r^2(d\\theta^2 + \\sin^2\\theta\\,d\\varphi^2),\\quad r_s = \\frac{2GM}{c^2}",
+          "operation_label": "真空アインシュタイン方程式の求解と弱場極限の適用",
+          "explanation": "静的球対称な計量仮設に対し真空アインシュタイン方程式を解き、積分定数をニュートン極限から決定する。",
+          "used_node_ids": [
+            "phys.rel.gr01_equivalence_principle",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "ds^2 = g_{\\mu\\nu}dx^\\mu dx^\\nu = -A(r)c^2 dt^2 + B(r)dr^2 + r^2 d\\Omega^2",
+          "to_latex": "R_{\\mu\\nu} = 0 \\implies A(r)B(r) = 1,\\quad A(r) = 1 + \\frac{C}{r}",
+          "operation_label": "真空場の方程式 R_μν = 0 の積分",
+          "explanation": "リッチテンソルの時間・動径成分が零である条件から A(r)B(r)=1 および A(r) の 1/r 依存性を得る。",
+          "used_node_ids": [
+            "phys.rel.gr01_equivalence_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_{\\mu\\nu} = 0 \\implies A(r)B(r) = 1,\\quad A(r) = 1 + \\frac{C}{r}",
+          "to_latex": "g_{00} \\approx -\\left(1 + \\frac{2\\Phi}{c^2}\\right) = -\\left(1 - \\frac{2GM}{c^2 r}\\right) \\implies C = -\\frac{2GM}{c^2} = -r_s",
+          "operation_label": "弱重力場（ニュートン極限）との同定",
+          "explanation": "等価原理に基づく測地線方程式の低速・弱場極限をニュートン重力ポテンシャル Φ=-GM/r と比較し、定数 C をシュヴァルツシルト半径 r_s で表す。",
+          "used_node_ids": [
+            "phys.rel.gr01_equivalence_principle",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_{00} \\approx -\\left(1 + \\frac{2\\Phi}{c^2}\\right) = -\\left(1 - \\frac{2GM}{c^2 r}\\right) \\implies C = -\\frac{2GM}{c^2} = -r_s",
+          "to_latex": "ds^2 = -\\left(1 - \\frac{r_s}{r}\\right)c^2 dt^2 + \\left(1 - \\frac{r_s}{r}\\right)^{-1} dr^2 + r^2(d\\theta^2 + \\sin^2\\theta\\,d\\varphi^2),\\quad r_s = \\frac{2GM}{c^2}",
+          "operation_label": "計量テンソルへの代入",
+          "explanation": "求めた A(r) と B(r)=A(r)^{-1} を線素に代入し、シュヴァルツシルト計量を得る。",
+          "used_node_ids": [
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.bh.d02_schwarzschild_effective_potential",
+      "target_node_id": "astro.bh.n02_schwarzschild_effective_potential",
+      "route_kind": "deductive",
+      "title": "保存量と4元速度規格化条件からの有効ポテンシャルの導出",
+      "premise_node_ids": [
+        "astro.bh.n01_schwarzschild_metric",
+        "phys.mech.p04_least_action",
+        "astro.orbit.ka01_angular_momentum_areal_velocity"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "質量 m > 0 の試験粒子が赤道面 θ = π/2 内を自由落下（測地線運動）する。",
+        "時空の静的性（t 並進対称性）と軸対称性（φ 回転対称性）によりエネルギーと角運動量が保存する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "g_{\\mu\\nu}\\frac{dx^\\mu}{d\\tau}\\frac{dx^\\nu}{d\\tau} = -c^2,\\quad \\theta = \\frac{\\pi}{2}",
+          "to_latex": "\\frac{1}{2}\\dot{r}^2 + V_{\\mathrm{eff}}(r) = \\frac{E^2 - m^2 c^4}{2m^2 c^2},\\quad V_{\\mathrm{eff}}(r) = -\\frac{GM}{r} + \\frac{h^2}{2r^2} - \\frac{GM h^2}{c^2 r^3}",
+          "operation_label": "保存則を用いた動径方程式への帰着",
+          "explanation": "4元速度の規格化条件に保存エネルギー E と比角運動量 h を代入し、1次元有効ポテンシャルの形に整理する。",
+          "used_node_ids": [
+            "astro.bh.n01_schwarzschild_metric",
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "phys.mech.p04_least_action"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_{\\mu\\nu}\\frac{dx^\\mu}{d\\tau}\\frac{dx^\\nu}{d\\tau} = -c^2,\\quad \\theta = \\frac{\\pi}{2}",
+          "to_latex": "\\left(1 - \\frac{r_s}{r}\\right)c^2\\dot{t} = \\frac{E}{m} \\equiv \\tilde{E}c,\\quad r^2\\dot{\\varphi} = h",
+          "operation_label": "オイラー＝ラグランジュ方程式による保存量の抽出",
+          "explanation": "測地線ラグランジアンが t と φ を陽に含まないことから、循環座標に対応するエネルギーと比角運動量の保存則を得る。",
+          "used_node_ids": [
+            "astro.bh.n01_schwarzschild_metric",
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "phys.mech.p04_least_action"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(1 - \\frac{r_s}{r}\\right)c^2\\dot{t} = \\frac{E}{m} \\equiv \\tilde{E}c,\\quad r^2\\dot{\\varphi} = h",
+          "to_latex": "-\\left(1 - \\frac{r_s}{r}\\right)^{-1}\\tilde{E}^2 c^2 + \\left(1 - \\frac{r_s}{r}\\right)^{-1}\\dot{r}^2 + \\frac{h^2}{r^2} = -c^2",
+          "operation_label": "4元速度の規格化条件への代入",
+          "explanation": "シュヴァルツシルト計量による線素の関係式に保存量 ṫ と φ̇ を代入する。",
+          "used_node_ids": [
+            "astro.bh.n01_schwarzschild_metric",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\left(1 - \\frac{r_s}{r}\\right)^{-1}\\tilde{E}^2 c^2 + \\left(1 - \\frac{r_s}{r}\\right)^{-1}\\dot{r}^2 + \\frac{h^2}{r^2} = -c^2",
+          "to_latex": "\\frac{1}{2}\\dot{r}^2 + V_{\\mathrm{eff}}(r) = \\frac{E^2 - m^2 c^4}{2m^2 c^2},\\quad V_{\\mathrm{eff}}(r) = -\\frac{GM}{r} + \\frac{h^2}{2r^2} - \\frac{GM h^2}{c^2 r^3}",
+          "operation_label": "有効ポテンシャル V_eff(r) の分離",
+          "explanation": "両辺に (1 - r_s/r)/2 を掛けて整理すると、ニュートン項・遠心力項に加えて一般相対論的 -1/r^3 補正項が現れる。",
+          "used_node_ids": [
+            "astro.bh.n01_schwarzschild_metric"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.bh.d03_isco_radius",
+      "target_node_id": "astro.bh.n03_isco_radius",
+      "route_kind": "deductive",
+      "title": "有効ポテンシャルの変曲点条件からの ISCO 半径の導出",
+      "premise_node_ids": [
+        "astro.bh.n02_schwarzschild_effective_potential"
+      ],
+      "required_math_node_ids": [
+        "astro.bh.n01_schwarzschild_metric",
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.e05_hessian_extremum_test"
+      ],
+      "assumptions": [
+        "円軌道は r = const. かつ ṙ = r̈ = 0 を満たす。",
+        "安定円軌道は有効ポテンシャルの極小点 V_eff''(r) > 0 であり、その限界（ISCO）は V_eff''(r) = 0 に対応する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V_{\\mathrm{eff}}(r) = -\\frac{GM}{r} + \\frac{h^2}{2r^2} - \\frac{GM h^2}{c^2 r^3}",
+          "to_latex": "r_{\\mathrm{ISCO}} = 3r_s = \\frac{6GM}{c^2},\\quad h_{\\mathrm{ISCO}} = \\frac{2\\sqrt{3}GM}{c}",
+          "operation_label": "円軌道条件 V_eff'=0 と安定限界 V_eff''=0 の連立求解",
+          "explanation": "有効ポテンシャルの1階微分を零として円軌道角運動量を求め、2階微分が零となる臨界半径として ISCO を決定する。",
+          "used_node_ids": [
+            "astro.bh.n02_schwarzschild_effective_potential",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\mathrm{eff}}(r) = -\\frac{GM}{r} + \\frac{h^2}{2r^2} - \\frac{GM h^2}{c^2 r^3}",
+          "to_latex": "V_{\\mathrm{eff}}'(r) = \\frac{GM}{r^2} - \\frac{h^2}{r^3} + \\frac{3GM h^2}{c^2 r^4} = 0 \\implies h^2 = \\frac{GM r^2}{r - \\frac{3GM}{c^2}}",
+          "operation_label": "停留点条件による円軌道角運動量の導出",
+          "explanation": "V_eff'(r) = 0 を h^2 について解き、半径 r における円軌道に必要な比角運動量を得る（r > 3GM/c^2 が必要）。",
+          "used_node_ids": [
+            "astro.bh.n02_schwarzschild_effective_potential",
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\mathrm{eff}}'(r) = \\frac{GM}{r^2} - \\frac{h^2}{r^3} + \\frac{3GM h^2}{c^2 r^4} = 0 \\implies h^2 = \\frac{GM r^2}{r - \\frac{3GM}{c^2}}",
+          "to_latex": "V_{\\mathrm{eff}}''(r) = -\\frac{2GM}{r^3} + \\frac{3h^2}{r^4} - \\frac{12GM h^2}{c^2 r^5} = \\frac{GM(r - \\frac{6GM}{c^2})}{r^3(r - \\frac{3GM}{c^2})} \\ge 0",
+          "operation_label": "2階微分による安定性判定条件の評価",
+          "explanation": "V_eff''(r) に円軌道の h^2 を代入して整理し、極小条件 V_eff''(r) >= 0 を満たす範囲を求める。",
+          "used_node_ids": [
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\mathrm{eff}}''(r) = -\\frac{2GM}{r^3} + \\frac{3h^2}{r^4} - \\frac{12GM h^2}{c^2 r^5} = \\frac{GM(r - \\frac{6GM}{c^2})}{r^3(r - \\frac{3GM}{c^2})} \\ge 0",
+          "to_latex": "r_{\\mathrm{ISCO}} = 3r_s = \\frac{6GM}{c^2},\\quad h_{\\mathrm{ISCO}} = \\frac{2\\sqrt{3}GM}{c}",
+          "operation_label": "臨界半径 r_ISCO と角運動量の確定",
+          "explanation": "V_eff''(r) = 0 より r_ISCO = 6GM/c^2 = 3r_s を得て、これを h^2 の式に代入し h_ISCO を求める。",
+          "used_node_ids": [
+            "astro.bh.n01_schwarzschild_metric"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.bh.d04_accretion_efficiency",
+      "target_node_id": "astro.bh.n04_accretion_efficiency",
+      "route_kind": "deductive",
+      "title": "ISCO の比エネルギー評価による降着光度効率の導出",
+      "premise_node_ids": [
+        "astro.bh.n02_schwarzschild_effective_potential",
+        "astro.bh.n03_isco_radius"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "降着物質は無限遠（静止エネルギー mc^2）から準定常的に ISCO まで落下し、余剰の束縛エネルギーをすべて放射として解放する。",
+        "ISCO より内側では放射を伴わず自由落下で事象の地平面へ吸い込まれる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\left(\\frac{E}{mc^2}\\right)^2 = \\left(1 - \\frac{r_s}{r}\\right)\\left(1 + \\frac{h^2}{c^2 r^2}\\right),\\quad r = r_{\\mathrm{ISCO}} = 3r_s",
+          "to_latex": "\\eta = 1 - \\frac{E_{\\mathrm{ISCO}}}{mc^2} = 1 - \\frac{2\\sqrt{2}}{3} \\approx 0.0572,\\quad L_{\\mathrm{acc}} = \\eta \\dot{M} c^2",
+          "operation_label": "ISCO における比エネルギーと質量変換効率の算出",
+          "explanation": "円軌道条件 (ṙ=0) のエネルギー式に r_ISCO と h_ISCO を代入し、無限遠からのエネルギー欠損率 η を求める。",
+          "used_node_ids": [
+            "astro.bh.n02_schwarzschild_effective_potential",
+            "astro.bh.n03_isco_radius"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{E}{mc^2}\\right)^2 = \\left(1 - \\frac{r_s}{r}\\right)\\left(1 + \\frac{h^2}{c^2 r^2}\\right),\\quad r = r_{\\mathrm{ISCO}} = 3r_s",
+          "to_latex": "\\left(\\frac{E_{\\mathrm{ISCO}}}{mc^2}\\right)^2 = \\left(1 - \\frac{1}{3}\\right)\\left(1 + \\frac{12 G^2 M^2 / c^4}{36 G^2 M^2 / c^4}\\right) = \\frac{2}{3}\\cdot\\frac{4}{3} = \\frac{8}{9}",
+          "operation_label": "ISCO 値の代入",
+          "explanation": "r_s / r_ISCO = 1/3 および h_ISCO^2 / (c^2 r_ISCO^2) = 1/3 をエネルギー公式に代入する。",
+          "used_node_ids": [
+            "astro.bh.n02_schwarzschild_effective_potential",
+            "astro.bh.n03_isco_radius"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{E_{\\mathrm{ISCO}}}{mc^2}\\right)^2 = \\left(1 - \\frac{1}{3}\\right)\\left(1 + \\frac{12 G^2 M^2 / c^4}{36 G^2 M^2 / c^4}\\right) = \\frac{2}{3}\\cdot\\frac{4}{3} = \\frac{8}{9}",
+          "to_latex": "\\eta = 1 - \\frac{E_{\\mathrm{ISCO}}}{mc^2} = 1 - \\frac{2\\sqrt{2}}{3} \\approx 0.0572,\\quad L_{\\mathrm{acc}} = \\eta \\dot{M} c^2",
+          "operation_label": "平方根の抽出と効率 η の定義適用",
+          "explanation": "E_ISCO / (mc^2) = 2√2/3 を得て、静止エネルギーとの差から降着効率 η ≈ 5.72% および光度 L_acc を導く。",
+          "used_node_ids": [
+            "astro.bh.n03_isco_radius"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.bh.d05_thin_disk_angular_momentum_transport",
+      "target_node_id": "astro.bh.n05_thin_disk_angular_momentum_transport",
+      "route_kind": "deductive",
+      "title": "定常降着円盤の角運動量保存則と内縁境界条件からの粘性トルク導出",
+      "premise_node_ids": [
+        "astro.orbit.ka01_angular_momentum_areal_velocity",
+        "phys.mech.p02_newton_second_law",
+        "astro.bh.n03_isco_radius"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "円盤は定常 (∂/∂t = 0)、軸対称、幾何学的に薄い (H << r) とし、ニュートン重力下のケプラー角速度 Ω(r) = √(GM/r^3) で回転する。",
+        "円盤内縁 r = r_in (典型的には r_ISCO) において粘性トルクが消失する (G(r_in) = 0)。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial}{\\partial t}(\\Sigma r^2 \\Omega) + \\frac{1}{r}\\frac{\\partial}{\\partial r}\\left(r \\Sigma v_r r^2 \\Omega\\right) = \\frac{1}{2\\pi r}\\frac{\\partial G}{\\partial r}",
+          "to_latex": "\\nu\\Sigma = \\frac{\\dot{M}}{3\\pi}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right),\\quad G(r) = -\\dot{M}\\sqrt{GMr}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)",
+          "operation_label": "定常角運動量保存式の積分と境界条件の適用",
+          "explanation": "円環要素の角運動量保存則を動径方向に積分し、内縁 r_in での無トルク条件を課して νΣ と G(r) の解析式を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial}{\\partial t}(\\Sigma r^2 \\Omega) + \\frac{1}{r}\\frac{\\partial}{\\partial r}\\left(r \\Sigma v_r r^2 \\Omega\\right) = \\frac{1}{2\\pi r}\\frac{\\partial G}{\\partial r}",
+          "to_latex": "-\\dot{M}r^2\\Omega = G(r) + C,\\quad \\Omega(r) = \\sqrt{\\frac{GM}{r^3}}",
+          "operation_label": "定常条件 ∂/∂t = 0 と質量降着率 Ṁ の代入・積分",
+          "explanation": "定常性より時間微分を落とし、Ṁ = -2πrΣv_r = const. を代入して r で積分することで積分定数 C を含む関係式を得る。",
+          "used_node_ids": [
+            "astro.orbit.ka01_angular_momentum_areal_velocity",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\dot{M}r^2\\Omega = G(r) + C,\\quad \\Omega(r) = \\sqrt{\\frac{GM}{r^3}}",
+          "to_latex": "G(r_{\\mathrm{in}}) = 0 \\implies C = -\\dot{M}\\sqrt{GM r_{\\mathrm{in}}} \\implies G(r) = -3\\pi \\nu\\Sigma \\sqrt{GMr} = -\\dot{M}\\sqrt{GMr}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)",
+          "operation_label": "内縁無トルク境界条件と剪断粘性トルク公式の代入",
+          "explanation": "r = r_in で G = 0 より C を決定し、G(r) = 2πrνΣr^2(dΩ/dr) = -3πνΣ√(GMr) と等置する。",
+          "used_node_ids": [
+            "astro.bh.n03_isco_radius",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G(r) = -3\\pi \\nu\\Sigma \\sqrt{GMr} = -\\dot{M}\\sqrt{GMr}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)",
+          "to_latex": "\\nu\\Sigma = \\frac{\\dot{M}}{3\\pi}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right),\\quad G(r) = -\\dot{M}\\sqrt{GMr}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)",
+          "operation_label": "νΣ についての整理",
+          "explanation": "両辺を -3π√(GMr) で割り、定常円盤における νΣ の動径分布を得る。",
+          "used_node_ids": [
+            "astro.bh.n03_isco_radius"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.bh.d06_shakura_sunyaev_alpha_viscosity",
+      "target_node_id": "astro.bh.n06_shakura_sunyaev_alpha_viscosity",
+      "route_kind": "deductive",
+      "title": "シャクラ＝スニャエフ α 粘性モデルにおける粘性散逸率の導出",
+      "premise_node_ids": [
+        "astro.bh.n05_thin_disk_angular_momentum_transport",
+        "astro.orbit.ka02_vis_viva_equation",
+        "phys.thermo.th03_first_law_internal_energy"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "粘性トルクが差動回転に対してなす仕事率がすべて局所的な熱エネルギー（散逸率）に変換され、上下両面から等しく放射される。",
+        "乱流粘性係数 ν は無次元パラメータ α <= 1 を用いて ν = α c_s H と表される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "D(r) = \\frac{G(r)}{4\\pi r}\\frac{d\\Omega}{dr},\\quad \\nu = \\alpha c_s H",
+          "to_latex": "D(r) = \\frac{3GM\\dot{M}}{8\\pi r^3}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)",
+          "operation_label": "粘性仕事率からの片面散逸率 D(r) の導出",
+          "explanation": "粘性トルクによるエネルギー散逸率にケプラー角速度の微分と定常解 νΣ を代入し、D(r) の厳密表式を得る。",
+          "used_node_ids": [
+            "astro.bh.n05_thin_disk_angular_momentum_transport",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D(r) = \\frac{G(r)}{4\\pi r}\\frac{d\\Omega}{dr},\\quad \\nu = \\alpha c_s H",
+          "to_latex": "D(r) = \\frac{1}{2}\\nu\\Sigma\\left(r\\frac{d\\Omega}{dr}\\right)^2 = \\frac{9}{8}\\nu\\Sigma\\Omega^2",
+          "operation_label": "G(r) の代入とケプラー角速度微分の評価",
+          "explanation": "G(r) = 2πrνΣr^2(dΩ/dr) および dΩ/dr = -(3/2)Ω/r を代入して D(r) を νΣ と Ω^2 で表す。",
+          "used_node_ids": [
+            "astro.bh.n05_thin_disk_angular_momentum_transport",
+            "astro.orbit.ka02_vis_viva_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D(r) = \\frac{1}{2}\\nu\\Sigma\\left(r\\frac{d\\Omega}{dr}\\right)^2 = \\frac{9}{8}\\nu\\Sigma\\Omega^2",
+          "to_latex": "D(r) = \\frac{9}{8}\\cdot\\frac{\\dot{M}}{3\\pi}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)\\frac{GM}{r^3} = \\frac{3GM\\dot{M}}{8\\pi r^3}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)",
+          "operation_label": "定常解 νΣ と Ω^2 = GM/r^3 の代入",
+          "explanation": "νΣ の表式を代入すると粘性パラメータ α が相殺し、質量 M と降着率 Ṁ のみに依存する散逸率 D(r) が得られる。",
+          "used_node_ids": [
+            "astro.bh.n05_thin_disk_angular_momentum_transport"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.bh.d07_standard_disk_temperature_profile",
+      "target_node_id": "astro.bh.n07_standard_disk_temperature_profile",
+      "route_kind": "deductive",
+      "title": "局所熱平衡と黒体放射条件による標準円盤温度分布の導出",
+      "premise_node_ids": [
+        "astro.bh.n06_shakura_sunyaev_alpha_viscosity",
+        "phys.thermo.th03_first_law_internal_energy"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "円盤は鉛直方向に光学的に厚く、局所熱平衡 (LTE) の黒体放射を行う。",
+        "半径方向の熱伝導・移流冷却は局所的な鉛直放射冷却に比べて無視できる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F_{\\mathrm{rad}}(r) = \\sigma_{\\mathrm{SB}} T_{\\mathrm{eff}}^4(r) = D(r)",
+          "to_latex": "T_{\\mathrm{eff}}(r) = \\left[\\frac{3GM\\dot{M}}{8\\pi \\sigma_{\\mathrm{SB}} r^3}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)\\right]^{1/4} \\propto r^{-3/4}",
+          "operation_label": "シュテファン＝ボルツマン則と粘性散逸率の等置",
+          "explanation": "円盤表面の放射フラックスと粘性散逸率を等置して有効温度 T_eff(r) を解き、遠方漸近形 T ∝ r^(-3/4) を得る。",
+          "used_node_ids": [
+            "astro.bh.n06_shakura_sunyaev_alpha_viscosity",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F_{\\mathrm{rad}}(r) = \\sigma_{\\mathrm{SB}} T_{\\mathrm{eff}}^4(r) = D(r)",
+          "to_latex": "\\sigma_{\\mathrm{SB}} T_{\\mathrm{eff}}^4(r) = \\frac{3GM\\dot{M}}{8\\pi r^3}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)",
+          "operation_label": "散逸率 D(r) の代入",
+          "explanation": "シュテファン＝ボルツマンの法則 σ_SB T_eff^4 にシャクラ＝スニャエフ円盤の散逸率 D(r) を代入する。",
+          "used_node_ids": [
+            "astro.bh.n06_shakura_sunyaev_alpha_viscosity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{\\mathrm{SB}} T_{\\mathrm{eff}}^4(r) = \\frac{3GM\\dot{M}}{8\\pi r^3}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)",
+          "to_latex": "T_{\\mathrm{eff}}(r) = \\left[\\frac{3GM\\dot{M}}{8\\pi \\sigma_{\\mathrm{SB}} r^3}\\left(1 - \\sqrt{\\frac{r_{\\mathrm{in}}}{r}}\\right)\\right]^{1/4} \\propto r^{-3/4}",
+          "operation_label": "T_eff(r) についての求解と漸近評価",
+          "explanation": "両辺の 1/4 乗をとり、r >> r_in において括弧内が 1 に近づくことから T_eff(r) ∝ r^(-3/4) が従う。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.bh.d08_disk_total_luminosity",
+      "target_node_id": "astro.bh.n08_disk_total_luminosity",
+      "route_kind": "deductive",
+      "title": "標準降着円盤の全光度積分とエディントン限界光度の導出",
+      "premise_node_ids": [
+        "astro.bh.n07_standard_disk_temperature_profile",
+        "astro.bh.n03_isco_radius"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "円盤は内縁 r_in から無限遠まで広がり、表裏の2面から等方的に放射する。",
+        "エディントン光度は球対称降着・完全電離水素プラズマのトムソン散乱に基づく力学的平衡で定義される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L_{\\mathrm{disk}} = 2\\int_{r_{\\mathrm{in}}}^{\\infty} 2\\pi r\\,D(r)\\,dr,\\quad \\frac{\\sigma_T L_{\\mathrm{Edd}}}{4\\pi r^2 c} = \\frac{GM m_p}{r^2}",
+          "to_latex": "L_{\\mathrm{disk}} = \\frac{GM\\dot{M}}{2r_{\\mathrm{in}}},\\qquad L_{\\mathrm{Edd}} = \\frac{4\\pi G M m_p c}{\\sigma_T}",
+          "operation_label": "円盤表面積分と放射圧平衡式の求解",
+          "explanation": "2πr D(r) を表裏2面分積分して全光度 L_disk を求め、電子散乱放射圧と陽子重力の釣り合いから L_Edd を導く。",
+          "used_node_ids": [
+            "astro.bh.n07_standard_disk_temperature_profile",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L_{\\mathrm{disk}} = 2\\int_{r_{\\mathrm{in}}}^{\\infty} 2\\pi r\\,D(r)\\,dr,\\quad \\frac{\\sigma_T L_{\\mathrm{Edd}}}{4\\pi r^2 c} = \\frac{GM m_p}{r^2}",
+          "to_latex": "L_{\\mathrm{disk}} = \\frac{3GM\\dot{M}}{2}\\int_{r_{\\mathrm{in}}}^{\\infty}\\left(r^{-2} - r_{\\mathrm{in}}^{1/2}r^{-5/2}\\right)dr = \\frac{3GM\\dot{M}}{2}\\left(\\frac{1}{r_{\\mathrm{in}}} - \\frac{2}{3r_{\\mathrm{in}}}\\right)",
+          "operation_label": "D(r) の代入と定積分の実行",
+          "explanation": "D(r) を代入してべき乗関数の積分を実行する。",
+          "used_node_ids": [
+            "astro.bh.n07_standard_disk_temperature_profile",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L_{\\mathrm{disk}} = \\frac{3GM\\dot{M}}{2}\\left(\\frac{1}{r_{\\mathrm{in}}} - \\frac{2}{3r_{\\mathrm{in}}}\\right)",
+          "to_latex": "L_{\\mathrm{disk}} = \\frac{GM\\dot{M}}{2r_{\\mathrm{in}}},\\qquad L_{\\mathrm{Edd}} = \\frac{4\\pi G M m_p c}{\\sigma_T}",
+          "operation_label": "全光度 L_disk の整理と L_Edd の求解",
+          "explanation": "係数整理により重力ポテンシャルエネルギーの半分に相当する L_disk = GM Ṁ/(2r_in) を得て、放射圧平衡式より L_Edd を確定する。",
+          "used_node_ids": [
+            "astro.bh.n03_isco_radius"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.bh.d09_hawking_temperature_radiation",
+      "target_node_id": "astro.bh.n09_hawking_temperature_radiation",
+      "route_kind": "deductive",
+      "title": "表面重力と熱力学第1法則からのホーキング温度・BHエントロピーの導出",
+      "premise_node_ids": [
+        "astro.bh.n01_schwarzschild_metric",
+        "phys.thermo.th03_first_law_internal_energy",
+        "phys.statmech.mc01_equal_a_priori_probability"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "事象の地平面近傍のユークリッド化時空の周期性（またはボゴリューボフ変換）により温度 T_H = ħκ/(2πck_B) が定まる。",
+        "ブラックホールのエネルギーは静止質量エネルギー E = Mc^2 で与えられ、熱力学第1法則 dE = T_H dS_BH を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\kappa = \\frac{c^4}{4GM},\\quad dE = c^2 dM = T_H dS_{\\mathrm{BH}}",
+          "to_latex": "T_H = \\frac{\\hbar c^3}{8\\pi G M k_B},\\qquad S_{\\mathrm{BH}} = \\frac{k_B c^3 A_H}{4G\\hbar}",
+          "operation_label": "表面重力からのホーキング温度算出と第1法則の積分",
+          "explanation": "シュヴァルツシルト・ブラックホールの表面重力 κ からホーキング温度を求め、dS = c^2 dM / T_H を積分して面積エントロピー則を導く。",
+          "used_node_ids": [
+            "astro.bh.n01_schwarzschild_metric",
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.statmech.mc01_equal_a_priori_probability",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\kappa = \\frac{c^4}{4GM},\\quad dE = c^2 dM = T_H dS_{\\mathrm{BH}}",
+          "to_latex": "T_H = \\frac{\\hbar \\kappa}{2\\pi c k_B} = \\frac{\\hbar c^3}{8\\pi G M k_B}",
+          "operation_label": "表面重力 κ の代入",
+          "explanation": "シュヴァルツシルト時空の地平面表面重力 κ = c^4/(4GM) をホーキング＝ウンルー温度関係式に代入する。",
+          "used_node_ids": [
+            "astro.bh.n01_schwarzschild_metric"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_H = \\frac{\\hbar \\kappa}{2\\pi c k_B} = \\frac{\\hbar c^3}{8\\pi G M k_B}",
+          "to_latex": "T_H = \\frac{\\hbar c^3}{8\\pi G M k_B},\\qquad S_{\\mathrm{BH}} = \\int \\frac{c^2 dM}{T_H} = \\frac{4\\pi G M^2 k_B}{\\hbar c} = \\frac{k_B c^3 A_H}{4G\\hbar}",
+          "operation_label": "熱力学第1法則の積分と地平面面積 A_H による表現",
+          "explanation": "S_BH(M=0)=0 を境界条件として dS_BH = c^2 dM / T_H を積分し、A_H = 4πr_s^2 = 16πG^2M^2/c^4 を用いて面積比例則を得る。",
+          "used_node_ids": [
+            "astro.bh.n01_schwarzschild_metric",
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.statmech.mc01_equal_a_priori_probability",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

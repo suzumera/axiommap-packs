@@ -1,0 +1,887 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.elec.semiconductor_pn",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "electrical_engineering",
+    "title": "半導体デバイス1：キャリア統計・ドリフト拡散方程式・PN接合ダイオード",
+    "language": "ja",
+    "description": "質量作用の法則、アインシュタインの関係式、空乏層近似と内蔵電位、ショックレーのダイオード電流方程式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.semi.n01_fermi_dirac_carrier_boundary",
+      "short_code": "SEMI01",
+      "kind": "math_boundary",
+      "title": "非縮退半導体のキャリア濃度（ボルツマン近似）",
+      "summary": "伝導帯・価電子帯の有効状態密度とフェルミ・ディラック分布の非縮退極限による電子・正孔濃度の表現。",
+      "canonical_latex": "n = N_c \\exp\\!\\left(-\\frac{E_c - E_F}{k_B T}\\right),\\quad p = N_v \\exp\\!\\left(-\\frac{E_F - E_v}{k_B T}\\right)\\quad (E_c - E_F \\gg k_B T,\\; E_F - E_v \\gg k_B T)",
+      "aliases_latex": [
+        "n=N_c e^{-(E_c-E_F)/k_BT},\\; p=N_v e^{-(E_F-E_v)/k_BT}"
+      ],
+      "keywords": [
+        "semiconductor",
+        "boltzmann_approximation",
+        "fermi_level",
+        "carrier_concentration"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "solid_state_physics"
+      ]
+    },
+    {
+      "id": "eng.semi.n02_mass_action_law",
+      "short_code": "SEMI02",
+      "kind": "theorem_formula",
+      "title": "質量作用の法則と真性キャリア濃度",
+      "summary": "熱平衡状態の非縮退半導体において、電子濃度と正孔濃度の積はフェルミ準位に依存せず真性キャリア濃度の2乗に等しい。",
+      "canonical_latex": "n p = n_i^2 = N_c N_v \\exp\\!\\left(-\\frac{E_g}{k_B T}\\right)\\quad (E_g := E_c - E_v)",
+      "aliases_latex": [
+        "np=n_i^2"
+      ],
+      "keywords": [
+        "mass_action_law",
+        "intrinsic_carrier_concentration",
+        "bandgap"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "solid_state_physics"
+      ]
+    },
+    {
+      "id": "eng.semi.n03_charge_neutrality_dopants",
+      "short_code": "SEMI03",
+      "kind": "definition",
+      "title": "電気的中性条件とドープ半導体のキャリア濃度",
+      "summary": "イオン化ドナー・アクセプタ密度を含む電気的中性条件と、完全電離・強外因性近似における多数・少数キャリア濃度。",
+      "canonical_latex": "p - n + N_D^+ - N_A^- = 0,\\quad n \\approx N_D,\\; p \\approx \\frac{n_i^2}{N_D}\\;(N_D \\gg n_i, N_A=0)",
+      "aliases_latex": [
+        "p-n+N_D-N_A=0"
+      ],
+      "keywords": [
+        "charge_neutrality",
+        "dopant",
+        "majority_carrier",
+        "minority_carrier"
+      ],
+      "domain_tags": [
+        "electrical_engineering"
+      ]
+    },
+    {
+      "id": "eng.semi.n04_drift_diffusion_currents",
+      "short_code": "SEMI04",
+      "kind": "definition",
+      "title": "ドリフト・拡散電流密度方程式",
+      "summary": "電界によるドリフト電流と濃度勾配による拡散電流の和として表される電子・正孔電流密度。",
+      "canonical_latex": "J_n = q \\mu_n n E + q D_n \\frac{dn}{dx},\\quad J_p = q \\mu_p p E - q D_p \\frac{dp}{dx}",
+      "aliases_latex": [
+        "J_n=q\\mu_n n E + qD_n \\partial_x n"
+      ],
+      "keywords": [
+        "drift_current",
+        "diffusion_current",
+        "mobility",
+        "diffusivity"
+      ],
+      "domain_tags": [
+        "electrical_engineering"
+      ]
+    },
+    {
+      "id": "eng.semi.n05_einstein_relation",
+      "short_code": "SEMI05",
+      "kind": "theorem_formula",
+      "title": "アインシュタインの関係式",
+      "summary": "熱平衡条件とボルツマン分布から導かれる、キャリアの拡散係数と移動度の普遍的関係式（熱電圧）。",
+      "canonical_latex": "\\frac{D_n}{\\mu_n} = \\frac{D_p}{\\mu_p} = \\frac{k_B T}{q} =: V_T",
+      "aliases_latex": [
+        "D/\\mu = k_B T / q"
+      ],
+      "keywords": [
+        "einstein_relation",
+        "thermal_voltage",
+        "diffusivity",
+        "mobility"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "statistical_mechanics"
+      ]
+    },
+    {
+      "id": "eng.semi.n06_built_in_potential",
+      "short_code": "SEMI06",
+      "kind": "theorem_formula",
+      "title": "PN接合の熱平衡内蔵電位",
+      "summary": "無バイアス熱平衡状態のPN接合におけるp領域とn領域間の静電ポテンシャル差（内蔵電位）。",
+      "canonical_latex": "V_{bi} = \\frac{k_B T}{q}\\ln\\!\\left(\\frac{N_A N_D}{n_i^2}\\right) = V_T \\ln\\!\\left(\\frac{N_A N_D}{n_i^2}\\right)",
+      "aliases_latex": [
+        "V_{bi}=V_T\\ln(N_A N_D/n_i^2)"
+      ],
+      "keywords": [
+        "built_in_potential",
+        "pn_junction",
+        "equilibrium"
+      ],
+      "domain_tags": [
+        "electrical_engineering"
+      ]
+    },
+    {
+      "id": "eng.semi.n07_depletion_approximation_width",
+      "short_code": "SEMI07",
+      "kind": "theorem_formula",
+      "title": "空乏層近似と空乏層幅",
+      "summary": "段階接合における空乏層近似と1次元ポアソン方程式の積分によって求まる総空乏層幅。",
+      "canonical_latex": "W = x_n + x_p = \\sqrt{\\frac{2\\varepsilon_s}{q}\\left(\\frac{1}{N_A}+\\frac{1}{N_D}\\right)(V_{bi} - V_a)}",
+      "aliases_latex": [
+        "W=\\sqrt{\\frac{2\\varepsilon_s}{q}(\\frac{1}{N_A}+\\frac{1}{N_D})(V_{bi}-V_a)}"
+      ],
+      "keywords": [
+        "depletion_approximation",
+        "poisson_equation",
+        "depletion_width"
+      ],
+      "domain_tags": [
+        "electrical_engineering"
+      ]
+    },
+    {
+      "id": "eng.semi.n08_law_of_the_junction",
+      "short_code": "SEMI08",
+      "kind": "theorem_formula",
+      "title": "接合の法則（空乏層端の少数キャリア境界条件）",
+      "summary": "印加電圧によるポテンシャル障壁変化が空乏層端の少数キャリア濃度を指数関数的に変調する境界条件。",
+      "canonical_latex": "n_p(-x_p) = n_{p0}\\exp\\!\\left(\\frac{V_a}{V_T}\\right),\\quad p_n(x_n) = p_{n0}\\exp\\!\\left(\\frac{V_a}{V_T}\\right)",
+      "aliases_latex": [
+        "p_n(x_n)=p_{n0}e^{V_a/V_T}"
+      ],
+      "keywords": [
+        "law_of_the_junction",
+        "minority_carrier_injection",
+        "boundary_condition"
+      ],
+      "domain_tags": [
+        "electrical_engineering"
+      ]
+    },
+    {
+      "id": "eng.semi.n09_minority_carrier_diffusion_eq",
+      "short_code": "SEMI09",
+      "kind": "theorem_formula",
+      "title": "少数キャリア拡散方程式と指数減衰解",
+      "summary": "準中性領域における定常少数キャリア連続方程式と、拡散長で特徴付けられる過剰キャリアの空間減衰解。",
+      "canonical_latex": "D_p \\frac{d^2\\Delta p_n}{dx^2} - \\frac{\\Delta p_n}{\\tau_p} = 0,\\quad \\Delta p_n(x) = \\Delta p_n(x_n)\\exp\\!\\left(-\\frac{x - x_n}{L_p}\\right)\\quad (L_p := \\sqrt{D_p \\tau_p})",
+      "aliases_latex": [
+        "L_p=\\sqrt{D_p\\tau_p}"
+      ],
+      "keywords": [
+        "minority_carrier_diffusion",
+        "diffusion_length",
+        "continuity_equation"
+      ],
+      "domain_tags": [
+        "electrical_engineering"
+      ]
+    },
+    {
+      "id": "eng.semi.n10_shockley_diode_equation",
+      "short_code": "SEMI10",
+      "kind": "theorem_formula",
+      "title": "ショックレーのダイオード電流方程式",
+      "summary": "長ダイオード近似における空乏層端の少数キャリア拡散電流の和として導出される理想PN接合ダイオードの電流-電圧特性。",
+      "canonical_latex": "I = I_S\\left(\\exp\\!\\left(\\frac{V_a}{V_T}\\right) - 1\\right),\\quad I_S = q A n_i^2\\left(\\frac{D_p}{L_p N_D} + \\frac{D_n}{L_n N_A}\\right)",
+      "aliases_latex": [
+        "I=I_S(e^{V_a/V_T}-1)"
+      ],
+      "keywords": [
+        "shockley_diode_equation",
+        "saturation_current",
+        "iv_characteristic"
+      ],
+      "domain_tags": [
+        "electrical_engineering"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_semi_mass_action",
+      "target_node_id": "eng.semi.n02_mass_action_law",
+      "route_kind": "deductive",
+      "title": "ボルツマン近似からの質量作用の法則の導出",
+      "premise_node_ids": [
+        "eng.semi.n01_fermi_dirac_carrier_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "非縮退半導体（ボルツマン近似が成立）",
+        "熱平衡状態"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "n = N_c \\exp\\!\\left(-\\frac{E_c - E_F}{k_B T}\\right),\\; p = N_v \\exp\\!\\left(-\\frac{E_F - E_v}{k_B T}\\right)",
+          "to_latex": "n p = n_i^2 = N_c N_v \\exp\\!\\left(-\\frac{E_g}{k_B T}\\right)",
+          "operation_label": "積によるフェルミ準位の消去",
+          "explanation": "電子濃度と正孔濃度の積をとることでフェルミ準位を消去し、バンドギャップのみに依存する質量作用の法則を得る。",
+          "used_node_ids": [
+            "eng.semi.n01_fermi_dirac_carrier_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "n = N_c \\exp\\!\\left(-\\frac{E_c - E_F}{k_B T}\\right),\\; p = N_v \\exp\\!\\left(-\\frac{E_F - E_v}{k_B T}\\right)",
+          "to_latex": "n p = N_c N_v \\exp\\!\\left(-\\frac{E_c - E_F}{k_B T}\\right)\\exp\\!\\left(-\\frac{E_F - E_v}{k_B T}\\right)",
+          "operation_label": "両辺の乗算",
+          "explanation": "電子濃度と正孔濃度の表現を掛け合わせる。",
+          "used_node_ids": [
+            "eng.semi.n01_fermi_dirac_carrier_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "n p = N_c N_v \\exp\\!\\left(-\\frac{E_c - E_F}{k_B T}\\right)\\exp\\!\\left(-\\frac{E_F - E_v}{k_B T}\\right)",
+          "to_latex": "n p = N_c N_v \\exp\\!\\left(-\\frac{E_c - E_v}{k_B T}\\right)",
+          "operation_label": "指数法則による整理",
+          "explanation": "指数関数の積を結合し、フェルミ準位を相殺する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "n p = N_c N_v \\exp\\!\\left(-\\frac{E_c - E_v}{k_B T}\\right)",
+          "to_latex": "n p = n_i^2 = N_c N_v \\exp\\!\\left(-\\frac{E_g}{k_B T}\\right)",
+          "operation_label": "バンドギャップと真性濃度の代入",
+          "explanation": "真性半導体でも同じ積が成り立つため、真性キャリア濃度の2乗と等置される。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_semi_charge_neutrality",
+      "target_node_id": "eng.semi.n03_charge_neutrality_dopants",
+      "route_kind": "deductive",
+      "title": "電気的中性条件と質量作用の法則からのn型半導体キャリア濃度導出",
+      "premise_node_ids": [
+        "eng.semi.n02_mass_action_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "完全電離",
+        "n型半導体（N_D >> n_i, N_A = 0）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p - n + N_D^+ - N_A^- = 0,\\; n p = n_i^2",
+          "to_latex": "n \\approx N_D,\\; p \\approx \\frac{n_i^2}{N_D}\\;(N_D \\gg n_i, N_A=0)",
+          "operation_label": "2次方程式の近似解法",
+          "explanation": "中性条件と質量作用の法則を連立し、強外因性極限で多数・少数キャリア濃度を求める。",
+          "used_node_ids": [
+            "eng.semi.n02_mass_action_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p - n + N_D^+ - N_A^- = 0,\\; n p = n_i^2",
+          "to_latex": "n - p = N_D\\;(N_D^+ \\approx N_D,\\; N_A^- = 0)",
+          "operation_label": "完全電離条件の適用",
+          "explanation": "ドナーがすべて電離しているとして中性条件を整理する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "n - p = N_D\\;(N_D^+ \\approx N_D,\\; N_A^- = 0)",
+          "to_latex": "n - \\frac{n_i^2}{n} = N_D \\implies n^2 - N_D n - n_i^2 = 0",
+          "operation_label": "質量作用の法則の代入",
+          "explanation": "正孔濃度を消去し、電子濃度に関する2次方程式を得る。",
+          "used_node_ids": [
+            "eng.semi.n02_mass_action_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "n - \\frac{n_i^2}{n} = N_D \\implies n^2 - N_D n - n_i^2 = 0",
+          "to_latex": "n \\approx N_D,\\; p \\approx \\frac{n_i^2}{N_D}\\;(N_D \\gg n_i, N_A=0)",
+          "operation_label": "高ドープ近似",
+          "explanation": "N_D >> n_i の極限で正の解を近似し、少数キャリア正孔濃度を得る。",
+          "used_node_ids": [
+            "eng.semi.n02_mass_action_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_semi_drift_diffusion",
+      "target_node_id": "eng.semi.n04_drift_diffusion_currents",
+      "route_kind": "reformulation",
+      "title": "ドリフト速度と拡散流束からの電流密度構成",
+      "premise_node_ids": [
+        "eng.semi.n01_fermi_dirac_carrier_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m20_derivative_definition"
+      ],
+      "assumptions": [
+        "1次元輸送",
+        "線形応答（低電界移動度・フィックの法則）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "v_{dn} = -\\mu_n E,\\; \\Phi_{n,\\mathrm{diff}} = -D_n \\frac{dn}{dx}",
+          "to_latex": "J_n = q \\mu_n n E + q D_n \\frac{dn}{dx},\\; J_p = q \\mu_p p E - q D_p \\frac{dp}{dx}",
+          "operation_label": "電荷量と粒子流束の結合",
+          "explanation": "各キャリアの電荷（-q, +q）をドリフト項と拡散流束に掛けて全電流密度を定義する。",
+          "used_node_ids": [
+            "eng.semi.n01_fermi_dirac_carrier_boundary",
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_{dn} = -\\mu_n E,\\; \\Phi_{n,\\mathrm{diff}} = -D_n \\frac{dn}{dx}",
+          "to_latex": "J_{n,\\mathrm{drift}} = (-q) n (-\\mu_n E) = q \\mu_n n E,\\; J_{p,\\mathrm{drift}} = q \\mu_p p E",
+          "operation_label": "ドリフト電流の計算",
+          "explanation": "電荷密度と平均ドリフト速度の積によりドリフト電流密度を求める。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{n,\\mathrm{drift}} = (-q) n (-\\mu_n E) = q \\mu_n n E,\\; J_{p,\\mathrm{drift}} = q \\mu_p p E",
+          "to_latex": "J_{n,\\mathrm{diff}} = (-q)\\left(-D_n \\frac{dn}{dx}\\right) = q D_n \\frac{dn}{dx},\\; J_{p,\\mathrm{diff}} = -q D_p \\frac{dp}{dx}",
+          "operation_label": "拡散電流の計算",
+          "explanation": "フィックの第1法則による粒子拡散流束に電荷を掛けて拡散電流密度を得る。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{n,\\mathrm{diff}} = (-q)\\left(-D_n \\frac{dn}{dx}\\right) = q D_n \\frac{dn}{dx},\\; J_{p,\\mathrm{diff}} = -q D_p \\frac{dp}{dx}",
+          "to_latex": "J_n = q \\mu_n n E + q D_n \\frac{dn}{dx},\\; J_p = q \\mu_p p E - q D_p \\frac{dp}{dx}",
+          "operation_label": "ドリフトと拡散の重ね合わせ",
+          "explanation": "線形重ね合わせにより電子および正孔の全電流密度式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_semi_einstein_relation",
+      "target_node_id": "eng.semi.n05_einstein_relation",
+      "route_kind": "deductive",
+      "title": "熱平衡ゼロ電流条件からのアインシュタインの関係式の導出",
+      "premise_node_ids": [
+        "eng.semi.n01_fermi_dirac_carrier_boundary",
+        "eng.semi.n04_drift_diffusion_currents"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "熱平衡状態（J_n = J_p = 0, dE_F/dx = 0）",
+        "非縮退半導体"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J_n = q \\mu_n n E + q D_n \\frac{dn}{dx} = 0,\\; n = N_c \\exp\\!\\left(-\\frac{E_c - E_F}{k_B T}\\right)",
+          "to_latex": "\\frac{D_n}{\\mu_n} = \\frac{D_p}{\\mu_p} = \\frac{k_B T}{q} =: V_T",
+          "operation_label": "熱平衡釣合いの微分評価",
+          "explanation": "熱平衡で正味電流が零となる条件にボルツマン分布の空間微分を代入し、拡散係数と移動度の比を得る。",
+          "used_node_ids": [
+            "eng.semi.n01_fermi_dirac_carrier_boundary",
+            "eng.semi.n04_drift_diffusion_currents",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_n = q \\mu_n n E + q D_n \\frac{dn}{dx} = 0,\\; n = N_c \\exp\\!\\left(-\\frac{E_c - E_F}{k_B T}\\right)",
+          "to_latex": "\\frac{dn}{dx} = -\\frac{n}{k_B T}\\frac{dE_c}{dx} = -\\frac{q n E}{k_B T}",
+          "operation_label": "連鎖律による濃度勾配の計算",
+          "explanation": "一様なフェルミ準位と電界 E = (1/q)dE_c/dx を用い、電子濃度を位置で微分する。",
+          "used_node_ids": [
+            "eng.semi.n01_fermi_dirac_carrier_boundary",
+            "math.calc.m01_chain_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dn}{dx} = -\\frac{n}{k_B T}\\frac{dE_c}{dx} = -\\frac{q n E}{k_B T}",
+          "to_latex": "q \\mu_n n E + q D_n \\left(-\\frac{q n E}{k_B T}\\right) = 0",
+          "operation_label": "ゼロ電流条件への代入",
+          "explanation": "電流密度方程式のドリフト項と拡散項の釣り合いに濃度勾配を代入する。",
+          "used_node_ids": [
+            "eng.semi.n04_drift_diffusion_currents"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q \\mu_n n E + q D_n \\left(-\\frac{q n E}{k_B T}\\right) = 0",
+          "to_latex": "\\frac{D_n}{\\mu_n} = \\frac{D_p}{\\mu_p} = \\frac{k_B T}{q} =: V_T",
+          "operation_label": "係数比の整理",
+          "explanation": "共通因子 q n E を約分し、正孔についても同様の議論を行ってアインシュタインの関係式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_semi_built_in_potential",
+      "target_node_id": "eng.semi.n06_built_in_potential",
+      "route_kind": "deductive",
+      "title": "電子電流零の積分によるPN接合内蔵電位の導出",
+      "premise_node_ids": [
+        "eng.semi.n03_charge_neutrality_dopants",
+        "eng.semi.n04_drift_diffusion_currents",
+        "eng.semi.n05_einstein_relation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "熱平衡状態（J_n = 0）",
+        "中性領域での完全電離・強外因性近似"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "q \\mu_n n E + q D_n \\frac{dn}{dx} = 0,\\; n(-x_p) = \\frac{n_i^2}{N_A},\\; n(x_n) = N_D",
+          "to_latex": "V_{bi} = \\frac{k_B T}{q}\\ln\\!\\left(\\frac{N_A N_D}{n_i^2}\\right) = V_T \\ln\\!\\left(\\frac{N_A N_D}{n_i^2}\\right)",
+          "operation_label": "空乏層を横切る電界の積分",
+          "explanation": "熱平衡の電流零条件を空間積分し、両端の中性領域の電子濃度比から内蔵電位を導く。",
+          "used_node_ids": [
+            "eng.semi.n03_charge_neutrality_dopants",
+            "eng.semi.n04_drift_diffusion_currents",
+            "eng.semi.n05_einstein_relation",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q \\mu_n n E + q D_n \\frac{dn}{dx} = 0,\\; n(-x_p) = \\frac{n_i^2}{N_A},\\; n(x_n) = N_D",
+          "to_latex": "E(x) = -\\frac{d\\psi}{dx} = -\\frac{D_n}{\\mu_n}\\frac{1}{n}\\frac{dn}{dx} = -V_T \\frac{1}{n}\\frac{dn}{dx}",
+          "operation_label": "アインシュタイン関係式の適用",
+          "explanation": "E = -dψ/dx とアインシュタインの関係式 D_n/μ_n = V_T を代入する。",
+          "used_node_ids": [
+            "eng.semi.n04_drift_diffusion_currents",
+            "eng.semi.n05_einstein_relation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E(x) = -\\frac{d\\psi}{dx} = -\\frac{D_n}{\\mu_n}\\frac{1}{n}\\frac{dn}{dx} = -V_T \\frac{1}{n}\\frac{dn}{dx}",
+          "to_latex": "\\int_{-x_p}^{x_n} \\frac{d\\psi}{dx}\\,dx = V_T \\int_{n(-x_p)}^{n(x_n)} \\frac{dn}{n} = V_T \\ln\\!\\left(\\frac{n(x_n)}{n(-x_p)}\\right)",
+          "operation_label": "空乏層区間の定積分",
+          "explanation": "微積分学の基本定理により電位差 V_{bi} = ψ(x_n) - ψ(-x_p) をキャリア濃度の対数で表す。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{-x_p}^{x_n} \\frac{d\\psi}{dx}\\,dx = V_T \\int_{n(-x_p)}^{n(x_n)} \\frac{dn}{n} = V_T \\ln\\!\\left(\\frac{n(x_n)}{n(-x_p)}\\right)",
+          "to_latex": "V_{bi} = \\frac{k_B T}{q}\\ln\\!\\left(\\frac{N_A N_D}{n_i^2}\\right) = V_T \\ln\\!\\left(\\frac{N_A N_D}{n_i^2}\\right)",
+          "operation_label": "境界濃度の代入",
+          "explanation": "p側およびn側中性領域の電子濃度を代入して内蔵電位の公式を得る。",
+          "used_node_ids": [
+            "eng.semi.n03_charge_neutrality_dopants"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_semi_depletion_width",
+      "target_node_id": "eng.semi.n07_depletion_approximation_width",
+      "route_kind": "deductive",
+      "title": "空乏層近似とポアソン方程式からの空乏層幅の導出",
+      "premise_node_ids": [
+        "eng.semi.n03_charge_neutrality_dopants",
+        "eng.semi.n06_built_in_potential"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "空乏層近似（自由キャリア無視・矩形電荷分布）",
+        "段階接合"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d^2\\psi}{dx^2} = -\\frac{\\rho(x)}{\\varepsilon_s},\\; \\rho(x) = \\begin{cases} -q N_A & (-x_p < x < 0) \\\\ q N_D & (0 < x < x_n) \\end{cases}",
+          "to_latex": "W = x_n + x_p = \\sqrt{\\frac{2\\varepsilon_s}{q}\\left(\\frac{1}{N_A}+\\frac{1}{N_D}\\right)(V_{bi} - V_a)}",
+          "operation_label": "ポアソン方程式の2回積分",
+          "explanation": "段階電荷密度を2回積分して全電位降下を V_{bi}-V_a と等置し、電荷中性条件と連立して空乏層幅を求める。",
+          "used_node_ids": [
+            "eng.semi.n03_charge_neutrality_dopants",
+            "eng.semi.n06_built_in_potential",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2\\psi}{dx^2} = -\\frac{\\rho(x)}{\\varepsilon_s},\\; \\rho(x) = \\begin{cases} -q N_A & (-x_p < x < 0) \\\\ q N_D & (0 < x < x_n) \\end{cases}",
+          "to_latex": "E(x) = \\begin{cases} -\\frac{q N_A}{\\varepsilon_s}(x + x_p) & (-x_p < x < 0) \\\\ -\\frac{q N_D}{\\varepsilon_s}(x_n - x) & (0 < x < x_n) \\end{cases},\\; N_A x_p = N_D x_n",
+          "operation_label": "1回目の積分と電界連続条件",
+          "explanation": "境界条件 E(-x_p)=E(x_n)=0 で積分し、x=0 での電界の連続性から電荷中性条件 N_A x_p = N_D x_n を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E(x) = \\begin{cases} -\\frac{q N_A}{\\varepsilon_s}(x + x_p) & (-x_p < x < 0) \\\\ -\\frac{q N_D}{\\varepsilon_s}(x_n - x) & (0 < x < x_n) \\end{cases},\\; N_A x_p = N_D x_n",
+          "to_latex": "V_{bi} - V_a = -\\int_{-x_p}^{x_n} E(x)\\,dx = \\frac{q}{2\\varepsilon_s}\\left(N_A x_p^2 + N_D x_n^2\\right)",
+          "operation_label": "電界の積分から総電位差へ",
+          "explanation": "電界を負方向に積分した面積を実効障壁電位 V_{bi} - V_a と等置する。",
+          "used_node_ids": [
+            "eng.semi.n06_built_in_potential",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{bi} - V_a = -\\int_{-x_p}^{x_n} E(x)\\,dx = \\frac{q}{2\\varepsilon_s}\\left(N_A x_p^2 + N_D x_n^2\\right)",
+          "to_latex": "W = x_n + x_p = \\sqrt{\\frac{2\\varepsilon_s}{q}\\left(\\frac{1}{N_A}+\\frac{1}{N_D}\\right)(V_{bi} - V_a)}",
+          "operation_label": "x_p, x_n の消去と総幅の導出",
+          "explanation": "N_A x_p = N_D x_n を用いて x_n と x_p をそれぞれ解き、その和 W = x_n + x_p を求める。",
+          "used_node_ids": [
+            "eng.semi.n03_charge_neutrality_dopants"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_semi_law_of_junction",
+      "target_node_id": "eng.semi.n08_law_of_the_junction",
+      "route_kind": "deductive",
+      "title": "障壁低下による接合の法則の導出",
+      "premise_node_ids": [
+        "eng.semi.n01_fermi_dirac_carrier_boundary",
+        "eng.semi.n03_charge_neutrality_dopants",
+        "eng.semi.n06_built_in_potential"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "低注入条件（多数キャリア濃度はほぼ不変）",
+        "空乏層内の擬平衡（ボルツマン関係の維持）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{n(x_n)}{n(-x_p)} = \\exp\\!\\left(\\frac{V_{bi} - V_a}{V_T}\\right),\\; V_{bi} = V_T \\ln\\!\\left(\\frac{N_A N_D}{n_i^2}\\right)",
+          "to_latex": "n_p(-x_p) = n_{p0}\\exp\\!\\left(\\frac{V_a}{V_T}\\right),\\quad p_n(x_n) = p_{n0}\\exp\\!\\left(\\frac{V_a}{V_T}\\right)",
+          "operation_label": "内蔵電位の代入と指数分解",
+          "explanation": "バイアス印加時の障壁電位 V_{bi}-V_a に対するボルツマン関係に V_{bi} を代入し、少数キャリア境界濃度を求める。",
+          "used_node_ids": [
+            "eng.semi.n01_fermi_dirac_carrier_boundary",
+            "eng.semi.n03_charge_neutrality_dopants",
+            "eng.semi.n06_built_in_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{n(x_n)}{n(-x_p)} = \\exp\\!\\left(\\frac{V_{bi} - V_a}{V_T}\\right),\\; V_{bi} = V_T \\ln\\!\\left(\\frac{N_A N_D}{n_i^2}\\right)",
+          "to_latex": "n_p(-x_p) = N_D \\exp\\!\\left(-\\frac{V_{bi}}{V_T}\\right)\\exp\\!\\left(\\frac{V_a}{V_T}\\right)",
+          "operation_label": "低注入条件の適用",
+          "explanation": "n側多数キャリア濃度を n(x_n) ≈ N_D として p側端の電子濃度を表す。",
+          "used_node_ids": [
+            "eng.semi.n03_charge_neutrality_dopants"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "n_p(-x_p) = N_D \\exp\\!\\left(-\\frac{V_{bi}}{V_T}\\right)\\exp\\!\\left(\\frac{V_a}{V_T}\\right)",
+          "to_latex": "n_p(-x_p) = N_D \\frac{n_i^2}{N_A N_D}\\exp\\!\\left(\\frac{V_a}{V_T}\\right) = \\frac{n_i^2}{N_A}\\exp\\!\\left(\\frac{V_a}{V_T}\\right)",
+          "operation_label": "内蔵電位の代入",
+          "explanation": "exp(-V_{bi}/V_T) = n_i^2 / (N_A N_D) を代入して簡約する。",
+          "used_node_ids": [
+            "eng.semi.n06_built_in_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "n_p(-x_p) = N_D \\frac{n_i^2}{N_A N_D}\\exp\\!\\left(\\frac{V_a}{V_T}\\right) = \\frac{n_i^2}{N_A}\\exp\\!\\left(\\frac{V_a}{V_T}\\right)",
+          "to_latex": "n_p(-x_p) = n_{p0}\\exp\\!\\left(\\frac{V_a}{V_T}\\right),\\quad p_n(x_n) = p_{n0}\\exp\\!\\left(\\frac{V_a}{V_T}\\right)",
+          "operation_label": "平衡少数キャリア濃度の同定",
+          "explanation": "n_{p0}=n_i^2/N_A を用い、正孔についても対称に接合の法則を得る。",
+          "used_node_ids": [
+            "eng.semi.n03_charge_neutrality_dopants"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_semi_minority_diffusion",
+      "target_node_id": "eng.semi.n09_minority_carrier_diffusion_eq",
+      "route_kind": "deductive",
+      "title": "連続方程式からの少数キャリア拡散方程式と指数減衰解の導出",
+      "premise_node_ids": [
+        "eng.semi.n04_drift_diffusion_currents"
+      ],
+      "required_math_node_ids": [
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "定常状態（∂p/∂t = 0）",
+        "準中性領域（E ≈ 0、拡散支配）",
+        "長ダイオード（無限遠境界で過剰濃度零）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{1}{q}\\frac{dJ_p}{dx} = -\\frac{\\Delta p_n}{\\tau_p},\\; J_p = -q D_p \\frac{d\\Delta p_n}{dx}",
+          "to_latex": "D_p \\frac{d^2\\Delta p_n}{dx^2} - \\frac{\\Delta p_n}{\\tau_p} = 0,\\; \\Delta p_n(x) = \\Delta p_n(x_n)\\exp\\!\\left(-\\frac{x - x_n}{L_p}\\right)",
+          "operation_label": "定数係数2階常微分方程式の求解",
+          "explanation": "拡散電流式を連続の式に代入して拡散方程式を得て、遠方境界条件のもとで指数減衰解を求める。",
+          "used_node_ids": [
+            "eng.semi.n04_drift_diffusion_currents",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{q}\\frac{dJ_p}{dx} = -\\frac{\\Delta p_n}{\\tau_p},\\; J_p = -q D_p \\frac{d\\Delta p_n}{dx}",
+          "to_latex": "\\frac{d^2\\Delta p_n}{dx^2} - \\frac{\\Delta p_n}{D_p \\tau_p} = 0,\\; L_p := \\sqrt{D_p \\tau_p}",
+          "operation_label": "拡散電流式の代入と拡散長の定義",
+          "explanation": "電界零の中性領域での電流式を連続方程式に代入し、拡散長 L_p を導入する。",
+          "used_node_ids": [
+            "eng.semi.n04_drift_diffusion_currents"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2\\Delta p_n}{dx^2} - \\frac{\\Delta p_n}{D_p \\tau_p} = 0,\\; L_p := \\sqrt{D_p \\tau_p}",
+          "to_latex": "\\Delta p_n(x) = C_1 \\exp\\!\\left(-\\frac{x - x_n}{L_p}\\right) + C_2 \\exp\\!\\left(\\frac{x - x_n}{L_p}\\right)",
+          "operation_label": "2階線形ODEの一般解",
+          "explanation": "定数係数2階線形常微分方程式の一般解を指数関数の線形結合として書く。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta p_n(x) = C_1 \\exp\\!\\left(-\\frac{x - x_n}{L_p}\\right) + C_2 \\exp\\!\\left(\\frac{x - x_n}{L_p}\\right)",
+          "to_latex": "D_p \\frac{d^2\\Delta p_n}{dx^2} - \\frac{\\Delta p_n}{\\tau_p} = 0,\\; \\Delta p_n(x) = \\Delta p_n(x_n)\\exp\\!\\left(-\\frac{x - x_n}{L_p}\\right)",
+          "operation_label": "境界条件の適用",
+          "explanation": "x -> ∞ で発散しない条件より C_2 = 0、x = x_n での値より C_1 = Δp_n(x_n) を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_semi_shockley_diode",
+      "target_node_id": "eng.semi.n10_shockley_diode_equation",
+      "route_kind": "deductive",
+      "title": "空乏層端の拡散電流評価によるショックレーのダイオード方程式の導出",
+      "premise_node_ids": [
+        "eng.semi.n02_mass_action_law",
+        "eng.semi.n03_charge_neutrality_dopants",
+        "eng.semi.n04_drift_diffusion_currents",
+        "eng.semi.n08_law_of_the_junction",
+        "eng.semi.n09_minority_carrier_diffusion_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "理想ダイオード近似（空乏層内の再結合・生成電流を無視）",
+        "長ダイオード",
+        "低注入"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I = A\\big(J_p(x_n) + J_n(-x_p)\\big),\\; \\Delta p_n(x_n) = p_{n0}\\big(e^{V_a/V_T} - 1\\big),\\; \\Delta n_p(-x_p) = n_{p0}\\big(e^{V_a/V_T} - 1\\big)",
+          "to_latex": "I = I_S\\left(\\exp\\!\\left(\\frac{V_a}{V_T}\\right) - 1\\right),\\; I_S = q A n_i^2\\left(\\frac{D_p}{L_p N_D} + \\frac{D_n}{L_n N_A}\\right)",
+          "operation_label": "空乏層端拡散電流の合算",
+          "explanation": "空乏層の両端における少数キャリア拡散電流を指数減衰解の微分で評価し、面積を掛けて理想ダイオード式を得る。",
+          "used_node_ids": [
+            "eng.semi.n04_drift_diffusion_currents",
+            "eng.semi.n08_law_of_the_junction",
+            "eng.semi.n09_minority_carrier_diffusion_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I = A\\big(J_p(x_n) + J_n(-x_p)\\big),\\; \\Delta p_n(x_n) = p_{n0}\\big(e^{V_a/V_T} - 1\\big),\\; \\Delta n_p(-x_p) = n_{p0}\\big(e^{V_a/V_T} - 1\\big)",
+          "to_latex": "J_p(x_n) = \\left.-q D_p \\frac{d\\Delta p_n}{dx}\\right|_{x=x_n} = \\frac{q D_p}{L_p}p_{n0}\\left(\\exp\\!\\left(\\frac{V_a}{V_T}\\right) - 1\\right)",
+          "operation_label": "n側空乏層端での正孔拡散電流評価",
+          "explanation": "少数キャリア拡散解を x=x_n で微分し、接合の法則による過剰濃度を代入する。",
+          "used_node_ids": [
+            "eng.semi.n04_drift_diffusion_currents",
+            "eng.semi.n08_law_of_the_junction",
+            "eng.semi.n09_minority_carrier_diffusion_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_p(x_n) = \\left.-q D_p \\frac{d\\Delta p_n}{dx}\\right|_{x=x_n} = \\frac{q D_p}{L_p}p_{n0}\\left(\\exp\\!\\left(\\frac{V_a}{V_T}\\right) - 1\\right)",
+          "to_latex": "J_n(-x_p) = \\frac{q D_n}{L_n}n_{p0}\\left(\\exp\\!\\left(\\frac{V_a}{V_T}\\right) - 1\\right),\\; p_{n0} = \\frac{n_i^2}{N_D},\\; n_{p0} = \\frac{n_i^2}{N_A}",
+          "operation_label": "p側電子電流の評価と平衡濃度の代入",
+          "explanation": "p側の電子拡散電流を同様に評価し、平衡少数キャリア濃度をドーピング濃度と n_i で表す。",
+          "used_node_ids": [
+            "eng.semi.n02_mass_action_law",
+            "eng.semi.n03_charge_neutrality_dopants"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_n(-x_p) = \\frac{q D_n}{L_n}n_{p0}\\left(\\exp\\!\\left(\\frac{V_a}{V_T}\\right) - 1\\right),\\; p_{n0} = \\frac{n_i^2}{N_D},\\; n_{p0} = \\frac{n_i^2}{N_A}",
+          "to_latex": "I = I_S\\left(\\exp\\!\\left(\\frac{V_a}{V_T}\\right) - 1\\right),\\; I_S = q A n_i^2\\left(\\frac{D_p}{L_p N_D} + \\frac{D_n}{L_n N_A}\\right)",
+          "operation_label": "全電流の統合と飽和電流 I_S の定義",
+          "explanation": "両電流密度の和に接合断面積 A を掛け、逆方向飽和電流 I_S を括り出してショックレーの式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

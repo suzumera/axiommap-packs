@@ -1,0 +1,788 @@
+{
+  "pack_meta": {
+    "pack_id": "astro.obs.radio_interferometry",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "astronomy",
+    "title": "電波天文学と干渉計：アンテナ温度・ファンシッタート＝ゼルニケの定理・開口合成",
+    "language": "ja",
+    "description": "レイリー＝ジーンズ近似と輝度温度、システム雑音温度とラジオメータ方程式、2素子干渉計のビジビリティ関数とuv平面フーリエ合成を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "astro.radio.n01_planck_blackbody_boundary",
+      "short_code": "RD01",
+      "kind": "math_boundary",
+      "title": "プランクの黒体放射輝度公式とジョンソン＝ナイキスト熱雑音電力",
+      "summary": "熱平衡黒体からの単位周波数・単位立体角あたり放射輝度および抵抗体・受信系の熱雑音電力の基礎境界条件。",
+      "canonical_latex": "B_\\nu(T) = \\frac{2h\\nu^3}{c^2}\\frac{1}{e^{h\\nu/(k_B T)} - 1},\\qquad P_{\\mathrm{noise}} = k_B T \\Delta\\nu",
+      "aliases_latex": [
+        "B_\\nu(T) = \\frac{2h\\nu^3}{c^2(e^{h\\nu/k_B T}-1)}"
+      ],
+      "keywords": [
+        "プランク分布",
+        "黒体放射",
+        "熱雑音",
+        "ナイキスト雑音",
+        "輝度"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "radio_astronomy"
+      ]
+    },
+    {
+      "id": "astro.radio.n02_rayleigh_jeans_brightness_temp",
+      "short_code": "RD02",
+      "kind": "theorem_formula",
+      "title": "レイリー＝ジーンズ近似と輝度温度の定義",
+      "summary": "低周波数・高温極限におけるプランク放射則の1次展開と、任意の比強度を等価な黒体温度で表す輝度温度の定義。",
+      "canonical_latex": "T_b(\\nu) := \\frac{c^2}{2k_B\\nu^2} I_\\nu,\\qquad I_\\nu \\approx B_\\nu^{\\mathrm{RJ}}(T_b) = \\frac{2\\nu^2 k_B T_b}{c^2}\\quad (h\\nu \\ll k_B T_b)",
+      "aliases_latex": [
+        "B_\\nu^{\\mathrm{RJ}}(T) = \\frac{2k_B T}{\\lambda^2}"
+      ],
+      "keywords": [
+        "レイリー＝ジーンズ近似",
+        "輝度温度",
+        "比強度",
+        "電波天文学"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "radio_astronomy"
+      ]
+    },
+    {
+      "id": "astro.radio.n03_antenna_temperature_beam",
+      "short_code": "RD03",
+      "kind": "definition",
+      "title": "アンテナ実効面積・ビーム立体角とアンテナ温度",
+      "summary": "単一偏波アンテナが受信する単位周波数あたりの電力と、規格化指向性パターンで重み付け平均されたアンテナ温度の定義。",
+      "canonical_latex": "T_A := \\frac{P_\\nu}{k_B} = \\frac{1}{\\Omega_A}\\iint_{4\\pi} T_b(\\Omega) P_n(\\Omega)\\,d\\Omega\\qquad \\left(A_{e,0}\\Omega_A = \\lambda^2,\\; \\Omega_A := \\iint_{4\\pi} P_n(\\Omega)\\,d\\Omega\\right)",
+      "aliases_latex": [
+        "P_\\nu = k_B T_A"
+      ],
+      "keywords": [
+        "アンテナ温度",
+        "実効面積",
+        "ビーム立体角",
+        "アンテナ定理"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "radio_astronomy"
+      ]
+    },
+    {
+      "id": "astro.radio.n04_system_temp_radiometer_eq",
+      "short_code": "RD04",
+      "kind": "theorem_formula",
+      "title": "システム雑音温度と理想ラジオメータ方程式",
+      "summary": "アンテナ温度と受信機雑音温度の和であるシステム雑音温度と、帯域幅・積分時間による温度検出限界を与えるラジオメータ方程式。",
+      "canonical_latex": "T_{\\mathrm{sys}} = T_A + T_{\\mathrm{rx}},\\qquad \\Delta T_{\\mathrm{rms}} = \\frac{T_{\\mathrm{sys}}}{\\sqrt{\\Delta\\nu\\,\\tau}}",
+      "aliases_latex": [
+        "\\frac{\\Delta T_{\\mathrm{rms}}}{T_{\\mathrm{sys}}} = \\frac{1}{\\sqrt{\\Delta\\nu\\,\\tau}}"
+      ],
+      "keywords": [
+        "システム雑音温度",
+        "ラジオメータ方程式",
+        "感度",
+        "積分時間"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "radio_astronomy"
+      ]
+    },
+    {
+      "id": "astro.radio.n05_two_element_interferometer_delay",
+      "short_code": "RD05",
+      "kind": "definition",
+      "title": "2素子電波干渉計の幾何学的遅延時間とフリンジ位相",
+      "summary": "基線ベクトルで結ばれた2つのアンテナに到来する平面波の行路差から生じる幾何学的遅延時間と干渉位相の定義。",
+      "canonical_latex": "\\tau_g = \\frac{\\mathbf{b}\\cdot\\hat{\\mathbf{s}}}{c},\\qquad \\phi = 2\\pi\\nu\\tau_g = 2\\pi\\frac{\\mathbf{b}\\cdot\\hat{\\mathbf{s}}}{\\lambda}",
+      "aliases_latex": [
+        "\\phi = 2\\pi \\mathbf{b}_\\lambda\\cdot\\hat{\\mathbf{s}}"
+      ],
+      "keywords": [
+        "2素子干渉計",
+        "幾何学的遅延",
+        "基線ベクトル",
+        "フリンジ位相"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "radio_astronomy"
+      ]
+    },
+    {
+      "id": "astro.radio.n06_complex_visibility_correlation",
+      "short_code": "RD06",
+      "kind": "theorem_formula",
+      "title": "複素ビジビリティ関数と相互相関応答",
+      "summary": "天球上の非干渉性輝度分布に対する2素子干渉計の複素相関出力（ビジビリティ）と方向余弦座標 (l, m, n) 表示。",
+      "canonical_latex": "V(u,v,w) = \\iint_{\\text{sky}} A_N(l,m) I_\\nu(l,m) e^{-2\\pi i\\left(u l + v m + w\\left(\\sqrt{1-l^2-m^2}-1\\right)\\right)}\\frac{dl\\,dm}{\\sqrt{1-l^2-m^2}}",
+      "aliases_latex": [
+        "\\mathcal{V}(\\mathbf{b}_\\lambda) = \\iint A_N(\\hat{\\mathbf{s}}) I_\\nu(\\hat{\\mathbf{s}}) e^{-2\\pi i \\mathbf{b}_\\lambda\\cdot(\\hat{\\mathbf{s}}-\\hat{\\mathbf{s}}_0)}\\,d\\Omega"
+      ],
+      "keywords": [
+        "複素ビジビリティ",
+        "相互相関",
+        "uv平面",
+        "方向余弦"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "radio_astronomy"
+      ]
+    },
+    {
+      "id": "astro.radio.n07_van_cittert_zernike_theorem",
+      "short_code": "RD07",
+      "kind": "theorem_formula",
+      "title": "ファンシッタート＝ゼルニケの定理（2次元フーリエ変換関係）",
+      "summary": "小視野近似（または共面基線条件）のもとで、複素ビジビリティ関数がビーム重み付き天球輝度分布の2次元フーリエ変換に一致する定理。",
+      "canonical_latex": "V(u,v) \\approx \\iint_{\\mathbb{R}^2} I_\\nu^{\\mathrm{app}}(l,m) e^{-2\\pi i(u l + v m)}\\,dl\\,dm\\qquad \\left(I_\\nu^{\\mathrm{app}}(l,m) := A_N(l,m)I_\\nu(l,m)\\right)",
+      "aliases_latex": [
+        "V(u,v) = \\mathcal{F}\\left[I_\\nu^{\\mathrm{app}}(l,m)\\right]"
+      ],
+      "keywords": [
+        "ファンシッタート＝ゼルニケの定理",
+        "フーリエ変換",
+        "小視野近似",
+        "ビジビリティ"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "radio_astronomy"
+      ]
+    },
+    {
+      "id": "astro.radio.n08_aperture_synthesis_dirty_beam",
+      "short_code": "RD08",
+      "kind": "theorem_formula",
+      "title": "開口合成におけるダーティイメージとダーティビームの畳み込み関係",
+      "summary": "有限の uv サンプリング関数を乗じたビジビリティの逆フーリエ変換として得られるダーティマップが、真の輝度分布とダーティビームの畳み込みとなる関係。",
+      "canonical_latex": "I^D(l,m) = \\mathcal{F}^{-1}\\!\\left[S(u,v)V(u,v)\\right] = (I_\\nu^{\\mathrm{app}} * B^D)(l,m),\\qquad B^D(l,m) := \\mathcal{F}^{-1}\\!\\left[S(u,v)\\right]",
+      "aliases_latex": [
+        "I^D = I_\\nu^{\\mathrm{app}} * B^D"
+      ],
+      "keywords": [
+        "開口合成",
+        "ダーティイメージ",
+        "ダーティビーム",
+        "uvカバレッジ",
+        "畳み込み"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "radio_astronomy"
+      ]
+    },
+    {
+      "id": "astro.radio.n09_synthesized_beam_resolution",
+      "short_code": "RD09",
+      "kind": "theorem_formula",
+      "title": "干渉計の合成ビーム角度分解能とN素子点源感度",
+      "summary": "最大基線長による回折限界角度分解能および N 素子干渉計アレイによる点源フラックス密度雑音限界。",
+      "canonical_latex": "\\theta_{\\mathrm{syn}} \\approx \\frac{\\lambda}{B_{\\max}},\\qquad \\Delta S_{\\mathrm{rms}} = \\frac{2 k_B T_{\\mathrm{sys}}}{A_e \\sqrt{N_{\\mathrm{ant}}(N_{\\mathrm{ant}}-1)\\Delta\\nu\\,\\tau}}",
+      "aliases_latex": [
+        "\\theta_{\\mathrm{syn}} \\sim u_{\\max}^{-1}"
+      ],
+      "keywords": [
+        "角度分解能",
+        "合成ビーム",
+        "点源感度",
+        "N素子干渉計"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "radio_astronomy"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_n02_rayleigh_jeans",
+      "target_node_id": "astro.radio.n02_rayleigh_jeans_brightness_temp",
+      "route_kind": "deductive",
+      "title": "プランク分布の1次漸近展開によるレイリー＝ジーンズ近似と輝度温度の導出",
+      "premise_node_ids": [
+        "astro.radio.n01_planck_blackbody_boundary"
+      ],
+      "required_math_node_ids": [
+        "astro.radio.n02_rayleigh_jeans_brightness_temp",
+        "math.calc.t07_maclaurin_exp",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "assumptions": [
+        "光子のエネルギーが熱エネルギーより十分小さい (hν ≪ k_B T)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "B_\\nu(T) = \\frac{2h\\nu^3}{c^2}\\frac{1}{e^{h\\nu/(k_B T)} - 1}",
+          "to_latex": "T_b(\\nu) := \\frac{c^2}{2k_B\\nu^2} I_\\nu,\\qquad I_\\nu \\approx B_\\nu^{\\mathrm{RJ}}(T_b) = \\frac{2\\nu^2 k_B T_b}{c^2}\\quad (h\\nu \\ll k_B T_b)",
+          "operation_label": "指数関数の1次展開と輝度温度の定義",
+          "explanation": "x = hν/(k_B T) ≪ 1 として指数関数を1次までマクローリン展開し、線形関係から輝度温度を定義する。",
+          "used_node_ids": [
+            "astro.radio.n01_planck_blackbody_boundary",
+            "math.calc.t07_maclaurin_exp",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "B_\\nu(T) = \\frac{2h\\nu^3}{c^2}\\frac{1}{e^{h\\nu/(k_B T)} - 1}",
+          "to_latex": "B_\\nu(T) = \\frac{2h\\nu^3}{c^2}\\frac{1}{\\frac{h\\nu}{k_B T} + \\mathcal{O}\\!\\left(\\left(\\frac{h\\nu}{k_B T}\\right)^2\\right)}",
+          "operation_label": "指数関数のマクローリン展開",
+          "explanation": "x = hν/(k_B T) に対して e^x = 1 + x + O(x^2) を代入する。",
+          "used_node_ids": [
+            "math.calc.t07_maclaurin_exp",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "B_\\nu(T) = \\frac{2h\\nu^3}{c^2}\\frac{1}{\\frac{h\\nu}{k_B T} + \\mathcal{O}\\!\\left(\\left(\\frac{h\\nu}{k_B T}\\right)^2\\right)}",
+          "to_latex": "B_\\nu^{\\mathrm{RJ}}(T) = \\frac{2\\nu^2 k_B T}{c^2}",
+          "operation_label": "主要項の抽出と約分",
+          "explanation": "hν ≪ k_B T として2次以上の微小項を無視し、hν を約分してレイリー＝ジーンズ近似式を得る。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "B_\\nu^{\\mathrm{RJ}}(T) = \\frac{2\\nu^2 k_B T}{c^2}",
+          "to_latex": "T_b(\\nu) := \\frac{c^2}{2k_B\\nu^2} I_\\nu,\\qquad I_\\nu \\approx B_\\nu^{\\mathrm{RJ}}(T_b) = \\frac{2\\nu^2 k_B T_b}{c^2}\\quad (h\\nu \\ll k_B T_b)",
+          "operation_label": "輝度温度の定義",
+          "explanation": "非熱的放射を含む任意の比強度 I_ν に対して、レイリー＝ジーンズ式を T について解いた量を輝度温度 T_b(ν) として定義する。",
+          "used_node_ids": [
+            "astro.radio.n02_rayleigh_jeans_brightness_temp"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n03_antenna_temp",
+      "target_node_id": "astro.radio.n03_antenna_temperature_beam",
+      "route_kind": "deductive",
+      "title": "単一偏波受信電力とアンテナ定理からのアンテナ温度の導出",
+      "premise_node_ids": [
+        "astro.radio.n01_planck_blackbody_boundary",
+        "astro.radio.n02_rayleigh_jeans_brightness_temp"
+      ],
+      "required_math_node_ids": [
+        "math.calc.mi01_multiple_integral_def"
+      ],
+      "assumptions": [
+        "無偏波放射に対する単一偏波受信（係数 1/2）",
+        "アンテナ定理 A_{e,0} Ω_A = λ^2 が成立する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_\\nu = \\frac{1}{2}\\iint_{4\\pi} A_e(\\Omega) I_\\nu(\\Omega)\\,d\\Omega",
+          "to_latex": "T_A := \\frac{P_\\nu}{k_B} = \\frac{1}{\\Omega_A}\\iint_{4\\pi} T_b(\\Omega) P_n(\\Omega)\\,d\\Omega\\qquad \\left(A_{e,0}\\Omega_A = \\lambda^2,\\; \\Omega_A := \\iint_{4\\pi} P_n(\\Omega)\\,d\\Omega\\right)",
+          "operation_label": "輝度温度表示とアンテナ定理の適用",
+          "explanation": "比強度を輝度温度で表し、A_e(Ω) = A_{e,0} P_n(Ω) および A_{e,0} Ω_A = λ^2 を用いてアンテナ温度 T_A を導出する。",
+          "used_node_ids": [
+            "astro.radio.n01_planck_blackbody_boundary",
+            "astro.radio.n02_rayleigh_jeans_brightness_temp",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_\\nu = \\frac{1}{2}\\iint_{4\\pi} A_e(\\Omega) I_\\nu(\\Omega)\\,d\\Omega",
+          "to_latex": "P_\\nu = \\frac{1}{2} A_{e,0}\\iint_{4\\pi} P_n(\\Omega)\\left(\\frac{2k_B \\nu^2}{c^2} T_b(\\Omega)\\right)d\\Omega",
+          "operation_label": "規格化ビームパターンと輝度温度の代入",
+          "explanation": "A_e(Ω) = A_{e,0} P_n(Ω) とし、I_ν(Ω) に輝度温度 T_b(Ω) の定義式を代入する。",
+          "used_node_ids": [
+            "astro.radio.n02_rayleigh_jeans_brightness_temp",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_\\nu = \\frac{1}{2} A_{e,0}\\iint_{4\\pi} P_n(\\Omega)\\left(\\frac{2k_B \\nu^2}{c^2} T_b(\\Omega)\\right)d\\Omega",
+          "to_latex": "P_\\nu = k_B \\frac{A_{e,0}}{\\lambda^2}\\iint_{4\\pi} T_b(\\Omega) P_n(\\Omega)\\,d\\Omega",
+          "operation_label": "波長 λ = c/ν による整理",
+          "explanation": "係数 1/2 と 2 を約分し、ν^2 / c^2 = 1 / λ^2 を用いて整理する。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_\\nu = k_B \\frac{A_{e,0}}{\\lambda^2}\\iint_{4\\pi} T_b(\\Omega) P_n(\\Omega)\\,d\\Omega",
+          "to_latex": "T_A := \\frac{P_\\nu}{k_B} = \\frac{1}{\\Omega_A}\\iint_{4\\pi} T_b(\\Omega) P_n(\\Omega)\\,d\\Omega\\qquad \\left(A_{e,0}\\Omega_A = \\lambda^2,\\; \\Omega_A := \\iint_{4\\pi} P_n(\\Omega)\\,d\\Omega\\right)",
+          "operation_label": "アンテナ定理と熱雑音等価温度の適用",
+          "explanation": "熱雑音電力公式 P_ν = k_B T_A およびアンテナ定理 A_{e,0} / λ^2 = 1 / Ω_A を代入して T_A の表式を得る。",
+          "used_node_ids": [
+            "astro.radio.n01_planck_blackbody_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n04_radiometer_eq",
+      "target_node_id": "astro.radio.n04_system_temp_radiometer_eq",
+      "route_kind": "deductive",
+      "title": "独立ガウス雑音サンプルの標本分散に基づくラジオメータ方程式の導出",
+      "premise_node_ids": [
+        "astro.radio.n01_planck_blackbody_boundary",
+        "astro.radio.n03_antenna_temperature_beam"
+      ],
+      "required_math_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "assumptions": [
+        "受信電圧 x_k は平均 0、分散 σ^2 の独立同分布ガウス雑音に従う",
+        "ナイキスト標本数 N = 2 Δν τ 個の独立サンプルを積分時間 τ で平均化する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T_{\\mathrm{sys}} = T_A + T_{\\mathrm{rx}},\\quad P_{\\mathrm{sys}} = k_B T_{\\mathrm{sys}} \\Delta\\nu",
+          "to_latex": "T_{\\mathrm{sys}} = T_A + T_{\\mathrm{rx}},\\qquad \\Delta T_{\\mathrm{rms}} = \\frac{T_{\\mathrm{sys}}}{\\sqrt{\\Delta\\nu\\,\\tau}}",
+          "operation_label": "独立ガウスサンプルの電力平均と標準誤差評価",
+          "explanation": "帯域幅 Δν・積分時間 τ における N = 2 Δν τ 個の独立なガウス雑音サンプルの2乗平均の標準偏差からラジオメータ方程式を導く。",
+          "used_node_ids": [
+            "astro.radio.n01_planck_blackbody_boundary",
+            "astro.radio.n03_antenna_temperature_beam",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\mathrm{sys}} = T_A + T_{\\mathrm{rx}},\\quad P_{\\mathrm{sys}} = k_B T_{\\mathrm{sys}} \\Delta\\nu",
+          "to_latex": "\\hat{P} = \\frac{1}{N}\\sum_{k=1}^{N} x_k^2,\\qquad \\mathbb{E}[\\hat{P}] = \\sigma^2,\\qquad \\mathrm{Var}(x_k^2) = 2\\sigma^4",
+          "operation_label": "ガウス雑音の4次モーメントと分散",
+          "explanation": "x_k ~ N(0, σ^2) のとき E[x_k^4] = 3σ^4 であるから、x_k^2 の分散は Var(x_k^2) = 3σ^4 - σ^4 = 2σ^4 となる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{P} = \\frac{1}{N}\\sum_{k=1}^{N} x_k^2,\\qquad \\mathbb{E}[\\hat{P}] = \\sigma^2,\\qquad \\mathrm{Var}(x_k^2) = 2\\sigma^4",
+          "to_latex": "\\frac{\\Delta P_{\\mathrm{rms}}}{P} = \\frac{\\sqrt{\\mathrm{Var}(\\hat{P})}}{\\mathbb{E}[\\hat{P}]} = \\sqrt{\\frac{2}{N}} = \\frac{1}{\\sqrt{\\Delta\\nu\\,\\tau}}",
+          "operation_label": "ナイキスト標本数 N = 2 Δν τ の代入",
+          "explanation": "独立性より Var(P_hat) = 2σ^4 / N であり、N = 2 Δν τ を代入して相対電力揺らぎを得る。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\Delta P_{\\mathrm{rms}}}{P} = \\frac{\\sqrt{\\mathrm{Var}(\\hat{P})}}{\\mathbb{E}[\\hat{P}]} = \\sqrt{\\frac{2}{N}} = \\frac{1}{\\sqrt{\\Delta\\nu\\,\\tau}}",
+          "to_latex": "T_{\\mathrm{sys}} = T_A + T_{\\mathrm{rx}},\\qquad \\Delta T_{\\mathrm{rms}} = \\frac{T_{\\mathrm{sys}}}{\\sqrt{\\Delta\\nu\\,\\tau}}",
+          "operation_label": "温度換算によるラジオメータ方程式の完成",
+          "explanation": "P ∝ T_sys の比例関係から ΔT_rms / T_sys = ΔP_rms / P となり、ラジオメータ方程式を得る。",
+          "used_node_ids": [
+            "astro.radio.n01_planck_blackbody_boundary",
+            "astro.radio.n03_antenna_temperature_beam"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n05_geometric_delay",
+      "target_node_id": "astro.radio.n05_two_element_interferometer_delay",
+      "route_kind": "deductive",
+      "title": "遠方天体からの平面波行路差による幾何学的遅延とフリンジ位相の導出",
+      "premise_node_ids": [
+        "phys.rel.sr01_relativity_postulates"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "天体は遠方にあり到来電磁波は平面波とみなせる（フラウンホーファー領域）",
+        "真空中の光速 c で伝搬する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta r = \\mathbf{b}\\cdot\\hat{\\mathbf{s}}",
+          "to_latex": "\\tau_g = \\frac{\\mathbf{b}\\cdot\\hat{\\mathbf{s}}}{c},\\qquad \\phi = 2\\pi\\nu\\tau_g = 2\\pi\\frac{\\mathbf{b}\\cdot\\hat{\\mathbf{s}}}{\\lambda}",
+          "operation_label": "行路差の時間・位相換算",
+          "explanation": "基線ベクトル b の天体方向単位ベクトル s_hat への射影である行路差を光速 c と波長 λ で換算する。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta r = \\mathbf{b}\\cdot\\hat{\\mathbf{s}}",
+          "to_latex": "\\tau_g = \\frac{\\Delta r}{c} = \\frac{\\mathbf{b}\\cdot\\hat{\\mathbf{s}}}{c}",
+          "operation_label": "幾何学的遅延時間の定義",
+          "explanation": "平面波が距離 Δr を伝搬する時間として遅延時間 τ_g = Δr / c を得る。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tau_g = \\frac{\\Delta r}{c} = \\frac{\\mathbf{b}\\cdot\\hat{\\mathbf{s}}}{c}",
+          "to_latex": "\\tau_g = \\frac{\\mathbf{b}\\cdot\\hat{\\mathbf{s}}}{c},\\qquad \\phi = 2\\pi\\nu\\tau_g = 2\\pi\\frac{\\mathbf{b}\\cdot\\hat{\\mathbf{s}}}{\\lambda}",
+          "operation_label": "角周波数 2πν による位相差換算",
+          "explanation": "周波数 ν の単色波に対する位相差 φ = 2πν τ_g に c = νλ を代入する。",
+          "used_node_ids": [
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n06_visibility_function",
+      "target_node_id": "astro.radio.n06_complex_visibility_correlation",
+      "route_kind": "deductive",
+      "title": "非干渉性天球輝度分布に対する複素相関出力と (l, m, n) 座標表示の導出",
+      "premise_node_ids": [
+        "astro.radio.n03_antenna_temperature_beam",
+        "astro.radio.n05_two_element_interferometer_delay"
+      ],
+      "required_math_node_ids": [
+        "math.calc.mi01_multiple_integral_def",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "天球上の異なる方向からの放射は互いに空間的非干渉（インコヒーレント）である",
+        "フリンジ追跡により位相中心 s_0 の幾何遅延は補償されている"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "R_c = \\iint_{\\text{sky}} A_N(\\hat{\\mathbf{s}}) I_\\nu(\\hat{\\mathbf{s}}) \\cos\\!\\left(2\\pi\\frac{\\mathbf{b}\\cdot\\hat{\\mathbf{s}}}{\\lambda}\\right) d\\Omega",
+          "to_latex": "V(u,v,w) = \\iint_{\\text{sky}} A_N(l,m) I_\\nu(l,m) e^{-2\\pi i\\left(u l + v m + w\\left(\\sqrt{1-l^2-m^2}-1\\right)\\right)}\\frac{dl\\,dm}{\\sqrt{1-l^2-m^2}}",
+          "operation_label": "複素相関化と (u,v,w)-(l,m,n) 座標変換",
+          "explanation": "余弦・正弦相関出力を複素ビジビリティにまとめ、位相基準点からの相対座標 (l, m, n) と波長単位基線 (u, v, w) で書き直す。",
+          "used_node_ids": [
+            "astro.radio.n03_antenna_temperature_beam",
+            "astro.radio.n05_two_element_interferometer_delay",
+            "math.calc.mi01_multiple_integral_def",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_c = \\iint_{\\text{sky}} A_N(\\hat{\\mathbf{s}}) I_\\nu(\\hat{\\mathbf{s}}) \\cos\\!\\left(2\\pi\\frac{\\mathbf{b}\\cdot\\hat{\\mathbf{s}}}{\\lambda}\\right) d\\Omega",
+          "to_latex": "\\mathcal{V}(\\mathbf{b}_\\lambda) = \\iint_{\\text{sky}} A_N(\\hat{\\mathbf{s}}) I_\\nu(\\hat{\\mathbf{s}}) e^{-2\\pi i \\mathbf{b}_\\lambda\\cdot(\\hat{\\mathbf{s}} - \\hat{\\mathbf{s}}_0)}\\,d\\Omega",
+          "operation_label": "複素相関と位相追跡基準点の導入",
+          "explanation": "同相成分 R_c と直交成分 R_s から複素相関 R_c - i R_s を構成し、基準方向 s_0 に対する位相を差し引く。",
+          "used_node_ids": [
+            "astro.radio.n05_two_element_interferometer_delay",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{V}(\\mathbf{b}_\\lambda) = \\iint_{\\text{sky}} A_N(\\hat{\\mathbf{s}}) I_\\nu(\\hat{\\mathbf{s}}) e^{-2\\pi i \\mathbf{b}_\\lambda\\cdot(\\hat{\\mathbf{s}} - \\hat{\\mathbf{s}}_0)}\\,d\\Omega",
+          "to_latex": "\\mathbf{b}_\\lambda\\cdot(\\hat{\\mathbf{s}} - \\hat{\\mathbf{s}}_0) = u l + v m + w(n - 1),\\qquad d\\Omega = \\frac{dl\\,dm}{n},\\qquad n = \\sqrt{1 - l^2 - m^2}",
+          "operation_label": "方向余弦座標と立体角要素の表現",
+          "explanation": "b_λ = (u, v, w)、s_hat = (l, m, n)、s_0 = (0, 0, 1) とおいて内積と単位球面上の立体角要素を展開する。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{b}_\\lambda\\cdot(\\hat{\\mathbf{s}} - \\hat{\\mathbf{s}}_0) = u l + v m + w(n - 1),\\qquad d\\Omega = \\frac{dl\\,dm}{n},\\qquad n = \\sqrt{1 - l^2 - m^2}",
+          "to_latex": "V(u,v,w) = \\iint_{\\text{sky}} A_N(l,m) I_\\nu(l,m) e^{-2\\pi i\\left(u l + v m + w\\left(\\sqrt{1-l^2-m^2}-1\\right)\\right)}\\frac{dl\\,dm}{\\sqrt{1-l^2-m^2}}",
+          "operation_label": "方向余弦積分への代入",
+          "explanation": "内積および dΩ を複素ビジビリティ積分に代入して厳密な (u,v,w) 表示を得る。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n07_van_cittert_zernike",
+      "target_node_id": "astro.radio.n07_van_cittert_zernike_theorem",
+      "route_kind": "deductive",
+      "title": "小視野近似によるファンシッタート＝ゼルニケの定理の導出",
+      "premise_node_ids": [
+        "astro.radio.n06_complex_visibility_correlation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "assumptions": [
+        "観測視野が狭く |l|, |m| ≪ 1 であり、w(l^2 + m^2)/2 ≪ 1 が満たされる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V(u,v,w) = \\iint_{\\text{sky}} A_N(l,m) I_\\nu(l,m) e^{-2\\pi i\\left(u l + v m + w\\left(\\sqrt{1-l^2-m^2}-1\\right)\\right)}\\frac{dl\\,dm}{\\sqrt{1-l^2-m^2}}",
+          "to_latex": "V(u,v) \\approx \\iint_{\\mathbb{R}^2} I_\\nu^{\\mathrm{app}}(l,m) e^{-2\\pi i(u l + v m)}\\,dl\\,dm\\qquad \\left(I_\\nu^{\\mathrm{app}}(l,m) := A_N(l,m)I_\\nu(l,m)\\right)",
+          "operation_label": "小視野近似による w 項の消去と2次元フーリエ変換化",
+          "explanation": "n = sqrt(1 - l^2 - m^2) ≈ 1 の近似のもとで w(n - 1) ≈ 0 とし、2次元フーリエ変換関係を得る。",
+          "used_node_ids": [
+            "astro.radio.n06_complex_visibility_correlation",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(u,v,w) = \\iint_{\\text{sky}} A_N(l,m) I_\\nu(l,m) e^{-2\\pi i\\left(u l + v m + w\\left(\\sqrt{1-l^2-m^2}-1\\right)\\right)}\\frac{dl\\,dm}{\\sqrt{1-l^2-m^2}}",
+          "to_latex": "n = \\sqrt{1 - l^2 - m^2} = 1 - \\frac{1}{2}(l^2 + m^2) + \\mathcal{O}\\!\\left((l^2+m^2)^2\\right)",
+          "operation_label": "方向余弦 n の2次漸近展開",
+          "explanation": "|l|, |m| ≪ 1 として sqrt(1 - x) を x = l^2 + m^2 に関してテイラー展開する。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "n = \\sqrt{1 - l^2 - m^2} = 1 - \\frac{1}{2}(l^2 + m^2) + \\mathcal{O}\\!\\left((l^2+m^2)^2\\right)",
+          "to_latex": "V(u,v) \\approx \\iint_{\\mathbb{R}^2} I_\\nu^{\\mathrm{app}}(l,m) e^{-2\\pi i(u l + v m)}\\,dl\\,dm\\qquad \\left(I_\\nu^{\\mathrm{app}}(l,m) := A_N(l,m)I_\\nu(l,m)\\right)",
+          "operation_label": "w(n-1) 項の無視とビーム重み付き輝度分布の定義",
+          "explanation": "w(l^2+m^2)/2 ≪ 1 および 1/n ≈ 1 を適用し、A_N I_ν をみかけの輝度分布 I_ν^app とおいてフーリエ積分を得る。",
+          "used_node_ids": [
+            "astro.radio.n06_complex_visibility_correlation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n08_aperture_synthesis",
+      "target_node_id": "astro.radio.n08_aperture_synthesis_dirty_beam",
+      "route_kind": "deductive",
+      "title": "サンプリング関数付き逆フーリエ変換によるダーティイメージと畳み込み定理の導出",
+      "premise_node_ids": [
+        "astro.radio.n07_van_cittert_zernike_theorem"
+      ],
+      "required_math_node_ids": [
+        "astro.radio.n08_aperture_synthesis_dirty_beam",
+        "math.calc.mi01_multiple_integral_def",
+        "math.fourier.ft03_complex_fourier_series"
+      ],
+      "assumptions": [
+        "サンプリング関数 S(u,v) は有限個の測定点と重み w_k で与えられる",
+        "積分順序の交換が可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V_{\\mathrm{meas}}(u,v) = S(u,v) V(u,v)",
+          "to_latex": "I^D(l,m) = \\mathcal{F}^{-1}\\!\\left[S(u,v)V(u,v)\\right] = (I_\\nu^{\\mathrm{app}} * B^D)(l,m),\\qquad B^D(l,m) := \\mathcal{F}^{-1}\\!\\left[S(u,v)\\right]",
+          "operation_label": "フーリエ畳み込み定理の適用",
+          "explanation": "uv平面での積 S(u,v)V(u,v) の逆フーリエ変換が、天球面での畳み込み I_ν^app * B^D になることを示す。",
+          "used_node_ids": [
+            "astro.radio.n07_van_cittert_zernike_theorem",
+            "math.calc.mi01_multiple_integral_def",
+            "math.fourier.ft03_complex_fourier_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\mathrm{meas}}(u,v) = S(u,v) V(u,v)",
+          "to_latex": "I^D(l,m) := \\iint_{\\mathbb{R}^2} S(u,v) V(u,v) e^{2\\pi i (u l + v m)}\\,du\\,dv",
+          "operation_label": "ダーティイメージの逆フーリエ定義",
+          "explanation": "サンプリングされたビジビリティに対して2次元逆フーリエ変換を適用し、ダーティイメージ I^D(l,m) を定義する。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "math.fourier.ft03_complex_fourier_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I^D(l,m) := \\iint_{\\mathbb{R}^2} S(u,v) V(u,v) e^{2\\pi i (u l + v m)}\\,du\\,dv",
+          "to_latex": "I^D(l,m) = \\iint_{\\mathbb{R}^2} I_\\nu^{\\mathrm{app}}(l',m')\\left[\\iint_{\\mathbb{R}^2} S(u,v) e^{2\\pi i (u(l-l') + v(m-m'))}\\,du\\,dv\\right]dl'\\,dm'",
+          "operation_label": "ファンシッタート＝ゼルニケの定理の代入と積分順序交換",
+          "explanation": "V(u,v) に I_ν^app(l',m') のフーリエ変換を代入し、(u,v) と (l',m') の積分順序を交換する。",
+          "used_node_ids": [
+            "astro.radio.n07_van_cittert_zernike_theorem",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I^D(l,m) = \\iint_{\\mathbb{R}^2} I_\\nu^{\\mathrm{app}}(l',m')\\left[\\iint_{\\mathbb{R}^2} S(u,v) e^{2\\pi i (u(l-l') + v(m-m'))}\\,du\\,dv\\right]dl'\\,dm'",
+          "to_latex": "I^D(l,m) = \\mathcal{F}^{-1}\\!\\left[S(u,v)V(u,v)\\right] = (I_\\nu^{\\mathrm{app}} * B^D)(l,m),\\qquad B^D(l,m) := \\mathcal{F}^{-1}\\!\\left[S(u,v)\\right]",
+          "operation_label": "ダーティビームの同定と畳み込み表示",
+          "explanation": "角括弧内の (u,v) 積分を B^D(l-l', m-m') とおけば、ダーティイメージが I_ν^app と B^D の畳み込みとなる。",
+          "used_node_ids": [
+            "astro.radio.n08_aperture_synthesis_dirty_beam"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_n09_resolution_sensitivity",
+      "target_node_id": "astro.radio.n09_synthesized_beam_resolution",
+      "route_kind": "deductive",
+      "title": "最大基線長による角度分解能とN素子干渉計の点源感度の導出",
+      "premise_node_ids": [
+        "astro.radio.n04_system_temp_radiometer_eq",
+        "astro.radio.n08_aperture_synthesis_dirty_beam"
+      ],
+      "required_math_node_ids": [
+        "astro.radio.n09_synthesized_beam_resolution",
+        "math.fourier.ft03_complex_fourier_series"
+      ],
+      "assumptions": [
+        "最大空間周波数 u_max = B_max / λ まで一様にサンプリングされている",
+        "N_ant 個の同一アンテナによる N_ant(N_ant-1)/2 本の独立基線すべてを等重みで結合する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "B^D(l,m) = \\mathcal{F}^{-1}\\!\\left[S(u,v)\\right],\\qquad \\Delta T_{\\mathrm{rms}} = \\frac{T_{\\mathrm{sys}}}{\\sqrt{\\Delta\\nu\\,\\tau}}",
+          "to_latex": "\\theta_{\\mathrm{syn}} \\approx \\frac{\\lambda}{B_{\\max}},\\qquad \\Delta S_{\\mathrm{rms}} = \\frac{2 k_B T_{\\mathrm{sys}}}{A_e \\sqrt{N_{\\mathrm{ant}}(N_{\\mathrm{ant}}-1)\\Delta\\nu\\,\\tau}}",
+          "operation_label": "逆フーリエ幅による分解能評価と基線数による感度スケーリング",
+          "explanation": "uv平面の広がり u_max = B_max/λ から合成ビーム幅を求め、点源フラックス換算と独立基線数 N_ant(N_ant-1)/2 による雑音低減を結合する。",
+          "used_node_ids": [
+            "astro.radio.n04_system_temp_radiometer_eq",
+            "astro.radio.n08_aperture_synthesis_dirty_beam",
+            "math.fourier.ft03_complex_fourier_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "B^D(l,m) = \\mathcal{F}^{-1}\\!\\left[S(u,v)\\right],\\qquad \\Delta T_{\\mathrm{rms}} = \\frac{T_{\\mathrm{sys}}}{\\sqrt{\\Delta\\nu\\,\\tau}}",
+          "to_latex": "B^D(l,0) \\propto \\operatorname{sinc}(2 u_{\\max} l) \\implies \\theta_{\\mathrm{syn}} \\sim \\frac{1}{u_{\\max}} = \\frac{\\lambda}{B_{\\max}},\\qquad \\Delta S_{12} = \\frac{2 k_B T_{\\mathrm{sys}}}{A_e \\sqrt{2\\Delta\\nu\\,\\tau}}",
+          "operation_label": "矩形開口の逆フーリエ変換と2素子相関のフラックス換算",
+          "explanation": "空間周波数 [-u_max, u_max] の逆変換は sinc 関数となり第一零点幅 ~ 1/u_max = λ/B_max を与える。また点源フラックス密度 S = 2 k_B T_A / A_e より2素子相関の雑音限界を得る。",
+          "used_node_ids": [
+            "astro.radio.n04_system_temp_radiometer_eq",
+            "astro.radio.n08_aperture_synthesis_dirty_beam",
+            "math.fourier.ft03_complex_fourier_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "B^D(l,0) \\propto \\operatorname{sinc}(2 u_{\\max} l) \\implies \\theta_{\\mathrm{syn}} \\sim \\frac{1}{u_{\\max}} = \\frac{\\lambda}{B_{\\max}},\\qquad \\Delta S_{12} = \\frac{2 k_B T_{\\mathrm{sys}}}{A_e \\sqrt{2\\Delta\\nu\\,\\tau}}",
+          "to_latex": "\\theta_{\\mathrm{syn}} \\approx \\frac{\\lambda}{B_{\\max}},\\qquad \\Delta S_{\\mathrm{rms}} = \\frac{2 k_B T_{\\mathrm{sys}}}{A_e \\sqrt{N_{\\mathrm{ant}}(N_{\\mathrm{ant}}-1)\\Delta\\nu\\,\\tau}}",
+          "operation_label": "N_p = N_ant(N_ant-1)/2 基線平均による感度向上",
+          "explanation": "N_p 個の独立な基線ペアを平均することで雑音標準偏差が 1/sqrt(N_p) 倍に低減し、N素子干渉計の感度式を得る。",
+          "used_node_ids": [
+            "astro.radio.n09_synthesized_beam_resolution"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

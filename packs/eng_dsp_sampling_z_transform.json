@@ -1,0 +1,771 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.dsp.sampling_z_transform",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "signal_processing",
+    "title": "デジタル信号処理1：標本化定理・DTFT・DFT/FFTとZ変換",
+    "language": "ja",
+    "description": "くし型関数のフーリエ変換からナイキスト＝シャノンの標本化定理、エイリアシング、Z変換と収束領域(ROC)、バタフライ演算(FFT)を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.dsp1.n01_dirac_comb_ft",
+      "short_code": "DSP01",
+      "kind": "theorem_formula",
+      "title": "くし型関数（ディラックのくし）とフーリエ変換",
+      "summary": "周期 T_s のインパルス列（くし型関数）は複素フーリエ級数展開を経て、周波数領域でも周期 2π/T_s のインパルス列に変換される（ポアソン和公式の基盤）。",
+      "canonical_latex": "\\mathrm{III}_{T_s}(t) := \\sum_{n=-\\infty}^{\\infty}\\delta(t-nT_s),\\quad \\mathcal{F}[\\mathrm{III}_{T_s}](\\Omega) = \\frac{2\\pi}{T_s}\\sum_{k=-\\infty}^{\\infty}\\delta\\left(\\Omega - \\frac{2\\pi k}{T_s}\\right) ",
+      "aliases_latex": [
+        "\\sum_{n=-\\infty}^{\\infty}\\delta(t-nT_s) \\xleftrightarrow{\\mathcal{F}} \\Omega_s\\sum_{k=-\\infty}^{\\infty}\\delta(\\Omega - k\\Omega_s)"
+      ],
+      "keywords": [
+        "くし型関数",
+        "ディラックのくし",
+        "ポアソン和公式",
+        "インパルス列"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "fourier_analysis"
+      ]
+    },
+    {
+      "id": "eng.dsp1.n02_impulse_sampling_aliasing",
+      "short_code": "DSP02",
+      "kind": "theorem_formula",
+      "title": "理想標本化信号のスペクトルとエイリアシング（折り返し雑音）",
+      "summary": "連続時間信号 x(t) にくし型関数を乗じて標本化すると、周波数領域では元のスペクトル X(Ω) がサンプリング角周波数 Ω_s ごとに周期的に複製・重畳され、帯域が重なる場合にエイリアシングが生じる。",
+      "canonical_latex": "x_s(t) := x(t)\\mathrm{III}_{T_s}(t) = \\sum_{n=-\\infty}^{\\infty}x(nT_s)\\delta(t-nT_s),\\quad X_s(\\Omega) = \\frac{1}{T_s}\\sum_{k=-\\infty}^{\\infty}X(\\Omega - k\\Omega_s)\\;\\left(\\Omega_s = \\frac{2\\pi}{T_s}\\right) ",
+      "aliases_latex": [
+        "X_s(\\Omega) = \\frac{1}{T_s}\\sum_{k=-\\infty}^{\\infty}X\\left(\\Omega - \\frac{2\\pi k}{T_s}\\right)"
+      ],
+      "keywords": [
+        "理想標本化",
+        "エイリアシング",
+        "折り返し雑音",
+        "スペクトル複製"
+      ],
+      "domain_tags": [
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.dsp1.n03_nyquist_shannon_sampling",
+      "short_code": "DSP03",
+      "kind": "theorem_formula",
+      "title": "ナイキスト＝シャノンの標本化定理とsinc補間再構成",
+      "summary": "最大角周波数 Ω_M に帯域制限された信号は、サンプリング角周波数 Ω_s > 2Ω_M（ナイキスト周波数条件）を満たせば、理想ローパスフィルタによる sinc 関数の畳み込みで原信号を完全に再構成できる。",
+      "canonical_latex": "X(\\Omega)=0\\;( |\\Omega|\\ge \\Omega_M ),\\; \\Omega_s > 2\\Omega_M \\implies X(\\Omega) = T_s\\operatorname{rect}\\left(\\frac{\\Omega}{\\Omega_s}\\right)X_s(\\Omega),\\quad x(t) = \\sum_{n=-\\infty}^{\\infty} x(nT_s)\\operatorname{sinc}\\left(\\frac{t - nT_s}{T_s}\\right) ",
+      "aliases_latex": [
+        "x(t) = \\sum_{n=-\\infty}^{\\infty} x[n]\\frac{\\sin(\\pi(t/T_s - n))}{\\pi(t/T_s - n)}"
+      ],
+      "keywords": [
+        "標本化定理",
+        "ナイキスト周波数",
+        "シャノン",
+        "sinc補間",
+        "信号再構成"
+      ],
+      "domain_tags": [
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.dsp1.n04_dtft_definition",
+      "short_code": "DSP04",
+      "kind": "definition",
+      "title": "離散時間フーリエ変換（DTFT）と逆DTFTの定義",
+      "summary": "標本列 x[n]=x(nT_s) に対し正規化角周波数 ω=ΩT_s を導入することで得られる 2π 周期の連続スペクトル表現と、その逆変換公式。",
+      "canonical_latex": "X(e^{j\\omega}) := \\sum_{n=-\\infty}^{\\infty} x[n] e^{-j\\omega n},\\qquad x[n] = \\frac{1}{2\\pi}\\int_{-\\pi}^{\\pi} X(e^{j\\omega}) e^{j\\omega n}\\,d\\omega\\quad (\\omega = \\Omega T_s) ",
+      "aliases_latex": [
+        "X(\\omega) = \\sum_{n=-\\infty}^{\\infty} x[n]e^{-j\\omega n}"
+      ],
+      "keywords": [
+        "DTFT",
+        "離散時間フーリエ変換",
+        "正規化角周波数",
+        "周期スペクトル"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "fourier_analysis"
+      ]
+    },
+    {
+      "id": "eng.dsp1.n05_z_transform_roc",
+      "short_code": "DSP05",
+      "kind": "definition",
+      "title": "両側Z変換と収束領域（ROC）の定義",
+      "summary": "DTFT を複素変数 z = r e^{jω} に拡張した離散時間信号のローラン級数表現であり、絶対収束する円環領域（ROC）の指定と対にして定義される。",
+      "canonical_latex": "X(z) = \\mathcal{Z}\\{x[n]\\} := \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n},\\qquad \\mathrm{ROC} := \\left\\{z\\in\\mathbb{C} \\;\\middle|\\; \\sum_{n=-\\infty}^{\\infty} |x[n]||z|^{-n} < \\infty\\right\\} = \\{z\\in\\mathbb{C}\\mid R_- < |z| < R_+\\} ",
+      "aliases_latex": [
+        "X(z) = \\sum_{n=-\\infty}^{\\infty} x[n]z^{-n}"
+      ],
+      "keywords": [
+        "Z変換",
+        "収束領域",
+        "ROC",
+        "ローラン級数"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "eng.dsp1.n06_z_inverse_residue_convolution",
+      "short_code": "DSP06",
+      "kind": "theorem_formula",
+      "title": "逆Z変換の留数公式とZ領域畳み込み定理",
+      "summary": "ROC 内の閉曲線に沿う周回積分とコーシーの留数定理による逆Z変換の明示公式、および離散畳み込みがZ領域での積に変換される性質。",
+      "canonical_latex": "x[n] = \\frac{1}{2\\pi j}\\oint_{C} X(z) z^{n-1}\\,dz = \\sum_{z_k\\in\\operatorname{int}(C)}\\operatorname{Res}\\!\\big(X(z)z^{n-1}, z_k\\big),\\qquad \\mathcal{Z}\\{x * h\\}(z) = X(z)H(z) ",
+      "aliases_latex": [
+        "x[n] = \\frac{1}{2\\pi i}\\oint_C X(z)z^{n-1}dz"
+      ],
+      "keywords": [
+        "逆Z変換",
+        "留数定理",
+        "伝達関数",
+        "畳み込み定理"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "complex_analysis"
+      ]
+    },
+    {
+      "id": "eng.dsp1.n07_dft_definition",
+      "short_code": "DSP07",
+      "kind": "definition",
+      "title": "離散フーリエ変換（DFT）と逆DFTの定義",
+      "summary": "有限長 N の離散時間信号に対し、DTFT を単位円上の等間隔 N 点 ω_k = 2πk/N で標本化して得られる離散スペクトル変換とその逆変換。",
+      "canonical_latex": "X[k] := \\sum_{n=0}^{N-1} x[n] W_N^{kn},\\quad x[n] = \\frac{1}{N}\\sum_{k=0}^{N-1} X[k] W_N^{-kn}\\quad \\left(W_N := e^{-j\\frac{2\\pi}{N}}\\right) ",
+      "aliases_latex": [
+        "X[k] = \\sum_{n=0}^{N-1} x[n] e^{-j\\frac{2\\pi kn}{N}}"
+      ],
+      "keywords": [
+        "DFT",
+        "離散フーリエ変換",
+        "回転因子",
+        "逆DFT"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "fourier_analysis"
+      ]
+    },
+    {
+      "id": "eng.dsp1.n08_fft_cooley_tukey_butterfly",
+      "short_code": "DSP08",
+      "kind": "theorem_formula",
+      "title": "Cooley-Tukey型基数2 FFTとバタフライ演算",
+      "summary": "信号長 N=2^M の DFT を偶数番目と奇数番目の長さ N/2 の DFT に再帰分割し、回転因子の対称性を用いてバタフライ演算を行うことで計算量を O(N^2) から O(N log_2 N) へ削減する。",
+      "canonical_latex": "X[k] = E[k] + W_N^k O[k],\\quad X\\left[k + \\frac{N}{2}\\right] = E[k] - W_N^k O[k]\\quad \\left(0 \\le k < \\frac{N}{2},\\; T(N) = 2T(N/2) + \\mathcal{O}(N) = \\mathcal{O}(N\\log_2 N)\\right) ",
+      "aliases_latex": [
+        "X[k+N/2] = E[k] - W_N^k O[k]"
+      ],
+      "keywords": [
+        "FFT",
+        "高速フーリエ変換",
+        "Cooley-Tukey",
+        "バタフライ演算",
+        "時間間引き"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "algorithms"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_eng_dsp1_n01",
+      "target_node_id": "eng.dsp1.n01_dirac_comb_ft",
+      "route_kind": "deductive",
+      "title": "複素フーリエ級数展開によるくし型関数のフーリエ変換の導出",
+      "premise_node_ids": [
+        "math.fourier.ft03_complex_fourier_series",
+        "math.fourier.ft05_fourier_transform_def",
+        "math.fourier.ft06_fourier_basic_properties"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "超関数（ディラックのデルタ関数）の篩い出し性質と各項の項別フーリエ変換を許容する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathrm{III}_{T_s}(t) := \\sum_{n=-\\infty}^{\\infty}\\delta(t - nT_s) ",
+          "to_latex": "\\mathcal{F}[\\mathrm{III}_{T_s}](\\Omega) = \\frac{2\\pi}{T_s}\\sum_{k=-\\infty}^{\\infty}\\delta\\left(\\Omega - \\frac{2\\pi k}{T_s}\\right) ",
+          "operation_label": "複素フーリエ級数展開と項別フーリエ変換",
+          "explanation": "周期 T_s のくし型関数を複素フーリエ級数に展開し、各複素正弦波のフーリエ変換が周波数シフトしたデルタ関数になることを用いて周波数領域のくし型関数を得る。",
+          "used_node_ids": [
+            "math.fourier.ft03_complex_fourier_series",
+            "math.fourier.ft05_fourier_transform_def",
+            "math.fourier.ft06_fourier_basic_properties"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathrm{III}_{T_s}(t) := \\sum_{n=-\\infty}^{\\infty}\\delta(t - nT_s) ",
+          "to_latex": "c_k = \\frac{1}{T_s}\\int_{-T_s/2}^{T_s/2}\\delta(t)e^{-i\\frac{2\\pi k}{T_s}t}\\,dt = \\frac{1}{T_s} ",
+          "operation_label": "フーリエ係数の計算",
+          "explanation": "周期 T_s の1周期区間 [-T_s/2, T_s/2] には n=0 のデルタ関数のみが含まれるため、篩い出し性質よりすべてのフーリエ係数 c_k が 1/T_s となる。",
+          "used_node_ids": [
+            "math.fourier.ft03_complex_fourier_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_k = \\frac{1}{T_s}\\int_{-T_s/2}^{T_s/2}\\delta(t)e^{-i\\frac{2\\pi k}{T_s}t}\\,dt = \\frac{1}{T_s} ",
+          "to_latex": "\\mathrm{III}_{T_s}(t) = \\frac{1}{T_s}\\sum_{k=-\\infty}^{\\infty} e^{i\\frac{2\\pi k}{T_s}t} ",
+          "operation_label": "複素フーリエ級数表示の構築",
+          "explanation": "求めた係数 c_k = 1/T_s を複素フーリエ級数展開式に代入する。",
+          "used_node_ids": [
+            "math.fourier.ft03_complex_fourier_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathrm{III}_{T_s}(t) = \\frac{1}{T_s}\\sum_{k=-\\infty}^{\\infty} e^{i\\frac{2\\pi k}{T_s}t} ",
+          "to_latex": "\\mathcal{F}[\\mathrm{III}_{T_s}](\\Omega) = \\frac{2\\pi}{T_s}\\sum_{k=-\\infty}^{\\infty}\\delta\\left(\\Omega - \\frac{2\\pi k}{T_s}\\right) ",
+          "operation_label": "複素指数関数の項別フーリエ変換",
+          "explanation": "積分と和の線形性および ℱ[e^{iω_0 t}](Ω) = 2π δ(Ω - ω_0) を適用して、くし型関数のフーリエ変換を得る。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.fourier.ft05_fourier_transform_def",
+            "math.fourier.ft06_fourier_basic_properties"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_eng_dsp1_n02",
+      "target_node_id": "eng.dsp1.n02_impulse_sampling_aliasing",
+      "route_kind": "deductive",
+      "title": "畳み込み定理による理想標本化スペクトルとエイリアシングの導出",
+      "premise_node_ids": [
+        "eng.dsp1.n01_dirac_comb_ft",
+        "math.fourier.ft08_convolution_theorem"
+      ],
+      "required_math_node_ids": [
+        "math.fourier.ft07_convolution_def"
+      ],
+      "assumptions": [
+        "x(t) はフーリエ変換可能であり、くし型関数との積のフーリエ変換に畳み込み定理が適用できる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "x_s(t) = x(t)\\mathrm{III}_{T_s}(t) ",
+          "to_latex": "X_s(\\Omega) = \\frac{1}{T_s}\\sum_{k=-\\infty}^{\\infty}X(\\Omega - k\\Omega_s) ",
+          "operation_label": "時間領域の積から周波数領域の周期畳み込みへ変換",
+          "explanation": "時間領域でのくし型関数との積は、周波数領域では元のスペクトルと周波数領域のくし型関数との畳み込みとなり、スペクトルの周期複製が生じる。",
+          "used_node_ids": [
+            "eng.dsp1.n01_dirac_comb_ft",
+            "math.fourier.ft07_convolution_def",
+            "math.fourier.ft08_convolution_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x_s(t) = x(t)\\mathrm{III}_{T_s}(t) ",
+          "to_latex": "X_s(\\Omega) = \\frac{1}{2\\pi}\\big(X * \\mathcal{F}[\\mathrm{III}_{T_s}]\\big)(\\Omega) ",
+          "operation_label": "フーリエ変換の乗積・畳み込み定理の適用",
+          "explanation": "時間領域の積 x(t) III_{T_s}(t) にフーリエ変換の畳み込み定理を適用する。",
+          "used_node_ids": [
+            "math.fourier.ft08_convolution_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X_s(\\Omega) = \\frac{1}{2\\pi}\\big(X * \\mathcal{F}[\\mathrm{III}_{T_s}]\\big)(\\Omega) ",
+          "to_latex": "X_s(\\Omega) = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty}X(\\Omega - \\nu)\\frac{2\\pi}{T_s}\\sum_{k=-\\infty}^{\\infty}\\delta(\\nu - k\\Omega_s)\\,d\\nu ",
+          "operation_label": "くし型関数のフーリエ変換と畳み込み定義の代入",
+          "explanation": "くし型関数のフーリエ変換結果（Ω_s = 2π/T_s）と畳み込み積分の定義を代入する。",
+          "used_node_ids": [
+            "eng.dsp1.n01_dirac_comb_ft",
+            "math.fourier.ft07_convolution_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X_s(\\Omega) = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty}X(\\Omega - \\nu)\\frac{2\\pi}{T_s}\\sum_{k=-\\infty}^{\\infty}\\delta(\\nu - k\\Omega_s)\\,d\\nu ",
+          "to_latex": "X_s(\\Omega) = \\frac{1}{T_s}\\sum_{k=-\\infty}^{\\infty}X(\\Omega - k\\Omega_s) ",
+          "operation_label": "デルタ関数の篩い出しによるスペクトル複製式の導出",
+          "explanation": "2π を約分し、各 k について δ(ν - kΩ_s) の積分を実行することで、kΩ_s だけシフトしたスペクトルの無限和を得る。",
+          "used_node_ids": [
+            "math.fourier.ft07_convolution_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_eng_dsp1_n03",
+      "target_node_id": "eng.dsp1.n03_nyquist_shannon_sampling",
+      "route_kind": "deductive",
+      "title": "帯域制限条件と理想ローパスフィルタによる標本化定理の導出",
+      "premise_node_ids": [
+        "eng.dsp1.n02_impulse_sampling_aliasing",
+        "math.fourier.ft05_fourier_transform_def",
+        "math.fourier.ft08_convolution_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "x(t) は最大角周波数 Ω_M に帯域制限されており、Ω_s > 2Ω_M が成立する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "X(\\Omega)=0\\;( |\\Omega|\\ge \\Omega_M ),\\quad \\Omega_s > 2\\Omega_M ",
+          "to_latex": "x(t) = \\sum_{n=-\\infty}^{\\infty} x(nT_s)\\operatorname{sinc}\\left(\\frac{t - nT_s}{T_s}\\right) ",
+          "operation_label": "理想ローパスフィルタによる原信号の再構成",
+          "explanation": "Ω_s > 2Ω_M のとき複製スペクトルが重ならないため、遮断角周波数 Ω_s/2 の理想ローパスフィルタで k=0 成分のみを抽出し、逆変換して sinc 補間公式を得る。",
+          "used_node_ids": [
+            "eng.dsp1.n02_impulse_sampling_aliasing",
+            "math.fourier.ft05_fourier_transform_def",
+            "math.fourier.ft08_convolution_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X(\\Omega)=0\\;( |\\Omega|\\ge \\Omega_M ),\\quad \\Omega_s > 2\\Omega_M ",
+          "to_latex": "X(\\Omega) = T_s H_{\\mathrm{LP}}(\\Omega) X_s(\\Omega),\\quad H_{\\mathrm{LP}}(\\Omega) := \\operatorname{rect}\\left(\\frac{\\Omega}{\\Omega_s}\\right) ",
+          "operation_label": "複製スペクトルの非重複性と基底帯域の抽出",
+          "explanation": "Ω_s - Ω_M > Ω_M より各複製項 X(Ω - kΩ_s) の台は互いに素であるため、[-Ω_s/2, Ω_s/2] を通す矩形フィルタに T_s を乗じることで X(Ω) が厳密に回復する。",
+          "used_node_ids": [
+            "eng.dsp1.n02_impulse_sampling_aliasing"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X(\\Omega) = T_s H_{\\mathrm{LP}}(\\Omega) X_s(\\Omega),\\quad H_{\\mathrm{LP}}(\\Omega) := \\operatorname{rect}\\left(\\frac{\\Omega}{\\Omega_s}\\right) ",
+          "to_latex": "h_{\\mathrm{LP}}(t) = \\mathcal{F}^{-1}[T_s H_{\\mathrm{LP}}](t) = \\operatorname{sinc}\\left(\\frac{t}{T_s}\\right) ",
+          "operation_label": "理想ローパスフィルタのインパルス応答計算",
+          "explanation": "矩形窓 T_s rect(Ω/Ω_s) をフーリエ逆変換し、(1/2π)∫_{-Ω_s/2}^{Ω_s/2} T_s e^{jΩt} dΩ = sin(πt/T_s)/(πt/T_s) = sinc(t/T_s) を得る。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": "simplify(integrate(Ts*exp(I*w*t)/(2*pi), (w, -pi/Ts, pi/Ts)))"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "h_{\\mathrm{LP}}(t) = \\mathcal{F}^{-1}[T_s H_{\\mathrm{LP}}](t) = \\operatorname{sinc}\\left(\\frac{t}{T_s}\\right) ",
+          "to_latex": "x(t) = \\sum_{n=-\\infty}^{\\infty} x(nT_s)\\operatorname{sinc}\\left(\\frac{t - nT_s}{T_s}\\right) ",
+          "operation_label": "時間領域への畳み込み変換",
+          "explanation": "周波数領域での積 T_s H_{LP}(Ω) X_s(Ω) は時間領域での畳み込み (h_{LP} * x_s)(t) に対応し、x_s(t) のデルタ列との畳み込みから sinc 補間級数を得る。",
+          "used_node_ids": [
+            "eng.dsp1.n02_impulse_sampling_aliasing",
+            "math.fourier.ft08_convolution_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_eng_dsp1_n04",
+      "target_node_id": "eng.dsp1.n04_dtft_definition",
+      "route_kind": "reformulation",
+      "title": "理想標本化信号のフーリエ変換からのDTFTおよび逆DTFTの導出",
+      "premise_node_ids": [
+        "eng.dsp1.n02_impulse_sampling_aliasing",
+        "math.fourier.ft05_fourier_transform_def"
+      ],
+      "required_math_node_ids": [
+        "math.fourier.ft03_complex_fourier_series"
+      ],
+      "assumptions": [
+        "離散列 x[n] := x(nT_s) は絶対総和可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "X_s(\\Omega) = \\int_{-\\infty}^{\\infty} \\sum_{n=-\\infty}^{\\infty} x(nT_s)\\delta(t-nT_s) e^{-j\\Omega t}\\,dt ",
+          "to_latex": "X(e^{j\\omega}) = \\sum_{n=-\\infty}^{\\infty} x[n]e^{-j\\omega n},\\quad x[n] = \\frac{1}{2\\pi}\\int_{-\\pi}^{\\pi} X(e^{j\\omega}) e^{j\\omega n}\\,d\\omega ",
+          "operation_label": "正規化周波数 ω=ΩT_s の導入とフーリエ級数係数としての逆変換",
+          "explanation": "理想標本化信号の連続時間フーリエ変換に ω=ΩT_s を導入して DTFT を定義し、2π 周期関数のフーリエ級数係数の公式から逆 DTFT を得る。",
+          "used_node_ids": [
+            "eng.dsp1.n02_impulse_sampling_aliasing",
+            "math.fourier.ft03_complex_fourier_series",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X_s(\\Omega) = \\int_{-\\infty}^{\\infty} \\sum_{n=-\\infty}^{\\infty} x(nT_s)\\delta(t-nT_s) e^{-j\\Omega t}\\,dt ",
+          "to_latex": "X_s(\\Omega) = \\sum_{n=-\\infty}^{\\infty} x[n] e^{-j\\Omega T_s n}\\quad (x[n] := x(nT_s)) ",
+          "operation_label": "デルタ関数の積分評価",
+          "explanation": "項別積分とデルタ関数の篩い出し性質により、連続時間積分から離散和へ移行する。",
+          "used_node_ids": [
+            "eng.dsp1.n02_impulse_sampling_aliasing",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X_s(\\Omega) = \\sum_{n=-\\infty}^{\\infty} x[n] e^{-j\\Omega T_s n}\\quad (x[n] := x(nT_s)) ",
+          "to_latex": "X(e^{j\\omega}) := X_s(\\omega / T_s) = \\sum_{n=-\\infty}^{\\infty} x[n] e^{-j\\omega n}\\quad (\\omega := \\Omega T_s) ",
+          "operation_label": "正規化角周波数 ω=ΩT_s の導入",
+          "explanation": "サンプリング周期 T_s に依存しない無次元角周波数 ω = ΩT_s で変数置換し、2π 周期の関数 X(e^{jω}) を得る。",
+          "used_node_ids": [
+            "eng.dsp1.n02_impulse_sampling_aliasing"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X(e^{j\\omega}) := X_s(\\omega / T_s) = \\sum_{n=-\\infty}^{\\infty} x[n] e^{-j\\omega n}\\quad (\\omega := \\Omega T_s) ",
+          "to_latex": "X(e^{j\\omega}) = \\sum_{n=-\\infty}^{\\infty} x[n]e^{-j\\omega n},\\quad x[n] = \\frac{1}{2\\pi}\\int_{-\\pi}^{\\pi} X(e^{j\\omega}) e^{j\\omega n}\\,d\\omega ",
+          "operation_label": "複素フーリエ級数係数の抽出による逆DTFTの導出",
+          "explanation": "X(e^{jω}) は周期 2π の ω の関数であり、x[n] はそのフーリエ級数係数（符号反転）に他ならないため、[-π, π] の積分で x[n] が復元される。",
+          "used_node_ids": [
+            "math.fourier.ft03_complex_fourier_series"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_eng_dsp1_n05",
+      "target_node_id": "eng.dsp1.n05_z_transform_roc",
+      "route_kind": "reformulation",
+      "title": "減衰因子付きDTFTとローラン展開によるZ変換・ROCの導出",
+      "premise_node_ids": [
+        "eng.dsp1.n04_dtft_definition",
+        "math.complex.lr01_laurent_series_expansion"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ある r>0 に対して x[n]r^{-n} が絶対総和可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{F}_{\\mathrm{DTFT}}\\{x[n]r^{-n}\\}(\\omega) = \\sum_{n=-\\infty}^{\\infty} x[n] r^{-n} e^{-j\\omega n} ",
+          "to_latex": "X(z) = \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n},\\quad \\mathrm{ROC} = \\{z\\in\\mathbb{C}\\mid R_- < |z| < R_+\\} ",
+          "operation_label": "複素変数 z = r e^{jω} による解析接続と円環収束領域の特定",
+          "explanation": "DTFT が存在しない信号にも指数減衰因子 r^{-n} を掛けて DTFT を適用し、z = r e^{jω} と置くことで複素平面上のローラン級数としての Z 変換と円環状 ROC を得る。",
+          "used_node_ids": [
+            "eng.dsp1.n04_dtft_definition",
+            "math.complex.lr01_laurent_series_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{F}_{\\mathrm{DTFT}}\\{x[n]r^{-n}\\}(\\omega) = \\sum_{n=-\\infty}^{\\infty} x[n] r^{-n} e^{-j\\omega n} ",
+          "to_latex": "X(r e^{j\\omega}) = \\sum_{n=-\\infty}^{\\infty} x[n] (r e^{j\\omega})^{-n}\\quad (z := r e^{j\\omega}) ",
+          "operation_label": "極座標形式の複素変数 z の導入",
+          "explanation": "r^{-n} e^{-jωn} = (r e^{jω})^{-n} とまとめ、複素変数 z = r e^{jω} を定義する。",
+          "used_node_ids": [
+            "eng.dsp1.n04_dtft_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X(r e^{j\\omega}) = \\sum_{n=-\\infty}^{\\infty} x[n] (r e^{j\\omega})^{-n}\\quad (z := r e^{j\\omega}) ",
+          "to_latex": "X(z) = \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n},\\quad \\mathrm{ROC} = \\{z\\in\\mathbb{C}\\mid R_- < |z| < R_+\\} ",
+          "operation_label": "ローラン級数としての収束領域（ROC）の同定",
+          "explanation": "べき級数 ∑_{n=0}^{∞} x[n]z^{-n}（|z|>R_-）と ∑_{n=-∞}^{-1} x[n]z^{-n}（|z|<R_+）の共通収束域として円環領域 R_- < |z| < R_+ が定まる。",
+          "used_node_ids": [
+            "math.complex.lr01_laurent_series_expansion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_eng_dsp1_n06",
+      "target_node_id": "eng.dsp1.n06_z_inverse_residue_convolution",
+      "route_kind": "deductive",
+      "title": "ローラン係数積分・留数定理による逆Z変換とZ領域畳み込み定理の導出",
+      "premise_node_ids": [
+        "eng.dsp1.n05_z_transform_roc",
+        "math.complex.lr05_cauchy_residue_theorem"
+      ],
+      "required_math_node_ids": [
+        "math.complex.lr01_laurent_series_expansion"
+      ],
+      "assumptions": [
+        "閉曲線 C は ROC 内にあり原点を反時計回りに1周する",
+        "X(z) は C の内部に有限個の極のみを持つ有理型関数である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "X(z) = \\sum_{m=-\\infty}^{\\infty} x[m] z^{-m}\\quad (z\\in\\mathrm{ROC}) ",
+          "to_latex": "x[n] = \\frac{1}{2\\pi j}\\oint_{C} X(z) z^{n-1}\\,dz = \\sum_{z_k\\in\\operatorname{int}(C)}\\operatorname{Res}\\!\\big(X(z)z^{n-1}, z_k\\big),\\quad \\mathcal{Z}\\{x * h\\}(z) = X(z)H(z) ",
+          "operation_label": "コーシーの積分・留数定理による逆変換と畳み込みのZ変換",
+          "explanation": "ROC 内の閉路積分でローラン係数を抽出して留数定理を適用し、また離散畳み込みの和の順序交換により Z 領域の積を得る。",
+          "used_node_ids": [
+            "eng.dsp1.n05_z_transform_roc",
+            "math.complex.lr01_laurent_series_expansion",
+            "math.complex.lr05_cauchy_residue_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X(z) = \\sum_{m=-\\infty}^{\\infty} x[m] z^{-m}\\quad (z\\in\\mathrm{ROC}) ",
+          "to_latex": "\\frac{1}{2\\pi j}\\oint_{C} X(z) z^{n-1}\\,dz = \\sum_{m=-\\infty}^{\\infty} x[m]\\frac{1}{2\\pi j}\\oint_{C} z^{n-m-1}\\,dz = x[n] ",
+          "operation_label": "ROC内の周回積分によるローラン係数の抽出",
+          "explanation": "両辺に z^{n-1}/(2πj) を掛けて ROC 内の閉曲線 C で積分すると、∮_C z^{n-m-1} dz = 2πj δ_{nm} より x[n] のみが残る。",
+          "used_node_ids": [
+            "eng.dsp1.n05_z_transform_roc",
+            "math.complex.lr01_laurent_series_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2\\pi j}\\oint_{C} X(z) z^{n-1}\\,dz = \\sum_{m=-\\infty}^{\\infty} x[m]\\frac{1}{2\\pi j}\\oint_{C} z^{n-m-1}\\,dz = x[n] ",
+          "to_latex": "x[n] = \\sum_{z_k\\in\\operatorname{int}(C)}\\operatorname{Res}\\!\\big(X(z)z^{n-1}, z_k\\big) ",
+          "operation_label": "コーシーの留数定理の適用",
+          "explanation": "周回積分 (1/2πj)∮_C X(z)z^{n-1} dz にコーシーの留数定理を適用し、C 内部の極における留数の和として表す。",
+          "used_node_ids": [
+            "math.complex.lr05_cauchy_residue_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x[n] = \\sum_{z_k\\in\\operatorname{int}(C)}\\operatorname{Res}\\!\\big(X(z)z^{n-1}, z_k\\big) ",
+          "to_latex": "x[n] = \\frac{1}{2\\pi j}\\oint_{C} X(z) z^{n-1}\\,dz = \\sum_{z_k\\in\\operatorname{int}(C)}\\operatorname{Res}\\!\\big(X(z)z^{n-1}, z_k\\big),\\quad \\mathcal{Z}\\{x * h\\}(z) = X(z)H(z) ",
+          "operation_label": "畳み込みのZ変換の和の順序交換による導出",
+          "explanation": "∑_n (∑_m x[m]h[n-m])z^{-n} = (∑_m x[m]z^{-m})(∑_k h[k]z^{-k}) = X(z)H(z) を併せて Z 変換の基本定理が完結する。",
+          "used_node_ids": [
+            "eng.dsp1.n05_z_transform_roc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_eng_dsp1_n07",
+      "target_node_id": "eng.dsp1.n07_dft_definition",
+      "route_kind": "reformulation",
+      "title": "DTFTの等間隔周波数サンプリングによるDFTとIDFTの導出",
+      "premise_node_ids": [
+        "eng.dsp1.n04_dtft_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "x[n] は区間 0 <= n <= N-1 に台を持つ有限長信号である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "X(e^{j\\omega}) = \\sum_{n=0}^{N-1} x[n] e^{-j\\omega n} ",
+          "to_latex": "X[k] = \\sum_{n=0}^{N-1} x[n] W_N^{kn},\\quad x[n] = \\frac{1}{N}\\sum_{k=0}^{N-1} X[k] W_N^{-kn} ",
+          "operation_label": "周波数標本化 ω_k=2πk/N と1のN乗根の直交性による逆変換",
+          "explanation": "有限長信号の DTFT を等間隔 N 点でサンプリングして DFT を定義し、回転因子 W_N の直交関係から逆 DFT を導く。",
+          "used_node_ids": [
+            "eng.dsp1.n04_dtft_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X(e^{j\\omega}) = \\sum_{n=0}^{N-1} x[n] e^{-j\\omega n} ",
+          "to_latex": "X[k] := X(e^{j\\frac{2\\pi k}{N}}) = \\sum_{n=0}^{N-1} x[n] W_N^{kn}\\quad \\left(W_N := e^{-j\\frac{2\\pi}{N}}\\right) ",
+          "operation_label": "正規化角周波数のN点等間隔サンプリング",
+          "explanation": "ω = 2πk/N (k=0,...,N-1) を DTFT に代入し、回転因子 W_N = e^{-j 2π/N} を用いて DFT を定義する。",
+          "used_node_ids": [
+            "eng.dsp1.n04_dtft_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X[k] := X(e^{j\\frac{2\\pi k}{N}}) = \\sum_{n=0}^{N-1} x[n] W_N^{kn}\\quad \\left(W_N := e^{-j\\frac{2\\pi}{N}}\\right) ",
+          "to_latex": "\\sum_{k=0}^{N-1} W_N^{k(m-n)} = N\\delta_{mn} \\implies x[n] = \\frac{1}{N}\\sum_{k=0}^{N-1} X[k] W_N^{-kn} ",
+          "operation_label": "複素指数列の離散直交性の利用",
+          "explanation": "等比数列の和より ∑_{k=0}^{N-1} W_N^{k(m-n)} = N δ_{mn} が成り立つため、X[k] W_N^{-kn} の和から x[n] が復元される。",
+          "used_node_ids": [
+            "eng.dsp1.n04_dtft_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k=0}^{N-1} W_N^{k(m-n)} = N\\delta_{mn} \\implies x[n] = \\frac{1}{N}\\sum_{k=0}^{N-1} X[k] W_N^{-kn} ",
+          "to_latex": "X[k] = \\sum_{n=0}^{N-1} x[n] W_N^{kn},\\quad x[n] = \\frac{1}{N}\\sum_{k=0}^{N-1} X[k] W_N^{-kn} ",
+          "operation_label": "DFT・IDFT対の確定",
+          "explanation": "周波数サンプリングによる順変換と直交性による逆変換の対が確立される。",
+          "used_node_ids": [
+            "eng.dsp1.n04_dtft_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_eng_dsp1_n08",
+      "target_node_id": "eng.dsp1.n08_fft_cooley_tukey_butterfly",
+      "route_kind": "deductive",
+      "title": "偶奇分割と回転因子の周期性・対称性によるバタフライ演算の導出",
+      "premise_node_ids": [
+        "eng.dsp1.n07_dft_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "信号長 N は 2 のべき乗 N = 2^M である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "X[k] = \\sum_{n=0}^{N-1} x[n] W_N^{kn}\\quad (N = 2^M) ",
+          "to_latex": "X[k] = E[k] + W_N^k O[k],\\quad X[k+N/2] = E[k] - W_N^k O[k] ",
+          "operation_label": "時間間引き（DIT）分割とバタフライ演算の導出",
+          "explanation": "入力列を偶数番目と奇数番目に分割し、W_N^{2km} = W_{N/2}^{km} と W_N^{k+N/2} = -W_N^k を用いてサイズ N/2 の DFT の組からサイズ N の DFT を構成する。",
+          "used_node_ids": [
+            "eng.dsp1.n07_dft_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X[k] = \\sum_{n=0}^{N-1} x[n] W_N^{kn}\\quad (N = 2^M) ",
+          "to_latex": "X[k] = \\sum_{m=0}^{N/2-1} x[2m] W_{N/2}^{km} + W_N^k \\sum_{m=0}^{N/2-1} x[2m+1] W_{N/2}^{km} ",
+          "operation_label": "偶数添字項と奇数添字項への分割",
+          "explanation": "n = 2m と n = 2m+1 に和を分け、W_N^{2km} = e^{-j 2π(2km)/N} = W_{N/2}^{km} を適用する。",
+          "used_node_ids": [
+            "eng.dsp1.n07_dft_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X[k] = \\sum_{m=0}^{N/2-1} x[2m] W_{N/2}^{km} + W_N^k \\sum_{m=0}^{N/2-1} x[2m+1] W_{N/2}^{km} ",
+          "to_latex": "X[k] = E[k] + W_N^k O[k],\\quad W_N^{k+N/2} = -W_N^k ",
+          "operation_label": "サイズN/2のDFTの定義と回転因子の半周期反転",
+          "explanation": "偶数部 DFT を E[k]、奇数部 DFT を O[k] と置き、W_N^{N/2} = e^{-jπ} = -1 より W_N^{k+N/2} = -W_N^k を得る。",
+          "used_node_ids": [
+            "eng.dsp1.n07_dft_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X[k] = E[k] + W_N^k O[k],\\quad W_N^{k+N/2} = -W_N^k ",
+          "to_latex": "X[k] = E[k] + W_N^k O[k],\\quad X[k+N/2] = E[k] - W_N^k O[k] ",
+          "operation_label": "後半帯域 k+N/2 への適用とバタフライ構造の完成",
+          "explanation": "E[k+N/2]=E[k], O[k+N/2]=O[k]（周期 N/2）と W_N^{k+N/2}=-W_N^k により、同一の W_N^k O[k] の加減算のみで2出力を同時に計算できる。",
+          "used_node_ids": [
+            "eng.dsp1.n07_dft_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

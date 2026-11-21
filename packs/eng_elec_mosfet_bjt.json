@@ -1,0 +1,743 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.elec.mosfet_bjt",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "electrical_engineering",
+    "title": "半導体デバイス2：MOSFET動作原理・小信号等価回路と増幅回路",
+    "language": "ja",
+    "description": "しきい値電圧、線形領域・飽和領域のドレイン電流式、相互コンダクタンスgm、ソース接地増幅回路の利得とミラー効果を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.fet.fet01_mos_electrostatics_boundary",
+      "short_code": "FET01",
+      "kind": "math_boundary",
+      "title": "MOS構造の静電平衡とキャリア輸送の基礎法則",
+      "summary": "MOSキャパシタの酸化膜容量、空乏層電荷、およびチャネル内ドリフト電流を記述する半導体物理・電磁気学の基礎関係式。",
+      "canonical_latex": "C_{\\mathrm{ox}} = \\frac{\\varepsilon_{\\mathrm{ox}}}{t_{\\mathrm{ox}}},\\quad Q_{\\mathrm{dep}} = -\\sqrt{2\\varepsilon_s q N_A \\phi_s},\\quad I_D = W \\mu_n |Q_i(x)| \\frac{dV(x)}{dx}",
+      "aliases_latex": [
+        "I_D = -W\\mu_n Q_i(x)\\frac{dV(x)}{dx}"
+      ],
+      "keywords": [
+        "MOSFET",
+        "oxide capacitance",
+        "depletion charge",
+        "drift current",
+        "gradual channel approximation"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "semiconductor_devices"
+      ]
+    },
+    {
+      "id": "eng.fet.fet02_threshold_voltage_def",
+      "short_code": "FET02",
+      "kind": "theorem_formula",
+      "title": "MOSFETのしきい値電圧（強反転条件）",
+      "summary": "半導体表面ポテンシャルがフェルミポテンシャルの2倍に達し、強反転層が形成され始めるゲート電圧の表式。",
+      "canonical_latex": "V_{\\mathrm{TH}} = V_{\\mathrm{FB}} + 2\\phi_F + \\frac{\\sqrt{4\\varepsilon_s q N_A \\phi_F}}{C_{\\mathrm{ox}}}",
+      "aliases_latex": [
+        "V_T = V_{\\mathrm{FB}} + 2\\phi_F + \\frac{\\sqrt{2\\varepsilon_s q N_A (2\\phi_F)}}{C_{\\mathrm{ox}}}"
+      ],
+      "keywords": [
+        "threshold voltage",
+        "strong inversion",
+        "flatband voltage",
+        "Fermi potential"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "semiconductor_devices"
+      ]
+    },
+    {
+      "id": "eng.fet.fet03_inversion_charge_sheet",
+      "short_code": "FET03",
+      "kind": "theorem_formula",
+      "title": "反転層電荷密度のシート電荷モデル",
+      "summary": "強反転状態においてチャネル電位を考慮した単位面積あたりの反転層電荷密度の線形近似式。",
+      "canonical_latex": "Q_i(x) = -C_{\\mathrm{ox}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{TH}} - V(x)\\big)\\quad (V_{\\mathrm{GS}} - V(x) \\ge V_{\\mathrm{TH}})",
+      "aliases_latex": [
+        "|Q_i(x)| = C_{\\mathrm{ox}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{TH}} - V(x)\\big)"
+      ],
+      "keywords": [
+        "inversion charge",
+        "sheet charge model",
+        "MOSFET channel"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "semiconductor_devices"
+      ]
+    },
+    {
+      "id": "eng.fet.fet04_mosfet_linear_current",
+      "short_code": "FET04",
+      "kind": "theorem_formula",
+      "title": "MOSFETの線形領域（非飽和領域）ドレイン電流式",
+      "summary": "漸近チャネル近似により、ソースからドレインまでチャネル電流を積分して得られる線形領域のドレイン電流公式。",
+      "canonical_latex": "I_D = \\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left[\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)V_{\\mathrm{DS}} - \\frac{1}{2}V_{\\mathrm{DS}}^2\\right]\\quad (V_{\\mathrm{DS}} < V_{\\mathrm{GS}} - V_{\\mathrm{TH}})",
+      "aliases_latex": [
+        "I_D = k_n'\\frac{W}{L}\\left[(V_{\\mathrm{GS}}-V_{\\mathrm{TH}})V_{\\mathrm{DS}} - \\frac{1}{2}V_{\\mathrm{DS}}^2\\right]"
+      ],
+      "keywords": [
+        "linear region",
+        "triode region",
+        "drain current",
+        "MOSFET"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "semiconductor_devices"
+      ]
+    },
+    {
+      "id": "eng.fet.fet05_mosfet_saturation_current",
+      "short_code": "FET05",
+      "kind": "theorem_formula",
+      "title": "MOSFETの飽和領域（ピンチオフ）ドレイン電流式",
+      "summary": "ドレイン端のピンチオフ条件およびチャネル長変調効果を含む飽和領域の2乗則ドレイン電流公式。",
+      "canonical_latex": "I_D = \\frac{1}{2}\\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)^2\\left(1 + \\lambda V_{\\mathrm{DS}}\\right)\\quad (V_{\\mathrm{DS}} \\ge V_{\\mathrm{GS}} - V_{\\mathrm{TH}})",
+      "aliases_latex": [
+        "I_D = \\frac{1}{2}k_n'\\frac{W}{L}(V_{\\mathrm{GS}}-V_{\\mathrm{TH}})^2(1+\\lambda V_{\\mathrm{DS}})"
+      ],
+      "keywords": [
+        "saturation region",
+        "pinch-off",
+        "square law",
+        "channel length modulation"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "semiconductor_devices"
+      ]
+    },
+    {
+      "id": "eng.fet.fet06_transconductance_gm",
+      "short_code": "FET06",
+      "kind": "theorem_formula",
+      "title": "相互コンダクタンス g_m と出力抵抗 r_o",
+      "summary": "飽和領域のドレイン電流をゲート電圧およびドレイン電圧で偏微分して得られる小信号パラメータの表現。",
+      "canonical_latex": "g_m := \\left.\\frac{\\partial I_D}{\\partial V_{\\mathrm{GS}}}\\right|_{V_{\\mathrm{DS}}} = \\mu_n C_{\\mathrm{ox}}\\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right) = \\sqrt{2\\mu_n C_{\\mathrm{ox}}\\frac{W}{L}I_D},\\quad r_o^{-1} := \\left.\\frac{\\partial I_D}{\\partial V_{\\mathrm{DS}}}\\right|_{V_{\\mathrm{GS}}} \\approx \\lambda I_D",
+      "aliases_latex": [
+        "g_m = \\frac{2I_D}{V_{\\mathrm{GS}} - V_{\\mathrm{TH}}},\\quad r_o = \\frac{1}{\\lambda I_D}"
+      ],
+      "keywords": [
+        "transconductance",
+        "output resistance",
+        "small-signal parameters"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits"
+      ]
+    },
+    {
+      "id": "eng.fet.fet07_small_signal_pi_model",
+      "short_code": "FET07",
+      "kind": "definition",
+      "title": "MOSFETの小信号ハイブリッドπ等価回路モデル",
+      "summary": "動作点周りの1次線形化に基づく小信号ドレイン電流式と寄生容量を含むゲート電流式の定義。",
+      "canonical_latex": "i_d = g_m v_{\\mathrm{gs}} + \\frac{v_{\\mathrm{ds}}}{r_o},\\quad i_g = s C_{\\mathrm{gs}} v_{\\mathrm{gs}} + s C_{\\mathrm{gd}}(v_{\\mathrm{gs}} - v_{\\mathrm{ds}})",
+      "aliases_latex": [
+        "i_d = g_m v_{\\mathrm{gs}} + g_{ds} v_{\\mathrm{ds}}"
+      ],
+      "keywords": [
+        "small-signal model",
+        "hybrid-pi model",
+        "MOSFET equivalent circuit"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits"
+      ]
+    },
+    {
+      "id": "eng.fet.fet08_common_source_gain",
+      "short_code": "FET08",
+      "kind": "theorem_formula",
+      "title": "ソース接地増幅回路の小信号電圧利得",
+      "summary": "負荷抵抗を持つソース接地増幅回路における低周波小信号電圧利得の公式。",
+      "canonical_latex": "A_v := \\frac{v_{\\mathrm{out}}}{v_{\\mathrm{in}}} = -g_m \\left(R_D \\parallel r_o\\right) = -\\frac{g_m R_D r_o}{R_D + r_o}",
+      "aliases_latex": [
+        "A_v = -g_m (R_D \\parallel r_o)"
+      ],
+      "keywords": [
+        "common-source amplifier",
+        "voltage gain",
+        "small-signal analysis"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits"
+      ]
+    },
+    {
+      "id": "eng.fet.fet09_miller_effect_capacitance",
+      "short_code": "FET09",
+      "kind": "theorem_formula",
+      "title": "ミラー効果と等価入力容量（ミラー容量）",
+      "summary": "反転増幅器の入出力間に存在する帰還容量が入力側で増幅率倍されて見えるミラー効果と全入力容量の公式。",
+      "canonical_latex": "C_{\\mathrm{M,in}} = C_{\\mathrm{gd}}(1 - A_v) = C_{\\mathrm{gd}}\\big(1 + g_m(R_D \\parallel r_o)\\big),\\quad C_{\\mathrm{in,tot}} = C_{\\mathrm{gs}} + C_{\\mathrm{gd}}(1 - A_v)",
+      "aliases_latex": [
+        "C_{\\mathrm{in}} = C_{\\mathrm{gs}} + (1 + |A_v|)C_{\\mathrm{gd}}"
+      ],
+      "keywords": [
+        "Miller effect",
+        "Miller capacitance",
+        "input capacitance",
+        "frequency response"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.fet.drv02_threshold_voltage",
+      "target_node_id": "eng.fet.fet02_threshold_voltage_def",
+      "route_kind": "deductive",
+      "title": "MOS静電平衡と強反転条件からのしきい値電圧の導出",
+      "premise_node_ids": [
+        "eng.fet.fet01_mos_electrostatics_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Uniformly doped p-type substrate with acceptor concentration N_A",
+        "Strong inversion onset at surface potential phi_s = 2*phi_F"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V_G = V_{\\mathrm{FB}} + \\phi_s - \\frac{Q_{\\mathrm{dep}}(\\phi_s)}{C_{\\mathrm{ox}}}",
+          "to_latex": "V_{\\mathrm{TH}} = V_{\\mathrm{FB}} + 2\\phi_F + \\frac{\\sqrt{4\\varepsilon_s q N_A \\phi_F}}{C_{\\mathrm{ox}}}",
+          "operation_label": "apply_strong_inversion_condition",
+          "explanation": "ゲート電圧の電位配分式に空乏層電荷の表式と強反転条件を代入してしきい値電圧を得る。",
+          "used_node_ids": [
+            "eng.fet.fet01_mos_electrostatics_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub_qdep",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_G = V_{\\mathrm{FB}} + \\phi_s - \\frac{Q_{\\mathrm{dep}}(\\phi_s)}{C_{\\mathrm{ox}}}",
+          "to_latex": "V_G = V_{\\mathrm{FB}} + \\phi_s + \\frac{\\sqrt{2\\varepsilon_s q N_A \\phi_s}}{C_{\\mathrm{ox}}}",
+          "operation_label": "substitute_depletion_charge",
+          "explanation": "空乏層電荷密度の負号を含む表式を代入する。",
+          "used_node_ids": [
+            "eng.fet.fet01_mos_electrostatics_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_apply_2phif",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_G = V_{\\mathrm{FB}} + \\phi_s + \\frac{\\sqrt{2\\varepsilon_s q N_A \\phi_s}}{C_{\\mathrm{ox}}}",
+          "to_latex": "V_{\\mathrm{TH}} = V_{\\mathrm{FB}} + 2\\phi_F + \\frac{\\sqrt{2\\varepsilon_s q N_A (2\\phi_F)}}{C_{\\mathrm{ox}}}",
+          "operation_label": "set_surface_potential_to_2phiF",
+          "explanation": "強反転開始条件として表面ポテンシャルを2*phi_Fとおき、そのときのゲート電圧をV_THと定義する。",
+          "used_node_ids": [
+            "eng.fet.fet01_mos_electrostatics_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_simplify_sqrt",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\mathrm{TH}} = V_{\\mathrm{FB}} + 2\\phi_F + \\frac{\\sqrt{2\\varepsilon_s q N_A (2\\phi_F)}}{C_{\\mathrm{ox}}}",
+          "to_latex": "V_{\\mathrm{TH}} = V_{\\mathrm{FB}} + 2\\phi_F + \\frac{\\sqrt{4\\varepsilon_s q N_A \\phi_F}}{C_{\\mathrm{ox}}}",
+          "operation_label": "algebraic_simplification",
+          "explanation": "根号内の係数を整理して標準表式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.fet.drv03_inversion_charge",
+      "target_node_id": "eng.fet.fet03_inversion_charge_sheet",
+      "route_kind": "deductive",
+      "title": "総半導体電荷としきい値電圧からの反転層電荷密度の導出",
+      "premise_node_ids": [
+        "eng.fet.fet01_mos_electrostatics_boundary",
+        "eng.fet.fet02_threshold_voltage_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Depletion charge remains pinned at strong inversion value Q_dep(2*phi_F)",
+        "Channel potential V(x) shifts local surface potential to 2*phi_F + V(x)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Q_i(x) + Q_{\\mathrm{dep}} = -C_{\\mathrm{ox}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{FB}} - 2\\phi_F - V(x)\\big)",
+          "to_latex": "Q_i(x) = -C_{\\mathrm{ox}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{TH}} - V(x)\\big)",
+          "operation_label": "subtract_pinned_depletion_charge",
+          "explanation": "強反転時の全電荷から固定された空乏層電荷を差し引き、しきい値電圧で整理する。",
+          "used_node_ids": [
+            "eng.fet.fet01_mos_electrostatics_boundary",
+            "eng.fet.fet02_threshold_voltage_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub_qdep_vth",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q_i(x) + Q_{\\mathrm{dep}} = -C_{\\mathrm{ox}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{FB}} - 2\\phi_F - V(x)\\big)",
+          "to_latex": "Q_i(x) = -C_{\\mathrm{ox}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{FB}} - 2\\phi_F - V(x)\\big) + C_{\\mathrm{ox}}\\left(V_{\\mathrm{TH}} - V_{\\mathrm{FB}} - 2\\phi_F\\right)",
+          "operation_label": "substitute_vth_relation",
+          "explanation": "しきい値電圧の定義式より空乏層電荷の項をC_ox(V_TH - V_FB - 2*phi_F)に置き換えて移項する。",
+          "used_node_ids": [
+            "eng.fet.fet02_threshold_voltage_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_cancel_fb_phif",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q_i(x) = -C_{\\mathrm{ox}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{FB}} - 2\\phi_F - V(x)\\big) + C_{\\mathrm{ox}}\\left(V_{\\mathrm{TH}} - V_{\\mathrm{FB}} - 2\\phi_F\\right)",
+          "to_latex": "Q_i(x) = -C_{\\mathrm{ox}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{TH}} - V(x)\\big)",
+          "operation_label": "cancel_common_terms",
+          "explanation": "V_FBと2*phi_Fの項を相殺し、C_oxで括る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.fet.drv04_linear_current",
+      "target_node_id": "eng.fet.fet04_mosfet_linear_current",
+      "route_kind": "deductive",
+      "title": "漸近チャネル近似とチャネル積分による線形領域ドレイン電流式の導出",
+      "premise_node_ids": [
+        "eng.fet.fet01_mos_electrostatics_boundary",
+        "eng.fet.fet03_inversion_charge_sheet"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "Constant electron mobility mu_n along the channel",
+        "V_DS < V_GS - V_TH so inversion layer exists throughout x in [0, L]"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\int_{0}^{L} I_D\\,dx = \\int_{0}^{V_{\\mathrm{DS}}} W\\mu_n C_{\\mathrm{ox}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{TH}} - V\\big)\\,dV",
+          "to_latex": "I_D = \\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left[\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)V_{\\mathrm{DS}} - \\frac{1}{2}V_{\\mathrm{DS}}^2\\right]",
+          "operation_label": "integrate_channel_drift_equation",
+          "explanation": "連続の式よりI_Dがxに依存しないことを用い、x=0..LおよびV=0..V_DSで両辺を積分してI_Dを求める。",
+          "used_node_ids": [
+            "eng.fet.fet01_mos_electrostatics_boundary",
+            "eng.fet.fet03_inversion_charge_sheet",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integrate_lhs",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{0}^{L} I_D\\,dx = \\int_{0}^{V_{\\mathrm{DS}}} W\\mu_n C_{\\mathrm{ox}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{TH}} - V\\big)\\,dV",
+          "to_latex": "I_D L = W\\mu_n C_{\\mathrm{ox}}\\int_{0}^{V_{\\mathrm{DS}}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{TH}} - V\\big)\\,dV",
+          "operation_label": "evaluate_spatial_integral",
+          "explanation": "I_Dは定数であるため左辺のx積分はI_D*Lとなり、右辺の定数係数を積分の外に出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_integrate_rhs",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_D L = W\\mu_n C_{\\mathrm{ox}}\\int_{0}^{V_{\\mathrm{DS}}}\\big(V_{\\mathrm{GS}} - V_{\\mathrm{TH}} - V\\big)\\,dV",
+          "to_latex": "I_D L = W\\mu_n C_{\\mathrm{ox}}\\left[\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)V_{\\mathrm{DS}} - \\frac{1}{2}V_{\\mathrm{DS}}^2\\right]",
+          "operation_label": "apply_fundamental_theorem_of_calculus",
+          "explanation": "微積分学の基本定理を用いてVに関する定積分を実行する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_divide_by_l",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_D L = W\\mu_n C_{\\mathrm{ox}}\\left[\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)V_{\\mathrm{DS}} - \\frac{1}{2}V_{\\mathrm{DS}}^2\\right]",
+          "to_latex": "I_D = \\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left[\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)V_{\\mathrm{DS}} - \\frac{1}{2}V_{\\mathrm{DS}}^2\\right]",
+          "operation_label": "divide_by_channel_length",
+          "explanation": "両辺をチャネル長Lで割り、線形領域のドレイン電流式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.fet.drv05_saturation_current",
+      "target_node_id": "eng.fet.fet05_mosfet_saturation_current",
+      "route_kind": "deductive",
+      "title": "ピンチオフ条件とチャネル長変調効果による飽和領域電流式の導出",
+      "premise_node_ids": [
+        "eng.fet.fet04_mosfet_linear_current"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Pinch-off occurs at V_DS = V_GS - V_TH",
+        "Channel-length modulation is modeled linearly as (1 + lambda * V_DS)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_D = \\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left[\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)V_{\\mathrm{DS}} - \\frac{1}{2}V_{\\mathrm{DS}}^2\\right]",
+          "to_latex": "I_D = \\frac{1}{2}\\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)^2\\left(1 + \\lambda V_{\\mathrm{DS}}\\right)",
+          "operation_label": "apply_pinchoff_and_clm",
+          "explanation": "ピンチオフ電圧V_DS,sat = V_GS - V_THを代入し、チャネル長変調係数lambdaによる補正を乗じる。",
+          "used_node_ids": [
+            "eng.fet.fet04_mosfet_linear_current"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub_pinchoff",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_D = \\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left[\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)V_{\\mathrm{DS}} - \\frac{1}{2}V_{\\mathrm{DS}}^2\\right]",
+          "to_latex": "I_{D,\\mathrm{sat}} = \\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left[\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)^2 - \\frac{1}{2}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)^2\\right]",
+          "operation_label": "substitute_pinchoff_voltage",
+          "explanation": "ピンチオフ点での実効ドレイン電圧V_DS = V_GS - V_THを代入する。",
+          "used_node_ids": [
+            "eng.fet.fet04_mosfet_linear_current"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_simplify_square",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{D,\\mathrm{sat}} = \\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left[\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)^2 - \\frac{1}{2}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)^2\\right]",
+          "to_latex": "I_{D,\\mathrm{sat}} = \\frac{1}{2}\\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)^2",
+          "operation_label": "combine_like_terms",
+          "explanation": "2乗項をまとめて2乗則の飽和電流を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_add_clm",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{D,\\mathrm{sat}} = \\frac{1}{2}\\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)^2",
+          "to_latex": "I_D = \\frac{1}{2}\\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)^2\\left(1 + \\lambda V_{\\mathrm{DS}}\\right)",
+          "operation_label": "include_channel_length_modulation",
+          "explanation": "実効チャネル長の短縮効果を表す因子(1 + lambda*V_DS)を乗じる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.fet.drv06_transconductance_gm",
+      "target_node_id": "eng.fet.fet06_transconductance_gm",
+      "route_kind": "deductive",
+      "title": "飽和領域ドレイン電流の偏微分による g_m と r_o の導出",
+      "premise_node_ids": [
+        "eng.fet.fet05_mosfet_saturation_current"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "assumptions": [
+        "lambda * V_DS << 1 when evaluating g_m"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_D = \\frac{1}{2}\\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)^2\\left(1 + \\lambda V_{\\mathrm{DS}}\\right)",
+          "to_latex": "g_m = \\mu_n C_{\\mathrm{ox}}\\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right) = \\sqrt{2\\mu_n C_{\\mathrm{ox}}\\frac{W}{L}I_D},\\quad r_o^{-1} \\approx \\lambda I_D",
+          "operation_label": "differentiate_saturation_current",
+          "explanation": "飽和領域のドレイン電流をV_GSおよびV_DSでそれぞれ偏微分してg_mとr_oを導く。",
+          "used_node_ids": [
+            "eng.fet.fet05_mosfet_saturation_current",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_partial_vgs",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_D = \\frac{1}{2}\\mu_n C_{\\mathrm{ox}} \\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)^2\\left(1 + \\lambda V_{\\mathrm{DS}}\\right)",
+          "to_latex": "g_m = \\left.\\frac{\\partial I_D}{\\partial V_{\\mathrm{GS}}}\\right|_{V_{\\mathrm{DS}}} \\approx \\mu_n C_{\\mathrm{ox}}\\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)",
+          "operation_label": "partial_derivative_wrt_vgs",
+          "explanation": "lambda*V_DS << 1の下でI_DをV_GSで偏微分してg_mを得る。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_express_in_id",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_m = \\left.\\frac{\\partial I_D}{\\partial V_{\\mathrm{GS}}}\\right|_{V_{\\mathrm{DS}}} \\approx \\mu_n C_{\\mathrm{ox}}\\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right)",
+          "to_latex": "g_m = \\mu_n C_{\\mathrm{ox}}\\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right) = \\sqrt{2\\mu_n C_{\\mathrm{ox}}\\frac{W}{L}I_D}",
+          "operation_label": "substitute_overdrive_voltage",
+          "explanation": "I_Dの2乗則からオーバードライブ電圧(V_GS - V_TH)を消去してI_Dで表す。",
+          "used_node_ids": [
+            "eng.fet.fet05_mosfet_saturation_current"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_partial_vds",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_m = \\mu_n C_{\\mathrm{ox}}\\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right) = \\sqrt{2\\mu_n C_{\\mathrm{ox}}\\frac{W}{L}I_D}",
+          "to_latex": "g_m = \\mu_n C_{\\mathrm{ox}}\\frac{W}{L}\\left(V_{\\mathrm{GS}} - V_{\\mathrm{TH}}\\right) = \\sqrt{2\\mu_n C_{\\mathrm{ox}}\\frac{W}{L}I_D},\\quad r_o^{-1} \\approx \\lambda I_D",
+          "operation_label": "partial_derivative_wrt_vds",
+          "explanation": "同様にV_DSで偏微分して出力コンダクタンスr_o^{-1} = lambda*I_Dを得る。",
+          "used_node_ids": [
+            "eng.fet.fet05_mosfet_saturation_current",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.fet.drv07_small_signal_pi_model",
+      "target_node_id": "eng.fet.fet07_small_signal_pi_model",
+      "route_kind": "deductive",
+      "title": "全微分による動作点周り線形化と小信号等価回路モデルの導出",
+      "premise_node_ids": [
+        "eng.fet.fet06_transconductance_gm"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "Small-signal amplitudes v_gs and v_ds around DC operating point Q",
+        "Quasi-static capacitive gate currents represented in Laplace domain s"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta I_D \\approx \\frac{\\partial I_D}{\\partial V_{\\mathrm{GS}}}\\Delta V_{\\mathrm{GS}} + \\frac{\\partial I_D}{\\partial V_{\\mathrm{DS}}}\\Delta V_{\\mathrm{DS}}",
+          "to_latex": "i_d = g_m v_{\\mathrm{gs}} + \\frac{v_{\\mathrm{ds}}}{r_o},\\quad i_g = s C_{\\mathrm{gs}} v_{\\mathrm{gs}} + s C_{\\mathrm{gd}}(v_{\\mathrm{gs}} - v_{\\mathrm{ds}})",
+          "operation_label": "linearize_and_add_capacitances",
+          "explanation": "ドレイン電流の1次全微分に小信号パラメータを代入し、ゲート寄生容量電流を加えて小信号モデルを構成する。",
+          "used_node_ids": [
+            "eng.fet.fet06_transconductance_gm",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub_gm_ro",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta I_D \\approx \\frac{\\partial I_D}{\\partial V_{\\mathrm{GS}}}\\Delta V_{\\mathrm{GS}} + \\frac{\\partial I_D}{\\partial V_{\\mathrm{DS}}}\\Delta V_{\\mathrm{DS}}",
+          "to_latex": "i_d = g_m v_{\\mathrm{gs}} + \\frac{v_{\\mathrm{ds}}}{r_o}",
+          "operation_label": "substitute_small_signal_params",
+          "explanation": "微少変分を小信号記号i_d, v_gs, v_dsとおき、偏微分係数をg_m, 1/r_oで置き換える。",
+          "used_node_ids": [
+            "eng.fet.fet06_transconductance_gm"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_add_gate_caps",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "i_d = g_m v_{\\mathrm{gs}} + \\frac{v_{\\mathrm{ds}}}{r_o}",
+          "to_latex": "i_d = g_m v_{\\mathrm{gs}} + \\frac{v_{\\mathrm{ds}}}{r_o},\\quad i_g = s C_{\\mathrm{gs}} v_{\\mathrm{gs}} + s C_{\\mathrm{gd}}(v_{\\mathrm{gs}} - v_{\\mathrm{ds}})",
+          "operation_label": "include_gate_capacitive_currents",
+          "explanation": "ゲート・ソース間およびゲート・ドレイン間容量を流れる変位電流をKCLでまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.fet.drv08_common_source_gain",
+      "target_node_id": "eng.fet.fet08_common_source_gain",
+      "route_kind": "deductive",
+      "title": "小信号等価回路の節点方程式からのソース接地増幅回路利得の導出",
+      "premise_node_ids": [
+        "eng.fet.fet07_small_signal_pi_model"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Low-frequency regime where capacitive currents are negligible",
+        "Source terminal grounded (v_gs = v_in, v_ds = v_out)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "i_d + \\frac{v_{\\mathrm{out}}}{R_D} = 0,\\quad i_d = g_m v_{\\mathrm{in}} + \\frac{v_{\\mathrm{out}}}{r_o}",
+          "to_latex": "A_v = \\frac{v_{\\mathrm{out}}}{v_{\\mathrm{in}}} = -g_m \\left(R_D \\parallel r_o\\right) = -\\frac{g_m R_D r_o}{R_D + r_o}",
+          "operation_label": "solve_drain_node_kcl",
+          "explanation": "ドレイン節点のキルヒホッフ電流則をv_out/v_inについて解く。",
+          "used_node_ids": [
+            "eng.fet.fet07_small_signal_pi_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub_id",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "i_d + \\frac{v_{\\mathrm{out}}}{R_D} = 0,\\quad i_d = g_m v_{\\mathrm{in}} + \\frac{v_{\\mathrm{out}}}{r_o}",
+          "to_latex": "g_m v_{\\mathrm{in}} + \\frac{v_{\\mathrm{out}}}{r_o} + \\frac{v_{\\mathrm{out}}}{R_D} = 0",
+          "operation_label": "substitute_drain_current",
+          "explanation": "小信号ドレイン電流式をドレイン節点のKCL方程式に代入する。",
+          "used_node_ids": [
+            "eng.fet.fet07_small_signal_pi_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_factor_vout",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_m v_{\\mathrm{in}} + \\frac{v_{\\mathrm{out}}}{r_o} + \\frac{v_{\\mathrm{out}}}{R_D} = 0",
+          "to_latex": "v_{\\mathrm{out}}\\left(\\frac{1}{R_D} + \\frac{1}{r_o}\\right) = -g_m v_{\\mathrm{in}}",
+          "operation_label": "group_output_voltage_terms",
+          "explanation": "v_outの項を左辺にまとめ、v_inの項を右辺に移項する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_solve_ratio",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_{\\mathrm{out}}\\left(\\frac{1}{R_D} + \\frac{1}{r_o}\\right) = -g_m v_{\\mathrm{in}}",
+          "to_latex": "A_v = \\frac{v_{\\mathrm{out}}}{v_{\\mathrm{in}}} = -g_m \\left(R_D \\parallel r_o\\right) = -\\frac{g_m R_D r_o}{R_D + r_o}",
+          "operation_label": "solve_for_voltage_gain",
+          "explanation": "並列抵抗の定義を用いて電圧利得A_vを得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.fet.drv09_miller_effect",
+      "target_node_id": "eng.fet.fet09_miller_effect_capacitance",
+      "route_kind": "deductive",
+      "title": "帰還容量電流の変形によるミラー効果と等価入力容量の導出",
+      "premise_node_ids": [
+        "eng.fet.fet07_small_signal_pi_model",
+        "eng.fet.fet08_common_source_gain"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Output voltage is approximated by v_out = A_v * v_in (Miller approximation)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "i_{\\mathrm{gd}} = s C_{\\mathrm{gd}}(v_{\\mathrm{in}} - v_{\\mathrm{out}}),\\quad v_{\\mathrm{out}} = A_v v_{\\mathrm{in}}",
+          "to_latex": "C_{\\mathrm{M,in}} = C_{\\mathrm{gd}}(1 - A_v) = C_{\\mathrm{gd}}\\big(1 + g_m(R_D \\parallel r_o)\\big),\\quad C_{\\mathrm{in,tot}} = C_{\\mathrm{gs}} + C_{\\mathrm{gd}}(1 - A_v)",
+          "operation_label": "derive_miller_input_capacitance",
+          "explanation": "帰還容量C_gdを流れる電流にv_out = A_v*v_inを代入し、等価接地容量を抽出する。",
+          "used_node_ids": [
+            "eng.fet.fet07_small_signal_pi_model",
+            "eng.fet.fet08_common_source_gain"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub_vout",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "i_{\\mathrm{gd}} = s C_{\\mathrm{gd}}(v_{\\mathrm{in}} - v_{\\mathrm{out}}),\\quad v_{\\mathrm{out}} = A_v v_{\\mathrm{in}}",
+          "to_latex": "i_{\\mathrm{gd}} = s C_{\\mathrm{gd}}(1 - A_v) v_{\\mathrm{in}}",
+          "operation_label": "substitute_voltage_gain",
+          "explanation": "v_out = A_v*v_inを代入してv_inで括る。",
+          "used_node_ids": [
+            "eng.fet.fet07_small_signal_pi_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_extract_cm",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "i_{\\mathrm{gd}} = s C_{\\mathrm{gd}}(1 - A_v) v_{\\mathrm{in}}",
+          "to_latex": "C_{\\mathrm{M,in}} := \\frac{i_{\\mathrm{gd}}}{s v_{\\mathrm{in}}} = C_{\\mathrm{gd}}(1 - A_v)",
+          "operation_label": "identify_equivalent_capacitance",
+          "explanation": "入力アドミタンスの係数から等価入力ミラー容量C_M,inを同定する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub_cs_gain",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_{\\mathrm{M,in}} := \\frac{i_{\\mathrm{gd}}}{s v_{\\mathrm{in}}} = C_{\\mathrm{gd}}(1 - A_v)",
+          "to_latex": "C_{\\mathrm{M,in}} = C_{\\mathrm{gd}}(1 - A_v) = C_{\\mathrm{gd}}\\big(1 + g_m(R_D \\parallel r_o)\\big),\\quad C_{\\mathrm{in,tot}} = C_{\\mathrm{gs}} + C_{\\mathrm{gd}}(1 - A_v)",
+          "operation_label": "substitute_cs_gain_and_total_cin",
+          "explanation": "ソース接地増幅回路の利得A_vを代入し、C_gsと並列合成して全入力容量を得る。",
+          "used_node_ids": [
+            "eng.fet.fet08_common_source_gain"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

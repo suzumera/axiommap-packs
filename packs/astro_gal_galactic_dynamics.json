@@ -1,0 +1,809 @@
+{
+  "pack_meta": {
+    "pack_id": "astro.gal.galactic_dynamics",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "astronomy",
+    "title": "銀河力学：ジーンズ方程式・平坦な回転曲線とダークマターハロー",
+    "language": "ja",
+    "description": "無衝突ボルツマン方程式、ジーンズ方程式、球対称質量分布からの回転曲線 v(r)=√(GM(r)/r)、等温球ハローとNFWプロファイルを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "astro.gal.n01_phase_space_distribution_def",
+      "short_code": "GD01",
+      "kind": "definition",
+      "title": "位相空間分布関数と恒星数密度・平均速度の定義",
+      "summary": "6次元位相空間 (x, v) における恒星の分布関数 f(x, v, t) と、その速度空間モーメントとしての空間数密度 n(x, t) および平均速度・速度分散テンソルの定義。",
+      "canonical_latex": "dN = f(\\mathbf{x},\\mathbf{v},t)\\,d^3\\mathbf{x}\\,d^3\\mathbf{v},\\quad n(\\mathbf{x},t) = \\int_{\\mathbb{R}^3} f\\,d^3\\mathbf{v},\\quad \\bar{v}_i(\\mathbf{x},t) = \\frac{1}{n}\\int_{\\mathbb{R}^3} v_i f\\,d^3\\mathbf{v},\\quad \\sigma_{ij}^2 := \\overline{v_i v_j} - \\bar{v}_i\\bar{v}_j",
+      "aliases_latex": [
+        "f(\\mathbf{x},\\mathbf{v},t) = \\frac{dN}{d^3\\mathbf{x}\\,d^3\\mathbf{v}}"
+      ],
+      "keywords": [
+        "distribution function",
+        "phase space",
+        "velocity moments",
+        "galactic dynamics"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "galactic_dynamics"
+      ]
+    },
+    {
+      "id": "astro.gal.n02_collisionless_boltzmann_eq",
+      "short_code": "GD02",
+      "kind": "theorem_formula",
+      "title": "無衝突ボルツマン方程式（CBE）",
+      "summary": "二体緩和を無視できる恒星系において、重力ポテンシャル Φ のもとでの位相空間密度保存（リウヴィルの定理）を表す基本偏微分方程式。",
+      "canonical_latex": "\\frac{\\partial f}{\\partial t} + \\mathbf{v}\\cdot\\nabla_{\\mathbf{x}} f - \\nabla\\Phi\\cdot\\nabla_{\\mathbf{v}} f = 0",
+      "aliases_latex": [
+        "\\frac{df}{dt} = \\frac{\\partial f}{\\partial t} + \\dot{\\mathbf{x}}\\cdot\\frac{\\partial f}{\\partial\\mathbf{x}} + \\dot{\\mathbf{v}}\\cdot\\frac{\\partial f}{\\partial\\mathbf{v}} = 0"
+      ],
+      "keywords": [
+        "collisionless Boltzmann equation",
+        "Vlasov equation",
+        "phase space conservation"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "galactic_dynamics"
+      ]
+    },
+    {
+      "id": "astro.gal.n03_jeans_equations_cartesian",
+      "short_code": "GD03",
+      "kind": "theorem_formula",
+      "title": "デカルト座標におけるジーンズ方程式",
+      "summary": "無衝突ボルツマン方程式に速度成分を乗じて速度空間で積分することにより得られる、恒星系の流体力学的運動量保存方程式。",
+      "canonical_latex": "n\\frac{\\partial \\bar{v}_j}{\\partial t} + n\\sum_{i=1}^{3}\\bar{v}_i\\frac{\\partial \\bar{v}_j}{\\partial x_i} = -n\\frac{\\partial\\Phi}{\\partial x_j} - \\sum_{i=1}^{3}\\frac{\\partial(n\\sigma_{ij}^2)}{\\partial x_i}\\quad (j=1,2,3)",
+      "aliases_latex": [
+        "\\frac{\\partial(n\\bar{v}_j)}{\\partial t} + \\sum_{i=1}^{3}\\frac{\\partial(n\\overline{v_i v_j})}{\\partial x_i} + n\\frac{\\partial\\Phi}{\\partial x_j} = 0"
+      ],
+      "keywords": [
+        "Jeans equations",
+        "velocity dispersion",
+        "stellar hydrodynamics"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "galactic_dynamics"
+      ]
+    },
+    {
+      "id": "astro.gal.n04_spherical_jeans_equation",
+      "short_code": "GD04",
+      "kind": "theorem_formula",
+      "title": "定常球対称系のジーンズ方程式と非等方性パラメータ β",
+      "summary": "定常・球対称・平均速度ゼロの恒星系に対する動径方向のジーンズ方程式と、速度分散の非等方性パラメータ β(r) の表式。",
+      "canonical_latex": "\\frac{1}{n}\\frac{d(n\\sigma_r^2)}{dr} + 2\\frac{\\beta(r)}{r}\\sigma_r^2 = -\\frac{d\\Phi}{dr},\\quad \\beta(r) := 1 - \\frac{\\sigma_\\theta^2 + \\sigma_\\phi^2}{2\\sigma_r^2}",
+      "aliases_latex": [
+        "\\frac{d(n\\sigma_r^2)}{dr} + \\frac{n}{r}(2\\sigma_r^2 - \\sigma_\\theta^2 - \\sigma_\\phi^2) = -n\\frac{d\\Phi}{dr}"
+      ],
+      "keywords": [
+        "spherical Jeans equation",
+        "velocity anisotropy",
+        "galactic dynamics"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "galactic_dynamics"
+      ]
+    },
+    {
+      "id": "astro.gal.n05_spherical_mass_enclosed",
+      "short_code": "GD05",
+      "kind": "theorem_formula",
+      "title": "球対称質量分布の累積質量 M(r) と重力ポテンシャル勾配",
+      "summary": "球対称密度分布 ρ(r) に対する半径 r 以内の累積質量 M(r) と、ニュートンの球殻定理に基づく動径重力場 dΦ/dr の関係。",
+      "canonical_latex": "M(r) = 4\\pi\\int_{0}^{r} \\rho(r')r'^2\\,dr',\\quad \\frac{d\\Phi}{dr} = \\frac{G M(r)}{r^2}",
+      "aliases_latex": [
+        "g(r) = -\\frac{d\\Phi}{dr} = -\\frac{G M(r)}{r^2}"
+      ],
+      "keywords": [
+        "enclosed mass",
+        "spherical symmetry",
+        "Newton shell theorem"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "galactic_dynamics"
+      ]
+    },
+    {
+      "id": "astro.gal.n06_galactic_rotation_curve",
+      "short_code": "GD06",
+      "kind": "theorem_formula",
+      "title": "球対称質量分布からの銀河回転曲線 v_c(r) = √(GM(r)/r)",
+      "summary": "球対称重力場における円運動の遠心力と重力の釣り合いから導かれる円軌道速度（回転曲線）の一般式。",
+      "canonical_latex": "v_c(r) = \\sqrt{r\\frac{d\\Phi}{dr}} = \\sqrt{\\frac{G M(r)}{r}}",
+      "aliases_latex": [
+        "v_c^2(r) = \\frac{G M(r)}{r}"
+      ],
+      "keywords": [
+        "rotation curve",
+        "circular velocity",
+        "mass profile"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "galactic_dynamics"
+      ]
+    },
+    {
+      "id": "astro.gal.n07_isothermal_sphere_flat_curve",
+      "short_code": "GD07",
+      "kind": "theorem_formula",
+      "title": "特異等温球（SIS）ハローモデルと平坦な回転曲線",
+      "summary": "等方的一定速度分散 σ を仮定した球対称ジーンズ方程式の自己重力解としての特異等温球密度分布 ρ∝r^{-2} と、定数となる平坦な回転曲線。",
+      "canonical_latex": "\\rho(r) = \\frac{\\sigma^2}{2\\pi G r^2},\\quad M(r) = \\frac{2\\sigma^2 r}{G},\\quad v_c(r) = \\sqrt{2}\\,\\sigma = \\text{const.}",
+      "aliases_latex": [
+        "v_c = \\sqrt{2}\\sigma"
+      ],
+      "keywords": [
+        "singular isothermal sphere",
+        "flat rotation curve",
+        "dark matter halo"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "galactic_dynamics"
+      ]
+    },
+    {
+      "id": "astro.gal.n08_nfw_halo_profile_mass",
+      "short_code": "GD08",
+      "kind": "definition",
+      "title": "NFW ダークマターハロー密度プロファイルと累積質量",
+      "summary": "冷たいダークマター（CDM）N体シミュレーションから見出された普遍的ハロー密度分布（NFWプロファイル）と、その体積積分による累積質量 M_NFW(r)。",
+      "canonical_latex": "\\rho_{\\mathrm{NFW}}(r) = \\frac{\\rho_0}{(r/r_s)(1 + r/r_s)^2},\\quad M_{\\mathrm{NFW}}(r) = 4\\pi\\rho_0 r_s^3\\left[\\ln\\!\\left(1 + \\frac{r}{r_s}\\right) - \\frac{r/r_s}{1 + r/r_s}\\right]",
+      "aliases_latex": [
+        "\\rho(r) = \\frac{\\rho_0 r_s^3}{r(r+r_s)^2}"
+      ],
+      "keywords": [
+        "NFW profile",
+        "dark matter halo",
+        "scale radius",
+        "enclosed mass"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "galactic_dynamics"
+      ]
+    },
+    {
+      "id": "astro.gal.n09_nfw_rotation_curve",
+      "short_code": "GD09",
+      "kind": "theorem_formula",
+      "title": "NFW ハローの回転曲線と無次元規格化表示",
+      "summary": "NFW 累積質量分布から導かれる円軌道速度 v_c(r) の解析表式（ビリアル半径 r_200、集中度パラメータ c = r_200 / r_s を用いた無次元化形式）。",
+      "canonical_latex": "v_c(r) = v_{200}\\sqrt{\\frac{1}{x}\\frac{\\ln(1+cx) - \\frac{cx}{1+cx}}{\\ln(1+c) - \\frac{c}{1+c}}}\\quad \\left(x = \\frac{r}{r_{200}},\\; c = \\frac{r_{200}}{r_s}\\right)",
+      "aliases_latex": [
+        "v_c^2(r) = \\frac{4\\pi G\\rho_0 r_s^3}{r}\\left[\\ln\\!\\left(1+\\frac{r}{r_s}\\right)-\\frac{r/r_s}{1+r/r_s}\\right]"
+      ],
+      "keywords": [
+        "NFW rotation curve",
+        "concentration parameter",
+        "dark matter halo"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "galactic_dynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "astro.gal.d01_phase_space_distribution",
+      "target_node_id": "astro.gal.n01_phase_space_distribution_def",
+      "route_kind": "reformulation",
+      "title": "位相空間分布関数の速度モーメントによる数密度と平均速度の定式化",
+      "premise_node_ids": [
+        "math.calc.mi01_multiple_integral_def",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "恒星系は連続体近似が可能な十分多数の粒子からなる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}\\in\\mathbb{R}^3,\\; \\mathbf{v}\\in\\mathbb{R}^3,\\; dN = f(\\mathbf{x},\\mathbf{v},t)\\,d^3\\mathbf{x}\\,d^3\\mathbf{v}",
+          "to_latex": "n(\\mathbf{x},t) = \\int_{\\mathbb{R}^3} f(\\mathbf{x},\\mathbf{v},t)\\,d^3\\mathbf{v},\\quad \\bar{v}_i(\\mathbf{x},t) = \\frac{1}{n}\\int_{\\mathbb{R}^3} v_i f\\,d^3\\mathbf{v}",
+          "operation_label": "速度空間上の重積分によるモーメント定義",
+          "explanation": "6次元位相空間の粒子数密度 f を速度空間全体にわたって多重積分することで空間数密度 n と平均速度・速度分散テンソルを定義する。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}\\in\\mathbb{R}^3,\\; \\mathbf{v}\\in\\mathbb{R}^3,\\; dN = f(\\mathbf{x},\\mathbf{v},t)\\,d^3\\mathbf{x}\\,d^3\\mathbf{v}",
+          "to_latex": "n(\\mathbf{x},t)\\,d^3\\mathbf{x} = \\left(\\int_{\\mathbb{R}^3} f(\\mathbf{x},\\mathbf{v},t)\\,d^3\\mathbf{v}\\right)d^3\\mathbf{x}",
+          "operation_label": "速度空間全体にわたる積分",
+          "explanation": "微小体積要素 d^3x 内の全速度の恒星数を求めるため、速度空間全体で多重積分を行う。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "n(\\mathbf{x},t)\\,d^3\\mathbf{x} = \\left(\\int_{\\mathbb{R}^3} f(\\mathbf{x},\\mathbf{v},t)\\,d^3\\mathbf{v}\\right)d^3\\mathbf{x}",
+          "to_latex": "n(\\mathbf{x},t) = \\int_{\\mathbb{R}^3} f(\\mathbf{x},\\mathbf{v},t)\\,d^3\\mathbf{v},\\quad \\bar{v}_i(\\mathbf{x},t) = \\frac{1}{n}\\int_{\\mathbb{R}^3} v_i f\\,d^3\\mathbf{v}",
+          "operation_label": "0次および1次・2次速度モーメントの定義",
+          "explanation": "d^3x を両辺から除き数密度 n を得るとともに、速度成分の期待値として平均速度および速度分散テンソル σ_{ij}^2 を定義する。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.gal.d02_collisionless_boltzmann",
+      "target_node_id": "astro.gal.n02_collisionless_boltzmann_eq",
+      "route_kind": "deductive",
+      "title": "位相空間密度保存と連鎖律による無衝突ボルツマン方程式の導出",
+      "premise_node_ids": [
+        "astro.gal.n01_phase_space_distribution_def",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m35_multivariable_chain_rule"
+      ],
+      "assumptions": [
+        "二体衝突や恒星の生成・消滅がない（無衝突系）",
+        "粒子は滑らかな重力ポテンシャル Φ(x, t) のもとで運動する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{df}{dt}(\\mathbf{x}(t),\\mathbf{v}(t),t) = 0,\\quad \\dot{\\mathbf{x}} = \\mathbf{v},\\; \\dot{\\mathbf{v}} = -\\nabla\\Phi(\\mathbf{x},t)",
+          "to_latex": "\\frac{\\partial f}{\\partial t} + \\mathbf{v}\\cdot\\nabla_{\\mathbf{x}} f - \\nabla\\Phi\\cdot\\nabla_{\\mathbf{v}} f = 0",
+          "operation_label": "位相空間軌道に沿う連鎖律の適用",
+          "explanation": "位相空間流に沿う分布関数のラグランジュ時間微分 df/dt=0 に多変数関数の連鎖律と運動方程式を代入し、無衝突ボルツマン方程式を得る。",
+          "used_node_ids": [
+            "astro.gal.n01_phase_space_distribution_def",
+            "math.calc.m35_multivariable_chain_rule",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{df}{dt}(\\mathbf{x}(t),\\mathbf{v}(t),t) = 0,\\quad \\dot{\\mathbf{x}} = \\mathbf{v},\\; \\dot{\\mathbf{v}} = -\\nabla\\Phi(\\mathbf{x},t)",
+          "to_latex": "\\frac{\\partial f}{\\partial t} + \\sum_{i=1}^{3}\\frac{\\partial f}{\\partial x_i}\\dot{x}_i + \\sum_{i=1}^{3}\\frac{\\partial f}{\\partial v_i}\\dot{v}_i = 0",
+          "operation_label": "多変数関数の全時間微分展開",
+          "explanation": "位相空間上の軌道 (x(t), v(t)) に沿って合成微分法則（連鎖律）を適用し、偏微分の和として展開する。",
+          "used_node_ids": [
+            "astro.gal.n01_phase_space_distribution_def",
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial f}{\\partial t} + \\sum_{i=1}^{3}\\frac{\\partial f}{\\partial x_i}\\dot{x}_i + \\sum_{i=1}^{3}\\frac{\\partial f}{\\partial v_i}\\dot{v}_i = 0",
+          "to_latex": "\\frac{\\partial f}{\\partial t} + \\mathbf{v}\\cdot\\nabla_{\\mathbf{x}} f - \\nabla\\Phi\\cdot\\nabla_{\\mathbf{v}} f = 0",
+          "operation_label": "ニュートンの運動方程式の代入",
+          "explanation": "運動方程式 \\dot{\\mathbf{x}} = \\mathbf{v} と \\dot{\\mathbf{v}} = -\\nabla\\Phi を代入してベクトル表記にまとめる。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.gal.d03_jeans_cartesian",
+      "target_node_id": "astro.gal.n03_jeans_equations_cartesian",
+      "route_kind": "deductive",
+      "title": "無衝突ボルツマン方程式の1次速度モーメントからのジーンズ方程式の導出",
+      "premise_node_ids": [
+        "astro.gal.n02_collisionless_boltzmann_eq",
+        "astro.gal.n01_phase_space_distribution_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m10_integration_by_parts",
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "|v|→∞ の極限で分布関数 f は十分速く 0 に減衰する（境界項が消滅）",
+        "0次モーメントから得られる連続の式 ∂n/∂t + Σ ∂(n v̄_i)/∂x_i = 0 が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\int_{\\mathbb{R}^3} v_j \\left(\\frac{\\partial f}{\\partial t} + \\sum_{i=1}^{3} v_i\\frac{\\partial f}{\\partial x_i} - \\sum_{i=1}^{3}\\frac{\\partial\\Phi}{\\partial x_i}\\frac{\\partial f}{\\partial v_i}\\right) d^3\\mathbf{v} = 0",
+          "to_latex": "n\\frac{\\partial \\bar{v}_j}{\\partial t} + n\\sum_{i=1}^{3}\\bar{v}_i\\frac{\\partial \\bar{v}_j}{\\partial x_i} = -n\\frac{\\partial\\Phi}{\\partial x_j} - \\sum_{i=1}^{3}\\frac{\\partial(n\\sigma_{ij}^2)}{\\partial x_i}",
+          "operation_label": "速度モーメント積分と連続の式による整理",
+          "explanation": "無衝突ボルツマン方程式に v_j を掛けて速度空間で積分し、部分積分と速度分散テンソルの定義および連続の式を用いてジーンズ方程式を得る。",
+          "used_node_ids": [
+            "astro.gal.n01_phase_space_distribution_def",
+            "astro.gal.n02_collisionless_boltzmann_eq",
+            "math.calc.m10_integration_by_parts",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{\\mathbb{R}^3} v_j \\left(\\frac{\\partial f}{\\partial t} + \\sum_{i=1}^{3} v_i\\frac{\\partial f}{\\partial x_i} - \\sum_{i=1}^{3}\\frac{\\partial\\Phi}{\\partial x_i}\\frac{\\partial f}{\\partial v_i}\\right) d^3\\mathbf{v} = 0",
+          "to_latex": "\\frac{\\partial(n\\bar{v}_j)}{\\partial t} + \\sum_{i=1}^{3}\\frac{\\partial(n\\overline{v_i v_j})}{\\partial x_i} + n\\frac{\\partial\\Phi}{\\partial x_j} = 0",
+          "operation_label": "積分線形性と速度に関する部分積分",
+          "explanation": "時間・空間微分を積分の外に出し、ポテンシャル項に対して v_i に関する部分積分を行って境界項を消去すると、j=i の項から n ∂Φ/∂x_j が現れる。",
+          "used_node_ids": [
+            "astro.gal.n01_phase_space_distribution_def",
+            "math.calc.m10_integration_by_parts",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial(n\\bar{v}_j)}{\\partial t} + \\sum_{i=1}^{3}\\frac{\\partial(n\\overline{v_i v_j})}{\\partial x_i} + n\\frac{\\partial\\Phi}{\\partial x_j} = 0",
+          "to_latex": "\\frac{\\partial(n\\bar{v}_j)}{\\partial t} + \\sum_{i=1}^{3}\\frac{\\partial(n\\bar{v}_i\\bar{v}_j)}{\\partial x_i} + \\sum_{i=1}^{3}\\frac{\\partial(n\\sigma_{ij}^2)}{\\partial x_i} + n\\frac{\\partial\\Phi}{\\partial x_j} = 0",
+          "operation_label": "速度分散テンソルの代入",
+          "explanation": "2次モーメントを平均流と分散に分解する関係 \\overline{v_i v_j} = \\bar{v}_i\\bar{v}_j + \\sigma_{ij}^2 を代入する。",
+          "used_node_ids": [
+            "astro.gal.n01_phase_space_distribution_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial(n\\bar{v}_j)}{\\partial t} + \\sum_{i=1}^{3}\\frac{\\partial(n\\bar{v}_i\\bar{v}_j)}{\\partial x_i} + \\sum_{i=1}^{3}\\frac{\\partial(n\\sigma_{ij}^2)}{\\partial x_i} + n\\frac{\\partial\\Phi}{\\partial x_j} = 0",
+          "to_latex": "n\\frac{\\partial \\bar{v}_j}{\\partial t} + n\\sum_{i=1}^{3}\\bar{v}_i\\frac{\\partial \\bar{v}_j}{\\partial x_i} = -n\\frac{\\partial\\Phi}{\\partial x_j} - \\sum_{i=1}^{3}\\frac{\\partial(n\\sigma_{ij}^2)}{\\partial x_i}",
+          "operation_label": "連続の式を用いた移流形式への変形",
+          "explanation": "左辺の積の微分を展開し、連続の式 ∂n/∂t + Σ ∂(n v̄_i)/∂x_i = 0 を差し引くことでオイラー方程式型のジーンズ方程式を得る。",
+          "used_node_ids": [
+            "astro.gal.n02_collisionless_boltzmann_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.gal.d04_spherical_jeans",
+      "target_node_id": "astro.gal.n04_spherical_jeans_equation",
+      "route_kind": "deductive",
+      "title": "定常球対称系における球座標ジーンズ方程式の導出",
+      "premise_node_ids": [
+        "astro.gal.n03_jeans_equations_cartesian"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m35_multivariable_chain_rule",
+        "math.calc.mi08_spherical_coordinates_def"
+      ],
+      "assumptions": [
+        "系は定常（∂/∂t = 0）かつ球対称であり、平均速度はゼロ（v̄ = 0）",
+        "球座標の主軸方向で速度分散テンソルは対角化する（σ_rθ = σ_rφ = σ_θφ = 0）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum_{i=1}^{3}\\frac{\\partial(n\\sigma_{ij}^2)}{\\partial x_i} = -n\\frac{\\partial\\Phi}{\\partial x_j}\\quad (\\bar{\\mathbf{v}}=\\mathbf{0},\\; \\partial_t=0)",
+          "to_latex": "\\frac{1}{n}\\frac{d(n\\sigma_r^2)}{dr} + 2\\frac{\\beta(r)}{r}\\sigma_r^2 = -\\frac{d\\Phi}{dr},\\quad \\beta(r) := 1 - \\frac{\\sigma_\\theta^2 + \\sigma_\\phi^2}{2\\sigma_r^2}",
+          "operation_label": "球座標変換と非等方性パラメータの導入",
+          "explanation": "デカルト座標のジーンズ方程式を球対称座標 (r, θ, φ) へ座標変換し、z 軸上での動径成分を評価して非等方性パラメータ β(r) を導入する。",
+          "used_node_ids": [
+            "astro.gal.n03_jeans_equations_cartesian",
+            "math.calc.m35_multivariable_chain_rule",
+            "math.calc.mi08_spherical_coordinates_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{3}\\frac{\\partial(n\\sigma_{ij}^2)}{\\partial x_i} = -n\\frac{\\partial\\Phi}{\\partial x_j}\\quad (\\bar{\\mathbf{v}}=\\mathbf{0},\\; \\partial_t=0)",
+          "to_latex": "\\frac{d(n\\sigma_r^2)}{dr} + \\frac{n}{r}(2\\sigma_r^2 - \\sigma_\\theta^2 - \\sigma_\\phi^2) = -n\\frac{d\\Phi}{dr}",
+          "operation_label": "球座標基底への変換と発散の計算",
+          "explanation": "球対称性のもとでデカルト座標のテンソル発散を球座標で計算すると、計量係数に由来する幾何学的項 (2σ_r^2 - σ_θ^2 - σ_φ^2)/r が現れる。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "math.calc.mi08_spherical_coordinates_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d(n\\sigma_r^2)}{dr} + \\frac{n}{r}(2\\sigma_r^2 - \\sigma_\\theta^2 - \\sigma_\\phi^2) = -n\\frac{d\\Phi}{dr}",
+          "to_latex": "\\frac{1}{n}\\frac{d(n\\sigma_r^2)}{dr} + 2\\frac{\\beta(r)}{r}\\sigma_r^2 = -\\frac{d\\Phi}{dr},\\quad \\beta(r) := 1 - \\frac{\\sigma_\\theta^2 + \\sigma_\\phi^2}{2\\sigma_r^2}",
+          "operation_label": "n による除算と β(r) の定義",
+          "explanation": "両辺を n で割り、非等方性パラメータ β(r) = 1 - (σ_θ^2 + σ_φ^2)/(2σ_r^2) を用いて整理する。",
+          "used_node_ids": [
+            "astro.gal.n03_jeans_equations_cartesian"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.gal.d05_spherical_mass",
+      "target_node_id": "astro.gal.n05_spherical_mass_enclosed",
+      "route_kind": "deductive",
+      "title": "球面座標体積要素による累積質量 M(r) と球殻定理からの重力場の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [
+        "math.calc.mi09_spherical_volume_element",
+        "math.vec.m05_gradient_line_integral"
+      ],
+      "assumptions": [
+        "質量密度分布 ρ(r) は球対称である",
+        "ニュートンの球殻定理（ガウスの重力法則）が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "M(r) = \\iiint_{r'\\le r} \\rho(r')\\,dV',\\quad \\mathbf{g}(\\mathbf{r}) = -\\nabla\\Phi(\\mathbf{r})",
+          "to_latex": "M(r) = 4\\pi\\int_{0}^{r} \\rho(r')r'^2\\,dr',\\quad \\frac{d\\Phi}{dr} = \\frac{G M(r)}{r^2}",
+          "operation_label": "球座標積分と球殻定理の適用",
+          "explanation": "球面座標の体積要素で角度積分を実行して M(r) を得、球殻定理より外側の質量は寄与せず内側質量 M(r) が中心に集中した場合と同じ重力場 dΦ/dr = GM(r)/r^2 を与える。",
+          "used_node_ids": [
+            "math.calc.mi09_spherical_volume_element",
+            "math.vec.m05_gradient_line_integral",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M(r) = \\iiint_{r'\\le r} \\rho(r')\\,dV',\\quad \\mathbf{g}(\\mathbf{r}) = -\\nabla\\Phi(\\mathbf{r})",
+          "to_latex": "M(r) = \\int_{0}^{r}\\int_{0}^{\\pi}\\int_{0}^{2\\pi} \\rho(r')r'^2\\sin\\theta\\,d\\varphi\\,d\\theta\\,dr' = 4\\pi\\int_{0}^{r} \\rho(r')r'^2\\,dr'",
+          "operation_label": "球面座標における立体角積分",
+          "explanation": "球面座標のヤコビアン r'^2 sinθ を用いて θ∈[0,π], φ∈[0,2π] の積分を実行し因子 4π を得る。",
+          "used_node_ids": [
+            "math.calc.mi09_spherical_volume_element"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M(r) = \\int_{0}^{r}\\int_{0}^{\\pi}\\int_{0}^{2\\pi} \\rho(r')r'^2\\sin\\theta\\,d\\varphi\\,d\\theta\\,dr' = 4\\pi\\int_{0}^{r} \\rho(r')r'^2\\,dr'",
+          "to_latex": "M(r) = 4\\pi\\int_{0}^{r} \\rho(r')r'^2\\,dr',\\quad \\frac{d\\Phi}{dr} = \\frac{G M(r)}{r^2}",
+          "operation_label": "球殻定理とポテンシャル勾配",
+          "explanation": "球対称ポテンシャルの勾配は動径成分 dΦ/dr のみとなり、ガウスの重力法則より半径 r 以内の質量 M(r) のみが重力場に寄与する。",
+          "used_node_ids": [
+            "math.vec.m05_gradient_line_integral",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.gal.d06_rotation_curve",
+      "target_node_id": "astro.gal.n06_galactic_rotation_curve",
+      "route_kind": "deductive",
+      "title": "等速円運動の向心加速度と球対称重力場の釣り合いからの回転曲線の導出",
+      "premise_node_ids": [
+        "astro.gal.n05_spherical_mass_enclosed",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m04_polar_acceleration"
+      ],
+      "assumptions": [
+        "試験粒子（ガス・星）は赤道面内で半径 r の等速円運動を行っている"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-\\frac{v_c^2}{r} = -\\frac{d\\Phi}{dr},\\quad \\frac{d\\Phi}{dr} = \\frac{G M(r)}{r^2}",
+          "to_latex": "v_c(r) = \\sqrt{r\\frac{d\\Phi}{dr}} = \\sqrt{\\frac{G M(r)}{r}}",
+          "operation_label": "円運動方程式の代数解法",
+          "explanation": "極座標における等速円運動の動径加速度 -v_c^2/r と重力 -dΦ/dr = -GM(r)/r^2 を等置し、v_c(r) について解く。",
+          "used_node_ids": [
+            "astro.gal.n05_spherical_mass_enclosed",
+            "math.vec.m04_polar_acceleration",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{v_c^2}{r} = -\\frac{d\\Phi}{dr},\\quad \\frac{d\\Phi}{dr} = \\frac{G M(r)}{r^2}",
+          "to_latex": "\\frac{v_c^2}{r} = \\frac{G M(r)}{r^2}",
+          "operation_label": "重力場表式の代入",
+          "explanation": "球対称ポテンシャル勾配 dΦ/dr = GM(r)/r^2 を円運動の動径方向運動方程式に代入する。",
+          "used_node_ids": [
+            "astro.gal.n05_spherical_mass_enclosed",
+            "math.vec.m04_polar_acceleration"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{v_c^2}{r} = \\frac{G M(r)}{r^2}",
+          "to_latex": "v_c(r) = \\sqrt{r\\frac{d\\Phi}{dr}} = \\sqrt{\\frac{G M(r)}{r}}",
+          "operation_label": "正の平方根による回転速度の導出",
+          "explanation": "両辺に r を掛けて正の平方根をとることで円軌道速度 v_c(r) を得る。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.gal.d07_isothermal_halo",
+      "target_node_id": "astro.gal.n07_isothermal_sphere_flat_curve",
+      "route_kind": "deductive",
+      "title": "等方・等温球ジーンズ方程式のべき乗解と平坦な回転曲線の導出",
+      "premise_node_ids": [
+        "astro.gal.n04_spherical_jeans_equation",
+        "astro.gal.n05_spherical_mass_enclosed",
+        "astro.gal.n06_galactic_rotation_curve"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "速度分散は等方的（β = 0）かつ空間的に一定（σ_r = σ = const.）である",
+        "粒子数密度は質量密度に比例する（n ∝ ρ）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\sigma^2}{\\rho}\\frac{d\\rho}{dr} = -\\frac{G M(r)}{r^2},\\quad M(r) = 4\\pi\\int_{0}^{r}\\rho(r')r'^2\\,dr'",
+          "to_latex": "\\rho(r) = \\frac{\\sigma^2}{2\\pi G r^2},\\quad M(r) = \\frac{2\\sigma^2 r}{G},\\quad v_c(r) = \\sqrt{2}\\,\\sigma = \\text{const.}",
+          "operation_label": "特異等温球解の導出と回転曲線計算",
+          "explanation": "等温球の静水圧平衡（球対称ジーンズ方程式）と質量積分から特異解 ρ∝r^{-2} を求め、M(r)∝r から回転速度が半径に依らず一定 √2 σ になることを示す。",
+          "used_node_ids": [
+            "astro.gal.n04_spherical_jeans_equation",
+            "astro.gal.n05_spherical_mass_enclosed",
+            "astro.gal.n06_galactic_rotation_curve",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\sigma^2}{\\rho}\\frac{d\\rho}{dr} = -\\frac{G M(r)}{r^2},\\quad M(r) = 4\\pi\\int_{0}^{r}\\rho(r')r'^2\\,dr'",
+          "to_latex": "\\frac{d}{dr}\\left(r^2\\frac{d\\ln\\rho}{dr}\\right) = -\\frac{4\\pi G}{\\sigma^2}\\rho r^2 \\implies \\rho(r) = \\frac{\\sigma^2}{2\\pi G r^2}",
+          "operation_label": "微積分学の基本定理によるレーン＝エムデン型微分方程式の求解",
+          "explanation": "両辺に r^2 を掛けて r で微分し dM/dr = 4πr^2ρ を代入すると、べき乗関数 ρ = A r^{-2} が厳密解となり係数 A = σ^2/(2πG) が定まる。",
+          "used_node_ids": [
+            "astro.gal.n04_spherical_jeans_equation",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dr}\\left(r^2\\frac{d\\ln\\rho}{dr}\\right) = -\\frac{4\\pi G}{\\sigma^2}\\rho r^2 \\implies \\rho(r) = \\frac{\\sigma^2}{2\\pi G r^2}",
+          "to_latex": "M(r) = 4\\pi\\int_{0}^{r}\\frac{\\sigma^2}{2\\pi G r'^2}r'^2\\,dr' = \\frac{2\\sigma^2 r}{G}",
+          "operation_label": "累積質量 M(r) の積分",
+          "explanation": "特異等温球密度分布を球対称質量積分式に代入すると r'^2 が相殺され、M(r) が r に比例する。",
+          "used_node_ids": [
+            "astro.gal.n05_spherical_mass_enclosed"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M(r) = 4\\pi\\int_{0}^{r}\\frac{\\sigma^2}{2\\pi G r'^2}r'^2\\,dr' = \\frac{2\\sigma^2 r}{G}",
+          "to_latex": "\\rho(r) = \\frac{\\sigma^2}{2\\pi G r^2},\\quad M(r) = \\frac{2\\sigma^2 r}{G},\\quad v_c(r) = \\sqrt{2}\\,\\sigma = \\text{const.}",
+          "operation_label": "回転曲線公式への代入",
+          "explanation": "M(r) = 2σ^2 r / G を回転曲線公式 v_c(r) = √(GM(r)/r) に代入し、r が消去されて平坦な回転曲線 v_c = √2 σ を得る。",
+          "used_node_ids": [
+            "astro.gal.n06_galactic_rotation_curve"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.gal.d08_nfw_profile_mass",
+      "target_node_id": "astro.gal.n08_nfw_halo_profile_mass",
+      "route_kind": "deductive",
+      "title": "NFW 密度プロファイルの体積積分による累積質量 M_NFW(r) の導出",
+      "premise_node_ids": [
+        "astro.gal.n05_spherical_mass_enclosed"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "assumptions": [
+        "ハロー密度分布は NFW 型 ρ_NFW(r) = ρ_0 / [(r/r_s)(1+r/r_s)^2] に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho_{\\mathrm{NFW}}(r) = \\frac{\\rho_0}{(r/r_s)(1 + r/r_s)^2},\\quad M_{\\mathrm{NFW}}(r) = 4\\pi\\int_{0}^{r}\\rho_{\\mathrm{NFW}}(r')r'^2\\,dr'",
+          "to_latex": "M_{\\mathrm{NFW}}(r) = 4\\pi\\rho_0 r_s^3\\left[\\ln\\!\\left(1 + \\frac{r}{r_s}\\right) - \\frac{r/r_s}{1 + r/r_s}\\right]",
+          "operation_label": "置換積分と有理関数積分の実行",
+          "explanation": "無次元変数 u = r'/r_s へ置換積分し、部分分数分解によって NFW プロファイルの累積質量を解析的に積分する。",
+          "used_node_ids": [
+            "astro.gal.n05_spherical_mass_enclosed",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": "integrate(u/(1+u)**2, (u, 0, x))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho_{\\mathrm{NFW}}(r) = \\frac{\\rho_0}{(r/r_s)(1 + r/r_s)^2},\\quad M_{\\mathrm{NFW}}(r) = 4\\pi\\int_{0}^{r}\\rho_{\\mathrm{NFW}}(r')r'^2\\,dr'",
+          "to_latex": "M_{\\mathrm{NFW}}(r) = 4\\pi\\rho_0 r_s^3\\int_{0}^{r/r_s} \\frac{u}{(1+u)^2}\\,du\\quad (u = r'/r_s)",
+          "operation_label": "無次元半径 u = r'/r_s への置換積分",
+          "explanation": "r' = r_s u, dr' = r_s du と置換して積分を無次元化する。",
+          "used_node_ids": [
+            "astro.gal.n05_spherical_mass_enclosed",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M_{\\mathrm{NFW}}(r) = 4\\pi\\rho_0 r_s^3\\int_{0}^{r/r_s} \\frac{u}{(1+u)^2}\\,du\\quad (u = r'/r_s)",
+          "to_latex": "M_{\\mathrm{NFW}}(r) = 4\\pi\\rho_0 r_s^3\\left[\\ln(1+u) + \\frac{1}{1+u}\\right]_{0}^{r/r_s}",
+          "operation_label": "部分分数分解と原始関数の評価",
+          "explanation": "u/(1+u)^2 = 1/(1+u) - 1/(1+u)^2 と分解して原始関数 ln(1+u) + 1/(1+u) を求める。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M_{\\mathrm{NFW}}(r) = 4\\pi\\rho_0 r_s^3\\left[\\ln(1+u) + \\frac{1}{1+u}\\right]_{0}^{r/r_s}",
+          "to_latex": "M_{\\mathrm{NFW}}(r) = 4\\pi\\rho_0 r_s^3\\left[\\ln\\!\\left(1 + \\frac{r}{r_s}\\right) - \\frac{r/r_s}{1 + r/r_s}\\right]",
+          "operation_label": "積分上下端の評価と整理",
+          "explanation": "下端 u=0 の寄与（0 + 1）を差し引き、1/(1+r/r_s) - 1 = -(r/r_s)/(1+r/r_s) と整理する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.gal.d09_nfw_rotation_curve",
+      "target_node_id": "astro.gal.n09_nfw_rotation_curve",
+      "route_kind": "deductive",
+      "title": "NFW 累積質量と回転曲線公式による無次元回転曲線の導出",
+      "premise_node_ids": [
+        "astro.gal.n08_nfw_halo_profile_mass",
+        "astro.gal.n06_galactic_rotation_curve"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ビリアル半径 r_200 と集中度パラメータ c = r_200 / r_s が定義されている"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "v_c(r) = \\sqrt{\\frac{G M_{\\mathrm{NFW}}(r)}{r}},\\quad M_{200} = M_{\\mathrm{NFW}}(r_{200}),\\; v_{200}^2 = \\frac{G M_{200}}{r_{200}}",
+          "to_latex": "v_c(r) = v_{200}\\sqrt{\\frac{1}{x}\\frac{\\ln(1+cx) - \\frac{cx}{1+cx}}{\\ln(1+c) - \\frac{c}{1+c}}}\\quad \\left(x = \\frac{r}{r_{200}},\\; c = \\frac{r_{200}}{r_s}\\right)",
+          "operation_label": "ビリアル速度 v_200 による規格化",
+          "explanation": "NFW 累積質量を回転曲線公式に代入し、r_200 での円軌道速度 v_200 の比をとることで定数因子 4πGρ_0 r_s^3 を消去する。",
+          "used_node_ids": [
+            "astro.gal.n06_galactic_rotation_curve",
+            "astro.gal.n08_nfw_halo_profile_mass"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_c(r) = \\sqrt{\\frac{G M_{\\mathrm{NFW}}(r)}{r}},\\quad M_{200} = M_{\\mathrm{NFW}}(r_{200}),\\; v_{200}^2 = \\frac{G M_{200}}{r_{200}}",
+          "to_latex": "\\frac{v_c^2(r)}{v_{200}^2} = \\frac{r_{200}}{r}\\frac{M_{\\mathrm{NFW}}(r)}{M_{\\mathrm{NFW}}(r_{200})} = \\frac{1}{x}\\frac{\\ln(1+cx) - \\frac{cx}{1+cx}}{\\ln(1+c) - \\frac{c}{1+c}}",
+          "operation_label": "速度二乗比の計算と無次元変数導入",
+          "explanation": "v_c^2/v_200^2 を計算し、r/r_s = cx および r_200/r_s = c を代入して共通因子 4πρ_0 r_s^3 を約分する。",
+          "used_node_ids": [
+            "astro.gal.n06_galactic_rotation_curve",
+            "astro.gal.n08_nfw_halo_profile_mass"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{v_c^2(r)}{v_{200}^2} = \\frac{r_{200}}{r}\\frac{M_{\\mathrm{NFW}}(r)}{M_{\\mathrm{NFW}}(r_{200})} = \\frac{1}{x}\\frac{\\ln(1+cx) - \\frac{cx}{1+cx}}{\\ln(1+c) - \\frac{c}{1+c}}",
+          "to_latex": "v_c(r) = v_{200}\\sqrt{\\frac{1}{x}\\frac{\\ln(1+cx) - \\frac{cx}{1+cx}}{\\ln(1+c) - \\frac{c}{1+c}}}\\quad \\left(x = \\frac{r}{r_{200}},\\; c = \\frac{r_{200}}{r_s}\\right)",
+          "operation_label": "平方根による NFW 回転曲線の導出",
+          "explanation": "両辺の正の平方根をとり v_200 を掛けて NFW ハローの回転曲線を得る。",
+          "used_node_ids": [
+            "astro.gal.n06_galactic_rotation_curve"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

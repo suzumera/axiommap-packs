@@ -1,0 +1,917 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.elec.dc_circuit_laws",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "electrical_engineering",
+    "title": "電気回路1：キルヒホッフの法則・テブナン／ノートンの定理・過渡応答",
+    "language": "ja",
+    "description": "KCL/KVL、重ね合わせの理、テブナン・ノートン等価回路、RC/RL/RLC回路の過渡応答（時定数と臨界減衰）を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.dc.dc01_kcl_kvl_lumped_axioms",
+      "short_code": "DC01",
+      "kind": "axiom",
+      "title": "キルヒホッフの電流則・電圧則（KCL/KVL）および集中定数素子の構成則",
+      "summary": "集中定数電気回路の基本公理。任意の節点における電流の代数和が零となる電荷保存則（KCL）、任意の閉路における電圧の代数和が零となる保存電場則（KVL）、および線形受動素子（R・L・C）の電圧-電流関係を定める。",
+      "canonical_latex": "\\sum_{k\\in\\text{node}} i_k(t) = 0,\\quad \\sum_{k\\in\\text{loop}} v_k(t) = 0,\\quad v_R = R i,\\quad v_L = L\\frac{di}{dt},\\quad i_C = C\\frac{dv}{dt}",
+      "aliases_latex": [
+        "\\sum i_k = 0,\\; \\sum v_k = 0,\\; v = Ri"
+      ],
+      "keywords": [
+        "KCL",
+        "KVL",
+        "キルヒホッフの法則",
+        "オームの法則",
+        "集中定数回路"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "circuit_theory"
+      ]
+    },
+    {
+      "id": "eng.dc.dc02_series_parallel_resistance",
+      "short_code": "DC02",
+      "kind": "theorem_formula",
+      "title": "抵抗の直列・並列合成と分圧・分流則",
+      "summary": "KCL・KVLとオームの法則から導かれる抵抗の直列合成抵抗・並列合成抵抗の公式、ならびに分圧則・分流則。",
+      "canonical_latex": "R_{\\text{ser}} = \\sum_{k=1}^{n} R_k,\\quad \\frac{1}{R_{\\text{par}}} = \\sum_{k=1}^{n} \\frac{1}{R_k},\\quad v_k = \\frac{R_k}{R_{\\text{ser}}}V,\\quad i_k = \\frac{R_{\\text{par}}}{R_k}I",
+      "aliases_latex": [
+        "R_{\\text{par}} = \\left(\\sum_{k=1}^{n} R_k^{-1}\\right)^{-1}"
+      ],
+      "keywords": [
+        "直列合成抵抗",
+        "並列合成抵抗",
+        "分圧則",
+        "分流則"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "circuit_theory"
+      ]
+    },
+    {
+      "id": "eng.dc.dc03_superposition_theorem",
+      "short_code": "DC03",
+      "kind": "theorem_formula",
+      "title": "線形回路における重ね合わせの理",
+      "summary": "複数の独立電源を含む線形回路の応答（節点電圧・枝電流）は、各独立電源を単独で残し他の独立電源を零化（電圧源短絡・電流源開放）したときの応答の線形和に等しい。",
+      "canonical_latex": "A\\mathbf{x} = \\sum_{m=1}^{M} \\mathbf{b}_m \\implies \\mathbf{x} = \\sum_{m=1}^{M} \\mathbf{x}^{(m)},\\quad A\\mathbf{x}^{(m)} = \\mathbf{b}_m",
+      "aliases_latex": [
+        "\\mathbf{x} = \\sum_{m=1}^{M} \\mathbf{x}^{(m)}"
+      ],
+      "keywords": [
+        "重ね合わせの理",
+        "線形性",
+        "独立電源"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "circuit_theory"
+      ]
+    },
+    {
+      "id": "eng.dc.dc04_thevenin_theorem",
+      "short_code": "DC04",
+      "kind": "theorem_formula",
+      "title": "テブナンの定理（等価電圧源表現）",
+      "summary": "任意の線形一端子対回路網は、端子開放電圧に等しい理想電圧源と、内部の独立電源を零化したときの端子間等価抵抗との直列回路に等価変換できる。",
+      "canonical_latex": "V_{\\text{port}} = V_{\\text{th}} - R_{\\text{th}} I_{\\text{port}},\\quad V_{\\text{th}} = V_{\\text{oc}},\\quad R_{\\text{th}} = \\left.\\frac{V_{\\text{test}}}{I_{\\text{test}}}\\right|_{\\text{sources}=0}",
+      "aliases_latex": [
+        "I = \\frac{V_{\\text{th}}}{R_{\\text{th}} + R_L}"
+      ],
+      "keywords": [
+        "テブナンの定理",
+        "鳳・テブナンの定理",
+        "等価電圧源",
+        "開放電圧"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "circuit_theory"
+      ]
+    },
+    {
+      "id": "eng.dc.dc05_norton_theorem",
+      "short_code": "DC05",
+      "kind": "theorem_formula",
+      "title": "ノートンの定理と電源変換（等価電流源表現）",
+      "summary": "任意の線形一端子対回路網は、端子短絡電流に等しい理想電流源と等価抵抗の並列回路に等価変換でき、テブナン等価回路と双対な電源変換関係をなす。",
+      "canonical_latex": "I_{\\text{port}} = I_{\\text{N}} - \\frac{V_{\\text{port}}}{R_{\\text{N}}},\\quad I_{\\text{N}} = I_{\\text{sc}} = \\frac{V_{\\text{th}}}{R_{\\text{th}}},\\quad R_{\\text{N}} = R_{\\text{th}}",
+      "aliases_latex": [
+        "I_{\\text{N}} = \\frac{V_{\\text{th}}}{R_{\\text{th}}},\\; R_{\\text{N}} = R_{\\text{th}}"
+      ],
+      "keywords": [
+        "ノートンの定理",
+        "等価電流源",
+        "電源変換",
+        "短絡電流"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "circuit_theory"
+      ]
+    },
+    {
+      "id": "eng.dc.dc06_rc_transient_response",
+      "short_code": "DC06",
+      "kind": "theorem_formula",
+      "title": "RC直列回路の過渡応答と時定数",
+      "summary": "直流電圧源に接続されたRC直列回路におけるキャパシタ電圧の1階線形微分方程式の解と、応答速度を特徴づける時定数。",
+      "canonical_latex": "RC\\frac{dv_C}{dt} + v_C = V_0 \\implies v_C(t) = V_0\\left(1 - e^{-t/\\tau}\\right) + v_C(0)e^{-t/\\tau},\\quad \\tau = RC",
+      "aliases_latex": [
+        "v_C(t) = V_0(1 - e^{-t/(RC)})"
+      ],
+      "keywords": [
+        "RC回路",
+        "過渡応答",
+        "時定数",
+        "充電"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "circuit_theory"
+      ]
+    },
+    {
+      "id": "eng.dc.dc07_rl_transient_response",
+      "short_code": "DC07",
+      "kind": "theorem_formula",
+      "title": "RL直列回路の過渡応答と時定数",
+      "summary": "直流電圧源に接続されたRL直列回路における回路電流の1階線形微分方程式の解と、磁気エネルギー蓄積に伴う時定数。",
+      "canonical_latex": "L\\frac{di}{dt} + R i = V_0 \\implies i(t) = \\frac{V_0}{R}\\left(1 - e^{-t/\\tau}\\right) + i(0)e^{-t/\\tau},\\quad \\tau = \\frac{L}{R}",
+      "aliases_latex": [
+        "i(t) = \\frac{V_0}{R}(1 - e^{-Rt/L})"
+      ],
+      "keywords": [
+        "RL回路",
+        "過渡応答",
+        "時定数"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "circuit_theory"
+      ]
+    },
+    {
+      "id": "eng.dc.dc08_rlc_characteristic_ode",
+      "short_code": "DC08",
+      "kind": "theorem_formula",
+      "title": "RLC直列回路の2階常微分方程式と減衰係数・固有角周波数",
+      "summary": "RLC直列回路のKVLおよび素子構成則から導かれる標準形の2階線形常微分方程式と、減衰係数・無減衰固有角周波数・減衰比の定義。",
+      "canonical_latex": "\\frac{d^2 v_C}{dt^2} + 2\\alpha\\frac{dv_C}{dt} + \\omega_0^2 v_C = \\omega_0^2 V_0,\\quad \\alpha := \\frac{R}{2L},\\quad \\omega_0 := \\frac{1}{\\sqrt{LC}},\\quad \\zeta := \\frac{\\alpha}{\\omega_0} = \\frac{R}{2}\\sqrt{\\frac{C}{L}}",
+      "aliases_latex": [
+        "LC\\ddot{v}_C + RC\\dot{v}_C + v_C = V_0"
+      ],
+      "keywords": [
+        "RLC直列回路",
+        "2階常微分方程式",
+        "減衰係数",
+        "固有角周波数",
+        "減衰比"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "circuit_theory"
+      ]
+    },
+    {
+      "id": "eng.dc.dc09_rlc_damping_regimes",
+      "short_code": "DC09",
+      "kind": "theorem_formula",
+      "title": "RLC直列回路の過渡応答分類（過減衰・臨界減衰・不足減衰）",
+      "summary": "特性方程式の判別式の符号に応じて分類されるRLC直列回路の3つの減衰形態（過減衰・臨界減衰・不足減衰）の一般解。",
+      "canonical_latex": "s^2 + 2\\alpha s + \\omega_0^2 = 0,\\; s_{1,2} = -\\alpha \\pm \\sqrt{\\alpha^2 - \\omega_0^2} \\implies v_{C,h}(t) = \\begin{cases} A_1 e^{s_1 t} + A_2 e^{s_2 t} & (\\alpha > \\omega_0:\\text{ overdamped}) \\\\ (B_1 + B_2 t)e^{-\\alpha t} & (\\alpha = \\omega_0:\\text{ critically damped}) \\\\ e^{-\\alpha t}(C_1\\cos\\omega_d t + C_2\\sin\\omega_d t) & (\\alpha < \\omega_0,\\; \\omega_d=\\sqrt{\\omega_0^2-\\alpha^2}:\\text{ underdamped}) \\end{cases}",
+      "aliases_latex": [
+        "\\alpha = \\omega_0 \\iff R = 2\\sqrt{L/C}"
+      ],
+      "keywords": [
+        "過減衰",
+        "臨界減衰",
+        "不足減衰",
+        "特性方程式"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "circuit_theory"
+      ]
+    },
+    {
+      "id": "eng.dc.dc10_maximum_power_transfer",
+      "short_code": "DC10",
+      "kind": "theorem_formula",
+      "title": "最大電力供給の定理（負荷整合条件）",
+      "summary": "テブナン等価回路で表現された直流電源から可変負荷抵抗へ供給される電力が最大となる条件（負荷抵抗が電源の内部抵抗に等しい）とその最大電力値。",
+      "canonical_latex": "P_L(R_L) = \\frac{V_{\\text{th}}^2 R_L}{(R_{\\text{th}} + R_L)^2},\\quad \\frac{dP_L}{dR_L} = 0 \\iff R_L = R_{\\text{th}} \\implies P_{L,\\max} = \\frac{V_{\\text{th}}^2}{4 R_{\\text{th}}}",
+      "aliases_latex": [
+        "P_{L,\\max} = \\frac{V_{\\text{th}}^2}{4 R_{\\text{th}}}"
+      ],
+      "keywords": [
+        "最大電力供給の定理",
+        "インピーダンス整合",
+        "電力最大化"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "circuit_theory"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_dc02_series_parallel",
+      "target_node_id": "eng.dc.dc02_series_parallel_resistance",
+      "route_kind": "deductive",
+      "title": "KCL・KVLとオームの法則による抵抗の直列・並列合成と分圧・分流則の導出",
+      "premise_node_ids": [
+        "eng.dc.dc01_kcl_kvl_lumped_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "各抵抗は時間不変の線形受動素子であり、R_k > 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum_{k\\in\\text{node}} i_k = 0,\\; \\sum_{k\\in\\text{loop}} v_k = 0,\\; v_k = R_k i_k",
+          "to_latex": "R_{\\text{ser}} = \\sum_{k=1}^{n} R_k,\\; \\frac{1}{R_{\\text{par}}} = \\sum_{k=1}^{n} \\frac{1}{R_k},\\; v_k = \\frac{R_k}{R_{\\text{ser}}}V,\\; i_k = \\frac{R_{\\text{par}}}{R_k}I",
+          "operation_label": "KCL・KVLとオームの法則の適用",
+          "explanation": "直列接続では共通電流にKVLを、並列接続では共通電圧にKCLをそれぞれ適用し、合成抵抗と分圧・分流比を得る。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k\\in\\text{node}} i_k = 0,\\; \\sum_{k\\in\\text{loop}} v_k = 0,\\; v_k = R_k i_k",
+          "to_latex": "V_{\\text{ser}} = \\sum_{k=1}^{n} R_k i,\\; I_{\\text{par}} = \\sum_{k=1}^{n} \\frac{v}{R_k}",
+          "operation_label": "直列KVLと並列KCLの立式",
+          "explanation": "直列接続ではKCLにより全素子電流が共通値 i に等しくKVLより総電圧は各電圧降下の和となる。並列接続ではKVLにより全素子電圧が共通値 v に等しくKCLより総電流は各枝電流の和となる。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\text{ser}} = \\sum_{k=1}^{n} R_k i,\\; I_{\\text{par}} = \\sum_{k=1}^{n} \\frac{v}{R_k}",
+          "to_latex": "R_{\\text{ser}} = \\sum_{k=1}^{n} R_k,\\; \\frac{1}{R_{\\text{par}}} = \\sum_{k=1}^{n} \\frac{1}{R_k}",
+          "operation_label": "等価抵抗の定義による除算",
+          "explanation": "等価抵抗を V_ser = R_ser i および I_par = v / R_par で定義し、両辺を i および v で割る。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_{\\text{ser}} = \\sum_{k=1}^{n} R_k,\\; \\frac{1}{R_{\\text{par}}} = \\sum_{k=1}^{n} \\frac{1}{R_k}",
+          "to_latex": "R_{\\text{ser}} = \\sum_{k=1}^{n} R_k,\\; \\frac{1}{R_{\\text{par}}} = \\sum_{k=1}^{n} \\frac{1}{R_k},\\; v_k = \\frac{R_k}{R_{\\text{ser}}}V,\\; i_k = \\frac{R_{\\text{par}}}{R_k}I",
+          "operation_label": "分圧・分流比の算出",
+          "explanation": "v_k = R_k i に i = V / R_ser を、i_k = v / R_k に v = R_par I をそれぞれ代入して分圧則・分流則を得る。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_dc03_superposition",
+      "target_node_id": "eng.dc.dc03_superposition_theorem",
+      "route_kind": "deductive",
+      "title": "回路方程式の線形性からの重ね合わせの理の導出",
+      "premise_node_ids": [
+        "eng.dc.dc01_kcl_kvl_lumped_axioms"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "回路は線形受動素子および独立電源のみで構成され、解が一意に存在するものとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum_{k\\in\\text{node}} i_k = 0,\\; \\sum_{k\\in\\text{loop}} v_k = 0,\\; v_R = R i",
+          "to_latex": "A\\mathbf{x} = \\sum_{m=1}^{M} \\mathbf{b}_m \\implies \\mathbf{x} = \\sum_{m=1}^{M} \\mathbf{x}^{(m)}",
+          "operation_label": "線形方程式の加法性",
+          "explanation": "KCL・KVLと線形素子則より導かれる連立1次方程式の線形性から、複数の独立電源による解は各電源単独の解の和に分解される。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k\\in\\text{node}} i_k = 0,\\; \\sum_{k\\in\\text{loop}} v_k = 0,\\; v_R = R i",
+          "to_latex": "A\\mathbf{x} = \\mathbf{b} = \\sum_{m=1}^{M} \\mathbf{b}_m",
+          "operation_label": "節点・網目方程式の行列表現",
+          "explanation": "KCL・KVLと線形オーム則を未知ベクトル x（節点電位や網目電流）について整理すると、各独立電源の寄与を右辺の和とした線形方程式が得られる。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A\\mathbf{x} = \\mathbf{b} = \\sum_{m=1}^{M} \\mathbf{b}_m",
+          "to_latex": "A\\left(\\sum_{m=1}^{M} \\mathbf{x}^{(m)}\\right) = \\sum_{m=1}^{M} A\\mathbf{x}^{(m)} = \\sum_{m=1}^{M} \\mathbf{b}_m",
+          "operation_label": "線形写像の分配則",
+          "explanation": "m番目の電源のみを残した解 x^(m) が A x^(m) = b_m を満たすとき、ベクトル空間の線形性によりその和は元の方程式を満たす。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A\\left(\\sum_{m=1}^{M} \\mathbf{x}^{(m)}\\right) = \\sum_{m=1}^{M} A\\mathbf{x}^{(m)} = \\sum_{m=1}^{M} \\mathbf{b}_m",
+          "to_latex": "\\mathbf{x} = \\sum_{m=1}^{M} \\mathbf{x}^{(m)}\\quad (A\\mathbf{x}^{(m)} = \\mathbf{b}_m)",
+          "operation_label": "解の一意性による同定",
+          "explanation": "回路方程式の解の一意性より、総応答 x は各単独応答 x^(m) の和と一致する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_dc04_thevenin",
+      "target_node_id": "eng.dc.dc04_thevenin_theorem",
+      "route_kind": "deductive",
+      "title": "重ね合わせの理を用いたテブナンの定理の導出",
+      "premise_node_ids": [
+        "eng.dc.dc01_kcl_kvl_lumped_axioms",
+        "eng.dc.dc03_superposition_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "端子対の外部に試験電流源 I_port を接続し、内部の線形回路網は一意解を持つものとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x} = \\mathbf{x}^{(\\text{int})} + \\mathbf{x}^{(\\text{port})}",
+          "to_latex": "V_{\\text{port}} = V_{\\text{th}} - R_{\\text{th}} I_{\\text{port}}",
+          "operation_label": "内部電源と端子電流の重ね合わせ",
+          "explanation": "端子電圧を、内部電源のみによる開放電圧と、内部電源を零化したときの端子電流による電圧降下の和として表現する。",
+          "used_node_ids": [
+            "eng.dc.dc03_superposition_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x} = \\mathbf{x}^{(\\text{int})} + \\mathbf{x}^{(\\text{port})}",
+          "to_latex": "V_{\\text{port}} = V_{\\text{port}}^{(I_{\\text{port}}=0)} + V_{\\text{port}}^{(\\text{sources}=0)}",
+          "operation_label": "2つの部分問題への分解",
+          "explanation": "端子から流出する電流 I_port を外部電流源とみなし、重ね合わせの理により端子電圧 V_port を内部電源のみの項と I_port のみの項に分離する。",
+          "used_node_ids": [
+            "eng.dc.dc03_superposition_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\text{port}} = V_{\\text{port}}^{(I_{\\text{port}}=0)} + V_{\\text{port}}^{(\\text{sources}=0)}",
+          "to_latex": "V_{\\text{port}}^{(I_{\\text{port}}=0)} = V_{\\text{oc}} = V_{\\text{th}},\\quad V_{\\text{port}}^{(\\text{sources}=0)} = -R_{\\text{th}} I_{\\text{port}}",
+          "operation_label": "開放電圧と駆動点抵抗の同定",
+          "explanation": "I_port=0 は端子開放状態であり電圧は V_oc となる。内部電源を零化した受動抵抗網に電流 -I_port が流入するときの端子電圧はオーム則より -R_th I_port となる。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\text{port}}^{(I_{\\text{port}}=0)} = V_{\\text{oc}} = V_{\\text{th}},\\quad V_{\\text{port}}^{(\\text{sources}=0)} = -R_{\\text{th}} I_{\\text{port}}",
+          "to_latex": "V_{\\text{port}} = V_{\\text{th}} - R_{\\text{th}} I_{\\text{port}}",
+          "operation_label": "テブナン等価式の完成",
+          "explanation": "両項を合算することで、電圧源 V_th と抵抗 R_th の直列回路と同一の V-I 特性を得る。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_dc05_norton",
+      "target_node_id": "eng.dc.dc05_norton_theorem",
+      "route_kind": "equivalence",
+      "title": "テブナン等価式からのノートンの定理と電源変換の導出",
+      "premise_node_ids": [
+        "eng.dc.dc01_kcl_kvl_lumped_axioms",
+        "eng.dc.dc04_thevenin_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "等価抵抗 R_th > 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V_{\\text{port}} = V_{\\text{th}} - R_{\\text{th}} I_{\\text{port}}",
+          "to_latex": "I_{\\text{port}} = I_{\\text{N}} - \\frac{V_{\\text{port}}}{R_{\\text{N}}},\\; I_{\\text{N}} = \\frac{V_{\\text{th}}}{R_{\\text{th}}},\\; R_{\\text{N}} = R_{\\text{th}}",
+          "operation_label": "V-I特性式の変形による双対表現",
+          "explanation": "テブナンの定理で得られた端子特性式を I_port について解くことで、電流源と並列抵抗によるノートン等価表現を得る。",
+          "used_node_ids": [
+            "eng.dc.dc04_thevenin_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\text{port}} = V_{\\text{th}} - R_{\\text{th}} I_{\\text{port}}",
+          "to_latex": "I_{\\text{port}} = \\frac{V_{\\text{th}}}{R_{\\text{th}}} - \\frac{V_{\\text{port}}}{R_{\\text{th}}}",
+          "operation_label": "I_portについての代数解法",
+          "explanation": "テブナン等価式を移項して R_th で割り、I_port を V_port の1次式として表す。",
+          "used_node_ids": [
+            "eng.dc.dc04_thevenin_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{\\text{port}} = \\frac{V_{\\text{th}}}{R_{\\text{th}}} - \\frac{V_{\\text{port}}}{R_{\\text{th}}}",
+          "to_latex": "I_{\\text{N}} := \\left.I_{\\text{port}}\\right|_{V_{\\text{port}}=0} = \\frac{V_{\\text{th}}}{R_{\\text{th}}},\\; R_{\\text{N}} := R_{\\text{th}}",
+          "operation_label": "短絡電流と並列抵抗の定義",
+          "explanation": "V_port = 0 としたときの端子短絡電流 I_sc をノートン電流 I_N と定め、R_N = R_th とおく。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{\\text{N}} := \\left.I_{\\text{port}}\\right|_{V_{\\text{port}}=0} = \\frac{V_{\\text{th}}}{R_{\\text{th}}},\\; R_{\\text{N}} := R_{\\text{th}}",
+          "to_latex": "I_{\\text{port}} = I_{\\text{N}} - \\frac{V_{\\text{port}}}{R_{\\text{N}}}",
+          "operation_label": "ノートン等価式の完成",
+          "explanation": "I_N と R_N を代入することで、電流源 I_N と抵抗 R_N の並列回路に対するKCL式と一致することを確認する。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_dc06_rc_transient",
+      "target_node_id": "eng.dc.dc06_rc_transient_response",
+      "route_kind": "deductive",
+      "title": "積分因子法によるRC直列回路の過渡応答の導出",
+      "premise_node_ids": [
+        "eng.dc.dc01_kcl_kvl_lumped_axioms"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m15_product_rule",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "t >= 0 で一定の直流電圧 V_0 が印加され、R > 0, C > 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "R i(t) + v_C(t) = V_0,\\; i(t) = C\\frac{dv_C}{dt}",
+          "to_latex": "v_C(t) = V_0\\left(1 - e^{-t/\\tau}\\right) + v_C(0)e^{-t/\\tau},\\; \\tau = RC",
+          "operation_label": "1階線形微分方程式の積分",
+          "explanation": "KVLとキャパシタ構成則から1階線形常微分方程式を立て、積分因子 e^(t/τ) を用いて一般解を導出する。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m15_product_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": "dsolve(R*C*v(t).diff(t) + v(t) - V0, v(t))"
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R i(t) + v_C(t) = V_0,\\; i(t) = C\\frac{dv_C}{dt}",
+          "to_latex": "\\frac{dv_C}{dt} + \\frac{1}{\\tau}v_C = \\frac{V_0}{\\tau}\\quad (\\tau := RC)",
+          "operation_label": "微分方程式の標準化",
+          "explanation": "i = C dv_C/dt をKVL式に代入し、両辺を τ = RC で割って正規化する。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dv_C}{dt} + \\frac{1}{\\tau}v_C = \\frac{V_0}{\\tau}\\quad (\\tau := RC)",
+          "to_latex": "\\frac{d}{dt}\\left(e^{t/\\tau} v_C(t)\\right) = \\frac{V_0}{\\tau}e^{t/\\tau}",
+          "operation_label": "積分因子による積の微分形への変換",
+          "explanation": "両辺に積分因子 e^(t/τ) を掛け、積の微分法（ライプニッツ則）と指数関数の導関数を用いて左辺を単一の微分にまとめる。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\left(e^{t/\\tau} v_C(t)\\right) = \\frac{V_0}{\\tau}e^{t/\\tau}",
+          "to_latex": "e^{t/\\tau}v_C(t) - v_C(0) = V_0\\left(e^{t/\\tau} - 1\\right)",
+          "operation_label": "定積分による境界条件の適用",
+          "explanation": "両辺を 0 から t まで定積分し、微積分学の基本定理を適用する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e^{t/\\tau}v_C(t) - v_C(0) = V_0\\left(e^{t/\\tau} - 1\\right)",
+          "to_latex": "v_C(t) = V_0\\left(1 - e^{-t/\\tau}\\right) + v_C(0)e^{-t/\\tau}",
+          "operation_label": "v_C(t)についての整理",
+          "explanation": "両辺に e^(-t/τ) を掛けて初期値 v_C(0) を含む過渡応答解を得る。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_dc07_rl_transient",
+      "target_node_id": "eng.dc.dc07_rl_transient_response",
+      "route_kind": "deductive",
+      "title": "積分因子法によるRL直列回路の過渡応答の導出",
+      "premise_node_ids": [
+        "eng.dc.dc01_kcl_kvl_lumped_axioms"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m15_product_rule",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "t >= 0 で一定の直流電圧 V_0 が印加され、R > 0, L > 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L\\frac{di}{dt} + R i(t) = V_0",
+          "to_latex": "i(t) = \\frac{V_0}{R}\\left(1 - e^{-t/\\tau}\\right) + i(0)e^{-t/\\tau},\\; \\tau = \\frac{L}{R}",
+          "operation_label": "1階線形微分方程式の積分",
+          "explanation": "KVLとインダクタ構成則による電流の微分方程式を、時定数 τ = L/R を用いて積分因子法で解く。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m15_product_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": "dsolve(L*i(t).diff(t) + R*i(t) - V0, i(t))"
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L\\frac{di}{dt} + R i(t) = V_0",
+          "to_latex": "\\frac{di}{dt} + \\frac{1}{\\tau}i(t) = \\frac{V_0}{L}\\quad \\left(\\tau := \\frac{L}{R}\\right)",
+          "operation_label": "時定数による標準化",
+          "explanation": "KVL式の両辺を L で割り、時定数 τ = L/R を導入して正規化する。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{di}{dt} + \\frac{1}{\\tau}i(t) = \\frac{V_0}{L}\\quad \\left(\\tau := \\frac{L}{R}\\right)",
+          "to_latex": "\\frac{d}{dt}\\left(e^{t/\\tau} i(t)\\right) = \\frac{V_0}{L}e^{t/\\tau}",
+          "operation_label": "積分因子による積の微分形への変換",
+          "explanation": "両辺に積分因子 e^(t/τ) を掛け、積の微分法により左辺をまとめる。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\left(e^{t/\\tau} i(t)\\right) = \\frac{V_0}{L}e^{t/\\tau}",
+          "to_latex": "i(t) = \\frac{V_0}{R}\\left(1 - e^{-t/\\tau}\\right) + i(0)e^{-t/\\tau}",
+          "operation_label": "定積分と初期条件による解の導出",
+          "explanation": "0 から t まで定積分し、V_0 τ / L = V_0 / R を用いて整理する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_dc08_rlc_ode",
+      "target_node_id": "eng.dc.dc08_rlc_characteristic_ode",
+      "route_kind": "deductive",
+      "title": "KVLと素子構成則からのRLC直列回路2階微分方程式の導出",
+      "premise_node_ids": [
+        "eng.dc.dc01_kcl_kvl_lumped_axioms"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "R >= 0, L > 0, C > 0 の定数素子が直列接続されているものとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "R i + L\\frac{di}{dt} + v_C = V_0,\\; i = C\\frac{dv_C}{dt}",
+          "to_latex": "\\frac{d^2 v_C}{dt^2} + 2\\alpha\\frac{dv_C}{dt} + \\omega_0^2 v_C = \\omega_0^2 V_0",
+          "operation_label": "構成則の代入と標準化",
+          "explanation": "KVLにキャパシタ電流とインダクタ電圧の構成則を代入し、減衰係数 α と固有角周波数 ω_0 で標準化する。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R i + L\\frac{di}{dt} + v_C = V_0,\\; i = C\\frac{dv_C}{dt}",
+          "to_latex": "LC\\frac{d^2 v_C}{dt^2} + RC\\frac{dv_C}{dt} + v_C = V_0",
+          "operation_label": "キャパシタ電圧への変数統一",
+          "explanation": "i = C dv_C/dt および di/dt = C d^2 v_C / dt^2 をKVL式に代入する。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "LC\\frac{d^2 v_C}{dt^2} + RC\\frac{dv_C}{dt} + v_C = V_0",
+          "to_latex": "\\frac{d^2 v_C}{dt^2} + \\frac{R}{L}\\frac{dv_C}{dt} + \\frac{1}{LC}v_C = \\frac{V_0}{LC}",
+          "operation_label": "最高階微分の係数規格化",
+          "explanation": "両辺を LC (> 0) で割って2階微分の係数を 1 にする。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 v_C}{dt^2} + \\frac{R}{L}\\frac{dv_C}{dt} + \\frac{1}{LC}v_C = \\frac{V_0}{LC}",
+          "to_latex": "\\frac{d^2 v_C}{dt^2} + 2\\alpha\\frac{dv_C}{dt} + \\omega_0^2 v_C = \\omega_0^2 V_0\\quad \\left(\\alpha=\\frac{R}{2L},\\; \\omega_0=\\frac{1}{\\sqrt{LC}}\\right)",
+          "operation_label": "減衰係数と固有角周波数の導入",
+          "explanation": "R/L = 2α、1/(LC) = ω_0^2 とおくことで2階標準形を得る。",
+          "used_node_ids": [
+            "eng.dc.dc01_kcl_kvl_lumped_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_dc09_rlc_damping",
+      "target_node_id": "eng.dc.dc09_rlc_damping_regimes",
+      "route_kind": "deductive",
+      "title": "特性方程式の判別によるRLC過渡応答3形態の導出",
+      "premise_node_ids": [
+        "eng.dc.dc08_rlc_characteristic_ode"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t06_exp_power_derivatives",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "同次解 v_{C,h}(t) に対して初期値による積分定数 A_i, B_i, C_i は実数とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d^2 v_{C,h}}{dt^2} + 2\\alpha\\frac{dv_{C,h}}{dt} + \\omega_0^2 v_{C,h} = 0",
+          "to_latex": "s_{1,2} = -\\alpha \\pm \\sqrt{\\alpha^2 - \\omega_0^2} \\implies \\text{overdamped / critically damped / underdamped}",
+          "operation_label": "特性根と減衰包絡線分離による解法",
+          "explanation": "指数関数試行解および包絡線変換 v_{C,h} = e^(-α t)y(t) により、α と ω_0 の大小関係に応じた3つの一般解を導く。",
+          "used_node_ids": [
+            "eng.dc.dc08_rlc_characteristic_ode",
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 v_{C,h}}{dt^2} + 2\\alpha\\frac{dv_{C,h}}{dt} + \\omega_0^2 v_{C,h} = 0",
+          "to_latex": "(s^2 + 2\\alpha s + \\omega_0^2)e^{st} = 0 \\implies s_{1,2} = -\\alpha \\pm \\sqrt{\\alpha^2 - \\omega_0^2}",
+          "operation_label": "特性方程式の立式と解の公式",
+          "explanation": "試行解 v_{C,h} = e^(st) を代入して特性方程式 s^2 + 2α s + ω_0^2 = 0 を得、2次方程式の解の公式で特性根を求める。",
+          "used_node_ids": [
+            "eng.dc.dc08_rlc_characteristic_ode",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(s^2 + 2\\alpha s + \\omega_0^2)e^{st} = 0 \\implies s_{1,2} = -\\alpha \\pm \\sqrt{\\alpha^2 - \\omega_0^2}",
+          "to_latex": "v_{C,h}(t) = e^{-\\alpha t}y(t) \\implies \\ddot{y} + (\\omega_0^2 - \\alpha^2)y = 0",
+          "operation_label": "減衰因子 e^(-α t) の分離",
+          "explanation": "重根・複素共役根を統一的に扱うため v_{C,h} = e^(-α t)y(t) とおいて1階微分項を消去する。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_{C,h}(t) = e^{-\\alpha t}y(t) \\implies \\ddot{y} + (\\omega_0^2 - \\alpha^2)y = 0",
+          "to_latex": "v_{C,h}(t) = \\begin{cases} A_1 e^{s_1 t} + A_2 e^{s_2 t} & (\\alpha > \\omega_0) \\\\ (B_1 + B_2 t)e^{-\\alpha t} & (\\alpha = \\omega_0) \\\\ e^{-\\alpha t}(C_1\\cos\\omega_d t + C_2\\sin\\omega_d t) & (\\alpha < \\omega_0,\\; \\omega_d = \\sqrt{\\omega_0^2 - \\alpha^2}) \\end{cases}",
+          "operation_label": "符号による3分類の一般解",
+          "explanation": "ω_0^2 - α^2 の符号に応じて、過減衰（指数減衰和）、臨界減衰（ÿ=0 より1次式 B_1+B_2 t）、不足減衰（単振動方程式の解）に分類される。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_dc10_max_power",
+      "target_node_id": "eng.dc.dc10_maximum_power_transfer",
+      "route_kind": "deductive",
+      "title": "テブナン等価回路と停留点条件による最大電力供給の定理の導出",
+      "premise_node_ids": [
+        "eng.dc.dc04_thevenin_theorem"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "R_th > 0 かつ R_L > 0 とし、V_th != 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V_L = V_{\\text{th}} - R_{\\text{th}} I_L,\\; V_L = R_L I_L,\\; P_L = V_L I_L",
+          "to_latex": "R_L = R_{\\text{th}} \\implies P_{L,\\max} = \\frac{V_{\\text{th}}^2}{4 R_{\\text{th}}}",
+          "operation_label": "消費電力関数の微分と極値判定",
+          "explanation": "テブナン等価回路に接続した負荷抵抗 R_L での消費電力 P_L(R_L) を R_L で微分し、停留点条件より最大電力条件 R_L = R_th を得る。",
+          "used_node_ids": [
+            "eng.dc.dc04_thevenin_theorem",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": "solve(diff(Vth**2 * RL / (Rth + RL)**2, RL), RL)"
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_L = V_{\\text{th}} - R_{\\text{th}} I_L,\\; V_L = R_L I_L,\\; P_L = V_L I_L",
+          "to_latex": "P_L(R_L) = I_L^2 R_L = \\frac{V_{\\text{th}}^2 R_L}{(R_{\\text{th}} + R_L)^2}",
+          "operation_label": "負荷電力のR_L関数表示",
+          "explanation": "V_L = R_L I_L をテブナン等価式に代入して I_L = V_th / (R_th + R_L) を得、P_L = I_L^2 R_L に代入する。",
+          "used_node_ids": [
+            "eng.dc.dc04_thevenin_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_L(R_L) = I_L^2 R_L = \\frac{V_{\\text{th}}^2 R_L}{(R_{\\text{th}} + R_L)^2}",
+          "to_latex": "\\frac{dP_L}{dR_L} = V_{\\text{th}}^2 \\frac{(R_{\\text{th}} + R_L)^2 - 2R_L(R_{\\text{th}} + R_L)}{(R_{\\text{th}} + R_L)^4} = V_{\\text{th}}^2 \\frac{R_{\\text{th}} - R_L}{(R_{\\text{th}} + R_L)^3} = 0",
+          "operation_label": "積の微分法と停留点条件の適用",
+          "explanation": "R_L > 0 上で P_L(R_L) を微分して極値の1階必要条件 dP_L/dR_L = 0 を立てる。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dP_L}{dR_L} = V_{\\text{th}}^2 \\frac{(R_{\\text{th}} + R_L)^2 - 2R_L(R_{\\text{th}} + R_L)}{(R_{\\text{th}} + R_L)^4} = V_{\\text{th}}^2 \\frac{R_{\\text{th}} - R_L}{(R_{\\text{th}} + R_L)^3} = 0",
+          "to_latex": "R_L = R_{\\text{th}} \\implies P_{L,\\max} = \\frac{V_{\\text{th}}^2}{4 R_{\\text{th}}}",
+          "operation_label": "整合条件と最大電力値の算出",
+          "explanation": "R_L < R_th で dP_L/dR_L > 0、R_L > R_th で dP_L/dR_L < 0 であるため R_L = R_th が大域的最大点となり、代入して最大電力を得る。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

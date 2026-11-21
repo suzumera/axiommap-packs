@@ -1,0 +1,865 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.dsp.fir_iir_filters",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "signal_processing",
+    "title": "デジタル信号処理2：LTIシステム伝達関数・極零点配置・FIR/IIRフィルタ設計",
+    "language": "ja",
+    "description": "差分方程式とZ伝達関数H(z)、BIBO安定条件（単位円内極）、線形位相FIRフィルタ、双一次変換によるバターワースIIR設計を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.dsp2.n01_z_transform_def",
+      "short_code": "DSP2_01",
+      "kind": "definition",
+      "title": "両側Z変換と収束領域（ROC）の定義",
+      "summary": "離散時間信号に対する両側Z変換と、級数が絶対収束する複素平面上の領域である収束領域（ROC）を定義する。",
+      "canonical_latex": "X(z) := \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n},\\quad \\mathrm{ROC} = \\left\\{z \\in \\mathbb{C} \\;\\middle|\\; \\sum_{n=-\\infty}^{\\infty} |x[n] z^{-n}| < \\infty\\right\\}",
+      "aliases_latex": [
+        "\\mathcal{Z}\\{x[n]\\} = \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n}"
+      ],
+      "keywords": [
+        "Z-transform",
+        "region of convergence",
+        "discrete-time signal",
+        "Laurent series"
+      ],
+      "domain_tags": [
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.dsp2.n02_difference_eq_transfer_func",
+      "short_code": "DSP2_02",
+      "kind": "theorem_formula",
+      "title": "線形定数係数差分方程式とZ伝達関数 H(z)",
+      "summary": "離散時間LTIシステムを記述する線形定数係数差分方程式にZ変換を適用し、有理関数型の伝達関数と極零点表現を導出する。",
+      "canonical_latex": "\\sum_{k=0}^{N} a_k y[n-k] = \\sum_{m=0}^{M} b_m x[n-m] \\implies H(z) = \\frac{Y(z)}{X(z)} = \\frac{\\sum_{m=0}^{M} b_m z^{-m}}{\\sum_{k=0}^{N} a_k z^{-k}} = \\frac{b_0}{a_0}\\frac{\\prod_{m=1}^{M}(1 - z_m z^{-1})}{\\prod_{k=1}^{N}(1 - p_k z^{-1})}",
+      "aliases_latex": [
+        "H(z) = \\frac{B(z)}{A(z)}"
+      ],
+      "keywords": [
+        "difference equation",
+        "transfer function",
+        "poles and zeros",
+        "LTI system"
+      ],
+      "domain_tags": [
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.dsp2.n03_bibo_stability_unit_circle",
+      "short_code": "DSP2_03",
+      "kind": "theorem_formula",
+      "title": "因果的LTIシステムのBIBO安定条件（単位円内極条件）",
+      "summary": "有界入力有界出力（BIBO）安定性がインパルス応答の絶対総和可能性と同値であり、因果的LTIシステムではROCが単位円を含み全極が単位円内部に存在することを示す。",
+      "canonical_latex": "\\sum_{n=0}^{\\infty} |h[n]| < \\infty \\iff \\mathrm{ROC} \\supset \\{z \\in \\mathbb{C} \\mid |z| \\ge 1\\} \\iff \\forall k,\\; |p_k| < 1",
+      "aliases_latex": [
+        "\\text{BIBO stable} \\iff \\max_k |p_k| < 1"
+      ],
+      "keywords": [
+        "BIBO stability",
+        "unit circle",
+        "poles",
+        "causal LTI system"
+      ],
+      "domain_tags": [
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.dsp2.n04_dtft_frequency_response",
+      "short_code": "DSP2_04",
+      "kind": "theorem_formula",
+      "title": "単位円上の周波数応答 H(e^{j\\omega}) と極零点による振幅・位相特性",
+      "summary": "安定なシステムのZ伝達関数を単位円上に制限して離散時間周波数応答を得るとともに、極と零点からのベクトル距離・偏角による幾何学的解釈を与える。",
+      "canonical_latex": "H(e^{j\\omega}) = H(z)\\big|_{z=e^{j\\omega}} = |H(e^{j\\omega})| e^{j\\angle H(e^{j\\omega})},\\quad |H(e^{j\\omega})| = \\left|\\frac{b_0}{a_0}\\right|\\frac{\\prod_{m=1}^{M}|e^{j\\omega} - z_m|}{\\prod_{k=1}^{N}|e^{j\\omega} - p_k|}",
+      "aliases_latex": [
+        "H(\\omega) = \\sum_{n=-\\infty}^{\\infty} h[n] e^{-j\\omega n}"
+      ],
+      "keywords": [
+        "frequency response",
+        "DTFT",
+        "magnitude response",
+        "phase response"
+      ],
+      "domain_tags": [
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.dsp2.n05_fir_linear_phase_def",
+      "short_code": "DSP2_05",
+      "kind": "definition",
+      "title": "FIRフィルタの定義と一般化線形位相条件",
+      "summary": "非再帰的な有限インパルス応答（FIR）フィルタを定義し、全周波数帯域で群遅延が一定となる一般化線形位相条件を定式化する。",
+      "canonical_latex": "H(z) = \\sum_{n=0}^{N-1} h[n] z^{-n},\\quad H(e^{j\\omega}) = A(\\omega) e^{-j\\alpha\\omega + j\\beta}\\; \\left(\\alpha = \\frac{N-1}{2},\\; \\beta \\in \\left\\{0, \\frac{\\pi}{2}\\right\\}\\right),\\quad \\tau_g(\\omega) := -\\frac{d}{d\\omega}\\angle H(e^{j\\omega}) = \\frac{N-1}{2}",
+      "aliases_latex": [
+        "y[n] = \\sum_{m=0}^{N-1} b_m x[n-m]"
+      ],
+      "keywords": [
+        "FIR filter",
+        "linear phase",
+        "group delay",
+        "non-recursive"
+      ],
+      "domain_tags": [
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.dsp2.n06_fir_symmetry_types",
+      "short_code": "DSP2_06",
+      "kind": "theorem_formula",
+      "title": "FIRフィルタの対称性による線形位相の実現と零点の鏡像対称性",
+      "summary": "インパルス応答の偶対称・奇対称条件が一般化線形位相を保証し、伝達関数の零点が単位円に対して鏡像対称に配置されることを示す。",
+      "canonical_latex": "h[n] = \\pm h[N-1-n] \\implies H(e^{j\\omega}) = \\begin{cases} e^{-j\\frac{N-1}{2}\\omega} A_{\\mathrm{even}}(\\omega) & (+) \\\\ j e^{-j\\frac{N-1}{2}\\omega} A_{\\mathrm{odd}}(\\omega) & (-) \\end{cases},\\quad H(z) = \\pm z^{-(N-1)} H(z^{-1})",
+      "aliases_latex": [
+        "h[n] = h[N-1-n] \\implies H(z) = z^{-(N-1)} H(z^{-1})"
+      ],
+      "keywords": [
+        "FIR symmetry",
+        "Type I-IV FIR",
+        "mirror-image zeros",
+        "linear phase"
+      ],
+      "domain_tags": [
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.dsp2.n07_bilinear_transform_def",
+      "short_code": "DSP2_07",
+      "kind": "definition",
+      "title": "双一次変換（Bilinear Transform）と周波数ワーピング",
+      "summary": "連続時間s領域と離散時間z領域を結ぶ一次分数変換としての双一次変換と、アナログ・デジタル周波数間の非線形な周波数ワーピング関係を定義する。",
+      "canonical_latex": "s = \\frac{2}{T}\\frac{1 - z^{-1}}{1 + z^{-1}},\\quad H(z) = H_a(s)\\Big|_{s = \\frac{2}{T}\\frac{1-z^{-1}}{1+z^{-1}}},\\quad \\Omega = \\frac{2}{T}\\tan\\left(\\frac{\\omega}{2}\\right)",
+      "aliases_latex": [
+        "s = \\frac{2}{T}\\frac{z-1}{z+1}"
+      ],
+      "keywords": [
+        "bilinear transform",
+        "frequency warping",
+        "IIR filter design",
+        "Tustin transform"
+      ],
+      "domain_tags": [
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.dsp2.n08_bilinear_stability_preservation",
+      "short_code": "DSP2_08",
+      "kind": "theorem_formula",
+      "title": "双一次変換による左半平面から単位円内への安定性保存写像",
+      "summary": "双一次変換がs平面の開左半平面をz平面の単位円内部へ、虚軸を単位円周上へ1対1に写像し、アナログフィルタの安定性を完全に保存することを証明する。",
+      "canonical_latex": "\\operatorname{Re}(s) < 0 \\iff |z| < 1,\\quad \\operatorname{Re}(s) = 0 \\iff |z| = 1\\quad \\left(z = \\frac{1 + \\frac{T}{2}s}{1 - \\frac{T}{2}s}\\right)",
+      "aliases_latex": [
+        "\\sigma < 0 \\iff |z| < 1"
+      ],
+      "keywords": [
+        "stability preservation",
+        "bilinear transform",
+        "left half-plane",
+        "unit disk"
+      ],
+      "domain_tags": [
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.dsp2.n09_butterworth_iir_design",
+      "short_code": "DSP2_09",
+      "kind": "theorem_formula",
+      "title": "バターワースアナログプロトタイプと双一次変換によるIIRフィルタ設計",
+      "summary": "通過域で最大平坦特性を持つN次バターワースアナログフィルタの極配置を構成し、プリワーピングと双一次変換によって安定なデジタルIIRフィルタを設計する。",
+      "canonical_latex": "|H_a(j\\Omega)|^2 = \\frac{1}{1 + (\\Omega / \\Omega_c)^{2N}},\\quad s_k = \\Omega_c e^{j\\pi\\left(\\frac{1}{2} + \\frac{2k+1}{2N}\\right)}\\;(k=0,\\dots,N-1),\\quad H(z) = H_a\\!\\left(\\frac{2}{T}\\frac{1-z^{-1}}{1+z^{-1}}\\right)",
+      "aliases_latex": [
+        "H_a(s) = \\frac{\\Omega_c^N}{\\prod_{k=0}^{N-1}(s - s_k)}"
+      ],
+      "keywords": [
+        "Butterworth filter",
+        "IIR filter",
+        "maximally flat",
+        "pre-warping"
+      ],
+      "domain_tags": [
+        "signal_processing"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_dsp2_n01_z_transform",
+      "target_node_id": "eng.dsp2.n01_z_transform_def",
+      "route_kind": "reformulation",
+      "title": "ラプラス変換の離散サンプリングとローラン級数からのZ変換の定式化",
+      "premise_node_ids": [
+        "math.laplace.lt01_laplace_transform_def",
+        "math.complex.lr01_laurent_series_expansion"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "x[n] = x_a(nT) is sampled at uniform period T > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "X_a(s) = \\int_{-\\infty}^{\\infty} x_a(t) e^{-st}\\,dt",
+          "to_latex": "X(z) = \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n},\\quad \\mathrm{ROC} = \\left\\{z \\in \\mathbb{C} \\;\\middle|\\; \\sum_{n=-\\infty}^{\\infty} |x[n] z^{-n}| < \\infty\\right\\}",
+          "operation_label": "離散化と変数置換 z = e^{sT}",
+          "explanation": "連続時間信号のサンプリング列に対するラプラス変換で z = e^{sT} と置換し、ローラン級数としての収束領域を定義する。",
+          "used_node_ids": [
+            "math.complex.lr01_laurent_series_expansion",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X_a(s) = \\int_{-\\infty}^{\\infty} x_a(t) e^{-st}\\,dt",
+          "to_latex": "X_s(s) = \\sum_{n=-\\infty}^{\\infty} x[n] e^{-snT}",
+          "operation_label": "インパルス列サンプリングの適用",
+          "explanation": "周期 T でサンプリングした離散系列 x[n] = x_a(nT) に対してラプラス積分を和に置き換える。",
+          "used_node_ids": [
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X_s(s) = \\sum_{n=-\\infty}^{\\infty} x[n] e^{-snT}",
+          "to_latex": "X(z) := \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n}\\quad (z = e^{sT} \\in \\mathbb{C})",
+          "operation_label": "複素変数 z = e^{sT} の導入",
+          "explanation": "e^{sT} を複素変数 z とおくことで、z に関する両側べき級数（ローラン展開形式）を得る。",
+          "used_node_ids": [
+            "math.complex.lr01_laurent_series_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X(z) := \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n}\\quad (z = e^{sT} \\in \\mathbb{C})",
+          "to_latex": "X(z) = \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n},\\quad \\mathrm{ROC} = \\left\\{z \\in \\mathbb{C} \\;\\middle|\\; \\sum_{n=-\\infty}^{\\infty} |x[n] z^{-n}| < \\infty\\right\\}",
+          "operation_label": "収束領域（ROC）の確定",
+          "explanation": "両側級数が絶対収束する複素平面上の円環領域として収束領域（ROC）を定義する。",
+          "used_node_ids": [
+            "math.complex.lr01_laurent_series_expansion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_dsp2_n02_transfer_function",
+      "target_node_id": "eng.dsp2.n02_difference_eq_transfer_func",
+      "route_kind": "deductive",
+      "title": "差分方程式のZ変換による伝達関数 H(z) と極零点分解の導出",
+      "premise_node_ids": [
+        "eng.dsp2.n01_z_transform_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "Zero initial conditions for the LTI system",
+        "a_0 != 0 and b_0 != 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum_{k=0}^{N} a_k y[n-k] = \\sum_{m=0}^{M} b_m x[n-m]",
+          "to_latex": "H(z) = \\frac{Y(z)}{X(z)} = \\frac{\\sum_{m=0}^{M} b_m z^{-m}}{\\sum_{k=0}^{N} a_k z^{-k}} = \\frac{b_0}{a_0}\\frac{\\prod_{m=1}^{M}(1 - z_m z^{-1})}{\\prod_{k=1}^{N}(1 - p_k z^{-1})}",
+          "operation_label": "Z変換の線形性・時間推移則と因数分解",
+          "explanation": "差分方程式の両辺をZ変換して比 Y(z)/X(z) を求め、分子・分母多項式を根（零点と極）で因数分解する。",
+          "used_node_ids": [
+            "eng.dsp2.n01_z_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k=0}^{N} a_k y[n-k] = \\sum_{m=0}^{M} b_m x[n-m]",
+          "to_latex": "\\sum_{k=0}^{N} a_k z^{-k} Y(z) = \\sum_{m=0}^{M} b_m z^{-m} X(z)",
+          "operation_label": "時間推移則 \\mathcal{Z}\\{x[n-k]\\} = z^{-k}X(z) の適用",
+          "explanation": "Z変換の線形性と時間遅延性質を用いて差分方程式を代数方程式に変換する。",
+          "used_node_ids": [
+            "eng.dsp2.n01_z_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k=0}^{N} a_k z^{-k} Y(z) = \\sum_{m=0}^{M} b_m z^{-m} X(z)",
+          "to_latex": "H(z) := \\frac{Y(z)}{X(z)} = \\frac{\\sum_{m=0}^{M} b_m z^{-m}}{\\sum_{k=0}^{N} a_k z^{-k}}",
+          "operation_label": "伝達関数 H(z) の構成",
+          "explanation": "出力と入力のZ変換の比としてシステム伝達関数 H(z) を得る。",
+          "used_node_ids": [
+            "eng.dsp2.n01_z_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(z) := \\frac{Y(z)}{X(z)} = \\frac{\\sum_{m=0}^{M} b_m z^{-m}}{\\sum_{k=0}^{N} a_k z^{-k}}",
+          "to_latex": "H(z) = \\frac{b_0}{a_0}\\frac{\\prod_{m=1}^{M}(1 - z_m z^{-1})}{\\prod_{k=1}^{N}(1 - p_k z^{-1})}",
+          "operation_label": "零点 z_m と極 p_k による因数分解",
+          "explanation": "代数学の基本定理により分子・分母を1次因子の積に分解し、零点と極を明示する。",
+          "used_node_ids": [
+            "eng.dsp2.n01_z_transform_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_dsp2_n03_bibo_stability",
+      "target_node_id": "eng.dsp2.n03_bibo_stability_unit_circle",
+      "route_kind": "deductive",
+      "title": "インパルス応答の絶対総和可能性から単位円内極条件の導出",
+      "premise_node_ids": [
+        "eng.dsp2.n01_z_transform_def",
+        "eng.dsp2.n02_difference_eq_transfer_func"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "System is causal (h[n] = 0 for n < 0) and rational"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|y[n]| = \\left|\\sum_{k=-\\infty}^{\\infty} h[k] x[n-k]\\right| \\le M_x \\sum_{k=0}^{\\infty} |h[k]|",
+          "to_latex": "\\mathrm{ROC} = \\{z \\in \\mathbb{C} \\mid |z| > \\max_k |p_k|\\} \\supset \\{|z| \\ge 1\\} \\iff \\forall k,\\; |p_k| < 1",
+          "operation_label": "畳み込み評価とROCによる極配置判定",
+          "explanation": "BIBO安定の必要十分条件である絶対総和可能性がROCに単位円を含むことと等価であり、因果系では全極が単位円内に位置することを示す。",
+          "used_node_ids": [
+            "eng.dsp2.n01_z_transform_def",
+            "eng.dsp2.n02_difference_eq_transfer_func"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|y[n]| = \\left|\\sum_{k=-\\infty}^{\\infty} h[k] x[n-k]\\right| \\le M_x \\sum_{k=0}^{\\infty} |h[k]|",
+          "to_latex": "\\text{BIBO stable} \\iff \\sum_{n=0}^{\\infty} |h[n]| < \\infty",
+          "operation_label": "有界入力に対する出力有界性条件",
+          "explanation": "任意の有界入力 |x[n]| <= M_x に対して出力が有界となる必要十分条件は、インパルス応答の絶対総和が有限であることである。",
+          "used_node_ids": [
+            "eng.dsp2.n01_z_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{BIBO stable} \\iff \\sum_{n=0}^{\\infty} |h[n]| < \\infty",
+          "to_latex": "\\sum_{n=0}^{\\infty} |h[n] z^{-n}| \\le \\sum_{n=0}^{\\infty} |h[n]| < \\infty\\; (\\forall |z| \\ge 1) \\iff \\{|z| \\ge 1\\} \\subset \\mathrm{ROC}",
+          "operation_label": "単位円上でのZ変換の絶対収束",
+          "explanation": "|z| = 1 上で |z^{-n}| = 1 となるため、絶対総和可能性は ROC が単位円 |z| = 1 を含むことと同値になる。",
+          "used_node_ids": [
+            "eng.dsp2.n01_z_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{n=0}^{\\infty} |h[n] z^{-n}| \\le \\sum_{n=0}^{\\infty} |h[n]| < \\infty\\; (\\forall |z| \\ge 1) \\iff \\{|z| \\ge 1\\} \\subset \\mathrm{ROC}",
+          "to_latex": "\\mathrm{ROC} = \\{z \\in \\mathbb{C} \\mid |z| > \\max_k |p_k|\\} \\supset \\{|z| \\ge 1\\} \\iff \\forall k,\\; |p_k| < 1",
+          "operation_label": "因果有理系のROCと極の絶対値評価",
+          "explanation": "因果的システムのROCは最外極の外側 |z| > max_k |p_k| であるため、単位円を含む条件はすべての極が |p_k| < 1 を満たすことになる。",
+          "used_node_ids": [
+            "eng.dsp2.n02_difference_eq_transfer_func"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_dsp2_n04_dtft_freq_response",
+      "target_node_id": "eng.dsp2.n04_dtft_frequency_response",
+      "route_kind": "deductive",
+      "title": "単位円上のZ伝達関数評価による周波数応答と振幅・位相公式の導出",
+      "premise_node_ids": [
+        "eng.dsp2.n02_difference_eq_transfer_func",
+        "eng.dsp2.n03_bibo_stability_unit_circle"
+      ],
+      "required_math_node_ids": [
+        "math.fourier.ft05_fourier_transform_def"
+      ],
+      "assumptions": [
+        "Unit circle |z| = 1 lies inside the ROC of H(z)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "X(z) = \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n},\\quad z = r e^{j\\omega}",
+          "to_latex": "|H(e^{j\\omega})| = \\left|\\frac{b_0}{a_0}\\right| \\frac{\\prod_{m=1}^{M} |e^{j\\omega} - z_m|}{\\prod_{k=1}^{N} |e^{j\\omega} - p_k|},\\quad \\angle H(e^{j\\omega}) = \\arg\\!\\left(\\frac{b_0}{a_0}\\right) + \\omega(N-M) + \\sum_{m=1}^{M}\\angle(e^{j\\omega}-z_m) - \\sum_{k=1}^{N}\\angle(e^{j\\omega}-p_k)",
+          "operation_label": "z = e^{j\\omega} の代入と極零点ベクトルの絶対値・偏角分解",
+          "explanation": "安定性により単位円上でH(z)が収束することを用い、z = e^{j\\omega} を代入して振幅応答と位相応答を極零点からのベクトルで表現する。",
+          "used_node_ids": [
+            "eng.dsp2.n02_difference_eq_transfer_func",
+            "eng.dsp2.n03_bibo_stability_unit_circle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X(z) = \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n},\\quad z = r e^{j\\omega}",
+          "to_latex": "H(e^{j\\omega}) = H(z)\\big|_{z=e^{j\\omega}} = \\sum_{n=-\\infty}^{\\infty} h[n] e^{-j\\omega n}",
+          "operation_label": "単位円 r = 1 への制限（DTFT）",
+          "explanation": "単位円がROCに含まれるため r = 1 とおくことができ、離散時間フーリエ変換による周波数応答を得る。",
+          "used_node_ids": [
+            "eng.dsp2.n03_bibo_stability_unit_circle",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(e^{j\\omega}) = H(z)\\big|_{z=e^{j\\omega}} = \\sum_{n=-\\infty}^{\\infty} h[n] e^{-j\\omega n}",
+          "to_latex": "H(e^{j\\omega}) = \\frac{b_0}{a_0} e^{j\\omega(N-M)} \\frac{\\prod_{m=1}^{M}(e^{j\\omega} - z_m)}{\\prod_{k=1}^{N}(e^{j\\omega} - p_k)}",
+          "operation_label": "極零点形式への z = e^{j\\omega} 代入",
+          "explanation": "H(z) の極零点分解に z = e^{j\\omega} を代入し、z^{-1} を正べきの (e^{j\\omega} - z_m) 形に整理する。",
+          "used_node_ids": [
+            "eng.dsp2.n02_difference_eq_transfer_func"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(e^{j\\omega}) = \\frac{b_0}{a_0} e^{j\\omega(N-M)} \\frac{\\prod_{m=1}^{M}(e^{j\\omega} - z_m)}{\\prod_{k=1}^{N}(e^{j\\omega} - p_k)}",
+          "to_latex": "|H(e^{j\\omega})| = \\left|\\frac{b_0}{a_0}\\right| \\frac{\\prod_{m=1}^{M} |e^{j\\omega} - z_m|}{\\prod_{k=1}^{N} |e^{j\\omega} - p_k|},\\quad \\angle H(e^{j\\omega}) = \\arg\\!\\left(\\frac{b_0}{a_0}\\right) + \\omega(N-M) + \\sum_{m=1}^{M}\\angle(e^{j\\omega}-z_m) - \\sum_{k=1}^{N}\\angle(e^{j\\omega}-p_k)",
+          "operation_label": "絶対値と偏角の分離",
+          "explanation": "複素積・商の絶対値と偏角の性質により、零点ベクトル長の積と極ベクトル長の積の比として振幅応答を得る。",
+          "used_node_ids": [
+            "eng.dsp2.n02_difference_eq_transfer_func"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_dsp2_n05_fir_linear_phase",
+      "target_node_id": "eng.dsp2.n05_fir_linear_phase_def",
+      "route_kind": "deductive",
+      "title": "非再帰差分方程式からのFIR伝達関数と線形位相・一定群遅延の定式化",
+      "premise_node_ids": [
+        "eng.dsp2.n02_difference_eq_transfer_func",
+        "eng.dsp2.n04_dtft_frequency_response"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Filter length is N with a_0 = 1 and a_k = 0 for k >= 1"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "y[n] = \\sum_{m=0}^{N-1} b_m x[n-m]",
+          "to_latex": "\\tau_g(\\omega) := -\\frac{d}{d\\omega}\\angle H(e^{j\\omega}) = \\alpha = \\frac{N-1}{2}\\; (\\text{constant where } A(\\omega) \\neq 0)",
+          "operation_label": "FIR伝達関数の構成と群遅延の微分評価",
+          "explanation": "非再帰型差分方程式から多項式型のFIR伝達関数を定義し、一般化線形位相表示から群遅延が定数 (N-1)/2 になることを示す。",
+          "used_node_ids": [
+            "eng.dsp2.n02_difference_eq_transfer_func",
+            "eng.dsp2.n04_dtft_frequency_response"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y[n] = \\sum_{m=0}^{N-1} b_m x[n-m]",
+          "to_latex": "H(z) = \\sum_{n=0}^{N-1} h[n] z^{-n},\\quad h[n] = b_n",
+          "operation_label": "分母定数化によるFIR伝達関数の導出",
+          "explanation": "フィードバック係数 a_k = 0 (k >= 1) とおくとインパルス応答が有限長 h[n] = b_n となり、極は原点のみとなる。",
+          "used_node_ids": [
+            "eng.dsp2.n02_difference_eq_transfer_func"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(z) = \\sum_{n=0}^{N-1} h[n] z^{-n},\\quad h[n] = b_n",
+          "to_latex": "H(e^{j\\omega}) = A(\\omega) e^{-j\\alpha\\omega + j\\beta}\\quad \\left(A(\\omega) \\in \\mathbb{R},\\; \\alpha = \\frac{N-1}{2},\\; \\beta \\in \\left\\{0, \\frac{\\pi}{2}\\right\\}\\right)",
+          "operation_label": "一般化線形位相形式の導入",
+          "explanation": "実数値の振幅関数 A(\\omega) と一次式位相 -\\alpha\\omega + \\beta の積で表される一般化線形位相条件を定義する。",
+          "used_node_ids": [
+            "eng.dsp2.n04_dtft_frequency_response"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(e^{j\\omega}) = A(\\omega) e^{-j\\alpha\\omega + j\\beta}\\quad \\left(A(\\omega) \\in \\mathbb{R},\\; \\alpha = \\frac{N-1}{2},\\; \\beta \\in \\left\\{0, \\frac{\\pi}{2}\\right\\}\\right)",
+          "to_latex": "\\tau_g(\\omega) := -\\frac{d}{d\\omega}\\angle H(e^{j\\omega}) = \\alpha = \\frac{N-1}{2}\\; (\\text{constant where } A(\\omega) \\neq 0)",
+          "operation_label": "群遅延の計算",
+          "explanation": "位相 \\angle H(e^{j\\omega}) = -\\alpha\\omega + \\beta (+ \\pi) を \\omega で微分して符号反転すると、定数群遅延 \\alpha = (N-1)/2 が得られる。",
+          "used_node_ids": [
+            "eng.dsp2.n04_dtft_frequency_response"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_dsp2_n06_fir_symmetry",
+      "target_node_id": "eng.dsp2.n06_fir_symmetry_types",
+      "route_kind": "deductive",
+      "title": "FIR係数の偶・奇対称性からの線形位相と零点鏡像関係式の導出",
+      "premise_node_ids": [
+        "eng.dsp2.n05_fir_linear_phase_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "Impulse response h[n] is real-valued"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "H(z) = \\sum_{n=0}^{N-1} h[n] z^{-n},\\quad h[n] = \\pm h[N-1-n]",
+          "to_latex": "H(e^{j\\omega}) = \\begin{cases} e^{-j\\frac{N-1}{2}\\omega} A_{\\mathrm{even}}(\\omega) & (h[n]=h[N-1-n]) \\\\ j e^{-j\\frac{N-1}{2}\\omega} A_{\\mathrm{odd}}(\\omega) & (h[n]=-h[N-1-n]) \\end{cases}",
+          "operation_label": "対称性の代入と中心位相因子の括り出し",
+          "explanation": "h[n] = \\pm h[N-1-n] から z 変換の対称関係 H(z) = \\pm z^{-(N-1)}H(z^{-1}) を示し、単位円上で位相因子 e^{-j(N-1)\\omega/2} を括り出すことで実振幅関数を得る。",
+          "used_node_ids": [
+            "eng.dsp2.n05_fir_linear_phase_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(z) = \\sum_{n=0}^{N-1} h[n] z^{-n},\\quad h[n] = \\pm h[N-1-n]",
+          "to_latex": "H(z) = \\pm z^{-(N-1)} \\sum_{n=0}^{N-1} h[n] z^{n} = \\pm z^{-(N-1)} H(z^{-1})",
+          "operation_label": "インデックス反転 m = N-1-n による鏡像関係式の導出",
+          "explanation": "対称性 h[n] = \\pm h[N-1-n] を代入して和の順序を反転させると、零点 z_0 に対し 1/z_0 も零点となる鏡像対称式が得られる。",
+          "used_node_ids": [
+            "eng.dsp2.n05_fir_linear_phase_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(z) = \\pm z^{-(N-1)} \\sum_{n=0}^{N-1} h[n] z^{n} = \\pm z^{-(N-1)} H(z^{-1})",
+          "to_latex": "H(e^{j\\omega}) = e^{-j\\frac{N-1}{2}\\omega} \\sum_{n=0}^{N-1} h[n] e^{j\\left(\\frac{N-1}{2} - n\\right)\\omega}",
+          "operation_label": "単位円上での中心指数因子 e^{-j(N-1)\\omega/2} の括り出し",
+          "explanation": "z = e^{j\\omega} を代入し、全体の半分遅延因子 e^{-j(N-1)\\omega/2} を前に括り出す。",
+          "used_node_ids": [
+            "eng.dsp2.n05_fir_linear_phase_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(e^{j\\omega}) = e^{-j\\frac{N-1}{2}\\omega} \\sum_{n=0}^{N-1} h[n] e^{j\\left(\\frac{N-1}{2} - n\\right)\\omega}",
+          "to_latex": "H(e^{j\\omega}) = \\begin{cases} e^{-j\\frac{N-1}{2}\\omega} A_{\\mathrm{even}}(\\omega) & (h[n]=h[N-1-n]) \\\\ j e^{-j\\frac{N-1}{2}\\omega} A_{\\mathrm{odd}}(\\omega) & (h[n]=-h[N-1-n]) \\end{cases}",
+          "operation_label": "オイラーの公式による対称項のペア化",
+          "explanation": "n と N-1-n の項をペアにすると、偶対称では cos の実和、奇対称では j sin の虚和となり、4種類の線形位相FIR（Type I〜IV）が得られる。",
+          "used_node_ids": [
+            "eng.dsp2.n05_fir_linear_phase_def",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_dsp2_n07_bilinear_transform",
+      "target_node_id": "eng.dsp2.n07_bilinear_transform_def",
+      "route_kind": "reformulation",
+      "title": "台形則離散化による双一次変換と周波数ワーピング式の導出",
+      "premise_node_ids": [
+        "eng.dsp2.n01_z_transform_def",
+        "math.laplace.lt01_laplace_transform_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "Sampling period T > 0",
+        "Frequency domain restricted to -pi < omega < pi"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "H_a(s) = \\frac{Y_a(s)}{X_a(s)},\\quad z = e^{sT}",
+          "to_latex": "\\Omega = \\frac{2}{T}\\tan\\left(\\frac{\\omega}{2}\\right),\\quad \\omega = 2\\arctan\\left(\\frac{\\Omega T}{2}\\right)",
+          "operation_label": "1次パデ近似によるs-z写像と虚軸・単位円対応",
+          "explanation": "s = (1/T) ln z を1次パデ近似して双一次変換を定義し、s = j\\Omega と z = e^{j\\omega} の代入から周波数ワーピング式を導く。",
+          "used_node_ids": [
+            "eng.dsp2.n01_z_transform_def",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H_a(s) = \\frac{Y_a(s)}{X_a(s)},\\quad z = e^{sT}",
+          "to_latex": "s = \\frac{1}{T}\\ln z \\approx \\frac{2}{T}\\frac{z - 1}{z + 1} = \\frac{2}{T}\\frac{1 - z^{-1}}{1 + z^{-1}}",
+          "operation_label": "対数関数の1次パデ近似（台形積分則）",
+          "explanation": "z = e^{sT} の逆関係 s = (1/T)\\ln z に1次有理近似（台形則による微分方程式の離散化と等価）を適用する。",
+          "used_node_ids": [
+            "eng.dsp2.n01_z_transform_def",
+            "math.laplace.lt01_laplace_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s = \\frac{1}{T}\\ln z \\approx \\frac{2}{T}\\frac{z - 1}{z + 1} = \\frac{2}{T}\\frac{1 - z^{-1}}{1 + z^{-1}}",
+          "to_latex": "H(z) = H_a(s)\\Big|_{s = \\frac{2}{T}\\frac{1-z^{-1}}{1+z^{-1}}},\\quad j\\Omega = \\frac{2}{T}\\frac{1 - e^{-j\\omega}}{1 + e^{-j\\omega}}",
+          "operation_label": "虚軸 s = j\\Omega と単位円 z = e^{j\\omega} の代入",
+          "explanation": "デジタル伝達関数 H(z) を定義し、アナログ周波数 \\Omega とデジタル周波数 \\omega の対応関係を評価する。",
+          "used_node_ids": [
+            "eng.dsp2.n01_z_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(z) = H_a(s)\\Big|_{s = \\frac{2}{T}\\frac{1-z^{-1}}{1+z^{-1}}},\\quad j\\Omega = \\frac{2}{T}\\frac{1 - e^{-j\\omega}}{1 + e^{-j\\omega}}",
+          "to_latex": "\\Omega = \\frac{2}{T}\\tan\\left(\\frac{\\omega}{2}\\right),\\quad \\omega = 2\\arctan\\left(\\frac{\\Omega T}{2}\\right)",
+          "operation_label": "半角 e^{-j\\omega/2} による括り出しと正接関数化",
+          "explanation": "分子・分母から e^{-j\\omega/2} を括り出して (2j\\sin(\\omega/2))/(2\\cos(\\omega/2)) = j\\tan(\\omega/2) と変形し、周波数ワーピング式を得る。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": "simplify((1 - exp(-I*w))/(1 + exp(-I*w)) - I*tan(w/2))"
+        }
+      ]
+    },
+    {
+      "id": "deriv_dsp2_n08_bilinear_stability",
+      "target_node_id": "eng.dsp2.n08_bilinear_stability_preservation",
+      "route_kind": "deductive",
+      "title": "双一次変換における左半平面と単位円内部の同値性の証明",
+      "premise_node_ids": [
+        "eng.dsp2.n07_bilinear_transform_def",
+        "eng.dsp2.n03_bibo_stability_unit_circle"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Sampling period T > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "s = \\frac{2}{T}\\frac{z - 1}{z + 1}",
+          "to_latex": "\\sigma = \\operatorname{Re}(s) < 0 \\iff |z| < 1,\\quad \\sigma = 0 \\iff |z| = 1",
+          "operation_label": "z についての逆解きと複素絶対値2乗の評価",
+          "explanation": "双一次変換を z について解き、s = \\sigma + j\\Omega の実部 \\sigma の符号と |z|^2 - 1 の符号が一致することを示す。",
+          "used_node_ids": [
+            "eng.dsp2.n03_bibo_stability_unit_circle",
+            "eng.dsp2.n07_bilinear_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s = \\frac{2}{T}\\frac{z - 1}{z + 1}",
+          "to_latex": "z = \\frac{1 + \\frac{T}{2}s}{1 - \\frac{T}{2}s},\\quad s = \\sigma + j\\Omega",
+          "operation_label": "メビウス変換の逆写像の導出",
+          "explanation": "s = (2/T)(z-1)/(z+1) を z について解き、s の実部と虚部を分離する。",
+          "used_node_ids": [
+            "eng.dsp2.n07_bilinear_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "z = \\frac{1 + \\frac{T}{2}s}{1 - \\frac{T}{2}s},\\quad s = \\sigma + j\\Omega",
+          "to_latex": "|z|^2 = \\frac{(1 + \\frac{T}{2}\\sigma)^2 + (\\frac{T}{2}\\Omega)^2}{(1 - \\frac{T}{2}\\sigma)^2 + (\\frac{T}{2}\\Omega)^2}",
+          "operation_label": "複素絶対値の2乗の計算",
+          "explanation": "分子・分母の実部と虚部を用いて |z|^2 を計算する。",
+          "used_node_ids": [
+            "eng.dsp2.n07_bilinear_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|z|^2 = \\frac{(1 + \\frac{T}{2}\\sigma)^2 + (\\frac{T}{2}\\Omega)^2}{(1 - \\frac{T}{2}\\sigma)^2 + (\\frac{T}{2}\\Omega)^2}",
+          "to_latex": "\\sigma = \\operatorname{Re}(s) < 0 \\iff |z| < 1,\\quad \\sigma = 0 \\iff |z| = 1",
+          "operation_label": "分子と分母の大小比較",
+          "explanation": "(1 + T\\sigma/2)^2 - (1 - T\\sigma/2)^2 = 2T\\sigma より、T > 0 のもとで \\sigma < 0 が |z| < 1 と同値になり、安定性が保存される。",
+          "used_node_ids": [
+            "eng.dsp2.n03_bibo_stability_unit_circle"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_dsp2_n09_butterworth_iir",
+      "target_node_id": "eng.dsp2.n09_butterworth_iir_design",
+      "route_kind": "deductive",
+      "title": "バターワース極配置の決定とプリワーピング双一次変換によるIIR設計",
+      "premise_node_ids": [
+        "eng.dsp2.n07_bilinear_transform_def",
+        "eng.dsp2.n08_bilinear_stability_preservation",
+        "eng.dsp2.n04_dtft_frequency_response"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Filter order N >= 1",
+        "Digital cutoff frequency 0 < omega_c < pi"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|H_a(j\\Omega)|^2 = \\frac{1}{1 + (\\Omega / \\Omega_c)^{2N}}",
+          "to_latex": "H(z) = H_a\\!\\left(\\frac{2}{T}\\frac{1 - z^{-1}}{1 + z^{-1}}\\right),\\quad \\Omega_c = \\frac{2}{T}\\tan\\left(\\frac{\\omega_c}{2}\\right),\\quad |p_k| < 1",
+          "operation_label": "左半平面極の選択とプリワーピング双一次変換",
+          "explanation": "バターワース振幅2乗特性を解析接続して左半平面の極を選び、プリワーピングした遮断周波数を用いて双一次変換で安定なIIRフィルタを構成する。",
+          "used_node_ids": [
+            "eng.dsp2.n04_dtft_frequency_response",
+            "eng.dsp2.n07_bilinear_transform_def",
+            "eng.dsp2.n08_bilinear_stability_preservation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|H_a(j\\Omega)|^2 = \\frac{1}{1 + (\\Omega / \\Omega_c)^{2N}}",
+          "to_latex": "H_a(s)H_a(-s) = \\frac{1}{1 + (-s^2 / \\Omega_c^2)^N},\\quad s_k = \\Omega_c e^{j\\pi\\left(\\frac{1}{2} + \\frac{2k+1}{2N}\\right)}\\;(k=0,\\dots,2N-1)",
+          "operation_label": "s = j\\Omega の解析接続と2N個の極の求根",
+          "explanation": "|H_a(j\\Omega)|^2 = H_a(j\\Omega)H_a(-j\\Omega) に \\Omega = s/j を代入し、半径 \\Omega_c の円周上の2N個の極を求める。",
+          "used_node_ids": [
+            "eng.dsp2.n04_dtft_frequency_response"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H_a(s)H_a(-s) = \\frac{1}{1 + (-s^2 / \\Omega_c^2)^N},\\quad s_k = \\Omega_c e^{j\\pi\\left(\\frac{1}{2} + \\frac{2k+1}{2N}\\right)}\\;(k=0,\\dots,2N-1)",
+          "to_latex": "H_a(s) = \\frac{\\Omega_c^N}{\\prod_{k=0}^{N-1}(s - s_k)},\\quad \\operatorname{Re}(s_k) < 0\\;(k=0,\\dots,N-1)",
+          "operation_label": "因果安定な左半平面極への因数分解",
+          "explanation": "Re(s_k) < 0 となる k = 0, ..., N-1 のN個の極のみを H_a(s) に割り当て、安定なアナログプロトタイプを構成する。",
+          "used_node_ids": [
+            "eng.dsp2.n08_bilinear_stability_preservation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H_a(s) = \\frac{\\Omega_c^N}{\\prod_{k=0}^{N-1}(s - s_k)},\\quad \\operatorname{Re}(s_k) < 0\\;(k=0,\\dots,N-1)",
+          "to_latex": "H(z) = H_a\\!\\left(\\frac{2}{T}\\frac{1 - z^{-1}}{1 + z^{-1}}\\right),\\quad \\Omega_c = \\frac{2}{T}\\tan\\left(\\frac{\\omega_c}{2}\\right),\\quad |p_k| < 1",
+          "operation_label": "プリワーピングと双一次変換の適用",
+          "explanation": "デジタル遮断周波数 \\omega_c を \\Omega_c = (2/T)\\tan(\\omega_c/2) でプリワーピングし、双一次変換を適用することで全極が |p_k| < 1 を満たすIIRフィルタを得る。",
+          "used_node_ids": [
+            "eng.dsp2.n07_bilinear_transform_def",
+            "eng.dsp2.n08_bilinear_stability_preservation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

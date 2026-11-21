@@ -1,0 +1,826 @@
+{
+  "pack_meta": {
+    "pack_id": "astro.rad.radiative_transfer",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "astronomy",
+    "title": "天体放射輸送：放射強度・光学的深さ・ソース関数と黒体放射・エディントン近似",
+    "language": "ja",
+    "description": "放射輸送方程式 dI/dτ = -I + S、キルヒホッフの法則、光学的に薄い/厚い極限、シュテファン＝ボルツマン則、エディントン光度限界を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "astro.rad.n01_specific_intensity_moments",
+      "short_code": "RD01",
+      "kind": "definition",
+      "title": "比放射強度と放射場の角モーメント（J, F, K）",
+      "summary": "単位面積・単位時間・単位振動数・単位立体角あたりの放射エネルギーとして比放射強度 I_ν を定義し、立体角積分により平均強度 J_ν、放射フラックス F_ν、エネルギー密度 u_ν、K積分の各モーメントを与える。",
+      "canonical_latex": "dE = I_{\\nu}\\cos\\theta\\,dA\\,dt\\,d\\nu\\,d\\Omega,\\quad J_{\\nu} = \\frac{1}{4\\pi}\\int_{4\\pi} I_{\\nu}\\,d\\Omega,\\quad \\mathbf{F}_{\\nu} = \\int_{4\\pi} I_{\\nu}\\hat{\\mathbf{n}}\\,d\\Omega,\\quad K_{\\nu} = \\frac{1}{4\\pi}\\int_{4\\pi} I_{\\nu}\\cos^2\\theta\\,d\\Omega",
+      "aliases_latex": [
+        "u_{\\nu} = \\frac{4\\pi}{c}J_{\\nu},\\quad H_{\\nu} = \\frac{F_{\\nu,z}}{4\\pi}"
+      ],
+      "keywords": [
+        "specific intensity",
+        "radiation flux",
+        "mean intensity",
+        "moments",
+        "radiative transfer"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics",
+        "radiative_transfer"
+      ]
+    },
+    {
+      "id": "astro.rad.n02_radiative_transfer_equation",
+      "short_code": "RD02",
+      "kind": "theorem_formula",
+      "title": "放射輸送方程式と光学的深さ・ソース関数",
+      "summary": "吸収係数 α_ν と放射係数 j_ν を用いた幾何経路に沿う放射輸送方程式から、光学的深さ dτ_ν = α_ν ds とソース関数 S_ν = j_ν/α_ν を導入して標準形 dI_ν/dτ_ν = -I_ν + S_ν を得る。",
+      "canonical_latex": "\\frac{dI_{\\nu}}{d\\tau_{\\nu}} = -I_{\\nu} + S_{\\nu},\\quad d\\tau_{\\nu} := \\alpha_{\\nu}\\,ds,\\quad S_{\\nu} := \\frac{j_{\\nu}}{\\alpha_{\\nu}}",
+      "aliases_latex": [
+        "\\frac{dI_{\\nu}}{ds} = -\\alpha_{\\nu} I_{\\nu} + j_{\\nu}"
+      ],
+      "keywords": [
+        "radiative transfer equation",
+        "optical depth",
+        "source function",
+        "absorption",
+        "emission"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics",
+        "radiative_transfer"
+      ]
+    },
+    {
+      "id": "astro.rad.n03_formal_solution_rte",
+      "short_code": "RD03",
+      "kind": "theorem_formula",
+      "title": "放射輸送方程式の形式解",
+      "summary": "積分因子 e^τ を用いて1階線形常微分方程式としての放射輸送方程式を積分し、任意の光学的深さにおける比放射強度の形式解および一様ソース関数での解析解を導く。",
+      "canonical_latex": "I_{\\nu}(\\tau_{\\nu}) = I_{\\nu}(0)e^{-\\tau_{\\nu}} + \\int_{0}^{\\tau_{\\nu}} S_{\\nu}(\\tau') e^{-(\\tau_{\\nu} - \\tau')}\\,d\\tau'",
+      "aliases_latex": [
+        "I_{\\nu}(\\tau_{\\nu}) = I_{\\nu}(0)e^{-\\tau_{\\nu}} + S_{\\nu}(1 - e^{-\\tau_{\\nu}})\\quad (S_{\\nu}=\\text{const.})"
+      ],
+      "keywords": [
+        "formal solution",
+        "integrating factor",
+        "radiative transfer",
+        "optical depth"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics",
+        "radiative_transfer"
+      ]
+    },
+    {
+      "id": "astro.rad.n04_optically_thin_thick_limits",
+      "short_code": "RD04",
+      "kind": "theorem_formula",
+      "title": "光学的に薄い極限と光学的に厚い極限",
+      "summary": "形式解を τ_ν ≪ 1 と τ_ν ≫ 1 で漸近展開し、光学的に薄い場合の線形減衰・放射累積と、光学的に厚い場合に放射強度がソース関数へ漸近する性質を示す。",
+      "canonical_latex": "I_{\\nu}(\\tau_{\\nu}) \\approx I_{\\nu}(0)(1 - \\tau_{\\nu}) + S_{\\nu}\\tau_{\\nu}\\;(\\tau_{\\nu}\\ll 1),\\qquad \\lim_{\\tau_{\\nu}\\to\\infty} I_{\\nu}(\\tau_{\\nu}) = S_{\\nu}\\;(\\tau_{\\nu}\\gg 1)",
+      "aliases_latex": [
+        "I_{\\nu} \\approx \\int j_{\\nu}\\,ds\\;(\\tau_{\\nu}\\ll 1,\\; I_{\\nu}(0)=0)"
+      ],
+      "keywords": [
+        "optically thin",
+        "optically thick",
+        "asymptotic limit",
+        "source function"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics",
+        "radiative_transfer"
+      ]
+    },
+    {
+      "id": "astro.rad.n05_kirchhoff_law_lte",
+      "short_code": "RD05",
+      "kind": "theorem_formula",
+      "title": "キルヒホッフの熱放射の法則と LTE ソース関数",
+      "summary": "熱平衡における放射輸送の釣合と熱力学第2法則から、放射係数と吸収係数の比が普遍関数であるプランク関数 B_ν(T) に等しいこと（j_ν = α_ν B_ν(T)）および局所熱平衡（LTE）での S_ν = B_ν(T) を導く。",
+      "canonical_latex": "j_{\\nu} = \\alpha_{\\nu} B_{\\nu}(T),\\quad S_{\\nu} = \\frac{j_{\\nu}}{\\alpha_{\\nu}} = B_{\\nu}(T)\\text{ (LTE)}",
+      "aliases_latex": [
+        "\\frac{j_{\\nu}}{\\alpha_{\\nu}} = B_{\\nu}(T)"
+      ],
+      "keywords": [
+        "Kirchhoff law",
+        "LTE",
+        "local thermodynamic equilibrium",
+        "Planck function"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "thermodynamics",
+        "radiative_transfer"
+      ]
+    },
+    {
+      "id": "astro.rad.n06_planck_stefan_boltzmann_law",
+      "short_code": "RD06",
+      "kind": "theorem_formula",
+      "title": "プランク関数とシュテファン＝ボルツマン則",
+      "summary": "黒体放射のプランク分布 B_ν(T) を全振動数および半球立体角にわたって積分し、全放射輝度 B(T) = (σ_SB/π)T^4 と黒体放射フラックス F = σ_SB T^4 を導く。",
+      "canonical_latex": "B(T) = \\int_{0}^{\\infty} B_{\\nu}(T)\\,d\\nu = \\frac{\\sigma_{\\mathrm{SB}}}{\\pi}T^4,\\quad F = \\pi B(T) = \\sigma_{\\mathrm{SB}} T^4,\\quad \\sigma_{\\mathrm{SB}} = \\frac{2\\pi^5 k_B^4}{15 c^2 h^3}",
+      "aliases_latex": [
+        "u = a_{\\mathrm{rad}} T^4,\\quad a_{\\mathrm{rad}} = \\frac{4\\sigma_{\\mathrm{SB}}}{c}"
+      ],
+      "keywords": [
+        "Planck function",
+        "Stefan-Boltzmann law",
+        "blackbody radiation",
+        "bolometric flux"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "thermodynamics",
+        "radiative_transfer"
+      ]
+    },
+    {
+      "id": "astro.rad.n07_eddington_approximation",
+      "short_code": "RD07",
+      "kind": "theorem_formula",
+      "title": "エディントン近似と灰色大気の温度構造",
+      "summary": "放射場のほぼ等方的な2項展開から閉包関係 K = J/3（P_rad = u_rad/3）を導き、放射平衡下の灰色平行平板大気における温度プロファイル T^4(τ) = (3/4)T_eff^4 (τ + 2/3) を得る。",
+      "canonical_latex": "K = \\frac{1}{3}J,\\quad P_{\\mathrm{rad}} = \\frac{1}{3}u_{\\mathrm{rad}},\\quad T^4(\\tau) = \\frac{3}{4}T_{\\mathrm{eff}}^4\\left(\\tau + \\frac{2}{3}\\right)",
+      "aliases_latex": [
+        "K_{\\nu} = \\frac{1}{3}J_{\\nu}"
+      ],
+      "keywords": [
+        "Eddington approximation",
+        "radiation pressure",
+        "grey atmosphere",
+        "radiative equilibrium"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics",
+        "stellar_atmospheres"
+      ]
+    },
+    {
+      "id": "astro.rad.n08_radiative_momentum_force",
+      "short_code": "RD08",
+      "kind": "theorem_formula",
+      "title": "放射圧による運動量輸送と放射加速度",
+      "summary": "光子の運動量 p = E/c と吸収・散乱によるフラックス減衰から、単位体積あたりの放射力 f_rad と単位質量あたりの放射加速度 g_rad = κF/c を導く。",
+      "canonical_latex": "\\mathbf{f}_{\\mathrm{rad}} = \\frac{1}{c}\\int_{0}^{\\infty} \\alpha_{\\nu}\\mathbf{F}_{\\nu}\\,d\\nu,\\quad g_{\\mathrm{rad}} = \\frac{\\kappa F}{c} = \\frac{\\kappa L}{4\\pi r^2 c}",
+      "aliases_latex": [
+        "\\mathbf{f}_{\\mathrm{rad}} = \\frac{\\kappa\\rho}{c}\\mathbf{F}"
+      ],
+      "keywords": [
+        "radiation pressure",
+        "radiative acceleration",
+        "opacity",
+        "momentum transfer"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics",
+        "radiative_transfer"
+      ]
+    },
+    {
+      "id": "astro.rad.n09_eddington_luminosity_limit",
+      "short_code": "RD09",
+      "kind": "theorem_formula",
+      "title": "エディントン光度限界",
+      "summary": "完全電離水素プラズマにおける電子のトムソン散乱不透明度 κ_T = σ_T/m_p に対する外向き放射加速度と内向き重力加速度の釣合から、静水圧平衡が保たれる最大光度 L_Edd を導く。",
+      "canonical_latex": "L_{\\mathrm{Edd}} = \\frac{4\\pi G M c}{\\kappa_T} = \\frac{4\\pi G M m_p c}{\\sigma_T}",
+      "aliases_latex": [
+        "L_{\\mathrm{Edd}} \\approx 1.26\\times 10^{38}\\left(\\frac{M}{M_\\odot}\\right)\\text{ erg s}^{-1}"
+      ],
+      "keywords": [
+        "Eddington luminosity",
+        "Eddington limit",
+        "Thomson scattering",
+        "hydrostatic equilibrium"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "astrophysics",
+        "accretion"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_rd01_moments",
+      "target_node_id": "astro.rad.n01_specific_intensity_moments",
+      "route_kind": "deductive",
+      "title": "比放射強度の定義と立体角積分による放射モーメントの導出",
+      "premise_node_ids": [
+        "math.calc.mi01_multiple_integral_def",
+        "math.calc.mi09_spherical_volume_element"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "放射場は位置 r、方向単位ベクトル n、振動数 ν、時刻 t に関して連続かつ可積分である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dE = I_{\\nu}(\\mathbf{r}, \\hat{\\mathbf{n}}, t)\\cos\\theta\\, dA\\, dt\\, d\\nu\\, d\\Omega,\\quad d\\Omega = \\sin\\theta\\, d\\theta\\, d\\varphi",
+          "to_latex": "J_{\\nu} = \\frac{1}{4\\pi}\\int_{4\\pi} I_{\\nu}\\,d\\Omega,\\quad \\mathbf{F}_{\\nu} = \\int_{4\\pi} I_{\\nu}\\hat{\\mathbf{n}}\\,d\\Omega,\\quad K_{\\nu} = \\frac{1}{4\\pi}\\int_{4\\pi} I_{\\nu}\\cos^2\\theta\\,d\\Omega",
+          "operation_label": "solid_angle_moment_integration",
+          "explanation": "比放射強度 I_ν に方向余弦のべき乗を掛けて全立体角 4π で積分することで、0次・1次・2次の角モーメント J_ν, F_ν, K_ν を定義する。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "math.calc.mi09_spherical_volume_element"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dE = I_{\\nu}(\\mathbf{r}, \\hat{\\mathbf{n}}, t)\\cos\\theta\\, dA\\, dt\\, d\\nu\\, d\\Omega,\\quad d\\Omega = \\sin\\theta\\, d\\theta\\, d\\varphi",
+          "to_latex": "u_{\\nu} = \\frac{1}{c}\\int_{4\\pi} I_{\\nu}\\,d\\Omega = \\frac{4\\pi}{c}J_{\\nu}",
+          "operation_label": "zeroth_moment_energy_density",
+          "explanation": "光速 c で伝播する光子の体積要素 dV = c dt cosθ dA 内のエネルギーを全立体角で積分し、0次モーメントである比エネルギー密度 u_ν と平均強度 J_ν を得る。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "math.calc.mi09_spherical_volume_element"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_{\\nu} = \\frac{1}{c}\\int_{4\\pi} I_{\\nu}\\,d\\Omega = \\frac{4\\pi}{c}J_{\\nu}",
+          "to_latex": "\\mathbf{F}_{\\nu} = \\int_{4\\pi} I_{\\nu}\\hat{\\mathbf{n}}\\,d\\Omega,\\quad F_{\\nu,z} = 4\\pi H_{\\nu} = \\int_{4\\pi} I_{\\nu}\\cos\\theta\\,d\\Omega",
+          "operation_label": "first_moment_flux",
+          "explanation": "方向ベクトル n（z軸に対する余弦 cosθ）を重みとして全立体角積分することで、1次モーメントである放射フラックス F_ν およびエディントンフラックス H_ν を得る。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F}_{\\nu} = \\int_{4\\pi} I_{\\nu}\\hat{\\mathbf{n}}\\,d\\Omega,\\quad F_{\\nu,z} = 4\\pi H_{\\nu} = \\int_{4\\pi} I_{\\nu}\\cos\\theta\\,d\\Omega",
+          "to_latex": "J_{\\nu} = \\frac{1}{4\\pi}\\int_{4\\pi} I_{\\nu}\\,d\\Omega,\\quad \\mathbf{F}_{\\nu} = \\int_{4\\pi} I_{\\nu}\\hat{\\mathbf{n}}\\,d\\Omega,\\quad K_{\\nu} = \\frac{1}{4\\pi}\\int_{4\\pi} I_{\\nu}\\cos^2\\theta\\,d\\Omega",
+          "operation_label": "second_moment_k_integral",
+          "explanation": "同様に cos^2θ を重みとする2次モーメント K_ν（放射圧テンソル成分に比例）を定義し、モーメント階層 J_ν, F_ν, K_ν をまとめる。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "math.calc.mi09_spherical_volume_element"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_rd02_rte",
+      "target_node_id": "astro.rad.n02_radiative_transfer_equation",
+      "route_kind": "deductive",
+      "title": "吸収・放出の収支と光学的深さによる放射輸送方程式の導出",
+      "premise_node_ids": [
+        "astro.rad.n01_specific_intensity_moments",
+        "math.calc.m01_chain_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "媒質中の微小経路 ds においてエネルギー収支が吸収係数 α_ν と放射係数 j_ν の線形和で表される。",
+        "定常状態または光線に沿う局所時間変化を無視する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dI_{\\nu} = (-\\alpha_{\\nu} I_{\\nu} + j_{\\nu})\\,ds,\\quad d\\tau_{\\nu} := \\alpha_{\\nu}\\,ds",
+          "to_latex": "\\frac{dI_{\\nu}}{d\\tau_{\\nu}} = -I_{\\nu} + S_{\\nu},\\quad S_{\\nu} := \\frac{j_{\\nu}}{\\alpha_{\\nu}}",
+          "operation_label": "optical_depth_variable_change",
+          "explanation": "光線経路 ds に沿う吸収と放出のエネルギー収支式に対して、光学的深さ dτ_ν = α_ν ds による変数変換とソース関数 S_ν = j_ν/α_ν の定義を適用する。",
+          "used_node_ids": [
+            "astro.rad.n01_specific_intensity_moments",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dI_{\\nu} = (-\\alpha_{\\nu} I_{\\nu} + j_{\\nu})\\,ds,\\quad d\\tau_{\\nu} := \\alpha_{\\nu}\\,ds",
+          "to_latex": "\\frac{dI_{\\nu}}{ds} = -\\alpha_{\\nu} I_{\\nu} + j_{\\nu}",
+          "operation_label": "path_derivative_form",
+          "explanation": "微小円柱要素（断面積 dA、長さ ds）における比放射強度の増分を ds で割り、幾何経路に沿う微分方程式を得る。",
+          "used_node_ids": [
+            "astro.rad.n01_specific_intensity_moments"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dI_{\\nu}}{ds} = -\\alpha_{\\nu} I_{\\nu} + j_{\\nu}",
+          "to_latex": "\\alpha_{\\nu}\\frac{dI_{\\nu}}{d\\tau_{\\nu}} = -\\alpha_{\\nu} I_{\\nu} + j_{\\nu}",
+          "operation_label": "apply_chain_rule_tau",
+          "explanation": "連鎖律 dI_ν/ds = (dI_ν/dτ_ν)(dτ_ν/ds) と dτ_ν/ds = α_ν を代入する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\alpha_{\\nu}\\frac{dI_{\\nu}}{d\\tau_{\\nu}} = -\\alpha_{\\nu} I_{\\nu} + j_{\\nu}",
+          "to_latex": "\\frac{dI_{\\nu}}{d\\tau_{\\nu}} = -I_{\\nu} + S_{\\nu},\\quad S_{\\nu} := \\frac{j_{\\nu}}{\\alpha_{\\nu}}",
+          "operation_label": "divide_by_alpha_define_source",
+          "explanation": "両辺を α_ν (> 0) で割り、ソース関数 S_ν := j_ν / α_ν を導入して放射輸送方程式の標準形を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_rd03_formal_solution",
+      "target_node_id": "astro.rad.n03_formal_solution_rte",
+      "route_kind": "deductive",
+      "title": "積分因子による放射輸送方程式の形式解の導出",
+      "premise_node_ids": [
+        "astro.rad.n02_radiative_transfer_equation",
+        "math.calc.m15_product_rule",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "光学的深さ τ_ν は光線進行方向に沿って単調増加する（0 から τ_ν まで積分）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dI_{\\nu}}{d\\tau_{\\nu}} + I_{\\nu} = S_{\\nu}(\\tau_{\\nu})",
+          "to_latex": "I_{\\nu}(\\tau_{\\nu}) = I_{\\nu}(0)e^{-\\tau_{\\nu}} + \\int_{0}^{\\tau_{\\nu}} S_{\\nu}(\\tau') e^{-(\\tau_{\\nu} - \\tau')}\\,d\\tau'",
+          "operation_label": "integrating_factor_solution",
+          "explanation": "1階線形常微分方程式に積分因子 e^τ' を掛けて 0 から τ_ν まで定積分し、形式解を得る。",
+          "used_node_ids": [
+            "astro.rad.n02_radiative_transfer_equation",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": "dsolve(I(tau).diff(tau) + I(tau) - S(tau), I(tau))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dI_{\\nu}}{d\\tau_{\\nu}} + I_{\\nu} = S_{\\nu}(\\tau_{\\nu})",
+          "to_latex": "\\frac{d}{d\\tau'}\\Big(I_{\\nu}(\\tau')e^{\\tau'}\\Big) = S_{\\nu}(\\tau')e^{\\tau'}",
+          "operation_label": "multiply_integrating_factor",
+          "explanation": "両辺に積分因子 e^τ' を掛け、積の微分法則により左辺を完全微分形にまとめる。",
+          "used_node_ids": [
+            "astro.rad.n02_radiative_transfer_equation",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{d\\tau'}\\Big(I_{\\nu}(\\tau')e^{\\tau'}\\Big) = S_{\\nu}(\\tau')e^{\\tau'}",
+          "to_latex": "I_{\\nu}(\\tau_{\\nu})e^{\\tau_{\\nu}} - I_{\\nu}(0) = \\int_{0}^{\\tau_{\\nu}} S_{\\nu}(\\tau')e^{\\tau'}\\,d\\tau'",
+          "operation_label": "definite_integration_ftc",
+          "explanation": "微積分学の基本定理を用いて τ' = 0 から τ' = τ_ν まで積分する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{\\nu}(\\tau_{\\nu})e^{\\tau_{\\nu}} - I_{\\nu}(0) = \\int_{0}^{\\tau_{\\nu}} S_{\\nu}(\\tau')e^{\\tau'}\\,d\\tau'",
+          "to_latex": "I_{\\nu}(\\tau_{\\nu}) = I_{\\nu}(0)e^{-\\tau_{\\nu}} + \\int_{0}^{\\tau_{\\nu}} S_{\\nu}(\\tau') e^{-(\\tau_{\\nu} - \\tau')}\\,d\\tau'",
+          "operation_label": "solve_for_intensity",
+          "explanation": "I_ν(0) を移項し、両辺に e^(-τ_ν) を掛けて形式解を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_rd04_thin_thick_limits",
+      "target_node_id": "astro.rad.n04_optically_thin_thick_limits",
+      "route_kind": "deductive",
+      "title": "形式解の漸近展開による光学的に薄い極限・厚い極限の導出",
+      "premise_node_ids": [
+        "astro.rad.n03_formal_solution_rte",
+        "math.calc.t07_maclaurin_exp",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "一様媒質（ソース関数 S_ν が一定）を仮定して極限挙動を評価する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_{\\nu}(\\tau_{\\nu}) = I_{\\nu}(0)e^{-\\tau_{\\nu}} + S_{\\nu}(1 - e^{-\\tau_{\\nu}})",
+          "to_latex": "I_{\\nu}(\\tau_{\\nu}) \\approx I_{\\nu}(0)(1 - \\tau_{\\nu}) + S_{\\nu}\\tau_{\\nu}\\;(\\tau_{\\nu}\\ll 1),\\qquad \\lim_{\\tau_{\\nu}\\to\\infty} I_{\\nu}(\\tau_{\\nu}) = S_{\\nu}\\;(\\tau_{\\nu}\\gg 1)",
+          "operation_label": "asymptotic_limits_tau",
+          "explanation": "一様ソース関数の形式解に対して τ_ν → 0 の1次マクローリン展開および τ_ν → ∞ の極限を評価する。",
+          "used_node_ids": [
+            "astro.rad.n03_formal_solution_rte",
+            "math.calc.t07_maclaurin_exp",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": "series(I0*exp(-tau) + S*(1 - exp(-tau)), tau, 0, 2)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{\\nu}(\\tau_{\\nu}) = I_{\\nu}(0)e^{-\\tau_{\\nu}} + S_{\\nu}(1 - e^{-\\tau_{\\nu}})",
+          "to_latex": "e^{-\\tau_{\\nu}} = 1 - \\tau_{\\nu} + \\mathcal{O}(\\tau_{\\nu}^2)\\implies I_{\\nu}(\\tau_{\\nu}) = I_{\\nu}(0)(1 - \\tau_{\\nu}) + S_{\\nu}\\tau_{\\nu} + \\mathcal{O}(\\tau_{\\nu}^2)",
+          "operation_label": "maclaurin_expansion_thin",
+          "explanation": "e^(-τ_ν) をマクローリン展開して1次まで保持し、光学的に薄い極限（τ_ν ≪ 1）の近似式を得る。",
+          "used_node_ids": [
+            "astro.rad.n03_formal_solution_rte",
+            "math.calc.t07_maclaurin_exp",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e^{-\\tau_{\\nu}} = 1 - \\tau_{\\nu} + \\mathcal{O}(\\tau_{\\nu}^2)\\implies I_{\\nu}(\\tau_{\\nu}) = I_{\\nu}(0)(1 - \\tau_{\\nu}) + S_{\\nu}\\tau_{\\nu} + \\mathcal{O}(\\tau_{\\nu}^2)",
+          "to_latex": "I_{\\nu}(\\tau_{\\nu}) \\approx I_{\\nu}(0)(1 - \\tau_{\\nu}) + S_{\\nu}\\tau_{\\nu}\\;(\\tau_{\\nu}\\ll 1),\\qquad \\lim_{\\tau_{\\nu}\\to\\infty} I_{\\nu}(\\tau_{\\nu}) = S_{\\nu}\\;(\\tau_{\\nu}\\gg 1)",
+          "operation_label": "evaluate_thick_limit",
+          "explanation": "逆に τ_ν → ∞ では e^(-τ_ν) → 0 となるため背景光 I_ν(0) が減衰して消え、放射強度は局所ソース関数 S_ν に収束する。",
+          "used_node_ids": [
+            "astro.rad.n03_formal_solution_rte"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_rd05_kirchhoff",
+      "target_node_id": "astro.rad.n05_kirchhoff_law_lte",
+      "route_kind": "deductive",
+      "title": "熱平衡条件と熱力学第2法則からのキルヒホッフの法則の導出",
+      "premise_node_ids": [
+        "astro.rad.n02_radiative_transfer_equation",
+        "phys.thermo.th01_zeroth_law_state_eq",
+        "phys.thermo.th06_second_law_principles"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "温度 T の等温空洞内で放射場と物質が熱平衡にある。",
+        "局所熱平衡（LTE）では物質の微視的状態分布が局所温度 T で決まる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dI_{\\nu}}{ds} = -\\alpha_{\\nu} I_{\\nu} + j_{\\nu} = 0,\\quad I_{\\nu} = B_{\\nu}(T)\\text{ (thermal equilibrium)}",
+          "to_latex": "j_{\\nu} = \\alpha_{\\nu} B_{\\nu}(T),\\quad S_{\\nu} = \\frac{j_{\\nu}}{\\alpha_{\\nu}} = B_{\\nu}(T)\\text{ (LTE)}",
+          "operation_label": "thermal_equilibrium_balance",
+          "explanation": "熱平衡下の空洞内では熱力学第2法則より正味のエネルギー移動がなく dI_ν/ds = 0 であり、平衡強度が温度のみの普遍関数 B_ν(T) となることからキルヒホッフの法則が従う。",
+          "used_node_ids": [
+            "astro.rad.n02_radiative_transfer_equation",
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dI_{\\nu}}{ds} = -\\alpha_{\\nu} I_{\\nu} + j_{\\nu} = 0,\\quad I_{\\nu} = B_{\\nu}(T)\\text{ (thermal equilibrium)}",
+          "to_latex": "\\frac{j_{\\nu}}{\\alpha_{\\nu}} = I_{\\nu}^{\\mathrm{eq}} = B_{\\nu}(T)",
+          "operation_label": "equate_source_to_blackbody",
+          "explanation": "熱力学第0・第2法則により、同温の2つの物体間で振動数 ν ごとに放射が釣り合わなければならず、平衡放射強度 I_ν^eq は物質によらず温度 T と振動数 ν のみの普遍関数 B_ν(T) となる。",
+          "used_node_ids": [
+            "astro.rad.n02_radiative_transfer_equation",
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{j_{\\nu}}{\\alpha_{\\nu}} = I_{\\nu}^{\\mathrm{eq}} = B_{\\nu}(T)",
+          "to_latex": "j_{\\nu} = \\alpha_{\\nu} B_{\\nu}(T),\\quad S_{\\nu} = \\frac{j_{\\nu}}{\\alpha_{\\nu}} = B_{\\nu}(T)\\text{ (LTE)}",
+          "operation_label": "lte_generalization",
+          "explanation": "物質の吸収・放出過程が局所温度 T で定まる LTE 状態に拡張すると、熱的放射に対しても j_ν = α_ν B_ν(T) および S_ν = B_ν(T) が成り立つ。",
+          "used_node_ids": [
+            "astro.rad.n02_radiative_transfer_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_rd06_stefan_boltzmann",
+      "target_node_id": "astro.rad.n06_planck_stefan_boltzmann_law",
+      "route_kind": "deductive",
+      "title": "プランク関数の振動数・立体角積分によるシュテファン＝ボルツマン則の導出",
+      "premise_node_ids": [
+        "astro.rad.n01_specific_intensity_moments",
+        "astro.rad.n05_kirchhoff_law_lte",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "プランク分布 B_ν(T) = (2hν^3/c^2)/(e^(hν/(k_B T)) - 1) を前提とする。",
+        "定積分 ∫_0^∞ x^3/(e^x - 1) dx = π^4/15 を用いる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "B_{\\nu}(T) = \\frac{2h\\nu^3}{c^2}\\frac{1}{e^{h\\nu/(k_B T)} - 1},\\quad F = \\int_{0}^{\\infty}\\int_{0}^{2\\pi}\\int_{0}^{\\pi/2} B_{\\nu}(T)\\cos\\theta\\sin\\theta\\,d\\theta\\,d\\varphi\\,d\\nu",
+          "to_latex": "B(T) = \\int_{0}^{\\infty} B_{\\nu}(T)\\,d\\nu = \\frac{\\sigma_{\\mathrm{SB}}}{\\pi}T^4,\\quad F = \\pi B(T) = \\sigma_{\\mathrm{SB}} T^4,\\quad \\sigma_{\\mathrm{SB}} = \\frac{2\\pi^5 k_B^4}{15 c^2 h^3}",
+          "operation_label": "integrate_planck_spectrum",
+          "explanation": "プランク関数を半球立体角で積分してフラックス F_ν = π B_ν(T) を得て、さらに無次元変数 x = hν/(k_B T) への置換積分により T^4 則を導く。",
+          "used_node_ids": [
+            "astro.rad.n01_specific_intensity_moments",
+            "astro.rad.n05_kirchhoff_law_lte",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": "integrate(x**3 / (exp(x) - 1), (x, 0, oo))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "B_{\\nu}(T) = \\frac{2h\\nu^3}{c^2}\\frac{1}{e^{h\\nu/(k_B T)} - 1},\\quad F = \\int_{0}^{\\infty}\\int_{0}^{2\\pi}\\int_{0}^{\\pi/2} B_{\\nu}(T)\\cos\\theta\\sin\\theta\\,d\\theta\\,d\\varphi\\,d\\nu",
+          "to_latex": "F = \\pi \\int_{0}^{\\infty} B_{\\nu}(T)\\,d\\nu = \\frac{2\\pi k_B^4 T^4}{c^2 h^3} \\int_{0}^{\\infty} \\frac{x^3}{e^x - 1}\\,dx\\quad \\left(x := \\frac{h\\nu}{k_B T}\\right)",
+          "operation_label": "hemisphere_and_substitution",
+          "explanation": "等方放射の半球積分 ∫_0^(2π) dφ ∫_0^(π/2) cosθ sinθ dθ = π を実行し、x = hν/(k_B T) で置換積分する。",
+          "used_node_ids": [
+            "astro.rad.n01_specific_intensity_moments",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F = \\pi \\int_{0}^{\\infty} B_{\\nu}(T)\\,d\\nu = \\frac{2\\pi k_B^4 T^4}{c^2 h^3} \\int_{0}^{\\infty} \\frac{x^3}{e^x - 1}\\,dx\\quad \\left(x := \\frac{h\\nu}{k_B T}\\right)",
+          "to_latex": "B(T) = \\int_{0}^{\\infty} B_{\\nu}(T)\\,d\\nu = \\frac{\\sigma_{\\mathrm{SB}}}{\\pi}T^4,\\quad F = \\pi B(T) = \\sigma_{\\mathrm{SB}} T^4,\\quad \\sigma_{\\mathrm{SB}} = \\frac{2\\pi^5 k_B^4}{15 c^2 h^3}",
+          "operation_label": "evaluate_bose_integral",
+          "explanation": "積分値 π^4/15 を代入してシュテファン＝ボルツマン定数 σ_SB と T^4 則を得る。",
+          "used_node_ids": [
+            "astro.rad.n05_kirchhoff_law_lte"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_rd07_eddington_approx",
+      "target_node_id": "astro.rad.n07_eddington_approximation",
+      "route_kind": "deductive",
+      "title": "エディントン近似と灰色平行平板大気の温度分布の導出",
+      "premise_node_ids": [
+        "astro.rad.n01_specific_intensity_moments",
+        "astro.rad.n02_radiative_transfer_equation",
+        "astro.rad.n06_planck_stefan_boltzmann_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "平行平板（plane-parallel）の灰色大気（不透明度が振動数に依らない）かつ放射平衡（dH/dτ = 0）を仮定する。",
+        "表面境界条件として J(0) = 2H（二流近似境界条件）を用いる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I(\\tau,\\mu) \\approx I_0(\\tau) + \\mu I_1(\\tau)\\;(\\mu = \\cos\\theta),\\quad \\frac{dH}{d\\tau} = J - B = 0,\\quad \\frac{dK}{d\\tau} = H",
+          "to_latex": "K = \\frac{1}{3}J,\\quad P_{\\mathrm{rad}} = \\frac{1}{3}u_{\\mathrm{rad}},\\quad T^4(\\tau) = \\frac{3}{4}T_{\\mathrm{eff}}^4\\left(\\tau + \\frac{2}{3}\\right)",
+          "operation_label": "eddington_closure_and_grey_profile",
+          "explanation": "I(τ,μ) の線形近似から閉包関係 K = J/3 を導き、モーメント方程式 dK/dτ = H を積分して灰色大気の温度構造を求める。",
+          "used_node_ids": [
+            "astro.rad.n01_specific_intensity_moments",
+            "astro.rad.n02_radiative_transfer_equation",
+            "astro.rad.n06_planck_stefan_boltzmann_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I(\\tau,\\mu) \\approx I_0(\\tau) + \\mu I_1(\\tau)\\;(\\mu = \\cos\\theta),\\quad \\frac{dH}{d\\tau} = J - B = 0,\\quad \\frac{dK}{d\\tau} = H",
+          "to_latex": "J = I_0,\\quad H = \\frac{1}{3}I_1,\\quad K = \\frac{1}{3}I_0 = \\frac{1}{3}J,\\quad P_{\\mathrm{rad}} = \\frac{4\\pi}{c}K = \\frac{1}{3}u_{\\mathrm{rad}}",
+          "operation_label": "compute_moments_linear_i",
+          "explanation": "μ ∈ [-1, 1] に関して (1/2)∫ μ^k I(τ,μ) dμ を計算し、K = J/3 および P_rad = u_rad/3 を得る。",
+          "used_node_ids": [
+            "astro.rad.n01_specific_intensity_moments"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J = I_0,\\quad H = \\frac{1}{3}I_1,\\quad K = \\frac{1}{3}I_0 = \\frac{1}{3}J,\\quad P_{\\mathrm{rad}} = \\frac{4\\pi}{c}K = \\frac{1}{3}u_{\\mathrm{rad}}",
+          "to_latex": "\\frac{1}{3}\\frac{dJ}{d\\tau} = H = \\text{const.} \\implies J(\\tau) = 3H\\tau + J(0),\\quad J(0) = 2H",
+          "operation_label": "integrate_moment_equation",
+          "explanation": "dK/dτ = H に K = J/3 を代入して積分し、表面境界条件 J(0) = 2H を適用する。",
+          "used_node_ids": [
+            "astro.rad.n02_radiative_transfer_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{3}\\frac{dJ}{d\\tau} = H = \\text{const.} \\implies J(\\tau) = 3H\\tau + J(0),\\quad J(0) = 2H",
+          "to_latex": "K = \\frac{1}{3}J,\\quad P_{\\mathrm{rad}} = \\frac{1}{3}u_{\\mathrm{rad}},\\quad T^4(\\tau) = \\frac{3}{4}T_{\\mathrm{eff}}^4\\left(\\tau + \\frac{2}{3}\\right)",
+          "operation_label": "apply_stefan_boltzmann_teff",
+          "explanation": "放射平衡 J = B = (σ_SB/π)T^4 と有効温度の定義 4πH = F = σ_SB T_eff^4 を代入し、灰色大気の温度構造を得る。",
+          "used_node_ids": [
+            "astro.rad.n06_planck_stefan_boltzmann_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_rd08_radiative_force",
+      "target_node_id": "astro.rad.n08_radiative_momentum_force",
+      "route_kind": "deductive",
+      "title": "光子の運動量輸送と放射加速度の導出",
+      "premise_node_ids": [
+        "astro.rad.n01_specific_intensity_moments",
+        "astro.rad.n02_radiative_transfer_equation",
+        "phys.mech.p02_newton_second_law",
+        "phys.rel.sr01_relativity_postulates"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "等方散乱または吸収のみを考慮し、再放出・散乱光による正味の運動量持ち去りはゼロとする。",
+        "不透明度 κ = α_ν / ρ は灰色またはフラックス平均値で代表される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "d\\mathbf{p}_{\\mathrm{rad}} = \\frac{dE}{c}\\hat{\\mathbf{n}},\\quad dE_{\\mathrm{abs}} = \\alpha_{\\nu} I_{\\nu}\\,ds\\,dA\\,dt\\,d\\nu\\,d\\Omega",
+          "to_latex": "\\mathbf{f}_{\\mathrm{rad}} = \\frac{1}{c}\\int_{0}^{\\infty} \\alpha_{\\nu}\\mathbf{F}_{\\nu}\\,d\\nu,\\quad g_{\\mathrm{rad}} = \\frac{\\kappa F}{c} = \\frac{\\kappa L}{4\\pi r^2 c}",
+          "operation_label": "radiative_momentum_transfer",
+          "explanation": "光子が運ぶ運動量 dE/c と単位体積あたりの吸収エネルギー率を全立体角・全振動数で積分し、ニュートンの第2法則より単位体積・単位質量あたりの放射力を得る。",
+          "used_node_ids": [
+            "astro.rad.n01_specific_intensity_moments",
+            "astro.rad.n02_radiative_transfer_equation",
+            "phys.mech.p02_newton_second_law",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\mathbf{p}_{\\mathrm{rad}} = \\frac{dE}{c}\\hat{\\mathbf{n}},\\quad dE_{\\mathrm{abs}} = \\alpha_{\\nu} I_{\\nu}\\,ds\\,dA\\,dt\\,d\\nu\\,d\\Omega",
+          "to_latex": "\\mathbf{f}_{\\mathrm{rad}} = \\frac{1}{c}\\int_{0}^{\\infty}\\int_{4\\pi} \\alpha_{\\nu} I_{\\nu}\\hat{\\mathbf{n}}\\,d\\Omega\\,d\\nu = \\frac{1}{c}\\int_{0}^{\\infty} \\alpha_{\\nu}\\mathbf{F}_{\\nu}\\,d\\nu",
+          "operation_label": "integrate_momentum_flux",
+          "explanation": "単位体積 dV = ds dA、単位時間 dt あたりの運動量変化 dp_rad/(dV dt) を立体角積分すると、フラックス F_ν の定義に帰着する。",
+          "used_node_ids": [
+            "astro.rad.n01_specific_intensity_moments",
+            "astro.rad.n02_radiative_transfer_equation",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{f}_{\\mathrm{rad}} = \\frac{1}{c}\\int_{0}^{\\infty}\\int_{4\\pi} \\alpha_{\\nu} I_{\\nu}\\hat{\\mathbf{n}}\\,d\\Omega\\,d\\nu = \\frac{1}{c}\\int_{0}^{\\infty} \\alpha_{\\nu}\\mathbf{F}_{\\nu}\\,d\\nu",
+          "to_latex": "\\mathbf{f}_{\\mathrm{rad}} = \\frac{1}{c}\\int_{0}^{\\infty} \\alpha_{\\nu}\\mathbf{F}_{\\nu}\\,d\\nu,\\quad g_{\\mathrm{rad}} = \\frac{\\kappa F}{c} = \\frac{\\kappa L}{4\\pi r^2 c}",
+          "operation_label": "spherical_flux_acceleration",
+          "explanation": "密度 ρ で割り α_ν = κ ρ および球対称フラックス F = L/(4π r^2) を代入して放射加速度 g_rad を得る。",
+          "used_node_ids": [
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_rd09_eddington_limit",
+      "target_node_id": "astro.rad.n09_eddington_luminosity_limit",
+      "route_kind": "deductive",
+      "title": "放射加速度と重力の釣合からのエディントン光度限界の導出",
+      "premise_node_ids": [
+        "astro.rad.n08_radiative_momentum_force",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "球対称定常状態における完全電離純粋水素プラズマ（単位質量あたりの電子散乱不透明度 κ_T = σ_T / m_p）を仮定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "g_{\\mathrm{rad}} = \\frac{\\kappa_T L}{4\\pi r^2 c} = \\frac{G M}{r^2} = g_{\\mathrm{grav}},\\quad \\kappa_T = \\frac{\\sigma_T}{m_p}",
+          "to_latex": "L_{\\mathrm{Edd}} = \\frac{4\\pi G M c}{\\kappa_T} = \\frac{4\\pi G M m_p c}{\\sigma_T}",
+          "operation_label": "force_balance_eddington",
+          "explanation": "トムソン散乱による外向き放射加速度と内向き重力加速度の釣合式を光度 L について解き、エディントン光度 L_Edd を得る。",
+          "used_node_ids": [
+            "astro.rad.n08_radiative_momentum_force",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": "solve(sigma_T * L / (4 * pi * r**2 * m_p * c) - G * M / r**2, L)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_{\\mathrm{rad}} = \\frac{\\kappa_T L}{4\\pi r^2 c} = \\frac{G M}{r^2} = g_{\\mathrm{grav}},\\quad \\kappa_T = \\frac{\\sigma_T}{m_p}",
+          "to_latex": "\\frac{\\sigma_T L_{\\mathrm{Edd}}}{4\\pi r^2 m_p c} = \\frac{G M}{r^2}",
+          "operation_label": "substitute_thomson_opacity",
+          "explanation": "κ_T = σ_T / m_p を代入し、静水圧釣合の臨界条件を陽に書き下す。",
+          "used_node_ids": [
+            "astro.rad.n08_radiative_momentum_force",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\sigma_T L_{\\mathrm{Edd}}}{4\\pi r^2 m_p c} = \\frac{G M}{r^2}",
+          "to_latex": "L_{\\mathrm{Edd}} = \\frac{4\\pi G M c}{\\kappa_T} = \\frac{4\\pi G M m_p c}{\\sigma_T}",
+          "operation_label": "solve_for_luminosity",
+          "explanation": "両辺の 1/r^2 を相殺して L_Edd について解く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

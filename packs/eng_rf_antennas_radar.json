@@ -1,0 +1,855 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.rf.antennas_radar",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "rf_engineering",
+    "title": "高周波工学2：アンテナ利得・フリスの伝達公式・レーダー方程式",
+    "language": "ja",
+    "description": "放射抵抗と指向性利得、実効開口面積 Ae=Gλ²/(4π)、自由空間伝搬損失とフリスの伝達公式、レーダー方程式とRCSを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.ant.n01_poynting_isotropic_flux",
+      "short_code": "ANT01",
+      "kind": "math_boundary",
+      "title": "遠方界のポインティング電力密度と放射電力保存",
+      "summary": "遠方界における時間平均ポインティング電力密度 S(R,theta,phi) の球面積分による全放射電力保存と、波長・周波数・光速の関係を定める境界条件。",
+      "canonical_latex": "P_{\\mathrm{rad}} = \\oint_{S^2} S(R,\\theta,\\varphi)\\,R^2\\sin\\theta\\,d\\theta\\,d\\varphi,\\quad S_{\\mathrm{iso}}(R) = \\frac{P_{\\mathrm{rad}}}{4\\pi R^2},\\quad \\lambda = \\frac{c}{f}",
+      "aliases_latex": [
+        "P_{\\mathrm{rad}} = \\int_0^{2\\pi}\\int_0^{\\pi} S(R,\\theta,\\varphi) R^2\\sin\\theta\\,d\\theta\\,d\\varphi"
+      ],
+      "keywords": [
+        "ポインティング電力密度",
+        "放射電力",
+        "等方性放射",
+        "遠方界",
+        "波長"
+      ],
+      "domain_tags": [
+        "rf_engineering",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "eng.ant.n02_radiation_resistance",
+      "short_code": "ANT02",
+      "kind": "definition",
+      "title": "放射抵抗とアンテナ放射効率の定義",
+      "summary": "アンテナ給電点電流振幅 I_0 に対する放射電力と損失電力から放射抵抗 R_r、損失抵抗 R_l、および放射効率 eta_r を定義する。",
+      "canonical_latex": "P_{\\mathrm{rad}} := \\frac{1}{2}|I_0|^2 R_r,\\quad P_{\\mathrm{loss}} := \\frac{1}{2}|I_0|^2 R_l,\\quad \\eta_r := \\frac{P_{\\mathrm{rad}}}{P_{\\mathrm{rad}} + P_{\\mathrm{loss}}} = \\frac{R_r}{R_r + R_l}",
+      "aliases_latex": [
+        "R_r = \\frac{2 P_{\\mathrm{rad}}}{|I_0|^2},\\quad \\eta_r = \\frac{R_r}{R_r + R_l}"
+      ],
+      "keywords": [
+        "放射抵抗",
+        "損失抵抗",
+        "放射効率",
+        "給電点電流"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.ant.n03_directive_gain",
+      "short_code": "ANT03",
+      "kind": "definition",
+      "title": "放射強度・指向性利得および動作利得の定義",
+      "summary": "単位立体角あたりの放射電力である放射強度 U(theta,phi) を用い、等方性アンテナを基準とした指向性利得 D と放射効率を含む動作利得 G を定義する。",
+      "canonical_latex": "U(\\theta,\\varphi) := R^2 S(R,\\theta,\\varphi),\\quad D(\\theta,\\varphi) := \\frac{4\\pi U(\\theta,\\varphi)}{P_{\\mathrm{rad}}},\\quad G(\\theta,\\varphi) := \\eta_r D(\\theta,\\varphi) = \\frac{4\\pi U(\\theta,\\varphi)}{P_{\\mathrm{in}}}",
+      "aliases_latex": [
+        "D(\\theta,\\varphi) = \\frac{U(\\theta,\\varphi)}{P_{\\mathrm{rad}}/(4\\pi)},\\quad G(\\theta,\\varphi) = \\eta_r D(\\theta,\\varphi)"
+      ],
+      "keywords": [
+        "放射強度",
+        "指向性利得",
+        "動作利得",
+        "アンテナ利得"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.ant.n04_isotropic_power_density",
+      "short_code": "ANT04",
+      "kind": "theorem_formula",
+      "title": "送信アンテナによる遠方界電力密度公式",
+      "summary": "入力電力 P_t と動作利得 G_t(theta,phi) を持つ送信アンテナから距離 R 離れた遠方界における電力密度を与える公式。",
+      "canonical_latex": "S_t(R,\\theta,\\varphi) = \\frac{P_t G_t(\\theta,\\varphi)}{4\\pi R^2}",
+      "aliases_latex": [
+        "S_t(R) = \\frac{P_t G_t}{4\\pi R^2}"
+      ],
+      "keywords": [
+        "電力密度",
+        "EIRP",
+        "遠方界",
+        "送信利得"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.ant.n05_effective_aperture_def",
+      "short_code": "ANT05",
+      "kind": "definition",
+      "title": "受信アンテナの実効開口面積の定義",
+      "summary": "受信アンテナに到来する平面波の電力密度 S_inc に対して整合負荷へ取り出される受信電力 P_r の比として実効開口面積 A_e を定義する。",
+      "canonical_latex": "A_e(\\theta,\\varphi) := \\frac{P_r}{S_{\\mathrm{inc}}(\\theta,\\varphi)},\\qquad P_r = S_{\\mathrm{inc}}(\\theta,\\varphi)\\,A_e(\\theta,\\varphi)",
+      "aliases_latex": [
+        "P_r = A_e S_{\\mathrm{inc}}"
+      ],
+      "keywords": [
+        "実効開口面積",
+        "実効面積",
+        "受信電力",
+        "整合負荷"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.ant.n06_aperture_gain_relation",
+      "short_code": "ANT06",
+      "kind": "theorem_formula",
+      "title": "アンテナ利得と実効開口面積の関係式",
+      "summary": "相反定理と基準アンテナの較正により、任意のアンテナの実効開口面積 A_e と動作利得 G が波長 lambda の2乗に比例して結びつくことを示す定理。",
+      "canonical_latex": "A_e(\\theta,\\varphi) = \\frac{\\lambda^2}{4\\pi} G(\\theta,\\varphi)",
+      "aliases_latex": [
+        "G = \\frac{4\\pi A_e}{\\lambda^2}"
+      ],
+      "keywords": [
+        "実効開口面積",
+        "アンテナ利得",
+        "相反定理",
+        "波長"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.ant.n07_free_space_path_loss",
+      "short_code": "ANT07",
+      "kind": "definition",
+      "title": "自由空間伝搬損失（FSPL）の定義",
+      "summary": "送受信ともに無損失の等方性アンテナ（G_t=G_r=1）を用いた場合の送信電力と受信電力の比として自由空間伝搬損失を定義する。",
+      "canonical_latex": "\\mathrm{FSPL} := \\left.\\frac{P_t}{P_r}\\right|_{G_t=G_r=1} = \\left(\\frac{4\\pi R}{\\lambda}\\right)^2 = \\left(\\frac{4\\pi R f}{c}\\right)^2,\\quad \\mathrm{FSPL}_{\\mathrm{dB}} = 20\\log_{10}\\!\\left(\\frac{4\\pi R f}{c}\\right)",
+      "aliases_latex": [
+        "L_{\\mathrm{fs}} = \\left(\\frac{4\\pi R}{\\lambda}\\right)^2"
+      ],
+      "keywords": [
+        "自由空間伝搬損失",
+        "FSPL",
+        "等方性アンテナ",
+        "リンクバジェット"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.ant.n08_friis_transmission_eq",
+      "short_code": "ANT08",
+      "kind": "theorem_formula",
+      "title": "フリスの伝達公式（Friis Transmission Equation）",
+      "summary": "自由空間における距離 R だけ離れた送受信アンテナ間の受信電力 P_r を、送信電力 P_t、送受信利得 G_t, G_r、および波長 lambda で表す基本公式。",
+      "canonical_latex": "P_r = P_t G_t G_r \\left(\\frac{\\lambda}{4\\pi R}\\right)^2 = \\frac{P_t G_t G_r}{\\mathrm{FSPL}}",
+      "aliases_latex": [
+        "\\frac{P_r}{P_t} = G_t G_r \\left(\\frac{\\lambda}{4\\pi R}\\right)^2"
+      ],
+      "keywords": [
+        "フリスの伝達公式",
+        "自由空間伝搬",
+        "回線設計",
+        "リンクバジェット"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.ant.n09_radar_cross_section_def",
+      "short_code": "ANT09",
+      "kind": "definition",
+      "title": "レーダー有効反射面積（RCS）の定義",
+      "summary": "標的への入射電力密度 S_inc に対し、受信機方向へ等方的に再放射したとみなした等価放射電力から標的のレーダー断面積 sigma を定義する。",
+      "canonical_latex": "\\sigma := \\lim_{R\\to\\infty} 4\\pi R^2 \\frac{S_{\\mathrm{scat}}(R)}{S_{\\mathrm{inc}}},\\qquad S_{\\mathrm{scat}}(R_r) = \\frac{\\sigma\\,S_{\\mathrm{inc}}}{4\\pi R_r^2}",
+      "aliases_latex": [
+        "\\sigma = \\frac{P_{\\mathrm{eq,iso}}}{S_{\\mathrm{inc}}}"
+      ],
+      "keywords": [
+        "レーダー断面積",
+        "RCS",
+        "散乱電力密度",
+        "レーダー"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.ant.n10_radar_range_equation",
+      "short_code": "ANT10",
+      "kind": "theorem_formula",
+      "title": "レーダー方程式（モノスタティック・バイスタティック）",
+      "summary": "送信電力、送受信アンテナ利得、波長、標的のRCS、および標的までの距離からレーダー受信電力を求める基本方程式。",
+      "canonical_latex": "P_r = \\frac{P_t G_t G_r \\lambda^2 \\sigma}{(4\\pi)^3 R_t^2 R_r^2},\\qquad P_r = \\frac{P_t G^2 \\lambda^2 \\sigma}{(4\\pi)^3 R^4}\\;\\text{(monostatic: }G_t=G_r=G,\\; R_t=R_r=R\\text{)}",
+      "aliases_latex": [
+        "R_{\\max} = \\left(\\frac{P_t G^2 \\lambda^2 \\sigma}{(4\\pi)^3 P_{r,\\min}}\\right)^{1/4}"
+      ],
+      "keywords": [
+        "レーダー方程式",
+        "モノスタティック",
+        "バイスタティック",
+        "最大探知距離"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.ant.d02_radiation_resistance",
+      "target_node_id": "eng.ant.n02_radiation_resistance",
+      "route_kind": "deductive",
+      "title": "全放射電力と入力電力から放射抵抗・放射効率の定義を導く",
+      "premise_node_ids": [
+        "eng.ant.n01_poynting_isotropic_flux"
+      ],
+      "required_math_node_ids": [
+        "eng.ant.n02_radiation_resistance"
+      ],
+      "assumptions": [
+        "正弦波定常状態において給電点電流を i(t)=Re(I_0 e^{j omega t}) とし、平均電力は (1/2)|I_0|^2 R で与えられる。",
+        "アンテナ入力電力 P_in は放射電力 P_rad と導体・誘電体損失電力 P_loss の和に等しい。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_{\\mathrm{in}} = P_{\\mathrm{rad}} + P_{\\mathrm{loss}}",
+          "to_latex": "P_{\\mathrm{rad}} = \\frac{1}{2}|I_0|^2 R_r,\\quad P_{\\mathrm{loss}} = \\frac{1}{2}|I_0|^2 R_l,\\quad \\eta_r = \\frac{R_r}{R_r + R_l}",
+          "operation_label": "等価抵抗による電力分解と効率定義",
+          "explanation": "放射電力と損失電力を給電点電流振幅の2乗に比例する等価抵抗で表し、その比として放射効率を定義する。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "eng.ant.n02_radiation_resistance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\mathrm{in}} = P_{\\mathrm{rad}} + P_{\\mathrm{loss}}",
+          "to_latex": "P_{\\mathrm{rad}} := \\frac{1}{2}|I_0|^2 R_r,\\quad P_{\\mathrm{loss}} := \\frac{1}{2}|I_0|^2 R_l",
+          "operation_label": "放射抵抗と損失抵抗の定義",
+          "explanation": "遠方界ポインティング積分による放射電力 P_rad および損失電力 P_loss を、給電点電流振幅 |I_0| を用いた等価直列抵抗 R_r, R_l で表す。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "eng.ant.n02_radiation_resistance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\mathrm{rad}} := \\frac{1}{2}|I_0|^2 R_r,\\quad P_{\\mathrm{loss}} := \\frac{1}{2}|I_0|^2 R_l",
+          "to_latex": "\\eta_r := \\frac{P_{\\mathrm{rad}}}{P_{\\mathrm{rad}} + P_{\\mathrm{loss}}} = \\frac{\\frac{1}{2}|I_0|^2 R_r}{\\frac{1}{2}|I_0|^2 (R_r + R_l)} = \\frac{R_r}{R_r + R_l}",
+          "operation_label": "共通因子 (1/2)|I_0|^2 の約分",
+          "explanation": "放射効率 eta_r = P_rad / P_in に等価抵抗表示を代入し、共通因子 (1/2)|I_0|^2 を約分して抵抗比の式を得る。",
+          "used_node_ids": [
+            "eng.ant.n02_radiation_resistance"
+          ],
+          "sympy_check_hint": "simplify((S(1)/2*I0**2*Rr)/(S(1)/2*I0**2*(Rr+Rl)))"
+        }
+      ]
+    },
+    {
+      "id": "eng.ant.d03_directive_gain",
+      "target_node_id": "eng.ant.n03_directive_gain",
+      "route_kind": "deductive",
+      "title": "球面上のポインティング電力密度から放射強度・指向性利得・動作利得を導く",
+      "premise_node_ids": [
+        "eng.ant.n01_poynting_isotropic_flux",
+        "eng.ant.n02_radiation_resistance"
+      ],
+      "required_math_node_ids": [
+        "eng.ant.n03_directive_gain",
+        "math.calc.mi08_spherical_coordinates_def",
+        "math.calc.mi09_spherical_volume_element"
+      ],
+      "assumptions": [
+        "遠方界領域において電力密度 S(R,theta,phi) は距離の2乗 1/R^2 に反比例して減衰する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_{\\mathrm{rad}} = \\oint_{S^2} S(R,\\theta,\\varphi)\\,R^2\\sin\\theta\\,d\\theta\\,d\\varphi",
+          "to_latex": "U(\\theta,\\varphi) = R^2 S(R,\\theta,\\varphi),\\quad D(\\theta,\\varphi) = \\frac{4\\pi U(\\theta,\\varphi)}{P_{\\mathrm{rad}}},\\quad G(\\theta,\\varphi) = \\eta_r D(\\theta,\\varphi) = \\frac{4\\pi U(\\theta,\\varphi)}{P_{\\mathrm{in}}}",
+          "operation_label": "放射強度の抽出と等方性基準による正規化",
+          "explanation": "距離依存性 R^2 を吸収した放射強度 U を定義し、全立体角 4pi にわたる平均放射強度で割ることで指向性利得 D と動作利得 G を得る。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "eng.ant.n02_radiation_resistance",
+            "eng.ant.n03_directive_gain",
+            "math.calc.mi08_spherical_coordinates_def",
+            "math.calc.mi09_spherical_volume_element"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\mathrm{rad}} = \\oint_{S^2} S(R,\\theta,\\varphi)\\,R^2\\sin\\theta\\,d\\theta\\,d\\varphi",
+          "to_latex": "U(\\theta,\\varphi) := R^2 S(R,\\theta,\\varphi),\\quad P_{\\mathrm{rad}} = \\oint_{S^2} U(\\theta,\\varphi)\\,d\\Omega\\quad (d\\Omega = \\sin\\theta\\,d\\theta\\,d\\varphi)",
+          "operation_label": "放射強度と立体角要素の導入",
+          "explanation": "球面上の面積要素 R^2 sin(theta) d(theta) d(phi) から R^2 を S に掛け合わせて距離に依らない放射強度 U(theta,phi) を定義する。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "eng.ant.n03_directive_gain",
+            "math.calc.mi08_spherical_coordinates_def",
+            "math.calc.mi09_spherical_volume_element"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U(\\theta,\\varphi) := R^2 S(R,\\theta,\\varphi),\\quad P_{\\mathrm{rad}} = \\oint_{S^2} U(\\theta,\\varphi)\\,d\\Omega\\quad (d\\Omega = \\sin\\theta\\,d\\theta\\,d\\varphi)",
+          "to_latex": "D(\\theta,\\varphi) := \\frac{U(\\theta,\\varphi)}{P_{\\mathrm{rad}}/(4\\pi)} = \\frac{4\\pi U(\\theta,\\varphi)}{P_{\\mathrm{rad}}}",
+          "operation_label": "等方性平均放射強度による指向性利得の定義",
+          "explanation": "全立体角 4pi で割った平均放射強度 P_rad/(4pi) に対する U(theta,phi) の比として指向性利得 D(theta,phi) を定義する。",
+          "used_node_ids": [
+            "eng.ant.n03_directive_gain"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D(\\theta,\\varphi) := \\frac{U(\\theta,\\varphi)}{P_{\\mathrm{rad}}/(4\\pi)} = \\frac{4\\pi U(\\theta,\\varphi)}{P_{\\mathrm{rad}}}",
+          "to_latex": "G(\\theta,\\varphi) := \\eta_r D(\\theta,\\varphi) = \\frac{P_{\\mathrm{rad}}}{P_{\\mathrm{in}}}\\cdot\\frac{4\\pi U(\\theta,\\varphi)}{P_{\\mathrm{rad}}} = \\frac{4\\pi U(\\theta,\\varphi)}{P_{\\mathrm{in}}}",
+          "operation_label": "放射効率の乗算による動作利得の導出",
+          "explanation": "指向性利得 D に放射効率 eta_r = P_rad / P_in を掛けることで、入力電力基準の動作利得 G を得る。",
+          "used_node_ids": [
+            "eng.ant.n02_radiation_resistance",
+            "eng.ant.n03_directive_gain"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ant.d04_isotropic_power_density",
+      "target_node_id": "eng.ant.n04_isotropic_power_density",
+      "route_kind": "deductive",
+      "title": "動作利得と放射強度の定義から送信遠方界電力密度を導出する",
+      "premise_node_ids": [
+        "eng.ant.n01_poynting_isotropic_flux",
+        "eng.ant.n03_directive_gain"
+      ],
+      "required_math_node_ids": [
+        "eng.ant.n04_isotropic_power_density"
+      ],
+      "assumptions": [
+        "送信入力電力を P_t = P_in、送信動作利得を G_t とおく。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "G_t(\\theta,\\varphi) = \\frac{4\\pi U(\\theta,\\varphi)}{P_t},\\quad U(\\theta,\\varphi) = R^2 S_t(R,\\theta,\\varphi)",
+          "to_latex": "S_t(R,\\theta,\\varphi) = \\frac{P_t G_t(\\theta,\\varphi)}{4\\pi R^2}",
+          "operation_label": "放射強度の消去による遠方界電力密度の導出",
+          "explanation": "動作利得と放射強度の定義式を連立して U(theta,phi) を消去し、遠方界電力密度 S_t を得る。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "eng.ant.n03_directive_gain",
+            "eng.ant.n04_isotropic_power_density"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G_t(\\theta,\\varphi) = \\frac{4\\pi U(\\theta,\\varphi)}{P_t},\\quad U(\\theta,\\varphi) = R^2 S_t(R,\\theta,\\varphi)",
+          "to_latex": "U(\\theta,\\varphi) = \\frac{P_t G_t(\\theta,\\varphi)}{4\\pi}",
+          "operation_label": "放射強度 U についての整理",
+          "explanation": "動作利得の定義式を放射強度 U について解く。",
+          "used_node_ids": [
+            "eng.ant.n03_directive_gain"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U(\\theta,\\varphi) = \\frac{P_t G_t(\\theta,\\varphi)}{4\\pi}",
+          "to_latex": "S_t(R,\\theta,\\varphi) = \\frac{U(\\theta,\\varphi)}{R^2} = \\frac{P_t G_t(\\theta,\\varphi)}{4\\pi R^2}",
+          "operation_label": "R^2 による除算",
+          "explanation": "U = R^2 S_t の関係を代入し、距離 R の位置での電力密度 S_t を得る。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "eng.ant.n04_isotropic_power_density"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ant.d05_effective_aperture_def",
+      "target_node_id": "eng.ant.n05_effective_aperture_def",
+      "route_kind": "reformulation",
+      "title": "到来電力密度と整合負荷への受信電力から実効開口面積を定義する",
+      "premise_node_ids": [
+        "eng.ant.n01_poynting_isotropic_flux",
+        "eng.ant.n04_isotropic_power_density"
+      ],
+      "required_math_node_ids": [
+        "eng.ant.n05_effective_aperture_def"
+      ],
+      "assumptions": [
+        "受信アンテナには偏波整合およびインピーダンス整合が成立している。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S_{\\mathrm{inc}}(\\theta,\\varphi) \\;\\text{(incident power flux density)}\\;\\left[\\mathrm{W/m^2}\\right],\\quad P_r\\;\\text{(received power)}\\;\\left[\\mathrm{W}\\right]",
+          "to_latex": "A_e(\\theta,\\varphi) := \\frac{P_r}{S_{\\mathrm{inc}}(\\theta,\\varphi)},\\qquad P_r = S_{\\mathrm{inc}}(\\theta,\\varphi)\\,A_e(\\theta,\\varphi)",
+          "operation_label": "受信電力と入射電力密度の比による実効面積定義",
+          "explanation": "入射平面波の電力密度と受信電力の次元解析から、面積の次元を持つ比例係数として実効開口面積 A_e を定義する。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "eng.ant.n04_isotropic_power_density",
+            "eng.ant.n05_effective_aperture_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_{\\mathrm{inc}}(\\theta,\\varphi) \\;\\text{(incident power flux density)}\\;\\left[\\mathrm{W/m^2}\\right],\\quad P_r\\;\\text{(received power)}\\;\\left[\\mathrm{W}\\right]",
+          "to_latex": "\\frac{P_r}{S_{\\mathrm{inc}}(\\theta,\\varphi)} \\;\\left[\\frac{\\mathrm{W}}{\\mathrm{W/m^2}} = \\mathrm{m^2}\\right]",
+          "operation_label": "次元確認と等価受光面積の抽出",
+          "explanation": "受信電力 P_r を入射電力密度 S_inc で除した量が面積の次元を持つことを確認する。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "eng.ant.n04_isotropic_power_density"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{P_r}{S_{\\mathrm{inc}}(\\theta,\\varphi)} \\;\\left[\\frac{\\mathrm{W}}{\\mathrm{W/m^2}} = \\mathrm{m^2}\\right]",
+          "to_latex": "A_e(\\theta,\\varphi) := \\frac{P_r}{S_{\\mathrm{inc}}(\\theta,\\varphi)},\\qquad P_r = S_{\\mathrm{inc}}(\\theta,\\varphi)\\,A_e(\\theta,\\varphi)",
+          "operation_label": "実効開口面積の定義式確立",
+          "explanation": "到来方向 (theta,phi) に依存する実効開口面積 A_e を定義し、受信電力の表現式を得る。",
+          "used_node_ids": [
+            "eng.ant.n05_effective_aperture_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ant.d06_aperture_gain_relation",
+      "target_node_id": "eng.ant.n06_aperture_gain_relation",
+      "route_kind": "deductive",
+      "title": "相反定理と基準アンテナ較正による実効開口面積と利得の関係式導出",
+      "premise_node_ids": [
+        "eng.ant.n04_isotropic_power_density",
+        "eng.ant.n05_effective_aperture_def"
+      ],
+      "required_math_node_ids": [
+        "eng.ant.n03_directive_gain",
+        "eng.ant.n06_aperture_gain_relation"
+      ],
+      "assumptions": [
+        "線形・等方・受動な媒質中では2アンテナ間の伝送電力比が相反定理により等しい（P_{r,1->2}/P_{t,1} = P_{r,2->1}/P_{t,2}）。",
+        "微小ダイポールアンテナの最大指向性利得 D=3/2 と最大実効開口面積 A_e = 3*lambda^2/(8*pi) が既知の基準値として与えられる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{P_{r,1\\to 2}}{P_{t,1}} = \\frac{P_{r,2\\to 1}}{P_{t,2}}",
+          "to_latex": "A_e(\\theta,\\varphi) = \\frac{\\lambda^2}{4\\pi} G(\\theta,\\varphi)",
+          "operation_label": "相反定理による普遍定数化と基準アンテナ較正",
+          "explanation": "2アンテナ間の伝送相反性から A_e/G がアンテナの種類に依存しない普遍定数であることを示し、基準アンテナの値で比例定数 lambda^2/(4pi) を決定する。",
+          "used_node_ids": [
+            "eng.ant.n04_isotropic_power_density",
+            "eng.ant.n05_effective_aperture_def",
+            "eng.ant.n06_aperture_gain_relation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{P_{r,1\\to 2}}{P_{t,1}} = \\frac{P_{r,2\\to 1}}{P_{t,2}}",
+          "to_latex": "\\frac{G_1 A_{e2}}{4\\pi R^2} = \\frac{G_2 A_{e1}}{4\\pi R^2} \\implies \\frac{A_{e1}}{G_1} = \\frac{A_{e2}}{G_2} = C(\\lambda)",
+          "operation_label": "遠方界電力密度と実効面積の代入",
+          "explanation": "各方向の伝送電力比を S_t * A_e / P_t = G_i A_ej / (4pi R^2) で表すと、A_e/G がアンテナに依らない定数 C(lambda) に等しいことが従う。",
+          "used_node_ids": [
+            "eng.ant.n04_isotropic_power_density",
+            "eng.ant.n05_effective_aperture_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{G_1 A_{e2}}{4\\pi R^2} = \\frac{G_2 A_{e1}}{4\\pi R^2} \\implies \\frac{A_{e1}}{G_1} = \\frac{A_{e2}}{G_2} = C(\\lambda)",
+          "to_latex": "C(\\lambda) = \\frac{A_{e,\\mathrm{dipole}}}{D_{\\mathrm{dipole}}} = \\frac{3\\lambda^2/(8\\pi)}{3/2} = \\frac{\\lambda^2}{4\\pi}",
+          "operation_label": "微小ダイポール基準による比例定数の決定",
+          "explanation": "無損失微小ダイポール（eta_r=1, G=D=3/2, A_e=3*lambda^2/(8pi)）を基準として代入し、普遍定数 C(lambda) = lambda^2/(4pi) を求める。",
+          "used_node_ids": [
+            "eng.ant.n03_directive_gain",
+            "eng.ant.n06_aperture_gain_relation"
+          ],
+          "sympy_check_hint": "simplify((3*lam**2/(8*pi))/(S(3)/2))"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C(\\lambda) = \\frac{A_{e,\\mathrm{dipole}}}{D_{\\mathrm{dipole}}} = \\frac{3\\lambda^2/(8\\pi)}{3/2} = \\frac{\\lambda^2}{4\\pi}",
+          "to_latex": "A_e(\\theta,\\varphi) = \\frac{\\lambda^2}{4\\pi} G(\\theta,\\varphi)",
+          "operation_label": "一般アンテナへの適用",
+          "explanation": "求めた定数 C(lambda) を一般のアンテナの比 A_e/G = C(lambda) に戻して関係式を得る。",
+          "used_node_ids": [
+            "eng.ant.n06_aperture_gain_relation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ant.d07_free_space_path_loss",
+      "target_node_id": "eng.ant.n07_free_space_path_loss",
+      "route_kind": "deductive",
+      "title": "等方性アンテナ間の電力伝送から自由空間伝搬損失を導出する",
+      "premise_node_ids": [
+        "eng.ant.n01_poynting_isotropic_flux",
+        "eng.ant.n04_isotropic_power_density",
+        "eng.ant.n05_effective_aperture_def",
+        "eng.ant.n06_aperture_gain_relation",
+        "phys.rel.sr01_relativity_postulates"
+      ],
+      "required_math_node_ids": [
+        "eng.ant.n07_free_space_path_loss"
+      ],
+      "assumptions": [
+        "自由空間において送受信ともに等方性無損失アンテナ（G_t = G_r = 1）を仮定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_r = S_t(R) A_{e,r}\\quad (G_t = G_r = 1)",
+          "to_latex": "\\mathrm{FSPL} = \\left(\\frac{4\\pi R}{\\lambda}\\right)^2 = \\left(\\frac{4\\pi R f}{c}\\right)^2,\\quad \\mathrm{FSPL}_{\\mathrm{dB}} = 20\\log_{10}\\!\\left(\\frac{4\\pi R f}{c}\\right)",
+          "operation_label": "等方性実効面積の代入と周波数表示への変換",
+          "explanation": "等方性アンテナの送信電力密度と実効開口面積を掛け合わせて受信電力を求め、その逆数として自由空間伝搬損失を導く。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "eng.ant.n04_isotropic_power_density",
+            "eng.ant.n05_effective_aperture_def",
+            "eng.ant.n06_aperture_gain_relation",
+            "eng.ant.n07_free_space_path_loss",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_r = S_t(R) A_{e,r}\\quad (G_t = G_r = 1)",
+          "to_latex": "P_r = \\left(\\frac{P_t}{4\\pi R^2}\\right)\\left(\\frac{\\lambda^2}{4\\pi}\\right) = P_t\\left(\\frac{\\lambda}{4\\pi R}\\right)^2",
+          "operation_label": "G_t=G_r=1 の電力密度と実効面積の代入",
+          "explanation": "S_t(R) = P_t/(4pi R^2) と A_{e,r} = lambda^2/(4pi) を代入して受信電力を計算する。",
+          "used_node_ids": [
+            "eng.ant.n04_isotropic_power_density",
+            "eng.ant.n05_effective_aperture_def",
+            "eng.ant.n06_aperture_gain_relation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_r = \\left(\\frac{P_t}{4\\pi R^2}\\right)\\left(\\frac{\\lambda^2}{4\\pi}\\right) = P_t\\left(\\frac{\\lambda}{4\\pi R}\\right)^2",
+          "to_latex": "\\mathrm{FSPL} := \\frac{P_t}{P_r} = \\left(\\frac{4\\pi R}{\\lambda}\\right)^2 = \\left(\\frac{4\\pi R f}{c}\\right)^2,\\quad \\mathrm{FSPL}_{\\mathrm{dB}} = 20\\log_{10}\\!\\left(\\frac{4\\pi R f}{c}\\right)",
+          "operation_label": "損失比の定義と lambda=c/f およびデシベル変換",
+          "explanation": "P_t/P_r を取り、lambda = c/f を代入した後、10 log10 を適用してデシベル表記を得る。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "eng.ant.n07_free_space_path_loss",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ant.d08_friis_transmission_eq",
+      "target_node_id": "eng.ant.n08_friis_transmission_eq",
+      "route_kind": "deductive",
+      "title": "送信電力密度と受信実効開口面積の積からフリスの伝達公式を導出する",
+      "premise_node_ids": [
+        "eng.ant.n04_isotropic_power_density",
+        "eng.ant.n05_effective_aperture_def",
+        "eng.ant.n06_aperture_gain_relation",
+        "eng.ant.n07_free_space_path_loss"
+      ],
+      "required_math_node_ids": [
+        "eng.ant.n08_friis_transmission_eq"
+      ],
+      "assumptions": [
+        "送受信アンテナは互いに遠方界にあり、偏波整合・インピーダンス整合が満たされている。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_r = S_t(R)\\,A_{e,r}",
+          "to_latex": "P_r = P_t G_t G_r \\left(\\frac{\\lambda}{4\\pi R}\\right)^2 = \\frac{P_t G_t G_r}{\\mathrm{FSPL}}",
+          "operation_label": "遠方界電力密度と実効開口面積の結合",
+          "explanation": "送信側の電力密度公式と受信側の実効開口面積・利得関係式を結合し、フリスの伝達公式を得る。",
+          "used_node_ids": [
+            "eng.ant.n04_isotropic_power_density",
+            "eng.ant.n05_effective_aperture_def",
+            "eng.ant.n06_aperture_gain_relation",
+            "eng.ant.n07_free_space_path_loss",
+            "eng.ant.n08_friis_transmission_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_r = S_t(R)\\,A_{e,r}",
+          "to_latex": "P_r = \\left(\\frac{P_t G_t}{4\\pi R^2}\\right)\\,A_{e,r}",
+          "operation_label": "送信電力密度の代入",
+          "explanation": "受信アンテナ位置での入射電力密度として S_t(R) = P_t G_t / (4pi R^2) を代入する。",
+          "used_node_ids": [
+            "eng.ant.n04_isotropic_power_density",
+            "eng.ant.n05_effective_aperture_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_r = \\left(\\frac{P_t G_t}{4\\pi R^2}\\right)\\,A_{e,r}",
+          "to_latex": "P_r = \\left(\\frac{P_t G_t}{4\\pi R^2}\\right)\\left(\\frac{\\lambda^2}{4\\pi} G_r\\right) = P_t G_t G_r \\left(\\frac{\\lambda}{4\\pi R}\\right)^2 = \\frac{P_t G_t G_r}{\\mathrm{FSPL}}",
+          "operation_label": "受信実効開口面積の利得表示代入と整理",
+          "explanation": "A_{e,r} = (lambda^2/(4pi)) G_r を代入して整理し、自由空間伝搬損失 FSPL を用いた表現も得る。",
+          "used_node_ids": [
+            "eng.ant.n06_aperture_gain_relation",
+            "eng.ant.n07_free_space_path_loss",
+            "eng.ant.n08_friis_transmission_eq"
+          ],
+          "sympy_check_hint": "simplify((Pt*Gt/(4*pi*R**2))*(lam**2/(4*pi)*Gr) - Pt*Gt*Gr*(lam/(4*pi*R))**2)"
+        }
+      ]
+    },
+    {
+      "id": "eng.ant.d09_radar_cross_section_def",
+      "target_node_id": "eng.ant.n09_radar_cross_section_def",
+      "route_kind": "reformulation",
+      "title": "等方性等価再放射電力モデルからレーダー断面積（RCS）を定義する",
+      "premise_node_ids": [
+        "eng.ant.n01_poynting_isotropic_flux",
+        "eng.ant.n04_isotropic_power_density"
+      ],
+      "required_math_node_ids": [
+        "eng.ant.n09_radar_cross_section_def"
+      ],
+      "assumptions": [
+        "標的は遠方界にあり、受信機方向へ等方的に電力 P_eq,iso = sigma * S_inc を再放射する等価点散乱体とみなせる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S_{\\mathrm{scat}}(R) = \\frac{P_{\\mathrm{eq,iso}}}{4\\pi R^2},\\quad P_{\\mathrm{eq,iso}} = \\sigma\\,S_{\\mathrm{inc}}",
+          "to_latex": "\\sigma := \\lim_{R\\to\\infty} 4\\pi R^2 \\frac{S_{\\mathrm{scat}}(R)}{S_{\\mathrm{inc}}},\\qquad S_{\\mathrm{scat}}(R_r) = \\frac{\\sigma\\,S_{\\mathrm{inc}}}{4\\pi R_r^2}",
+          "operation_label": "等価等方放射電力と入射電力密度の比の抽出",
+          "explanation": "散乱波の遠方界電力密度を等方性点散乱モデルと対応づけることで、距離 R に依存しない標的固有の面積量として RCS を定義する。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "eng.ant.n04_isotropic_power_density",
+            "eng.ant.n09_radar_cross_section_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_{\\mathrm{scat}}(R) = \\frac{P_{\\mathrm{eq,iso}}}{4\\pi R^2},\\quad P_{\\mathrm{eq,iso}} = \\sigma\\,S_{\\mathrm{inc}}",
+          "to_latex": "\\sigma = \\frac{4\\pi R^2 S_{\\mathrm{scat}}(R)}{S_{\\mathrm{inc}}}",
+          "operation_label": "等価放射電力の消去",
+          "explanation": "等方性球面拡散の式に P_eq,iso = sigma * S_inc を代入し、sigma について解く。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma = \\frac{4\\pi R^2 S_{\\mathrm{scat}}(R)}{S_{\\mathrm{inc}}}",
+          "to_latex": "\\sigma := \\lim_{R\\to\\infty} 4\\pi R^2 \\frac{S_{\\mathrm{scat}}(R)}{S_{\\mathrm{inc}}},\\qquad S_{\\mathrm{scat}}(R_r) = \\frac{\\sigma\\,S_{\\mathrm{inc}}}{4\\pi R_r^2}",
+          "operation_label": "遠方界極限による厳密定義と散乱電力密度表示",
+          "explanation": "近傍界成分を除去するため R -> infinity の極限を取り RCS を定義し、受信点距離 R_r での散乱電力密度式を得る。",
+          "used_node_ids": [
+            "eng.ant.n09_radar_cross_section_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.ant.d10_radar_range_equation",
+      "target_node_id": "eng.ant.n10_radar_range_equation",
+      "route_kind": "deductive",
+      "title": "往路電力密度・RCS散乱・受信実効開口面積の結合によるレーダー方程式の導出",
+      "premise_node_ids": [
+        "eng.ant.n04_isotropic_power_density",
+        "eng.ant.n05_effective_aperture_def",
+        "eng.ant.n06_aperture_gain_relation",
+        "eng.ant.n09_radar_cross_section_def"
+      ],
+      "required_math_node_ids": [
+        "eng.ant.n10_radar_range_equation"
+      ],
+      "assumptions": [
+        "自由空間伝搬・無損失媒質・偏波およびインピーダンス整合を仮定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_r = S_{\\mathrm{scat}}(R_r)\\,A_{e,r}",
+          "to_latex": "P_r = \\frac{P_t G_t G_r \\lambda^2 \\sigma}{(4\\pi)^3 R_t^2 R_r^2},\\qquad P_r = \\frac{P_t G^2 \\lambda^2 \\sigma}{(4\\pi)^3 R^4}\\;\\text{(monostatic: }G_t=G_r=G,\\; R_t=R_r=R\\text{)}",
+          "operation_label": "往路照射・標的散乱・復路受信の3段階結合",
+          "explanation": "送信アンテナによる標的照射電力密度、RCSによる復路散乱電力密度、受信アンテナの実効開口面積を順次掛け合わせてレーダー方程式を導く。",
+          "used_node_ids": [
+            "eng.ant.n04_isotropic_power_density",
+            "eng.ant.n05_effective_aperture_def",
+            "eng.ant.n06_aperture_gain_relation",
+            "eng.ant.n09_radar_cross_section_def",
+            "eng.ant.n10_radar_range_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_r = S_{\\mathrm{scat}}(R_r)\\,A_{e,r}",
+          "to_latex": "S_{\\mathrm{inc}}(R_t) = \\frac{P_t G_t}{4\\pi R_t^2},\\quad S_{\\mathrm{scat}}(R_r) = \\frac{\\sigma\\,S_{\\mathrm{inc}}(R_t)}{4\\pi R_r^2} = \\frac{P_t G_t \\sigma}{(4\\pi)^2 R_t^2 R_r^2}",
+          "operation_label": "往路入射電力密度とRCS散乱電力密度の結合",
+          "explanation": "標的への入射電力密度 S_inc(R_t) に RCS による散乱伝搬係数 sigma/(4pi R_r^2) を掛け、受信アンテナ位置での散乱電力密度を求める。",
+          "used_node_ids": [
+            "eng.ant.n04_isotropic_power_density",
+            "eng.ant.n09_radar_cross_section_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_{\\mathrm{inc}}(R_t) = \\frac{P_t G_t}{4\\pi R_t^2},\\quad S_{\\mathrm{scat}}(R_r) = \\frac{\\sigma\\,S_{\\mathrm{inc}}(R_t)}{4\\pi R_r^2} = \\frac{P_t G_t \\sigma}{(4\\pi)^2 R_t^2 R_r^2}",
+          "to_latex": "P_r = S_{\\mathrm{scat}}(R_r)\\,A_{e,r} = \\frac{P_t G_t \\sigma}{(4\\pi)^2 R_t^2 R_r^2}\\cdot\\frac{\\lambda^2 G_r}{4\\pi} = \\frac{P_t G_t G_r \\lambda^2 \\sigma}{(4\\pi)^3 R_t^2 R_r^2}",
+          "operation_label": "受信実効開口面積の乗算（バイスタティック形）",
+          "explanation": "散乱電力密度に受信アンテナの実効開口面積 A_{e,r} = lambda^2 G_r / (4pi) を掛け合わせ、バイスタティック・レーダー方程式を得る。",
+          "used_node_ids": [
+            "eng.ant.n05_effective_aperture_def",
+            "eng.ant.n06_aperture_gain_relation",
+            "eng.ant.n10_radar_range_equation"
+          ],
+          "sympy_check_hint": "simplify((Pt*Gt*sigma/((4*pi)**2*Rt**2*Rr**2))*(lam**2*Gr/(4*pi)))"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_r = S_{\\mathrm{scat}}(R_r)\\,A_{e,r} = \\frac{P_t G_t \\sigma}{(4\\pi)^2 R_t^2 R_r^2}\\cdot\\frac{\\lambda^2 G_r}{4\\pi} = \\frac{P_t G_t G_r \\lambda^2 \\sigma}{(4\\pi)^3 R_t^2 R_r^2}",
+          "to_latex": "P_r = \\frac{P_t G_t G_r \\lambda^2 \\sigma}{(4\\pi)^3 R_t^2 R_r^2},\\qquad P_r = \\frac{P_t G^2 \\lambda^2 \\sigma}{(4\\pi)^3 R^4}\\;\\text{(monostatic: }G_t=G_r=G,\\; R_t=R_r=R\\text{)}",
+          "operation_label": "モノスタティック条件の適用",
+          "explanation": "送受信共用アンテナかつ同一位置（G_t=G_r=G, R_t=R_r=R）の条件を代入し、距離の4乗に反比例するモノスタティック・レーダー方程式を得る。",
+          "used_node_ids": [
+            "eng.ant.n10_radar_range_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

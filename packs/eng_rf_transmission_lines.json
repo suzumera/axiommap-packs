@@ -1,0 +1,781 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.rf.transmission_lines",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "rf_engineering",
+    "title": "高周波工学1：電信方程式・特性インピーダンス・反射係数とスミスチャート",
+    "language": "ja",
+    "description": "分布定数回路から電信方程式、特性インピーダンスZ0、電圧反射係数Γ、VSWR、入力インピーダンス変換式とスミスチャートの等角写像を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.tline.tl01_distributed_circuit_model",
+      "short_code": "TL01",
+      "kind": "math_boundary",
+      "title": "分布定数線路の微小区間等価回路モデル（KVL・KCL）",
+      "summary": "単位長あたりの直列抵抗R・直列インダクタンスL・並列コンダクタンスG・並列静電容量Cを持つ微小長さΔzの伝送線路区間に対するキルヒホッフの電圧則・電流則。",
+      "canonical_latex": "\\Delta v(z,t) = -\\left(R\\Delta z\\, i + L\\Delta z\\frac{\\partial i}{\\partial t}\\right),\\quad \\Delta i(z,t) = -\\left(G\\Delta z\\, v + C\\Delta z\\frac{\\partial v}{\\partial t}\\right)",
+      "aliases_latex": [
+        "v(z+\\Delta z,t)-v(z,t) = -\\left(R\\Delta z\\, i + L\\Delta z\\frac{\\partial i}{\\partial t}\\right)",
+        "i(z+\\Delta z,t)-i(z,t) = -\\left(G\\Delta z\\, v + C\\Delta z\\frac{\\partial v}{\\partial t}\\right)"
+      ],
+      "keywords": [
+        "分布定数回路",
+        "RLGCモデル",
+        "キルヒホッフの法則",
+        "伝送線路"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.tline.tl02_telegraphers_equations",
+      "short_code": "TL02",
+      "kind": "theorem_formula",
+      "title": "電信方程式（時間領域の分布定数回路偏微分方程式）",
+      "summary": "分布定数線路の微小極限から導かれる電圧・電流に関する1階連立偏微分方程式および2階波動方程式。",
+      "canonical_latex": "\\frac{\\partial v}{\\partial z} = -R i - L\\frac{\\partial i}{\\partial t},\\quad \\frac{\\partial i}{\\partial z} = -G v - C\\frac{\\partial v}{\\partial t},\\quad \\frac{\\partial^2 v}{\\partial z^2} = LC\\frac{\\partial^2 v}{\\partial t^2} + (RC+GL)\\frac{\\partial v}{\\partial t} + RG v",
+      "aliases_latex": [
+        "\\frac{\\partial^2 i}{\\partial z^2} = LC\\frac{\\partial^2 i}{\\partial t^2} + (RC+GL)\\frac{\\partial i}{\\partial t} + RG i"
+      ],
+      "keywords": [
+        "電信方程式",
+        "偏微分方程式",
+        "分布定数線路"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.tline.tl03_phasor_propagation_constant",
+      "short_code": "TL03",
+      "kind": "theorem_formula",
+      "title": "周波数領域の電信方程式と伝搬定数",
+      "summary": "正弦波定常状態におけるフェーザ表示の電信方程式と、減衰定数αおよび位相定数βからなる伝搬定数γ。",
+      "canonical_latex": "\\frac{d^2 V(z)}{dz^2} = \\gamma^2 V(z),\\quad \\frac{d^2 I(z)}{dz^2} = \\gamma^2 I(z),\\quad \\gamma := \\alpha + j\\beta = \\sqrt{(R+j\\omega L)(G+j\\omega C)}",
+      "aliases_latex": [
+        "\\frac{dV}{dz} = -(R+j\\omega L)I,\\quad \\frac{dI}{dz} = -(G+j\\omega C)V"
+      ],
+      "keywords": [
+        "伝搬定数",
+        "減衰定数",
+        "位相定数",
+        "フェーザ"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.tline.tl04_characteristic_impedance_def",
+      "short_code": "TL04",
+      "kind": "definition",
+      "title": "進行波解と特性インピーダンスの定義",
+      "summary": "周波数領域の電信方程式の一般解（前進波と後退波の重ね合わせ）および前進波電圧・電流比として定まる特性インピーダンスZ0。",
+      "canonical_latex": "V(z) = V^+ e^{-\\gamma z} + V^- e^{\\gamma z},\\quad I(z) = \\frac{V^+}{Z_0} e^{-\\gamma z} - \\frac{V^-}{Z_0} e^{\\gamma z},\\quad Z_0 := \\sqrt{\\frac{R+j\\omega L}{G+j\\omega C}}",
+      "aliases_latex": [
+        "Z_0 = \\frac{V^+}{I^+} = -\\frac{V^-}{I^-}"
+      ],
+      "keywords": [
+        "特性インピーダンス",
+        "進行波",
+        "反射波"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.tline.tl05_lossless_line_parameters",
+      "short_code": "TL05",
+      "kind": "theorem_formula",
+      "title": "無損失線路の伝搬定数・特性インピーダンス・位相速度",
+      "summary": "R=G=0の無損失伝送線路における純虚数伝搬定数、実数特性インピーダンス、および位相速度の表式。",
+      "canonical_latex": "R=G=0 \\implies \\alpha=0,\\quad \\gamma = j\\beta = j\\omega\\sqrt{LC},\\quad Z_0 = \\sqrt{\\frac{L}{C}},\\quad v_p = \\frac{\\omega}{\\beta} = \\frac{1}{\\sqrt{LC}}",
+      "aliases_latex": [
+        "\\beta = \\omega\\sqrt{LC},\\quad Z_0 = \\sqrt{L/C}"
+      ],
+      "keywords": [
+        "無損失線路",
+        "位相速度",
+        "特性インピーダンス"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.tline.tl06_reflection_coefficient",
+      "short_code": "TL06",
+      "kind": "theorem_formula",
+      "title": "負荷端における電圧反射係数の定義とインピーダンス表示",
+      "summary": "負荷インピーダンスZLで終端された伝送線路における反射波・入射波電圧比としての電圧反射係数ΓLおよび負荷からの距離dにおけるΓ(d)。",
+      "canonical_latex": "\\Gamma_L := \\frac{V_L^-}{V_L^+} = \\frac{Z_L - Z_0}{Z_L + Z_0},\\qquad \\Gamma(d) = \\Gamma_L e^{-2\\gamma d}\\quad (d := l - z)",
+      "aliases_latex": [
+        "\\Gamma(d) = \\frac{Z(d)-Z_0}{Z(d)+Z_0}"
+      ],
+      "keywords": [
+        "電圧反射係数",
+        "負荷インピーダンス",
+        "インピーダンス整合"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.tline.tl07_vswr_standing_wave",
+      "short_code": "TL07",
+      "kind": "theorem_formula",
+      "title": "定在波比（VSWR）の定義と反射係数による表現",
+      "summary": "無損失線路上の定在波電圧振幅の最大値と最小値の比として定義される電圧定在波比（VSWR）と反射係数の大きさとの関係。",
+      "canonical_latex": "\\mathrm{VSWR} := \\frac{|V(d)|_{\\max}}{|V(d)|_{\\min}} = \\frac{1 + |\\Gamma_L|}{1 - |\\Gamma_L|}\\quad (|\\Gamma_L| < 1,\\;\\alpha = 0)",
+      "aliases_latex": [
+        "|\\Gamma_L| = \\frac{\\mathrm{VSWR} - 1}{\\mathrm{VSWR} + 1}"
+      ],
+      "keywords": [
+        "VSWR",
+        "電圧定在波比",
+        "定在波"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.tline.tl08_input_impedance_transform",
+      "short_code": "TL08",
+      "kind": "theorem_formula",
+      "title": "伝送線路の入力インピーダンス変換式",
+      "summary": "負荷インピーダンスZLから距離dだけ電源側へ戻った点から負荷側を見込んだ入力インピーダンスZin(d)の変換公式。",
+      "canonical_latex": "Z_{\\mathrm{in}}(d) = Z_0 \\frac{Z_L + Z_0 \\tanh(\\gamma d)}{Z_0 + Z_L \\tanh(\\gamma d)},\\qquad Z_{\\mathrm{in}}(d) = Z_0 \\frac{Z_L + j Z_0 \\tan(\\beta d)}{Z_0 + j Z_L \\tan(\\beta d)}\\quad (\\alpha = 0)",
+      "aliases_latex": [
+        "Z_{\\mathrm{in}}(d) = Z_0 \\frac{1 + \\Gamma_L e^{-2\\gamma d}}{1 - \\Gamma_L e^{-2\\gamma d}}"
+      ],
+      "keywords": [
+        "入力インピーダンス",
+        "インピーダンス変換",
+        "1/4波長変成器"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    },
+    {
+      "id": "eng.tline.tl09_smith_chart_mobius_map",
+      "short_code": "TL09",
+      "kind": "theorem_formula",
+      "title": "スミスチャートの等角写像（メビウス変換）と定抵抗・定リアクタンス円",
+      "summary": "正規化インピーダンスz_bar=r+jxから複素反射係数Γ=u+jvへのメビウス変換（等角写像）と、Γ平面上の定抵抗円・定リアクタンス円の方程式。",
+      "canonical_latex": "\\Gamma = \\frac{\\bar{z} - 1}{\\bar{z} + 1}\\quad (\\bar{z} := \\frac{Z}{Z_0} = r + jx),\\qquad \\left(u - \\frac{r}{r+1}\\right)^2 + v^2 = \\left(\\frac{1}{r+1}\\right)^2,\\quad (u - 1)^2 + \\left(v - \\frac{1}{x}\\right)^2 = \\left(\\frac{1}{x}\\right)^2",
+      "aliases_latex": [
+        "\\bar{z} = \\frac{1 + \\Gamma}{1 - \\Gamma}"
+      ],
+      "keywords": [
+        "スミスチャート",
+        "メビウス変換",
+        "等角写像",
+        "定抵抗円",
+        "定リアクタンス円"
+      ],
+      "domain_tags": [
+        "rf_engineering"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_tl02_telegraphers",
+      "target_node_id": "eng.tline.tl02_telegraphers_equations",
+      "route_kind": "deductive",
+      "title": "分布定数モデルからの電信方程式の導出",
+      "premise_node_ids": [
+        "eng.tline.tl01_distributed_circuit_model"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity",
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "assumptions": [
+        "線路定数R, L, G, Cは位置zおよび時間tに依存しない一様な分布定数とする。",
+        "電圧v(z,t)および電流i(z,t)はC^2級であり混合偏微分の交換が可能とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta v(z,t) = -\\left(R\\Delta z\\, i + L\\Delta z\\frac{\\partial i}{\\partial t}\\right),\\quad \\Delta i(z,t) = -\\left(G\\Delta z\\, v + C\\Delta z\\frac{\\partial v}{\\partial t}\\right)",
+          "to_latex": "\\frac{\\partial v}{\\partial z} = -R i - L\\frac{\\partial i}{\\partial t},\\quad \\frac{\\partial i}{\\partial z} = -G v - C\\frac{\\partial v}{\\partial t},\\quad \\frac{\\partial^2 v}{\\partial z^2} = LC\\frac{\\partial^2 v}{\\partial t^2} + (RC+GL)\\frac{\\partial v}{\\partial t} + RG v",
+          "operation_label": "微小極限と変数消去",
+          "explanation": "Δz→0の極限で1階連立偏微分方程式を得たのち、一方の式を空間微分して他方を代入し2階電信方程式を導く。",
+          "used_node_ids": [
+            "eng.tline.tl01_distributed_circuit_model",
+            "math.calc.m36_derivative_linearity",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta v(z,t) = -\\left(R\\Delta z\\, i + L\\Delta z\\frac{\\partial i}{\\partial t}\\right),\\quad \\Delta i(z,t) = -\\left(G\\Delta z\\, v + C\\Delta z\\frac{\\partial v}{\\partial t}\\right)",
+          "to_latex": "\\frac{\\partial v}{\\partial z} = -R i - L\\frac{\\partial i}{\\partial t},\\quad \\frac{\\partial i}{\\partial z} = -G v - C\\frac{\\partial v}{\\partial t}",
+          "operation_label": "偏微分の定義（Δz→0極限）",
+          "explanation": "両辺をΔzで割り、Δz→0の極限をとることでzに関する偏導関数の関係式を得る。",
+          "used_node_ids": [
+            "eng.tline.tl01_distributed_circuit_model",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial v}{\\partial z} = -R i - L\\frac{\\partial i}{\\partial t},\\quad \\frac{\\partial i}{\\partial z} = -G v - C\\frac{\\partial v}{\\partial t}",
+          "to_latex": "\\frac{\\partial^2 v}{\\partial z^2} = -R\\frac{\\partial i}{\\partial z} - L\\frac{\\partial}{\\partial t}\\left(\\frac{\\partial i}{\\partial z}\\right) = \\left(R + L\\frac{\\partial}{\\partial t}\\right)\\left(G v + C\\frac{\\partial v}{\\partial t}\\right)",
+          "operation_label": "空間微分と偏微分順序の交換",
+          "explanation": "第1式をzで偏微分し、微分の線形性を用いて∂i/∂zを第2式で消去する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial^2 v}{\\partial z^2} = -R\\frac{\\partial i}{\\partial z} - L\\frac{\\partial}{\\partial t}\\left(\\frac{\\partial i}{\\partial z}\\right) = \\left(R + L\\frac{\\partial}{\\partial t}\\right)\\left(G v + C\\frac{\\partial v}{\\partial t}\\right)",
+          "to_latex": "\\frac{\\partial v}{\\partial z} = -R i - L\\frac{\\partial i}{\\partial t},\\quad \\frac{\\partial i}{\\partial z} = -G v - C\\frac{\\partial v}{\\partial t},\\quad \\frac{\\partial^2 v}{\\partial z^2} = LC\\frac{\\partial^2 v}{\\partial t^2} + (RC+GL)\\frac{\\partial v}{\\partial t} + RG v",
+          "operation_label": "微分演算子の展開",
+          "explanation": "右辺の微分演算子を展開整理して時間領域の2階電信方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_tl03_phasor_gamma",
+      "target_node_id": "eng.tline.tl03_phasor_propagation_constant",
+      "route_kind": "deductive",
+      "title": "正弦波定常状態のフェーザ変換による伝搬定数の導出",
+      "premise_node_ids": [
+        "eng.tline.tl02_telegraphers_equations"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "角周波数ω>0の単一周波数正弦波定常状態 v(z,t)=Re{V(z)e^{jωt}}, i(z,t)=Re{I(z)e^{jωt}} を仮定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial v}{\\partial z} = -R i - L\\frac{\\partial i}{\\partial t},\\quad \\frac{\\partial i}{\\partial z} = -G v - C\\frac{\\partial v}{\\partial t}",
+          "to_latex": "\\frac{d^2 V(z)}{dz^2} = \\gamma^2 V(z),\\quad \\frac{d^2 I(z)}{dz^2} = \\gamma^2 I(z),\\quad \\gamma := \\alpha + j\\beta = \\sqrt{(R+j\\omega L)(G+j\\omega C)}",
+          "operation_label": "フェーザ変換と連立ODEの分離",
+          "explanation": "時間微分∂/∂tをjωに置換して周波数領域の連立常微分方程式とし、V(z)とI(z)の2階常微分方程式と伝搬定数γを得る。",
+          "used_node_ids": [
+            "eng.tline.tl02_telegraphers_equations",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial v}{\\partial z} = -R i - L\\frac{\\partial i}{\\partial t},\\quad \\frac{\\partial i}{\\partial z} = -G v - C\\frac{\\partial v}{\\partial t}",
+          "to_latex": "\\frac{dV(z)}{dz} = -(R + j\\omega L)I(z),\\quad \\frac{dI(z)}{dz} = -(G + j\\omega C)V(z)",
+          "operation_label": "フェーザ表示の代入（∂/∂t → jω）",
+          "explanation": "時間領域の電信方程式にe^{jωt}依存のフェーザ表示を代入し、線形性より複素振幅に関する常微分方程式を得る。",
+          "used_node_ids": [
+            "eng.tline.tl02_telegraphers_equations",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dV(z)}{dz} = -(R + j\\omega L)I(z),\\quad \\frac{dI(z)}{dz} = -(G + j\\omega C)V(z)",
+          "to_latex": "\\frac{d^2 V(z)}{dz^2} = -(R + j\\omega L)\\frac{dI(z)}{dz} = (R + j\\omega L)(G + j\\omega C)V(z)",
+          "operation_label": "2階微分と電流フェーザの消去",
+          "explanation": "第1式をzで微分し、第2式を代入してI(z)を消去する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 V(z)}{dz^2} = -(R + j\\omega L)\\frac{dI(z)}{dz} = (R + j\\omega L)(G + j\\omega C)V(z)",
+          "to_latex": "\\frac{d^2 V(z)}{dz^2} = \\gamma^2 V(z),\\quad \\frac{d^2 I(z)}{dz^2} = \\gamma^2 I(z),\\quad \\gamma := \\alpha + j\\beta = \\sqrt{(R+j\\omega L)(G+j\\omega C)}",
+          "operation_label": "伝搬定数γの定義と対称性",
+          "explanation": "γ^2=(R+jωL)(G+jωC)とおき、I(z)についても同様の消去を行うことで伝搬定数γ=α+jβ（α,β>=0の主値）による標準形を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_tl04_z0_waves",
+      "target_node_id": "eng.tline.tl04_characteristic_impedance_def",
+      "route_kind": "deductive",
+      "title": "波動方程式の一般解と特性インピーダンスの導出",
+      "premise_node_ids": [
+        "eng.tline.tl03_phasor_propagation_constant"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "γ ≠ 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d^2 V(z)}{dz^2} = \\gamma^2 V(z),\\quad \\frac{dV(z)}{dz} = -(R+j\\omega L)I(z)",
+          "to_latex": "V(z) = V^+ e^{-\\gamma z} + V^- e^{\\gamma z},\\quad I(z) = \\frac{V^+}{Z_0} e^{-\\gamma z} - \\frac{V^-}{Z_0} e^{\\gamma z},\\quad Z_0 := \\sqrt{\\frac{R+j\\omega L}{G+j\\omega C}}",
+          "operation_label": "2階定数係数ODEの求解と電流解の計算",
+          "explanation": "V(z)の2階線形常微分方程式を指数関数解で表し、電信方程式から対応する電流I(z)と特性インピーダンスZ0を導出する。",
+          "used_node_ids": [
+            "eng.tline.tl03_phasor_propagation_constant",
+            "math.calc.m36_derivative_linearity",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 V(z)}{dz^2} = \\gamma^2 V(z),\\quad \\frac{dV(z)}{dz} = -(R+j\\omega L)I(z)",
+          "to_latex": "V(z) = V^+ e^{-\\gamma z} + V^- e^{\\gamma z},\\quad I(z) = -\\frac{1}{R+j\\omega L}\\frac{dV(z)}{dz}",
+          "operation_label": "2階線形ODEの一般解",
+          "explanation": "特性方程式λ^2 - γ^2 = 0の2根±γに対応する指数関数の線形結合でV(z)を表し、電流I(z)をdV/dzで表現する。",
+          "used_node_ids": [
+            "eng.tline.tl03_phasor_propagation_constant",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(z) = V^+ e^{-\\gamma z} + V^- e^{\\gamma z},\\quad I(z) = -\\frac{1}{R+j\\omega L}\\frac{dV(z)}{dz}",
+          "to_latex": "I(z) = \\frac{\\gamma}{R+j\\omega L}\\left(V^+ e^{-\\gamma z} - V^- e^{\\gamma z}\\right) = \\sqrt{\\frac{G+j\\omega C}{R+j\\omega L}}\\left(V^+ e^{-\\gamma z} - V^- e^{\\gamma z}\\right)",
+          "operation_label": "微分とγの代入",
+          "explanation": "V(z)をzで微分してγ=√((R+jωL)(G+jωC))を代入し、係数を整理する。",
+          "used_node_ids": [
+            "eng.tline.tl03_phasor_propagation_constant",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I(z) = \\frac{\\gamma}{R+j\\omega L}\\left(V^+ e^{-\\gamma z} - V^- e^{\\gamma z}\\right) = \\sqrt{\\frac{G+j\\omega C}{R+j\\omega L}}\\left(V^+ e^{-\\gamma z} - V^- e^{\\gamma z}\\right)",
+          "to_latex": "V(z) = V^+ e^{-\\gamma z} + V^- e^{\\gamma z},\\quad I(z) = \\frac{V^+}{Z_0} e^{-\\gamma z} - \\frac{V^-}{Z_0} e^{\\gamma z},\\quad Z_0 := \\sqrt{\\frac{R+j\\omega L}{G+j\\omega C}}",
+          "operation_label": "特性インピーダンスZ0の定義",
+          "explanation": "進行波の電圧・電流比として特性インピーダンスZ0 := √((R+jωL)/(G+jωC))を定義し、I(z)の表式を確定する。",
+          "used_node_ids": [
+            "eng.tline.tl03_phasor_propagation_constant"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_tl05_lossless",
+      "target_node_id": "eng.tline.tl05_lossless_line_parameters",
+      "route_kind": "deductive",
+      "title": "無損失条件（R=G=0）における伝送線路定数の導出",
+      "premise_node_ids": [
+        "eng.tline.tl03_phasor_propagation_constant",
+        "eng.tline.tl04_characteristic_impedance_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "R = 0, G = 0, L > 0, C > 0, ω > 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\gamma = \\sqrt{(R+j\\omega L)(G+j\\omega C)},\\quad Z_0 = \\sqrt{\\frac{R+j\\omega L}{G+j\\omega C}},\\quad R=G=0",
+          "to_latex": "R=G=0 \\implies \\alpha=0,\\quad \\gamma = j\\beta = j\\omega\\sqrt{LC},\\quad Z_0 = \\sqrt{\\frac{L}{C}},\\quad v_p = \\frac{\\omega}{\\beta} = \\frac{1}{\\sqrt{LC}}",
+          "operation_label": "無損失条件の代入と位相速度の算出",
+          "explanation": "R=G=0を伝搬定数と特性インピーダンスの定義に代入し、減衰ゼロ・実特性インピーダンス・一定の位相速度を導く。",
+          "used_node_ids": [
+            "eng.tline.tl03_phasor_propagation_constant",
+            "eng.tline.tl04_characteristic_impedance_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\gamma = \\sqrt{(R+j\\omega L)(G+j\\omega C)},\\quad Z_0 = \\sqrt{\\frac{R+j\\omega L}{G+j\\omega C}},\\quad R=G=0",
+          "to_latex": "\\gamma = \\sqrt{(j\\omega L)(j\\omega C)} = j\\omega\\sqrt{LC},\\quad Z_0 = \\sqrt{\\frac{j\\omega L}{j\\omega C}} = \\sqrt{\\frac{L}{C}}",
+          "operation_label": "R=0, G=0の代入と約分",
+          "explanation": "γの平方根内からjωが外に出ることで純虚数jω√(LC)となり、Z0ではjωが約分されて実数√(L/C)となる。",
+          "used_node_ids": [
+            "eng.tline.tl03_phasor_propagation_constant",
+            "eng.tline.tl04_characteristic_impedance_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\gamma = \\sqrt{(j\\omega L)(j\\omega C)} = j\\omega\\sqrt{LC},\\quad Z_0 = \\sqrt{\\frac{j\\omega L}{j\\omega C}} = \\sqrt{\\frac{L}{C}}",
+          "to_latex": "R=G=0 \\implies \\alpha=0,\\quad \\gamma = j\\beta = j\\omega\\sqrt{LC},\\quad Z_0 = \\sqrt{\\frac{L}{C}},\\quad v_p = \\frac{\\omega}{\\beta} = \\frac{1}{\\sqrt{LC}}",
+          "operation_label": "実部・虚部比較と位相速度の定義",
+          "explanation": "γ=α+jβとの比較よりα=0, β=ω√(LC)を得て、等位相面ωt-βz=const.の移動速度v_p=ω/β=1/√(LC)を得る。",
+          "used_node_ids": [
+            "eng.tline.tl03_phasor_propagation_constant"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_tl06_reflection_gamma",
+      "target_node_id": "eng.tline.tl06_reflection_coefficient",
+      "route_kind": "deductive",
+      "title": "負荷端境界条件からの電圧反射係数Γの導出",
+      "premise_node_ids": [
+        "eng.tline.tl04_characteristic_impedance_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "線路長lの終端z=l（負荷端からの距離d=l-z=0）に負荷インピーダンスZLが接続され、ZL + Z0 ≠ 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V(z) = V^+ e^{-\\gamma z} + V^- e^{\\gamma z},\\quad I(z) = \\frac{V^+}{Z_0} e^{-\\gamma z} - \\frac{V^-}{Z_0} e^{\\gamma z},\\quad \\frac{V(l)}{I(l)} = Z_L",
+          "to_latex": "\\Gamma_L := \\frac{V_L^-}{V_L^+} = \\frac{Z_L - Z_0}{Z_L + Z_0},\\qquad \\Gamma(d) = \\Gamma_L e^{-2\\gamma d}\\quad (d := l - z)",
+          "operation_label": "負荷端境界条件の適用と位置変換",
+          "explanation": "z=lにおけるオームの法則V(l)/I(l)=ZLを進行波解に適用してΓLを求め、距離d=l-zでの反射係数Γ(d)を導く。",
+          "used_node_ids": [
+            "eng.tline.tl04_characteristic_impedance_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(z) = V^+ e^{-\\gamma z} + V^- e^{\\gamma z},\\quad I(z) = \\frac{V^+}{Z_0} e^{-\\gamma z} - \\frac{V^-}{Z_0} e^{\\gamma z},\\quad \\frac{V(l)}{I(l)} = Z_L",
+          "to_latex": "Z_L = Z_0 \\frac{V_L^+ + V_L^-}{V_L^+ - V_L^-} = Z_0 \\frac{1 + \\Gamma_L}{1 - \\Gamma_L}\\quad \\left(V_L^\\pm := V^\\pm e^{\\mp\\gamma l},\\;\\Gamma_L := \\frac{V_L^-}{V_L^+}\\right)",
+          "operation_label": "z=lにおける電圧・電流比",
+          "explanation": "z=lにおける入射波・反射波フェーザV_L^±を導入し、負荷インピーダンスZLをΓLで表す。",
+          "used_node_ids": [
+            "eng.tline.tl04_characteristic_impedance_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Z_L = Z_0 \\frac{V_L^+ + V_L^-}{V_L^+ - V_L^-} = Z_0 \\frac{1 + \\Gamma_L}{1 - \\Gamma_L}\\quad \\left(V_L^\\pm := V^\\pm e^{\\mp\\gamma l},\\;\\Gamma_L := \\frac{V_L^-}{V_L^+}\\right)",
+          "to_latex": "\\Gamma_L = \\frac{Z_L - Z_0}{Z_L + Z_0},\\quad \\Gamma(d) := \\frac{V^- e^{\\gamma (l-d)}}{V^+ e^{-\\gamma (l-d)}} = \\frac{V_L^- e^{-\\gamma d}}{V_L^+ e^{\\gamma d}}",
+          "operation_label": "ΓLの解法と任意位置dでの定義",
+          "explanation": "ZL=Z0(1+ΓL)/(1-ΓL)をΓLについて解き、さらにz=l-dを代入して任意位置dでの反射波・入射波比Γ(d)を書く。",
+          "used_node_ids": [
+            "eng.tline.tl04_characteristic_impedance_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma_L = \\frac{Z_L - Z_0}{Z_L + Z_0},\\quad \\Gamma(d) := \\frac{V^- e^{\\gamma (l-d)}}{V^+ e^{-\\gamma (l-d)}} = \\frac{V_L^- e^{-\\gamma d}}{V_L^+ e^{\\gamma d}}",
+          "to_latex": "\\Gamma_L := \\frac{V_L^-}{V_L^+} = \\frac{Z_L - Z_0}{Z_L + Z_0},\\qquad \\Gamma(d) = \\Gamma_L e^{-2\\gamma d}\\quad (d := l - z)",
+          "operation_label": "指数関数の整理",
+          "explanation": "V_L^-/V_L^+ = ΓLおよびe^{-γd}/e^{γd}=e^{-2γd}よりΓ(d)=ΓL e^{-2γd}を得る。",
+          "used_node_ids": [
+            "eng.tline.tl04_characteristic_impedance_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_tl07_vswr",
+      "target_node_id": "eng.tline.tl07_vswr_standing_wave",
+      "route_kind": "deductive",
+      "title": "無損失線路上の電圧振幅分布とVSWRの導出",
+      "premise_node_ids": [
+        "eng.tline.tl04_characteristic_impedance_def",
+        "eng.tline.tl05_lossless_line_parameters",
+        "eng.tline.tl06_reflection_coefficient"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "無損失線路（α=0, γ=jβ）かつ |ΓL| < 1 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V(d) = V_L^+ e^{j\\beta d} + V_L^- e^{-j\\beta d},\\quad \\Gamma_L = |\\Gamma_L|e^{j\\theta_\\Gamma}\\quad (\\alpha=0)",
+          "to_latex": "\\mathrm{VSWR} := \\frac{|V(d)|_{\\max}}{|V(d)|_{\\min}} = \\frac{1 + |\\Gamma_L|}{1 - |\\Gamma_L|}\\quad (|\\Gamma_L| < 1,\\;\\alpha = 0)",
+          "operation_label": "電圧振幅の最大・最小評価",
+          "explanation": "線路上の電圧振幅|V(d)|を極形式の反射係数で表し、位相差による最大値・最小値の比からVSWRを導く。",
+          "used_node_ids": [
+            "eng.tline.tl04_characteristic_impedance_def",
+            "eng.tline.tl05_lossless_line_parameters",
+            "eng.tline.tl06_reflection_coefficient"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(d) = V_L^+ e^{j\\beta d} + V_L^- e^{-j\\beta d},\\quad \\Gamma_L = |\\Gamma_L|e^{j\\theta_\\Gamma}\\quad (\\alpha=0)",
+          "to_latex": "|V(d)| = |V_L^+|\\left|1 + \\Gamma_L e^{-2j\\beta d}\\right| = |V_L^+|\\left|1 + |\\Gamma_L|e^{j(\\theta_\\Gamma - 2\\beta d)}\\right|",
+          "operation_label": "電圧振幅の反射係数表示",
+          "explanation": "V_L^+ e^{jβd}を括り出して絶対値をとり、ΓLを極形式で表す。",
+          "used_node_ids": [
+            "eng.tline.tl04_characteristic_impedance_def",
+            "eng.tline.tl05_lossless_line_parameters",
+            "eng.tline.tl06_reflection_coefficient"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|V(d)| = |V_L^+|\\left|1 + \\Gamma_L e^{-2j\\beta d}\\right| = |V_L^+|\\left|1 + |\\Gamma_L|e^{j(\\theta_\\Gamma - 2\\beta d)}\\right|",
+          "to_latex": "|V(d)|_{\\max} = |V_L^+|(1 + |\\Gamma_L|),\\quad |V(d)|_{\\min} = |V_L^+|(1 - |\\Gamma_L|)",
+          "operation_label": "位相条件による極値の決定",
+          "explanation": "θ_Γ - 2βd = 2nπ で最大値、θ_Γ - 2βd = (2n+1)π で最小値をとる。",
+          "used_node_ids": [
+            "eng.tline.tl06_reflection_coefficient"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|V(d)|_{\\max} = |V_L^+|(1 + |\\Gamma_L|),\\quad |V(d)|_{\\min} = |V_L^+|(1 - |\\Gamma_L|)",
+          "to_latex": "\\mathrm{VSWR} := \\frac{|V(d)|_{\\max}}{|V(d)|_{\\min}} = \\frac{1 + |\\Gamma_L|}{1 - |\\Gamma_L|}\\quad (|\\Gamma_L| < 1,\\;\\alpha = 0)",
+          "operation_label": "最大値と最小値の比",
+          "explanation": "|V(d)|_maxを|V(d)|_minで割り、|V_L^+|を約分してVSWRの公式を得る。",
+          "used_node_ids": [
+            "eng.tline.tl06_reflection_coefficient"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_tl08_zin",
+      "target_node_id": "eng.tline.tl08_input_impedance_transform",
+      "route_kind": "deductive",
+      "title": "入力インピーダンス変換式の導出",
+      "premise_node_ids": [
+        "eng.tline.tl04_characteristic_impedance_def",
+        "eng.tline.tl05_lossless_line_parameters",
+        "eng.tline.tl06_reflection_coefficient"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "負荷からの距離dにおける電圧・電流比 Z_in(d) = V(d)/I(d) が定義されるものとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V(d) = V_L^+ e^{\\gamma d}\\big(1 + \\Gamma_L e^{-2\\gamma d}\\big),\\quad I(d) = \\frac{V_L^+}{Z_0} e^{\\gamma d}\\big(1 - \\Gamma_L e^{-2\\gamma d}\\big),\\quad \\Gamma_L = \\frac{Z_L - Z_0}{Z_L + Z_0}",
+          "to_latex": "Z_{\\mathrm{in}}(d) = Z_0 \\frac{Z_L + Z_0 \\tanh(\\gamma d)}{Z_0 + Z_L \\tanh(\\gamma d)},\\qquad Z_{\\mathrm{in}}(d) = Z_0 \\frac{Z_L + j Z_0 \\tan(\\beta d)}{Z_0 + j Z_L \\tan(\\beta d)}\\quad (\\alpha = 0)",
+          "operation_label": "指数関数の双曲線・三角関数表示",
+          "explanation": "V(d)/I(d)にΓL=(ZL-Z0)/(ZL+Z0)を代入し、双曲線関数tanh(γd)を用いて整理したのち、無損失条件γ=jβを適用する。",
+          "used_node_ids": [
+            "eng.tline.tl04_characteristic_impedance_def",
+            "eng.tline.tl05_lossless_line_parameters",
+            "eng.tline.tl06_reflection_coefficient"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(d) = V_L^+ e^{\\gamma d}\\big(1 + \\Gamma_L e^{-2\\gamma d}\\big),\\quad I(d) = \\frac{V_L^+}{Z_0} e^{\\gamma d}\\big(1 - \\Gamma_L e^{-2\\gamma d}\\big),\\quad \\Gamma_L = \\frac{Z_L - Z_0}{Z_L + Z_0}",
+          "to_latex": "Z_{\\mathrm{in}}(d) = \\frac{V(d)}{I(d)} = Z_0 \\frac{(Z_L+Z_0)e^{\\gamma d} + (Z_L-Z_0)e^{-\\gamma d}}{(Z_L+Z_0)e^{\\gamma d} - (Z_L-Z_0)e^{-\\gamma d}}",
+          "operation_label": "ΓLの代入と分母払いの整理",
+          "explanation": "V(d)/I(d)にΓL=(ZL-Z0)/(ZL+Z0)を代入し、分母・分子に(ZL+Z0)e^{γd}を掛けて整理する。",
+          "used_node_ids": [
+            "eng.tline.tl04_characteristic_impedance_def",
+            "eng.tline.tl06_reflection_coefficient"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Z_{\\mathrm{in}}(d) = \\frac{V(d)}{I(d)} = Z_0 \\frac{(Z_L+Z_0)e^{\\gamma d} + (Z_L-Z_0)e^{-\\gamma d}}{(Z_L+Z_0)e^{\\gamma d} - (Z_L-Z_0)e^{-\\gamma d}}",
+          "to_latex": "Z_{\\mathrm{in}}(d) = Z_0 \\frac{Z_L\\cosh(\\gamma d) + Z_0\\sinh(\\gamma d)}{Z_0\\cosh(\\gamma d) + Z_L\\sinh(\\gamma d)} = Z_0 \\frac{Z_L + Z_0\\tanh(\\gamma d)}{Z_0 + Z_L\\tanh(\\gamma d)}",
+          "operation_label": "双曲線関数への変換",
+          "explanation": "ZLとZ0の係数ごとにまとめ、e^{γd}±e^{-γd}をcosh(γd), sinh(γd)で表し、分母・分子をcosh(γd)で割る。",
+          "used_node_ids": [
+            "eng.tline.tl04_characteristic_impedance_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Z_{\\mathrm{in}}(d) = Z_0 \\frac{Z_L\\cosh(\\gamma d) + Z_0\\sinh(\\gamma d)}{Z_0\\cosh(\\gamma d) + Z_L\\sinh(\\gamma d)} = Z_0 \\frac{Z_L + Z_0\\tanh(\\gamma d)}{Z_0 + Z_L\\tanh(\\gamma d)}",
+          "to_latex": "Z_{\\mathrm{in}}(d) = Z_0 \\frac{Z_L + Z_0 \\tanh(\\gamma d)}{Z_0 + Z_L \\tanh(\\gamma d)},\\qquad Z_{\\mathrm{in}}(d) = Z_0 \\frac{Z_L + j Z_0 \\tan(\\beta d)}{Z_0 + j Z_L \\tan(\\beta d)}\\quad (\\alpha = 0)",
+          "operation_label": "無損失極限（tanh(jβd)=j tan(βd)）",
+          "explanation": "無損失条件γ=jβのときtanh(jβd)=j tan(βd)となることから、無損失線路の入力インピーダンス変換式を得る。",
+          "used_node_ids": [
+            "eng.tline.tl05_lossless_line_parameters"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_tl09_smith_chart",
+      "target_node_id": "eng.tline.tl09_smith_chart_mobius_map",
+      "route_kind": "deductive",
+      "title": "反射係数の等角写像とスミスチャートの円群方程式の導出",
+      "premise_node_ids": [
+        "eng.tline.tl06_reflection_coefficient"
+      ],
+      "required_math_node_ids": [
+        "math.complex.ca01_complex_differentiability_def"
+      ],
+      "assumptions": [
+        "受動負荷として特性インピーダンスZ0>0で正規化したインピーダンス z_bar = r + jx が Re(z_bar)=r >= 0 を満たすとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Gamma = \\frac{Z - Z_0}{Z + Z_0},\\quad \\bar{z} := \\frac{Z}{Z_0} = r + jx,\\quad \\Gamma = u + jv",
+          "to_latex": "\\Gamma = \\frac{\\bar{z} - 1}{\\bar{z} + 1}\\quad (\\bar{z} := \\frac{Z}{Z_0} = r + jx),\\qquad \\left(u - \\frac{r}{r+1}\\right)^2 + v^2 = \\left(\\frac{1}{r+1}\\right)^2,\\quad (u - 1)^2 + \\left(v - \\frac{1}{x}\\right)^2 = \\left(\\frac{1}{x}\\right)^2",
+          "operation_label": "メビウス変換の等角性と実部・虚部分離",
+          "explanation": "正規化インピーダンスによる反射係数写像がRe(z_bar)>=0で正則かつ導関数非零（等角写像）であることを示し、逆写像の実部r・虚部xを分離して定抵抗円・定リアクタンス円を導く。",
+          "used_node_ids": [
+            "eng.tline.tl06_reflection_coefficient",
+            "math.complex.ca01_complex_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma = \\frac{Z - Z_0}{Z + Z_0},\\quad \\bar{z} := \\frac{Z}{Z_0} = r + jx,\\quad \\Gamma = u + jv",
+          "to_latex": "\\Gamma(\\bar{z}) = \\frac{\\bar{z} - 1}{\\bar{z} + 1},\\quad \\frac{d\\Gamma}{d\\bar{z}} = \\frac{2}{(\\bar{z}+1)^2} \\neq 0\\;(\\operatorname{Re}\\bar{z}\\ge 0),\\quad \\bar{z} = \\frac{1+\\Gamma}{1-\\Gamma}",
+          "operation_label": "正規化と等角性・逆写像",
+          "explanation": "z_bar=Z/Z0で正規化したメビウス変換Γ(z_bar)はz_bar=-1を除き複素微分可能で導関数が零にならず等角写像であり、逆変換z_bar=(1+Γ)/(1-Γ)をもつ。",
+          "used_node_ids": [
+            "eng.tline.tl06_reflection_coefficient",
+            "math.complex.ca01_complex_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma(\\bar{z}) = \\frac{\\bar{z} - 1}{\\bar{z} + 1},\\quad \\frac{d\\Gamma}{d\\bar{z}} = \\frac{2}{(\\bar{z}+1)^2} \\neq 0\\;(\\operatorname{Re}\\bar{z}\\ge 0),\\quad \\bar{z} = \\frac{1+\\Gamma}{1-\\Gamma}",
+          "to_latex": "r + jx = \\frac{(1+u)+jv}{(1-u)-jv} = \\frac{(1 - u^2 - v^2) + j(2v)}{(1-u)^2 + v^2}",
+          "operation_label": "分母の実数化と成分比較",
+          "explanation": "Γ=u+jvを逆写像に代入し、分母・分子に共役複素数(1-u)+jvを掛けて実部rと虚部xの有理式を得る。",
+          "used_node_ids": [
+            "eng.tline.tl06_reflection_coefficient"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r + jx = \\frac{(1+u)+jv}{(1-u)-jv} = \\frac{(1 - u^2 - v^2) + j(2v)}{(1-u)^2 + v^2}",
+          "to_latex": "\\Gamma = \\frac{\\bar{z} - 1}{\\bar{z} + 1}\\quad (\\bar{z} := \\frac{Z}{Z_0} = r + jx),\\qquad \\left(u - \\frac{r}{r+1}\\right)^2 + v^2 = \\left(\\frac{1}{r+1}\\right)^2,\\quad (u - 1)^2 + \\left(v - \\frac{1}{x}\\right)^2 = \\left(\\frac{1}{x}\\right)^2",
+          "operation_label": "平方完成による円の方程式化",
+          "explanation": "実部・虚部それぞれについて分母を払い平方完成することで、定抵抗円（r=const.）および定リアクタンス円（x=const.）の標準形を得る。",
+          "used_node_ids": [
+            "eng.tline.tl06_reflection_coefficient"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,836 @@
+{
+  "pack_meta": {
+    "pack_id": "astro.pos.spherical_astronomy",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "astronomy",
+    "title": "球面天文学：球面三角法・赤道/地平/黄道座標変換・歳差と光行差",
+    "language": "ja",
+    "description": "球面余弦定理・正弦定理、時角・赤緯⇔方位角・高度変換、恒星時、年周光行差、年周視差とパーセクの定義を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "astro.sph.n01_spherical_triangle_setup",
+      "short_code": "SP01",
+      "kind": "definition",
+      "title": "単位球面上の球面三角形と方向余弦ベクトル表現",
+      "summary": "単位球面上の3点に対応する単位位置ベクトルと大円弧の辺角・内角の幾何学的定義。",
+      "canonical_latex": "\\cos a = \\hat{\\mathbf{u}}_B\\cdot\\hat{\\mathbf{u}}_C,\\quad \\cos b = \\hat{\\mathbf{u}}_C\\cdot\\hat{\\mathbf{u}}_A,\\quad \\cos c = \\hat{\\mathbf{u}}_A\\cdot\\hat{\\mathbf{u}}_B,\\quad \\hat{\\mathbf{n}}_{AB} = \\frac{\\hat{\\mathbf{u}}_A\\times\\hat{\\mathbf{u}}_B}{\\sin c} \\quad (a,b,c\\in(0,\\pi))",
+      "aliases_latex": [
+        "\\hat{\\mathbf{u}}_i \\in S^2,\\; \\cos c = \\hat{\\mathbf{u}}_A\\cdot\\hat{\\mathbf{u}}_B"
+      ],
+      "keywords": [
+        "spherical triangle",
+        "great circle",
+        "unit sphere",
+        "direction cosine"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "spherical_astronomy",
+        "geometry"
+      ]
+    },
+    {
+      "id": "astro.sph.n02_spherical_law_of_cosines",
+      "short_code": "SP02",
+      "kind": "theorem_formula",
+      "title": "球面余弦定理（辺の余弦定理・角の余弦定理）",
+      "summary": "球面三角形の3辺と1角、および3角と1辺を結びつける基本恒等式。",
+      "canonical_latex": "\\cos a = \\cos b\\cos c + \\sin b\\sin c\\cos A,\\qquad \\cos A = -\\cos B\\cos C + \\sin B\\sin C\\cos a",
+      "aliases_latex": [
+        "\\cos A = \\frac{\\cos a - \\cos b\\cos c}{\\sin b\\sin c}"
+      ],
+      "keywords": [
+        "spherical law of cosines",
+        "spherical trigonometry"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "spherical_astronomy",
+        "geometry"
+      ]
+    },
+    {
+      "id": "astro.sph.n03_spherical_law_of_sines",
+      "short_code": "SP03",
+      "kind": "theorem_formula",
+      "title": "球面正弦定理と5要素公式（正弦余弦公式）",
+      "summary": "球面三角形における辺の正弦と対角の正弦の比の一定性、および隣接5要素を結ぶ関係式。",
+      "canonical_latex": "\\frac{\\sin A}{\\sin a} = \\frac{\\sin B}{\\sin b} = \\frac{\\sin C}{\\sin c},\\qquad \\sin a\\cos B = \\cos b\\sin c - \\sin b\\cos c\\cos A",
+      "aliases_latex": [
+        "\\sin A\\sin b = \\sin B\\sin a"
+      ],
+      "keywords": [
+        "spherical law of sines",
+        "five-part formula"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "spherical_astronomy",
+        "geometry"
+      ]
+    },
+    {
+      "id": "astro.sph.n04_equatorial_horizontal_coords",
+      "short_code": "SP04",
+      "kind": "definition",
+      "title": "赤道座標・時角と地平座標および天文三角形 PZX の定義",
+      "summary": "観測者の緯度、天体の時角・赤緯、方位角・高度が天の北極 P・天頂 Z・天体 X からなる球面三角形を構成することの定義。",
+      "canonical_latex": "PZX:\\; PZ = 90^\\circ - \\phi,\\; PX = 90^\\circ - \\delta,\\; ZX = 90^\\circ - h,\\; \\angle ZPX = H,\\; \\angle PZX = A_{\\mathrm{N}}",
+      "aliases_latex": [
+        "z = 90^\\circ - h,\\; \\text{colatitude } 90^\\circ - \\phi"
+      ],
+      "keywords": [
+        "equatorial coordinates",
+        "horizontal coordinates",
+        "hour angle",
+        "declination",
+        "altitude",
+        "azimuth"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "spherical_astronomy",
+        "astrometry"
+      ]
+    },
+    {
+      "id": "astro.sph.n05_equatorial_to_horizontal_transform",
+      "short_code": "SP05",
+      "kind": "theorem_formula",
+      "title": "時角・赤緯 (H, δ) と方位角・高度 (A, h) の相互変換公式",
+      "summary": "天文三角形 PZX に球面余弦定理と5要素公式・正弦定理を適用して得られる赤道・地平座標変換式。",
+      "canonical_latex": "\\sin h = \\sin\\phi\\sin\\delta + \\cos\\phi\\cos\\delta\\cos H,\\quad \\cos h\\cos A_{\\mathrm{N}} = \\cos\\phi\\sin\\delta - \\sin\\phi\\cos\\delta\\cos H,\\quad \\cos h\\sin A_{\\mathrm{N}} = -\\cos\\delta\\sin H",
+      "aliases_latex": [
+        "\\sin\\delta = \\sin\\phi\\sin h + \\cos\\phi\\cos h\\cos A_{\\mathrm{N}}"
+      ],
+      "keywords": [
+        "coordinate transformation",
+        "azimuth",
+        "altitude",
+        "hour angle",
+        "declination"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "spherical_astronomy",
+        "astrometry"
+      ]
+    },
+    {
+      "id": "astro.sph.n06_sidereal_time_hour_angle",
+      "short_code": "SP06",
+      "kind": "definition",
+      "title": "恒星時（GMST / LST）と赤経・時角の関係",
+      "summary": "春分点の時角として定義される地方恒星時と、観測経度・グリニッジ平均恒星時・天体の赤経および時角の基本関係式。",
+      "canonical_latex": "H = \\theta_{\\mathrm{LST}} - \\alpha,\\qquad \\theta_{\\mathrm{LST}} = \\theta_{\\mathrm{GMST}} + \\lambda_{\\mathrm{obs}}",
+      "aliases_latex": [
+        "\\mathrm{LST} = \\mathrm{HA} + \\mathrm{RA}"
+      ],
+      "keywords": [
+        "sidereal time",
+        "GMST",
+        "LST",
+        "right ascension",
+        "hour angle"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "spherical_astronomy",
+        "timekeeping"
+      ]
+    },
+    {
+      "id": "astro.sph.n07_equatorial_ecliptic_precession",
+      "short_code": "SP07",
+      "kind": "theorem_formula",
+      "title": "赤道座標と黄道座標の変換および歳差による永年変化",
+      "summary": "黄道傾斜角による赤道・黄道座標変換と、分点の歳差に伴う黄経の一定増加が赤経・赤緯にもたらす1次永年変化率。",
+      "canonical_latex": "\\sin\\delta = \\sin\\varepsilon\\cos\\beta\\sin\\lambda + \\cos\\varepsilon\\sin\\beta,\\qquad \\dot{\\alpha} \\approx m + n\\sin\\alpha\\tan\\delta,\\quad \\dot{\\delta} \\approx n\\cos\\alpha",
+      "aliases_latex": [
+        "\\tan\\alpha = \\frac{\\cos\\varepsilon\\sin\\lambda - \\sin\\varepsilon\\tan\\beta}{\\cos\\lambda}"
+      ],
+      "keywords": [
+        "ecliptic coordinates",
+        "obliquity",
+        "precession",
+        "secular variation"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "spherical_astronomy",
+        "astrometry"
+      ]
+    },
+    {
+      "id": "astro.sph.n08_annual_aberration",
+      "short_code": "SP08",
+      "kind": "theorem_formula",
+      "title": "年周光行差（恒星光行差）の角変位公式",
+      "summary": "地球の公転速度と光速度の比を光行差定数として、天体の見かけの方向が地球の進行方向へ傾く1次近似公式。",
+      "canonical_latex": "\\Delta\\theta \\approx \\kappa\\sin\\psi,\\qquad \\kappa = \\frac{v_\\oplus}{c} \\approx 20.4955''",
+      "aliases_latex": [
+        "\\Delta\\hat{\\mathbf{s}} \\approx \\hat{\\mathbf{s}}\\times(\\boldsymbol{\\beta}\\times\\hat{\\mathbf{s}})"
+      ],
+      "keywords": [
+        "annual aberration",
+        "aberration constant",
+        "stellar aberration"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "spherical_astronomy",
+        "relativity"
+      ]
+    },
+    {
+      "id": "astro.sph.n09_annual_parallax_parsec",
+      "short_code": "SP09",
+      "kind": "theorem_formula",
+      "title": "年周視差とパーセク（pc）による距離定義",
+      "summary": "地球軌道の平均半径（1 AU）に対する天体の視差角と距離の小角近似関係、および 1 パーセクの厳密定義。",
+      "canonical_latex": "d = \\frac{1\\,\\mathrm{AU}}{p\\,\\mathrm{[rad]}} = \\frac{1}{p''}\\,\\mathrm{pc},\\qquad 1\\,\\mathrm{pc} = \\frac{648000}{\\pi}\\,\\mathrm{AU} \\approx 3.08568\\times 10^{16}\\,\\mathrm{m} \\approx 3.26156\\,\\mathrm{ly} \\quad (p \\ll 1\\,\\mathrm{rad})",
+      "aliases_latex": [
+        "d\\,\\mathrm{[pc]} = \\frac{1}{p\\,\\mathrm{[arcsec]}}"
+      ],
+      "keywords": [
+        "annual parallax",
+        "parsec",
+        "astronomical unit",
+        "astrometry"
+      ],
+      "domain_tags": [
+        "astronomy",
+        "spherical_astronomy",
+        "astrometry"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "astro.sph.d01_spherical_triangle_setup",
+      "target_node_id": "astro.sph.n01_spherical_triangle_setup",
+      "route_kind": "reformulation",
+      "title": "単位球面上の3ベクトルによる球面三角形の定式化",
+      "premise_node_ids": [
+        "math.vec.m03_dot_cross_product",
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "3つの単位ベクトルは同一の大円上にない（非退化三角形）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{\\mathbf{u}}_A, \\hat{\\mathbf{u}}_B, \\hat{\\mathbf{u}}_C \\in S^2 \\subset \\mathbb{R}^3",
+          "to_latex": "\\cos a = \\hat{\\mathbf{u}}_B\\cdot\\hat{\\mathbf{u}}_C,\\quad \\cos b = \\hat{\\mathbf{u}}_C\\cdot\\hat{\\mathbf{u}}_A,\\quad \\cos c = \\hat{\\mathbf{u}}_A\\cdot\\hat{\\mathbf{u}}_B,\\quad \\hat{\\mathbf{n}}_{AB} = \\frac{\\hat{\\mathbf{u}}_A\\times\\hat{\\mathbf{u}}_B}{\\sin c} \\quad (a,b,c\\in(0,\\pi))",
+          "operation_label": "内積・外積による大円辺角と接平面法線の定義",
+          "explanation": "球面三角形の頂点を単位ベクトルで表し、辺の長さを中心角として内積で、大円面の法線を正規化外積で定義する。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{u}}_A, \\hat{\\mathbf{u}}_B, \\hat{\\mathbf{u}}_C \\in S^2 \\subset \\mathbb{R}^3",
+          "to_latex": "\\cos a = \\hat{\\mathbf{u}}_B\\cdot\\hat{\\mathbf{u}}_C,\\quad \\cos b = \\hat{\\mathbf{u}}_C\\cdot\\hat{\\mathbf{u}}_A,\\quad \\cos c = \\hat{\\mathbf{u}}_A\\cdot\\hat{\\mathbf{u}}_B",
+          "operation_label": "大円弧長の余弦の内積表示",
+          "explanation": "単位ベクトル同士の内積はそのなす中心角（大円弧長）の余弦に等しい。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\cos a = \\hat{\\mathbf{u}}_B\\cdot\\hat{\\mathbf{u}}_C,\\quad \\cos b = \\hat{\\mathbf{u}}_C\\cdot\\hat{\\mathbf{u}}_A,\\quad \\cos c = \\hat{\\mathbf{u}}_A\\cdot\\hat{\\mathbf{u}}_B",
+          "to_latex": "\\cos a = \\hat{\\mathbf{u}}_B\\cdot\\hat{\\mathbf{u}}_C,\\quad \\cos b = \\hat{\\mathbf{u}}_C\\cdot\\hat{\\mathbf{u}}_A,\\quad \\cos c = \\hat{\\mathbf{u}}_A\\cdot\\hat{\\mathbf{u}}_B,\\quad \\hat{\\mathbf{n}}_{AB} = \\frac{\\hat{\\mathbf{u}}_A\\times\\hat{\\mathbf{u}}_B}{\\sin c} \\quad (a,b,c\\in(0,\\pi))",
+          "operation_label": "大円面の単位法線ベクトルの導入",
+          "explanation": "辺 AB を含む大円面の単位法線ベクトルを外積で定義し、大きさが sin c であることを用いる。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.sph.d02_spherical_law_of_cosines",
+      "target_node_id": "astro.sph.n02_spherical_law_of_cosines",
+      "route_kind": "deductive",
+      "title": "ベクトル三重積恒等式による球面余弦定理の導出",
+      "premise_node_ids": [
+        "astro.sph.n01_spherical_triangle_setup"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "球面三角形の辺・角は (0, π) の範囲にある。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{\\mathbf{n}}_{AB} = \\frac{\\hat{\\mathbf{u}}_A\\times\\hat{\\mathbf{u}}_B}{\\sin c},\\quad \\hat{\\mathbf{n}}_{AC} = \\frac{\\hat{\\mathbf{u}}_A\\times\\hat{\\mathbf{u}}_C}{\\sin b} \\quad (b,c\\in(0,\\pi))",
+          "to_latex": "\\cos a = \\cos b\\cos c + \\sin b\\sin c\\cos A,\\qquad \\cos A = -\\cos B\\cos C + \\sin B\\sin C\\cos a",
+          "operation_label": "大円面法線の内積と極三角形双対性",
+          "explanation": "頂点 A で交わる2つの大円面の単位法線ベクトルの内積から辺の余弦定理を導き、極三角形の双対性から角の余弦定理を得る。",
+          "used_node_ids": [
+            "astro.sph.n01_spherical_triangle_setup",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": "cos(a) - (cos(b)*cos(c) + sin(b)*sin(c)*cos(A))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{n}}_{AB} = \\frac{\\hat{\\mathbf{u}}_A\\times\\hat{\\mathbf{u}}_B}{\\sin c},\\quad \\hat{\\mathbf{n}}_{AC} = \\frac{\\hat{\\mathbf{u}}_A\\times\\hat{\\mathbf{u}}_C}{\\sin b} \\quad (b,c\\in(0,\\pi))",
+          "to_latex": "\\cos A = \\hat{\\mathbf{n}}_{AB}\\cdot\\hat{\\mathbf{n}}_{AC} = \\frac{(\\hat{\\mathbf{u}}_A\\times\\hat{\\mathbf{u}}_B)\\cdot(\\hat{\\mathbf{u}}_A\\times\\hat{\\mathbf{u}}_C)}{\\sin b\\sin c} \\quad (A\\in(0,\\pi))",
+          "operation_label": "内角 A の法線内積表現",
+          "explanation": "2つの大円面のなす角（二面角）が球面角 A に等しいため、法線同士の内積が cos A となる。",
+          "used_node_ids": [
+            "astro.sph.n01_spherical_triangle_setup",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\cos A = \\hat{\\mathbf{n}}_{AB}\\cdot\\hat{\\mathbf{n}}_{AC} = \\frac{(\\hat{\\mathbf{u}}_A\\times\\hat{\\mathbf{u}}_B)\\cdot(\\hat{\\mathbf{u}}_A\\times\\hat{\\mathbf{u}}_C)}{\\sin b\\sin c} \\quad (A\\in(0,\\pi))",
+          "to_latex": "\\cos A = \\frac{(\\hat{\\mathbf{u}}_A\\cdot\\hat{\\mathbf{u}}_A)(\\hat{\\mathbf{u}}_B\\cdot\\hat{\\mathbf{u}}_C) - (\\hat{\\mathbf{u}}_A\\cdot\\hat{\\mathbf{u}}_C)(\\hat{\\mathbf{u}}_B\\cdot\\hat{\\mathbf{u}}_A)}{\\sin b\\sin c} = \\frac{\\cos a - \\cos b\\cos c}{\\sin b\\sin c} \\quad (b,c\\in(0,\\pi))",
+          "operation_label": "ビネ＝コーシー恒等式の適用",
+          "explanation": "外積同士の内積を展開し、単位ベクトルの内積を辺の余弦で置き換える。",
+          "used_node_ids": [
+            "astro.sph.n01_spherical_triangle_setup",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\cos A = \\frac{(\\hat{\\mathbf{u}}_A\\cdot\\hat{\\mathbf{u}}_A)(\\hat{\\mathbf{u}}_B\\cdot\\hat{\\mathbf{u}}_C) - (\\hat{\\mathbf{u}}_A\\cdot\\hat{\\mathbf{u}}_C)(\\hat{\\mathbf{u}}_B\\cdot\\hat{\\mathbf{u}}_A)}{\\sin b\\sin c} = \\frac{\\cos a - \\cos b\\cos c}{\\sin b\\sin c} \\quad (b,c\\in(0,\\pi))",
+          "to_latex": "\\cos a = \\cos b\\cos c + \\sin b\\sin c\\cos A,\\qquad \\cos A = -\\cos B\\cos C + \\sin B\\sin C\\cos a",
+          "operation_label": "辺の余弦定理の整理と極三角形双対性の適用",
+          "explanation": "分母を払って辺の余弦定理を得、さらに辺と角が補角関係で入れ替わる極三角形に同じ式を適用して角の余弦定理を得る。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.sph.d03_spherical_law_of_sines",
+      "target_node_id": "astro.sph.n03_spherical_law_of_sines",
+      "route_kind": "deductive",
+      "title": "球面余弦定理からの球面正弦定理および5要素公式の導出",
+      "premise_node_ids": [
+        "astro.sph.n02_spherical_law_of_cosines"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "球面三角形の辺・角は (0, π) の範囲にある。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\cos A = \\frac{\\cos a - \\cos b\\cos c}{\\sin b\\sin c} \\quad (a,b,c\\in(0,\\pi))",
+          "to_latex": "\\frac{\\sin A}{\\sin a} = \\frac{\\sin B}{\\sin b} = \\frac{\\sin C}{\\sin c},\\qquad \\sin a\\cos B = \\cos b\\sin c - \\sin b\\cos c\\cos A",
+          "operation_label": "ピタゴラス恒等式と対称化による正弦定理・5要素公式導出",
+          "explanation": "1 - cos^2 A を展開して (a, b, c) に対称な式を得て正弦定理を示し、余弦定理の連立消去から5要素公式を導く。",
+          "used_node_ids": [
+            "astro.sph.n02_spherical_law_of_cosines",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\cos A = \\frac{\\cos a - \\cos b\\cos c}{\\sin b\\sin c} \\quad (a,b,c\\in(0,\\pi))",
+          "to_latex": "\\sin^2 A = 1 - \\cos^2 A = \\frac{(1-\\cos^2 b)(1-\\cos^2 c) - (\\cos a - \\cos b\\cos c)^2}{\\sin^2 b\\sin^2 c} \\quad (b,c\\in(0,\\pi))",
+          "operation_label": "sin^2 A の余弦展開",
+          "explanation": "三角関数の基本恒等式 sin^2 A = 1 - cos^2 A に球面余弦定理を代入する。",
+          "used_node_ids": [
+            "astro.sph.n02_spherical_law_of_cosines",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sin^2 A = 1 - \\cos^2 A = \\frac{(1-\\cos^2 b)(1-\\cos^2 c) - (\\cos a - \\cos b\\cos c)^2}{\\sin^2 b\\sin^2 c} \\quad (b,c\\in(0,\\pi))",
+          "to_latex": "\\frac{\\sin A}{\\sin a} = \\frac{\\sqrt{1 - \\cos^2 a - \\cos^2 b - \\cos^2 c + 2\\cos a\\cos b\\cos c}}{\\sin a\\sin b\\sin c} \\quad (a,b,c\\in(0,\\pi))",
+          "operation_label": "分子の展開と完全対称形の抽出",
+          "explanation": "分子を展開整理すると cos^2 b cos^2 c が相殺し、a, b, c に関して完全対称な表現が得られる。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\sin A}{\\sin a} = \\frac{\\sqrt{1 - \\cos^2 a - \\cos^2 b - \\cos^2 c + 2\\cos a\\cos b\\cos c}}{\\sin a\\sin b\\sin c} \\quad (a,b,c\\in(0,\\pi))",
+          "to_latex": "\\frac{\\sin A}{\\sin a} = \\frac{\\sin B}{\\sin b} = \\frac{\\sin C}{\\sin c},\\qquad \\sin a\\cos B = \\cos b\\sin c - \\sin b\\cos c\\cos A",
+          "operation_label": "巡回置換と5要素公式の導出",
+          "explanation": "辺と角の巡回置換不変性から球面正弦定理が従い、cos b = cos a cos c + sin a sin c cos B に cos a を代入して5要素公式を得る。",
+          "used_node_ids": [
+            "astro.sph.n02_spherical_law_of_cosines",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.sph.d04_equatorial_horizontal_coords",
+      "target_node_id": "astro.sph.n04_equatorial_horizontal_coords",
+      "route_kind": "reformulation",
+      "title": "回転変換による天文三角形 PZX の構成",
+      "premise_node_ids": [
+        "astro.sph.n01_spherical_triangle_setup",
+        "math.alg.gr07_rodrigues_rotation_exp_map"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "観測地の測地緯度を φ とし、大気差は無視する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{\\mathbf{u}}_P = (0,0,1)^\\top,\\quad \\hat{\\mathbf{u}}_Z = R(\\mathbf{e}_2, -(90^\\circ-\\phi))\\hat{\\mathbf{u}}_P,\\quad \\hat{\\mathbf{u}}_X \\in S^2",
+          "to_latex": "PZX:\\; PZ = 90^\\circ - \\phi,\\; PX = 90^\\circ - \\delta,\\; ZX = 90^\\circ - h,\\; \\angle ZPX = H,\\; \\angle PZX = A_{\\mathrm{N}}",
+          "operation_label": "北極 P・天頂 Z・天体 X の天球上での対応付け",
+          "explanation": "天の北極 P、観測者の天頂 Z、天体 X がなす球面三角形の辺と内角を、観測緯度 φ、赤緯 δ、高度 h、時角 H、方位角 A_N と対応付ける。",
+          "used_node_ids": [
+            "astro.sph.n01_spherical_triangle_setup",
+            "math.alg.gr07_rodrigues_rotation_exp_map"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{u}}_P = (0,0,1)^\\top,\\quad \\hat{\\mathbf{u}}_Z = R(\\mathbf{e}_2, -(90^\\circ-\\phi))\\hat{\\mathbf{u}}_P,\\quad \\hat{\\mathbf{u}}_X \\in S^2",
+          "to_latex": "\\cos(PZ) = \\sin\\phi,\\quad \\cos(PX) = \\sin\\delta,\\quad \\cos(ZX) = \\sin h \\quad (\\phi,\\delta,h\\in[-90^\\circ,90^\\circ])",
+          "operation_label": "余緯度・余赤緯・天頂距離の定義",
+          "explanation": "各頂点間の中心角がそれぞれ余緯度 90°-φ、極距離 90°-δ、天頂距離 90°-h になることをベクトル内積から確認する。",
+          "used_node_ids": [
+            "astro.sph.n01_spherical_triangle_setup",
+            "math.alg.gr07_rodrigues_rotation_exp_map"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\cos(PZ) = \\sin\\phi,\\quad \\cos(PX) = \\sin\\delta,\\quad \\cos(ZX) = \\sin h \\quad (\\phi,\\delta,h\\in[-90^\\circ,90^\\circ])",
+          "to_latex": "PZX:\\; PZ = 90^\\circ - \\phi,\\; PX = 90^\\circ - \\delta,\\; ZX = 90^\\circ - h,\\; \\angle ZPX = H,\\; \\angle PZX = A_{\\mathrm{N}}",
+          "operation_label": "内角と時角・方位角の対応付け",
+          "explanation": "子午線 PZ に対する天体方位の角として極角を時角 H、天頂角を北起点方位角 A_N（東回りを正とする場合は 360°-A_N または符号に注意）と定義する。",
+          "used_node_ids": [
+            "astro.sph.n01_spherical_triangle_setup"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.sph.d05_equatorial_to_horizontal_transform",
+      "target_node_id": "astro.sph.n05_equatorial_to_horizontal_transform",
+      "route_kind": "deductive",
+      "title": "天文三角形 PZX からの赤道・地平座標変換公式の導出",
+      "premise_node_ids": [
+        "astro.sph.n02_spherical_law_of_cosines",
+        "astro.sph.n03_spherical_law_of_sines",
+        "astro.sph.n04_equatorial_horizontal_coords"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "方位角 A_N は北から東回りを正とし、時角 H は子午線から西回りを正とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "PZX:\\; PZ = 90^\\circ - \\phi,\\; PX = 90^\\circ - \\delta,\\; ZX = 90^\\circ - h,\\; \\angle ZPX = H,\\; \\angle PZX = A_{\\mathrm{N}}",
+          "to_latex": "\\sin h = \\sin\\phi\\sin\\delta + \\cos\\phi\\cos\\delta\\cos H,\\quad \\cos h\\cos A_{\\mathrm{N}} = \\cos\\phi\\sin\\delta - \\sin\\phi\\cos\\delta\\cos H,\\quad \\cos h\\sin A_{\\mathrm{N}} = -\\cos\\delta\\sin H",
+          "operation_label": "球面三角法公式の PZX への適用",
+          "explanation": "天文三角形 PZX に球面余弦定理、5要素公式、球面正弦定理を順に適用して、高度 h と方位角 A_N を求める変換式を得る。",
+          "used_node_ids": [
+            "astro.sph.n02_spherical_law_of_cosines",
+            "astro.sph.n03_spherical_law_of_sines",
+            "astro.sph.n04_equatorial_horizontal_coords"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "PZX:\\; PZ = 90^\\circ - \\phi,\\; PX = 90^\\circ - \\delta,\\; ZX = 90^\\circ - h,\\; \\angle ZPX = H,\\; \\angle PZX = A_{\\mathrm{N}}",
+          "to_latex": "\\cos(90^\\circ - h) = \\cos(90^\\circ - \\phi)\\cos(90^\\circ - \\delta) + \\sin(90^\\circ - \\phi)\\sin(90^\\circ - \\delta)\\cos H",
+          "operation_label": "辺 ZX に対する球面余弦定理の適用",
+          "explanation": "PZX の辺 ZX について球面余弦定理を書き下す。",
+          "used_node_ids": [
+            "astro.sph.n02_spherical_law_of_cosines",
+            "astro.sph.n04_equatorial_horizontal_coords"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\cos(90^\\circ - h) = \\cos(90^\\circ - \\phi)\\cos(90^\\circ - \\delta) + \\sin(90^\\circ - \\phi)\\sin(90^\\circ - \\delta)\\cos H",
+          "to_latex": "\\sin h = \\sin\\phi\\sin\\delta + \\cos\\phi\\cos\\delta\\cos H,\\quad \\sin(90^\\circ - h)\\cos A_{\\mathrm{N}} = \\cos(90^\\circ - \\delta)\\sin(90^\\circ - \\phi) - \\sin(90^\\circ - \\delta)\\cos(90^\\circ - \\phi)\\cos H",
+          "operation_label": "余角変換と5要素公式の適用",
+          "explanation": "余角の三角比を変換して高度 h の式を得、さらに角 A_N と辺 ZX について5要素公式を適用する。",
+          "used_node_ids": [
+            "astro.sph.n03_spherical_law_of_sines",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sin h = \\sin\\phi\\sin\\delta + \\cos\\phi\\cos\\delta\\cos H,\\quad \\sin(90^\\circ - h)\\cos A_{\\mathrm{N}} = \\cos(90^\\circ - \\delta)\\sin(90^\\circ - \\phi) - \\sin(90^\\circ - \\delta)\\cos(90^\\circ - \\phi)\\cos H",
+          "to_latex": "\\sin h = \\sin\\phi\\sin\\delta + \\cos\\phi\\cos\\delta\\cos H,\\quad \\cos h\\cos A_{\\mathrm{N}} = \\cos\\phi\\sin\\delta - \\sin\\phi\\cos\\delta\\cos H,\\quad \\cos h\\sin A_{\\mathrm{N}} = -\\cos\\delta\\sin H",
+          "operation_label": "正弦定理による方位角の符号確定",
+          "explanation": "球面正弦定理 sin(90°-h) sin A_N = -sin(90°-δ) sin H を併せて方位角の象限を一意に決定する。",
+          "used_node_ids": [
+            "astro.sph.n03_spherical_law_of_sines",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.sph.d06_sidereal_time_hour_angle",
+      "target_node_id": "astro.sph.n06_sidereal_time_hour_angle",
+      "route_kind": "deductive",
+      "title": "地球自転と春分点時角からの恒星時・時角関係の導出",
+      "premise_node_ids": [
+        "astro.sph.n04_equatorial_horizontal_coords",
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "東経 λ_obs を正とし、時角と赤経は同一の単位（時間角または度）で表す。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\theta_{\\mathrm{LST}} := \\theta_{\\mathrm{GMST}} + \\lambda_{\\mathrm{obs}},\\quad \\dot{\\theta}_{\\mathrm{GMST}} = \\omega_\\oplus",
+          "to_latex": "H = \\theta_{\\mathrm{LST}} - \\alpha,\\qquad \\theta_{\\mathrm{LST}} = \\theta_{\\mathrm{GMST}} + \\lambda_{\\mathrm{obs}}",
+          "operation_label": "春分点の時角としての恒星時の関係付け",
+          "explanation": "地方恒星時は地方子午線から西向きに測った春分点の時角であり、天体の赤経は春分点から東向きに測られることから H = LST - α が従う。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.sph.n04_equatorial_horizontal_coords"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\theta_{\\mathrm{LST}} := \\theta_{\\mathrm{GMST}} + \\lambda_{\\mathrm{obs}},\\quad \\dot{\\theta}_{\\mathrm{GMST}} = \\omega_\\oplus",
+          "to_latex": "\\theta_{\\mathrm{LST}} = H_{\\Upsilon},\\quad \\alpha = \\theta_{\\mathrm{LST}} - H",
+          "operation_label": "天の赤道上の角度の向きによる関係式",
+          "explanation": "春分点から天体までの東向き角が赤経 α、地方子午線から春分点までの西向き角が地方恒星時 θ_LST であることから、天体の西向き時角 H との和が θ_LST に等しい。",
+          "used_node_ids": [
+            "astro.sph.n04_equatorial_horizontal_coords"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\theta_{\\mathrm{LST}} = H_{\\Upsilon},\\quad \\alpha = \\theta_{\\mathrm{LST}} - H",
+          "to_latex": "H = \\theta_{\\mathrm{LST}} - \\alpha,\\qquad \\theta_{\\mathrm{LST}} = \\theta_{\\mathrm{GMST}} + \\lambda_{\\mathrm{obs}}",
+          "operation_label": "時角 H についての整理",
+          "explanation": "H について解き、グリニッジ平均恒星時と観測経度の関係式と併記する。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.sph.n04_equatorial_horizontal_coords"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.sph.d07_equatorial_ecliptic_precession",
+      "target_node_id": "astro.sph.n07_equatorial_ecliptic_precession",
+      "route_kind": "deductive",
+      "title": "黄道傾斜角回転による赤道・黄道変換と一般歳差率の導出",
+      "premise_node_ids": [
+        "math.alg.gr07_rodrigues_rotation_exp_map",
+        "astro.sph.n04_equatorial_horizontal_coords",
+        "math.calc.m31_trig_derivatives"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "歳差による黄緯 β の時間変化および黄道傾斜角 ε の微少変化を1次近似で無視する（dβ/dt ≈ 0, dε/dt ≈ 0）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}_{\\mathrm{ecl}} = R(\\mathbf{e}_1, \\varepsilon)\\,\\mathbf{r}_{\\mathrm{eq}},\\quad \\dot{\\lambda} = p",
+          "to_latex": "\\sin\\delta = \\sin\\varepsilon\\cos\\beta\\sin\\lambda + \\cos\\varepsilon\\sin\\beta,\\qquad \\dot{\\alpha} \\approx m + n\\sin\\alpha\\tan\\delta,\\quad \\dot{\\delta} \\approx n\\cos\\alpha",
+          "operation_label": "x軸回り回転と時間微分による歳差公式導出",
+          "explanation": "春分点方向を x 軸とする黄道傾斜角 ε の回転変換から赤道・黄道座標の変換式を得、黄経の歳差速度 p に対する時間微分から赤経・赤緯の永年変化率を導く。",
+          "used_node_ids": [
+            "astro.sph.n04_equatorial_horizontal_coords",
+            "math.alg.gr07_rodrigues_rotation_exp_map",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r}_{\\mathrm{ecl}} = R(\\mathbf{e}_1, \\varepsilon)\\,\\mathbf{r}_{\\mathrm{eq}},\\quad \\dot{\\lambda} = p",
+          "to_latex": "\\sin\\delta = \\sin\\varepsilon\\cos\\beta\\sin\\lambda + \\cos\\varepsilon\\sin\\beta,\\quad \\cos\\delta\\sin\\alpha = \\cos\\varepsilon\\cos\\beta\\sin\\lambda - \\sin\\varepsilon\\sin\\beta,\\quad \\cos\\delta\\cos\\alpha = \\cos\\beta\\cos\\lambda",
+          "operation_label": "方向余弦成分の書き下し",
+          "explanation": "逆回転 R(e_1, -ε) を黄道方向余弦ベクトルに作用させ、赤道方向余弦成分を得る。",
+          "used_node_ids": [
+            "astro.sph.n04_equatorial_horizontal_coords",
+            "math.alg.gr07_rodrigues_rotation_exp_map"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sin\\delta = \\sin\\varepsilon\\cos\\beta\\sin\\lambda + \\cos\\varepsilon\\sin\\beta,\\quad \\cos\\delta\\sin\\alpha = \\cos\\varepsilon\\cos\\beta\\sin\\lambda - \\sin\\varepsilon\\sin\\beta,\\quad \\cos\\delta\\cos\\alpha = \\cos\\beta\\cos\\lambda",
+          "to_latex": "\\cos\\delta\\,\\dot{\\delta} = p\\sin\\varepsilon\\cos\\beta\\cos\\lambda = p\\sin\\varepsilon\\cos\\delta\\cos\\alpha \\implies \\dot{\\delta} = p\\sin\\varepsilon\\cos\\alpha",
+          "operation_label": "sin δ の時間微分による赤緯変化率導出",
+          "explanation": "dλ/dt = p とおいて第1式を時間微分し、第3式を代入することで dδ/dt = n cos α (n = p sin ε) を得る。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\cos\\delta\\,\\dot{\\delta} = p\\sin\\varepsilon\\cos\\beta\\cos\\lambda = p\\sin\\varepsilon\\cos\\delta\\cos\\alpha \\implies \\dot{\\delta} = p\\sin\\varepsilon\\cos\\alpha",
+          "to_latex": "\\sin\\delta = \\sin\\varepsilon\\cos\\beta\\sin\\lambda + \\cos\\varepsilon\\sin\\beta,\\qquad \\dot{\\alpha} \\approx m + n\\sin\\alpha\\tan\\delta,\\quad \\dot{\\delta} \\approx n\\cos\\alpha",
+          "operation_label": "赤経変化率 dα/dt の導出と整理",
+          "explanation": "同様に cos δ cos α の時間微分と惑星歳差項を合わせて m = p cos ε - p_g, n = p sin ε として赤経変化率を得る。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.sph.d08_annual_aberration",
+      "target_node_id": "astro.sph.n08_annual_aberration",
+      "route_kind": "deductive",
+      "title": "光速度不変と1次テイラー展開による年周光行差の導出",
+      "premise_node_ids": [
+        "phys.rel.sr01_relativity_postulates",
+        "math.vec.m03_dot_cross_product",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "地球の公転軌道速度は光速より十分小さい（β = v_⊕/c ≈ 10^-4 ≪ 1）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{u} = -c\\hat{\\mathbf{s}},\\quad \\boldsymbol{\\beta} = \\frac{\\mathbf{v}_\\oplus}{c},\\quad \\|\\boldsymbol{\\beta}\\| \\ll 1",
+          "to_latex": "\\Delta\\theta \\approx \\kappa\\sin\\psi,\\qquad \\kappa = \\frac{v_\\oplus}{c} \\approx 20.4955''",
+          "operation_label": "速度合成と1次摂動展開による光行差角導出",
+          "explanation": "太陽系重心系から地球系への光の到来方向変換を β の1次まで展開し、天体方向と地球進行方向のなす角 ψ に対する見かけの角変位を得る。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "math.vec.m03_dot_cross_product",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{u} = -c\\hat{\\mathbf{s}},\\quad \\boldsymbol{\\beta} = \\frac{\\mathbf{v}_\\oplus}{c},\\quad \\|\\boldsymbol{\\beta}\\| \\ll 1",
+          "to_latex": "\\hat{\\mathbf{s}}' = \\frac{\\hat{\\mathbf{s}} + \\boldsymbol{\\beta} + \\mathcal{O}(\\beta^2)}{1 + \\hat{\\mathbf{s}}\\cdot\\boldsymbol{\\beta}}",
+          "operation_label": "相対論的恒星光行差の1次展開式",
+          "explanation": "特殊相対論の速度変換において γ ≈ 1 + O(β^2) と近似し、見かけの単位方向ベクトル s' を表す。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{s}}' = \\frac{\\hat{\\mathbf{s}} + \\boldsymbol{\\beta} + \\mathcal{O}(\\beta^2)}{1 + \\hat{\\mathbf{s}}\\cdot\\boldsymbol{\\beta}}",
+          "to_latex": "\\Delta\\hat{\\mathbf{s}} = \\hat{\\mathbf{s}}' - \\hat{\\mathbf{s}} = \\boldsymbol{\\beta} - (\\hat{\\mathbf{s}}\\cdot\\boldsymbol{\\beta})\\hat{\\mathbf{s}} + \\mathcal{O}(\\beta^2) = \\hat{\\mathbf{s}}\\times(\\boldsymbol{\\beta}\\times\\hat{\\mathbf{s}}) + \\mathcal{O}(\\beta^2) \\quad (\\beta = \\|\\boldsymbol{\\beta}\\| \\ll 1) \\quad (\\text{1st order})",
+          "operation_label": "幾何級数展開とベクトル三重積表示",
+          "explanation": "分母を 1 - (s・β) + O(β^2) と展開して元の方向ベクトル s との差をとり、垂直成分を抽出する。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta\\hat{\\mathbf{s}} = \\hat{\\mathbf{s}}' - \\hat{\\mathbf{s}} = \\boldsymbol{\\beta} - (\\hat{\\mathbf{s}}\\cdot\\boldsymbol{\\beta})\\hat{\\mathbf{s}} + \\mathcal{O}(\\beta^2) = \\hat{\\mathbf{s}}\\times(\\boldsymbol{\\beta}\\times\\hat{\\mathbf{s}}) + \\mathcal{O}(\\beta^2) \\quad (\\beta = \\|\\boldsymbol{\\beta}\\| \\ll 1) \\quad (\\text{1st order})",
+          "to_latex": "\\Delta\\theta \\approx \\kappa\\sin\\psi,\\qquad \\kappa = \\frac{v_\\oplus}{c} \\approx 20.4955''",
+          "operation_label": "角変位の大きさの評価",
+          "explanation": "s と β のなす角を ψ とおくと |Δs| ≈ β sin ψ となり、地球の平均公転速度を代入して光行差定数 κ ≈ 20.4955'' を得る。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "astro.sph.d09_annual_parallax_parsec",
+      "target_node_id": "astro.sph.n09_annual_parallax_parsec",
+      "route_kind": "deductive",
+      "title": "年周視差の小角近似によるパーセク距離公式の導出",
+      "premise_node_ids": [
+        "astro.sph.n01_spherical_triangle_setup",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "天体までの距離 d は 1 AU より極めて大きい（d ≫ a_⊕）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sin p = \\frac{a_\\oplus}{d},\\quad a_\\oplus = 1\\,\\mathrm{AU},\\quad p \\ll 1\\,\\mathrm{rad} \\quad (d > 0) \\quad (\\text{parallax angle } p) \\quad \\text{with } 1\\,\\mathrm{rad} = \\frac{648000}{\\pi}''",
+          "to_latex": "d = \\frac{1\\,\\mathrm{AU}}{p\\,\\mathrm{[rad]}} = \\frac{1}{p''}\\,\\mathrm{pc},\\qquad 1\\,\\mathrm{pc} = \\frac{648000}{\\pi}\\,\\mathrm{AU} \\approx 3.08568\\times 10^{16}\\,\\mathrm{m} \\approx 3.26156\\,\\mathrm{ly} \\quad (p \\ll 1\\,\\mathrm{rad})",
+          "operation_label": "sin p ≈ p の小角近似と秒角単位への換算",
+          "explanation": "直角三角形の視差定義 sin p = 1 AU / d に小角近似を適用し、p = 1 秒角となる距離を 1 パーセクとして定義する。",
+          "used_node_ids": [
+            "astro.sph.n01_spherical_triangle_setup",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sin p = \\frac{a_\\oplus}{d},\\quad a_\\oplus = 1\\,\\mathrm{AU},\\quad p \\ll 1\\,\\mathrm{rad} \\quad (d > 0) \\quad (\\text{parallax angle } p) \\quad \\text{with } 1\\,\\mathrm{rad} = \\frac{648000}{\\pi}''",
+          "to_latex": "p = \\frac{a_\\oplus}{d} + \\mathcal{O}(p^3) \\implies d \\approx \\frac{1\\,\\mathrm{AU}}{p\\,\\mathrm{[rad]}}",
+          "operation_label": "1次テイラー近似の適用",
+          "explanation": "sin p = p + O(p^3) を用いて距離 d を視差角 p [rad] の逆数として表す。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p = \\frac{a_\\oplus}{d} + \\mathcal{O}(p^3) \\implies d \\approx \\frac{1\\,\\mathrm{AU}}{p\\,\\mathrm{[rad]}}",
+          "to_latex": "d = \\frac{1\\,\\mathrm{AU}}{p\\,\\mathrm{[rad]}} = \\frac{1}{p''}\\,\\mathrm{pc},\\qquad 1\\,\\mathrm{pc} = \\frac{648000}{\\pi}\\,\\mathrm{AU} \\approx 3.08568\\times 10^{16}\\,\\mathrm{m} \\approx 3.26156\\,\\mathrm{ly} \\quad (p \\ll 1\\,\\mathrm{rad})",
+          "operation_label": "秒角単位への変換と 1 pc の定義",
+          "explanation": "1 rad = 180×3600/π 秒角 = (648000/π)'' を代入し、視差が 1'' のときの距離を 1 pc と定義する。",
+          "used_node_ids": [
+            "astro.sph.n01_spherical_triangle_setup"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,809 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.elec.ac_phasor_resonance",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "electrical_engineering",
+    "title": "電気回路2：複素インピーダンス・フェーザ法・交流電力と共振回路",
+    "language": "ja",
+    "description": "オイラーの公式によるフェーザ表示、複素電力（有効・無効・皮相電力）、最大電力供給条件、直列/並列RLC共振と選択度Qを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.ac.ac00_circuit_elements_kvl_kcl",
+      "short_code": "AC00",
+      "kind": "math_boundary",
+      "title": "集中定数回路素子の構成則とキルヒホッフの法則",
+      "summary": "線形時不変の抵抗・インダクタ・キャパシタの電圧電流関係式およびKVL・KCLによる回路方程式の境界条件。",
+      "canonical_latex": "v_R = R i,\\quad v_L = L\\frac{di}{dt},\\quad i_C = C\\frac{dv}{dt},\\quad \\sum_{\\text{loop}} v_k = 0,\\quad \\sum_{\\text{node}} i_k = 0",
+      "aliases_latex": [
+        "v_C(t) = \\frac{1}{C}\\int i_C(t)\\,dt"
+      ],
+      "keywords": [
+        "Kirchhoff's laws",
+        "RLC elements",
+        "constitutive relations",
+        "lumped circuit"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "circuit_theory"
+      ]
+    },
+    {
+      "id": "eng.ac.ac01_phasor_representation",
+      "short_code": "AC01",
+      "kind": "definition",
+      "title": "正弦波交流のフェーザ表示（複素振幅・実効値表現）",
+      "summary": "オイラーの公式を用いて正弦波時間関数を複素平面上の回転ベクトルの実部として表し、定常状態における実効値フェーザを定義する。",
+      "canonical_latex": "x(t) = X_m\\cos(\\omega t + \\phi) = \\operatorname{Re}\\left\\{\\sqrt{2}\\dot{X}e^{j\\omega t}\\right\\},\\quad \\dot{X} := \\frac{X_m}{\\sqrt{2}}e^{j\\phi} = X\\angle\\phi",
+      "aliases_latex": [
+        "\\dot{X}_m = X_m e^{j\\phi} = \\sqrt{2}\\dot{X}"
+      ],
+      "keywords": [
+        "phasor",
+        "Euler's formula",
+        "sinusoidal steady state",
+        "RMS value"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "ac_circuits"
+      ]
+    },
+    {
+      "id": "eng.ac.ac02_complex_impedance_admittance",
+      "short_code": "AC02",
+      "kind": "theorem_formula",
+      "title": "複素インピーダンスと複素アドミタンス",
+      "summary": "正弦波定常状態において時間微分をjω、時間積分を1/(jω)へ変換することで、R・L・C素子の電圧電流比を代数的な複素数ZとYで表す。",
+      "canonical_latex": "\\dot{V} = Z\\dot{I},\\quad Z_R = R,\\quad Z_L = j\\omega L,\\quad Z_C = \\frac{1}{j\\omega C} = -j\\frac{1}{\\omega C},\\quad Y := \\frac{1}{Z} = G + jB",
+      "aliases_latex": [
+        "Z = R + jX,\\quad Y = \\frac{\\dot{I}}{\\dot{V}}"
+      ],
+      "keywords": [
+        "complex impedance",
+        "admittance",
+        "reactance",
+        "susceptance"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "ac_circuits"
+      ]
+    },
+    {
+      "id": "eng.ac.ac03_ac_power_complex_power",
+      "short_code": "AC03",
+      "kind": "theorem_formula",
+      "title": "交流の瞬時電力平均と複素電力（有効・無効・皮相電力）",
+      "summary": "瞬時電力の1周期平均から有効電力Pを導出し、電圧フェーザと電流共役フェーザの積として複素電力S=P+jQ、無効電力Q、皮相電力|S|、力率cosθを定める。",
+      "canonical_latex": "\\dot{S} = \\dot{V}\\dot{I}^* = P + jQ,\\quad P = VI\\cos\\theta,\\quad Q = VI\\sin\\theta,\\quad S = |\\dot{S}| = VI = \\sqrt{P^2+Q^2},\\quad \\mathrm{pf} = \\cos\\theta",
+      "aliases_latex": [
+        "p(t) = v(t)i(t),\\quad P = \\frac{1}{T}\\int_0^T p(t)\\,dt"
+      ],
+      "keywords": [
+        "complex power",
+        "active power",
+        "reactive power",
+        "apparent power",
+        "power factor"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "ac_power"
+      ]
+    },
+    {
+      "id": "eng.ac.ac04_maximum_power_transfer",
+      "short_code": "AC04",
+      "kind": "theorem_formula",
+      "title": "交流回路の最大電力供給条件（共役整合）",
+      "summary": "内部インピーダンスZsを持つ交流電源から負荷ZLへ供給される有効電力を最大化するための複素共役整合条件ZL=Zs*と最大供給電力を与える。",
+      "canonical_latex": "Z_L = Z_s^* \\iff (R_L = R_s \\land X_L = -X_s) \\implies P_{L,\\max} = \\frac{|\\dot{E}|^2}{8R_s} = \\frac{E^2}{4R_s}\\;\\left(E=\\frac{|\\dot{E}|}{\\sqrt{2}}\\right)\\text{ or }\\frac{|\\dot{E}|^2}{8R_s}\\text{ (amplitude)}",
+      "aliases_latex": [
+        "P_L = \\frac{|\\dot{E}|^2 R_L}{(R_s+R_L)^2 + (X_s+X_L)^2}"
+      ],
+      "keywords": [
+        "maximum power transfer",
+        "conjugate matching",
+        "impedance matching"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "ac_power"
+      ]
+    },
+    {
+      "id": "eng.ac.ac05_series_rlc_resonance",
+      "short_code": "AC05",
+      "kind": "theorem_formula",
+      "title": "直列RLC共振回路の共振周波数と特性",
+      "summary": "RLC直列回路の合成インピーダンス虚部が零となる共振角周波数ω0=1/√(LC)と、共振時のインピーダンス最小・電流最大・電圧拡大現象を表す。",
+      "canonical_latex": "Z(\\omega) = R + j\\left(\\omega L - \\frac{1}{\\omega C}\\right),\\quad \\omega_0 = \\frac{1}{\\sqrt{LC}},\\quad Z(\\omega_0) = R,\\quad |\\dot{I}|_{\\max} = \\frac{|\\dot{V}|}{R},\\quad |\\dot{V}_L|=|\\dot{V}_C|=Q_s|\\dot{V}|",
+      "aliases_latex": [
+        "f_0 = \\frac{1}{2\\pi\\sqrt{LC}}"
+      ],
+      "keywords": [
+        "series resonance",
+        "resonant frequency",
+        "RLC circuit",
+        "voltage magnification"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "resonance"
+      ]
+    },
+    {
+      "id": "eng.ac.ac06_series_q_factor_bandwidth",
+      "short_code": "AC06",
+      "kind": "theorem_formula",
+      "title": "直列共振回路の選択度 Q と半値帯域幅",
+      "summary": "蓄積エネルギーと1周期消費エネルギーの比として定義される選択度Qsを回路定数で表し、電力半値条件から帯域幅Δω=ω0/Qsを導く。",
+      "canonical_latex": "Q_s = \\frac{\\omega_0 L}{R} = \\frac{1}{\\omega_0 C R} = \\frac{1}{R}\\sqrt{\\frac{L}{C}},\\quad \\Delta\\omega = \\omega_2 - \\omega_1 = \\frac{R}{L} = \\frac{\\omega_0}{Q_s}\\;\\left(|Z(\\omega_{1,2})|=\\sqrt{2}R\\right) ",
+      "aliases_latex": [
+        "\\frac{\\Delta\\omega}{\\omega_0} = \\frac{1}{Q_s}"
+      ],
+      "keywords": [
+        "quality factor",
+        "Q factor",
+        "bandwidth",
+        "half-power frequency",
+        "selectivity"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "resonance"
+      ]
+    },
+    {
+      "id": "eng.ac.ac07_parallel_rlc_resonance",
+      "short_code": "AC07",
+      "kind": "theorem_formula",
+      "title": "並列RLC共振回路の共振周波数と特性",
+      "summary": "RLC並列回路の合成アドミタンス虚部が零となる共振角周波数ω0=1/√(LC)と、共振時のアドミタンス最小（インピーダンス最大）・電流拡大現象を表す。",
+      "canonical_latex": "Y(\\omega) = \\frac{1}{R} + j\\left(\\omega C - \\frac{1}{\\omega L}\\right),\\quad \\omega_0 = \\frac{1}{\\sqrt{LC}},\\quad Y(\\omega_0) = \\frac{1}{R},\\quad |\\dot{V}|_{\\max} = R|\\dot{I}|,\\quad |\\dot{I}_L|=|\\dot{I}_C|=Q_p|\\dot{I}|",
+      "aliases_latex": [
+        "Z(\\omega_0) = R"
+      ],
+      "keywords": [
+        "parallel resonance",
+        "antiresonance",
+        "admittance",
+        "RLC circuit"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "resonance"
+      ]
+    },
+    {
+      "id": "eng.ac.ac08_parallel_q_factor_bandwidth",
+      "short_code": "AC08",
+      "kind": "theorem_formula",
+      "title": "並列共振回路の選択度 Q と半値帯域幅",
+      "summary": "並列RLC共振回路における選択度Qpの回路定数表現と、アドミタンスの電力半値条件に基づく帯域幅Δω=ω0/Qpの関係を与える。",
+      "canonical_latex": "Q_p = \\omega_0 C R = \\frac{R}{\\omega_0 L} = R\\sqrt{\\frac{C}{L}},\\quad \\Delta\\omega = \\omega_2 - \\omega_1 = \\frac{1}{CR} = \\frac{\\omega_0}{Q_p}\\;\\left(|Y(\\omega_{1,2})|=\\frac{\\sqrt{2}}{R}\\right) ",
+      "aliases_latex": [
+        "Q_p = \\frac{1}{Q_s\\text{ (same R,L,C)}}"
+      ],
+      "keywords": [
+        "parallel Q factor",
+        "bandwidth",
+        "selectivity",
+        "half-power frequency"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "resonance"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.eng.ac.ac01_phasor",
+      "target_node_id": "eng.ac.ac01_phasor_representation",
+      "route_kind": "deductive",
+      "title": "オイラーの公式による正弦波のフェーザ表示導出",
+      "premise_node_ids": [
+        "math.calc.t07_maclaurin_exp",
+        "math.calc.t08_maclaurin_sin_cos"
+      ],
+      "required_math_node_ids": [
+        "eng.ac.ac01_phasor_representation"
+      ],
+      "assumptions": [
+        "定常状態の単一角周波数ωの正弦波信号を対象とする",
+        "電気工学慣例により虚数単位をjとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "x(t) = X_m \\cos(\\omega t + \\phi),\\quad e^{j\\theta} = \\sum_{k=0}^{\\infty}\\frac{(j\\theta)^k}{k!}",
+          "to_latex": "x(t) = \\operatorname{Re}\\left\\{\\sqrt{2}\\dot{X} e^{j\\omega t}\\right\\},\\quad \\dot{X} = X e^{j\\phi} = \\frac{X_m}{\\sqrt{2}}e^{j\\phi} ",
+          "operation_label": "オイラーの公式の適用と実効値フェーザ定義",
+          "explanation": "指数関数と三角関数のマクローリン展開からオイラーの公式を得て、正弦波を複素指数関数の実部で表し実効値フェーザを定義する。",
+          "used_node_ids": [
+            "eng.ac.ac01_phasor_representation",
+            "math.calc.t07_maclaurin_exp",
+            "math.calc.t08_maclaurin_sin_cos"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_euler",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e^{j\\theta} = \\sum_{k=0}^{\\infty}\\frac{(j\\theta)^k}{k!}",
+          "to_latex": "e^{j\\theta} = \\cos\\theta + j\\sin\\theta",
+          "operation_label": "級数展開の偶奇項分離（オイラーの公式）",
+          "explanation": "指数関数のマクローリン級数を実部（偶数次項）と虚部（奇数次項）に分け、cosθとsinθの級数と同定する。",
+          "used_node_ids": [
+            "math.calc.t07_maclaurin_exp",
+            "math.calc.t08_maclaurin_sin_cos"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_real_part",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e^{j\\theta} = \\cos\\theta + j\\sin\\theta",
+          "to_latex": "x(t) = X_m\\cos(\\omega t + \\phi) = \\operatorname{Re}\\left\\{X_m e^{j\\phi} e^{j\\omega t}\\right\\} ",
+          "operation_label": "θ=ωt+φ の代入と指数法則による分離",
+          "explanation": "θ=ωt+φを代入したオイラーの公式の実部を取り、時間依存因子e^{jωt}と複素振幅X_m e^{jφ}を分離する。",
+          "used_node_ids": [
+            "math.calc.t07_maclaurin_exp",
+            "math.calc.t08_maclaurin_sin_cos"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_rms_phasor",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x(t) = X_m\\cos(\\omega t + \\phi) = \\operatorname{Re}\\left\\{X_m e^{j\\phi} e^{j\\omega t}\\right\\} ",
+          "to_latex": "x(t) = \\operatorname{Re}\\left\\{\\sqrt{2}\\dot{X} e^{j\\omega t}\\right\\},\\quad \\dot{X} = X e^{j\\phi} = \\frac{X_m}{\\sqrt{2}}e^{j\\phi} ",
+          "operation_label": "実効値 X=X_m/√2 によるフェーザ規格化",
+          "explanation": "電力計算の便のため最大値X_mを√2で割った実効値Xを用い、実効値フェーザを定義する。",
+          "used_node_ids": [
+            "eng.ac.ac01_phasor_representation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.eng.ac.ac02_impedance",
+      "target_node_id": "eng.ac.ac02_complex_impedance_admittance",
+      "route_kind": "deductive",
+      "title": "微分積分演算子のフェーザ変換による複素インピーダンス導出",
+      "premise_node_ids": [
+        "eng.ac.ac00_circuit_elements_kvl_kcl",
+        "eng.ac.ac01_phasor_representation"
+      ],
+      "required_math_node_ids": [
+        "eng.ac.ac02_complex_impedance_admittance",
+        "math.calc.m01_chain_rule",
+        "math.calc.m31_trig_derivatives"
+      ],
+      "assumptions": [
+        "R, L, C は線形時不変素子である",
+        "正弦波定常状態であり初期過渡項は無視する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "v_R = R i,\\quad v_L = L\\frac{di}{dt},\\quad i_C = C\\frac{dv}{dt},\\quad i(t)=\\operatorname{Re}\\{\\sqrt{2}\\dot{I}e^{j\\omega t}\\} ",
+          "to_latex": "\\dot{V} = Z\\dot{I},\\quad Z_R = R,\\quad Z_L = j\\omega L,\\quad Z_C = \\frac{1}{j\\omega C},\\quad Y = \\frac{1}{Z} = G + jB ",
+          "operation_label": "フェーザ領域における微分・積分の代数化",
+          "explanation": "時間領域の微積分関係にフェーザ表示を適用し、d/dt→jωの対応からR, L, Cの複素インピーダンスおよびアドミタンスを導出する。",
+          "used_node_ids": [
+            "eng.ac.ac00_circuit_elements_kvl_kcl",
+            "eng.ac.ac01_phasor_representation",
+            "eng.ac.ac02_complex_impedance_admittance",
+            "math.calc.m01_chain_rule",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_diff_operator",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "i(t) = \\operatorname{Re}\\left\\{\\sqrt{2}\\dot{I}e^{j\\omega t}\\right\\} ",
+          "to_latex": "\\frac{di(t)}{dt} = \\operatorname{Re}\\left\\{\\sqrt{2}(j\\omega\\dot{I})e^{j\\omega t}\\right\\},\\quad \\int i(t)\\,dt = \\operatorname{Re}\\left\\{\\sqrt{2}\\left(\\frac{\\dot{I}}{j\\omega}\\right)e^{j\\omega t}\\right\\} ",
+          "operation_label": "指数関数の時間微分と積分",
+          "explanation": "連鎖律と三角関数の微分を用いてe^{jωt}の時間微分がjωe^{jωt}となることから、フェーザ領域で微分がjω倍・積分が1/(jω)倍に対応することを示す。",
+          "used_node_ids": [
+            "eng.ac.ac01_phasor_representation",
+            "math.calc.m01_chain_rule",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_element_impedance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{di(t)}{dt} = \\operatorname{Re}\\left\\{\\sqrt{2}(j\\omega\\dot{I})e^{j\\omega t}\\right\\},\\quad \\int i(t)\\,dt = \\operatorname{Re}\\left\\{\\sqrt{2}\\left(\\frac{\\dot{I}}{j\\omega}\\right)e^{j\\omega t}\\right\\} ",
+          "to_latex": "\\dot{V}_R = R\\dot{I},\\quad \\dot{V}_L = j\\omega L\\dot{I},\\quad \\dot{V}_C = \\frac{1}{j\\omega C}\\dot{I} ",
+          "operation_label": "各素子の構成則への代入",
+          "explanation": "R, L, Cの電圧電流関係式にフェーザ微分・積分規則を代入し、各素子の電圧フェーザと電流フェーザの線形関係を得る。",
+          "used_node_ids": [
+            "eng.ac.ac00_circuit_elements_kvl_kcl",
+            "eng.ac.ac01_phasor_representation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_impedance_admittance",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{V}_R = R\\dot{I},\\quad \\dot{V}_L = j\\omega L\\dot{I},\\quad \\dot{V}_C = \\frac{1}{j\\omega C}\\dot{I} ",
+          "to_latex": "\\dot{V} = Z\\dot{I},\\quad Z_R = R,\\quad Z_L = j\\omega L,\\quad Z_C = \\frac{1}{j\\omega C},\\quad Y = \\frac{1}{Z} = G + jB ",
+          "operation_label": "インピーダンスとアドミタンスの定義式への整理",
+          "explanation": "各素子の電圧・電流フェーザ比を複素インピーダンスZとしてまとめ、その逆数をアドミタンスY=G+jBとして定義する。",
+          "used_node_ids": [
+            "eng.ac.ac02_complex_impedance_admittance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.eng.ac.ac03_power",
+      "target_node_id": "eng.ac.ac03_ac_power_complex_power",
+      "route_kind": "deductive",
+      "title": "瞬時電力の1周期平均と複素電力表示の導出",
+      "premise_node_ids": [
+        "eng.ac.ac01_phasor_representation"
+      ],
+      "required_math_node_ids": [
+        "eng.ac.ac03_ac_power_complex_power",
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "電圧・電流は同一角周波数ω=2π/Tの正弦波定常状態である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "v(t)=\\sqrt{2}V\\cos(\\omega t+\\theta_v),\\quad i(t)=\\sqrt{2}I\\cos(\\omega t+\\theta_i),\\quad \\theta=\\theta_v-\\theta_i",
+          "to_latex": "\\dot{S} = \\dot{V}\\dot{I}^* = P + jQ,\\quad P = VI\\cos\\theta,\\quad Q = VI\\sin\\theta,\\quad S = |\\dot{S}| = VI = \\sqrt{P^2+Q^2} ",
+          "operation_label": "瞬時電力の時間平均と複素共役積による統一表現",
+          "explanation": "瞬時電力v(t)i(t)を積和公式で展開し1周期平均から有効電力Pを求め、複素電力S=V・I*の実部・虚部・絶対値としてP, Q, Sを導出する。",
+          "used_node_ids": [
+            "eng.ac.ac01_phasor_representation",
+            "eng.ac.ac03_ac_power_complex_power",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_instantaneous_power",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(t) = v(t)i(t) = 2VI\\cos(\\omega t+\\theta_v)\\cos(\\omega t+\\theta_i) ",
+          "to_latex": "p(t) = VI\\cos(\\theta_v-\\theta_i) + VI\\cos(2\\omega t + \\theta_v + \\theta_i) ",
+          "operation_label": "三角関数の積和変換",
+          "explanation": "加法定理から得られる余弦の積和公式を適用し、瞬時電力を直流成分と2ω周波数で振動する交流成分に分解する。",
+          "used_node_ids": [
+            "eng.ac.ac01_phasor_representation",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_active_power_avg",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(t) = VI\\cos(\\theta_v-\\theta_i) + VI\\cos(2\\omega t + \\theta_v + \\theta_i) ",
+          "to_latex": "P = \\frac{1}{T}\\int_{0}^{T} p(t)\\,dt = VI\\cos\\theta\\quad (\\theta = \\theta_v - \\theta_i) ",
+          "operation_label": "1周期にわたる定積分平均",
+          "explanation": "微積分学の基本定理によりcos(2ωt+θ_v+θ_i)の1周期積分が0となるため、平均電力（有効電力）P=VIcosθが得られる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_complex_power_form",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P = \\frac{1}{T}\\int_{0}^{T} p(t)\\,dt = VI\\cos\\theta\\quad (\\theta = \\theta_v - \\theta_i) ",
+          "to_latex": "\\dot{S} = \\dot{V}\\dot{I}^* = P + jQ,\\quad P = VI\\cos\\theta,\\quad Q = VI\\sin\\theta,\\quad S = |\\dot{S}| = VI = \\sqrt{P^2+Q^2} ",
+          "operation_label": "複素電力 S=V・I* の計算と分解",
+          "explanation": "V=Ve^{jθ_v}とI*=Ie^{-jθ_i}の積を取るとVIe^{jθ}=VIcosθ+jVIsinθとなり、有効電力P、無効電力Q、皮相電力Sが統一的に表される。",
+          "used_node_ids": [
+            "eng.ac.ac01_phasor_representation",
+            "eng.ac.ac03_ac_power_complex_power"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.eng.ac.ac04_max_power",
+      "target_node_id": "eng.ac.ac04_maximum_power_transfer",
+      "route_kind": "deductive",
+      "title": "複素負荷インピーダンスに対する最大電力供給条件の導出",
+      "premise_node_ids": [
+        "eng.ac.ac02_complex_impedance_admittance",
+        "eng.ac.ac03_ac_power_complex_power"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.e05_hessian_extremum_test"
+      ],
+      "assumptions": [
+        "電源起電力E（実効値）と内部インピーダンスZs=Rs+jXsは固定され、Rs>0である",
+        "負荷インピーダンスZL=RL+jXLはRL>0の範囲で独立に調整可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Z_s = R_s + jX_s,\\quad Z_L = R_L + jX_L,\\quad P_L = R_L\\left|\\frac{\\dot{E}}{Z_s + Z_L}\\right|^2",
+          "to_latex": "Z_L = Z_s^*\\;(R_L = R_s,\\; X_L = -X_s) \\implies P_{L,\\max} = \\frac{|\\dot{E}|^2}{8R_s} ",
+          "operation_label": "負荷電力の停留点解析による共役整合条件の導出",
+          "explanation": "負荷抵抗RLで消費される有効電力PL(RL, XL)をXLとRLについて最適化し、共役整合条件ZL=Zs*と最大電力を導く。",
+          "used_node_ids": [
+            "eng.ac.ac02_complex_impedance_admittance",
+            "eng.ac.ac03_ac_power_complex_power",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_load_power_expr",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_L(R_L, X_L) = R_L\\left|\\frac{\\dot{E}}{(R_s + R_L) + j(X_s + X_L)}\\right|^2",
+          "to_latex": "P_L(R_L, X_L) = \\frac{|\\dot{E}|^2 R_L}{(R_s + R_L)^2 + (X_s + X_L)^2} ",
+          "operation_label": "複素電流の大きさの2乗の展開",
+          "explanation": "全インピーダンスZs+ZLの絶対値の2乗を計算し、負荷有効電力PLをRLとXLの2変数関数として表す。",
+          "used_node_ids": [
+            "eng.ac.ac02_complex_impedance_admittance",
+            "eng.ac.ac03_ac_power_complex_power"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_reactance_cancel",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_L(R_L, X_L) = \\frac{|\\dot{E}|^2 R_L}{(R_s + R_L)^2 + (X_s + X_L)^2} ",
+          "to_latex": "\\frac{\\partial P_L}{\\partial X_L} = 0 \\implies X_L = -X_s,\\quad P_L(R_L, -X_s) = \\frac{|\\dot{E}|^2 R_L}{(R_s + R_L)^2} ",
+          "operation_label": "リアクタンスXLに関する最大化",
+          "explanation": "任意のRL>0に対し分母が最小となるXL=-Xs（リアクタンスの相殺）でPLが最大になることを停留条件から示す。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_resistance_match",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial P_L}{\\partial X_L} = 0 \\implies X_L = -X_s,\\quad P_L(R_L, -X_s) = \\frac{|\\dot{E}|^2 R_L}{(R_s + R_L)^2} ",
+          "to_latex": "Z_L = Z_s^*\\;(R_L = R_s,\\; X_L = -X_s) \\implies P_{L,\\max} = \\frac{|\\dot{E}|^2}{8R_s} ",
+          "operation_label": "抵抗RLに関する極大条件の決定",
+          "explanation": "dPL/dRL=0からRL=Rsを得て、2階微分が負（極大）であることを確認し、最大電力|E|^2/(8Rs)を得る（ただしEが振幅表示の場合の表記|E|^2/(8Rs)に注意、実効値E_rmsではE_rms^2/(4Rs)）。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.e05_hessian_extremum_test"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.eng.ac.ac05_series_res",
+      "target_node_id": "eng.ac.ac05_series_rlc_resonance",
+      "route_kind": "deductive",
+      "title": "直列RLC回路のインピーダンス虚部零条件による共振導出",
+      "premise_node_ids": [
+        "eng.ac.ac00_circuit_elements_kvl_kcl",
+        "eng.ac.ac02_complex_impedance_admittance"
+      ],
+      "required_math_node_ids": [
+        "eng.ac.ac05_series_rlc_resonance"
+      ],
+      "assumptions": [
+        "R>0, L>0, C>0 の直列接続に角周波数ω>0の正弦波電圧を印加する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Z(\\omega) = Z_R + Z_L + Z_C = R + j\\omega L + \\frac{1}{j\\omega C} ",
+          "to_latex": "\\operatorname{Im}Z(\\omega_0) = 0 \\iff \\omega_0 = \\frac{1}{\\sqrt{LC}},\\quad Z(\\omega_0) = R,\\quad |\\dot{I}|_{\\max} = \\frac{|\\dot{V}|}{R} ",
+          "operation_label": "合成インピーダンスのリアクタンス零条件",
+          "explanation": "KVLによる直列合成インピーダンスの実部と虚部を分離し、虚部（リアクタンス）が0となる角周波数ω0とインピーダンス最小・電流最大条件を導く。",
+          "used_node_ids": [
+            "eng.ac.ac00_circuit_elements_kvl_kcl",
+            "eng.ac.ac02_complex_impedance_admittance",
+            "eng.ac.ac05_series_rlc_resonance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_series_impedance",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Z(\\omega) = R + j\\omega L + \\frac{1}{j\\omega C} ",
+          "to_latex": "Z(\\omega) = R + j\\left(\\omega L - \\frac{1}{\\omega C}\\right),\\quad |Z(\\omega)| = \\sqrt{R^2 + \\left(\\omega L - \\frac{1}{\\omega C}\\right)^2} ",
+          "operation_label": "1/j=-j を用いた実部・虚部の分離",
+          "explanation": "容量性インピーダンス1/(jωC)を-j/(ωC)に変形して実部Rと虚部ωL-1/(ωC)にまとめ、大きさ|Z(ω)|を表す。",
+          "used_node_ids": [
+            "eng.ac.ac00_circuit_elements_kvl_kcl",
+            "eng.ac.ac02_complex_impedance_admittance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_resonance_freq",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Z(\\omega) = R + j\\left(\\omega L - \\frac{1}{\\omega C}\\right),\\quad |Z(\\omega)| = \\sqrt{R^2 + \\left(\\omega L - \\frac{1}{\\omega C}\\right)^2} ",
+          "to_latex": "\\operatorname{Im}Z(\\omega_0) = 0 \\iff \\omega_0 = \\frac{1}{\\sqrt{LC}},\\quad Z(\\omega_0) = R,\\quad |\\dot{I}|_{\\max} = \\frac{|\\dot{V}|}{R} ",
+          "operation_label": "誘導性リアクタンスと容量性リアクタンスの相殺",
+          "explanation": "ω0 L = 1/(ω0 C) を解いて共振角周波数ω0=1/√(LC)を得て、そのとき|Z|が最小値Rとなり電流が最大になることを示す。",
+          "used_node_ids": [
+            "eng.ac.ac05_series_rlc_resonance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.eng.ac.ac06_series_q",
+      "target_node_id": "eng.ac.ac06_series_q_factor_bandwidth",
+      "route_kind": "deductive",
+      "title": "直列共振回路のエネルギー比によるQ値と半値帯域幅の導出",
+      "premise_node_ids": [
+        "eng.ac.ac03_ac_power_complex_power",
+        "eng.ac.ac05_series_rlc_resonance"
+      ],
+      "required_math_node_ids": [
+        "eng.ac.ac06_series_q_factor_bandwidth"
+      ],
+      "assumptions": [
+        "R>0, L>0, C>0 かつ共振条件 ω0=1/√(LC) が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Z(\\omega) = R + j\\left(\\omega L - \\frac{1}{\\omega C}\\right),\\quad \\omega_0 = \\frac{1}{\\sqrt{LC}} ",
+          "to_latex": "Q_s = \\frac{\\omega_0 L}{R} = \\frac{1}{\\omega_0 C R} = \\frac{1}{R}\\sqrt{\\frac{L}{C}},\\quad \\Delta\\omega = \\omega_2 - \\omega_1 = \\frac{R}{L} = \\frac{\\omega_0}{Q_s} ",
+          "operation_label": "エネルギー比からのQs導出と半値周波数差の計算",
+          "explanation": "共振時の最大蓄積磁気エネルギーと1周期消費エネルギーの比からQsを導出し、インピーダンスが√2 Rとなる2つの角周波数の差から帯域幅Δω=ω0/Qsを得る。",
+          "used_node_ids": [
+            "eng.ac.ac03_ac_power_complex_power",
+            "eng.ac.ac05_series_rlc_resonance",
+            "eng.ac.ac06_series_q_factor_bandwidth"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_energy_ratio_q",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W_{\\max} = L I^2,\\quad P_R = R I^2 ",
+          "to_latex": "Q_s = 2\\pi\\frac{W_{\\max}}{P_R T_0} = \\frac{\\omega_0 L}{R} = \\frac{1}{\\omega_0 C R} = \\frac{1}{R}\\sqrt{\\frac{L}{C}} ",
+          "operation_label": "選択度Qのエネルギー定義への代入",
+          "explanation": "電流振幅√2 Iより最大蓄積エネルギーW_max=(1/2)L(√2 I)^2=L I^2、1周期消費エネルギーP_R T_0 = R I^2 (2π/ω0)を代入してQsを得る。",
+          "used_node_ids": [
+            "eng.ac.ac03_ac_power_complex_power",
+            "eng.ac.ac05_series_rlc_resonance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_half_power_cond",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q_s = 2\\pi\\frac{W_{\\max}}{P_R T_0} = \\frac{\\omega_0 L}{R} = \\frac{1}{\\omega_0 C R} = \\frac{1}{R}\\sqrt{\\frac{L}{C}} ",
+          "to_latex": "|Z(\\omega)| = \\sqrt{2}R \\iff \\omega L - \\frac{1}{\\omega C} = \\pm R ",
+          "operation_label": "消費電力半減（|I|=I_max/√2）条件の立式",
+          "explanation": "定電圧駆動時に有効電力が共振時の1/2となる半値条件|Z(ω)|=√2 Rをインピーダンスの実部と虚部の関係式へ書き換える。",
+          "used_node_ids": [
+            "eng.ac.ac05_series_rlc_resonance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_bandwidth_diff",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|Z(\\omega)| = \\sqrt{2}R \\iff \\omega L - \\frac{1}{\\omega C} = \\pm R ",
+          "to_latex": "Q_s = \\frac{\\omega_0 L}{R} = \\frac{1}{\\omega_0 C R} = \\frac{1}{R}\\sqrt{\\frac{L}{C}},\\quad \\Delta\\omega = \\omega_2 - \\omega_1 = \\frac{R}{L} = \\frac{\\omega_0}{Q_s} ",
+          "operation_label": "2次方程式の解の差による厳密帯域幅の導出",
+          "explanation": "ω^2 ∓ (R/L)ω - 1/(LC) = 0 の正の解ω1, ω2について解と係数の関係から差ω2-ω1=R/L=ω0/Qsを得る。",
+          "used_node_ids": [
+            "eng.ac.ac06_series_q_factor_bandwidth"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.eng.ac.ac07_parallel_res",
+      "target_node_id": "eng.ac.ac07_parallel_rlc_resonance",
+      "route_kind": "deductive",
+      "title": "並列RLC回路のアドミタンス虚部零条件による共振導出",
+      "premise_node_ids": [
+        "eng.ac.ac00_circuit_elements_kvl_kcl",
+        "eng.ac.ac02_complex_impedance_admittance"
+      ],
+      "required_math_node_ids": [
+        "eng.ac.ac07_parallel_rlc_resonance"
+      ],
+      "assumptions": [
+        "R>0, L>0, C>0 の並列接続に角周波数ω>0の正弦波電流を供給する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Y(\\omega) = \\frac{1}{R} + \\frac{1}{j\\omega L} + j\\omega C ",
+          "to_latex": "\\operatorname{Im}Y(\\omega_0) = 0 \\iff \\omega_0 = \\frac{1}{\\sqrt{LC}},\\quad Y(\\omega_0) = \\frac{1}{R},\\quad |\\dot{V}|_{\\max} = R|\\dot{I}| ",
+          "operation_label": "合成アドミタンスのサセプタンス零条件",
+          "explanation": "KCLによる並列合成アドミタンスの実部（コンダクタンス）と虚部（サセプタンス）を分離し、虚部が0となる共振角周波数ω0を導く。",
+          "used_node_ids": [
+            "eng.ac.ac00_circuit_elements_kvl_kcl",
+            "eng.ac.ac02_complex_impedance_admittance",
+            "eng.ac.ac07_parallel_rlc_resonance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_parallel_admittance",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y(\\omega) = \\frac{1}{R} + \\frac{1}{j\\omega L} + j\\omega C ",
+          "to_latex": "Y(\\omega) = G + j\\left(\\omega C - \\frac{1}{\\omega L}\\right)\\quad \\left(G = \\frac{1}{R}\\right) ",
+          "operation_label": "各素子アドミタンスの加算と整理",
+          "explanation": "1/(jωL)=-j/(ωL)と変形してコンダクタンスG=1/RとサセプタンスB=ωC-1/(ωL)に分離する。",
+          "used_node_ids": [
+            "eng.ac.ac00_circuit_elements_kvl_kcl",
+            "eng.ac.ac02_complex_impedance_admittance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_parallel_res_freq",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y(\\omega) = G + j\\left(\\omega C - \\frac{1}{\\omega L}\\right)\\quad \\left(G = \\frac{1}{R}\\right) ",
+          "to_latex": "\\operatorname{Im}Y(\\omega_0) = 0 \\iff \\omega_0 = \\frac{1}{\\sqrt{LC}},\\quad Y(\\omega_0) = \\frac{1}{R},\\quad |\\dot{V}|_{\\max} = R|\\dot{I}| ",
+          "operation_label": "サセプタンス零による共振角周波数の決定",
+          "explanation": "ω0 C = 1/(ω0 L) を解いてω0=1/√(LC)を得て、共振時にアドミタンスが最小値1/R（インピーダンス最大値R）となることを示す。",
+          "used_node_ids": [
+            "eng.ac.ac07_parallel_rlc_resonance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.eng.ac.ac08_parallel_q",
+      "target_node_id": "eng.ac.ac08_parallel_q_factor_bandwidth",
+      "route_kind": "deductive",
+      "title": "並列共振回路のエネルギー比によるQ値と半値帯域幅の導出",
+      "premise_node_ids": [
+        "eng.ac.ac03_ac_power_complex_power",
+        "eng.ac.ac07_parallel_rlc_resonance"
+      ],
+      "required_math_node_ids": [
+        "eng.ac.ac08_parallel_q_factor_bandwidth"
+      ],
+      "assumptions": [
+        "R>0, L>0, C>0 かつ共振条件 ω0=1/√(LC) が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Y(\\omega) = \\frac{1}{R} + j\\left(\\omega C - \\frac{1}{\\omega L}\\right),\\quad \\omega_0 = \\frac{1}{\\sqrt{LC}} ",
+          "to_latex": "Q_p = \\omega_0 C R = \\frac{R}{\\omega_0 L} = R\\sqrt{\\frac{C}{L}},\\quad \\Delta\\omega = \\omega_2 - \\omega_1 = \\frac{1}{CR} = \\frac{\\omega_0}{Q_p} ",
+          "operation_label": "エネルギー比からのQp導出と半値帯域幅の計算",
+          "explanation": "並列共振時の最大蓄積静電エネルギーと1周期消費エネルギーの比からQpを導き、アドミタンスの半値条件から帯域幅Δω=ω0/Qpを得る。",
+          "used_node_ids": [
+            "eng.ac.ac03_ac_power_complex_power",
+            "eng.ac.ac07_parallel_rlc_resonance",
+            "eng.ac.ac08_parallel_q_factor_bandwidth"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_parallel_energy_q",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W_{\\max} = C V^2,\\quad P_R = \\frac{V^2}{R} ",
+          "to_latex": "Q_p = 2\\pi\\frac{W_{\\max}}{P_R T_0} = \\omega_0 C R = \\frac{R}{\\omega_0 L} = R\\sqrt{\\frac{C}{L}} ",
+          "operation_label": "選択度Qのエネルギー定義への代入",
+          "explanation": "電圧振幅√2 Vより最大蓄積エネルギーW_max=(1/2)C(√2 V)^2=C V^2、1周期消費エネルギーP_R T_0=(V^2/R)(2π/ω0)を代入してQpを得る。",
+          "used_node_ids": [
+            "eng.ac.ac03_ac_power_complex_power",
+            "eng.ac.ac07_parallel_rlc_resonance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_parallel_half_power",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q_p = 2\\pi\\frac{W_{\\max}}{P_R T_0} = \\omega_0 C R = \\frac{R}{\\omega_0 L} = R\\sqrt{\\frac{C}{L}} ",
+          "to_latex": "|Y(\\omega)| = \\frac{\\sqrt{2}}{R} \\iff \\omega C - \\frac{1}{\\omega L} = \\pm\\frac{1}{R} ",
+          "operation_label": "定電流駆動における電力半減条件の立式",
+          "explanation": "定電流駆動時に端子電圧の振幅が1/√2倍、すなわち消費電力が半減する条件|Y(ω)|=√2/Rをサセプタンスの条件へ書き換える。",
+          "used_node_ids": [
+            "eng.ac.ac07_parallel_rlc_resonance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_parallel_bandwidth",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|Y(\\omega)| = \\frac{\\sqrt{2}}{R} \\iff \\omega C - \\frac{1}{\\omega L} = \\pm\\frac{1}{R} ",
+          "to_latex": "Q_p = \\omega_0 C R = \\frac{R}{\\omega_0 L} = R\\sqrt{\\frac{C}{L}},\\quad \\Delta\\omega = \\omega_2 - \\omega_1 = \\frac{1}{CR} = \\frac{\\omega_0}{Q_p} ",
+          "operation_label": "2次方程式の解の差による厳密帯域幅の導出",
+          "explanation": "ω^2 ∓ (1/(CR))ω - 1/(LC) = 0 の正の解ω1, ω2の差を取ることで帯域幅Δω=1/(CR)=ω0/Qpを得る。",
+          "used_node_ids": [
+            "eng.ac.ac08_parallel_q_factor_bandwidth"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

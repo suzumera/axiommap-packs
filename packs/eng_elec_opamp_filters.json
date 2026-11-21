@@ -1,0 +1,758 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.elec.opamp_filters",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "electrical_engineering",
+    "title": "アナログ電子回路：オペアンプ負帰還回路・アクティブフィルタと雑音解析",
+    "language": "ja",
+    "description": "仮想短絡による反転/非反転/差動/積分回路、サレンキー型アクティブフィルタ、熱雑音（ジョンソン＝ナイキスト式）とSN比を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.opamp.n01_ideal_opamp_kcl_model",
+      "short_code": "OP01",
+      "kind": "axiom",
+      "title": "理想オペアンプとキルヒホッフ電流則・インピーダンスモデル",
+      "summary": "無限大の開ループ利得・無限大の入力インピーダンス・零出力インピーダンスを持つ理想オペアンプのモデルと、節点におけるキルヒホッフ電流則およびs領域インピーダンス則。",
+      "canonical_latex": "V_{\\text{out}} = A_{\\text{OL}}(V_+ - V_-),\\quad A_{\\text{OL}} \\to \\infty,\\quad I_+ = I_- = 0,\\quad \\sum_{k} I_k = 0,\\quad Z_R = R,\\quad Z_C(s) = \\frac{1}{sC}",
+      "aliases_latex": [
+        "I_+ = I_- = 0,\\; V_{\\text{out}} = A_{\\text{OL}}(V_+ - V_-)"
+      ],
+      "keywords": [
+        "ideal op-amp",
+        "KCL",
+        "open-loop gain",
+        "impedance"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits"
+      ]
+    },
+    {
+      "id": "eng.opamp.n02_virtual_short_principle",
+      "short_code": "OP02",
+      "kind": "theorem_formula",
+      "title": "負帰還による仮想短絡（イマジナリーショート）の定理",
+      "summary": "負帰還が施された理想オペアンプにおいて、出力電圧が有限であることから非反転・反転入力端子間の電位差が零に収束する性質。",
+      "canonical_latex": "V_+ = V_-,\\quad I_+ = I_- = 0",
+      "aliases_latex": [
+        "V_+ - V_- = 0"
+      ],
+      "keywords": [
+        "virtual short",
+        "imaginary short",
+        "negative feedback"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits"
+      ]
+    },
+    {
+      "id": "eng.opamp.n03_inverting_amplifier",
+      "short_code": "OP03",
+      "kind": "theorem_formula",
+      "title": "反転増幅回路の電圧利得と入力インピーダンス",
+      "summary": "反転入力端子を仮想接地として動作する反転増幅回路の閉ループ電圧利得および入力インピーダンスの公式。",
+      "canonical_latex": "A_v = \\frac{V_{\\text{out}}}{V_{\\text{in}}} = -\\frac{R_f}{R_{\\text{in}}},\\quad Z_{\\text{in}} = R_{\\text{in}}",
+      "aliases_latex": [
+        "V_{\\text{out}} = -\\frac{R_f}{R_{\\text{in}}} V_{\\text{in}}"
+      ],
+      "keywords": [
+        "inverting amplifier",
+        "virtual ground",
+        "voltage gain"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits"
+      ]
+    },
+    {
+      "id": "eng.opamp.n04_noninverting_amplifier",
+      "short_code": "OP04",
+      "kind": "theorem_formula",
+      "title": "非反転増幅回路とボルテージフォロワの電圧利得",
+      "summary": "非反転入力端子に信号を入力し、抵抗分圧で負帰還をかける非反転増幅回路の閉ループ電圧利得。",
+      "canonical_latex": "A_v = \\frac{V_{\\text{out}}}{V_{\\text{in}}} = 1 + \\frac{R_f}{R_1}",
+      "aliases_latex": [
+        "V_{\\text{out}} = \\left(1 + \\frac{R_f}{R_1}\\right) V_{\\text{in}}"
+      ],
+      "keywords": [
+        "non-inverting amplifier",
+        "voltage follower",
+        "closed-loop gain"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits"
+      ]
+    },
+    {
+      "id": "eng.opamp.n05_differential_amplifier",
+      "short_code": "OP05",
+      "kind": "theorem_formula",
+      "title": "差動増幅回路の出力電圧と平衡条件",
+      "summary": "2つの入力電圧の差を増幅する差動増幅回路の出力式と、同相信号を除去するための抵抗比平衡条件。",
+      "canonical_latex": "V_{\\text{out}} = \\frac{R_2}{R_1}(V_2 - V_1)\\quad \\left(\\frac{R_2}{R_1} = \\frac{R_4}{R_3}\\right)",
+      "aliases_latex": [
+        "V_{\\text{out}} = A_d (V_2 - V_1)"
+      ],
+      "keywords": [
+        "differential amplifier",
+        "CMRR",
+        "common-mode rejection"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits"
+      ]
+    },
+    {
+      "id": "eng.opamp.n06_opamp_integrator",
+      "short_code": "OP06",
+      "kind": "theorem_formula",
+      "title": "オペアンプ積分回路の伝達関数と時間応答",
+      "summary": "帰還素子にキャパシタを用いた反転型積分回路のs領域伝達関数および時間領域の積分出力式。",
+      "canonical_latex": "H(s) = -\\frac{1}{sRC},\\quad v_{\\text{out}}(t) = -\\frac{1}{RC}\\int_{0}^{t} v_{\\text{in}}(\\tau)\\,d\\tau + v_{\\text{out}}(0^-)",
+      "aliases_latex": [
+        "V_{\\text{out}}(s) = -\\frac{1}{sRC} V_{\\text{in}}(s)"
+      ],
+      "keywords": [
+        "op-amp integrator",
+        "transfer function",
+        "Laplace domain"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits"
+      ]
+    },
+    {
+      "id": "eng.opamp.n07_sallen_key_lpf",
+      "short_code": "OP07",
+      "kind": "theorem_formula",
+      "title": "2次サレン・キー型アクティブローパスフィルタの伝達関数とQ値",
+      "summary": "非反転増幅段を正帰還ループに用いた2次サレン・キー型ローパスフィルタの伝達関数、固有角周波数、および品質係数Q。",
+      "canonical_latex": "H(s) = \\frac{K\\omega_0^2}{s^2 + \\frac{\\omega_0}{Q}s + \\omega_0^2},\\quad \\omega_0 = \\frac{1}{\\sqrt{R_1 R_2 C_1 C_2}},\\quad Q = \\frac{\\sqrt{R_1 R_2 C_1 C_2}}{C_2(R_1+R_2) + R_1 C_1(1-K)}",
+      "aliases_latex": [
+        "H(s) = \\frac{K}{s^2 R_1 R_2 C_1 C_2 + s\\big(C_2(R_1+R_2) + R_1 C_1(1-K)\\big) + 1}"
+      ],
+      "keywords": [
+        "Sallen-Key filter",
+        "active low-pass filter",
+        "quality factor",
+        "cutoff frequency"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits",
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "eng.opamp.n08_johnson_nyquist_noise",
+      "short_code": "OP08",
+      "kind": "theorem_formula",
+      "title": "抵抗の熱雑音（ジョンソン＝ナイキストの公式）",
+      "summary": "熱平衡状態にある抵抗Rの端子間に生じる熱雑音電圧の片側パワースペクトル密度と帯域幅Δfあたりの平均二乗雑音電圧。",
+      "canonical_latex": "S_v(f) = 4 k_B T R,\\quad \\overline{v_n^2} = 4 k_B T R\\,\\Delta f",
+      "aliases_latex": [
+        "v_{n,\\text{rms}} = \\sqrt{4 k_B T R\\,\\Delta f}"
+      ],
+      "keywords": [
+        "Johnson-Nyquist noise",
+        "thermal noise",
+        "power spectral density"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits",
+        "statistical_mechanics"
+      ]
+    },
+    {
+      "id": "eng.opamp.n09_opamp_output_noise_snr",
+      "short_code": "OP09",
+      "kind": "theorem_formula",
+      "title": "負帰還増幅回路の出力換算雑音とSN比（信号対雑音比）",
+      "summary": "雑音利得Gn(f)による入力換算雑音スペクトルの出力積分と、出力信号電力に対するSN比（dB表示）の定式化。",
+      "canonical_latex": "\\overline{v_{n,\\text{out}}^2} = \\int_{0}^{\\infty} |G_n(f)|^2 S_{v,\\text{in}}(f)\\,df,\\quad \\mathrm{SNR}_{\\text{dB}} = 10\\log_{10}\\!\\left(\\frac{V_{s,\\text{rms}}^2}{\\overline{v_{n,\\text{out}}^2}}\\right)",
+      "aliases_latex": [
+        "\\mathrm{SNR} = \\frac{P_{\\text{sig}}}{P_{\\text{noise}}}"
+      ],
+      "keywords": [
+        "noise gain",
+        "output-referred noise",
+        "SNR",
+        "signal-to-noise ratio"
+      ],
+      "domain_tags": [
+        "electrical_engineering",
+        "analog_circuits"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.opamp.d02_virtual_short",
+      "target_node_id": "eng.opamp.n02_virtual_short_principle",
+      "route_kind": "deductive",
+      "title": "理想オペアンプモデルからの仮想短絡の導出",
+      "premise_node_ids": [
+        "eng.opamp.n01_ideal_opamp_kcl_model"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m23_limit_algebra"
+      ],
+      "assumptions": [
+        "負帰還により出力電圧 V_out が有限値に保たれる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V_{\\text{out}} = A_{\\text{OL}}(V_+ - V_-)",
+          "to_latex": "V_+ = V_-,\\quad I_+ = I_- = 0",
+          "operation_label": "開ループ利得無限大の極限による仮想短絡",
+          "explanation": "有限な出力電圧のもとで開ループ利得を無限大へ極限移行することで、入力端子間の電位差が零になることを示す。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model",
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\text{out}} = A_{\\text{OL}}(V_+ - V_-)",
+          "to_latex": "V_+ - V_- = \\frac{V_{\\text{out}}}{A_{\\text{OL}}}",
+          "operation_label": "入力電位差について整理",
+          "explanation": "理想オペアンプの入出力関係式を A_OL で割り、入力端子間の差電圧を表す。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_+ - V_- = \\frac{V_{\\text{out}}}{A_{\\text{OL}}}",
+          "to_latex": "\\lim_{A_{\\text{OL}}\\to\\infty}(V_+ - V_-) = 0 \\implies V_+ = V_-,\\quad I_+ = I_- = 0",
+          "operation_label": "A_OL -> ∞ の極限評価",
+          "explanation": "V_out が有限であるため極限で差電圧が零となり、入力電流零の条件と合わせて仮想短絡が成立する。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model",
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.opamp.d03_inverting_amp",
+      "target_node_id": "eng.opamp.n03_inverting_amplifier",
+      "route_kind": "deductive",
+      "title": "反転増幅回路の電圧利得と入力インピーダンスの導出",
+      "premise_node_ids": [
+        "eng.opamp.n01_ideal_opamp_kcl_model",
+        "eng.opamp.n02_virtual_short_principle"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "非反転入力端子は接地 (V_+ = 0) されている"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{V_{\\text{in}} - V_-}{R_{\\text{in}}} + \\frac{V_{\\text{out}} - V_-}{R_f} = I_-",
+          "to_latex": "A_v = \\frac{V_{\\text{out}}}{V_{\\text{in}}} = -\\frac{R_f}{R_{\\text{in}}},\\quad Z_{\\text{in}} = R_{\\text{in}}",
+          "operation_label": "仮想接地とKCLによる反転増幅利得の導出",
+          "explanation": "反転入力節点のKCLに仮想短絡条件 V_- = V_+ = 0 および I_- = 0 を代入して電圧利得と入力インピーダンスを求める。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model",
+            "eng.opamp.n02_virtual_short_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{V_{\\text{in}} - V_-}{R_{\\text{in}}} + \\frac{V_{\\text{out}} - V_-}{R_f} = I_-",
+          "to_latex": "\\frac{V_{\\text{in}}}{R_{\\text{in}}} + \\frac{V_{\\text{out}}}{R_f} = 0",
+          "operation_label": "仮想短絡と零入力電流の代入",
+          "explanation": "V_- = V_+ = 0（仮想接地）および I_- = 0 をKCLの式に代入する。",
+          "used_node_ids": [
+            "eng.opamp.n02_virtual_short_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{V_{\\text{in}}}{R_{\\text{in}}} + \\frac{V_{\\text{out}}}{R_f} = 0",
+          "to_latex": "A_v = \\frac{V_{\\text{out}}}{V_{\\text{in}}} = -\\frac{R_f}{R_{\\text{in}}},\\quad Z_{\\text{in}} = \\frac{V_{\\text{in}}}{I_{\\text{in}}} = R_{\\text{in}}",
+          "operation_label": "電圧利得と入力インピーダンスの整理",
+          "explanation": "V_out / V_in について解き、さらに反転入力が仮想接地であることから入力インピーダンスが R_in に等しいことを得る。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.opamp.d04_noninverting_amp",
+      "target_node_id": "eng.opamp.n04_noninverting_amplifier",
+      "route_kind": "deductive",
+      "title": "非反転増幅回路の電圧利得の導出",
+      "premise_node_ids": [
+        "eng.opamp.n01_ideal_opamp_kcl_model",
+        "eng.opamp.n02_virtual_short_principle"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "V_+ = V_in であり、帰還抵抗 R_f と接地抵抗 R_1 が反転入力に接続される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{0 - V_-}{R_1} + \\frac{V_{\\text{out}} - V_-}{R_f} = I_-,\\quad V_+ = V_{\\text{in}}",
+          "to_latex": "A_v = \\frac{V_{\\text{out}}}{V_{\\text{in}}} = 1 + \\frac{R_f}{R_1}",
+          "operation_label": "仮想短絡と抵抗分圧による非反転利得の導出",
+          "explanation": "反転入力節点のKCLに仮想短絡 V_- = V_+ = V_in および I_- = 0 を適用して閉ループ利得を求める。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model",
+            "eng.opamp.n02_virtual_short_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{0 - V_-}{R_1} + \\frac{V_{\\text{out}} - V_-}{R_f} = I_-,\\quad V_+ = V_{\\text{in}}",
+          "to_latex": "-\\frac{V_{\\text{in}}}{R_1} + \\frac{V_{\\text{out}} - V_{\\text{in}}}{R_f} = 0",
+          "operation_label": "V_- = V_in および I_- = 0 の代入",
+          "explanation": "仮想短絡条件により V_- を V_in に置き換え、入力電流を零とする。",
+          "used_node_ids": [
+            "eng.opamp.n02_virtual_short_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{V_{\\text{in}}}{R_1} + \\frac{V_{\\text{out}} - V_{\\text{in}}}{R_f} = 0",
+          "to_latex": "\\frac{V_{\\text{out}}}{R_f} = \\left(\\frac{1}{R_1} + \\frac{1}{R_f}\\right)V_{\\text{in}}",
+          "operation_label": "V_out と V_in の項の分離",
+          "explanation": "V_in を含む項を右辺へ移項してまとめる。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{V_{\\text{out}}}{R_f} = \\left(\\frac{1}{R_1} + \\frac{1}{R_f}\\right)V_{\\text{in}}",
+          "to_latex": "A_v = \\frac{V_{\\text{out}}}{V_{\\text{in}}} = 1 + \\frac{R_f}{R_1}",
+          "operation_label": "両辺に R_f を乗じて利得を算出",
+          "explanation": "両辺に R_f を掛け、V_out / V_in の形で非反転増幅率を得る。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.opamp.d05_differential_amp",
+      "target_node_id": "eng.opamp.n05_differential_amplifier",
+      "route_kind": "deductive",
+      "title": "差動増幅回路の出力式と抵抗比平衡条件の導出",
+      "premise_node_ids": [
+        "eng.opamp.n01_ideal_opamp_kcl_model",
+        "eng.opamp.n02_virtual_short_principle"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "非反転入力側は R_3 と R_4 の分圧、反転入力側は R_1 と R_2 の帰還回路を構成する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V_+ = \\frac{R_4}{R_3 + R_4}V_2,\\quad \\frac{V_1 - V_-}{R_1} + \\frac{V_{\\text{out}} - V_-}{R_2} = 0",
+          "to_latex": "V_{\\text{out}} = \\frac{R_2}{R_1}(V_2 - V_1)\\quad \\left(\\frac{R_2}{R_1} = \\frac{R_4}{R_3}\\right)",
+          "operation_label": "分圧と仮想短絡による差動出力式の導出",
+          "explanation": "非反転入力の分圧電圧と反転入力のKCLを仮想短絡 V_- = V_+ で結び、平衡条件 R_2/R_1 = R_4/R_3 の下で差動出力式を得る。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model",
+            "eng.opamp.n02_virtual_short_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_+ = \\frac{R_4}{R_3 + R_4}V_2,\\quad \\frac{V_1 - V_-}{R_1} + \\frac{V_{\\text{out}} - V_-}{R_2} = 0",
+          "to_latex": "\\frac{V_{\\text{out}}}{R_2} = \\left(\\frac{1}{R_1} + \\frac{1}{R_2}\\right)\\frac{R_4}{R_3 + R_4}V_2 - \\frac{V_1}{R_1}",
+          "operation_label": "V_- = V_+ の代入と V_out への整理",
+          "explanation": "仮想短絡より V_- = V_+ をKCL式に代入し、V_out/R_2 を左辺に残して整理する。",
+          "used_node_ids": [
+            "eng.opamp.n02_virtual_short_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{V_{\\text{out}}}{R_2} = \\left(\\frac{1}{R_1} + \\frac{1}{R_2}\\right)\\frac{R_4}{R_3 + R_4}V_2 - \\frac{V_1}{R_1}",
+          "to_latex": "V_{\\text{out}} = \\frac{R_1 + R_2}{R_1}\\frac{R_4}{R_3 + R_4}V_2 - \\frac{R_2}{R_1}V_1",
+          "operation_label": "両辺に R_2 を乗じる",
+          "explanation": "両辺に R_2 を掛けて V_out の一般式を得る。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\text{out}} = \\frac{R_1 + R_2}{R_1}\\frac{R_4}{R_3 + R_4}V_2 - \\frac{R_2}{R_1}V_1",
+          "to_latex": "V_{\\text{out}} = \\frac{R_2}{R_1}(V_2 - V_1)\\quad \\left(\\frac{R_2}{R_1} = \\frac{R_4}{R_3}\\right)",
+          "operation_label": "抵抗比平衡条件の適用",
+          "explanation": "R_2/R_1 = R_4/R_3 を代入すると V_2 の係数が R_2/R_1 に一致し、純粋な差動増幅式となる。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.opamp.d06_opamp_integrator",
+      "target_node_id": "eng.opamp.n06_opamp_integrator",
+      "route_kind": "deductive",
+      "title": "オペアンプ積分回路の伝達関数と時間領域応答の導出",
+      "premise_node_ids": [
+        "eng.opamp.n01_ideal_opamp_kcl_model",
+        "eng.opamp.n02_virtual_short_principle"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.laplace.lt04_derivative_integral_rules"
+      ],
+      "assumptions": [
+        "非反転入力は接地 (V_+ = 0) であり、反転入力と出力間に容量 C が接続される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{V_{\\text{in}}(s)}{R} + sC\\,V_{\\text{out}}(s) - C\\,v_{\\text{out}}(0^-) = 0",
+          "to_latex": "H(s) = -\\frac{1}{sRC},\\quad v_{\\text{out}}(t) = -\\frac{1}{RC}\\int_{0}^{t} v_{\\text{in}}(\\tau)\\,d\\tau + v_{\\text{out}}(0^-)",
+          "operation_label": "s領域KCLとラプラス逆変換による積分器応答の導出",
+          "explanation": "キャパシタの電流-電圧関係をラプラス領域で書き、仮想接地KCLから伝達関数および時間領域の積分式を導く。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model",
+            "eng.opamp.n02_virtual_short_principle",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.laplace.lt04_derivative_integral_rules"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{V_{\\text{in}}(s)}{R} + sC\\,V_{\\text{out}}(s) - C\\,v_{\\text{out}}(0^-) = 0",
+          "to_latex": "V_{\\text{out}}(s) = -\\frac{1}{sRC}V_{\\text{in}}(s) + \\frac{v_{\\text{out}}(0^-)}{s}",
+          "operation_label": "V_out(s) について解く",
+          "explanation": "sC で両辺を割り、出力電圧のラプラス変換表現を得る。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model",
+            "eng.opamp.n02_virtual_short_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{\\text{out}}(s) = -\\frac{1}{sRC}V_{\\text{in}}(s) + \\frac{v_{\\text{out}}(0^-)}{s}",
+          "to_latex": "H(s) = -\\frac{1}{sRC},\\quad v_{\\text{out}}(t) = -\\frac{1}{RC}\\int_{0}^{t} v_{\\text{in}}(\\tau)\\,d\\tau + v_{\\text{out}}(0^-)",
+          "operation_label": "ラプラス逆変換による時間領域表現",
+          "explanation": "初期値零での比として伝達関数 H(s) を得て、ラプラス変換の積分法則により時間領域の積分表示へ変換する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.laplace.lt04_derivative_integral_rules"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.opamp.d07_sallen_key_lpf",
+      "target_node_id": "eng.opamp.n07_sallen_key_lpf",
+      "route_kind": "deductive",
+      "title": "サレン・キー型2次ローパスフィルタの伝達関数とQ値の導出",
+      "premise_node_ids": [
+        "eng.opamp.n01_ideal_opamp_kcl_model",
+        "eng.opamp.n04_noninverting_amplifier"
+      ],
+      "required_math_node_ids": [
+        "math.laplace.lt09_algebraic_ode_method"
+      ],
+      "assumptions": [
+        "非反転増幅段の利得は K = 1 + R_b / R_a であり、V_out = K V_+ が成立する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{V_{\\text{in}}-V_x}{R_1}+sC_1(V_{\\text{out}}-V_x)+\\frac{V_+-V_x}{R_2}=0,\\quad V_x=(1+sR_2 C_2)V_+,\\quad V_{\\text{out}}=KV_+",
+          "to_latex": "H(s) = \\frac{K\\omega_0^2}{s^2 + \\frac{\\omega_0}{Q}s + \\omega_0^2},\\quad \\omega_0 = \\frac{1}{\\sqrt{R_1 R_2 C_1 C_2}},\\quad Q = \\frac{\\sqrt{R_1 R_2 C_1 C_2}}{C_2(R_1+R_2) + R_1 C_1(1-K)}",
+          "operation_label": "節点方程式の消去による2次標準形伝達関数の導出",
+          "explanation": "中間節点電圧 V_x と非反転入力電圧 V_+ を消去し、2次ローパスフィルタの標準形から ω_0 と Q を同定する。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model",
+            "eng.opamp.n04_noninverting_amplifier",
+            "math.laplace.lt09_algebraic_ode_method"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{V_{\\text{in}}-V_x}{R_1}+sC_1(V_{\\text{out}}-V_x)+\\frac{V_+-V_x}{R_2}=0,\\quad V_x=(1+sR_2 C_2)V_+,\\quad V_{\\text{out}}=KV_+",
+          "to_latex": "\\frac{V_{\\text{in}}}{R_1} = \\left[\\left(\\frac{1}{R_1}+\\frac{1}{R_2}+sC_1\\right)\\frac{1+sR_2 C_2}{K} - \\frac{1}{KR_2} - sC_1\\right]V_{\\text{out}}",
+          "operation_label": "V_x と V_+ の消去",
+          "explanation": "V_+ = V_out / K および V_x = (1 + s R_2 C_2) V_out / K を節点 V_x のKCL式に代入して整理する。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model",
+            "eng.opamp.n04_noninverting_amplifier"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{V_{\\text{in}}}{R_1} = \\left[\\left(\\frac{1}{R_1}+\\frac{1}{R_2}+sC_1\\right)\\frac{1+sR_2 C_2}{K} - \\frac{1}{KR_2} - sC_1\\right]V_{\\text{out}}",
+          "to_latex": "K V_{\\text{in}} = \\Big[s^2 R_1 R_2 C_1 C_2 + s\\big(C_2(R_1+R_2) + R_1 C_1(1-K)\\big) + 1\\Big] V_{\\text{out}}",
+          "operation_label": "分母を払い s のべき乗で展開整理",
+          "explanation": "両辺に K R_1 を掛けて展開し、s^2, s, 定数項ごとに係数をまとめる。",
+          "used_node_ids": [
+            "math.laplace.lt09_algebraic_ode_method"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "K V_{\\text{in}} = \\Big[s^2 R_1 R_2 C_1 C_2 + s\\big(C_2(R_1+R_2) + R_1 C_1(1-K)\\big) + 1\\Big] V_{\\text{out}}",
+          "to_latex": "H(s) = \\frac{K\\omega_0^2}{s^2 + \\frac{\\omega_0}{Q}s + \\omega_0^2},\\quad \\omega_0 = \\frac{1}{\\sqrt{R_1 R_2 C_1 C_2}},\\quad Q = \\frac{\\sqrt{R_1 R_2 C_1 C_2}}{C_2(R_1+R_2) + R_1 C_1(1-K)}",
+          "operation_label": "モニック2次多項式への正規化と ω_0, Q の同定",
+          "explanation": "s^2 の係数 R_1 R_2 C_1 C_2 で分母分子を割り、2次系の標準形と比較して固有角周波数とQ値を得る。",
+          "used_node_ids": [
+            "math.laplace.lt09_algebraic_ode_method"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.opamp.d08_johnson_nyquist",
+      "target_node_id": "eng.opamp.n08_johnson_nyquist_noise",
+      "route_kind": "deductive",
+      "title": "RC回路の熱平衡等分配則からのジョンソン＝ナイキスト雑音式の導出",
+      "premise_node_ids": [
+        "eng.opamp.n01_ideal_opamp_kcl_model",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m43_definite_integral_substitution",
+        "math.fourier.ft09_plancherel_parseval_transform"
+      ],
+      "assumptions": [
+        "抵抗 R と容量 C の並列回路が温度 T で熱平衡にあり、静電エネルギーに等分配則 (1/2)C<v_C^2> = (1/2)k_B T が成り立つ",
+        "雑音パワースペクトル密度 S_v(f) は周波数に対して白色（定数）とみなせる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{1}{2}C\\overline{v_C^2} = \\frac{1}{2}k_B T,\\quad \\overline{v_C^2} = \\int_{0}^{\\infty} \\frac{S_v(f)}{1 + (2\\pi f R C)^2}\\,df",
+          "to_latex": "S_v(f) = 4 k_B T R,\\quad \\overline{v_n^2} = 4 k_B T R\\,\\Delta f",
+          "operation_label": "等分配則とRCローパス積分の等置による熱雑音PSDの導出",
+          "explanation": "RC回路の容量に蓄えられる平均静電エネルギーと、抵抗の雑音PSDをRC伝達関数で積分した平均二乗電圧を等置し、S_v(f) = 4 k_B T R を得る。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model",
+            "math.calc.m43_definite_integral_substitution",
+            "math.fourier.ft09_plancherel_parseval_transform",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2}C\\overline{v_C^2} = \\frac{1}{2}k_B T,\\quad \\overline{v_C^2} = \\int_{0}^{\\infty} \\frac{S_v(f)}{1 + (2\\pi f R C)^2}\\,df",
+          "to_latex": "\\frac{k_B T}{C} = S_v \\int_{0}^{\\infty} \\frac{df}{1 + (2\\pi f R C)^2}",
+          "operation_label": "平均二乗電圧の等置",
+          "explanation": "パーセバルの等式に基づく出力雑音電力積分を熱平衡条件 k_B T / C と等置する。",
+          "used_node_ids": [
+            "math.fourier.ft09_plancherel_parseval_transform",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{k_B T}{C} = S_v \\int_{0}^{\\infty} \\frac{df}{1 + (2\\pi f R C)^2}",
+          "to_latex": "\\frac{k_B T}{C} = S_v \\cdot \\frac{1}{4 R C}",
+          "operation_label": "置換積分によるローレンツ型積分の評価",
+          "explanation": "u = 2π f R C と置換積分すると ∫_0^∞ du/(1+u^2) = π/2 より、積分値は 1/(4RC) となる。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{k_B T}{C} = S_v \\cdot \\frac{1}{4 R C}",
+          "to_latex": "S_v(f) = 4 k_B T R,\\quad \\overline{v_n^2} = \\int_{f_1}^{f_2} S_v(f)\\,df = 4 k_B T R\\,\\Delta f",
+          "operation_label": "S_v について解き帯域幅 Δf で積分",
+          "explanation": "両辺に 4RC を掛けて片側PSD S_v(f) = 4 k_B T R を得て、帯域幅 Δf = f_2 - f_1 で積分する。",
+          "used_node_ids": [
+            "eng.opamp.n01_ideal_opamp_kcl_model"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.opamp.d09_opamp_noise_snr",
+      "target_node_id": "eng.opamp.n09_opamp_output_noise_snr",
+      "route_kind": "deductive",
+      "title": "負帰還増幅回路の出力雑音電力積分とSN比の導出",
+      "premise_node_ids": [
+        "eng.opamp.n03_inverting_amplifier",
+        "eng.opamp.n04_noninverting_amplifier",
+        "eng.opamp.n08_johnson_nyquist_noise"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity",
+        "math.fourier.ft09_plancherel_parseval_transform"
+      ],
+      "assumptions": [
+        "各雑音源（オペアンプの入力換算雑音および抵抗の熱雑音）は互いに無相関である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S_{v,\\text{out}}(f) = |G_n(f)|^2 S_{v,\\text{in}}(f),\\quad G_n = 1 + \\frac{R_f}{R_1}",
+          "to_latex": "\\overline{v_{n,\\text{out}}^2} = \\int_{0}^{\\infty} |G_n(f)|^2 S_{v,\\text{in}}(f)\\,df,\\quad \\mathrm{SNR}_{\\text{dB}} = 10\\log_{10}\\!\\left(\\frac{V_{s,\\text{rms}}^2}{\\overline{v_{n,\\text{out}}^2}}\\right)",
+          "operation_label": "雑音利得による出力雑音スペクトル積分とSN比の定義",
+          "explanation": "無相関な入力換算雑音スペクトルに雑音利得の二乗を掛けて全帯域積分し、信号電力との比からSN比を導く。",
+          "used_node_ids": [
+            "eng.opamp.n03_inverting_amplifier",
+            "eng.opamp.n04_noninverting_amplifier",
+            "eng.opamp.n08_johnson_nyquist_noise",
+            "math.calc.m16_integral_linearity",
+            "math.fourier.ft09_plancherel_parseval_transform"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_{v,\\text{out}}(f) = |G_n(f)|^2 S_{v,\\text{in}}(f),\\quad G_n = 1 + \\frac{R_f}{R_1}",
+          "to_latex": "\\overline{v_{n,\\text{out}}^2} = \\int_{0}^{\\infty} |G_n(f)|^2 S_{v,\\text{in}}(f)\\,df",
+          "operation_label": "パーセバルの等式による出力平均二乗雑音の積分表示",
+          "explanation": "周波数領域での出力パワースペクトル密度を全周波数にわたって積分し、出力雑音分散を得る。",
+          "used_node_ids": [
+            "eng.opamp.n04_noninverting_amplifier",
+            "eng.opamp.n08_johnson_nyquist_noise",
+            "math.calc.m16_integral_linearity",
+            "math.fourier.ft09_plancherel_parseval_transform"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\overline{v_{n,\\text{out}}^2} = \\int_{0}^{\\infty} |G_n(f)|^2 S_{v,\\text{in}}(f)\\,df",
+          "to_latex": "\\overline{v_{n,\\text{out}}^2} = \\int_{0}^{\\infty} |G_n(f)|^2 S_{v,\\text{in}}(f)\\,df,\\quad \\mathrm{SNR}_{\\text{dB}} = 10\\log_{10}\\!\\left(\\frac{V_{s,\\text{rms}}^2}{\\overline{v_{n,\\text{out}}^2}}\\right)",
+          "operation_label": "出力信号電力との比によるSN比のdB表示",
+          "explanation": "出力信号の実効値二乗 V_{s,rms}^2 を出力雑音分散で除して対数表示のSN比を得る。",
+          "used_node_ids": [
+            "eng.opamp.n03_inverting_amplifier"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

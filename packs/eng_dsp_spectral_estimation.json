@@ -1,0 +1,754 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.dsp.spectral_estimation",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "signal_processing",
+    "title": "統計的信号処理：自己相関・ウィーナー＝ヒンチンの定理・ウィーナーフィルタ",
+    "language": "ja",
+    "description": "定常確率過程の自己相関関数とパワースペクトル密度（ウィーナー＝ヒンチン定理）、マッチドフィルタ、最小二乗ウィーナーフィルタを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.dsp3.n01_wss_autocorrelation_def",
+      "short_code": "DSP3_01",
+      "kind": "definition",
+      "title": "広義定常確率過程と自己相関・相互相関関数の定義",
+      "summary": "時間並進に対して平均が一定で、2次モーメントが時間差のみに依存する広義定常（WSS）確率過程と、その自己相関・相互相関関数を定義する。",
+      "canonical_latex": "\\mathbb{E}[X(t)] = m_X,\\quad R_X(\\tau) := \\mathbb{E}[X(t+\\tau)\\overline{X(t)}],\\quad R_{YX}(\\tau) := \\mathbb{E}[Y(t+\\tau)\\overline{X(t)}]",
+      "aliases_latex": [
+        "R_{XX}(\\tau) = \\mathbb{E}[X(t+\\tau)X^*(t)]"
+      ],
+      "keywords": [
+        "広義定常過程",
+        "WSS",
+        "自己相関関数",
+        "相互相関関数"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "stochastic_processes"
+      ]
+    },
+    {
+      "id": "eng.dsp3.n02_autocorrelation_properties",
+      "short_code": "DSP3_02",
+      "kind": "theorem_formula",
+      "title": "自己相関関数の基本性質（共役対称性・最大値・半正定値性）",
+      "summary": "広義定常過程の自己相関関数が満たす共役対称性、原点での最大値性（コーシー＝シュワルツ不等式）、およびエルミート半正定値性を示す。",
+      "canonical_latex": "R_X(-\\tau) = \\overline{R_X(\\tau)},\\quad |R_X(\\tau)| \\le R_X(0),\\quad \\sum_{j,k=1}^{n} c_j \\overline{c_k} R_X(t_j - t_k) \\ge 0",
+      "aliases_latex": [
+        "R_X(-\\tau) = R_X(\\tau) \\text{ (for real } X\\text{)}"
+      ],
+      "keywords": [
+        "自己相関関数",
+        "共役対称性",
+        "半正定値性",
+        "ボホナーの定理"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "stochastic_processes"
+      ]
+    },
+    {
+      "id": "eng.dsp3.n03_power_spectral_density_def",
+      "short_code": "DSP3_03",
+      "kind": "definition",
+      "title": "パワースペクトル密度（PSD）の定義",
+      "summary": "定常確率過程の有限時間区間切り出しフーリエ変換の期待二乗振幅を時間平均して極限をとることで、周波数ごとの平均電力密度（PSD）を定義する。",
+      "canonical_latex": "S_X(\\omega) := \\lim_{T \\to \\infty} \\frac{1}{2T} \\mathbb{E}\\!\\left[\\left|\\int_{-T}^{T} X(t) e^{-i\\omega t}\\,dt\\right|^2\\right]",
+      "aliases_latex": [
+        "P_X(\\omega) = \\lim_{T \\to \\infty} \\frac{1}{2T}\\mathbb{E}[|\\hat{X}_T(\\omega)|^2]"
+      ],
+      "keywords": [
+        "パワースペクトル密度",
+        "PSD",
+        "ピリオドグラム",
+        "平均電力"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "spectral_estimation"
+      ]
+    },
+    {
+      "id": "eng.dsp3.n04_wiener_khinchin_theorem",
+      "short_code": "DSP3_04",
+      "kind": "theorem_formula",
+      "title": "ウィーナー＝ヒンチンの定理（自己相関とPSDのフーリエ変換対）",
+      "summary": "広義定常確率過程のパワースペクトル密度と自己相関関数がフーリエ変換対をなすことを示す基本定理。",
+      "canonical_latex": "S_X(\\omega) = \\int_{-\\infty}^{\\infty} R_X(\\tau) e^{-i\\omega\\tau}\\,d\\tau,\\qquad R_X(\\tau) = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} S_X(\\omega) e^{i\\omega\\tau}\\,d\\omega",
+      "aliases_latex": [
+        "S_X(\\omega) = \\mathcal{F}[R_X](\\omega)"
+      ],
+      "keywords": [
+        "ウィーナー＝ヒンチンの定理",
+        "パワースペクトル密度",
+        "自己相関関数",
+        "フーリエ変換"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "spectral_estimation"
+      ]
+    },
+    {
+      "id": "eng.dsp3.n05_lti_psd_transmission",
+      "short_code": "DSP3_05",
+      "kind": "theorem_formula",
+      "title": "LTIシステムにおける自己相関とPSDの入出力関係",
+      "summary": "インパルス応答 h(t) と周波数応答 H(ω) を持つ線形時不変システムに広義定常過程を入力した際の出力自己相関関数および出力PSDの関係式。",
+      "canonical_latex": "R_Y(\\tau) = (h * \\tilde{h} * R_X)(\\tau),\\quad S_Y(\\omega) = |H(\\omega)|^2 S_X(\\omega),\\quad S_{YX}(\\omega) = H(\\omega) S_X(\\omega),\\quad \\tilde{h}(t) := \\overline{h(-t)}",
+      "aliases_latex": [
+        "S_Y(\\omega) = |H(\\omega)|^2 S_X(\\omega)"
+      ],
+      "keywords": [
+        "LTIシステム",
+        "周波数応答",
+        "パワースペクトル密度",
+        "入出力関係"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "linear_systems"
+      ]
+    },
+    {
+      "id": "eng.dsp3.n06_matched_filter_snr",
+      "short_code": "DSP3_06",
+      "kind": "theorem_formula",
+      "title": "マッチドフィルタ（白色雑音下の出力SNR最大化フィルタ）",
+      "summary": "両側電力密度 N0/2 の加法性白色雑音下の既知信号 s(t) に対し、時刻 t0 における出力信号対雑音比（SNR）を最大化する最適線形フィルタ。",
+      "canonical_latex": "\\mathrm{SNR}_{\\mathrm{out}}(t_0) = \\frac{\\left|\\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} H(\\omega) S(\\omega) e^{i\\omega t_0}\\,d\\omega\\right|^2}{\\frac{N_0}{4\\pi}\\int_{-\\infty}^{\\infty} |H(\\omega)|^2\\,d\\omega} \\le \\frac{2E_s}{N_0},\\qquad H_{\\mathrm{opt}}(\\omega) = c\\,\\overline{S(\\omega)} e^{-i\\omega t_0} ",
+      "aliases_latex": [
+        "h_{\\mathrm{opt}}(t) = c\\,\\overline{s(t_0 - t)}"
+      ],
+      "keywords": [
+        "マッチドフィルタ",
+        "整合フィルタ",
+        "SNR最大化",
+        "白色雑音"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "detection_theory"
+      ]
+    },
+    {
+      "id": "eng.dsp3.n07_wiener_hopf_equation",
+      "short_code": "DSP3_07",
+      "kind": "theorem_formula",
+      "title": "ウィーナー＝ホップ方程式（最小二乗線形推定の直交原理）",
+      "summary": "観測信号 X(t) の線形フィルタリングによる目標信号 D(t) の平均二乗誤差最小化問題において、推定誤差と観測信号の直交性から導かれる積分方程式。",
+      "canonical_latex": "\\hat{D}(t) = \\int_{-\\infty}^{\\infty} h(u) X(t-u)\\,du,\\quad \\min_{h} \\mathbb{E}\\!\\left[|D(t) - \\hat{D}(t)|^2\\right] \\iff \\int_{-\\infty}^{\\infty} h(u) R_X(\\tau - u)\\,du = R_{DX}(\\tau) ",
+      "aliases_latex": [
+        "(h * R_X)(\\tau) = R_{DX}(\\tau)"
+      ],
+      "keywords": [
+        "ウィーナー＝ホップ方程式",
+        "直交原理",
+        "最小二乗推定",
+        "MMSE"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "estimation_theory"
+      ]
+    },
+    {
+      "id": "eng.dsp3.n08_noncausal_wiener_filter",
+      "short_code": "DSP3_08",
+      "kind": "theorem_formula",
+      "title": "非因果的ウィーナーフィルタの周波数領域解と最小平均二乗誤差",
+      "summary": "全時間領域の観測を許す非因果的ウィーナー＝ホップ方程式をフーリエ変換により代数的に解いた最適フィルタの伝達関数と、その際の最小平均二乗誤差（MMSE）。",
+      "canonical_latex": "H_W(\\omega) = \\frac{S_{DX}(\\omega)}{S_X(\\omega)},\\qquad \\mathrm{MMSE} = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} \\left(S_D(\\omega) - \\frac{|S_{DX}(\\omega)|^2}{S_X(\\omega)}\\right)d\\omega",
+      "aliases_latex": [
+        "H_W(\\omega) = \\frac{S_S(\\omega)}{S_S(\\omega) + S_N(\\omega)}"
+      ],
+      "keywords": [
+        "ウィーナーフィルタ",
+        "非因果フィルタ",
+        "最小平均二乗誤差",
+        "MMSE"
+      ],
+      "domain_tags": [
+        "signal_processing",
+        "estimation_theory"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.dsp3.d01_wss_autocorrelation_def",
+      "target_node_id": "eng.dsp3.n01_wss_autocorrelation_def",
+      "route_kind": "reformulation",
+      "title": "確率空間上の確率過程から広義定常性と自己相関関数を定義する",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.dsp3.n01_wss_autocorrelation_def"
+      ],
+      "assumptions": [
+        "X(t) and Y(t) are second-order stochastic processes on (\\Omega,\\mathcal{F},P)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "X(t,\\omega)\\text{ on }(\\Omega,\\mathcal{F},P) ",
+          "to_latex": "\\mathbb{E}[X(t)] = m_X,\\quad R_X(\\tau) := \\mathbb{E}[X(t+\\tau)\\overline{X(t)}] ",
+          "operation_label": "define_wss_moments",
+          "explanation": "確率空間上の2次モーメント有限な確率過程に対し、平均の定数性と自己相関の時間差依存性によって広義定常性を定義する。",
+          "used_node_ids": [
+            "eng.dsp3.n01_wss_autocorrelation_def",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_expectation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X(t,\\omega)\\text{ on }(\\Omega,\\mathcal{F},P) ",
+          "to_latex": "\\mu_X(t) := \\mathbb{E}[X(t)] = \\int_{\\Omega} X(t,\\omega)\\,dP(\\omega),\\quad R_X(t_1,t_2) := \\mathbb{E}[X(t_1)\\overline{X(t_2)}] ",
+          "operation_label": "define_ensemble_moments",
+          "explanation": "確率測度 P に関するアンサンブル平均として平均関数と2時刻自己相関関数を定義する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_stationarity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu_X(t) := \\mathbb{E}[X(t)] = \\int_{\\Omega} X(t,\\omega)\\,dP(\\omega),\\quad R_X(t_1,t_2) := \\mathbb{E}[X(t_1)\\overline{X(t_2)}] ",
+          "to_latex": "\\mathbb{E}[X(t)] = m_X,\\quad R_X(\\tau) := \\mathbb{E}[X(t+\\tau)\\overline{X(t)}] ",
+          "operation_label": "impose_time_shift_invariance",
+          "explanation": "時間並進不変性を課し、平均を定数 m_X、自己相関を時間差 \\tau = t_1 - t_2 のみの関数 R_X(\\tau) として表す。",
+          "used_node_ids": [
+            "eng.dsp3.n01_wss_autocorrelation_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.dsp3.d02_autocorrelation_properties",
+      "target_node_id": "eng.dsp3.n02_autocorrelation_properties",
+      "route_kind": "deductive",
+      "title": "広義定常性と期待値の非負性から自己相関関数の基本性質を導出する",
+      "premise_node_ids": [
+        "eng.dsp3.n01_wss_autocorrelation_def",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "eng.dsp3.n02_autocorrelation_properties"
+      ],
+      "assumptions": [
+        "X(t) is wide-sense stationary"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "R_X(\\tau) = \\mathbb{E}[X(t+\\tau)\\overline{X(t)}] ",
+          "to_latex": "R_X(-\\tau) = \\overline{R_X(\\tau)},\\quad |R_X(\\tau)| \\le R_X(0),\\quad \\sum_{j,k=1}^{n} c_j \\overline{c_k} R_X(t_j - t_k) \\ge 0 ",
+          "operation_label": "derive_autocorrelation_properties",
+          "explanation": "自己相関関数の定義に時間並進とコーシー＝シュワルツの不等式、二次形式の期待値非負性を適用して3つの基本性質を導く。",
+          "used_node_ids": [
+            "eng.dsp3.n01_wss_autocorrelation_def",
+            "eng.dsp3.n02_autocorrelation_properties",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_symmetry",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_X(\\tau) = \\mathbb{E}[X(t+\\tau)\\overline{X(t)}] ",
+          "to_latex": "R_X(-\\tau) = \\mathbb{E}[X(t-\\tau)\\overline{X(t)}] = \\overline{\\mathbb{E}[X(t)\\overline{X(t-\\tau)}]} = \\overline{R_X(\\tau)} ",
+          "operation_label": "conjugate_symmetry",
+          "explanation": "\\tau を -\\tau に置き換え、複素共役と時間並進 t \\mapsto t+\\tau を用いることで共役対称性を得る。",
+          "used_node_ids": [
+            "eng.dsp3.n01_wss_autocorrelation_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_cauchy_schwarz",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_X(-\\tau) = \\mathbb{E}[X(t-\\tau)\\overline{X(t)}] = \\overline{\\mathbb{E}[X(t)\\overline{X(t-\\tau)}]} = \\overline{R_X(\\tau)} ",
+          "to_latex": "|R_X(\\tau)|^2 = |\\mathbb{E}[X(t+\\tau)\\overline{X(t)}]|^2 \\le \\mathbb{E}[|X(t+\\tau)|^2]\\mathbb{E}[|X(t)|^2] = R_X(0)^2 \\implies |R_X(\\tau)| \\le R_X(0) ",
+          "operation_label": "apply_cauchy_schwarz",
+          "explanation": "期待値内積に対するコーシー＝シュワルツの不等式と定常分散 R_X(0) = \\mathbb{E}[|X(t)|^2] から原点最大性を導く。",
+          "used_node_ids": [
+            "eng.dsp3.n01_wss_autocorrelation_def",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_psd_property",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|R_X(\\tau)|^2 = |\\mathbb{E}[X(t+\\tau)\\overline{X(t)}]|^2 \\le \\mathbb{E}[|X(t+\\tau)|^2]\\mathbb{E}[|X(t)|^2] = R_X(0)^2 \\implies |R_X(\\tau)| \\le R_X(0) ",
+          "to_latex": "\\sum_{j,k=1}^{n} c_j \\overline{c_k} R_X(t_j - t_k) = \\mathbb{E}\\!\\left[\\left|\\sum_{j=1}^{n} c_j X(t_j)\\right|^2\\right] \\ge 0 ",
+          "operation_label": "verify_positive_semidefiniteness",
+          "explanation": "線形結合の絶対値二乗の期待値が非負であることから、自己相関関数の半正定値性を示す。",
+          "used_node_ids": [
+            "eng.dsp3.n02_autocorrelation_properties",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.dsp3.d03_power_spectral_density_def",
+      "target_node_id": "eng.dsp3.n03_power_spectral_density_def",
+      "route_kind": "reformulation",
+      "title": "切り出し信号のパーセバル等式からパワースペクトル密度を定義する",
+      "premise_node_ids": [
+        "eng.dsp3.n01_wss_autocorrelation_def",
+        "math.fourier.ft05_fourier_transform_def",
+        "math.fourier.ft09_plancherel_parseval_transform"
+      ],
+      "required_math_node_ids": [
+        "eng.dsp3.n03_power_spectral_density_def"
+      ],
+      "assumptions": [
+        "X(t) has finite average power R_X(0) < \\infty"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "X_T(t) := X(t)\\,\\mathbf{1}_{[-T,T]}(t) ",
+          "to_latex": "S_X(\\omega) := \\lim_{T \\to \\infty} \\frac{1}{2T} \\mathbb{E}\\!\\left[\\left|\\int_{-T}^{T} X(t) e^{-i\\omega t}\\,dt\\right|^2\\right] ",
+          "operation_label": "define_psd_via_truncation",
+          "explanation": "定常過程は L^2(\\mathbb{R}) に属さないため、有限区間 [-T,T] で切り出した信号のエネルギー・スペクトルを 2T で正規化して極限をとることでPSDを定義する。",
+          "used_node_ids": [
+            "eng.dsp3.n03_power_spectral_density_def",
+            "math.fourier.ft05_fourier_transform_def",
+            "math.fourier.ft09_plancherel_parseval_transform"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_truncated_ft",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X_T(t) := X(t)\\,\\mathbf{1}_{[-T,T]}(t) ",
+          "to_latex": "\\hat{X}_T(\\omega) = \\int_{-T}^{T} X(t) e^{-i\\omega t}\\,dt,\\quad \\frac{1}{2T}\\mathbb{E}\\!\\left[\\int_{-T}^{T} |X(t)|^2\\,dt\\right] = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} \\frac{\\mathbb{E}[|\\hat{X}_T(\\omega)|^2]}{2T}\\,d\\omega ",
+          "operation_label": "apply_parseval_to_truncated_signal",
+          "explanation": "切り出し信号 X_T(t) のフーリエ変換にパーセバル＝プランシュレルの定理を適用し、時間平均電力を周波数領域の積分として表す。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def",
+            "math.fourier.ft09_plancherel_parseval_transform"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_limit_psd",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{X}_T(\\omega) = \\int_{-T}^{T} X(t) e^{-i\\omega t}\\,dt,\\quad \\frac{1}{2T}\\mathbb{E}\\!\\left[\\int_{-T}^{T} |X(t)|^2\\,dt\\right] = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} \\frac{\\mathbb{E}[|\\hat{X}_T(\\omega)|^2]}{2T}\\,d\\omega ",
+          "to_latex": "S_X(\\omega) := \\lim_{T \\to \\infty} \\frac{1}{2T} \\mathbb{E}\\!\\left[\\left|\\int_{-T}^{T} X(t) e^{-i\\omega t}\\,dt\\right|^2\\right] ",
+          "operation_label": "take_infinite_time_limit",
+          "explanation": "T \\to \\infty の極限における被積分関数をパワースペクトル密度 S_X(\\omega) と定義する。",
+          "used_node_ids": [
+            "eng.dsp3.n01_wss_autocorrelation_def",
+            "eng.dsp3.n03_power_spectral_density_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.dsp3.d04_wiener_khinchin_theorem",
+      "target_node_id": "eng.dsp3.n04_wiener_khinchin_theorem",
+      "route_kind": "deductive",
+      "title": "ウィーナー＝ヒンチンの定理の導出",
+      "premise_node_ids": [
+        "eng.dsp3.n03_power_spectral_density_def",
+        "eng.dsp3.n01_wss_autocorrelation_def",
+        "math.fourier.ft05_fourier_transform_def"
+      ],
+      "required_math_node_ids": [
+        "eng.dsp3.n04_wiener_khinchin_theorem",
+        "math.calc.mi02_fubini_theorem"
+      ],
+      "assumptions": [
+        "R_X(\\tau) \\in L^1(\\mathbb{R})",
+        "Expectation and finite-interval integration commute"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S_X(\\omega) = \\lim_{T \\to \\infty} \\frac{1}{2T} \\mathbb{E}\\!\\left[\\left|\\int_{-T}^{T} X(t) e^{-i\\omega t}\\,dt\\right|^2\\right] ",
+          "to_latex": "S_X(\\omega) = \\int_{-\\infty}^{\\infty} R_X(\\tau) e^{-i\\omega\\tau}\\,d\\tau,\\quad R_X(\\tau) = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} S_X(\\omega) e^{i\\omega\\tau}\\,d\\omega ",
+          "operation_label": "derive_wiener_khinchin",
+          "explanation": "PSDの定義式を2重積分に展開して時間差変数 \\tau = t_1 - t_2 へ変換し、T \\to \\infty の極限をとることで自己相関関数のフーリエ変換対を導く。",
+          "used_node_ids": [
+            "eng.dsp3.n01_wss_autocorrelation_def",
+            "eng.dsp3.n03_power_spectral_density_def",
+            "eng.dsp3.n04_wiener_khinchin_theorem",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_expand_square",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_X(\\omega) = \\lim_{T \\to \\infty} \\frac{1}{2T} \\mathbb{E}\\!\\left[\\left|\\int_{-T}^{T} X(t) e^{-i\\omega t}\\,dt\\right|^2\\right] ",
+          "to_latex": "S_X(\\omega) = \\lim_{T \\to \\infty} \\frac{1}{2T}\\int_{-T}^{T}\\int_{-T}^{T} R_X(t_1 - t_2) e^{-i\\omega(t_1 - t_2)}\\,dt_1\\,dt_2 ",
+          "operation_label": "expand_squared_integral_and_commute_expectation",
+          "explanation": "絶対値二乗を2重積分として展開し、フビニの定理により期待値と積分を交換して自己相関関数 R_X(t_1 - t_2) を得る。",
+          "used_node_ids": [
+            "eng.dsp3.n01_wss_autocorrelation_def",
+            "eng.dsp3.n03_power_spectral_density_def",
+            "math.calc.mi02_fubini_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_change_var_tau",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_X(\\omega) = \\lim_{T \\to \\infty} \\frac{1}{2T}\\int_{-T}^{T}\\int_{-T}^{T} R_X(t_1 - t_2) e^{-i\\omega(t_1 - t_2)}\\,dt_1\\,dt_2 ",
+          "to_latex": "S_X(\\omega) = \\lim_{T \\to \\infty} \\int_{-2T}^{2T} \\left(1 - \\frac{|\\tau|}{2T}\\right) R_X(\\tau) e^{-i\\omega\\tau}\\,d\\tau = \\int_{-\\infty}^{\\infty} R_X(\\tau) e^{-i\\omega\\tau}\\,d\\tau ",
+          "operation_label": "change_variables_and_take_limit",
+          "explanation": "\\tau = t_1 - t_2 による変数変換で三角窓関数 (1 - |\\tau|/(2T)) が現れ、R_X \\in L^1 のもとで T \\to \\infty の極限をとるとフーリエ変換に一致する。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_inverse_ft",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_X(\\omega) = \\lim_{T \\to \\infty} \\int_{-2T}^{2T} \\left(1 - \\frac{|\\tau|}{2T}\\right) R_X(\\tau) e^{-i\\omega\\tau}\\,d\\tau = \\int_{-\\infty}^{\\infty} R_X(\\tau) e^{-i\\omega\\tau}\\,d\\tau ",
+          "to_latex": "R_X(\\tau) = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} S_X(\\omega) e^{i\\omega\\tau}\\,d\\omega ",
+          "operation_label": "apply_inverse_fourier_transform",
+          "explanation": "フーリエ逆変換を適用して、PSDから自己相関関数を復元する逆関係式を得る。",
+          "used_node_ids": [
+            "eng.dsp3.n04_wiener_khinchin_theorem",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.dsp3.d05_lti_psd_transmission",
+      "target_node_id": "eng.dsp3.n05_lti_psd_transmission",
+      "route_kind": "deductive",
+      "title": "LTIシステムの畳み込み出力に対する自己相関とPSD変換則の導出",
+      "premise_node_ids": [
+        "eng.dsp3.n04_wiener_khinchin_theorem",
+        "math.fourier.ft07_convolution_def",
+        "math.fourier.ft08_convolution_theorem"
+      ],
+      "required_math_node_ids": [
+        "eng.dsp3.n01_wss_autocorrelation_def",
+        "eng.dsp3.n05_lti_psd_transmission"
+      ],
+      "assumptions": [
+        "h \\in L^1(\\mathbb{R})",
+        "H(\\omega) = \\mathcal{F}[h](\\omega)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Y(t) = (h * X)(t) = \\int_{-\\infty}^{\\infty} h(u) X(t-u)\\,du ",
+          "to_latex": "R_Y(\\tau) = (h * \\tilde{h} * R_X)(\\tau),\\quad S_Y(\\omega) = |H(\\omega)|^2 S_X(\\omega) ",
+          "operation_label": "derive_lti_psd_formula",
+          "explanation": "畳み込みで表されるLTI出力の自己相関関数を計算し、ウィーナー＝ヒンチンの定理と畳み込み定理を適用してPSDの乗法公式を得る。",
+          "used_node_ids": [
+            "eng.dsp3.n04_wiener_khinchin_theorem",
+            "eng.dsp3.n05_lti_psd_transmission",
+            "math.fourier.ft07_convolution_def",
+            "math.fourier.ft08_convolution_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_cross_corr",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Y(t) = (h * X)(t) = \\int_{-\\infty}^{\\infty} h(u) X(t-u)\\,du ",
+          "to_latex": "R_{YX}(\\tau) = \\mathbb{E}[Y(t+\\tau)\\overline{X(t)}] = \\int_{-\\infty}^{\\infty} h(u) R_X(\\tau - u)\\,du = (h * R_X)(\\tau) ",
+          "operation_label": "compute_cross_correlation",
+          "explanation": "出力 Y(t+\\tau) と入力 X(t) の相互相関を計算し、h と R_X の畳み込みになることを示す。",
+          "used_node_ids": [
+            "eng.dsp3.n01_wss_autocorrelation_def",
+            "math.fourier.ft07_convolution_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_auto_corr_conv",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_{YX}(\\tau) = \\mathbb{E}[Y(t+\\tau)\\overline{X(t)}] = \\int_{-\\infty}^{\\infty} h(u) R_X(\\tau - u)\\,du = (h * R_X)(\\tau) ",
+          "to_latex": "R_Y(\\tau) = \\int_{-\\infty}^{\\infty} \\overline{h(v)} R_{YX}(\\tau + v)\\,dv = (h * \\tilde{h} * R_X)(\\tau) ",
+          "operation_label": "compute_output_autocorrelation",
+          "explanation": "同様に Y(t+\\tau)\\overline{Y(t)} の期待値をとり、時間反転共役フィルタ \\tilde{h}(t) = \\overline{h(-t)} との畳み込みとして R_Y(\\tau) を表す。",
+          "used_node_ids": [
+            "math.fourier.ft07_convolution_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_freq_domain",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_Y(\\tau) = \\int_{-\\infty}^{\\infty} \\overline{h(v)} R_{YX}(\\tau + v)\\,dv = (h * \\tilde{h} * R_X)(\\tau) ",
+          "to_latex": "S_Y(\\omega) = \\mathcal{F}[R_Y](\\omega) = H(\\omega)\\overline{H(\\omega)}S_X(\\omega) = |H(\\omega)|^2 S_X(\\omega) ",
+          "operation_label": "apply_convolution_and_wk_theorems",
+          "explanation": "ウィーナー＝ヒンチンの定理と畳み込み定理、さらに \\mathcal{F}[\\tilde{h}](\\omega) = \\overline{H(\\omega)} を用いて S_Y(\\omega) = |H(\\omega)|^2 S_X(\\omega) を得る。",
+          "used_node_ids": [
+            "eng.dsp3.n04_wiener_khinchin_theorem",
+            "eng.dsp3.n05_lti_psd_transmission",
+            "math.fourier.ft08_convolution_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.dsp3.d06_matched_filter_snr",
+      "target_node_id": "eng.dsp3.n06_matched_filter_snr",
+      "route_kind": "deductive",
+      "title": "白色雑音下での出力SNR最大化からマッチドフィルタを導出する",
+      "premise_node_ids": [
+        "eng.dsp3.n05_lti_psd_transmission",
+        "math.fourier.ft05_fourier_transform_def",
+        "math.fourier.ft09_plancherel_parseval_transform"
+      ],
+      "required_math_node_ids": [
+        "eng.dsp3.n04_wiener_khinchin_theorem",
+        "eng.dsp3.n06_matched_filter_snr"
+      ],
+      "assumptions": [
+        "s(t) \\in L^2(\\mathbb{R}) with energy E_s = \\int |s(t)|^2 dt",
+        "W(t) is zero-mean white noise with PSD S_W(\\omega) = N_0/2"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "X(t) = s(t) + W(t),\\quad S_W(\\omega) = \\frac{N_0}{2} ",
+          "to_latex": "H_{\\mathrm{opt}}(\\omega) = c\\,\\overline{S(\\omega)} e^{-i\\omega t_0},\\quad \\mathrm{SNR}_{\\max} = \\frac{2E_s}{N_0} ",
+          "operation_label": "maximize_output_snr",
+          "explanation": "信号出力のフーリエ逆変換表現と白色雑音の出力電力にコーシー＝シュワルツの不等式を適用し、最大SNRと最適整合フィルタを導く。",
+          "used_node_ids": [
+            "eng.dsp3.n05_lti_psd_transmission",
+            "eng.dsp3.n06_matched_filter_snr",
+            "math.fourier.ft05_fourier_transform_def",
+            "math.fourier.ft09_plancherel_parseval_transform"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_output_snr",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X(t) = s(t) + W(t),\\quad S_W(\\omega) = \\frac{N_0}{2} ",
+          "to_latex": "\\mathrm{SNR}_{\\mathrm{out}}(t_0) = \\frac{|(h * s)(t_0)|^2}{\\mathbb{E}[|(h * W)(t)|^2]} = \\frac{\\left|\\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} H(\\omega)S(\\omega)e^{i\\omega t_0}\\,d\\omega\\right|^2}{\\frac{N_0}{4\\pi}\\int_{-\\infty}^{\\infty} |H(\\omega)|^2\\,d\\omega} ",
+          "operation_label": "express_snr_in_frequency_domain",
+          "explanation": "出力信号成分を逆フーリエ変換で、出力雑音電力をLTIのPSD変換則とウィーナー＝ヒンチンの定理（R_Y(0)）を用いて周波数領域で表す。",
+          "used_node_ids": [
+            "eng.dsp3.n04_wiener_khinchin_theorem",
+            "eng.dsp3.n05_lti_psd_transmission",
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_cauchy_schwarz_opt",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathrm{SNR}_{\\mathrm{out}}(t_0) = \\frac{|(h * s)(t_0)|^2}{\\mathbb{E}[|(h * W)(t)|^2]} = \\frac{\\left|\\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} H(\\omega)S(\\omega)e^{i\\omega t_0}\\,d\\omega\\right|^2}{\\frac{N_0}{4\\pi}\\int_{-\\infty}^{\\infty} |H(\\omega)|^2\\,d\\omega} ",
+          "to_latex": "\\mathrm{SNR}_{\\mathrm{out}}(t_0) \\le \\frac{1}{\\pi N_0}\\int_{-\\infty}^{\\infty} |S(\\omega)|^2\\,d\\omega = \\frac{2E_s}{N_0},\\quad H_{\\mathrm{opt}}(\\omega) = c\\,\\overline{S(\\omega)} e^{-i\\omega t_0} ",
+          "operation_label": "apply_cauchy_schwarz_and_parseval",
+          "explanation": "L^2内積に対するコーシー＝シュワルツの不等式とパーセバルの等式を適用し、等号成立条件からマッチドフィルタの周波数応答を決定する。",
+          "used_node_ids": [
+            "eng.dsp3.n06_matched_filter_snr",
+            "math.fourier.ft09_plancherel_parseval_transform"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.dsp3.d07_wiener_hopf_equation",
+      "target_node_id": "eng.dsp3.n07_wiener_hopf_equation",
+      "route_kind": "deductive",
+      "title": "平均二乗誤差の変分からウィーナー＝ホップ方程式を導出する",
+      "premise_node_ids": [
+        "eng.dsp3.n01_wss_autocorrelation_def",
+        "math.calc.m09_fundamental_lemma_variations",
+        "math.calc.m16_integral_linearity"
+      ],
+      "required_math_node_ids": [
+        "eng.dsp3.n07_wiener_hopf_equation"
+      ],
+      "assumptions": [
+        "D(t) and X(t) are jointly wide-sense stationary"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J[h] := \\mathbb{E}\\!\\left[\\left|D(t) - \\int_{-\\infty}^{\\infty} h(u)X(t-u)\\,du\\right|^2\\right] ",
+          "to_latex": "\\int_{-\\infty}^{\\infty} h(u) R_X(\\tau - u)\\,du = R_{DX}(\\tau) ",
+          "operation_label": "derive_wiener_hopf_by_variation",
+          "explanation": "平均二乗誤差汎関数 J[h] の第1変分が任意の試験関数に対して零になる条件（直交原理）からウィーナー＝ホップ方程式を導く。",
+          "used_node_ids": [
+            "eng.dsp3.n01_wss_autocorrelation_def",
+            "eng.dsp3.n07_wiener_hopf_equation",
+            "math.calc.m09_fundamental_lemma_variations",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_first_variation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J[h] := \\mathbb{E}\\!\\left[\\left|D(t) - \\int_{-\\infty}^{\\infty} h(u)X(t-u)\\,du\\right|^2\\right] ",
+          "to_latex": "\\left.\\frac{d}{d\\epsilon}J[h+\\epsilon\\eta]\\right|_{\\epsilon=0} = -2\\operatorname{Re}\\int_{-\\infty}^{\\infty}\\overline{\\eta(\\tau)}\\,\\mathbb{E}\\!\\left[\\big(D(t)-\\hat{D}(t)\\big)\\overline{X(t-\\tau)}\\right]d\\tau = 0 ",
+          "operation_label": "compute_first_variation",
+          "explanation": "摂動 h + \\epsilon\\eta を代入して \\epsilon=0 で微分し、積分の線形性により誤差と過去・未来の観測の期待値積として第1変分を表す。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_orthogonality_principle",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left.\\frac{d}{d\\epsilon}J[h+\\epsilon\\eta]\\right|_{\\epsilon=0} = -2\\operatorname{Re}\\int_{-\\infty}^{\\infty}\\overline{\\eta(\\tau)}\\,\\mathbb{E}\\!\\left[\\big(D(t)-\\hat{D}(t)\\big)\\overline{X(t-\\tau)}\\right]d\\tau = 0 ",
+          "to_latex": "\\mathbb{E}\\!\\left[\\big(D(t)-\\hat{D}(t)\\big)\\overline{X(t-\\tau)}\\right] = 0 \\implies \\int_{-\\infty}^{\\infty} h(u) R_X(\\tau - u)\\,du = R_{DX}(\\tau) ",
+          "operation_label": "apply_fundamental_lemma_and_correlation_def",
+          "explanation": "変分法の基本補題により推定誤差と観測信号の直交原理が導かれ、自己相関と相互相関の定義を代入してウィーナー＝ホップ方程式を得る。",
+          "used_node_ids": [
+            "eng.dsp3.n01_wss_autocorrelation_def",
+            "eng.dsp3.n07_wiener_hopf_equation",
+            "math.calc.m09_fundamental_lemma_variations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.dsp3.d08_noncausal_wiener_filter",
+      "target_node_id": "eng.dsp3.n08_noncausal_wiener_filter",
+      "route_kind": "deductive",
+      "title": "ウィーナー＝ホップ方程式のフーリエ変換から非因果的ウィーナーフィルタとMMSEを導出する",
+      "premise_node_ids": [
+        "eng.dsp3.n07_wiener_hopf_equation",
+        "eng.dsp3.n04_wiener_khinchin_theorem",
+        "math.fourier.ft08_convolution_theorem"
+      ],
+      "required_math_node_ids": [
+        "eng.dsp3.n08_noncausal_wiener_filter",
+        "math.fourier.ft09_plancherel_parseval_transform"
+      ],
+      "assumptions": [
+        "S_X(\\omega) > 0 for all \\omega \\in \\mathbb{R}"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\int_{-\\infty}^{\\infty} h(u) R_X(\\tau - u)\\,du = R_{DX}(\\tau) ",
+          "to_latex": "H_W(\\omega) = \\frac{S_{DX}(\\omega)}{S_X(\\omega)},\\quad \\mathrm{MMSE} = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} \\left(S_D(\\omega) - \\frac{|S_{DX}(\\omega)|^2}{S_X(\\omega)}\\right)d\\omega ",
+          "operation_label": "solve_wiener_hopf_in_freq_domain",
+          "explanation": "非因果的ウィーナー＝ホップ方程式に畳み込み定理を適用して周波数応答 H_W(\\omega) を求め、直交原理を用いてMMSEを評価する。",
+          "used_node_ids": [
+            "eng.dsp3.n04_wiener_khinchin_theorem",
+            "eng.dsp3.n07_wiener_hopf_equation",
+            "eng.dsp3.n08_noncausal_wiener_filter",
+            "math.fourier.ft08_convolution_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_ft_wiener_hopf",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{-\\infty}^{\\infty} h(u) R_X(\\tau - u)\\,du = R_{DX}(\\tau) ",
+          "to_latex": "H_W(\\omega) S_X(\\omega) = S_{DX}(\\omega) \\implies H_W(\\omega) = \\frac{S_{DX}(\\omega)}{S_X(\\omega)} ",
+          "operation_label": "fourier_transform_convolution",
+          "explanation": "両辺をフーリエ変換し、畳み込み定理とウィーナー＝ヒンチンの定理を適用して H_W(\\omega) を代数的に解く。",
+          "used_node_ids": [
+            "eng.dsp3.n04_wiener_khinchin_theorem",
+            "math.fourier.ft08_convolution_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_mmse_eval",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H_W(\\omega) S_X(\\omega) = S_{DX}(\\omega) \\implies H_W(\\omega) = \\frac{S_{DX}(\\omega)}{S_X(\\omega)} ",
+          "to_latex": "\\mathrm{MMSE} = R_D(0) - \\int_{-\\infty}^{\\infty} h_W(u)\\overline{R_{DX}(u)}\\,du = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} \\left(S_D(\\omega) - \\frac{|S_{DX}(\\omega)|^2}{S_X(\\omega)}\\right)d\\omega ",
+          "operation_label": "evaluate_minimum_mse",
+          "explanation": "直交原理 \\mathbb{E}[(D-\\hat{D})\\overline{\\hat{D}}] = 0 を用いて MMSE = \\mathbb{E}[(D-\\hat{D})\\overline{D}] を簡約し、パーセバルの等式と H_W(\\omega) を代入して周波数積分表示を得る。",
+          "used_node_ids": [
+            "eng.dsp3.n08_noncausal_wiener_filter",
+            "math.fourier.ft09_plancherel_parseval_transform"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
