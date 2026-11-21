@@ -1,0 +1,818 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.aero.compressible_shock",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "圧縮性流体力学：音速・マッハ数・等エントロピー流れ・垂直衝撃波とラバールノズル",
+    "language": "ja",
+    "description": "微少擾乱の波動方程式から音速 a=√(γRT)、よどみ点関係式、面積マッハ数関係（チョーク条件）、ランキン＝ユゴニオの垂直衝撃波関係式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.comp.n01_acoustic_wave_speed_of_sound",
+      "short_code": "COMP01",
+      "kind": "theorem_formula",
+      "title": "微小擾乱の波動方程式と音速",
+      "summary": "静止一様流体に対する微小断熱擾乱の線形化から圧力・密度の波動方程式を導き、理想気体における音速 a = sqrt(gamma R T) を得る。",
+      "canonical_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\qquad a = \\sqrt{\\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s} = \\sqrt{\\gamma R T}",
+      "aliases_latex": [
+        "a = \\sqrt{\\gamma R_{\\mathrm{sp}} T}",
+        "a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s"
+      ],
+      "keywords": [
+        "音速",
+        "波動方程式",
+        "微小擾乱",
+        "断熱過程",
+        "speed of sound"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "compressible_flow",
+        "fluid_mechanics"
+      ]
+    },
+    {
+      "id": "eng.comp.n02_mach_number_and_flow_regimes",
+      "short_code": "COMP02",
+      "kind": "definition",
+      "title": "マッハ数と圧縮性流れの領域分類",
+      "summary": "局所流速と局所音速の比としてマッハ数 M を定義し、M の値によって亜音速・遷音速・超音速の各流れ領域を分類する。",
+      "canonical_latex": "M := \\frac{u}{a} = \\frac{u}{\\sqrt{\\gamma R T}},\\qquad M < 1\\text{ (subsonic)},\\quad M \\approx 1\\text{ (transonic)},\\quad M > 1\\text{ (supersonic)}",
+      "aliases_latex": [
+        "M = \\frac{\\|\\mathbf{u}\\|}{a}"
+      ],
+      "keywords": [
+        "マッハ数",
+        "亜音速",
+        "遷音速",
+        "超音速",
+        "Mach number"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "compressible_flow"
+      ]
+    },
+    {
+      "id": "eng.comp.n03_stagnation_enthalpy_energy_eq",
+      "short_code": "COMP03",
+      "kind": "theorem_formula",
+      "title": "断熱定常流れのエネルギー保存とよどみ点温度関係式",
+      "summary": "定常断熱1次元流れにおける全エンタルピー保存則から、理想気体のよどみ点温度（全温）と静温の比をマッハ数の関数として表す。",
+      "canonical_latex": "h_0 := h + \\frac{u^2}{2} = \\text{const.},\\qquad \\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
+      "aliases_latex": [
+        "T_0 = T\\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)"
+      ],
+      "keywords": [
+        "よどみ点温度",
+        "全温",
+        "全エンタルピー",
+        "エネルギー保存",
+        "stagnation temperature"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "compressible_flow",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "eng.comp.n04_isentropic_stagnation_relations",
+      "short_code": "COMP04",
+      "kind": "theorem_formula",
+      "title": "等エントロピー流れのよどみ点圧力・密度関係式",
+      "summary": "定常等エントロピー流れにおいて、よどみ点圧力（全圧）およびよどみ点密度（全密度）と静圧・静密度の比をマッハ数で表す。",
+      "canonical_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{1}{\\gamma - 1}}",
+      "aliases_latex": [
+        "\\frac{p}{p_0} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{-\\frac{\\gamma}{\\gamma - 1}}"
+      ],
+      "keywords": [
+        "等エントロピー流れ",
+        "よどみ点圧力",
+        "全圧",
+        "よどみ点密度",
+        "isentropic flow"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "compressible_flow"
+      ]
+    },
+    {
+      "id": "eng.comp.n05_area_velocity_differential_relation",
+      "short_code": "COMP05",
+      "kind": "theorem_formula",
+      "title": "準1次元等エントロピー流れの面積・速度微分関係式",
+      "summary": "準1次元管内流の連続式と運動量式から、流路断面積変化 dA/A と流速変化 du/u の関係がマッハ数によって符号反転することを示す。",
+      "canonical_latex": "\\frac{dA}{A} = (M^2 - 1)\\frac{du}{u}",
+      "aliases_latex": [
+        "\\frac{dA}{A} = \\frac{1 - M^2}{\\rho u^2}\\,dp"
+      ],
+      "keywords": [
+        "面積速度関係",
+        "準1次元流れ",
+        "ラバールノズル",
+        "area-velocity relation"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "compressible_flow"
+      ]
+    },
+    {
+      "id": "eng.comp.n06_area_mach_number_relation",
+      "short_code": "COMP06",
+      "kind": "theorem_formula",
+      "title": "ラバールノズルの面積・マッハ数関係式とチョーク条件",
+      "summary": "音速スロート断面積 A* を基準とした流路断面積比 A/A* と局所マッハ数 M の一意な関係式を与え、M=1 で断面積が最小となるチョーク条件を示す。",
+      "canonical_latex": "\\left(\\frac{A}{A^*}\\right)^2 = \\frac{1}{M^2}\\left[\\frac{2}{\\gamma + 1}\\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)\\right]^{\\frac{\\gamma + 1}{\\gamma - 1}}",
+      "aliases_latex": [
+        "\\frac{A}{A^*} = \\frac{1}{M}\\left[\\frac{2}{\\gamma + 1}\\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)\\right]^{\\frac{\\gamma + 1}{2(\\gamma - 1)}}"
+      ],
+      "keywords": [
+        "面積マッハ数関係",
+        "チョーク条件",
+        "音速スロート",
+        "ラバールノズル",
+        "area-Mach relation"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "compressible_flow",
+        "propulsion"
+      ]
+    },
+    {
+      "id": "eng.comp.n07_normal_shock_conservation_laws",
+      "short_code": "COMP07",
+      "kind": "theorem_formula",
+      "title": "垂直衝撃波前後の保存則",
+      "summary": "定常1次元垂直衝撃波を挟む検査体積に質量・運動量・エネルギーの保存則を適用し、衝撃波前後の状態量を結ぶ基本方程式系を得る。",
+      "canonical_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad h_1 + \\frac{u_1^2}{2} = h_2 + \\frac{u_2^2}{2}",
+      "aliases_latex": [
+        "\\dot{m}'' = \\rho_1 u_1 = \\rho_2 u_2,\\; p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\; h_{01} = h_{02}"
+      ],
+      "keywords": [
+        "垂直衝撃波",
+        "保存則",
+        "検査体積",
+        "normal shock"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "compressible_flow"
+      ]
+    },
+    {
+      "id": "eng.comp.n08_rankine_hugoniot_relations",
+      "short_code": "COMP08",
+      "kind": "theorem_formula",
+      "title": "ランキン＝ユゴニオの垂直衝撃波関係式",
+      "summary": "理想気体の垂直衝撃波保存則を解くことで、下流マッハ数 M2、圧力比 p2/p1、密度比 rho2/rho1 を上流マッハ数 M1 のみで表す。",
+      "canonical_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad \\frac{\\rho_2}{\\rho_1} = \\frac{(\\gamma + 1)M_1^2}{2 + (\\gamma - 1)M_1^2},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+      "aliases_latex": [
+        "\\frac{T_2}{T_1} = \\frac{p_2}{p_1}\\frac{\\rho_1}{\\rho_2}"
+      ],
+      "keywords": [
+        "ランキン＝ユゴニオ関係式",
+        "垂直衝撃波",
+        "衝撃波前後比",
+        "Rankine-Hugoniot"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "compressible_flow"
+      ]
+    },
+    {
+      "id": "eng.comp.n09_normal_shock_entropy_stagnation_loss",
+      "short_code": "COMP09",
+      "kind": "theorem_formula",
+      "title": "垂直衝撃波のエントロピー増大則とよどみ点圧力損失",
+      "summary": "熱力学第2法則を垂直衝撃波に適用し、圧縮性衝撃波が超音速流（M1 >= 1）でのみ発生すること、および不可逆性による全圧損失が生じることを示す。",
+      "canonical_latex": "s_2 - s_1 = c_p\\ln\\frac{T_2}{T_1} - R\\ln\\frac{p_2}{p_1} \\ge 0 \\iff M_1 \\ge 1,\\qquad \\frac{p_{02}}{p_{01}} = \\exp\\!\\left(-\\frac{s_2 - s_1}{R}\\right) \\le 1",
+      "aliases_latex": [
+        "\\Delta s = -R\\ln\\frac{p_{02}}{p_{01}} \\ge 0"
+      ],
+      "keywords": [
+        "エントロピー増大",
+        "よどみ点圧力損失",
+        "全圧損失",
+        "不可逆過程",
+        "entropy across shock"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "compressible_flow",
+        "thermodynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.comp.d01_acoustic_wave_speed",
+      "target_node_id": "eng.comp.n01_acoustic_wave_speed_of_sound",
+      "route_kind": "deductive",
+      "title": "連続式・オイラー方程式の線形化による音速の導出",
+      "premise_node_ids": [
+        "eng.acst.n01_fluid_adiabatic_boundary",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "静止一様場 (rho_0, p_0, u_0=0) に対する微小擾乱 (rho', p', u')",
+        "非粘性・断熱（等エントロピー）な理想気体"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho \\mathbf{u}) = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p,\\quad \\frac{dp}{d\\rho} = \\frac{\\gamma p_0}{\\rho_0}",
+          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\qquad a = \\sqrt{\\gamma R T}",
+          "operation_label": "微小擾乱線形化と波動方程式導出",
+          "explanation": "連続式とオイラー方程式を静止基準状態の周りで1次線形化して速度場を消去し、断熱状態関係と理想気体状態方程式から音速公式を得る。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho \\mathbf{u}) = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "to_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0 \\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p'",
+          "operation_label": "微小擾乱による1次線形化",
+          "explanation": "密度・圧力・速度を基準値と微小擾乱の和に分解し、擾乱の2次以上の高次項を無視して線形化方程式を得る。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0 \\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p'",
+          "to_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} = \\nabla^2 p'",
+          "operation_label": "速度擾乱の消去",
+          "explanation": "連続式を時間微分し、運動量式の発散を取って差し引くことで速度擾乱を消去する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} = \\nabla^2 p'",
+          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\qquad a = \\sqrt{\\gamma R T}",
+          "operation_label": "断熱関係と理想気体状態方程式の代入",
+          "explanation": "等エントロピー関係 dp'/drho' = gamma p_0 / rho_0 = a^2 および理想気体の状態方程式 p_0 / rho_0 = R T を代入し、圧力の波動方程式と音速を得る。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.comp.d02_mach_number",
+      "target_node_id": "eng.comp.n02_mach_number_and_flow_regimes",
+      "route_kind": "reformulation",
+      "title": "音速に基づく無次元数（マッハ数）の定義",
+      "premise_node_ids": [
+        "eng.comp.n01_acoustic_wave_speed_of_sound"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "局所音速 a > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "a = \\sqrt{\\gamma R T}",
+          "to_latex": "M := \\frac{u}{a} = \\frac{u}{\\sqrt{\\gamma R T}}",
+          "operation_label": "流速と音速の無次元比の定義",
+          "explanation": "局所流速 u を局所音速 a で無次元化し、圧縮性流れの支配的無次元数であるマッハ数 M を定義する。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a = \\sqrt{\\gamma R T}",
+          "to_latex": "\\frac{u}{a} = \\frac{u}{\\sqrt{\\gamma R T}}",
+          "operation_label": "局所音速による除算",
+          "explanation": "流速 u を音速 a で割り、圧力擾乱の伝播速度に対する流れの速さの比を作る。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{u}{a} = \\frac{u}{\\sqrt{\\gamma R T}}",
+          "to_latex": "M := \\frac{u}{a} = \\frac{u}{\\sqrt{\\gamma R T}}",
+          "operation_label": "マッハ数記号と領域区分の導入",
+          "explanation": "この比を M と定義し、M=1 を境に亜音速・遷音速・超音速に分類する。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.comp.d03_stagnation_temperature",
+      "target_node_id": "eng.comp.n03_stagnation_enthalpy_energy_eq",
+      "route_kind": "deductive",
+      "title": "定常断熱エネルギー保存則からのよどみ点温度比の導出",
+      "premise_node_ids": [
+        "phys.thermo.th03_first_law_internal_energy",
+        "eng.comp.n01_acoustic_wave_speed_of_sound",
+        "eng.comp.n02_mach_number_and_flow_regimes"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "定常・断熱・外部仕事なし（全エンタルピー保存）",
+        "比熱比一定の理想気体（熱量的に完全な気体）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "h + \\frac{u^2}{2} = h_0,\\quad h = c_p T,\\quad c_p = \\frac{\\gamma R}{\\gamma - 1}",
+          "to_latex": "\\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
+          "operation_label": "よどみ点温度・静温比の導出",
+          "explanation": "全エンタルピー保存則に理想気体の定圧比熱と音速・マッハ数の定義を代入し、T0/T を M の関数として表す。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": "simplify((1 + (gamma - 1)*u**2 / (2*gamma*R*T)) - (1 + (gamma - 1)/2 * M**2))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "h + \\frac{u^2}{2} = h_0,\\quad h = c_p T,\\quad c_p = \\frac{\\gamma R}{\\gamma - 1}",
+          "to_latex": "c_p T + \\frac{u^2}{2} = c_p T_0",
+          "operation_label": "エンタルピーへの温度代入",
+          "explanation": "熱量的に完全な気体では h = c_p T, h_0 = c_p T_0 となるため、エネルギー保存式を温度で書き換える。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_p T + \\frac{u^2}{2} = c_p T_0",
+          "to_latex": "\\frac{T_0}{T} = 1 + \\frac{(\\gamma - 1)u^2}{2\\gamma R T}",
+          "operation_label": "c_p T による除算と整理",
+          "explanation": "両辺を c_p T で割り、c_p = gamma R / (gamma - 1) を代入する。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{T_0}{T} = 1 + \\frac{(\\gamma - 1)u^2}{2\\gamma R T}",
+          "to_latex": "\\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
+          "operation_label": "音速とマッハ数の代入",
+          "explanation": "a^2 = gamma R T および M = u/a を代入し、T_0/T の標準形式を得る。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.comp.d04_isentropic_stagnation_pressure",
+      "target_node_id": "eng.comp.n04_isentropic_stagnation_relations",
+      "route_kind": "deductive",
+      "title": "等エントロピー関係とよどみ点温度比からの全圧・全密度比の導出",
+      "premise_node_ids": [
+        "eng.comp.n03_stagnation_enthalpy_energy_eq",
+        "phys.thermo.th03_first_law_internal_energy",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "等エントロピー過程 (ds = 0)",
+        "比熱一定の理想気体"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T\\,ds = dh - \\frac{dp}{\\rho} = 0,\\quad \\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
+          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\quad \\frac{\\rho_0}{\\rho} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{1}{\\gamma - 1}}",
+          "operation_label": "等エントロピー積分による全圧・全密度比導出",
+          "explanation": "ギブス関係式 ds = 0 を積分して圧力・密度と温度のべき乗関係を得て、よどみ点温度比を代入する。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T\\,ds = dh - \\frac{dp}{\\rho} = 0,\\quad \\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
+          "to_latex": "c_p \\frac{dT}{T} = R \\frac{dp}{p} \\implies \\frac{p_0}{p} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "operation_label": "等エントロピー関係の積分",
+          "explanation": "dh = c_p dT と理想気体状態方程式 1/(rho T) = R/p を用いて ds = 0 を積分し、p_0/p と T_0/T の関係を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_p \\frac{dT}{T} = R \\frac{dp}{p} \\implies \\frac{p_0}{p} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\quad \\frac{\\rho_0}{\\rho} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{1}{\\gamma - 1}}",
+          "operation_label": "よどみ点温度比と状態方程式の適用",
+          "explanation": "T_0/T の式を代入して p_0/p を得、さらに rho_0/rho = (p_0/p)/(T_0/T) より全密度比を得る。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.comp.d05_area_velocity_relation",
+      "target_node_id": "eng.comp.n05_area_velocity_differential_relation",
+      "route_kind": "deductive",
+      "title": "準1次元連続式とオイラー方程式からの面積・速度微分関係式の導出",
+      "premise_node_ids": [
+        "eng.acst.n01_fluid_adiabatic_boundary",
+        "eng.comp.n01_acoustic_wave_speed_of_sound",
+        "eng.comp.n02_mach_number_and_flow_regimes"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m19_differential_linearity_leibniz"
+      ],
+      "assumptions": [
+        "定常準1次元非粘性等エントロピー流れ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho u A = \\text{const.},\\quad \\rho u\\,du + dp = 0,\\quad \\frac{dp}{d\\rho} = a^2",
+          "to_latex": "\\frac{dA}{A} = (M^2 - 1)\\frac{du}{u}",
+          "operation_label": "対数微分と運動量式の連立",
+          "explanation": "連続式の対数微分と1次元オイラー方程式・音速関係を連立して密度微分を消去し、面積・速度微分関係式を得る。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho u A = \\text{const.},\\quad \\rho u\\,du + dp = 0,\\quad \\frac{dp}{d\\rho} = a^2",
+          "to_latex": "\\frac{d\\rho}{\\rho} + \\frac{du}{u} + \\frac{dA}{A} = 0,\\quad \\frac{d\\rho}{\\rho} = -\\frac{u\\,du}{a^2}",
+          "operation_label": "連続式の全微分と圧力・密度変換",
+          "explanation": "rho u A = const. を対数微分し、さらに dp = a^2 drho を用いて運動量式を drho/rho について解く。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "math.calc.m19_differential_linearity_leibniz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\rho}{\\rho} + \\frac{du}{u} + \\frac{dA}{A} = 0,\\quad \\frac{d\\rho}{\\rho} = -\\frac{u\\,du}{a^2}",
+          "to_latex": "\\frac{dA}{A} = (M^2 - 1)\\frac{du}{u}",
+          "operation_label": "密度微分の消去とマッハ数導入",
+          "explanation": "drho/rho を連続式に代入し、u^2/a^2 = M^2 を用いて整理する。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.comp.d06_area_mach_relation",
+      "target_node_id": "eng.comp.n06_area_mach_number_relation",
+      "route_kind": "deductive",
+      "title": "質量流量保存と等エントロピー関係からの面積・マッハ数関係式の導出",
+      "premise_node_ids": [
+        "eng.comp.n04_isentropic_stagnation_relations",
+        "eng.comp.n05_area_velocity_differential_relation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "スロートで M = 1（チョーク状態）が達成される定常準1次元等エントロピー流れ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho u A = \\rho^* a^* A^*,\\quad \\frac{\\rho_0}{\\rho} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{1}{\\gamma - 1}},\\quad \\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
+          "to_latex": "\\left(\\frac{A}{A^*}\\right)^2 = \\frac{1}{M^2}\\left[\\frac{2}{\\gamma + 1}\\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)\\right]^{\\frac{\\gamma + 1}{\\gamma - 1}}",
+          "operation_label": "音速スロート基準による断面積比導出",
+          "explanation": "任意断面と音速スロート断面の質量流量保存式に、等エントロピー全圧・全密度・全温関係式を代入して A/A* を M のみで表す。",
+          "used_node_ids": [
+            "eng.comp.n04_isentropic_stagnation_relations",
+            "eng.comp.n05_area_velocity_differential_relation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho u A = \\rho^* a^* A^*,\\quad \\frac{\\rho_0}{\\rho} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{1}{\\gamma - 1}},\\quad \\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
+          "to_latex": "\\frac{A}{A^*} = \\frac{\\rho^*}{\\rho}\\frac{a^*}{M a} = \\frac{1}{M}\\frac{\\rho^*}{\\rho_0}\\frac{\\rho_0}{\\rho}\\sqrt{\\frac{T^*}{T_0}\\frac{T_0}{T}}",
+          "operation_label": "よどみ点状態を仲介した質量保存の変形",
+          "explanation": "u = M a および音速比 a*/a = sqrt(T*/T) を用いて、A/A* をよどみ点状態との比の積に分解する。",
+          "used_node_ids": [
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{A}{A^*} = \\frac{\\rho^*}{\\rho}\\frac{a^*}{M a} = \\frac{1}{M}\\frac{\\rho^*}{\\rho_0}\\frac{\\rho_0}{\\rho}\\sqrt{\\frac{T^*}{T_0}\\frac{T_0}{T}}",
+          "to_latex": "\\left(\\frac{A}{A^*}\\right)^2 = \\frac{1}{M^2}\\left[\\frac{2}{\\gamma + 1}\\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)\\right]^{\\frac{\\gamma + 1}{\\gamma - 1}}",
+          "operation_label": "M*=1 の臨界比の代入と平方",
+          "explanation": "T_0/T* = (gamma + 1)/2 および rho_0/rho* = ((gamma + 1)/2)^(1/(gamma - 1)) を代入し、両辺を2乗して整理する。",
+          "used_node_ids": [
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.comp.d07_normal_shock_conservation",
+      "target_node_id": "eng.comp.n07_normal_shock_conservation_laws",
+      "route_kind": "deductive",
+      "title": "垂直衝撃波を囲む検査体積への保存則適用",
+      "premise_node_ids": [
+        "eng.acst.n01_fluid_adiabatic_boundary",
+        "eng.comp.n03_stagnation_enthalpy_energy_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "定常1次元平面衝撃波、衝撃波面は極めて薄く外部熱移動・壁面摩擦なし"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla\\cdot(\\rho\\mathbf{u}) = 0,\\quad \\nabla\\cdot(\\rho\\mathbf{u}\\mathbf{u} + p I) = \\mathbf{0},\\quad h + \\frac{u^2}{2} = \\text{const.}",
+          "to_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad h_1 + \\frac{u_1^2}{2} = h_2 + \\frac{u_2^2}{2}",
+          "operation_label": "検査体積積分の跳躍条件化",
+          "explanation": "定常保存形式の連続式・運動量式・エネルギー式を衝撃波前後の微小検査体積で積分し、上流(1)と下流(2)の代数跳躍条件を得る。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\cdot(\\rho\\mathbf{u}) = 0,\\quad \\nabla\\cdot(\\rho\\mathbf{u}\\mathbf{u} + p I) = \\mathbf{0},\\quad h + \\frac{u^2}{2} = \\text{const.}",
+          "to_latex": "\\int_{CV} \\frac{\\partial}{\\partial x}(\\rho u)\\,dV = 0,\\quad \\int_{CV} \\frac{\\partial}{\\partial x}(p + \\rho u^2)\\,dV = 0",
+          "operation_label": "1次元検査体積での体積積分",
+          "explanation": "流れ方向に垂直な断面積一定の検査体積で発散形式の保存則を積分する。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{CV} \\frac{\\partial}{\\partial x}(\\rho u)\\,dV = 0,\\quad \\int_{CV} \\frac{\\partial}{\\partial x}(p + \\rho u^2)\\,dV = 0",
+          "to_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad h_1 + \\frac{u_1^2}{2} = h_2 + \\frac{u_2^2}{2}",
+          "operation_label": "微積分学の基本定理とエネルギー保存の結合",
+          "explanation": "上流面(1)と下流面(2)での流束の釣合いおよび断熱全エンタルピー保存を連立して3つの垂直衝撃波保存則を得る。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.comp.d08_rankine_hugoniot",
+      "target_node_id": "eng.comp.n08_rankine_hugoniot_relations",
+      "route_kind": "deductive",
+      "title": "垂直衝撃波保存則からのランキン＝ユゴニオ関係式の導出",
+      "premise_node_ids": [
+        "eng.comp.n07_normal_shock_conservation_laws",
+        "eng.comp.n02_mach_number_and_flow_regimes",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "比熱比一定の理想気体",
+        "非自明解 (u_1 != u_2)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad \\frac{\\gamma}{\\gamma-1}\\frac{p_1}{\\rho_1} + \\frac{u_1^2}{2} = \\frac{\\gamma}{\\gamma-1}\\frac{p_2}{\\rho_2} + \\frac{u_2^2}{2}",
+          "to_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad \\frac{\\rho_2}{\\rho_1} = \\frac{(\\gamma + 1)M_1^2}{2 + (\\gamma - 1)M_1^2},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "プラントル関係式経由での代数求解",
+          "explanation": "保存則からプラントル関係式 u_1 u_2 = a*^2 と運動量保存の圧力比を導き、M_2, p_2/p_1, rho_2/rho_1 を M_1 で陽に表す。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n07_normal_shock_conservation_laws",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad \\frac{\\gamma}{\\gamma-1}\\frac{p_1}{\\rho_1} + \\frac{u_1^2}{2} = \\frac{\\gamma}{\\gamma-1}\\frac{p_2}{\\rho_2} + \\frac{u_2^2}{2}",
+          "to_latex": "u_1 u_2 = a^{*2},\\quad \\frac{p_2}{p_1} = \\frac{1 + \\gamma M_1^2}{1 + \\gamma M_2^2}",
+          "operation_label": "プラントル関係式と運動量比の導出",
+          "explanation": "運動量式と連続式から (p_2 - p_1)/(rho_1 u_1) = u_1 - u_2 を得てエネルギー式と組み合わせ、プラントル関係式 u_1 u_2 = a*^2 と圧力比のM_1, M_2表示を導く。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n07_normal_shock_conservation_laws"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_1 u_2 = a^{*2},\\quad \\frac{p_2}{p_1} = \\frac{1 + \\gamma M_1^2}{1 + \\gamma M_2^2}",
+          "to_latex": "M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "臨界マッハ数関係による M2 の求解",
+          "explanation": "M*^2 = (gamma+1)M^2 / (2 + (gamma-1)M^2) を M*_1 M*_2 = 1 に代入し、M_2^2 を M_1^2 で解く。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "to_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad \\frac{\\rho_2}{\\rho_1} = \\frac{(\\gamma + 1)M_1^2}{2 + (\\gamma - 1)M_1^2},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "圧力比と密度比の整理",
+          "explanation": "M_2^2 を p_2/p_1 に代入して圧力比を得、さらに連続式 rho_2/rho_1 = u_1/u_2 = M*_1^2 から密度比を得る。",
+          "used_node_ids": [
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.comp.d09_shock_entropy_and_loss",
+      "target_node_id": "eng.comp.n09_normal_shock_entropy_stagnation_loss",
+      "route_kind": "deductive",
+      "title": "垂直衝撃波前後のエントロピー変化と全圧損失の導出",
+      "premise_node_ids": [
+        "eng.comp.n08_rankine_hugoniot_relations",
+        "eng.comp.n04_isentropic_stagnation_relations",
+        "phys.thermo.th06_second_law_principles"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "熱力学第2法則 (s_2 - s_1 >= 0)",
+        "衝撃波前後で全温保存 (T_{01} = T_{02})"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "s_2 - s_1 = c_p\\ln\\frac{T_2}{T_1} - R\\ln\\frac{p_2}{p_1} \\ge 0,\\quad T_{02} = T_{01}",
+          "to_latex": "s_2 - s_1 \\ge 0 \\iff M_1 \\ge 1,\\qquad \\frac{p_{02}}{p_{01}} = \\exp\\!\\left(-\\frac{s_2 - s_1}{R}\\right) \\le 1",
+          "operation_label": "第2法則による超音速条件と全圧損失導出",
+          "explanation": "理想気体のエントロピー変化式にランキン＝ユゴニオ関係式と全温保存を適用し、M_1 >= 1 の必然性と全圧比減少を示す。",
+          "used_node_ids": [
+            "eng.comp.n04_isentropic_stagnation_relations",
+            "eng.comp.n08_rankine_hugoniot_relations",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s_2 - s_1 = c_p\\ln\\frac{T_2}{T_1} - R\\ln\\frac{p_2}{p_1} \\ge 0,\\quad T_{02} = T_{01}",
+          "to_latex": "s_2 - s_1 = -R\\ln\\frac{p_{02}}{p_{01}} = R\\ln\\!\\left[\\left(\\frac{p_1}{p_2}\\right)\\left(\\frac{T_2}{T_1}\\right)^{\\frac{\\gamma}{\\gamma - 1}}\\right] \\ge 0",
+          "operation_label": "よどみ点状態によるエントロピー変化表現",
+          "explanation": "各点から等エントロピー的によどみ点へ戻してもエントロピー差は不変であり、T_{02}=T_{01} のため s_2 - s_1 = -R ln(p_{02}/p_{01}) となる。",
+          "used_node_ids": [
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s_2 - s_1 = -R\\ln\\frac{p_{02}}{p_{01}} = R\\ln\\!\\left[\\left(\\frac{p_1}{p_2}\\right)\\left(\\frac{T_2}{T_1}\\right)^{\\frac{\\gamma}{\\gamma - 1}}\\right] \\ge 0",
+          "to_latex": "s_2 - s_1 \\ge 0 \\iff M_1 \\ge 1,\\qquad \\frac{p_{02}}{p_{01}} = \\exp\\!\\left(-\\frac{s_2 - s_1}{R}\\right) \\le 1",
+          "operation_label": "M1>=1 の判定と全圧比の導出",
+          "explanation": "ランキン＝ユゴニオの温度比・圧力比を代入すると M_1 >= 1 で s_2 - s_1 >= 0（M_1 < 1 では負となり第2法則に反する）となり、p_{02}/p_{01} <= 1 が確定する。",
+          "used_node_ids": [
+            "eng.comp.n08_rankine_hugoniot_relations",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

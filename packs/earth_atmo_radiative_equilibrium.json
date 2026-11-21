@@ -1,0 +1,782 @@
+{
+  "pack_meta": {
+    "pack_id": "earth.atmo.radiative_equilibrium",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "meteorology",
+    "title": "大気放射・気候力学：放射平衡温度・温室効果モデルと乾燥/湿潤断熱減率",
+    "language": "ja",
+    "description": "シュテファン＝ボルツマン則から惑星の有効放射温度、1層/多層温室効果モデル、熱力学第1法則と静力学平衡から乾燥断熱減率Γd=g/cpを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "earth.rad.n01_stefan_boltzmann_law",
+      "short_code": "RAD01",
+      "kind": "theorem_formula",
+      "title": "シュテファン＝ボルツマンの法則（黒体放射フラックス）",
+      "summary": "プランクの黒体放射輝度を全振動数および半球立体角にわたって積分することで得られる、黒体表面からの全放射エネルギーフラックスと温度の4乗則。",
+      "canonical_latex": "F_{\\mathrm{BB}}(T) = \\sigma T^4,\\quad \\sigma = \\frac{2\\pi^5 k_B^4}{15 c^2 h^3} \\approx 5.67\\times 10^{-8}\\,\\mathrm{W\\,m^{-2}\\,K^{-4}}",
+      "aliases_latex": [
+        "F = \\sigma T^4",
+        "I_{\\mathrm{BB}} = \\frac{\\sigma}{\\pi}T^4"
+      ],
+      "keywords": [
+        "Stefan-Boltzmann law",
+        "blackbody flux",
+        "Planck integration",
+        "radiative transfer"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "atmospheric_physics",
+        "radiation"
+      ]
+    },
+    {
+      "id": "earth.rad.n02_planetary_effective_temp",
+      "short_code": "RAD02",
+      "kind": "theorem_formula",
+      "title": "惑星の放射平衡と有効放射温度",
+      "summary": "惑星が吸収する短波太陽放射と宇宙空間へ射出する長波黒体放射のエネルギー釣合いから定まる有効放射温度の公式。",
+      "canonical_latex": "(1 - \\alpha_p) S_0 \\pi R_p^2 = 4\\pi R_p^2 \\sigma T_e^4 \\implies T_e = \\left(\\frac{(1 - \\alpha_p) S_0}{4\\sigma}\\right)^{1/4} \\approx 255\\,\\mathrm{K}\\;(\\text{Earth})",
+      "aliases_latex": [
+        "T_e = \\left(\\frac{(1 - \\alpha_p) S_0}{4\\sigma}\\right)^{1/4}"
+      ],
+      "keywords": [
+        "effective temperature",
+        "planetary energy balance",
+        "albedo",
+        "solar constant"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "climate_dynamics"
+      ]
+    },
+    {
+      "id": "earth.rad.n03_single_layer_greenhouse",
+      "short_code": "RAD03",
+      "kind": "theorem_formula",
+      "title": "1層大気温室効果モデル（放射平衡温度と地表面温度）",
+      "summary": "太陽放射に対して透明で長波放射に対して射出率・吸収率εを持つ均質1層大気モデルにおける、大気上端と大気層の放射平衡から導かれる地表面温度の上昇式。",
+      "canonical_latex": "T_s = \\left(\\frac{2}{2 - \\varepsilon}\\right)^{1/4} T_e,\\quad T_a = \\left(\\frac{1}{2 - \\varepsilon}\\right)^{1/4} T_e,\\quad \\varepsilon = 1 \\implies T_s = 2^{1/4} T_e",
+      "aliases_latex": [
+        "T_s = \\left(\\frac{2}{2-\\varepsilon}\\right)^{1/4} T_e",
+        "T_s^4 = \\frac{2}{2-\\varepsilon}T_e^4"
+      ],
+      "keywords": [
+        "greenhouse effect",
+        "single-layer model",
+        "emissivity",
+        "surface temperature"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "climate_dynamics"
+      ]
+    },
+    {
+      "id": "earth.rad.n04_multilayer_greenhouse",
+      "short_code": "RAD04",
+      "kind": "theorem_formula",
+      "title": "N層光学的厚大気（多層温室効果）モデル",
+      "summary": "長波放射に対して黒体（ε=1）として振る舞うN枚の薄い大気層を積み重ねた放射平衡モデルにおいて、各層および地表面の温度が層数に応じて増大する関係式。",
+      "canonical_latex": "T_k = k^{1/4} T_e\\quad (k = 1,\\dots,N),\\qquad T_s = (N + 1)^{1/4} T_e",
+      "aliases_latex": [
+        "T_s = (N+1)^{1/4} T_e",
+        "T_k^4 = k T_e^4"
+      ],
+      "keywords": [
+        "multi-layer greenhouse model",
+        "optical depth",
+        "radiative equilibrium",
+        "gray atmosphere"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "climate_dynamics"
+      ]
+    },
+    {
+      "id": "earth.rad.n05_dry_adiabatic_enthalpy",
+      "short_code": "RAD05",
+      "kind": "theorem_formula",
+      "title": "乾燥空気の断熱過程と比エンタルピー形式の熱力学第1法則",
+      "summary": "理想気体としての乾燥空気に対して比エンタルピーを導入し、熱力学第1法則を温度変化と圧力変化で表した断熱過程の基本関係式。",
+      "canonical_latex": "\\delta q = c_p\\,dT - \\frac{R_d T}{p}\\,dp = c_p\\,dT - v\\,dp = 0",
+      "aliases_latex": [
+        "c_p\\,dT - \\frac{1}{\\rho}\\,dp = 0",
+        "dh = \\delta q + v\\,dp"
+      ],
+      "keywords": [
+        "first law of thermodynamics",
+        "enthalpy",
+        "dry air",
+        "adiabatic process"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "atmospheric_thermodynamics"
+      ]
+    },
+    {
+      "id": "earth.rad.n06_dry_adiabatic_lapse_rate",
+      "short_code": "RAD06",
+      "kind": "theorem_formula",
+      "title": "乾燥断熱減率（Γd = g / cp）",
+      "summary": "乾燥空気塊が周囲と熱交換せず静力学平衡のもとで鉛直昇降するときに生じる温度の鉛直減少率。",
+      "canonical_latex": "\\Gamma_d := -\\left(\\frac{dT}{dz}\\right)_{\\mathrm{ad}} = \\frac{g}{c_p} \\approx 9.8\\,\\mathrm{K\\,km^{-1}}",
+      "aliases_latex": [
+        "\\Gamma_d = \\frac{g}{c_p}发布",
+        "\\left(\\frac{dT}{dz}\\right)_{\\mathrm{ad}} = -\\frac{g}{c_p}"
+      ],
+      "keywords": [
+        "dry adiabatic lapse rate",
+        "hydrostatic balance",
+        "atmospheric stability"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "atmospheric_thermodynamics"
+      ]
+    },
+    {
+      "id": "earth.rad.n07_potential_temperature_def",
+      "short_code": "RAD07",
+      "kind": "theorem_formula",
+      "title": "温位（Potential Temperature）の定義と断熱保存性",
+      "summary": "空気塊を基準気圧p0（通常1000 hPa）まで乾燥断熱的に移動させたときに到達する温度として定義され、乾燥断熱過程で保存される熱力学的状態量。",
+      "canonical_latex": "\\theta := T\\left(\\frac{p_0}{p}\\right)^{R_d / c_p},\\qquad \\delta q = 0 \\implies d\\theta = 0",
+      "aliases_latex": [
+        "\\theta = T(p_0/p)^{\\kappa}"
+      ],
+      "keywords": [
+        "potential temperature",
+        "Poisson equation",
+        "adiabatic invariant",
+        "atmospheric thermodynamics"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "atmospheric_thermodynamics"
+      ]
+    },
+    {
+      "id": "earth.rad.n08_moist_adiabatic_lapse_rate",
+      "short_code": "RAD08",
+      "kind": "theorem_formula",
+      "title": "湿潤断熱減率（偽断熱過程と潜熱解放効果）",
+      "summary": "飽和水蒸気を含む湿潤空気塊が上昇・凝結する際に解放される潜熱を考慮した温度の鉛直減少率であり、凝結潜熱により乾燥断熱減率より小さくなる。",
+      "canonical_latex": "\\Gamma_m := -\\left(\\frac{dT}{dz}\\right)_m = \\frac{g}{c_p}\\frac{1 + \\frac{L_v w_s}{R_d T}}{1 + \\frac{L_v^2 w_s}{c_p R_v T^2}} < \\Gamma_d",
+      "aliases_latex": [
+        "\\Gamma_m = \\Gamma_d\\frac{1 + L_v w_s / (R_d T)}{1 + L_v^2 w_s / (c_p R_v T^2)}"
+      ],
+      "keywords": [
+        "moist adiabatic lapse rate",
+        "pseudoadiabatic process",
+        "latent heat",
+        "Clausius-Clapeyron"
+      ],
+      "domain_tags": [
+        "meteorology",
+        "atmospheric_thermodynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.earth.rad.n01_stefan_boltzmann_law",
+      "target_node_id": "earth.rad.n01_stefan_boltzmann_law",
+      "route_kind": "deductive",
+      "title": "プランクの黒体放射輝度からのシュテファン＝ボルツマン則の導出",
+      "premise_node_ids": [
+        "astro.radio.n01_planck_blackbody_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "assumptions": [
+        "等方的な黒体放射場",
+        "半球立体角（0 <= theta <= pi/2, 0 <= phi < 2pi）への積分",
+        "ランベルトの余弦則 cos(theta) の重み"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "B_\\nu(T) = \\frac{2h\\nu^3}{c^2}\\frac{1}{e^{h\\nu/(k_B T)} - 1}发布",
+          "to_latex": "F_{\\mathrm{BB}}(T) = \\sigma T^4,\\quad \\sigma = \\frac{2\\pi^5 k_B^4}{15 c^2 h^3}发布",
+          "operation_label": "半球立体角および全振動数の積分",
+          "explanation": "プランクの放射輝度公式を法線成分の重み cos(theta) を掛けて半球全体で積分し、無次元変数 x = h*nu/(k_B*T) に置換して全振動数積分を実行することで T^4 則とシュテファン＝ボルツマン定数を得る。",
+          "used_node_ids": [
+            "astro.radio.n01_planck_blackbody_boundary",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "B_\\nu(T) = \\frac{2h\\nu^3}{c^2}\\frac{1}{e^{h\\nu/(k_B T)} - 1}发布",
+          "to_latex": "F_{\\mathrm{BB}}(T) = \\int_0^\\infty \\left(\\int_0^{2\\pi}\\int_0^{\\pi/2} B_\\nu(T)\\cos\\theta\\sin\\theta\\,d\\theta\\,d\\phi\\right) d\\nu = \\pi \\int_0^\\infty \\frac{2h\\nu^3}{c^2}\\frac{1}{e^{h\\nu/(k_B T)} - 1}\\,d\\nu发布",
+          "operation_label": "半球立体角積分による放射フラックス化",
+          "explanation": "放射輝度は等方的であるため角度積分は pi を与え、全振動数にわたる積分表示を得る。",
+          "used_node_ids": [
+            "astro.radio.n01_planck_blackbody_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F_{\\mathrm{BB}}(T) = \\pi \\int_0^\\infty \\frac{2h\\nu^3}{c^2}\\frac{1}{e^{h\\nu/(k_B T)} - 1}\\,d\\nu发布",
+          "to_latex": "F_{\\mathrm{BB}}(T) = \\frac{2\\pi k_B^4 T^4}{c^2 h^3}\\int_0^\\infty \\frac{x^3}{e^x - 1}\\,dx\\quad \\left(x := \\frac{h\\nu}{k_B T}\\right)发布",
+          "operation_label": "無次元変数 x = h*nu/(k_B*T) への置換積分",
+          "explanation": "置換積分法により温度依存性 T^4 を積分の外へ括り出す。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F_{\\mathrm{BB}}(T) = \\frac{2\\pi k_B^4 T^4}{c^2 h^3}\\int_0^\\infty \\frac{x^3}{e^x - 1}\\,dx\\quad \\left(x := \\frac{h\\nu}{k_B T}\\right)发布",
+          "to_latex": "F_{\\mathrm{BB}}(T) = \\sigma T^4,\\quad \\sigma = \\frac{2\\pi^5 k_B^4}{15 c^2 h^3}发布",
+          "operation_label": "ボース積分の値 pi^4/15 の代入",
+          "explanation": "定積分値が pi^4/15 であることを用いてシュテファン＝ボルツマン定数 sigma を定義する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.earth.rad.n02_planetary_effective_temp",
+      "target_node_id": "earth.rad.n02_planetary_effective_temp",
+      "route_kind": "deductive",
+      "title": "放射エネルギー収支からの惑星有効放射温度の導出",
+      "premise_node_ids": [
+        "earth.rad.n01_stefan_boltzmann_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "定常状態（吸収放射電力＝射出放射電力）",
+        "半径 R_p の球形惑星が断面積 pi*R_p^2 で平行太陽放射を受け、全表面積 4*pi*R_p^2 から等方的に黒体放射する",
+        "惑星ボンドアルベド alpha_p は一定"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F_{\\mathrm{BB}}(T_e) = \\sigma T_e^4",
+          "to_latex": "T_e = \\left(\\frac{(1 - \\alpha_p) S_0}{4\\sigma}\\right)^{1/4}发布",
+          "operation_label": "全球放射エネルギー収支の等置と T_e への求解",
+          "explanation": "惑星断面積が吸収する太陽短波放射電力と全表面から射出される長波放射電力を等置して有効放射温度を求める。",
+          "used_node_ids": [
+            "earth.rad.n01_stefan_boltzmann_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F_{\\mathrm{BB}}(T_e) = \\sigma T_e^4",
+          "to_latex": "P_{\\mathrm{abs}} = (1 - \\alpha_p) S_0 \\pi R_p^2,\\quad P_{\\mathrm{emit}} = 4\\pi R_p^2 \\sigma T_e^4发布",
+          "operation_label": "吸収電力と射出電力の定式化",
+          "explanation": "太陽定数 S_0、アルベド alpha_p、断面積 pi*R_p^2 から吸収電力を、シュテファン＝ボルツマン則と表面積 4*pi*R_p^2 から射出電力を表す。",
+          "used_node_ids": [
+            "earth.rad.n01_stefan_boltzmann_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\mathrm{abs}} = (1 - \\alpha_p) S_0 \\pi R_p^2,\\quad P_{\\mathrm{emit}} = 4\\pi R_p^2 \\sigma T_e^4发布",
+          "to_latex": "(1 - \\alpha_p) S_0 \\pi R_p^2 = 4\\pi R_p^2 \\sigma T_e^4",
+          "operation_label": "定常放射平衡条件 P_abs = P_emit の適用",
+          "explanation": "惑星全体のエネルギー保存則より吸収電力と射出電力を等置する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(1 - \\alpha_p) S_0 \\pi R_p^2 = 4\\pi R_p^2 \\sigma T_e^4",
+          "to_latex": "T_e = \\left(\\frac{(1 - \\alpha_p) S_0}{4\\sigma}\\right)^{1/4}发布",
+          "operation_label": "幾何因子 4 の約分と 1/4 乗",
+          "explanation": "両辺を 4*pi*R_p^2*sigma で割り、1/4乗をとって有効放射温度 T_e を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.earth.rad.n03_single_layer_greenhouse",
+      "target_node_id": "earth.rad.n03_single_layer_greenhouse",
+      "route_kind": "deductive",
+      "title": "1層温室効果モデルにおける地表面温度と大気温度の導出",
+      "premise_node_ids": [
+        "earth.rad.n01_stefan_boltzmann_law",
+        "earth.rad.n02_planetary_effective_temp"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "大気は短波太陽放射に対して完全に透明",
+        "大気は長波放射に対して射出率・吸収率 epsilon（キルヒホッフ則）を持つ均質1層",
+        "地表面は長波に対して黒体（射出率 1）",
+        "対流や潜熱輸送は含まない純粋放射平衡"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma T_e^4 = \\frac{(1 - \\alpha_p) S_0}{4}发布",
+          "to_latex": "T_s = \\left(\\frac{2}{2 - \\varepsilon}\\right)^{1/4} T_e,\\quad T_a = \\left(\\frac{1}{2 - \\varepsilon}\\right)^{1/4} T_e发布",
+          "operation_label": "大気上端と大気層の2つの放射収支式の連立求解",
+          "explanation": "大気上端および大気層における長波・短波フラックスの釣合いを連立し、地表面温度 T_s と大気温度 T_a を有効温度 T_e で表す。",
+          "used_node_ids": [
+            "earth.rad.n01_stefan_boltzmann_law",
+            "earth.rad.n02_planetary_effective_temp"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma T_e^4 = \\frac{(1 - \\alpha_p) S_0}{4}发布",
+          "to_latex": "\\sigma T_e^4 = (1 - \\varepsilon)\\sigma T_s^4 + \\varepsilon\\sigma T_a^4,\\quad 2\\varepsilon\\sigma T_a^4 = \\varepsilon\\sigma T_s^4发布",
+          "operation_label": "大気上端（TOA）および大気層の放射平衡式の立式",
+          "explanation": "大気上端で出ていく長波フラックス（大気を透過した地表面放射と大気の上向き放射）が吸収太陽フラックス sigma*T_e^4 に等しく、大気層が上下に射出する放射 2*epsilon*sigma*T_a^4 が地表面からの吸収 epsilon*sigma*T_s^4 に等しいと置く。",
+          "used_node_ids": [
+            "earth.rad.n01_stefan_boltzmann_law",
+            "earth.rad.n02_planetary_effective_temp"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma T_e^4 = (1 - \\varepsilon)\\sigma T_s^4 + \\varepsilon\\sigma T_a^4,\\quad 2\\varepsilon\\sigma T_a^4 = \\varepsilon\\sigma T_s^4发布",
+          "to_latex": "T_a^4 = \\frac{1}{2}T_s^4,\\quad T_e^4 = \\left(1 - \\frac{\\varepsilon}{2}\\right) T_s^4发布",
+          "operation_label": "大気温度 T_a^4 の消去",
+          "explanation": "第2式より T_a^4 = T_s^4 / 2 を得て第1式へ代入し、sigma を約分する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_a^4 = \\frac{1}{2}T_s^4,\\quad T_e^4 = \\left(1 - \\frac{\\varepsilon}{2}\\right) T_s^4发布",
+          "to_latex": "T_s = \\left(\\frac{2}{2 - \\varepsilon}\\right)^{1/4} T_e,\\quad T_a = \\left(\\frac{1}{2 - \\varepsilon}\\right)^{1/4} T_e发布",
+          "operation_label": "T_s および T_a についての求解",
+          "explanation": "T_s^4 について解いて 1/4 乗をとり、さらに T_a = 2^{-1/4} T_s より大気温度を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.earth.rad.n04_multilayer_greenhouse",
+      "target_node_id": "earth.rad.n04_multilayer_greenhouse",
+      "route_kind": "deductive",
+      "title": "N層灰色放射平衡モデルの逐次エネルギー収支からの導出",
+      "premise_node_ids": [
+        "earth.rad.n01_stefan_boltzmann_law",
+        "earth.rad.n03_single_layer_greenhouse"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "短波放射に対して透明で長波放射に対して不透明（epsilon = 1）な N 枚の大気層（上端から k=1,...,N）",
+        "各層の間および大気上端で正味の上向き長波フラックスが一定値 sigma*T_e^4 を保つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F_{\\uparrow,k} - F_{\\downarrow,k} = \\sigma T_e^4",
+          "to_latex": "T_k = k^{1/4} T_e,\\quad T_s = (N + 1)^{1/4} T_e",
+          "operation_label": "各層間正味フラックス一定条件からの漸化式求解",
+          "explanation": "不透明層間の正味上向き長波フラックスが常に sigma*T_e^4 に等しいことから温度4乗の等差数列を導き、層数 N に対する地表面温度の上昇則を得る。",
+          "used_node_ids": [
+            "earth.rad.n01_stefan_boltzmann_law",
+            "earth.rad.n03_single_layer_greenhouse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F_{\\uparrow,k} - F_{\\downarrow,k} = \\sigma T_e^4",
+          "to_latex": "\\sigma T_k^4 - \\sigma T_{k-1}^4 = \\sigma T_e^4\\quad (k=1,\\dots,N),\\quad T_0 := 0",
+          "operation_label": "各層境界へのシュテファン＝ボルツマン則の適用",
+          "explanation": "層 k と層 k-1 の間の上向きフラックスは sigma*T_k^4、下向きフラックスは sigma*T_{k-1}^4 であり（宇宙からの下向き長波は T_0 = 0 でゼロ）、その差が sigma*T_e^4 となる。",
+          "used_node_ids": [
+            "earth.rad.n01_stefan_boltzmann_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma T_k^4 - \\sigma T_{k-1}^4 = \\sigma T_e^4\\quad (k=1,\\dots,N),\\quad T_0 := 0",
+          "to_latex": "T_k^4 = k T_e^4\\quad (k=1,\\dots,N),\\quad \\sigma T_s^4 - \\sigma T_N^4 = \\sigma T_e^4",
+          "operation_label": "漸化式の帰納的求解と地表面境界条件",
+          "explanation": "T_0 = 0 から帰納的に T_k^4 = k*T_e^4 を得て、さらに最下層 N と地表面の間のエネルギー収支式を立てる。",
+          "used_node_ids": [
+            "earth.rad.n03_single_layer_greenhouse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_k^4 = k T_e^4\\quad (k=1,\\dots,N),\\quad \\sigma T_s^4 - \\sigma T_N^4 = \\sigma T_e^4",
+          "to_latex": "T_k = k^{1/4} T_e,\\quad T_s = (N + 1)^{1/4} T_e",
+          "operation_label": "地表面温度 T_s の導出",
+          "explanation": "T_s^4 = T_N^4 + T_e^4 = (N+1)T_e^4 の両辺を 1/4 乗して N 層温室効果の一般公式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.earth.rad.n05_dry_adiabatic_enthalpy",
+      "target_node_id": "earth.rad.n05_dry_adiabatic_enthalpy",
+      "route_kind": "deductive",
+      "title": "熱力学第1法則と理想気体状態方程式からの乾燥断熱式の導出",
+      "premise_node_ids": [
+        "phys.thermo.th03_first_law_internal_energy",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "乾燥空気は理想気体（比熱 c_p 一定、気体定数 R_d）",
+        "準静的・断熱過程（delta q = 0）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "du = \\delta q - p\\,dv,\\quad p v = R_d T",
+          "to_latex": "\\delta q = c_p\\,dT - \\frac{R_d T}{p}\\,dp = 0",
+          "operation_label": "比エンタルピー h = u + pv へのルジャンドル的変換と断熱条件適用",
+          "explanation": "単位質量あたりの熱力学第1法則に比エンタルピーの全微分と理想気体の状態方程式を適用し、温度と圧力の微分関係式を導く。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "du = \\delta q - p\\,dv,\\quad p v = R_d T",
+          "to_latex": "dh = d(u + pv) = du + p\\,dv + v\\,dp = \\delta q + v\\,dp",
+          "operation_label": "比エンタルピー全微分の計算",
+          "explanation": "積の全微分則により dh を展開し、熱力学第1法則 du + p dv = delta q を代入する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dh = d(u + pv) = du + p\\,dv + v\\,dp = \\delta q + v\\,dp",
+          "to_latex": "c_p\\,dT = \\delta q + \\frac{R_d T}{p}\\,dp",
+          "operation_label": "理想気体の性質 dh = c_p dT と v = R_d T / p の代入",
+          "explanation": "理想気体では比エンタルピーが温度のみの関数で dh = c_p dT となり、比体積 v を状態方程式で置き換える。",
+          "used_node_ids": [
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_p\\,dT = \\delta q + \\frac{R_d T}{p}\\,dp",
+          "to_latex": "\\delta q = c_p\\,dT - \\frac{R_d T}{p}\\,dp = 0",
+          "operation_label": "断熱条件 delta q = 0 の適用",
+          "explanation": "外部との熱交換がない断熱条件を課して乾燥断熱式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.earth.rad.n06_dry_adiabatic_lapse_rate",
+      "target_node_id": "earth.rad.n06_dry_adiabatic_lapse_rate",
+      "route_kind": "deductive",
+      "title": "乾燥断熱式と静力学平衡からの乾燥断熱減率 Γd = g/cp の導出",
+      "premise_node_ids": [
+        "earth.rad.n05_dry_adiabatic_enthalpy",
+        "earth.gfd.n02_hydrostatic_balance"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "空気塊の圧力は常に周囲の大気圧力と等しい",
+        "周囲の大気は静力学平衡を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "c_p\\,dT - \\frac{R_d T}{p}\\,dp = 0,\\quad \\frac{\\partial p}{\\partial z} = -\\rho g",
+          "to_latex": "\\Gamma_d := -\\left(\\frac{dT}{dz}\\right)_{\\mathrm{ad}} = \\frac{g}{c_p}发布",
+          "operation_label": "高度 z に関する微分と静力学平衡の代入",
+          "explanation": "乾燥断熱式を高度 z で微分し、静力学平衡 dp/dz = -rho g を代入することで乾燥断熱減率 g/cp を得る。",
+          "used_node_ids": [
+            "earth.gfd.n02_hydrostatic_balance",
+            "earth.rad.n05_dry_adiabatic_enthalpy",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_p\\,dT - \\frac{R_d T}{p}\\,dp = 0,\\quad \\frac{\\partial p}{\\partial z} = -\\rho g",
+          "to_latex": "c_p\\frac{dT}{dz} - \\frac{1}{\\rho}\\frac{dp}{dz} = 0",
+          "operation_label": "連鎖律による z 微分と R_d T / p = 1 / rho の適用",
+          "explanation": "高度 z に沿った変化率として d/dz をとり、理想気体状態方程式から R_d T / p = v = 1 / rho を用いる。",
+          "used_node_ids": [
+            "earth.rad.n05_dry_adiabatic_enthalpy",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_p\\frac{dT}{dz} - \\frac{1}{\\rho}\\frac{dp}{dz} = 0",
+          "to_latex": "c_p\\frac{dT}{dz} + g = 0",
+          "operation_label": "静力学平衡 dp/dz = -rho g の代入",
+          "explanation": "空気塊の圧力変化が周囲大気の静力学平衡に従うとして dp/dz を消去する。",
+          "used_node_ids": [
+            "earth.gfd.n02_hydrostatic_balance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_p\\frac{dT}{dz} + g = 0",
+          "to_latex": "\\Gamma_d := -\\left(\\frac{dT}{dz}\\right)_{\\mathrm{ad}} = \\frac{g}{c_p}发布",
+          "operation_label": "乾燥断熱減率 Gamma_d の定義と整理",
+          "explanation": "温度減率 -dT/dz について解くことで、重力加速度と定圧比熱の比 g/c_p を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.earth.rad.n07_potential_temperature_def",
+      "target_node_id": "earth.rad.n07_potential_temperature_def",
+      "route_kind": "deductive",
+      "title": "乾燥断熱式の積分による温位の定義と保存則の導出",
+      "premise_node_ids": [
+        "earth.rad.n05_dry_adiabatic_enthalpy"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "定圧比熱 c_p および気体定数 R_d が定数"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "c_p\\,dT - \\frac{R_d T}{p}\\,dp = 0",
+          "to_latex": "\\theta := T\\left(\\frac{p_0}{p}\\right)^{R_d / c_p},\\quad d\\theta = 0\\quad (\\delta q = 0)发布",
+          "operation_label": "変数分離と定積分によるポアソン方程式および温位の導出",
+          "explanation": "乾燥断熱式を T と p で変数分離して基準状態 (p0, theta) まで積分することで温位の定義式とその断熱保存性を得る。",
+          "used_node_ids": [
+            "earth.rad.n05_dry_adiabatic_enthalpy",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_p\\,dT - \\frac{R_d T}{p}\\,dp = 0",
+          "to_latex": "\\frac{dT}{T} - \\frac{R_d}{c_p}\\frac{dp}{p} = 0",
+          "operation_label": "両辺を c_p T で割る変数分離",
+          "explanation": "温度変数 T と圧力変数 p を分離し、積分可能な形式にする。",
+          "used_node_ids": [
+            "earth.rad.n05_dry_adiabatic_enthalpy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dT}{T} - \\frac{R_d}{c_p}\\frac{dp}{p} = 0",
+          "to_latex": "\\ln\\frac{T}{T_0} = \\frac{R_d}{c_p}\\ln\\frac{p}{p_0} \\implies T\\left(\\frac{p_0}{p}\\right)^{R_d / c_p} = T_0 = \\mathrm{const.}发布",
+          "operation_label": "基準状態 (p0, T0) からの定積分と指数化",
+          "explanation": "微積分学の基本定理により両辺を積分し、対数を外してポアソン関係式を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln\\frac{T}{T_0} = \\frac{R_d}{c_p}\\ln\\frac{p}{p_0} \\implies T\\left(\\frac{p_0}{p}\\right)^{R_d / c_p} = T_0 = \\mathrm{const.}发布",
+          "to_latex": "\\theta := T\\left(\\frac{p_0}{p}\\right)^{R_d / c_p},\\quad d\\theta = 0\\quad (\\delta q = 0)发布",
+          "operation_label": "温位 theta の定義と断熱保存性の確立",
+          "explanation": "基準気圧 p0 における温度 T0 を温位 theta と定義し、断熱過程で保存量となることを示す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.earth.rad.n08_moist_adiabatic_lapse_rate",
+      "target_node_id": "earth.rad.n08_moist_adiabatic_lapse_rate",
+      "route_kind": "deductive",
+      "title": "凝結潜熱解放とクラウジウス＝クラペイロン関係による湿潤断熱減率の導出",
+      "premise_node_ids": [
+        "earth.rad.n05_dry_adiabatic_enthalpy",
+        "earth.rad.n06_dry_adiabatic_lapse_rate",
+        "earth.gfd.n02_hydrostatic_balance"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "飽和混合比 w_s << 1 であり、水蒸気気体定数 R_v を用いたクラウジウス＝クラペイロン式 de_s/dT = L_v e_s / (R_v T^2) が成り立つ",
+        "偽断熱過程（凝結した水は直ちに系外へ落下し、熱容量を無視する）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "c_p\\,dT - \\frac{1}{\\rho}\\,dp = \\delta q,\\quad \\delta q = -L_v\\,dw_s",
+          "to_latex": "\\Gamma_m := -\\left(\\frac{dT}{dz}\\right)_m = \\frac{g}{c_p}\\frac{1 + \\frac{L_v w_s}{R_d T}}{1 + \\frac{L_v^2 w_s}{c_p R_v T^2}} < \\Gamma_d",
+          "operation_label": "潜熱解放項の z 微分展開と dT/dz への求解",
+          "explanation": "飽和混合比の変化に伴う潜熱解放 delta q = -L_v dw_s を熱力学第1法則に組み込み、静力学平衡とクラウジウス＝クラペイロン式を用いて湿潤断熱減率を導出する。",
+          "used_node_ids": [
+            "earth.gfd.n02_hydrostatic_balance",
+            "earth.rad.n05_dry_adiabatic_enthalpy",
+            "earth.rad.n06_dry_adiabatic_lapse_rate",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_p\\,dT - \\frac{1}{\\rho}\\,dp = \\delta q,\\quad \\delta q = -L_v\\,dw_s",
+          "to_latex": "c_p\\frac{dT}{dz} + g = -L_v\\frac{dw_s}{dz}发布",
+          "operation_label": "高度 z に関する微分と静力学平衡の適用",
+          "explanation": "両辺を dz で割り、静力学平衡 dp/dz = -rho g を代入する。",
+          "used_node_ids": [
+            "earth.gfd.n02_hydrostatic_balance",
+            "earth.rad.n05_dry_adiabatic_enthalpy",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_p\\frac{dT}{dz} + g = -L_v\\frac{dw_s}{dz}发布",
+          "to_latex": "c_p\\frac{dT}{dz} + g = -L_v w_s\\left(\\frac{L_v}{R_v T^2}\\frac{dT}{dz} + \\frac{g}{R_d T}\\right)发布",
+          "operation_label": "dw_s/dz の連鎖律展開とクラウジウス＝クラペイロン式の代入",
+          "explanation": "w_s ≈ (R_d/R_v)(e_s/p) の対数微分 dw_s/w_s = de_s/e_s - dp/p にクラウジウス＝クラペイロン式と静力学平衡を代入する。",
+          "used_node_ids": [
+            "earth.gfd.n02_hydrostatic_balance",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_p\\frac{dT}{dz} + g = -L_v w_s\\left(\\frac{L_v}{R_v T^2}\\frac{dT}{dz} + \\frac{g}{R_d T}\\right)发布",
+          "to_latex": "\\Gamma_m := -\\left(\\frac{dT}{dz}\\right)_m = \\frac{g}{c_p}\\frac{1 + \\frac{L_v w_s}{R_d T}}{1 + \\frac{L_v^2 w_s}{c_p R_v T^2}} < \\Gamma_d",
+          "operation_label": "-dT/dz についての求解と Γd との比較",
+          "explanation": "dT/dz の項を左辺に集めて解き、R_d < R_v かつ典型的大気温度で L_v / (c_p T) > R_v / R_d であることから分子より分母が大きく Gamma_m < Gamma_d となることを示す。",
+          "used_node_ids": [
+            "earth.rad.n06_dry_adiabatic_lapse_rate"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,685 @@
+{
+  "pack_meta": {
+    "pack_id": "earth.seismo.elastic_waves",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "geophysics",
+    "title": "地震学・地球物理：弾性体波動方程式からのP波・S波速度とスネルの法則（走時曲線）",
+    "language": "ja",
+    "description": "ナヴィエの弾性運動方程式をヘルムホルツ分解してP波・S波の波動方程式と速度式、層構造でのスネルの法則と屈折走時曲線を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "earth.seis.n01_cauchy_lame_boundary",
+      "short_code": "SEIS01",
+      "kind": "math_boundary",
+      "title": "等方線形弾性体のコーシー運動方程式・ラメの構成則とヘルムホルツ分解",
+      "summary": "連続体の運動方程式、等方線形弾性体のラメ定数による応力-ひずみ関係、および変位場のヘルムホルツ分解とベクトルラプラシアン恒等式をまとめた基礎境界。",
+      "canonical_latex": "\\rho \\frac{\\partial^2 u_i}{\\partial t^2} = \\frac{\\partial \\sigma_{ij}}{\\partial x_j},\\quad \\sigma_{ij} = \\lambda \\delta_{ij} \\varepsilon_{kk} + 2\\mu \\varepsilon_{ij},\\quad \\varepsilon_{ij} = \\frac{1}{2}\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right),\\quad \\mathbf{u} = \\nabla\\phi + \\nabla\\times\\boldsymbol{\\psi}\\;(\\nabla\\cdot\\boldsymbol{\\psi}=0),\\quad \\nabla^2\\mathbf{u} = \\nabla(\\nabla\\cdot\\mathbf{u}) - \\nabla\\times(\\nabla\\times\\mathbf{u})",
+      "aliases_latex": [
+        "\\rho \\ddot{\\mathbf{u}} = \\nabla\\cdot\\boldsymbol{\\sigma},\\quad \\boldsymbol{\\sigma} = \\lambda(\\nabla\\cdot\\mathbf{u})\\mathbf{I} + 2\\mu\\boldsymbol{\\varepsilon}"
+      ],
+      "keywords": [
+        "Cauchy equation of motion",
+        "Lame parameters",
+        "isotropic elasticity",
+        "Helmholtz decomposition"
+      ],
+      "domain_tags": [
+        "geophysics",
+        "seismology",
+        "continuum_mechanics"
+      ]
+    },
+    {
+      "id": "earth.seis.n02_navier_elastodynamic_eq",
+      "short_code": "SEIS02",
+      "kind": "theorem_formula",
+      "title": "ナヴィエの弾性波動方程式（等方均質媒質）",
+      "summary": "等方均質線形弾性体における変位ベクトル場に対する運動方程式。膨張成分と回転成分に分離可能な形で記述される。",
+      "canonical_latex": "\\rho \\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + 2\\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) - \\mu\\nabla\\times(\\nabla\\times\\mathbf{u})",
+      "aliases_latex": [
+        "\\rho \\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\mu\\nabla^2\\mathbf{u}"
+      ],
+      "keywords": [
+        "Navier equation",
+        "elastodynamic equation",
+        "elastic waves"
+      ],
+      "domain_tags": [
+        "geophysics",
+        "seismology"
+      ]
+    },
+    {
+      "id": "earth.seis.n03_p_wave_equation_velocity",
+      "short_code": "SEIS03",
+      "kind": "theorem_formula",
+      "title": "P波（縦波・疎密波）の波動方程式と伝播速度",
+      "summary": "スカラーポテンシャル（無回転成分）が満たす波動方程式と、ラメ定数および密度で表されるP波速度の公式。",
+      "canonical_latex": "\\frac{\\partial^2 \\phi}{\\partial t^2} = V_P^2 \\nabla^2 \\phi,\\qquad V_P = \\sqrt{\\frac{\\lambda + 2\\mu}{\\rho}}",
+      "aliases_latex": [
+        "\\alpha = \\sqrt{\\frac{\\lambda + 2\\mu}{\\rho}},\\quad \\nabla^2(\\nabla\\cdot\\mathbf{u}) = \\frac{1}{V_P^2}\\frac{\\partial^2(\\nabla\\cdot\\mathbf{u})}{\\partial t^2}"
+      ],
+      "keywords": [
+        "P-wave",
+        "primary wave",
+        "compressional wave",
+        "seismic velocity"
+      ],
+      "domain_tags": [
+        "geophysics",
+        "seismology"
+      ]
+    },
+    {
+      "id": "earth.seis.n04_s_wave_equation_velocity",
+      "short_code": "SEIS04",
+      "kind": "theorem_formula",
+      "title": "S波（横波・せん断波）の波動方程式と伝播速度",
+      "summary": "ベクトルポテンシャル（無発散成分）が満たす波動方程式と、剛性率および密度で表されるS波速度の公式。",
+      "canonical_latex": "\\frac{\\partial^2 \\boldsymbol{\\psi}}{\\partial t^2} = V_S^2 \\nabla^2 \\boldsymbol{\\psi},\\qquad V_S = \\sqrt{\\frac{\\mu}{\\rho}}",
+      "aliases_latex": [
+        "\\beta = \\sqrt{\\frac{\\mu}{\\rho}},\\quad \\nabla^2(\\nabla\\times\\mathbf{u}) = \\frac{1}{V_S^2}\\frac{\\partial^2(\\nabla\\times\\mathbf{u})}{\\partial t^2}"
+      ],
+      "keywords": [
+        "S-wave",
+        "secondary wave",
+        "shear wave",
+        "shear modulus"
+      ],
+      "domain_tags": [
+        "geophysics",
+        "seismology"
+      ]
+    },
+    {
+      "id": "earth.seis.n05_ray_parameter_snells_law",
+      "short_code": "SEIS05",
+      "kind": "theorem_formula",
+      "title": "水平成層構造におけるスネルの法則と波線パラメータ",
+      "summary": "フェルマーの原理（走時停留条件）から導かれる水平境界面での屈折の法則。各層で不変な波線パラメータを定義する。",
+      "canonical_latex": "p = \\frac{\\sin\\theta_1}{V_1} = \\frac{\\sin\\theta_2}{V_2} = \\text{const.}",
+      "aliases_latex": [
+        "\\frac{\\sin\\theta_i}{V_i} = p"
+      ],
+      "keywords": [
+        "Snell's law",
+        "ray parameter",
+        "Fermat's principle",
+        "seismic ray"
+      ],
+      "domain_tags": [
+        "geophysics",
+        "seismology"
+      ]
+    },
+    {
+      "id": "earth.seis.n06_critical_angle_head_wave",
+      "short_code": "SEIS06",
+      "kind": "definition",
+      "title": "臨界角と屈折波（ヘッド波）の幾何学的条件",
+      "summary": "下層速度が上層速度より大きい場合に、屈折角が90度となって境界面に沿って伝播する波線を生じる臨界入射角の定義。",
+      "canonical_latex": "\\theta_c = \\arcsin\\!\\left(\\frac{V_1}{V_2}\\right)\\quad (V_2 > V_1),\\qquad p_c = \\frac{1}{V_2}",
+      "aliases_latex": [
+        "\\sin\\theta_c = \\frac{V_1}{V_2}"
+      ],
+      "keywords": [
+        "critical angle",
+        "head wave",
+        "critical refraction"
+      ],
+      "domain_tags": [
+        "geophysics",
+        "seismology"
+      ]
+    },
+    {
+      "id": "earth.seis.n07_direct_reflected_travel_time",
+      "short_code": "SEIS07",
+      "kind": "theorem_formula",
+      "title": "水平1層構造における直接波と反射波の走時曲線",
+      "summary": "均質な上層内を伝播する直接波の線形走時曲線と、層厚hの境界面で反射する反射波の双曲線型走時曲線。",
+      "canonical_latex": "T_{\\mathrm{dir}}(x) = \\frac{x}{V_1},\\qquad T_{\\mathrm{ref}}(x) = \\frac{\\sqrt{x^2 + 4h^2}}{V_1}",
+      "aliases_latex": [
+        "T_{\\mathrm{ref}}^2(x) = T_0^2 + \\frac{x^2}{V_1^2}\\quad \\left(T_0 = \\frac{2h}{V_1}\\right)"
+      ],
+      "keywords": [
+        "travel-time curve",
+        "direct wave",
+        "reflected wave",
+        "normal moveout"
+      ],
+      "domain_tags": [
+        "geophysics",
+        "seismology"
+      ]
+    },
+    {
+      "id": "earth.seis.n08_refracted_head_wave_travel_time",
+      "short_code": "SEIS08",
+      "kind": "theorem_formula",
+      "title": "水平2層構造における屈折波（ヘッド波）の走時曲線と交差距離",
+      "summary": "臨界角で下層境界面に入射し、上層へ再放射される屈折波の線形走時曲線と、直接波を追い越す交差距離の公式。",
+      "canonical_latex": "T_{\\mathrm{head}}(x) = \\frac{x}{V_2} + \\frac{2h\\sqrt{V_2^2 - V_1^2}}{V_1 V_2}\\quad (x \\ge 2h\\tan\\theta_c),\\qquad x_{\\mathrm{cross}} = 2h\\sqrt{\\frac{V_2 + V_1}{V_2 - V_1}}",
+      "aliases_latex": [
+        "T_{\\mathrm{head}}(x) = \\frac{x}{V_2} + \\frac{2h\\cos\\theta_c}{V_1}"
+      ],
+      "keywords": [
+        "head wave",
+        "refracted wave",
+        "travel-time curve",
+        "crossover distance",
+        "intercept time"
+      ],
+      "domain_tags": [
+        "geophysics",
+        "seismology"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "earth.seis.d02_navier_eq",
+      "target_node_id": "earth.seis.n02_navier_elastodynamic_eq",
+      "route_kind": "deductive",
+      "title": "コーシー運動方程式と等方フックの法則からのナヴィエ方程式の導出",
+      "premise_node_ids": [
+        "earth.seis.n01_cauchy_lame_boundary",
+        "eng.frac.n01_elastic_strain_energy_boundary",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "媒質は等方かつ均質（密度およびラメ定数が空間的に一定）",
+        "微小変形を仮定する線形弾性体",
+        "体積力は零とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho \\frac{\\partial^2 u_i}{\\partial t^2} = \\frac{\\partial \\sigma_{ij}}{\\partial x_j},\\quad \\sigma_{ij} = \\lambda \\delta_{ij} \\varepsilon_{kk} + 2\\mu \\varepsilon_{ij}",
+          "to_latex": "\\rho \\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + 2\\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) - \\mu\\nabla\\times(\\nabla\\times\\mathbf{u})",
+          "operation_label": "構成則の代入とベクトル恒等式",
+          "explanation": "応力テンソルに等方フックの法則とひずみ-変位関係を代入し、均質性を仮定して空間微分を整理したのちベクトルラプラシアンの恒等式を適用する。",
+          "used_node_ids": [
+            "earth.seis.n01_cauchy_lame_boundary",
+            "eng.frac.n01_elastic_strain_energy_boundary",
+            "math.calc.m36_derivative_linearity",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_strain",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho \\frac{\\partial^2 u_i}{\\partial t^2} = \\frac{\\partial \\sigma_{ij}}{\\partial x_j},\\quad \\sigma_{ij} = \\lambda \\delta_{ij} \\varepsilon_{kk} + 2\\mu \\varepsilon_{ij}",
+          "to_latex": "\\rho \\frac{\\partial^2 u_i}{\\partial t^2} = \\frac{\\partial}{\\partial x_j}\\left[\\lambda \\delta_{ij}\\frac{\\partial u_k}{\\partial x_k} + \\mu\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right)\\right]",
+          "operation_label": "ひずみ定義の代入",
+          "explanation": "微小ひずみテンソルを対称化された変位勾配として応力表示に代入する。",
+          "used_node_ids": [
+            "earth.seis.n01_cauchy_lame_boundary",
+            "eng.frac.n01_elastic_strain_energy_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_expand_divergence",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho \\frac{\\partial^2 u_i}{\\partial t^2} = \\frac{\\partial}{\\partial x_j}\\left[\\lambda \\delta_{ij}\\frac{\\partial u_k}{\\partial x_k} + \\mu\\left(\\frac{\\partial u_i}{\\partial x_j} + \\frac{\\partial u_j}{\\partial x_i}\\right)\\right]",
+          "to_latex": "\\rho \\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\mu\\nabla^2\\mathbf{u}",
+          "operation_label": "偏微分の展開とベクトル表記",
+          "explanation": "ラメ定数の空間一様性と偏微分の可換性を用いて発散項とラプラシアン項にまとめる。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_vector_laplacian_id",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho \\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + \\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) + \\mu\\nabla^2\\mathbf{u}",
+          "to_latex": "\\rho \\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + 2\\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) - \\mu\\nabla\\times(\\nabla\\times\\mathbf{u})",
+          "operation_label": "ベクトルラプラシアン恒等式の適用",
+          "explanation": "恒等式 \\nabla^2\\mathbf{u} = \\nabla(\\nabla\\cdot\\mathbf{u}) - \\nabla\\times(\\nabla\\times\\mathbf{u}) を代入して縦波項と横波項を分離する。",
+          "used_node_ids": [
+            "earth.seis.n01_cauchy_lame_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "earth.seis.d03_p_wave",
+      "target_node_id": "earth.seis.n03_p_wave_equation_velocity",
+      "route_kind": "deductive",
+      "title": "ナヴィエ方程式のヘルムホルツ分解（発散操作）によるP波方程式の導出",
+      "premise_node_ids": [
+        "earth.seis.n02_navier_elastodynamic_eq",
+        "earth.seis.n01_cauchy_lame_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "変位場およびポテンシャルは十分滑らかで偏微分の順序交換が可能",
+        "無限均質媒質における平面波または局在波を扱う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho \\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + 2\\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) - \\mu\\nabla\\times(\\nabla\\times\\mathbf{u}),\\quad \\mathbf{u} = \\nabla\\phi + \\nabla\\times\\boldsymbol{\\psi}",
+          "to_latex": "\\frac{\\partial^2 \\phi}{\\partial t^2} = V_P^2 \\nabla^2 \\phi,\\quad V_P = \\sqrt{\\frac{\\lambda + 2\\mu}{\\rho}}",
+          "operation_label": "発散の作用とP波速度の同定",
+          "explanation": "ナヴィエ方程式の両辺に発散を作用させ、回転項が零になることを用いてスカラーポテンシャルの波動方程式を得る。",
+          "used_node_ids": [
+            "earth.seis.n01_cauchy_lame_boundary",
+            "earth.seis.n02_navier_elastodynamic_eq",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_take_divergence",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho \\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + 2\\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) - \\mu\\nabla\\times(\\nabla\\times\\mathbf{u}),\\quad \\mathbf{u} = \\nabla\\phi + \\nabla\\times\\boldsymbol{\\psi}",
+          "to_latex": "\\rho \\frac{\\partial^2}{\\partial t^2}(\\nabla\\cdot\\mathbf{u}) = (\\lambda + 2\\mu)\\nabla^2(\\nabla\\cdot\\mathbf{u}),\\quad \\nabla\\cdot\\mathbf{u} = \\nabla^2\\phi",
+          "operation_label": "両辺の発散の取得",
+          "explanation": "\\nabla\\cdot(\\nabla\\times\\mathbf{A}) = 0 を用いてせん断項を消去し、ヘルムホルツ分解の発散 \\nabla\\cdot\\mathbf{u} = \\nabla^2\\phi を得る。",
+          "used_node_ids": [
+            "earth.seis.n01_cauchy_lame_boundary",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_factor_laplacian",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho \\frac{\\partial^2}{\\partial t^2}(\\nabla\\cdot\\mathbf{u}) = (\\lambda + 2\\mu)\\nabla^2(\\nabla\\cdot\\mathbf{u}),\\quad \\nabla\\cdot\\mathbf{u} = \\nabla^2\\phi",
+          "to_latex": "\\nabla^2\\left(\\rho \\frac{\\partial^2 \\phi}{\\partial t^2} - (\\lambda + 2\\mu)\\nabla^2 \\phi\\right) = 0",
+          "operation_label": "ラプラシアンの括り出し",
+          "explanation": "時間微分と空間ラプラシアンの可換性から、波動演算子全体に \\nabla^2 がかかる形に整理する。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_p_wave_speed",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla^2\\left(\\rho \\frac{\\partial^2 \\phi}{\\partial t^2} - (\\lambda + 2\\mu)\\nabla^2 \\phi\\right) = 0",
+          "to_latex": "\\frac{\\partial^2 \\phi}{\\partial t^2} = V_P^2 \\nabla^2 \\phi,\\quad V_P = \\sqrt{\\frac{\\lambda + 2\\mu}{\\rho}}",
+          "operation_label": "波動方程式とP波速度の導出",
+          "explanation": "遠方で減衰する調和関数解を除いた波動成分に対し括弧内を零とおき、両辺を \\rho で割って V_P を同定する。",
+          "used_node_ids": [
+            "earth.seis.n02_navier_elastodynamic_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "earth.seis.d04_s_wave",
+      "target_node_id": "earth.seis.n04_s_wave_equation_velocity",
+      "route_kind": "deductive",
+      "title": "ナヴィエ方程式のヘルムホルツ分解（回転操作）によるS波方程式の導出",
+      "premise_node_ids": [
+        "earth.seis.n02_navier_elastodynamic_eq",
+        "earth.seis.n01_cauchy_lame_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "変位場およびベクトルポテンシャルは十分滑らか",
+        "ゲージ条件 \\nabla\\cdot\\boldsymbol{\\psi} = 0 を課す"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho \\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + 2\\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) - \\mu\\nabla\\times(\\nabla\\times\\mathbf{u}),\\quad \\mathbf{u} = \\nabla\\phi + \\nabla\\times\\boldsymbol{\\psi}",
+          "to_latex": "\\frac{\\partial^2 \\boldsymbol{\\psi}}{\\partial t^2} = V_S^2 \\nabla^2 \\boldsymbol{\\psi},\\quad V_S = \\sqrt{\\frac{\\mu}{\\rho}}",
+          "operation_label": "回転の作用とS波速度の同定",
+          "explanation": "ナヴィエ方程式の両辺に回転を作用させ、勾配項が零になることを用いてベクトルポテンシャルの波動方程式を得る。",
+          "used_node_ids": [
+            "earth.seis.n01_cauchy_lame_boundary",
+            "earth.seis.n02_navier_elastodynamic_eq",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_take_curl",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho \\frac{\\partial^2 \\mathbf{u}}{\\partial t^2} = (\\lambda + 2\\mu)\\nabla(\\nabla\\cdot\\mathbf{u}) - \\mu\\nabla\\times(\\nabla\\times\\mathbf{u}),\\quad \\mathbf{u} = \\nabla\\phi + \\nabla\\times\\boldsymbol{\\psi}",
+          "to_latex": "\\rho \\frac{\\partial^2}{\\partial t^2}(\\nabla\\times\\mathbf{u}) = -\\mu\\nabla\\times\\nabla\\times(\\nabla\\times\\mathbf{u}),\\quad \\nabla\\times\\mathbf{u} = -\\nabla^2\\boldsymbol{\\psi}",
+          "operation_label": "両辺の回転の取得",
+          "explanation": "\\nabla\\times(\\nabla f) = \\mathbf{0} により体積膨張項を消去し、クーロンゲージ \\nabla\\cdot\\boldsymbol{\\psi}=0 のもとで \\nabla\\times\\mathbf{u} = -\\nabla^2\\boldsymbol{\\psi} を得る。",
+          "used_node_ids": [
+            "earth.seis.n01_cauchy_lame_boundary",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_curl_laplacian",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho \\frac{\\partial^2}{\\partial t^2}(\\nabla\\times\\mathbf{u}) = -\\mu\\nabla\\times\\nabla\\times(\\nabla\\times\\mathbf{u}),\\quad \\nabla\\times\\mathbf{u} = -\\nabla^2\\boldsymbol{\\psi}",
+          "to_latex": "\\nabla^2\\left(\\rho \\frac{\\partial^2 \\boldsymbol{\\psi}}{\\partial t^2} - \\mu\\nabla^2 \\boldsymbol{\\psi}\\right) = \\mathbf{0}",
+          "operation_label": "ラプラシアンによる整理",
+          "explanation": "\\nabla\\cdot(\\nabla\\times\\mathbf{u})=0 より -\\nabla\\times\\nabla\\times(\\nabla\\times\\mathbf{u}) = \\nabla^2(\\nabla\\times\\mathbf{u}) となるため、\\nabla^2 を括り出す。",
+          "used_node_ids": [
+            "earth.seis.n01_cauchy_lame_boundary",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_s_wave_speed",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla^2\\left(\\rho \\frac{\\partial^2 \\boldsymbol{\\psi}}{\\partial t^2} - \\mu\\nabla^2 \\boldsymbol{\\psi}\\right) = \\mathbf{0}",
+          "to_latex": "\\frac{\\partial^2 \\boldsymbol{\\psi}}{\\partial t^2} = V_S^2 \\nabla^2 \\boldsymbol{\\psi},\\quad V_S = \\sqrt{\\frac{\\mu}{\\rho}}",
+          "operation_label": "波動方程式とS波速度の導出",
+          "explanation": "波動成分に対して括弧内を零とおき、両辺を \\rho で割って S波速度 V_S を得る。",
+          "used_node_ids": [
+            "earth.seis.n02_navier_elastodynamic_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "earth.seis.d05_snells_law",
+      "target_node_id": "earth.seis.n05_ray_parameter_snells_law",
+      "route_kind": "deductive",
+      "title": "フェルマーの原理（走時停留条件）からのスネルの法則の導出",
+      "premise_node_ids": [
+        "earth.seis.n03_p_wave_equation_velocity",
+        "earth.seis.n04_s_wave_equation_velocity"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "波線近似（高周波極限）が成り立つ",
+        "水平境界面の上下に速度一定の層（V_1, V_2）がある"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T(x) = \\frac{\\sqrt{x^2 + h_1^2}}{V_1} + \\frac{\\sqrt{(X - x)^2 + h_2^2}}{V_2}",
+          "to_latex": "p = \\frac{\\sin\\theta_1}{V_1} = \\frac{\\sin\\theta_2}{V_2}",
+          "operation_label": "走時関数の微分と停留条件",
+          "explanation": "2層を通過する波線の走時を境界面通過点 x の関数として表し、フェルマーの原理により停留条件 dT/dx = 0 を課してスネルの法則を導く。",
+          "used_node_ids": [
+            "earth.seis.n03_p_wave_equation_velocity",
+            "earth.seis.n04_s_wave_equation_velocity",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_fermat_derivative",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T(x) = \\frac{\\sqrt{x^2 + h_1^2}}{V_1} + \\frac{\\sqrt{(X - x)^2 + h_2^2}}{V_2}",
+          "to_latex": "\\frac{dT}{dx} = \\frac{x}{V_1\\sqrt{x^2 + h_1^2}} - \\frac{X - x}{V_2\\sqrt{(X - x)^2 + h_2^2}} = 0",
+          "operation_label": "連鎖律による微分と極値条件",
+          "explanation": "走時 T(x) を通過位置 x で微分し、極値の1階必要条件として導関数を零とおく。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_identify_sines",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dT}{dx} = \\frac{x}{V_1\\sqrt{x^2 + h_1^2}} - \\frac{X - x}{V_2\\sqrt{(X - x)^2 + h_2^2}} = 0",
+          "to_latex": "p = \\frac{\\sin\\theta_1}{V_1} = \\frac{\\sin\\theta_2}{V_2}",
+          "operation_label": "入射角・屈折角の正弦への置換",
+          "explanation": "幾何学的関係 \\sin\\theta_1 = x/\\sqrt{x^2 + h_1^2} および \\sin\\theta_2 = (X - x)/\\sqrt{(X - x)^2 + h_2^2} を代入し、波線パラメータ p を定義する。",
+          "used_node_ids": [
+            "earth.seis.n03_p_wave_equation_velocity",
+            "earth.seis.n04_s_wave_equation_velocity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "earth.seis.d06_critical_angle",
+      "target_node_id": "earth.seis.n06_critical_angle_head_wave",
+      "route_kind": "deductive",
+      "title": "スネルの法則からの臨界角と臨界波線パラメータの導出",
+      "premise_node_ids": [
+        "earth.seis.n05_ray_parameter_snells_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "下層の地震波速度が上層より大きい（V_2 > V_1）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\sin\\theta_1}{V_1} = \\frac{\\sin\\theta_2}{V_2}\\quad (V_2 > V_1)",
+          "to_latex": "\\theta_c = \\arcsin\\!\\left(\\frac{V_1}{V_2}\\right),\\quad p_c = \\frac{1}{V_2}",
+          "operation_label": "屈折角90度の条件代入",
+          "explanation": "屈折波が境界面に平行となる \\theta_2 = \\pi/2 をスネルの法則に代入し、臨界角および臨界波線パラメータを求める。",
+          "used_node_ids": [
+            "earth.seis.n05_ray_parameter_snells_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_set_horizontal_refraction",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\sin\\theta_1}{V_1} = \\frac{\\sin\\theta_2}{V_2}\\quad (V_2 > V_1)",
+          "to_latex": "\\frac{\\sin\\theta_c}{V_1} = \\frac{\\sin(\\pi/2)}{V_2} = \\frac{1}{V_2}",
+          "operation_label": "臨界条件 \\theta_2 = \\pi/2 の代入",
+          "explanation": "\\theta_1 = \\theta_c のとき \\theta_2 = \\pi/2 すなわち \\sin\\theta_2 = 1 となることを用いる。",
+          "used_node_ids": [
+            "earth.seis.n05_ray_parameter_snells_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_solve_critical_angle",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\sin\\theta_c}{V_1} = \\frac{\\sin(\\pi/2)}{V_2} = \\frac{1}{V_2}",
+          "to_latex": "\\theta_c = \\arcsin\\!\\left(\\frac{V_1}{V_2}\\right),\\quad p_c = \\frac{1}{V_2}",
+          "operation_label": "臨界角の求解",
+          "explanation": "\\sin\\theta_c = V_1 / V_2 を \\theta_c について解き、同時に波線パラメータ p_c = 1/V_2 を確定する。",
+          "used_node_ids": [
+            "earth.seis.n05_ray_parameter_snells_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "earth.seis.d07_direct_reflected",
+      "target_node_id": "earth.seis.n07_direct_reflected_travel_time",
+      "route_kind": "deductive",
+      "title": "水平1層構造における直接波・反射波の走時曲線の導出",
+      "premise_node_ids": [
+        "earth.seis.n05_ray_parameter_snells_law",
+        "earth.seis.n03_p_wave_equation_velocity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "震源と観測点はともに地表面（z=0）にある",
+        "上層は厚さ h、速度 V_1 の均質層である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T_{\\mathrm{dir}}(x) = \\frac{x}{V_1},\\quad \\theta_i = \\theta_r,\\quad L_{\\mathrm{ref}} = 2\\sqrt{(x/2)^2 + h^2}",
+          "to_latex": "T_{\\mathrm{dir}}(x) = \\frac{x}{V_1},\\quad T_{\\mathrm{ref}}(x) = \\frac{\\sqrt{x^2 + 4h^2}}{V_1}",
+          "operation_label": "反射経路長の計算と速度での除算",
+          "explanation": "スネルの法則の反射対称性から反射経路長を求め、上層速度 V_1 で割って反射波の走時曲線を得る。",
+          "used_node_ids": [
+            "earth.seis.n03_p_wave_equation_velocity",
+            "earth.seis.n05_ray_parameter_snells_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_reflection_symmetry",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\mathrm{dir}}(x) = \\frac{x}{V_1},\\quad \\theta_i = \\theta_r,\\quad L_{\\mathrm{ref}} = 2\\sqrt{(x/2)^2 + h^2}",
+          "to_latex": "T_{\\mathrm{ref}}(x) = \\frac{2\\sqrt{(x/2)^2 + h^2}}{V_1}",
+          "operation_label": "幾何経路長の走時への変換",
+          "explanation": "等速度層内での反射対称性により、震央距離 x の中点直下で反射する経路長を V_1 で割る。",
+          "used_node_ids": [
+            "earth.seis.n05_ray_parameter_snells_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_simplify_hyperbola",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\mathrm{ref}}(x) = \\frac{2\\sqrt{(x/2)^2 + h^2}}{V_1}",
+          "to_latex": "T_{\\mathrm{dir}}(x) = \\frac{x}{V_1},\\quad T_{\\mathrm{ref}}(x) = \\frac{\\sqrt{x^2 + 4h^2}}{V_1}",
+          "operation_label": "平方根内の簡約",
+          "explanation": "係数 2 を根号内に入れて双曲線型の標準走時式を得る。",
+          "used_node_ids": [
+            "earth.seis.n03_p_wave_equation_velocity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "earth.seis.d08_head_wave_travel_time",
+      "target_node_id": "earth.seis.n08_refracted_head_wave_travel_time",
+      "route_kind": "deductive",
+      "title": "水平2層構造における屈折波走時曲線と交差距離の導出",
+      "premise_node_ids": [
+        "earth.seis.n06_critical_angle_head_wave",
+        "earth.seis.n07_direct_reflected_travel_time"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "V_2 > V_1 である",
+        "震央距離 x は臨界距離 x_c = 2h\\tan\\theta_c 以上である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T_{\\mathrm{head}}(x) = \\frac{2h}{V_1\\cos\\theta_c} + \\frac{x - 2h\\tan\\theta_c}{V_2},\\quad \\sin\\theta_c = \\frac{V_1}{V_2}",
+          "to_latex": "T_{\\mathrm{head}}(x) = \\frac{x}{V_2} + \\frac{2h\\sqrt{V_2^2 - V_1^2}}{V_1 V_2},\\quad x_{\\mathrm{cross}} = 2h\\sqrt{\\frac{V_2 + V_1}{V_2 - V_1}}",
+          "operation_label": "臨界屈折経路の走時整理と直接波との交点求解",
+          "explanation": "上層の斜行区間と下層境界面の水平区間の走時を合算して臨界角を消去し、直接波との走時一致条件から交差距離を導く。",
+          "used_node_ids": [
+            "earth.seis.n06_critical_angle_head_wave",
+            "earth.seis.n07_direct_reflected_travel_time",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_group_terms",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\mathrm{head}}(x) = \\frac{2h}{V_1\\cos\\theta_c} + \\frac{x - 2h\\tan\\theta_c}{V_2},\\quad \\sin\\theta_c = \\frac{V_1}{V_2}",
+          "to_latex": "T_{\\mathrm{head}}(x) = \\frac{x}{V_2} + \\frac{2h}{V_1\\cos\\theta_c}\\left(1 - \\frac{V_1}{V_2}\\sin\\theta_c\\right)",
+          "operation_label": "x に比例する項と切片時間の分離",
+          "explanation": "\\tan\\theta_c = \\sin\\theta_c / \\cos\\theta_c を用いて切片時間項を括り出す。",
+          "used_node_ids": [
+            "earth.seis.n06_critical_angle_head_wave"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_eliminate_angle",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\mathrm{head}}(x) = \\frac{x}{V_2} + \\frac{2h}{V_1\\cos\\theta_c}\\left(1 - \\frac{V_1}{V_2}\\sin\\theta_c\\right)",
+          "to_latex": "T_{\\mathrm{head}}(x) = \\frac{x}{V_2} + \\frac{2h\\cos\\theta_c}{V_1} = \\frac{x}{V_2} + \\frac{2h\\sqrt{V_2^2 - V_1^2}}{V_1 V_2}",
+          "operation_label": "ピタゴラス恒等式による \\theta_c の消去",
+          "explanation": "V_1/V_2 = \\sin\\theta_c および 1 - \\sin^2\\theta_c = \\cos^2\\theta_c を用いて \\cos\\theta_c = \\sqrt{V_2^2 - V_1^2}/V_2 に書き換える。",
+          "used_node_ids": [
+            "earth.seis.n06_critical_angle_head_wave",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_crossover_distance",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\mathrm{head}}(x) = \\frac{x}{V_2} + \\frac{2h\\cos\\theta_c}{V_1} = \\frac{x}{V_2} + \\frac{2h\\sqrt{V_2^2 - V_1^2}}{V_1 V_2}",
+          "to_latex": "T_{\\mathrm{head}}(x) = \\frac{x}{V_2} + \\frac{2h\\sqrt{V_2^2 - V_1^2}}{V_1 V_2},\\quad x_{\\mathrm{cross}} = 2h\\sqrt{\\frac{V_2 + V_1}{V_2 - V_1}}",
+          "operation_label": "直接波との交差距離の求解",
+          "explanation": "T_{\\mathrm{dir}}(x) = x/V_1 と T_{\\mathrm{head}}(x) を等置し、x について解いて交差距離を得る。",
+          "used_node_ids": [
+            "earth.seis.n07_direct_reflected_travel_time"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

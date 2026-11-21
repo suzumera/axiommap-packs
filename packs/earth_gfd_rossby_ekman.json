@@ -1,0 +1,753 @@
+{
+  "pack_meta": {
+    "pack_id": "earth.gfd.rossby_ekman",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "oceanography",
+    "title": "地球流体力学2：ポテンシャル渦度保存・ロスビー波とエクマン輸送",
+    "language": "ja",
+    "description": "β平面近似の渦度方程式からロスビー波の分散関係、エルテルのポテンシャル渦度保存、海洋表層のエクマン螺旋・エクマン輸送を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "earth.rossby.n01_beta_plane_approx",
+      "short_code": "RE01",
+      "kind": "definition",
+      "title": "β平面近似（コリオリパラメータの線形化）",
+      "summary": "基準緯度 φ0 の近傍でコリオリパラメータ f(φ) を南北座標 y に関して1次までテイラー展開し、線形近似 f(y) ≈ f0 + βy を導入する。",
+      "canonical_latex": "f(y) \\approx f_0 + \\beta y,\\quad f_0 := 2\\Omega\\sin\\varphi_0,\\quad \\beta := \\left.\\frac{df}{dy}\\right|_{\\varphi_0} = \\frac{2\\Omega\\cos\\varphi_0}{R_E}",
+      "aliases_latex": [
+        "f = f_0 + \\beta y"
+      ],
+      "keywords": [
+        "beta-plane",
+        "Coriolis parameter",
+        "planetary vorticity gradient"
+      ],
+      "domain_tags": [
+        "oceanography",
+        "geophysical_fluid_dynamics"
+      ]
+    },
+    {
+      "id": "earth.rossby.n02_barotropic_vorticity_eq",
+      "short_code": "RE02",
+      "kind": "theorem_formula",
+      "title": "順圧渦度方程式と絶対渦度保存",
+      "summary": "水平運動方程式の鉛直成分回転をとることで圧力傾度力項を消去し、非発散順圧流における絶対渦度 ζ + f のラグランジュ保存を導く。",
+      "canonical_latex": "\\zeta := \\mathbf{k}\\cdot(\\nabla_h\\times\\mathbf{u}_h) = \\frac{\\partial v}{\\partial x} - \\frac{\\partial u}{\\partial y},\\quad \\frac{D_h}{Dt}(\\zeta + f) + (\\zeta + f)\\nabla_h\\cdot\\mathbf{u}_h = 0,\\quad \\nabla_h\\cdot\\mathbf{u}_h = 0 \\implies \\frac{D_h}{Dt}(\\zeta + f) = 0",
+      "aliases_latex": [
+        "\\frac{D_h}{Dt}(\\zeta + f) = 0"
+      ],
+      "keywords": [
+        "barotropic vorticity equation",
+        "absolute vorticity",
+        "relative vorticity"
+      ],
+      "domain_tags": [
+        "oceanography",
+        "geophysical_fluid_dynamics"
+      ]
+    },
+    {
+      "id": "earth.rossby.n03_quasigeostrophic_streamfunction",
+      "short_code": "RE03",
+      "kind": "definition",
+      "title": "地衡流流線関数と準地衡風渦度",
+      "summary": "基準コリオリパラメータ f0 を用いて圧力擾乱から地衡流流線関数 ψ を定義し、地衡流速と相対渦度を ψ の偏微分およびラプラシアンで表す。",
+      "canonical_latex": "\\psi := \\frac{p'}{\\rho_0 f_0},\\quad u_g = -\\frac{\\partial\\psi}{\\partial y},\\quad v_g = \\frac{\\partial\\psi}{\\partial x},\\quad \\zeta_g = \\nabla_h^2\\psi",
+      "aliases_latex": [
+        "\\mathbf{u}_g = \\mathbf{k}\\times\\nabla_h\\psi"
+      ],
+      "keywords": [
+        "geostrophic streamfunction",
+        "quasi-geostrophic vorticity"
+      ],
+      "domain_tags": [
+        "oceanography",
+        "geophysical_fluid_dynamics"
+      ]
+    },
+    {
+      "id": "earth.rossby.n04_rossby_wave_dispersion",
+      "short_code": "RE04",
+      "kind": "theorem_formula",
+      "title": "順圧ロスビー波の分散関係と西向き位相伝播",
+      "summary": "β平面上の線形化順圧渦度方程式に平面波解を代入し、ロスビー波の分散関係および位相速度が常に西向き（負のx方向）であることを導く。",
+      "canonical_latex": "\\frac{\\partial}{\\partial t}\\nabla_h^2\\psi + \\beta\\frac{\\partial\\psi}{\\partial x} = 0,\\quad \\psi = \\operatorname{Re}\\!\\left[\\hat{\\psi}e^{i(kx+ly-\\omega t)}\\right] \\implies \\omega = -\\frac{\\beta k}{k^2 + l^2},\\quad c_x = \\frac{\\omega}{k} = -\\frac{\\beta}{k^2+l^2} < 0",
+      "aliases_latex": [
+        "\\omega = -\\frac{\\beta k}{k^2 + l^2}"
+      ],
+      "keywords": [
+        "Rossby wave",
+        "dispersion relation",
+        "westward phase propagation"
+      ],
+      "domain_tags": [
+        "oceanography",
+        "geophysical_fluid_dynamics"
+      ]
+    },
+    {
+      "id": "earth.rossby.n05_ertel_potential_vorticity",
+      "short_code": "RE05",
+      "kind": "theorem_formula",
+      "title": "エルテルのポテンシャル渦度保存則",
+      "summary": "非粘性断熱流体において保存される温位 θ と絶対渦度ベクトル ω_a の内積を密度 ρ で割ったエルテルのポテンシャル渦度 Π が流体粒子に沿って保存されることを示す。",
+      "canonical_latex": "\\Pi := \\frac{\\boldsymbol{\\omega}_a\\cdot\\nabla\\theta}{\\rho},\\quad \\boldsymbol{\\omega}_a := \\nabla\\times\\mathbf{u} + 2\\boldsymbol{\\Omega},\\quad \\frac{D\\theta}{Dt} = 0 \\implies \\frac{D\\Pi}{Dt} = 0",
+      "aliases_latex": [
+        "q = \\frac{\\boldsymbol{\\omega}_a\\cdot\\nabla\\theta}{\\rho}"
+      ],
+      "keywords": [
+        "Ertel potential vorticity",
+        "baroclinic torque",
+        "material conservation"
+      ],
+      "domain_tags": [
+        "oceanography",
+        "geophysical_fluid_dynamics"
+      ]
+    },
+    {
+      "id": "earth.rossby.n06_ekman_layer_equations",
+      "short_code": "RE06",
+      "kind": "theorem_formula",
+      "title": "海洋表層エクマン層の定常運動方程式（コリオリ力と渦粘性の釣合い）",
+      "summary": "海洋表層の定常水平運動方程式を地衡流とエクマン流に分解し、海面の風応力境界条件のもとでコリオリ力と鉛直渦粘性力の釣合いを定式化する。",
+      "canonical_latex": "-f v_E = A_z\\frac{\\partial^2 u_E}{\\partial z^2},\\quad f u_E = A_z\\frac{\\partial^2 v_E}{\\partial z^2},\\quad \\mathbf{u}_E = \\mathbf{u}_h - \\mathbf{u}_g,\\quad \\left.\\rho_0 A_z\\frac{\\partial\\mathbf{u}_E}{\\partial z}\\right|_{z=0} = \\boldsymbol{\\tau}_w",
+      "aliases_latex": [
+        "f\\mathbf{k}\\times\\mathbf{u}_E = A_z\\frac{\\partial^2\\mathbf{u}_E}{\\partial z^2}"
+      ],
+      "keywords": [
+        "Ekman layer",
+        "eddy viscosity",
+        "wind stress"
+      ],
+      "domain_tags": [
+        "oceanography",
+        "geophysical_fluid_dynamics"
+      ]
+    },
+    {
+      "id": "earth.rossby.n07_ekman_spiral",
+      "short_code": "RE07",
+      "kind": "theorem_formula",
+      "title": "エクマン螺旋とエクマン層厚（表層45度偏向）",
+      "summary": "複素速度 W = u_E + i v_E を用いてエクマン層方程式を解き、深度とともに指数減衰しながら回転するエクマン螺旋と表層流の45度偏向を導く。",
+      "canonical_latex": "W(z) := u_E + i v_E = W_0 e^{(1+i)z/D_E},\\quad D_E := \\sqrt{\\frac{2A_z}{|f|}},\\quad \\boldsymbol{\\tau}_w = (\\tau_{wx}, 0) \\implies u_E(z) = V_0 e^{z/D_E}\\cos\\!\\left(\\frac{\\pi}{4}+\\frac{z}{D_E}\\right),\\; v_E(z) = V_0 e^{z/D_E}\\sin\\!\\left(\\frac{\\pi}{4}+\\frac{z}{D_E}\\right)",
+      "aliases_latex": [
+        "D_E = \\sqrt{\\frac{2A_z}{|f|}}"
+      ],
+      "keywords": [
+        "Ekman spiral",
+        "Ekman depth",
+        "surface deflection"
+      ],
+      "domain_tags": [
+        "oceanography",
+        "geophysical_fluid_dynamics"
+      ]
+    },
+    {
+      "id": "earth.rossby.n08_ekman_transport",
+      "short_code": "RE08",
+      "kind": "theorem_formula",
+      "title": "エクマン輸送量と風応力との直交関係",
+      "summary": "エクマン層の運動方程式を海面から深層まで鉛直積分することで、正味の質量輸送量 M_E が風応力ベクトル τ_w と直交（北半球では右向き90度）することを導く。",
+      "canonical_latex": "\\mathbf{M}_E := \\int_{-\\infty}^{0}\\rho_0\\mathbf{u}_E\\,dz = \\frac{\\boldsymbol{\\tau}_w\\times\\mathbf{k}}{f},\\quad M_{Ex} = \\frac{\\tau_{wy}}{f},\\quad M_{Ey} = -\\frac{\\tau_{wx}}{f}",
+      "aliases_latex": [
+        "\\mathbf{M}_E = \\frac{\\boldsymbol{\\tau}_w\\times\\mathbf{k}}{f}"
+      ],
+      "keywords": [
+        "Ekman transport",
+        "wind-driven circulation"
+      ],
+      "domain_tags": [
+        "oceanography",
+        "geophysical_fluid_dynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_re01_beta_plane",
+      "target_node_id": "earth.rossby.n01_beta_plane_approx",
+      "route_kind": "reformulation",
+      "title": "コリオリパラメータのテイラー展開によるβ平面近似の導出",
+      "premise_node_ids": [
+        "earth.gfd.n03_rossby_number_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m31_trig_derivatives",
+        "math.calc.t10_taylor_asymptotic_approx"
+      ],
+      "assumptions": [
+        "地球半径 R_E に対し南北変位 y が十分小さい（|y|/R_E ≪ 1）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f(\\varphi) = 2\\Omega\\sin\\varphi,\\quad y = R_E(\\varphi - \\varphi_0)",
+          "to_latex": "f(y) \\approx f_0 + \\beta y,\\quad f_0 := 2\\Omega\\sin\\varphi_0,\\quad \\beta := \\left.\\frac{df}{dy}\\right|_{\\varphi_0} = \\frac{2\\Omega\\cos\\varphi_0}{R_E}",
+          "operation_label": "1次テイラー展開",
+          "explanation": "基準緯度 φ0 周りでコリオリパラメータ f(φ) を南北距離 y について1次近似し、惑星渦度勾配 β を定義する。",
+          "used_node_ids": [
+            "earth.gfd.n03_rossby_number_def",
+            "math.calc.m31_trig_derivatives",
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_meridional_coord",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\varphi) = 2\\Omega\\sin\\varphi,\\quad y = R_E(\\varphi - \\varphi_0)",
+          "to_latex": "f(\\varphi) = 2\\Omega\\sin\\!\\left(\\varphi_0 + \\frac{y}{R_E}\\right)",
+          "operation_label": "南北座標への変数変換",
+          "explanation": "基準緯度 φ0 からの緯度差を南北距離 y = R_E(φ - φ0) で表す。",
+          "used_node_ids": [
+            "earth.gfd.n03_rossby_number_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_taylor_expand",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(\\varphi) = 2\\Omega\\sin\\!\\left(\\varphi_0 + \\frac{y}{R_E}\\right)",
+          "to_latex": "f(y) = 2\\Omega\\sin\\varphi_0 + \\left.\\frac{d}{dy}(2\\Omega\\sin\\varphi)\\right|_{\\varphi_0} y + \\mathcal{O}\\!\\left(\\left(\\frac{y}{R_E}\\right)^2\\right)",
+          "operation_label": "テイラー展開の適用",
+          "explanation": "y/R_E ≪ 1 のもとで y = 0 周りに1次テイラー展開を行う。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_beta_def",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(y) = 2\\Omega\\sin\\varphi_0 + \\left.\\frac{d}{dy}(2\\Omega\\sin\\varphi)\\right|_{\\varphi_0} y + \\mathcal{O}\\!\\left(\\left(\\frac{y}{R_E}\\right)^2\\right)",
+          "to_latex": "f(y) \\approx f_0 + \\beta y,\\quad f_0 := 2\\Omega\\sin\\varphi_0,\\quad \\beta := \\left.\\frac{df}{dy}\\right|_{\\varphi_0} = \\frac{2\\Omega\\cos\\varphi_0}{R_E}",
+          "operation_label": "正弦関数の微分とβの定義",
+          "explanation": "d(sin φ)/dy = (cos φ)/R_E を用いて1次係数を β と置き、2次以上の微小項を落とす。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_re02_barotropic_vorticity",
+      "target_node_id": "earth.rossby.n02_barotropic_vorticity_eq",
+      "route_kind": "deductive",
+      "title": "水平運動方程式の回転による順圧渦度方程式の導出",
+      "premise_node_ids": [
+        "earth.gfd.n01_rotating_frame_momentum",
+        "earth.gfd.n03_rossby_number_def"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "順圧流体（密度 ρ = ρ0 一定）かつ非粘性",
+        "水平非発散流（∇_h・u_h = 0）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{D_h\\mathbf{u}_h}{Dt} + f\\mathbf{k}\\times\\mathbf{u}_h = -\\frac{1}{\\rho_0}\\nabla_h p",
+          "to_latex": "\\zeta := \\mathbf{k}\\cdot(\\nabla_h\\times\\mathbf{u}_h) = \\frac{\\partial v}{\\partial x} - \\frac{\\partial u}{\\partial y},\\quad \\frac{D_h}{Dt}(\\zeta + f) + (\\zeta + f)\\nabla_h\\cdot\\mathbf{u}_h = 0,\\quad \\nabla_h\\cdot\\mathbf{u}_h = 0 \\implies \\frac{D_h}{Dt}(\\zeta + f) = 0",
+          "operation_label": "鉛直回転の適用と非発散条件",
+          "explanation": "水平運動方程式の回転の鉛直成分をとって圧力項を消去し、非発散条件から絶対渦度保存則を得る。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum",
+            "earth.gfd.n03_rossby_number_def",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_curl_momentum",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{D_h\\mathbf{u}_h}{Dt} + f\\mathbf{k}\\times\\mathbf{u}_h = -\\frac{1}{\\rho_0}\\nabla_h p",
+          "to_latex": "\\mathbf{k}\\cdot\\nabla_h\\times\\left(\\frac{\\partial\\mathbf{u}_h}{\\partial t} + (\\mathbf{u}_h\\cdot\\nabla_h)\\mathbf{u}_h + f\\mathbf{k}\\times\\mathbf{u}_h\\right) = -\\frac{1}{\\rho_0}\\mathbf{k}\\cdot(\\nabla_h\\times\\nabla_h p) = 0",
+          "operation_label": "回転作用素と圧力項の消去",
+          "explanation": "一定密度のもとで勾配の回転 ∇_h×∇_h p = 0 となるため、圧力傾度力項が消滅する。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_vorticity_identity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{k}\\cdot\\nabla_h\\times\\left(\\frac{\\partial\\mathbf{u}_h}{\\partial t} + (\\mathbf{u}_h\\cdot\\nabla_h)\\mathbf{u}_h + f\\mathbf{k}\\times\\mathbf{u}_h\\right) = -\\frac{1}{\\rho_0}\\mathbf{k}\\cdot(\\nabla_h\\times\\nabla_h p) = 0",
+          "to_latex": "\\frac{D_h\\zeta}{Dt} + \\zeta(\\nabla_h\\cdot\\mathbf{u}_h) + \\frac{D_h f}{Dt} + f(\\nabla_h\\cdot\\mathbf{u}_h) = 0,\\quad \\zeta := \\frac{\\partial v}{\\partial x} - \\frac{\\partial u}{\\partial y}",
+          "operation_label": "渦度恒等式の展開",
+          "explanation": "移流項の回転とコリオリ項 k・∇_h×(f k×u_h) = u_h・∇_h f + f(∇_h・u_h) を整理する。",
+          "used_node_ids": [
+            "earth.gfd.n03_rossby_number_def",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_nondivergent_limit",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{D_h\\zeta}{Dt} + \\zeta(\\nabla_h\\cdot\\mathbf{u}_h) + \\frac{D_h f}{Dt} + f(\\nabla_h\\cdot\\mathbf{u}_h) = 0,\\quad \\zeta := \\frac{\\partial v}{\\partial x} - \\frac{\\partial u}{\\partial y}",
+          "to_latex": "\\zeta := \\mathbf{k}\\cdot(\\nabla_h\\times\\mathbf{u}_h) = \\frac{\\partial v}{\\partial x} - \\frac{\\partial u}{\\partial y},\\quad \\frac{D_h}{Dt}(\\zeta + f) + (\\zeta + f)\\nabla_h\\cdot\\mathbf{u}_h = 0,\\quad \\nabla_h\\cdot\\mathbf{u}_h = 0 \\implies \\frac{D_h}{Dt}(\\zeta + f) = 0",
+          "operation_label": "非発散条件の適用",
+          "explanation": "水平発散 ∇_h・u_h = 0 を課すことで絶対渦度 ζ + f の物質微分が 0 となる。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_re03_qg_streamfunction",
+      "target_node_id": "earth.rossby.n03_quasigeostrophic_streamfunction",
+      "route_kind": "reformulation",
+      "title": "地衡風バランスからの流線関数と準地衡風渦度の導出",
+      "premise_node_ids": [
+        "earth.gfd.n04_geostrophic_wind",
+        "earth.rossby.n01_beta_plane_approx",
+        "earth.rossby.n02_barotropic_vorticity_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "準地衡近似（f ≈ f0 として流線関数を定義）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{u}_g = \\frac{1}{\\rho_0 f_0}\\mathbf{k}\\times\\nabla_h p'",
+          "to_latex": "\\psi := \\frac{p'}{\\rho_0 f_0},\\quad u_g = -\\frac{\\partial\\psi}{\\partial y},\\quad v_g = \\frac{\\partial\\psi}{\\partial x},\\quad \\zeta_g = \\nabla_h^2\\psi",
+          "operation_label": "流線関数の定義と渦度表示",
+          "explanation": "圧力擾乱を ρ0 f0 で割って流線関数 ψ を定義し、地衡流速と相対渦度を ψ で表す。",
+          "used_node_ids": [
+            "earth.gfd.n04_geostrophic_wind",
+            "earth.rossby.n01_beta_plane_approx",
+            "earth.rossby.n02_barotropic_vorticity_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_define_psi",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{u}_g = \\frac{1}{\\rho_0 f_0}\\mathbf{k}\\times\\nabla_h p'",
+          "to_latex": "\\mathbf{u}_g = \\mathbf{k}\\times\\nabla_h\\psi = \\left(-\\frac{\\partial\\psi}{\\partial y},\\, \\frac{\\partial\\psi}{\\partial x}\\right),\\quad \\psi := \\frac{p'}{\\rho_0 f_0}",
+          "operation_label": "流線関数の導入",
+          "explanation": "ψ = p'/(ρ0 f0) を定義して k × ∇_h ψ の成分を書き下す。",
+          "used_node_ids": [
+            "earth.gfd.n04_geostrophic_wind",
+            "earth.rossby.n01_beta_plane_approx",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_geostrophic_vorticity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{u}_g = \\mathbf{k}\\times\\nabla_h\\psi = \\left(-\\frac{\\partial\\psi}{\\partial y},\\, \\frac{\\partial\\psi}{\\partial x}\\right),\\quad \\psi := \\frac{p'}{\\rho_0 f_0}",
+          "to_latex": "\\psi := \\frac{p'}{\\rho_0 f_0},\\quad u_g = -\\frac{\\partial\\psi}{\\partial y},\\quad v_g = \\frac{\\partial\\psi}{\\partial x},\\quad \\zeta_g = \\nabla_h^2\\psi",
+          "operation_label": "地衡風渦度の計算",
+          "explanation": "ζ_g = ∂v_g/∂x - ∂u_g/∂y に代入すると 2次元ラプラシアン ∇_h^2 ψ が得られる。",
+          "used_node_ids": [
+            "earth.rossby.n02_barotropic_vorticity_eq",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_re04_rossby_dispersion",
+      "target_node_id": "earth.rossby.n04_rossby_wave_dispersion",
+      "route_kind": "deductive",
+      "title": "線形化順圧渦度方程式からのロスビー波分散関係の導出",
+      "premise_node_ids": [
+        "earth.rossby.n01_beta_plane_approx",
+        "earth.rossby.n02_barotropic_vorticity_eq",
+        "earth.rossby.n03_quasigeostrophic_streamfunction"
+      ],
+      "required_math_node_ids": [
+        "earth.rossby.n04_rossby_wave_dispersion",
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "静止基本場周りの微小振幅擾乱（非線形移流項を無視）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{D_h}{Dt}(\\zeta + f) = 0,\\quad f = f_0 + \\beta y,\\quad \\zeta_g = \\nabla_h^2\\psi",
+          "to_latex": "\\frac{\\partial}{\\partial t}\\nabla_h^2\\psi + \\beta\\frac{\\partial\\psi}{\\partial x} = 0,\\quad \\psi = \\operatorname{Re}\\!\\left[\\hat{\\psi}e^{i(kx+ly-\\omega t)}\\right] \\implies \\omega = -\\frac{\\beta k}{k^2 + l^2},\\quad c_x = \\frac{\\omega}{k} = -\\frac{\\beta}{k^2+l^2} < 0",
+          "operation_label": "線形化と平面波解の代入",
+          "explanation": "絶対渦度保存式を静止基本場周りで線形化し、平面波アンザッツを代入して分散関係を得る。",
+          "used_node_ids": [
+            "earth.rossby.n01_beta_plane_approx",
+            "earth.rossby.n02_barotropic_vorticity_eq",
+            "earth.rossby.n03_quasigeostrophic_streamfunction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_linearize_pv",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{D_h}{Dt}(\\zeta + f) = 0,\\quad f = f_0 + \\beta y,\\quad \\zeta_g = \\nabla_h^2\\psi",
+          "to_latex": "\\frac{\\partial\\zeta_g}{\\partial t} + \\beta v_g = 0 \\implies \\frac{\\partial}{\\partial t}\\nabla_h^2\\psi + \\beta\\frac{\\partial\\psi}{\\partial x} = 0",
+          "operation_label": "線形化順圧渦度方程式",
+          "explanation": "相対渦度の非線形移流を落とし、Df/dt = β v_g = β ∂ψ/∂x を代入する。",
+          "used_node_ids": [
+            "earth.rossby.n01_beta_plane_approx",
+            "earth.rossby.n02_barotropic_vorticity_eq",
+            "earth.rossby.n03_quasigeostrophic_streamfunction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_plane_wave_ansatz",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial\\zeta_g}{\\partial t} + \\beta v_g = 0 \\implies \\frac{\\partial}{\\partial t}\\nabla_h^2\\psi + \\beta\\frac{\\partial\\psi}{\\partial x} = 0",
+          "to_latex": "\\big[(-i\\omega)(-(k^2+l^2)) + \\beta(ik)\\big]\\hat{\\psi} e^{i(kx+ly-\\omega t)} = 0",
+          "operation_label": "平面波解の代入",
+          "explanation": "∂/∂t → -iω, ∂/∂x → ik, ∇_h^2 → -(k^2+l^2) として代数方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_dispersion_relation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\big[(-i\\omega)(-(k^2+l^2)) + \\beta(ik)\\big]\\hat{\\psi} e^{i(kx+ly-\\omega t)} = 0",
+          "to_latex": "\\frac{\\partial}{\\partial t}\\nabla_h^2\\psi + \\beta\\frac{\\partial\\psi}{\\partial x} = 0,\\quad \\psi = \\operatorname{Re}\\!\\left[\\hat{\\psi}e^{i(kx+ly-\\omega t)}\\right] \\implies \\omega = -\\frac{\\beta k}{k^2 + l^2},\\quad c_x = \\frac{\\omega}{k} = -\\frac{\\beta}{k^2+l^2} < 0",
+          "operation_label": "分散関係と位相速度の決定",
+          "explanation": "非自明解条件から ω = -βk/(k^2+l^2) を解き、東西位相速度 c_x < 0（西向き伝播）を示す。",
+          "used_node_ids": [
+            "earth.rossby.n04_rossby_wave_dispersion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_re05_ertel_pv",
+      "target_node_id": "earth.rossby.n05_ertel_potential_vorticity",
+      "route_kind": "deductive",
+      "title": "3次元回転流体方程式からのエルテルのポテンシャル渦度保存則の導出",
+      "premise_node_ids": [
+        "earth.gfd.n01_rotating_frame_momentum"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "非粘性・断熱流体（Dθ/Dt = 0）",
+        "状態方程式により θ = θ(p, ρ) で表される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{D\\mathbf{u}}{Dt} + 2\\boldsymbol{\\Omega}\\times\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g},\\quad \\frac{D\\theta}{Dt} = 0",
+          "to_latex": "\\Pi := \\frac{\\boldsymbol{\\omega}_a\\cdot\\nabla\\theta}{\\rho},\\quad \\boldsymbol{\\omega}_a := \\nabla\\times\\mathbf{u} + 2\\boldsymbol{\\Omega},\\quad \\frac{D\\theta}{Dt} = 0 \\implies \\frac{D\\Pi}{Dt} = 0",
+          "operation_label": "3次元渦度方程式と温位勾配の結合",
+          "explanation": "運動方程式の回転をとって得られる絶対渦度方程式と連続の式・断熱条件を結合し、傾圧トルク項が ∇θ と直交することを用いて保存則を導く。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum",
+            "math.calc.m15_product_rule",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_3d_vorticity_eq",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{D\\mathbf{u}}{Dt} + 2\\boldsymbol{\\Omega}\\times\\mathbf{u} = -\\frac{1}{\\rho}\\nabla p + \\mathbf{g},\\quad \\frac{D\\theta}{Dt} = 0",
+          "to_latex": "\\frac{D\\boldsymbol{\\omega}_a}{Dt} = (\\boldsymbol{\\omega}_a\\cdot\\nabla)\\mathbf{u} - \\boldsymbol{\\omega}_a(\\nabla\\cdot\\mathbf{u}) + \\frac{\\nabla\\rho\\times\\nabla p}{\\rho^2},\\quad \\boldsymbol{\\omega}_a := \\nabla\\times\\mathbf{u} + 2\\boldsymbol{\\Omega}",
+          "operation_label": "3次元絶対渦度方程式の導出",
+          "explanation": "運動方程式の回転をとり、重力がポテンシャル力であることから ∇×g = 0 を用いて絶対渦度の発展方程式を得る。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_divide_rho",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{D\\boldsymbol{\\omega}_a}{Dt} = (\\boldsymbol{\\omega}_a\\cdot\\nabla)\\mathbf{u} - \\boldsymbol{\\omega}_a(\\nabla\\cdot\\mathbf{u}) + \\frac{\\nabla\\rho\\times\\nabla p}{\\rho^2},\\quad \\boldsymbol{\\omega}_a := \\nabla\\times\\mathbf{u} + 2\\boldsymbol{\\Omega}",
+          "to_latex": "\\frac{D}{Dt}\\!\\left(\\frac{\\boldsymbol{\\omega}_a}{\\rho}\\right) = \\left(\\frac{\\boldsymbol{\\omega}_a}{\\rho}\\cdot\\nabla\\right)\\mathbf{u} + \\frac{\\nabla\\rho\\times\\nabla p}{\\rho^3}",
+          "operation_label": "連続の式による発散項の消去",
+          "explanation": "質量保存則 Dρ/Dt + ρ(∇・u) = 0 を用いて ω_a/ρ の物質微分に書き換える。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_dot_grad_theta",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{D}{Dt}\\!\\left(\\frac{\\boldsymbol{\\omega}_a}{\\rho}\\right) = \\left(\\frac{\\boldsymbol{\\omega}_a}{\\rho}\\cdot\\nabla\\right)\\mathbf{u} + \\frac{\\nabla\\rho\\times\\nabla p}{\\rho^3}",
+          "to_latex": "\\Pi := \\frac{\\boldsymbol{\\omega}_a\\cdot\\nabla\\theta}{\\rho},\\quad \\boldsymbol{\\omega}_a := \\nabla\\times\\mathbf{u} + 2\\boldsymbol{\\Omega},\\quad \\frac{D\\theta}{Dt} = 0 \\implies \\frac{D\\Pi}{Dt} = 0",
+          "operation_label": "温位勾配との内積と傾圧項の消滅",
+          "explanation": "∇θ と内積をとり、D(∇θ)/Dt = ∇(Dθ/Dt) - (∇u)・∇θ = -(∇u)・∇θ による伸縮項相殺と、(∇ρ×∇p)・∇θ = 0（θ = θ(p, ρ)）から DΠ/Dt = 0 を得る。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_re06_ekman_eq",
+      "target_node_id": "earth.rossby.n06_ekman_layer_equations",
+      "route_kind": "deductive",
+      "title": "表層粘性運動方程式からのエクマン層方程式の導出",
+      "premise_node_ids": [
+        "earth.gfd.n01_rotating_frame_momentum",
+        "earth.gfd.n03_rossby_number_def",
+        "earth.gfd.n04_geostrophic_wind"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "定常・水平一様な鉛直渦粘性係数 A_z",
+        "微小ロスビー数（非線形移流項を無視）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f\\mathbf{k}\\times\\mathbf{u}_h = -\\frac{1}{\\rho_0}\\nabla_h p + A_z\\frac{\\partial^2\\mathbf{u}_h}{\\partial z^2},\\quad \\mathbf{u}_h = \\mathbf{u}_g + \\mathbf{u}_E",
+          "to_latex": "-f v_E = A_z\\frac{\\partial^2 u_E}{\\partial z^2},\\quad f u_E = A_z\\frac{\\partial^2 v_E}{\\partial z^2},\\quad \\mathbf{u}_E = \\mathbf{u}_h - \\mathbf{u}_g,\\quad \\left.\\rho_0 A_z\\frac{\\partial\\mathbf{u}_E}{\\partial z}\\right|_{z=0} = \\boldsymbol{\\tau}_w",
+          "operation_label": "地衡流成分の差し引き",
+          "explanation": "定常水平運動方程式から地衡流バランスを差し引き、風応力境界条件を伴うエクマン層方程式を得る。",
+          "used_node_ids": [
+            "earth.gfd.n01_rotating_frame_momentum",
+            "earth.gfd.n03_rossby_number_def",
+            "earth.gfd.n04_geostrophic_wind"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_subtract_geostrophic",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f\\mathbf{k}\\times\\mathbf{u}_h = -\\frac{1}{\\rho_0}\\nabla_h p + A_z\\frac{\\partial^2\\mathbf{u}_h}{\\partial z^2},\\quad \\mathbf{u}_h = \\mathbf{u}_g + \\mathbf{u}_E",
+          "to_latex": "f\\mathbf{k}\\times\\mathbf{u}_E = A_z\\frac{\\partial^2\\mathbf{u}_E}{\\partial z^2},\\quad \\left.\\rho_0 A_z\\frac{\\partial\\mathbf{u}_E}{\\partial z}\\right|_{z=0} = \\boldsymbol{\\tau}_w",
+          "operation_label": "地衡流バランスの消去",
+          "explanation": "f k × u_g = -(1/ρ0)∇_h p および ∂^2 u_g/∂z^2 = 0 を用いて u_E のみの式に整理する。",
+          "used_node_ids": [
+            "earth.gfd.n04_geostrophic_wind"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_component_form",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f\\mathbf{k}\\times\\mathbf{u}_E = A_z\\frac{\\partial^2\\mathbf{u}_E}{\\partial z^2},\\quad \\left.\\rho_0 A_z\\frac{\\partial\\mathbf{u}_E}{\\partial z}\\right|_{z=0} = \\boldsymbol{\\tau}_w",
+          "to_latex": "-f v_E = A_z\\frac{\\partial^2 u_E}{\\partial z^2},\\quad f u_E = A_z\\frac{\\partial^2 v_E}{\\partial z^2},\\quad \\mathbf{u}_E = \\mathbf{u}_h - \\mathbf{u}_g,\\quad \\left.\\rho_0 A_z\\frac{\\partial\\mathbf{u}_E}{\\partial z}\\right|_{z=0} = \\boldsymbol{\\tau}_w",
+          "operation_label": "直交成分への展開",
+          "explanation": "k × (u_E, v_E) = (-v_E, u_E) により東西・南北成分の連立常微分方程式を得る。",
+          "used_node_ids": [
+            "earth.gfd.n03_rossby_number_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_re07_ekman_spiral",
+      "target_node_id": "earth.rossby.n07_ekman_spiral",
+      "route_kind": "deductive",
+      "title": "複素速度法によるエクマン螺旋解の導出",
+      "premise_node_ids": [
+        "earth.rossby.n06_ekman_layer_equations"
+      ],
+      "required_math_node_ids": [
+        "earth.rossby.n07_ekman_spiral",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "北半球（f > 0）かつ深海極限で u_E → 0 (z → -∞)",
+        "x軸正方向の定常風応力 τ_w = (τ_wx, 0)"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-f v_E = A_z\\frac{\\partial^2 u_E}{\\partial z^2},\\quad f u_E = A_z\\frac{\\partial^2 v_E}{\\partial z^2}",
+          "to_latex": "W(z) := u_E + i v_E = W_0 e^{(1+i)z/D_E},\\quad D_E := \\sqrt{\\frac{2A_z}{|f|}},\\quad \\boldsymbol{\\tau}_w = (\\tau_{wx}, 0) \\implies u_E(z) = V_0 e^{z/D_E}\\cos\\!\\left(\\frac{\\pi}{4}+\\frac{z}{D_E}\\right),\\; v_E(z) = V_0 e^{z/D_E}\\sin\\!\\left(\\frac{\\pi}{4}+\\frac{z}{D_E}\\right)",
+          "operation_label": "複素常微分方程式の求解",
+          "explanation": "連立方程式を複素速度 W = u_E + i v_E の2階線形常微分方程式に統合し、境界条件からエクマン螺旋解を得る。",
+          "used_node_ids": [
+            "earth.rossby.n06_ekman_layer_equations",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_complex_velocity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-f v_E = A_z\\frac{\\partial^2 u_E}{\\partial z^2},\\quad f u_E = A_z\\frac{\\partial^2 v_E}{\\partial z^2}",
+          "to_latex": "A_z\\frac{d^2 W}{dz^2} - i f W = 0,\\quad W(z) := u_E(z) + i v_E(z)",
+          "operation_label": "複素速度の導入",
+          "explanation": "第1式に第2式の i 倍を加え、W = u_E + i v_E に関する単一の2階線形常微分方程式を作る。",
+          "used_node_ids": [
+            "earth.rossby.n06_ekman_layer_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_solve_ode_bc",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A_z\\frac{d^2 W}{dz^2} - i f W = 0,\\quad W(z) := u_E(z) + i v_E(z)",
+          "to_latex": "W(z) = W_0 e^{(1+i)z/D_E},\\quad D_E := \\sqrt{\\frac{2A_z}{|f|}},\\quad W_0 = \\frac{\\tau_{wx}}{\\rho_0 A_z}\\frac{D_E}{1+i}\\;(f>0)",
+          "operation_label": "特性方程式と境界条件の適用",
+          "explanation": "特性根 ±(1+i)/D_E のうち z → -∞ で有界な解を残し、海面応力条件 A_z W'(0) = τ_wx/ρ0 から W_0 を決定する。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_real_imag_spiral",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W(z) = W_0 e^{(1+i)z/D_E},\\quad D_E := \\sqrt{\\frac{2A_z}{|f|}},\\quad W_0 = \\frac{\\tau_{wx}}{\\rho_0 A_z}\\frac{D_E}{1+i}\\;(f>0)",
+          "to_latex": "W(z) := u_E + i v_E = W_0 e^{(1+i)z/D_E},\\quad D_E := \\sqrt{\\frac{2A_z}{|f|}},\\quad \\boldsymbol{\\tau}_w = (\\tau_{wx}, 0) \\implies u_E(z) = V_0 e^{z/D_E}\\cos\\!\\left(\\frac{\\pi}{4}+\\frac{z}{D_E}\\right),\\; v_E(z) = V_0 e^{z/D_E}\\sin\\!\\left(\\frac{\\pi}{4}+\\frac{z}{D_E}\\right)",
+          "operation_label": "実部・虚部への分離",
+          "explanation": "1/(1+i) = (1-i)/2 = e^{-iπ/4}/√2 だが f > 0 の海洋表層（z ≤ 0）では W_0 e^{(1+i)z/D_E} において流向が風下右45度（北半球）…待て、1/(1+i) は角度 -π/4 なので北半球 z=0 で南東向き（風向右45度）となる。",
+          "used_node_ids": [
+            "earth.rossby.n07_ekman_spiral"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_re08_ekman_transport",
+      "target_node_id": "earth.rossby.n08_ekman_transport",
+      "route_kind": "deductive",
+      "title": "エクマン層方程式の鉛直積分によるエクマン輸送量の導出",
+      "premise_node_ids": [
+        "earth.rossby.n06_ekman_layer_equations"
+      ],
+      "required_math_node_ids": [
+        "earth.rossby.n08_ekman_transport",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "深海（z → -∞）で乱流応力 τ → 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f\\mathbf{k}\\times(\\rho_0\\mathbf{u}_E) = \\frac{\\partial\\boldsymbol{\\tau}}{\\partial z},\\quad \\boldsymbol{\\tau}(0) = \\boldsymbol{\\tau}_w,\\quad \\boldsymbol{\\tau}(-\\infty) = \\mathbf{0}",
+          "to_latex": "\\mathbf{M}_E := \\int_{-\\infty}^{0}\\rho_0\\mathbf{u}_E\\,dz = \\frac{\\boldsymbol{\\tau}_w\\times\\mathbf{k}}{f},\\quad M_{Ex} = \\frac{\\tau_{wy}}{f},\\quad M_{Ey} = -\\frac{\\tau_{wx}}{f}",
+          "operation_label": "全層鉛直積分と外積反転",
+          "explanation": "エクマン層方程式を -∞ から 0 まで積分して表面風応力と関係づけ、k× を左から掛けて輸送量 M_E を求める。",
+          "used_node_ids": [
+            "earth.rossby.n06_ekman_layer_equations",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_integrate_depth",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f\\mathbf{k}\\times(\\rho_0\\mathbf{u}_E) = \\frac{\\partial\\boldsymbol{\\tau}}{\\partial z},\\quad \\boldsymbol{\\tau}(0) = \\boldsymbol{\\tau}_w,\\quad \\boldsymbol{\\tau}(-\\infty) = \\mathbf{0}",
+          "to_latex": "f\\mathbf{k}\\times\\int_{-\\infty}^{0}\\rho_0\\mathbf{u}_E\\,dz = \\Big[\\boldsymbol{\\tau}(z)\\Big]_{-\\infty}^{0} = \\boldsymbol{\\tau}_w",
+          "operation_label": "微積分学の基本定理の適用",
+          "explanation": "z = -∞ から z = 0 まで積分し、下端で応力 0、上端で風応力 τ_w を代入する。",
+          "used_node_ids": [
+            "earth.rossby.n06_ekman_layer_equations",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_cross_k",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f\\mathbf{k}\\times\\int_{-\\infty}^{0}\\rho_0\\mathbf{u}_E\\,dz = \\Big[\\boldsymbol{\\tau}(z)\\Big]_{-\\infty}^{0} = \\boldsymbol{\\tau}_w",
+          "to_latex": "\\mathbf{M}_E := \\int_{-\\infty}^{0}\\rho_0\\mathbf{u}_E\\,dz = \\frac{\\boldsymbol{\\tau}_w\\times\\mathbf{k}}{f},\\quad M_{Ex} = \\frac{\\tau_{wy}}{f},\\quad M_{Ey} = -\\frac{\\tau_{wx}}{f}",
+          "operation_label": "外積によるM_Eの求解",
+          "explanation": "M_E が水平ベクトルであることから (k×M_E)×k = M_E を用い、M_E = (τ_w × k)/f を得る。",
+          "used_node_ids": [
+            "earth.rossby.n08_ekman_transport"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
