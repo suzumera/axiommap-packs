@@ -1,0 +1,570 @@
+{
+  "pack_meta": {
+    "pack_id": "med.imaging.ct_radon",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "medical_imaging",
+    "title": "医用画像工学1（CT）：ランベルト＝ベール則・ラドン変換・投影切断面定理とフィルタ補正逆投影（FBP）",
+    "language": "ja",
+    "description": "X線減弱のランベルト＝ベール則からラドン変換、2次元フーリエ変換による投影切断面定理、極座標ヤコビアンからのフィルタ補正逆投影法（FBP）を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "med.ct.n01_xray_attenuation_boundary",
+      "short_code": "CT01",
+      "kind": "math_boundary",
+      "title": "X線減弱の微小法則（単色X線・散乱無視の境界）",
+      "summary": "物質中を微小距離 dℓ だけ透過する単色X線の強度減少率が、局所的な線減弱係数 μ(x,y) に比例するという物理的境界条件。",
+      "canonical_latex": "-\\frac{dI}{I} = \\mu(x,y)\\,d\\ell",
+      "aliases_latex": [
+        "dI = -\\mu(x,y) I\\,d\\ell"
+      ],
+      "keywords": [
+        "X線減弱",
+        "線減弱係数",
+        "ランベルト＝ベール則",
+        "CT"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "physics",
+        "optics"
+      ]
+    },
+    {
+      "id": "med.ct.n02_lambert_beer_projection",
+      "short_code": "CT02",
+      "kind": "theorem_formula",
+      "title": "ランベルト＝ベール則と対数投影データ",
+      "summary": "X線経路に沿った微小減弱則を積分して得られる透過強度と、線減弱係数の線積分として定義される対数投影データ p(θ,s) の関係式。",
+      "canonical_latex": "I(\\theta,s) = I_0 \\exp\\!\\left(-\\int_{L(\\theta,s)} \\mu(x,y)\\,d\\ell\\right),\\quad p(\\theta,s) := -\\ln\\frac{I(\\theta,s)}{I_0} = \\int_{L(\\theta,s)} \\mu(x,y)\\,d\\ell",
+      "aliases_latex": [
+        "p(\\theta,s) = \\int_{L(\\theta,s)} \\mu(x,y)\\,d\\ell"
+      ],
+      "keywords": [
+        "ランベルト＝ベール則",
+        "投影データ",
+        "線積分",
+        "CT"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "physics"
+      ]
+    },
+    {
+      "id": "med.ct.n03_radon_transform_def",
+      "short_code": "CT03",
+      "kind": "definition",
+      "title": "2次元ラドン変換の定義",
+      "summary": "平面上の関数 f(x,y) に対し、角度 θ と原点からの符号付き距離 s で指定される直線 x cosθ + y sinθ = s 上の線積分を対応づける積分変換。",
+      "canonical_latex": "\\mathcal{R}\\{f\\}(\\theta,s) := \\int_{-\\infty}^{\\infty}\\int_{-\\infty}^{\\infty} f(x,y)\\,\\delta(x\\cos\\theta + y\\sin\\theta - s)\\,dx\\,dy",
+      "aliases_latex": [
+        "p(\\theta,s) = \\mathcal{R}\\{f\\}(\\theta,s)"
+      ],
+      "keywords": [
+        "ラドン変換",
+        "サイノグラム",
+        "線積分",
+        "CT"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "applied_math"
+      ]
+    },
+    {
+      "id": "med.ct.n04_2d_fourier_transform_def",
+      "short_code": "CT04",
+      "kind": "definition",
+      "title": "2次元フーリエ変換と逆変換の定義",
+      "summary": "2次元実空間の関数 f(x,y) を空間周波数空間 (k_x, k_y) へ写像する2次元フーリエ変換とその逆変換の定義。",
+      "canonical_latex": "F(k_x,k_y) := \\iint_{\\mathbb{R}^2} f(x,y) e^{-i(k_x x + k_y y)}\\,dx\\,dy,\\quad f(x,y) = \\frac{1}{(2\\pi)^2}\\iint_{\\mathbb{R}^2} F(k_x,k_y) e^{i(k_x x + k_y y)}\\,dk_x\\,dk_y",
+      "aliases_latex": [
+        "\\hat{f}(\\mathbf{k}) = \\mathcal{F}_{2\\mathrm{D}}[f](\\mathbf{k})"
+      ],
+      "keywords": [
+        "2次元フーリエ変換",
+        "空間周波数",
+        "逆変換"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "fourier_analysis"
+      ]
+    },
+    {
+      "id": "med.ct.n05_fourier_slice_theorem",
+      "short_code": "CT05",
+      "kind": "theorem_formula",
+      "title": "投影切断面定理（中央断面定理）",
+      "summary": "角度 θ における投影データ（ラドン変換）の1次元フーリエ変換は、原画像の2次元フーリエ変換の原点を通る角度 θ の断面に一致するという定理。",
+      "canonical_latex": "\\mathcal{F}_s[\\mathcal{R}\\{f\\}(\\theta,\\cdot)](\\omega) = F(\\omega\\cos\\theta,\\omega\\sin\\theta) = \\hat{p}(\\theta,\\omega)\\quad (\\theta \\in [0,\\pi),\\; \\omega \\in \\mathbb{R})",
+      "aliases_latex": [
+        "\\hat{p}(\\theta,\\omega) = F(\\omega\\cos\\theta,\\omega\\sin\\theta)"
+      ],
+      "keywords": [
+        "投影切断面定理",
+        "中央断面定理",
+        "ラドン変換",
+        "フーリエ変換"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "fourier_analysis"
+      ]
+    },
+    {
+      "id": "med.ct.n06_backprojection_def",
+      "short_code": "CT06",
+      "kind": "definition",
+      "title": "単純逆投影（Backprojection）作用素の定義",
+      "summary": "各投影角度 θ の投影データ p(θ,s) を、その光線が通過したすべての点 (x,y) へ一様に塗り戻して角度方向に積分する作用素の定義。",
+      "canonical_latex": "b(x,y) = \\mathcal{B}\\{p\\}(x,y) := \\int_{0}^{\\pi} p(\\theta, x\\cos\\theta + y\\sin\\theta)\\,d\\theta",
+      "aliases_latex": [
+        "\\mathcal{B}\\{p\\}(x,y) = \\int_{0}^{\\pi} p(\\theta, x\\cos\\theta + y\\sin\\theta)\\,d\\theta"
+      ],
+      "keywords": [
+        "逆投影",
+        "バックプロジェクション",
+        "画像再構成"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "applied_math"
+      ]
+    },
+    {
+      "id": "med.ct.n07_filtered_backprojection",
+      "short_code": "CT07",
+      "kind": "theorem_formula",
+      "title": "フィルタ補正逆投影法（FBP）の再構成公式",
+      "summary": "2次元逆フーリエ変換の極座標ヤコビアン |ω| をランプフィルタとして投影データに1次元畳み込みした上で逆投影することにより、原画像を厳密再構成する公式。",
+      "canonical_latex": "f(x,y) = \\frac{1}{2\\pi}\\int_{0}^{\\pi} (p_\\theta * h_{\\mathrm{ramp}})(x\\cos\\theta + y\\sin\\theta)\\,d\\theta,\\quad \\hat{h}_{\\mathrm{ramp}}(\\omega) = |\\omega|",
+      "aliases_latex": [
+        "f(x,y) = \\frac{1}{2\\pi}\\mathcal{B}\\{p_\\theta * h_{\\mathrm{ramp}}\\}(x,y)"
+      ],
+      "keywords": [
+        "FBP",
+        "フィルタ補正逆投影法",
+        "ランプフィルタ",
+        "極座標ヤコビアン"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "med.ct.n08_ram_lak_windowed_filter",
+      "short_code": "CT08",
+      "kind": "theorem_formula",
+      "title": "帯域制限ランプフィルタ（Ram-Lakフィルタ）の空間核",
+      "summary": "理想ランプフィルタ |ω| に最大周波数 ω_max の矩形窓を掛けて帯域制限した Ram-Lak フィルタの空間領域における畳み込み核の閉じた表式。",
+      "canonical_latex": "\\hat{h}_{\\mathrm{RL}}(\\omega) = |\\omega|\\operatorname{rect}\\!\\left(\\frac{\\omega}{2\\omega_{\\max}}\\right) \\implies h_{\\mathrm{RL}}(s) = \\frac{\\omega_{\\max}\\sin(\\omega_{\\max} s)}{\\pi s} - \\frac{1 - \\cos(\\omega_{\\max} s)}{\\pi s^2}\\quad \\left(h_{\\mathrm{RL}}(0) = \\frac{\\omega_{\\max}^2}{2\\pi}\\right)$$",
+      "aliases_latex": [
+        "h_{\\mathrm{RL}}(s) = \\frac{1}{2\\pi}\\int_{-\\omega_{\\max}}^{\\omega_{\\max}} |\\omega|e^{i\\omega s}\\,d\\omega"
+      ],
+      "keywords": [
+        "Ram-Lakフィルタ",
+        "帯域制限",
+        "畳み込み核",
+        "CT再構成"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "signal_processing"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "med.ct.d01_lambert_beer",
+      "target_node_id": "med.ct.n02_lambert_beer_projection",
+      "route_kind": "deductive",
+      "title": "微小減弱則の積分によるランベルト＝ベール則と対数投影の導出",
+      "premise_node_ids": [
+        "med.ct.n01_xray_attenuation_boundary",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "単色X線であり、線減弱係数 μ(x,y) はエネルギーに依存しない。",
+        "散乱線や検出器雑音は無視し、入射強度 I_0 は既知である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-\\frac{dI}{I} = \\mu(x,y)\\,d\\ell",
+          "to_latex": "p(\\theta,s) := -\\ln\\frac{I(\\theta,s)}{I_0} = \\int_{L(\\theta,s)} \\mu(x,y)\\,d\\ell",
+          "operation_label": "経路に沿った定積分と対数変換",
+          "explanation": "X線経路 L(θ,s) に沿って微小減弱率を積分し、透過強度の対数比を取ることで線減弱係数の線積分が得られる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "med.ct.n01_xray_attenuation_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{dI}{I} = \\mu(x,y)\\,d\\ell",
+          "to_latex": "-\\int_{I_0}^{I(\\theta,s)} \\frac{dI}{I} = \\int_{L(\\theta,s)} \\mu(x,y)\\,d\\ell",
+          "operation_label": "変数分離と両辺の定積分",
+          "explanation": "変数分離された微分方程式の両辺を、入射点から検出器までの経路 L(θ,s) に沿って定積分する。",
+          "used_node_ids": [
+            "med.ct.n01_xray_attenuation_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\int_{I_0}^{I(\\theta,s)} \\frac{dI}{I} = \\int_{L(\\theta,s)} \\mu(x,y)\\,d\\ell",
+          "to_latex": "-\\ln\\frac{I(\\theta,s)}{I_0} = \\int_{L(\\theta,s)} \\mu(x,y)\\,d\\ell",
+          "operation_label": "微積分学の基本定理による対数積分",
+          "explanation": "1/I の原始関数が ln I であることを用いて左辺を評価する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\ln\\frac{I(\\theta,s)}{I_0} = \\int_{L(\\theta,s)} \\mu(x,y)\\,d\\ell",
+          "to_latex": "p(\\theta,s) := -\\ln\\frac{I(\\theta,s)}{I_0} = \\int_{L(\\theta,s)} \\mu(x,y)\\,d\\ell",
+          "operation_label": "対数投影データ p(θ,s) の定義",
+          "explanation": "左辺を対数投影データ p(θ,s) と定義し、線積分表現を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "med.ct.d02_radon_def",
+      "target_node_id": "med.ct.n03_radon_transform_def",
+      "route_kind": "reformulation",
+      "title": "平行ビーム幾何に基づく2次元ラドン変換の定義",
+      "premise_node_ids": [
+        "med.ct.n02_lambert_beer_projection"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "投影線 L(θ,s) は直線方程式 x cosθ + y sinθ = s で表される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p(\\theta,s) = \\int_{L(\\theta,s)} f(x,y)\\,d\\ell",
+          "to_latex": "\\mathcal{R}\\{f\\}(\\theta,s) := \\int_{-\\infty}^{\\infty}\\int_{-\\infty}^{\\infty} f(x,y)\\,\\delta(x\\cos\\theta + y\\sin\\theta - s)\\,dx\\,dy",
+          "operation_label": "ディラックのデルタ関数による直線積分の表現",
+          "explanation": "線減弱係数分布 f(x,y)=μ(x,y) の直線 L(θ,s) 上の線積分を、2次元平面全体の積分にデルタ関数を乗じたラドン変換として定式化する。",
+          "used_node_ids": [
+            "med.ct.n02_lambert_beer_projection"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "med.ct.d03_2d_ft_def",
+      "target_node_id": "med.ct.n04_2d_fourier_transform_def",
+      "route_kind": "reformulation",
+      "title": "1次元フーリエ変換からの2次元フーリエ変換の拡張定義",
+      "premise_node_ids": [
+        "math.fourier.ft05_fourier_transform_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f(x,y) は R^2 上で絶対可積分である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{f}(\\omega) = \\int_{-\\infty}^{\\infty} f(x)e^{-i\\omega x}\\,dx",
+          "to_latex": "F(k_x,k_y) := \\iint_{\\mathbb{R}^2} f(x,y) e^{-i(k_x x + k_y y)}\\,dx\\,dy,\\quad f(x,y) = \\frac{1}{(2\\pi)^2}\\iint_{\\mathbb{R}^2} F(k_x,k_y) e^{i(k_x x + k_y y)}\\,dk_x\\,dk_y",
+          "operation_label": "直交2変数へのフーリエ変換対の拡張",
+          "explanation": "1次元フーリエ変換の定義を x, y の2変数へ逐次適用し、2次元フーリエ変換とその逆変換を定義する。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "med.ct.d04_fourier_slice",
+      "target_node_id": "med.ct.n05_fourier_slice_theorem",
+      "route_kind": "deductive",
+      "title": "ラドン変換の1次元フーリエ変換からの投影切断面定理の導出",
+      "premise_node_ids": [
+        "med.ct.n03_radon_transform_def",
+        "med.ct.n04_2d_fourier_transform_def",
+        "math.fourier.ft05_fourier_transform_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f(x,y) は急減少またはコンパクト台を持ち、積分順序交換とデルタ関数の篩い分け性質が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{F}_s[\\mathcal{R}\\{f\\}(\\theta,\\cdot)](\\omega) = \\int_{-\\infty}^{\\infty} \\mathcal{R}\\{f\\}(\\theta,s)e^{-i\\omega s}\\,ds",
+          "to_latex": "\\mathcal{F}_s[\\mathcal{R}\\{f\\}(\\theta,\\cdot)](\\omega) = F(\\omega\\cos\\theta,\\omega\\sin\\theta) = \\hat{p}(\\theta,\\omega)\\quad (\\theta \\in [0,\\pi),\\; \\omega \\in \\mathbb{R})",
+          "operation_label": "デルタ関数積分の評価と2次元フーリエ変換との同一視",
+          "explanation": "ラドン変換を s について1次元フーリエ変換し、デルタ関数で s 積分を実行すると、2次元フーリエ変換の極座標上の断面と一致する。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def",
+            "med.ct.n03_radon_transform_def",
+            "med.ct.n04_2d_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{F}_s[\\mathcal{R}\\{f\\}(\\theta,\\cdot)](\\omega) = \\int_{-\\infty}^{\\infty} \\mathcal{R}\\{f\\}(\\theta,s)e^{-i\\omega s}\\,ds",
+          "to_latex": "\\int_{-\\infty}^{\\infty}\\left(\\iint_{\\mathbb{R}^2} f(x,y)\\,\\delta(x\\cos\\theta + y\\sin\\theta - s)\\,dx\\,dy\\right)e^{-i\\omega s}\\,ds",
+          "operation_label": "ラドン変換の定義の代入",
+          "explanation": "1次元フーリエ変換の被積分関数に2次元ラドン変換の定義式を代入する。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def",
+            "med.ct.n03_radon_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{-\\infty}^{\\infty}\\left(\\iint_{\\mathbb{R}^2} f(x,y)\\,\\delta(x\\cos\\theta + y\\sin\\theta - s)\\,dx\\,dy\\right)e^{-i\\omega s}\\,ds",
+          "to_latex": "\\iint_{\\mathbb{R}^2} f(x,y) e^{-i\\omega(x\\cos\\theta + y\\sin\\theta)}\\,dx\\,dy",
+          "operation_label": "積分順序交換とデルタ関数の篩い分け",
+          "explanation": "s に関する積分を先に行い、デルタ関数の性質により s = x cosθ + y sinθ を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iint_{\\mathbb{R}^2} f(x,y) e^{-i\\omega(x\\cos\\theta + y\\sin\\theta)}\\,dx\\,dy",
+          "to_latex": "\\mathcal{F}_s[\\mathcal{R}\\{f\\}(\\theta,\\cdot)](\\omega) = F(\\omega\\cos\\theta,\\omega\\sin\\theta) = \\hat{p}(\\theta,\\omega)\\quad (\\theta \\in [0,\\pi),\\; \\omega \\in \\mathbb{R})",
+          "operation_label": "2次元フーリエ変換の断面との一致",
+          "explanation": "k_x = ω cosθ, k_y = ω sinθ と置けば、2次元フーリエ変換の定義と完全に一致する。",
+          "used_node_ids": [
+            "med.ct.n04_2d_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "med.ct.d05_backprojection_def",
+      "target_node_id": "med.ct.n06_backprojection_def",
+      "route_kind": "reformulation",
+      "title": "ラドン変換の随伴操作としての単純逆投影の定義",
+      "premise_node_ids": [
+        "med.ct.n03_radon_transform_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "投影データ p(θ,s) は 0 ≤ θ < π の全方向で取得されている。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p(\\theta,s) = \\mathcal{R}\\{f\\}(\\theta,s) = \\int_{-\\infty}^{\\infty}\\int_{-\\infty}^{\\infty} f(x,y)\\,\\delta(x\\cos\\theta + y\\sin\\theta - s)\\,dx\\,dy",
+          "to_latex": "b(x,y) = \\mathcal{B}\\{p\\}(x,y) := \\int_{0}^{\\pi} p(\\theta, x\\cos\\theta + y\\sin\\theta)\\,d\\theta",
+          "operation_label": "全投影角度にわたる光線値の塗り戻し積分",
+          "explanation": "各点 (x,y) を通るすべての投影線 s = x cosθ + y sinθ の投影値を角度 θ ∈ [0,π) で積分し、単純逆投影作用素を定義する。",
+          "used_node_ids": [
+            "med.ct.n03_radon_transform_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "med.ct.d06_fbp_derivation",
+      "target_node_id": "med.ct.n07_filtered_backprojection",
+      "route_kind": "deductive",
+      "title": "2次元逆フーリエ変換と極座標ヤコビアンからのFBP導出",
+      "premise_node_ids": [
+        "med.ct.n04_2d_fourier_transform_def",
+        "med.ct.n05_fourier_slice_theorem",
+        "med.ct.n06_backprojection_def",
+        "math.calc.mi05_polar_2d_area_element",
+        "math.fourier.ft08_convolution_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "すべての角度 θ ∈ [0,π) において投影データ p(θ,s) が連続的に与えられている。",
+        "F(k_x, k_y) は原点での特異性を含め極座標積分で収束する（あるいは適切な正則化を行う）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f(x,y) = \\frac{1}{(2\\pi)^2}\\iint_{\\mathbb{R}^2} F(k_x,k_y)e^{i(k_x x + k_y y)}\\,dk_x\\,dk_y",
+          "to_latex": "f(x,y) = \\frac{1}{2\\pi}\\int_{0}^{\\pi} (p_\\theta * h_{\\mathrm{ramp}})(x\\cos\\theta + y\\sin\\theta)\\,d\\theta,\\quad \\hat{h}_{\\mathrm{ramp}}(\\omega) = |\\omega|",
+          "operation_label": "極座標変数変換・投影切断面定理・畳み込み定理の適用",
+          "explanation": "2次元逆フーリエ変換を極座標で書き換えるとヤコビアン |ω| が現れ、投影切断面定理と畳み込み定理によりランプフィルタ付き逆投影の式に帰着する。",
+          "used_node_ids": [
+            "math.calc.mi05_polar_2d_area_element",
+            "math.fourier.ft08_convolution_theorem",
+            "med.ct.n04_2d_fourier_transform_def",
+            "med.ct.n05_fourier_slice_theorem",
+            "med.ct.n06_backprojection_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(x,y) = \\frac{1}{(2\\pi)^2}\\iint_{\\mathbb{R}^2} F(k_x,k_y)e^{i(k_x x + k_y y)}\\,dk_x\\,dk_y",
+          "to_latex": "\\frac{1}{(2\\pi)^2}\\int_{0}^{\\pi}\\int_{-\\infty}^{\\infty} F(\\omega\\cos\\theta,\\omega\\sin\\theta)e^{i\\omega(x\\cos\\theta + y\\sin\\theta)}|\\omega|\\,d\\omega\\,d\\theta",
+          "operation_label": "極座標への変数変換と対称折り返し",
+          "explanation": "(k_x, k_y) = (ω cosθ, ω sinθ) と極座標変換し、角度を [0,π)、動径周波数を (-∞,∞) に拡張するとヤコビアン |ω| が生じる。",
+          "used_node_ids": [
+            "math.calc.mi05_polar_2d_area_element",
+            "med.ct.n04_2d_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{(2\\pi)^2}\\int_{0}^{\\pi}\\int_{-\\infty}^{\\infty} F(\\omega\\cos\\theta,\\omega\\sin\\theta)e^{i\\omega(x\\cos\\theta + y\\sin\\theta)}|\\omega|\\,d\\omega\\,d\\theta",
+          "to_latex": "\\frac{1}{2\\pi}\\int_{0}^{\\pi}\\left(\\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} \\hat{p}(\\theta,\\omega)|\\omega|e^{i\\omega(x\\cos\\theta + y\\sin\\theta)}\\,d\\omega\\right)d\\theta",
+          "operation_label": "投影切断面定理の代入",
+          "explanation": "投影切断面定理 F(ω cosθ, ω sinθ) = p̂(θ,ω) を代入し、内側の1次元逆フーリエ変換を分離する。",
+          "used_node_ids": [
+            "med.ct.n05_fourier_slice_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2\\pi}\\int_{0}^{\\pi}\\left(\\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} \\hat{p}(\\theta,\\omega)|\\omega|e^{i\\omega(x\\cos\\theta + y\\sin\\theta)}\\,d\\omega\\right)d\\theta",
+          "to_latex": "f(x,y) = \\frac{1}{2\\pi}\\int_{0}^{\\pi} (p_\\theta * h_{\\mathrm{ramp}})(x\\cos\\theta + y\\sin\\theta)\\,d\\theta,\\quad \\hat{h}_{\\mathrm{ramp}}(\\omega) = |\\omega|",
+          "operation_label": "畳み込み定理と逆投影表示の適用",
+          "explanation": "周波数空間での積 p̂(θ,ω)|ω| の逆フーリエ変換を畳み込み定理で空間領域の畳み込み (p_θ * h_ramp) に変換し、s = x cosθ + y sinθ で評価して角度積分する。",
+          "used_node_ids": [
+            "math.fourier.ft08_convolution_theorem",
+            "med.ct.n06_backprojection_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "med.ct.d07_ram_lak_kernel",
+      "target_node_id": "med.ct.n08_ram_lak_windowed_filter",
+      "route_kind": "deductive",
+      "title": "帯域制限ランプフィルタの逆フーリエ変換による空間核の導出",
+      "premise_node_ids": [
+        "med.ct.n07_filtered_backprojection",
+        "math.fourier.ft05_fourier_transform_def",
+        "math.calc.m10_integration_by_parts"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "高周波雑音抑制のため、周波数は [-ω_max, ω_max] に帯域制限されている。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "h_{\\mathrm{RL}}(s) = \\frac{1}{2\\pi}\\int_{-\\omega_{\\max}}^{\\omega_{\\max}} |\\omega|e^{i\\omega s}\\,d\\omega",
+          "to_latex": "h_{\\mathrm{RL}}(s) = \\frac{\\omega_{\\max}\\sin(\\omega_{\\max} s)}{\\pi s} - \\frac{1 - \\cos(\\omega_{\\max} s)}{\\pi s^2}\\quad \\left(h_{\\mathrm{RL}}(0) = \\frac{\\omega_{\\max}^2}{2\\pi}\\right)$$",
+          "operation_label": "偶関数対称性と部分積分による逆フーリエ変換の評価",
+          "explanation": "|ω| が偶関数であることを用いて余弦積分に帰着させ、部分積分を実行することで空間領域の Ram-Lak 畳み込み核を得る。",
+          "used_node_ids": [
+            "math.calc.m10_integration_by_parts",
+            "math.fourier.ft05_fourier_transform_def",
+            "med.ct.n07_filtered_backprojection"
+          ],
+          "sympy_check_hint": "integrate(w * cos(w * s), (w, 0, w_max)) / pi"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "h_{\\mathrm{RL}}(s) = \\frac{1}{2\\pi}\\int_{-\\omega_{\\max}}^{\\omega_{\\max}} |\\omega|e^{i\\omega s}\\,d\\omega",
+          "to_latex": "\\frac{1}{\\pi}\\int_{0}^{\\omega_{\\max}} \\omega\\cos(\\omega s)\\,d\\omega",
+          "operation_label": "偶関数の対称性による虚部の消去",
+          "explanation": "|ω| cos(ωs) は偶関数、|ω| sin(ωs) は奇関数であるため、対称区間 [-ω_max, ω_max] の積分は実部のみの2倍となる。",
+          "used_node_ids": [
+            "math.fourier.ft05_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{\\pi}\\int_{0}^{\\omega_{\\max}} \\omega\\cos(\\omega s)\\,d\\omega",
+          "to_latex": "\\frac{1}{\\pi}\\left[\\frac{\\omega\\sin(\\omega s)}{s} + \\frac{\\cos(\\omega s)}{s^2}\\right]_{0}^{\\omega_{\\max}}",
+          "operation_label": "部分積分（s ≠ 0）",
+          "explanation": "u = ω, dv = cos(ωs) dω として部分積分を適用し、原始関数を求める。",
+          "used_node_ids": [
+            "math.calc.m10_integration_by_parts"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{\\pi}\\left[\\frac{\\omega\\sin(\\omega s)}{s} + \\frac{\\cos(\\omega s)}{s^2}\\right]_{0}^{\\omega_{\\max}}",
+          "to_latex": "h_{\\mathrm{RL}}(s) = \\frac{\\omega_{\\max}\\sin(\\omega_{\\max} s)}{\\pi s} - \\frac{1 - \\cos(\\omega_{\\max} s)}{\\pi s^2}\\quad \\left(h_{\\mathrm{RL}}(0) = \\frac{\\omega_{\\max}^2}{2\\pi}\\right)$$",
+          "operation_label": "積分区間の上下限代入と s=0 極限の評価",
+          "explanation": "上下限 ω = ω_max, 0 を代入して整理し、s → 0 の極限として ω_max^2 / (2π) を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
