@@ -1,0 +1,545 @@
+{
+  "pack_meta": {
+    "pack_id": "med.imaging.mri_bloch",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "medical_imaging",
+    "title": "医用画像工学2（MRI）：ラーモア歳差・ブロッホ方程式（T1/T2緩和）とk空間撮像",
+    "language": "ja",
+    "description": "磁気双極子のトルク方程式からラーモア周波数、回転座標系でのブロッホ方程式、縦緩和T1・横緩和T2の解、傾斜磁場によるk空間フーリエエンコーディングを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "med.mri.n01_magnetic_torque_boundary",
+      "short_code": "MRI01",
+      "kind": "math_boundary",
+      "title": "磁気双極子の運動方程式と緩和現象の基礎境界",
+      "summary": "静磁場および時間変動磁場中の巨視的磁化ベクトルが受ける磁気トルクによる運動方程式と、スピン-格子緩和（T1）およびスピン-スピン緩和（T2）の現象論的緩和率の境界。",
+      "canonical_latex": "\\frac{d\\mathbf{M}}{dt} = \\gamma \\mathbf{M} \\times \\mathbf{B},\\quad \\mathbf{B}_0 = B_0 \\hat{\\mathbf{z}},\\quad \\left(\\frac{dM_z}{dt}\\right)_{\\text{relax}} = -\\frac{M_z - M_0}{T_1},\\quad \\left(\\frac{d\\mathbf{M}_{xy}}{dt}\\right)_{\\text{relax}} = -\\frac{\\mathbf{M}_{xy}}{T_2}",
+      "aliases_latex": [
+        "\\dot{\\mathbf{M}} = \\gamma \\mathbf{M} \\times \\mathbf{B}"
+      ],
+      "keywords": [
+        "磁気回転比",
+        "磁気トルク",
+        "ラーモア歳差",
+        "T1緩和",
+        "T2緩和",
+        "MRI"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "mri",
+        "electromagnetism"
+      ]
+    },
+    {
+      "id": "med.mri.n02_larmor_precession",
+      "short_code": "MRI02",
+      "kind": "theorem_formula",
+      "title": "静磁場中のラーモア歳差運動とラーモア周波数",
+      "summary": "一様な静磁場 B_0 下での非緩和磁化ベクトルが、z軸成分を保存しつつ横平面内で角周波数 ω_0 = γ B_0 で歳差運動（ラーモア歳差）することを示す公式。",
+      "canonical_latex": "\\frac{dM_z}{dt} = 0,\\quad \\ddot{M}_x + \\omega_0^2 M_x = 0,\\quad M_{xy}(t) = M_{xy}(0) e^{-i\\omega_0 t}\\quad \\left(\\omega_0 := \\gamma B_0,\\; M_{xy} := M_x + i M_y\\right)",
+      "aliases_latex": [
+        "\\omega_0 = \\gamma B_0",
+        "M_+(t) = M_+(0)e^{-i\\gamma B_0 t}"
+      ],
+      "keywords": [
+        "ラーモア周波数",
+        "歳差運動",
+        "横磁化",
+        "複素磁化"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "mri"
+      ]
+    },
+    {
+      "id": "med.mri.n03_rotating_frame_bloch",
+      "short_code": "MRI03",
+      "kind": "theorem_formula",
+      "title": "回転座標系におけるブロッホ方程式",
+      "summary": "角速度 Ω = -ω z^ で回転する座標系において、見かけの磁場（実効磁場 B_eff）と T1/T2 緩和項を統合した巨視的磁化の運動方程式。",
+      "canonical_latex": "\\frac{d\\mathbf{M}'}{dt} = \\gamma \\mathbf{M}' \\times \\mathbf{B}_{\\mathrm{eff}} - \\frac{M'_x \\hat{\\mathbf{x}}' + M'_y \\hat{\\mathbf{y}}'}{T_2} - \\frac{M'_z - M_0}{T_1}\\hat{\\mathbf{z}}',\\quad \\mathbf{B}_{\\mathrm{eff}} = \\left(B_0 - \\frac{\\omega}{\\gamma}\\right)\\hat{\\mathbf{z}}' + \\mathbf{B}_{1,\\mathrm{rot}}",
+      "aliases_latex": [
+        "\\frac{d\\mathbf{M}'}{dt} = \\gamma \\mathbf{M}' \\times \\mathbf{B}_{\\mathrm{eff}} + \\mathbf{R}(\\mathbf{M}')"
+      ],
+      "keywords": [
+        "ブロッホ方程式",
+        "回転座標系",
+        "実効磁場",
+        "RFパルス",
+        "共鳴条件"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "mri"
+      ]
+    },
+    {
+      "id": "med.mri.n04_t1_t2_relaxation_solutions",
+      "short_code": "MRI04",
+      "kind": "theorem_formula",
+      "title": "自由緩和時の縦緩和（T1回復）および横緩和（T2減衰）の解析解",
+      "summary": "オン共鳴回転座標系でRFパルス印加後（B_eff = 0）のブロッホ方程式を解くことで得られる、縦磁化 M_z の指数回復解と横磁化 M'_{xy} の指数減衰解。",
+      "canonical_latex": "M_z(t) = M_0\\left(1 - e^{-t/T_1}\\right) + M_z(0)e^{-t/T_1},\\qquad M'_{xy}(t) = M'_{xy}(0)e^{-t/T_2}",
+      "aliases_latex": [
+        "M_z(t) = M_0 - (M_0 - M_z(0))e^{-t/T_1}"
+      ],
+      "keywords": [
+        "縦緩和",
+        "横緩和",
+        "T1回復",
+        "T2減衰",
+        "自由誘導減衰"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "mri"
+      ]
+    },
+    {
+      "id": "med.mri.n05_gradient_field_larmor_def",
+      "short_code": "MRI05",
+      "kind": "definition",
+      "title": "空間傾斜磁場と位置依存ラーモア周波数の定義",
+      "summary": "空間位置 r に比例して静磁場強度を線形変調させる傾斜磁場ベクトル G(t) と、それによって生じる位置依存のラーモア周波数および共鳴周波数シフトの定義。",
+      "canonical_latex": "B_z(\\mathbf{r}, t) := B_0 + \\mathbf{G}(t)\\cdot\\mathbf{r},\\qquad \\omega(\\mathbf{r}, t) := \\gamma B_z(\\mathbf{r}, t) = \\omega_0 + \\gamma \\mathbf{G}(t)\\cdot\\mathbf{r}",
+      "aliases_latex": [
+        "\\Delta\\omega(\\mathbf{r}, t) = \\gamma \\mathbf{G}(t)\\cdot\\mathbf{r}"
+      ],
+      "keywords": [
+        "傾斜磁場",
+        "勾配磁場",
+        "空間エンコーディング",
+        "共鳴周波数シフト"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "mri"
+      ]
+    },
+    {
+      "id": "med.mri.n06_k_space_trajectory_def",
+      "short_code": "MRI06",
+      "kind": "definition",
+      "title": "k空間座標（空間周波数ベクトル）の定義",
+      "summary": "時間変動する傾斜磁場 G(τ) の時間積分によって定義される、MRI撮像における空間周波数空間（k空間）上のサンプリング軌道座標 k(t)。",
+      "canonical_latex": "\\mathbf{k}(t) := \\gamma \\int_{0}^{t} \\mathbf{G}(\\tau)\\,d\\tau,\\qquad \\phi(\\mathbf{r}, t) := \\int_{0}^{t} \\Delta\\omega(\\mathbf{r}, \\tau)\\,d\\tau = \\mathbf{k}(t)\\cdot\\mathbf{r}",
+      "aliases_latex": [
+        "\\mathbf{k}(t) = \\frac{\\gamma}{2\\pi}\\int_0^t \\mathbf{G}(\\tau)\\,d\\tau"
+      ],
+      "keywords": [
+        "k空間",
+        "空間周波数",
+        "k空間軌道",
+        "位相エンコーディング",
+        "周波数エンコーディング"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "mri",
+        "fourier_analysis"
+      ]
+    },
+    {
+      "id": "med.mri.n07_mri_signal_k_space_fourier",
+      "short_code": "MRI07",
+      "kind": "theorem_formula",
+      "title": "MRI受信信号のk空間フーリエエンコーディング定理",
+      "summary": "傾斜磁場下における全スピンからの復調受信信号 s(t) が、スピン密度（緩和重み付き有効横磁化密度）ρ(r) のk空間座標 k(t) におけるフーリエ変換に等しいことを示すMRI画像再構成の核心定理。",
+      "canonical_latex": "s(t) = \\int_{\\mathbb{R}^d} \\rho(\\mathbf{r}) e^{-i \\mathbf{k}(t)\\cdot\\mathbf{r}}\\,d\\mathbf{r} = \\mathcal{F}\\{\\rho\\}\\big(\\mathbf{k}(t)\\big)",
+      "aliases_latex": [
+        "s(\\mathbf{k}) = \\iint \\rho(x,y)e^{-i(k_x x + k_y y)}\\,dx\\,dy"
+      ],
+      "keywords": [
+        "MRI再構成",
+        "フーリエエンコーディング",
+        "k空間信号",
+        "スピン密度",
+        "2次元フーリエ変換"
+      ],
+      "domain_tags": [
+        "medical_imaging",
+        "mri",
+        "fourier_analysis"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_mri_n02",
+      "target_node_id": "med.mri.n02_larmor_precession",
+      "route_kind": "deductive",
+      "title": "磁気トルク方程式からのラーモア歳差解の導出",
+      "premise_node_ids": [
+        "med.mri.n01_magnetic_torque_boundary",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "静磁場 B = (0, 0, B_0)^T は空間的・時間的に一様である。",
+        "この導出段階では緩和項（T_1, T_2）を無視する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d\\mathbf{M}}{dt} = \\gamma \\mathbf{M} \\times (B_0 \\hat{\\mathbf{z}})",
+          "to_latex": "\\frac{dM_z}{dt} = 0,\\quad \\ddot{M}_x + \\omega_0^2 M_x = 0,\\quad M_{xy}(t) = M_{xy}(0) e^{-i\\omega_0 t}\\quad \\left(\\omega_0 := \\gamma B_0,\\; M_{xy} := M_x + i M_y\\right)",
+          "operation_label": "外積成分の展開と連立常微分方程式の複素化による解法",
+          "explanation": "静磁場との外積を成分展開して縦磁化の保存と横磁化の単振動方程式を得て、複素横磁化を導入してラーモア歳差解を導く。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd",
+            "med.mri.n01_magnetic_torque_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\mathbf{M}}{dt} = \\gamma \\mathbf{M} \\times (B_0 \\hat{\\mathbf{z}})",
+          "to_latex": "\\frac{dM_x}{dt} = \\gamma B_0 M_y,\\quad \\frac{dM_y}{dt} = -\\gamma B_0 M_x,\\quad \\frac{dM_z}{dt} = 0",
+          "operation_label": "3次元外積の直交成分展開",
+          "explanation": "B = (0, 0, B_0) との外積を計算すると、z成分は時間微分が0となり、x成分とy成分は結合した1階線形常微分方程式となる。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "med.mri.n01_magnetic_torque_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dM_x}{dt} = \\gamma B_0 M_y,\\quad \\frac{dM_y}{dt} = -\\gamma B_0 M_x,\\quad \\frac{dM_z}{dt} = 0",
+          "to_latex": "\\ddot{M}_x + \\omega_0^2 M_x = 0,\\quad \\frac{dM_{xy}}{dt} = -i\\omega_0 M_{xy}\\quad \\left(\\omega_0 := \\gamma B_0,\\; M_{xy} := M_x + i M_y\\right)",
+          "operation_label": "2階微分の消去と複素横磁化による1階化",
+          "explanation": "第1式を時間微分して第2式を代入すると単振動方程式が得られ、複素横磁化 M_{xy} = M_x + i M_y を導入すると1階の複素微分方程式にまとめられる。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{M}_x + \\omega_0^2 M_x = 0,\\quad \\frac{dM_{xy}}{dt} = -i\\omega_0 M_{xy}\\quad \\left(\\omega_0 := \\gamma B_0,\\; M_{xy} := M_x + i M_y\\right)",
+          "to_latex": "\\frac{dM_z}{dt} = 0,\\quad \\ddot{M}_x + \\omega_0^2 M_x = 0,\\quad M_{xy}(t) = M_{xy}(0) e^{-i\\omega_0 t}\\quad \\left(\\omega_0 := \\gamma B_0,\\; M_{xy} := M_x + i M_y\\right)",
+          "operation_label": "指数関数解の代入と初期条件の適用",
+          "explanation": "複素微分方程式を積分して初期条件を適用することで、角周波数 ω_0 = γ B_0 で時計回りに回転するラーモア歳差解を得る。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_mri_n03",
+      "target_node_id": "med.mri.n03_rotating_frame_bloch",
+      "route_kind": "deductive",
+      "title": "回転座標変換と緩和項の加算によるブロッホ方程式の導出",
+      "premise_node_ids": [
+        "med.mri.n01_magnetic_torque_boundary",
+        "med.mri.n02_larmor_precession",
+        "math.vec.m04_polar_acceleration"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "回転座標系は静止系に対して角速度ベクトル Ω = -ω z^ で回転している。",
+        "回転基底ベクトルの時間微分は d(e'_i)/dt = Ω × e'_i に従う。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\left(\\frac{d\\mathbf{M}}{dt}\\right)_{\\text{lab}} = \\gamma \\mathbf{M} \\times \\mathbf{B} - \\frac{M_x \\hat{\\mathbf{x}} + M_y \\hat{\\mathbf{y}}}{T_2} - \\frac{M_z - M_0}{T_1}\\hat{\\mathbf{z}}",
+          "to_latex": "\\frac{d\\mathbf{M}'}{dt} = \\gamma \\mathbf{M}' \\times \\mathbf{B}_{\\mathrm{eff}} - \\frac{M'_x \\hat{\\mathbf{x}}' + M'_y \\hat{\\mathbf{y}}'}{T_2} - \\frac{M'_z - M_0}{T_1}\\hat{\\mathbf{z}}',\\quad \\mathbf{B}_{\\mathrm{eff}} = \\left(B_0 - \\frac{\\omega}{\\gamma}\\right)\\hat{\\mathbf{z}}' + \\mathbf{B}_{1,\\mathrm{rot}}",
+          "operation_label": "回転座標系への時間微分変換と実効磁場の導入",
+          "explanation": "静止系での時間微分を回転座標系の時間微分と角速度ベクトルとの外積に分解し、z軸周りに回転するRF磁場 B_1 を加えて回転系ブロッホ方程式を得る。",
+          "used_node_ids": [
+            "math.vec.m04_polar_acceleration",
+            "med.mri.n01_magnetic_torque_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{d\\mathbf{M}}{dt}\\right)_{\\text{lab}} = \\gamma \\mathbf{M} \\times \\mathbf{B} - \\frac{M_x \\hat{\\mathbf{x}} + M_y \\hat{\\mathbf{y}}}{T_2} - \\frac{M_z - M_0}{T_1}\\hat{\\mathbf{z}}",
+          "to_latex": "\\frac{d\\mathbf{M}'}{dt} + \\boldsymbol{\\Omega} \\times \\mathbf{M}' = \\gamma \\mathbf{M}' \\times (\\mathbf{B}_0 + \\mathbf{B}_{1,\\mathrm{rot}}) - \\frac{M'_x \\hat{\\mathbf{x}}' + M'_y \\hat{\\mathbf{y}}'}{T_2} - \\frac{M'_z - M_0}{T_1}\\hat{\\mathbf{z}}'",
+          "operation_label": "回転基底の時間微分の適用（コリオリ項の分離）",
+          "explanation": "回転座標系の基底ベクトルの時間微分と積の微分法より、静止系微分を回転系微分と Ω × M' の和に書き換える。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.vec.m04_polar_acceleration"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\mathbf{M}'}{dt} + \\boldsymbol{\\Omega} \\times \\mathbf{M}' = \\gamma \\mathbf{M}' \\times (\\mathbf{B}_0 + \\mathbf{B}_{1,\\mathrm{rot}}) - \\frac{M'_x \\hat{\\mathbf{x}}' + M'_y \\hat{\\mathbf{y}}'}{T_2} - \\frac{M'_z - M_0}{T_1}\\hat{\\mathbf{z}}'",
+          "to_latex": "\\frac{d\\mathbf{M}'}{dt} = \\gamma \\mathbf{M}' \\times \\left(\\mathbf{B}_0 + \\frac{\\boldsymbol{\\Omega}}{\\gamma} + \\mathbf{B}_{1,\\mathrm{rot}}\\right) - \\frac{M'_x \\hat{\\mathbf{x}}' + M'_y \\hat{\\mathbf{y}}'}{T_2} - \\frac{M'_z - M_0}{T_1}\\hat{\\mathbf{z}}'",
+          "operation_label": "外積の反対称性による実効磁場項の統合",
+          "explanation": "-Ω × M' = M' × Ω を用いて右辺の磁場との外積項にまとめ、見かけの磁場 Ω/γ を定義する。",
+          "used_node_ids": [
+            "med.mri.n02_larmor_precession"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\mathbf{M}'}{dt} = \\gamma \\mathbf{M}' \\times \\left(\\mathbf{B}_0 + \\frac{\\boldsymbol{\\Omega}}{\\gamma} + \\mathbf{B}_{1,\\mathrm{rot}}\\right) - \\frac{M'_x \\hat{\\mathbf{x}}' + M'_y \\hat{\\mathbf{y}}'}{T_2} - \\frac{M'_z - M_0}{T_1}\\hat{\\mathbf{z}}'",
+          "to_latex": "\\frac{d\\mathbf{M}'}{dt} = \\gamma \\mathbf{M}' \\times \\mathbf{B}_{\\mathrm{eff}} - \\frac{M'_x \\hat{\\mathbf{x}}' + M'_y \\hat{\\mathbf{y}}'}{T_2} - \\frac{M'_z - M_0}{T_1}\\hat{\\mathbf{z}}',\\quad \\mathbf{B}_{\\mathrm{eff}} = \\left(B_0 - \\frac{\\omega}{\\gamma}\\right)\\hat{\\mathbf{z}}' + \\mathbf{B}_{1,\\mathrm{rot}}",
+          "operation_label": "回転角速度 Ω = -ω z^' の代入",
+          "explanation": "歳差方向に合わせた角速度 Ω = -ω z^' を代入すると、共鳴時（ω = γ B_0）に静磁場成分が相殺される実効磁場 B_eff が得られる。",
+          "used_node_ids": [
+            "med.mri.n02_larmor_precession"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_mri_n04",
+      "target_node_id": "med.mri.n04_t1_t2_relaxation_solutions",
+      "route_kind": "deductive",
+      "title": "回転系ブロッホ方程式からのT1・T2緩和解析解の導出",
+      "premise_node_ids": [
+        "med.mri.n03_rotating_frame_bloch",
+        "med.pk.n01_pk_mass_balance_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "オン共鳴条件（ω = γ B_0）かつRFパルス停止後（B_1 = 0）であり、B_eff = 0 が成り立つ。",
+        "T_1 > 0 および T_2 > 0 は時間的に一定である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d\\mathbf{M}'}{dt} = -\\frac{M'_x \\hat{\\mathbf{x}}' + M'_y \\hat{\\mathbf{y}}'}{T_2} - \\frac{M'_z - M_0}{T_1}\\hat{\\mathbf{z}}'",
+          "to_latex": "M_z(t) = M_0\\left(1 - e^{-t/T_1}\\right) + M_z(0)e^{-t/T_1},\\qquad M'_{xy}(t) = M'_{xy}(0)e^{-t/T_2}",
+          "operation_label": "独立した1階線形常微分方程式の積分",
+          "explanation": "B_eff = 0 の下で縦磁化と横磁化の微分方程式が分離されるため、それぞれ1階線形微分方程式として解くことでT1回復とT2減衰の式を得る。",
+          "used_node_ids": [
+            "med.mri.n03_rotating_frame_bloch",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d\\mathbf{M}'}{dt} = -\\frac{M'_x \\hat{\\mathbf{x}}' + M'_y \\hat{\\mathbf{y}}'}{T_2} - \\frac{M'_z - M_0}{T_1}\\hat{\\mathbf{z}}'",
+          "to_latex": "\\frac{dM_z}{dt} + \\frac{1}{T_1}M_z = \\frac{M_0}{T_1},\\qquad \\frac{dM'_{xy}}{dt} = -\\frac{1}{T_2}M'_{xy}",
+          "operation_label": "縦成分と複素横成分への方程式の分離",
+          "explanation": "M'_z = M_z および複素横磁化 M'_{xy} = M'_x + i M'_y を用いると、縦緩和と横緩和の非結合な1階線形常微分方程式に分離される。",
+          "used_node_ids": [
+            "med.mri.n03_rotating_frame_bloch"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dM_z}{dt} + \\frac{1}{T_1}M_z = \\frac{M_0}{T_1},\\qquad \\frac{dM'_{xy}}{dt} = -\\frac{1}{T_2}M'_{xy}",
+          "to_latex": "\\frac{d}{dt}\\left(e^{t/T_1} M_z(t)\\right) = \\frac{M_0}{T_1}e^{t/T_1},\\qquad \\frac{d}{dt}\\left(e^{t/T_2} M'_{xy}(t)\\right) = 0",
+          "operation_label": "積分因子 e^{t/T_1} および e^{t/T_2} の乗算",
+          "explanation": "それぞれの微分方程式に積分因子を掛けて左辺を積の微分の形にまとめる。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\left(e^{t/T_1} M_z(t)\\right) = \\frac{M_0}{T_1}e^{t/T_1},\\qquad \\frac{d}{dt}\\left(e^{t/T_2} M'_{xy}(t)\\right) = 0",
+          "to_latex": "M_z(t) = M_0\\left(1 - e^{-t/T_1}\\right) + M_z(0)e^{-t/T_1},\\qquad M'_{xy}(t) = M'_{xy}(0)e^{-t/T_2}",
+          "operation_label": "区間 [0, t] での定積分と初期条件の代入",
+          "explanation": "両辺を 0 から t まで積分して微積分学の基本定理を適用し、M_z(t) と M'_{xy}(t) について整理することでT1回復・T2減衰の解析解を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_mri_n05",
+      "target_node_id": "med.mri.n05_gradient_field_larmor_def",
+      "route_kind": "reformulation",
+      "title": "ラーモア周波数への空間線形傾斜磁場の導入",
+      "premise_node_ids": [
+        "med.mri.n02_larmor_precession"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "傾斜磁場による随伴磁場成分は静磁場 B_0 に比べて十分小さく無視できる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\omega_0 = \\gamma B_0",
+          "to_latex": "B_z(\\mathbf{r}, t) := B_0 + \\mathbf{G}(t)\\cdot\\mathbf{r},\\qquad \\omega(\\mathbf{r}, t) := \\gamma B_z(\\mathbf{r}, t) = \\omega_0 + \\gamma \\mathbf{G}(t)\\cdot\\mathbf{r}",
+          "operation_label": "静磁場への位置線形傾斜磁場 G(t)・r の重畳と記号定義",
+          "explanation": "一様な静磁場 B_0 に位置の1次関数である傾斜磁場 G(t)・r を重畳することで、ラーモア周波数を空間座標 r の関数として定義する。",
+          "used_node_ids": [
+            "med.mri.n02_larmor_precession"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_mri_n06",
+      "target_node_id": "med.mri.n06_k_space_trajectory_def",
+      "route_kind": "reformulation",
+      "title": "位置依存周波数の時間積分によるk空間ベクトルの定義",
+      "premise_node_ids": [
+        "med.mri.n05_gradient_field_larmor_def",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "回転座標系（周波数 ω_0）から見た共鳴周波数シフト Δω(r, t) = γ G(t)・r を考える。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta\\omega(\\mathbf{r}, \\tau) = \\gamma \\mathbf{G}(\\tau)\\cdot\\mathbf{r}",
+          "to_latex": "\\mathbf{k}(t) := \\gamma \\int_{0}^{t} \\mathbf{G}(\\tau)\\,d\\tau,\\qquad \\phi(\\mathbf{r}, t) := \\int_{0}^{t} \\Delta\\omega(\\mathbf{r}, \\tau)\\,d\\tau = \\mathbf{k}(t)\\cdot\\mathbf{r}",
+          "operation_label": "周波数シフトの時間積分と波数ベクトル k(t) の定義",
+          "explanation": "回転座標系における位置 r のスピンが時刻 t までに蓄積する位相 φ(r, t) を周波数シフトの積分で表し、傾斜磁場の積分部分を空間周波数ベクトル k(t) として定義する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "med.mri.n05_gradient_field_larmor_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_mri_n07",
+      "target_node_id": "med.mri.n07_mri_signal_k_space_fourier",
+      "route_kind": "deductive",
+      "title": "横磁化の積分とk空間座標の代入によるMRI信号方程式の導出",
+      "premise_node_ids": [
+        "med.mri.n04_t1_t2_relaxation_solutions",
+        "med.mri.n06_k_space_trajectory_def",
+        "med.ct.n04_2d_fourier_transform_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "med.mri.n05_gradient_field_larmor_def"
+      ],
+      "assumptions": [
+        "信号収集時間中は短時間近似により緩和減衰を実効スピン密度 ρ(r) に含めて一定とみなす。",
+        "受信コイル感度は撮像領域内で一様かつ比例定数を1に規格化する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "s(t) = \\int_{\\mathbb{R}^d} M'_{xy}(\\mathbf{r}, t)\\,d\\mathbf{r}",
+          "to_latex": "s(t) = \\int_{\\mathbb{R}^d} \\rho(\\mathbf{r}) e^{-i \\mathbf{k}(t)\\cdot\\mathbf{r}}\\,d\\mathbf{r} = \\mathcal{F}\\{\\rho\\}\\big(\\mathbf{k}(t)\\big)",
+          "operation_label": "傾斜磁場位相の導入とフーリエ変換定義への帰着",
+          "explanation": "各位置の復調横磁化 M'_{xy}(r, t) が蓄積位相 φ(r, t) = k(t)・r を持つことから、撮像領域全体の積分が有効スピン密度 ρ(r) のk空間におけるフーリエ変換となることを導く。",
+          "used_node_ids": [
+            "med.ct.n04_2d_fourier_transform_def",
+            "med.mri.n04_t1_t2_relaxation_solutions",
+            "med.mri.n06_k_space_trajectory_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s(t) = \\int_{\\mathbb{R}^d} M'_{xy}(\\mathbf{r}, t)\\,d\\mathbf{r}",
+          "to_latex": "s(t) = \\int_{\\mathbb{R}^d} \\rho(\\mathbf{r}) \\exp\\!\\left(-i \\int_{0}^{t} \\Delta\\omega(\\mathbf{r}, \\tau)\\,d\\tau\\right) d\\mathbf{r}",
+          "operation_label": "位置依存歳差による蓄積位相と有効横磁化密度の代入",
+          "explanation": "回転座標系における各位置 r の横磁化 M'_{xy}(r, t) は緩和重み付き横磁化密度 ρ(r) に位置依存の蓄積位相因子を乗じたものとして表される。",
+          "used_node_ids": [
+            "med.mri.n04_t1_t2_relaxation_solutions",
+            "med.mri.n05_gradient_field_larmor_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s(t) = \\int_{\\mathbb{R}^d} \\rho(\\mathbf{r}) \\exp\\!\\left(-i \\int_{0}^{t} \\Delta\\omega(\\mathbf{r}, \\tau)\\,d\\tau\\right) d\\mathbf{r}",
+          "to_latex": "s(t) = \\int_{\\mathbb{R}^d} \\rho(\\mathbf{r}) e^{-i \\mathbf{k}(t)\\cdot\\mathbf{r}}\\,d\\mathbf{r}",
+          "operation_label": "k空間座標 k(t) の定義の代入",
+          "explanation": "時間積分された位相因子に φ(r, t) = k(t)・r を代入すると、空間座標 r と空間周波数 k(t) の内積を核とする積分表示が得られる。",
+          "used_node_ids": [
+            "med.mri.n06_k_space_trajectory_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s(t) = \\int_{\\mathbb{R}^d} \\rho(\\mathbf{r}) e^{-i \\mathbf{k}(t)\\cdot\\mathbf{r}}\\,d\\mathbf{r}",
+          "to_latex": "s(t) = \\int_{\\mathbb{R}^d} \\rho(\\mathbf{r}) e^{-i \\mathbf{k}(t)\\cdot\\mathbf{r}}\\,d\\mathbf{r} = \\mathcal{F}\\{\\rho\\}\\big(\\mathbf{k}(t)\\big)",
+          "operation_label": "多次元フーリエ変換の定義との同定",
+          "explanation": "フーリエ変換の定義式と比較することで、時刻 t のMRI受信信号 s(t) がスピン密度 ρ(r) のk空間点 k(t) におけるフーリエ変換値であることが示される。",
+          "used_node_ids": [
+            "med.ct.n04_2d_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

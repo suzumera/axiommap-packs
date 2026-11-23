@@ -1,0 +1,588 @@
+{
+  "pack_meta": {
+    "pack_id": "cs.crypto.rsa_number_theory",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "cryptography",
+    "title": "現代暗号1：フェルマーの小定理・オイラーの定理・中国剰余定理とRSA暗号の正当性",
+    "language": "ja",
+    "description": "合同算術と乗法群からオイラーのφ関数、オイラーの定理、拡張ユークリッド互除法、RSA暗号の復号正当性とディフィー＝ヘルマン鍵共有を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "cs.rsa.n01_extended_gcd_mod_inverse",
+      "short_code": "RSA01",
+      "kind": "theorem_formula",
+      "title": "拡張ユークリッドの互除法とモジュラ乗法逆元の存在・計算定理",
+      "summary": "a と n が互いに素であるとき、ベズーの等式 ax + ny = 1 を満たす整数 x が存在し、x mod n が剰余環 Z/nZ における a の一意な乗法逆元となることを示す定理。",
+      "canonical_latex": "\\gcd(a, n) = 1 \\iff \\exists x \\in (\\mathbb{Z}/n\\mathbb{Z})^\\times\\text{ s.t. } ax \\equiv 1 \\pmod{n},\\quad x \\equiv a^{-1} \\pmod{n}",
+      "aliases_latex": [
+        "ax + ny = 1 \\implies a^{-1} \\equiv x \\pmod{n}"
+      ],
+      "keywords": [
+        "拡張ユークリッドの互除法",
+        "モジュラ逆元",
+        "ベズーの等式",
+        "既約剰余類群",
+        "RSA鍵生成"
+      ],
+      "domain_tags": [
+        "cryptography",
+        "number_theory"
+      ]
+    },
+    {
+      "id": "cs.rsa.n02_element_order_lagrange",
+      "short_code": "RSA02",
+      "kind": "theorem_formula",
+      "title": "有限群における元の位数とラグランジュの定理の系",
+      "summary": "位数 N の有限群 G において、任意の元 g が生成する巡回部分群の位数（元の位数 ord(g)）は群全体の位数 N を割り切り、したがって g^N = e が成り立つ。",
+      "canonical_latex": "|G| = N < \\infty,\\; g \\in G \\implies \\operatorname{ord}(g) \\mid N \\implies g^N = e",
+      "aliases_latex": [
+        "g^{|G|} = e\\quad (|G| < \\infty)"
+      ],
+      "keywords": [
+        "ラグランジュの定理",
+        "元の位数",
+        "巡回部分群",
+        "有限群",
+        "オイラーの定理"
+      ],
+      "domain_tags": [
+        "cryptography",
+        "algebra"
+      ]
+    },
+    {
+      "id": "cs.rsa.n03_chinese_remainder_theorem",
+      "short_code": "RSA03",
+      "kind": "theorem_formula",
+      "title": "中国剰余定理（CRT）と剰余環の直積同型",
+      "summary": "互いに素な法 n1, n2 に対して、連立合同式 x ≡ a1 (mod n1), x ≡ a2 (mod n2) は法 n1 n2 の下で一意な解を持ち、環同型 Z/(n1 n2)Z ≅ Z/n1Z × Z/n2Z が成り立つ。",
+      "canonical_latex": "\\gcd(n_1, n_2) = 1 \\implies \\mathbb{Z}/(n_1 n_2)\\mathbb{Z} \\cong \\mathbb{Z}/n_1\\mathbb{Z} \\times \\mathbb{Z}/n_2\\mathbb{Z},\\quad x \\equiv a_1 n_2 (n_2^{-1} \\bmod n_1) + a_2 n_1 (n_1^{-1} \\bmod n_2) \\pmod{n_1 n_2}",
+      "aliases_latex": [
+        "x \\equiv a_1 \\pmod{n_1},\\; x \\equiv a_2 \\pmod{n_2} \\implies \\exists!\\, x \\pmod{n_1 n_2}"
+      ],
+      "keywords": [
+        "中国剰余定理",
+        "連立合同式",
+        "環同型",
+        "直積分解"
+      ],
+      "domain_tags": [
+        "cryptography",
+        "number_theory"
+      ]
+    },
+    {
+      "id": "cs.rsa.n04_totient_multiplicativity",
+      "short_code": "RSA04",
+      "kind": "theorem_formula",
+      "title": "中国剰余定理による乗法群の直積分解とオイラーのφ関数の乗法性",
+      "summary": "gcd(m, n) = 1 のとき、中国剰余定理の環同型を可逆元群へ制限することで群同型 (Z/mnZ)^× ≅ (Z/mZ)^× × (Z/nZ)^× が得られ、φ(mn) = φ(m)φ(n) が導かれる。",
+      "canonical_latex": "\\gcd(m, n) = 1 \\implies (\\mathbb{Z}/mn\\mathbb{Z})^\\times \\cong (\\mathbb{Z}/m\\mathbb{Z})^\\times \\times (\\mathbb{Z}/n\\mathbb{Z})^\\times \\implies \\varphi(mn) = \\varphi(m)\\varphi(n)",
+      "aliases_latex": [
+        "\\gcd(m, n) = 1 \\implies \\varphi(mn) = \\varphi(m)\\varphi(n)"
+      ],
+      "keywords": [
+        "オイラーのφ関数",
+        "乗法性",
+        "既約剰余類群",
+        "中国剰余定理"
+      ],
+      "domain_tags": [
+        "cryptography",
+        "number_theory"
+      ]
+    },
+    {
+      "id": "cs.rsa.n05_rsa_general_message_correctness",
+      "short_code": "RSA05",
+      "kind": "theorem_formula",
+      "title": "任意の平文に対するRSA復号正当性のCRT証明（gcd(M,n)>1を含む）",
+      "summary": "平文 M が秘密素因数 p または q の倍数であって gcd(M, n) > 1 となる場合も含め、すべての整数 M に対して中国剰余定理とフェルマーの小定理から (M^e)^d ≡ M (mod pq) が成り立つことを示す定理。",
+      "canonical_latex": "n = pq\\;(p \\neq q\\text{ prime}),\\; ed \\equiv 1 \\pmod{\\varphi(n)} \\implies \\forall M \\in \\mathbb{Z},\\; M^{ed} \\equiv M \\pmod{p} \\land M^{ed} \\equiv M \\pmod{q} \\implies M^{ed} \\equiv M \\pmod{n}",
+      "aliases_latex": [
+        "\\forall M \\in \\mathbb{Z},\\; (M^e)^d \\equiv M \\pmod{pq}"
+      ],
+      "keywords": [
+        "RSA暗号",
+        "復号正当性",
+        "フェルマーの小定理",
+        "中国剰余定理"
+      ],
+      "domain_tags": [
+        "cryptography",
+        "number_theory"
+      ]
+    },
+    {
+      "id": "cs.rsa.n06_rsa_crt_fast_decryption",
+      "short_code": "RSA06",
+      "kind": "theorem_formula",
+      "title": "中国剰余定理を用いたRSA高速復号アルゴリズム（RSA-CRT / ガーナー法）",
+      "summary": "秘密素因数 p, q を用いて法 n 上のべき剰余 c^d mod n を法 p と法 q 上の小さな指数 d_p, d_q の計算へ分解し、ガーナーの再構成式で統合して高速に復号する定理。",
+      "canonical_latex": "d_p := d \\bmod (p-1),\\; d_q := d \\bmod (q-1),\\; q_{\\mathrm{inv}} := q^{-1} \\bmod p,\\quad m_1 = c^{d_p} \\bmod p,\\; m_2 = c^{d_q} \\bmod q \\implies m = m_2 + q\\big(q_{\\mathrm{inv}}(m_1 - m_2) \\bmod p\\big) \\equiv c^d \\pmod{pq}",
+      "aliases_latex": [
+        "c^d \\equiv m_2 + q\\big(q_{\\mathrm{inv}}(m_1 - m_2) \\bmod p\\big) \\pmod{pq}"
+      ],
+      "keywords": [
+        "RSA-CRT",
+        "ガーナーのアルゴリズム",
+        "高速復号",
+        "べき剰余"
+      ],
+      "domain_tags": [
+        "cryptography",
+        "algorithms"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "der_rsa01_extended_gcd_inverse",
+      "target_node_id": "cs.rsa.n01_extended_gcd_mod_inverse",
+      "route_kind": "deductive",
+      "title": "ベズーの等式からモジュラ乗法逆元の存在と計算式を導出",
+      "premise_node_ids": [
+        "eng.crypto.n01_euclidean_division_gcd",
+        "eng.crypto.n02_modular_arithmetic_zn"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "a, n は整数であり、n > 1 とする。",
+        "拡張ユークリッドの互除法によりベズー係数 x, y が計算可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\gcd(a, n) = 1 \\land \\exists x, y \\in \\mathbb{Z}\\text{ s.t. } ax + ny = 1",
+          "to_latex": "ax \\equiv 1 \\pmod{n} \\land x \\bmod n \\in (\\mathbb{Z}/n\\mathbb{Z})^\\times",
+          "operation_label": "ベズーの等式の法n還元による逆元構成",
+          "explanation": "gcd(a, n) = 1 に対するベズーの等式 ax + ny = 1 を法 n で評価することで、x が a の乗法逆元となり既約剰余類群に属することを導く。",
+          "used_node_ids": [
+            "eng.crypto.n01_euclidean_division_gcd",
+            "eng.crypto.n02_modular_arithmetic_zn"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\gcd(a, n) = 1",
+          "to_latex": "\\exists x, y \\in \\mathbb{Z}\\text{ s.t. } ax + ny = 1",
+          "operation_label": "ベズーの等式の適用",
+          "explanation": "互いに素な整数 a, n に対して拡張ユークリッドの互除法を適用し、1次結合 ax + ny = 1 を満たす整数対 (x, y) を得る。",
+          "used_node_ids": [
+            "eng.crypto.n01_euclidean_division_gcd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists x, y \\in \\mathbb{Z}\\text{ s.t. } ax + ny = 1",
+          "to_latex": "ax - 1 = (-y)n \\implies ax \\equiv 1 \\pmod{n}",
+          "operation_label": "合同式の定義への変形",
+          "explanation": "等式を移項して ax - 1 が n の倍数であることを示し、法 n における合同式 ax ≡ 1 (mod n) を得る。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "ax - 1 = (-y)n \\implies ax \\equiv 1 \\pmod{n}",
+          "to_latex": "ax \\equiv 1 \\pmod{n} \\land x \\bmod n \\in (\\mathbb{Z}/n\\mathbb{Z})^\\times",
+          "operation_label": "既約剰余類群への帰属確認",
+          "explanation": "ax + ny = 1 より gcd(x, n) = 1 も同時に成り立つため、x mod n は既約剰余類群 (Z/nZ)^× に属する一意な逆元 a^{-1} である。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_rsa02_element_order_lagrange",
+      "target_node_id": "cs.rsa.n02_element_order_lagrange",
+      "route_kind": "deductive",
+      "title": "有限群の左剰余類分割から元の位数の整除性と g^N = e を導出",
+      "premise_node_ids": [
+        "math.alg.gr01_group_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "G は位数 N の有限群であり、e はその単位元である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|G| = N < \\infty,\\; g \\in G,\\; H = \\langle g \\rangle = \\{e, g, \\dots, g^{d-1}\\}\\;(d = \\operatorname{ord}(g))",
+          "to_latex": "d \\mid N \\implies g^N = (g^d)^{N/d} = e",
+          "operation_label": "左剰余類分割による位数整除の導出",
+          "explanation": "元 g が生成する巡回部分群 H の左剰余類で G を直和分割することで |H| = d が |G| = N を割り切ることを示し、g^N = e を得る。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|G| = N < \\infty,\\; g \\in G,\\; H = \\langle g \\rangle = \\{e, g, \\dots, g^{d-1}\\}\\;(d = \\operatorname{ord}(g))",
+          "to_latex": "G = \\bigsqcup_{k=1}^{m} a_k H,\\quad |a_k H| = |H| = d",
+          "operation_label": "左剰余類による群の直和分割",
+          "explanation": "群の公理より左剰余類 a_k H は互いに交わらないか一致し、左乗算が全単射であるため各剰余類の位数は |H| = d に等しい。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G = \\bigsqcup_{k=1}^{m} a_k H,\\quad |a_k H| = |H| = d",
+          "to_latex": "N = |G| = m \\cdot d \\implies d \\mid N",
+          "operation_label": "元の個数の計数",
+          "explanation": "直和分割の元の総数を数えることで N = md を得て、元の位数 d が群の位数 N の約数であることを示す。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "N = |G| = m \\cdot d \\implies d \\mid N",
+          "to_latex": "d \\mid N \\implies g^N = (g^d)^{N/d} = e",
+          "operation_label": "位数の定義の代入",
+          "explanation": "位数の定義より g^d = e であるため、N = md を代入すると g^N = (g^d)^m = e^m = e が従う。",
+          "used_node_ids": [
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_rsa03_chinese_remainder_theorem",
+      "target_node_id": "cs.rsa.n03_chinese_remainder_theorem",
+      "route_kind": "deductive",
+      "title": "モジュラ逆元を用いた中国剰余定理の構成的証明と一意性",
+      "premise_node_ids": [
+        "eng.crypto.n02_modular_arithmetic_zn",
+        "cs.rsa.n01_extended_gcd_mod_inverse"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "n1, n2 は正の整数であり、gcd(n1, n2) = 1 を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\gcd(n_1, n_2) = 1,\\quad x \\equiv a_1 \\pmod{n_1},\\quad x \\equiv a_2 \\pmod{n_2}",
+          "to_latex": "x \\equiv a_1 n_2 y_1 + a_2 n_1 y_2 \\pmod{n_1 n_2}\\;\\text{(unique)}",
+          "operation_label": "逆元を用いた直交基底構成と一意性証明",
+          "explanation": "n2 mod n1 と n1 mod n2 の乗法逆元を用いて連立合同式の解を構成的に与え、さらに法 n1 n2 での一意性を示す。",
+          "used_node_ids": [
+            "cs.rsa.n01_extended_gcd_mod_inverse",
+            "eng.crypto.n02_modular_arithmetic_zn"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\gcd(n_1, n_2) = 1",
+          "to_latex": "\\exists y_1, y_2 \\in \\mathbb{Z}\\text{ s.t. } n_2 y_1 \\equiv 1 \\pmod{n_1},\\quad n_1 y_2 \\equiv 1 \\pmod{n_2}",
+          "operation_label": "互いに素な法に対する逆元の存在",
+          "explanation": "gcd(n1, n2) = 1 より、モジュラ逆元定理を適用して y1 = n2^{-1} mod n1 および y2 = n1^{-1} mod n2 を得る。",
+          "used_node_ids": [
+            "cs.rsa.n01_extended_gcd_mod_inverse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists y_1, y_2 \\in \\mathbb{Z}\\text{ s.t. } n_2 y_1 \\equiv 1 \\pmod{n_1},\\quad n_1 y_2 \\equiv 1 \\pmod{n_2}",
+          "to_latex": "x_0 := a_1 n_2 y_1 + a_2 n_1 y_2 \\implies x_0 \\equiv a_1 \\pmod{n_1} \\land x_0 \\equiv a_2 \\pmod{n_2}",
+          "operation_label": "構成的解の代入検証",
+          "explanation": "x0 = a1 n2 y1 + a2 n1 y2 とおくと、法 n1 では第2項が消え n2 y1 ≡ 1 となるため a1 に合同となり、法 n2 でも同様に a2 に合同となる。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x_0 := a_1 n_2 y_1 + a_2 n_1 y_2 \\implies x_0 \\equiv a_1 \\pmod{n_1} \\land x_0 \\equiv a_2 \\pmod{n_2}",
+          "to_latex": "x \\equiv x_0 \\pmod{n_1} \\land x \\equiv x_0 \\pmod{n_2} \\implies n_1 n_2 \\mid (x - x_0) \\implies x \\equiv x_0 \\pmod{n_1 n_2}",
+          "operation_label": "法 n1 n2 における解の一意性",
+          "explanation": "任意の解 x に対して x - x0 は n1 と n2 の双方で割り切れ、gcd(n1, n2) = 1 であるため n1 n2 で割り切れる。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_rsa04_totient_multiplicativity",
+      "target_node_id": "cs.rsa.n04_totient_multiplicativity",
+      "route_kind": "deductive",
+      "title": "中国剰余定理の環同型を可逆元群へ制限してφ関数の乗法性を導出",
+      "premise_node_ids": [
+        "eng.crypto.n03_euler_totient_function",
+        "cs.rsa.n03_chinese_remainder_theorem"
+      ],
+      "required_math_node_ids": [
+        "eng.crypto.n02_modular_arithmetic_zn"
+      ],
+      "assumptions": [
+        "m, n は正の整数であり、gcd(m, n) = 1 を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\gcd(m, n) = 1,\\quad \\Phi: \\mathbb{Z}/mn\\mathbb{Z} \\xrightarrow{\\sim} \\mathbb{Z}/m\\mathbb{Z} \\times \\mathbb{Z}/n\\mathbb{Z}",
+          "to_latex": "\\varphi(mn) = |(\\mathbb{Z}/mn\\mathbb{Z})^\\times| = |(\\mathbb{Z}/m\\mathbb{Z})^\\times| \\cdot |(\\mathbb{Z}/n\\mathbb{Z})^\\times| = \\varphi(m)\\varphi(n)",
+          "operation_label": "可逆元群の直積同型による位数計数",
+          "explanation": "中国剰余定理による環同型を可逆元のなす乗法群へ制限し、直積群の位数を比較することで φ(mn) = φ(m)φ(n) を導く。",
+          "used_node_ids": [
+            "cs.rsa.n03_chinese_remainder_theorem",
+            "eng.crypto.n03_euler_totient_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\gcd(m, n) = 1,\\quad \\Phi([x]_{mn}) = ([x]_m, [x]_n)",
+          "to_latex": "\\gcd(x, mn) = 1 \\iff \\gcd(x, m) = 1 \\land \\gcd(x, n) = 1",
+          "operation_label": "互いに素条件の分解",
+          "explanation": "x が積 mn と互いに素であることは、x が m と互いに素かつ n と互いに素であることと同値である。",
+          "used_node_ids": [
+            "eng.crypto.n02_modular_arithmetic_zn"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\gcd(x, mn) = 1 \\iff \\gcd(x, m) = 1 \\land \\gcd(x, n) = 1",
+          "to_latex": "\\Phi|_{(\\mathbb{Z}/mn\\mathbb{Z})^\\times}: (\\mathbb{Z}/mn\\mathbb{Z})^\\times \\xrightarrow{\\sim} (\\mathbb{Z}/m\\mathbb{Z})^\\times \\times (\\mathbb{Z}/n\\mathbb{Z})^\\times",
+          "operation_label": "CRT環同型の可逆元群への制限",
+          "explanation": "CRTの全単射写像 Φ は互いに素な元を互いに素な元の対へ写すため、乗法群の群同型を誘導する。",
+          "used_node_ids": [
+            "cs.rsa.n03_chinese_remainder_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Phi|_{(\\mathbb{Z}/mn\\mathbb{Z})^\\times}: (\\mathbb{Z}/mn\\mathbb{Z})^\\times \\xrightarrow{\\sim} (\\mathbb{Z}/m\\mathbb{Z})^\\times \\times (\\mathbb{Z}/n\\mathbb{Z})^\\times",
+          "to_latex": "\\varphi(mn) = |(\\mathbb{Z}/mn\\mathbb{Z})^\\times| = |(\\mathbb{Z}/m\\mathbb{Z})^\\times| \\cdot |(\\mathbb{Z}/n\\mathbb{Z})^\\times| = \\varphi(m)\\varphi(n)",
+          "operation_label": "直積集合の位数の計数",
+          "explanation": "オイラーの φ 関数の定義より各既約剰余類群の位数が φ(mn), φ(m), φ(n) であるため、全単射同型から φ(mn) = φ(m)φ(n) が従う。",
+          "used_node_ids": [
+            "eng.crypto.n03_euler_totient_function"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_rsa05_rsa_general_message_correctness",
+      "target_node_id": "cs.rsa.n05_rsa_general_message_correctness",
+      "route_kind": "deductive",
+      "title": "フェルマーの小定理とCRTによる一般平文MのRSA復号正当性証明",
+      "premise_node_ids": [
+        "eng.crypto.n04_euler_fermat_theorem",
+        "eng.crypto.n05_rsa_cryptosystem_correctness",
+        "cs.rsa.n03_chinese_remainder_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "p, q は相異なる素数であり、n = pq とする。",
+        "公開指数 e と秘密指数 d は ed ≡ 1 (mod φ(n)) を満たす正の整数である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "ed = 1 + k(p-1)(q-1)\\;(k \\in \\mathbb{Z}_{\\ge 0}),\\quad M \\in \\mathbb{Z}",
+          "to_latex": "M^{ed} \\equiv M \\pmod{p} \\land M^{ed} \\equiv M \\pmod{q} \\implies M^{ed} \\equiv M \\pmod{pq}",
+          "operation_label": "素因数法ごとの場合分けとCRT統合",
+          "explanation": "gcd(M, n) > 1 の場合も含め、法 p と法 q それぞれで M^{ed} ≡ M を検証し、中国剰余定理により法 pq の合同式へ統合する。",
+          "used_node_ids": [
+            "cs.rsa.n03_chinese_remainder_theorem",
+            "eng.crypto.n04_euler_fermat_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "ed = 1 + k(p-1)(q-1),\\; M \\in \\mathbb{Z}",
+          "to_latex": "(p \\nmid M \\implies M^{ed} = M(M^{p-1})^{k(q-1)} \\equiv M \\pmod{p}) \\land (p \\mid M \\implies M^{ed} \\equiv 0 \\equiv M \\pmod{p})",
+          "operation_label": "法 p における場合分けとフェルマーの小定理の適用",
+          "explanation": "p が M を割らないときはフェルマーの小定理 M^{p-1} ≡ 1 (mod p) を使い、p が M を割るときは両辺とも 0 (mod p) となることで M^{ed} ≡ M (mod p) を得る。",
+          "used_node_ids": [
+            "eng.crypto.n04_euler_fermat_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(p \\nmid M \\implies M^{ed} = M(M^{p-1})^{k(q-1)} \\equiv M \\pmod{p}) \\land (p \\mid M \\implies M^{ed} \\equiv 0 \\equiv M \\pmod{p})",
+          "to_latex": "M^{ed} \\equiv M \\pmod{p} \\land M^{ed} \\equiv M \\pmod{q}",
+          "operation_label": "対称性による法 q での合同式の導出",
+          "explanation": "p と q の対称性により法 q についても全く同様に M^{ed} ≡ M (mod q) が成り立つ。",
+          "used_node_ids": [
+            "eng.crypto.n04_euler_fermat_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M^{ed} \\equiv M \\pmod{p} \\land M^{ed} \\equiv M \\pmod{q}",
+          "to_latex": "M^{ed} \\equiv M \\pmod{pq}",
+          "operation_label": "中国剰余定理による法 pq への統合",
+          "explanation": "p ≠ q より gcd(p, q) = 1 であるため、中国剰余定理により法 pq における合同式 (M^e)^d ≡ M (mod pq) が一意に導かれる。",
+          "used_node_ids": [
+            "cs.rsa.n03_chinese_remainder_theorem",
+            "eng.crypto.n05_rsa_cryptosystem_correctness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_rsa06_rsa_crt_fast_decryption",
+      "target_node_id": "cs.rsa.n06_rsa_crt_fast_decryption",
+      "route_kind": "deductive",
+      "title": "フェルマーの小定理による指数縮小とガーナー法によるRSA-CRT復号の導出",
+      "premise_node_ids": [
+        "eng.crypto.n04_euler_fermat_theorem",
+        "cs.rsa.n01_extended_gcd_mod_inverse",
+        "cs.rsa.n03_chinese_remainder_theorem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "p, q は相異なる素数であり、n = pq とする。",
+        "復号側は秘密情報 p, q, d および事前計算値 q_inv = q^{-1} mod p を保持している。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m_1 \\equiv c^{d_p} \\pmod{p},\\quad m_2 \\equiv c^{d_q} \\pmod{q},\\quad h := q_{\\mathrm{inv}}(m_1 - m_2) \\bmod p",
+          "to_latex": "m = m_2 + qh \\equiv c^d \\pmod{pq}",
+          "operation_label": "指数縮小とガーナーの再構成によるCRT統合",
+          "explanation": "法 p, q 上で指数 d をそれぞれ p-1, q-1 で剰余をとって縮小し、ガーナーの公式で法 pq 上の復号結果 m を一意に再構成する。",
+          "used_node_ids": [
+            "cs.rsa.n01_extended_gcd_mod_inverse",
+            "cs.rsa.n03_chinese_remainder_theorem",
+            "eng.crypto.n04_euler_fermat_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m_1 \\equiv c^{d_p} \\pmod{p},\\; m_2 \\equiv c^{d_q} \\pmod{q},\\; d_p = d \\bmod (p-1),\\; d_q = d \\bmod (q-1)",
+          "to_latex": "c^d \\equiv m_1 \\pmod{p} \\land c^d \\equiv m_2 \\pmod{q}",
+          "operation_label": "フェルマーの小定理による指数の縮小",
+          "explanation": "d = k_p(p-1) + d_p と表せ、フェルマーの小定理（および p | c の自明ケース）より c^d ≡ c^{d_p} ≡ m1 (mod p) が成り立つ。法 q でも同様である。",
+          "used_node_ids": [
+            "eng.crypto.n04_euler_fermat_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c^d \\equiv m_1 \\pmod{p} \\land c^d \\equiv m_2 \\pmod{q}",
+          "to_latex": "m := m_2 + q\\big(q_{\\mathrm{inv}}(m_1 - m_2) \\bmod p\\big) \\implies m \\equiv c^d \\pmod{p} \\land m \\equiv c^d \\pmod{q}",
+          "operation_label": "ガーナーの再構成式の合同検証",
+          "explanation": "m ≡ m2 (mod q) は明らかであり、法 p では q q_inv ≡ 1 (mod p) より m ≡ m2 + (m1 - m2) = m1 ≡ c^d (mod p) となる。",
+          "used_node_ids": [
+            "cs.rsa.n01_extended_gcd_mod_inverse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m := m_2 + q\\big(q_{\\mathrm{inv}}(m_1 - m_2) \\bmod p\\big) \\implies m \\equiv c^d \\pmod{p} \\land m \\equiv c^d \\pmod{q}",
+          "to_latex": "m = m_2 + qh \\equiv c^d \\pmod{pq}",
+          "operation_label": "中国剰余定理による一意解の確定",
+          "explanation": "0 ≤ m2 < q かつ 0 ≤ h < p より 0 ≤ m < pq であり、中国剰余定理の一意性から m が求める c^d mod pq に一致する。",
+          "used_node_ids": [
+            "cs.rsa.n03_chinese_remainder_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
