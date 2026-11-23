@@ -1,0 +1,55 @@
+{
+  "pack_meta": {
+    "pack_id": "ml.state.kalman_filter",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "machine_learning",
+    "title": "状態空間モデル：線形ガウス状態空間からのカルマンフィルタ予測・更新式とカルマンゲイン",
+    "language": "ja",
+    "description": "多変量正規分布の条件付き分布と最小平均二乗誤差（MMSE）から、カルマンフィルタの予測ステップ、最適カルマンゲインK、誤差共分散更新式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "ml.kf.n01_linear_gaussian_ssm_def",
+      "short_code": "KF01",
+      "kind": "definition",
+      "title": "線形ガウス状態空間モデル（LGSSM）の定義",
+      "summary": "潜在状態ベクトルの線形マルコフ遷移と線形観測に独立な多変量ガウス雑音が加わる離散時間確率モデルを定義する。",
+      "canonical_latex": "\\mathbf{x}_t = F_t \\mathbf{x}_{t-1} + \\mathbf{w}_t,\\quad \\mathbf{y}_t = H_t \\mathbf{x}_t + \\mathbf{v}_t,\\quad \\mathbf{w}_t \\sim \\mathcal{N}(\\mathbf{0}, Q_t),\\quad \\mathbf{v}_t \\sim \\mathcal{N}(\\mathbf{0}, R_t),\\quad \\mathbf{x}_0 \\sim \\mathcal{N}(\\hat{\\mathbf{x}}_{0|0}, P_{0|0})",
+      "aliases_latex": [
+        "p(\\mathbf{x}_t \\mid \\mathbf{x}_{t-1}) = \\mathcal{N}(F_t \\mathbf{x}_{t-1}, Q_t),\\quad p(\\mathbf{y}_t \\mid \\mathbf{x}_t) = \\mathcal{N}(H_t \\mathbf{x}_t, R_t)"
+      ],
+      "keywords": [
+        "線形ガウス状態空間モデル",
+        "状態空間モデル",
+        "マルコフ連鎖",
+        "カルマンフィルタ"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "state_space_model"
+      ]
+    },
+    {
+      "id": "ml.kf.n02_multivariate_gaussian_cond",
+      "short_code": "KF02",
+      "kind": "theorem_formula",
+      "title": "多変量正規分布の条件付き分布（平均とシューア補元による共分散）",
+      "summary": "結合多変量正規分布に従う2つの確率変数ベクトルについて、一方を観測したときの他方の条件付き分布が再び正規分布となり、その平均と共分散がブロック行列のシューア補元で与えられることを示す。",
+      "canonical_latex": "\\begin{pmatrix}\\mathbf{x}\\\\\\mathbf{y}\\end{pmatrix} \\sim \\mathcal{N}\\!\\left(\\begin{pmatrix}\\boldsymbol{\\mu}_x\\\\\\boldsymbol{\\mu}_y\\end{pmatrix}, \\begin{pmatrix}\\Sigma_{xx} & \\Sigma_{xy}\\\\\\Sigma_{yx} & \\Sigma_{yy}\\end{pmatrix}\\right) \\implies \\mathbf{x}\\mid\\mathbf{y} \\sim \\mathcal{N}\\!\\left(\\boldsymbol{\\mu}_x + \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y),\\; \\Sigma_{xx} - \\Sigma_{xy}\\Sigma_{yy}^{-1}\\Sigma_{yx}\\right)",
+      "aliases_latex": [
+        "\\boldsymbol{\\mu}_{x|y} = \\boldsymbol{\\mu}_x + \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y),\\quad \\Sigma_{x|y} = \\Sigma_{xx} - \\Sigma_{xy}\\Sigma_{yy}^{-1}\\Sigma_{yx}"
+      ],
+      "keywords": [
+        "多変量正規分布",
+        "条件付き分布",
+        "シューア補元"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "probability"
+      ]
+    }
+  ],
+  "derivations": []
+}
