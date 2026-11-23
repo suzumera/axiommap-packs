@@ -10,26 +10,6 @@
   },
   "nodes": [
     {
-      "id": "eng.dsp2.n01_z_transform_def",
-      "short_code": "DSP2_01",
-      "kind": "definition",
-      "title": "両側Z変換と収束領域（ROC）の定義",
-      "summary": "離散時間信号に対する両側Z変換と、級数が絶対収束する複素平面上の領域である収束領域（ROC）を定義する。",
-      "canonical_latex": "X(z) := \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n},\\quad \\mathrm{ROC} = \\left\\{z \\in \\mathbb{C} \\;\\middle|\\; \\sum_{n=-\\infty}^{\\infty} |x[n] z^{-n}| < \\infty\\right\\}",
-      "aliases_latex": [
-        "\\mathcal{Z}\\{x[n]\\} = \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n}"
-      ],
-      "keywords": [
-        "Z-transform",
-        "region of convergence",
-        "discrete-time signal",
-        "Laurent series"
-      ],
-      "domain_tags": [
-        "signal_processing"
-      ]
-    },
-    {
       "id": "eng.dsp2.n02_difference_eq_transfer_func",
       "short_code": "DSP2_02",
       "kind": "theorem_formula",
@@ -192,85 +172,12 @@
   ],
   "derivations": [
     {
-      "id": "deriv_dsp2_n01_z_transform",
-      "target_node_id": "eng.dsp2.n01_z_transform_def",
-      "route_kind": "reformulation",
-      "title": "ラプラス変換の離散サンプリングとローラン級数からのZ変換の定式化",
-      "premise_node_ids": [
-        "math.laplace.lt01_laplace_transform_def",
-        "math.complex.lr01_laurent_series_expansion"
-      ],
-      "required_math_node_ids": [],
-      "assumptions": [
-        "x[n] = x_a(nT) is sampled at uniform period T > 0"
-      ],
-      "steps": [
-        {
-          "step_id": "s1_overview",
-          "order": 1,
-          "granularity_level": 1,
-          "parent_step_id": null,
-          "from_latex": "X_a(s) = \\int_{-\\infty}^{\\infty} x_a(t) e^{-st}\\,dt",
-          "to_latex": "X(z) = \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n},\\quad \\mathrm{ROC} = \\left\\{z \\in \\mathbb{C} \\;\\middle|\\; \\sum_{n=-\\infty}^{\\infty} |x[n] z^{-n}| < \\infty\\right\\}",
-          "operation_label": "離散化と変数置換 z = e^{sT}",
-          "explanation": "連続時間信号のサンプリング列に対するラプラス変換で z = e^{sT} と置換し、ローラン級数としての収束領域を定義する。",
-          "used_node_ids": [
-            "math.complex.lr01_laurent_series_expansion",
-            "math.laplace.lt01_laplace_transform_def"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_1",
-          "order": 1,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "X_a(s) = \\int_{-\\infty}^{\\infty} x_a(t) e^{-st}\\,dt",
-          "to_latex": "X_s(s) = \\sum_{n=-\\infty}^{\\infty} x[n] e^{-snT}",
-          "operation_label": "インパルス列サンプリングの適用",
-          "explanation": "周期 T でサンプリングした離散系列 x[n] = x_a(nT) に対してラプラス積分を和に置き換える。",
-          "used_node_ids": [
-            "math.laplace.lt01_laplace_transform_def"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_2",
-          "order": 2,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "X_s(s) = \\sum_{n=-\\infty}^{\\infty} x[n] e^{-snT}",
-          "to_latex": "X(z) := \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n}\\quad (z = e^{sT} \\in \\mathbb{C})",
-          "operation_label": "複素変数 z = e^{sT} の導入",
-          "explanation": "e^{sT} を複素変数 z とおくことで、z に関する両側べき級数（ローラン展開形式）を得る。",
-          "used_node_ids": [
-            "math.complex.lr01_laurent_series_expansion"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_3",
-          "order": 3,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "X(z) := \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n}\\quad (z = e^{sT} \\in \\mathbb{C})",
-          "to_latex": "X(z) = \\sum_{n=-\\infty}^{\\infty} x[n] z^{-n},\\quad \\mathrm{ROC} = \\left\\{z \\in \\mathbb{C} \\;\\middle|\\; \\sum_{n=-\\infty}^{\\infty} |x[n] z^{-n}| < \\infty\\right\\}",
-          "operation_label": "収束領域（ROC）の確定",
-          "explanation": "両側級数が絶対収束する複素平面上の円環領域として収束領域（ROC）を定義する。",
-          "used_node_ids": [
-            "math.complex.lr01_laurent_series_expansion"
-          ],
-          "sympy_check_hint": null
-        }
-      ]
-    },
-    {
       "id": "deriv_dsp2_n02_transfer_function",
       "target_node_id": "eng.dsp2.n02_difference_eq_transfer_func",
       "route_kind": "deductive",
       "title": "差分方程式のZ変換による伝達関数 H(z) と極零点分解の導出",
       "premise_node_ids": [
-        "eng.dsp2.n01_z_transform_def"
+        "eng.dsp1.n05_z_transform_roc"
       ],
       "required_math_node_ids": [
         "math.calc.m36_derivative_linearity"
@@ -290,7 +197,7 @@
           "operation_label": "Z変換の線形性・時間推移則と因数分解",
           "explanation": "差分方程式の両辺をZ変換して比 Y(z)/X(z) を求め、分子・分母多項式を根（零点と極）で因数分解する。",
           "used_node_ids": [
-            "eng.dsp2.n01_z_transform_def"
+            "eng.dsp1.n05_z_transform_roc"
           ],
           "sympy_check_hint": null
         },
@@ -304,7 +211,7 @@
           "operation_label": "時間推移則 \\mathcal{Z}\\{x[n-k]\\} = z^{-k}X(z) の適用",
           "explanation": "Z変換の線形性と時間遅延性質を用いて差分方程式を代数方程式に変換する。",
           "used_node_ids": [
-            "eng.dsp2.n01_z_transform_def"
+            "eng.dsp1.n05_z_transform_roc"
           ],
           "sympy_check_hint": null
         },
@@ -318,7 +225,7 @@
           "operation_label": "伝達関数 H(z) の構成",
           "explanation": "出力と入力のZ変換の比としてシステム伝達関数 H(z) を得る。",
           "used_node_ids": [
-            "eng.dsp2.n01_z_transform_def"
+            "eng.dsp1.n05_z_transform_roc"
           ],
           "sympy_check_hint": null
         },
@@ -332,7 +239,7 @@
           "operation_label": "零点 z_m と極 p_k による因数分解",
           "explanation": "代数学の基本定理により分子・分母を1次因子の積に分解し、零点と極を明示する。",
           "used_node_ids": [
-            "eng.dsp2.n01_z_transform_def"
+            "eng.dsp1.n05_z_transform_roc"
           ],
           "sympy_check_hint": null
         }
@@ -344,7 +251,7 @@
       "route_kind": "deductive",
       "title": "インパルス応答の絶対総和可能性から単位円内極条件の導出",
       "premise_node_ids": [
-        "eng.dsp2.n01_z_transform_def",
+        "eng.dsp1.n05_z_transform_roc",
         "eng.dsp2.n02_difference_eq_transfer_func"
       ],
       "required_math_node_ids": [],
@@ -362,7 +269,7 @@
           "operation_label": "畳み込み評価とROCによる極配置判定",
           "explanation": "BIBO安定の必要十分条件である絶対総和可能性がROCに単位円を含むことと等価であり、因果系では全極が単位円内に位置することを示す。",
           "used_node_ids": [
-            "eng.dsp2.n01_z_transform_def",
+            "eng.dsp1.n05_z_transform_roc",
             "eng.dsp2.n02_difference_eq_transfer_func"
           ],
           "sympy_check_hint": null
@@ -377,7 +284,7 @@
           "operation_label": "有界入力に対する出力有界性条件",
           "explanation": "任意の有界入力 |x[n]| <= M_x に対して出力が有界となる必要十分条件は、インパルス応答の絶対総和が有限であることである。",
           "used_node_ids": [
-            "eng.dsp2.n01_z_transform_def"
+            "eng.dsp1.n05_z_transform_roc"
           ],
           "sympy_check_hint": null
         },
@@ -391,7 +298,7 @@
           "operation_label": "単位円上でのZ変換の絶対収束",
           "explanation": "|z| = 1 上で |z^{-n}| = 1 となるため、絶対総和可能性は ROC が単位円 |z| = 1 を含むことと同値になる。",
           "used_node_ids": [
-            "eng.dsp2.n01_z_transform_def"
+            "eng.dsp1.n05_z_transform_roc"
           ],
           "sympy_check_hint": null
         },
@@ -640,7 +547,7 @@
       "route_kind": "reformulation",
       "title": "台形則離散化による双一次変換と周波数ワーピング式の導出",
       "premise_node_ids": [
-        "eng.dsp2.n01_z_transform_def",
+        "eng.dsp1.n05_z_transform_roc",
         "math.laplace.lt01_laplace_transform_def"
       ],
       "required_math_node_ids": [
@@ -661,7 +568,7 @@
           "operation_label": "1次パデ近似によるs-z写像と虚軸・単位円対応",
           "explanation": "s = (1/T) ln z を1次パデ近似して双一次変換を定義し、s = j\\Omega と z = e^{j\\omega} の代入から周波数ワーピング式を導く。",
           "used_node_ids": [
-            "eng.dsp2.n01_z_transform_def",
+            "eng.dsp1.n05_z_transform_roc",
             "math.laplace.lt01_laplace_transform_def"
           ],
           "sympy_check_hint": null
@@ -676,7 +583,7 @@
           "operation_label": "対数関数の1次パデ近似（台形積分則）",
           "explanation": "z = e^{sT} の逆関係 s = (1/T)\\ln z に1次有理近似（台形則による微分方程式の離散化と等価）を適用する。",
           "used_node_ids": [
-            "eng.dsp2.n01_z_transform_def",
+            "eng.dsp1.n05_z_transform_roc",
             "math.laplace.lt01_laplace_transform_def"
           ],
           "sympy_check_hint": null
@@ -691,7 +598,7 @@
           "operation_label": "虚軸 s = j\\Omega と単位円 z = e^{j\\omega} の代入",
           "explanation": "デジタル伝達関数 H(z) を定義し、アナログ周波数 \\Omega とデジタル周波数 \\omega の対応関係を評価する。",
           "used_node_ids": [
-            "eng.dsp2.n01_z_transform_def"
+            "eng.dsp1.n05_z_transform_roc"
           ],
           "sympy_check_hint": null
         },
