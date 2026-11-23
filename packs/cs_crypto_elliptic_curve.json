@@ -1,0 +1,546 @@
+{
+  "pack_meta": {
+    "pack_id": "cs.crypto.elliptic_curve",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "cryptography",
+    "title": "現代暗号2：有限体上の楕円曲線群の加算公式とECDH・ECDSA",
+    "language": "ja",
+    "description": "ワイエルシュトラス標準形 y^2=x^3+ax+b 上の弦接線法から点の加算・2倍算公式、楕円曲線離散対数問題とECDSAの検証等式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "cs.ecc.n01_chord_tangent_group_law",
+      "short_code": "ECC01",
+      "kind": "definition",
+      "title": "楕円曲線上の弦接線法と加法群構造の定義",
+      "summary": "ワイエルシュトラス標準形 y^2 = x^3 + ax + b 上の点と無限遠点 O に対し、同一直線上の3点の和が O になるという幾何学的規則（弦接線法）により可換群の演算を定義する。",
+      "canonical_latex": "P + Q + R = \\mathcal{O} \\iff P + Q = -R,\\quad -(x,y) = (x,-y),\\quad P + \\mathcal{O} = P",
+      "aliases_latex": [
+        "P + (-P) = \\mathcal{O}"
+      ],
+      "keywords": [
+        "楕円曲線",
+        "弦接線法",
+        "無限遠点",
+        "加法群"
+      ],
+      "domain_tags": [
+        "cryptography",
+        "algebra"
+      ]
+    },
+    {
+      "id": "cs.ecc.n02_point_addition_formula",
+      "short_code": "ECC02",
+      "kind": "theorem_formula",
+      "title": "楕円曲線上の異なる2点の加算公式（P ≠ ±Q）",
+      "summary": "x座標が異なる2点 P=(x1,y1), Q=(x2,y2) を結ぶ割線の傾き λ と3次方程式の解と係数の関係（ビエタの定理）から、和の点 P+Q=(x3,y3) の座標公式を導出する。",
+      "canonical_latex": "\\lambda \\equiv \\frac{y_2 - y_1}{x_2 - x_1} \\pmod{p},\\quad x_3 \\equiv \\lambda^2 - x_1 - x_2 \\pmod{p},\\quad y_3 \\equiv \\lambda(x_1 - x_3) - y_1 \\pmod{p}",
+      "aliases_latex": [
+        "x_3 = \\lambda^2 - x_1 - x_2"
+      ],
+      "keywords": [
+        "点の加算",
+        "割線",
+        "ビエタの定理",
+        "モジュラ逆元"
+      ],
+      "domain_tags": [
+        "cryptography",
+        "algebra"
+      ]
+    },
+    {
+      "id": "cs.ecc.n03_point_doubling_formula",
+      "short_code": "ECC03",
+      "kind": "theorem_formula",
+      "title": "楕円曲線上の点の2倍算公式（P = Q, y1 ≠ 0）",
+      "summary": "y1 ≠ 0 を満たす点 P=(x1,y1) における接線の傾き λ を形式微分により求め、重解 x1 を持つ3次方程式の解と係数の関係から 2P=(x3,y3) の座標公式を導出する。",
+      "canonical_latex": "\\lambda \\equiv \\frac{3x_1^2 + a}{2y_1} \\pmod{p},\\quad x_3 \\equiv \\lambda^2 - 2x_1 \\pmod{p},\\quad y_3 \\equiv \\lambda(x_1 - x_3) - y_1 \\pmod{p}",
+      "aliases_latex": [
+        "x_3 = \\lambda^2 - 2x_1"
+      ],
+      "keywords": [
+        "点の2倍算",
+        "接線",
+        "重解",
+        "ワイエルシュトラス形"
+      ],
+      "domain_tags": [
+        "cryptography",
+        "algebra"
+      ]
+    },
+    {
+      "id": "cs.ecc.n04_scalar_multiplication_double_add",
+      "short_code": "ECC04",
+      "kind": "definition",
+      "title": "スカラー倍算とバイナリ法（Double-and-Add）の定義",
+      "summary": "楕円曲線上の点 P を k 回加算するスカラー倍算 [k]P を定義し、k の2進展開に基づいて2倍算と加算を組み合わせることで O(log k) 回の演算で計算するバイナリ法を定める。",
+      "canonical_latex": "[k]P := \\underbrace{P + P + \\dots + P}_{k\\text{ times}} = \\sum_{j=0}^{m-1} k_j ([2^j]P)\\quad \\left(k = \\sum_{j=0}^{m-1} k_j 2^j,\\; k_j \\in \\{0,1\\}\\right)",
+      "aliases_latex": [
+        "kP = \\sum k_j (2^j P)"
+      ],
+      "keywords": [
+        "スカラー倍算",
+        "バイナリ法",
+        "Double-and-Add",
+        "ECDLP"
+      ],
+      "domain_tags": [
+        "cryptography",
+        "algorithms"
+      ]
+    },
+    {
+      "id": "cs.ecc.n05_ecdh_key_exchange",
+      "short_code": "ECC05",
+      "kind": "theorem_formula",
+      "title": "楕円曲線ディフィー＝ヘルマン（ECDH）鍵共有の一致定理",
+      "summary": "楕円曲線離散対数問題（ECDLP）の計算困難性を安全性の根拠とし、アリスとボブが公開鍵の交換を通じて同一の共有点 [dA dB]G に到達することを示す。",
+      "canonical_latex": "Q_A = [d_A]G,\\; Q_B = [d_B]G \\implies S_A = [d_A]Q_B = [d_A d_B]G = [d_B]Q_A = S_B",
+      "aliases_latex": [
+        "d_A Q_B = d_B Q_A"
+      ],
+      "keywords": [
+        "ECDH",
+        "鍵共有",
+        "楕円曲線暗号",
+        "共有鍵"
+      ],
+      "domain_tags": [
+        "cryptography"
+      ]
+    },
+    {
+      "id": "cs.ecc.n06_ecdsa_signature_scheme",
+      "short_code": "ECC06",
+      "kind": "definition",
+      "title": "ECDSA（楕円曲線デジタル署名アルゴリズム）の署名生成定義",
+      "summary": "素数位数 n の生成元 G、秘密鍵 d、公開鍵 Q=[d]G の下で、メッセージハッシュ z と一時乱数 k を用いて署名ペア (r, s) を生成する手順を定義する。",
+      "canonical_latex": "R = (x_R, y_R) = [k]G,\\quad r \\equiv x_R \\pmod{n},\\quad s \\equiv k^{-1}(z + rd) \\pmod{n}\\quad (r, s \\not\\equiv 0 \\pmod{n})",
+      "aliases_latex": [
+        "s = k^{-1}(z + rd) \\bmod n"
+      ],
+      "keywords": [
+        "ECDSA",
+        "デジタル署名",
+        "一時乱数",
+        "署名生成"
+      ],
+      "domain_tags": [
+        "cryptography"
+      ]
+    },
+    {
+      "id": "cs.ecc.n07_ecdsa_verification_correctness",
+      "short_code": "ECC07",
+      "kind": "theorem_formula",
+      "title": "ECDSA署名検証等式の正当性定理",
+      "summary": "検証者が公開鍵 Q と署名 (r, s) およびハッシュ値 z から計算する点 R' = [u1]G + [u2]Q が、位数 n の巡回部分群の性質により署名時の一時点 [k]G = R と一致し、x座標が r と合同になることを証明する。",
+      "canonical_latex": "u_1 \\equiv z s^{-1} \\pmod{n},\\; u_2 \\equiv r s^{-1} \\pmod{n} \\implies R' = [u_1]G + [u_2]Q = [k]G = R \\implies x_{R'} \\equiv r \\pmod{n}",
+      "aliases_latex": [
+        "[z s^{-1}]G + [r s^{-1}]Q = [k]G"
+      ],
+      "keywords": [
+        "ECDSA",
+        "署名検証",
+        "正当性証明",
+        "巡回群"
+      ],
+      "domain_tags": [
+        "cryptography"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_ecc01_chord_tangent_def",
+      "target_node_id": "cs.ecc.n01_chord_tangent_group_law",
+      "route_kind": "reformulation",
+      "title": "楕円曲線集合への弦接線法による加法群構造の導入",
+      "premise_node_ids": [
+        "eng.crypto.n08_elliptic_curve_group_intro",
+        "math.alg.gr01_group_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "有限体 F_p の標数 p は 2 および 3 ではない（p > 3）。",
+        "判別式条件 4a^3 + 27b^2 ≠ 0 (mod p) が満たされ、曲線は非特異である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_group_law",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "E(\\mathbb{F}_p) = \\{(x,y)\\in\\mathbb{F}_p^2 \\mid y^2 \\equiv x^3 + ax + b \\pmod{p}\\} \\cup \\{\\mathcal{O}\\}",
+          "to_latex": "P + Q + R = \\mathcal{O} \\iff P + Q = -R,\\quad -(x,y) = (x,-y),\\quad P + \\mathcal{O} = P",
+          "operation_label": "無限遠点と逆元・加算規則の定義",
+          "explanation": "無限遠点 O を加法の単位元とし、x軸に関する対称点 (x, -y) を (x, y) の逆元と定める。任意の直線と曲線の3交点 P, Q, R の和を O と約束することで可換群の公理が満たされる。",
+          "used_node_ids": [
+            "eng.crypto.n08_elliptic_curve_group_intro",
+            "math.alg.gr01_group_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ecc02_point_addition",
+      "target_node_id": "cs.ecc.n02_point_addition_formula",
+      "route_kind": "deductive",
+      "title": "割線とビエタの定理による異なる2点の加算公式の導出",
+      "premise_node_ids": [
+        "cs.ecc.n01_chord_tangent_group_law",
+        "cs.rsa.n01_extended_gcd_mod_inverse"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "P = (x1, y1) と Q = (x2, y2) は x1 ≠ x2 (mod p) を満たす曲線上の点である。",
+        "p は素数であり、x2 - x1 ≠ 0 (mod p) に対して mod p における乗法逆元が存在する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P=(x_1,y_1),\\; Q=(x_2,y_2)\\in E(\\mathbb{F}_p),\\quad x_1 \\not\\equiv x_2 \\pmod{p}",
+          "to_latex": "\\lambda \\equiv \\frac{y_2 - y_1}{x_2 - x_1} \\pmod{p},\\quad x_3 \\equiv \\lambda^2 - x_1 - x_2 \\pmod{p},\\quad y_3 \\equiv \\lambda(x_1 - x_3) - y_1 \\pmod{p}",
+          "operation_label": "割線と曲線の方程式の連立による加算座標の導出",
+          "explanation": "2点 P, Q を通る直線の式を楕円曲線の方程式に代入し、3次方程式の解と係数の関係から第3の交点のx座標を求め、x軸反転により P+Q の座標を得る。",
+          "used_node_ids": [
+            "cs.ecc.n01_chord_tangent_group_law",
+            "cs.rsa.n01_extended_gcd_mod_inverse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_secant_line",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P=(x_1,y_1),\\; Q=(x_2,y_2)\\in E(\\mathbb{F}_p),\\quad x_1 \\not\\equiv x_2 \\pmod{p}",
+          "to_latex": "y = \\lambda(x - x_1) + y_1,\\quad \\lambda \\equiv (y_2 - y_1)(x_2 - x_1)^{-1} \\pmod{p}",
+          "operation_label": "モジュラ逆元を用いた割線の方程式の立式",
+          "explanation": "x2 - x1 は p と互いに素であるため mod p の乗法逆元が存在し、P と Q を結ぶ割線の傾き λ と直線の方程式が一意に定まる。",
+          "used_node_ids": [
+            "cs.rsa.n01_extended_gcd_mod_inverse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_cubic_vieta",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "y = \\lambda(x - x_1) + y_1,\\quad \\lambda \\equiv (y_2 - y_1)(x_2 - x_1)^{-1} \\pmod{p}",
+          "to_latex": "x^3 - \\lambda^2 x^2 + (a + 2\\lambda^2 x_1 - 2\\lambda y_1)x + (b - (y_1 - \\lambda x_1)^2) \\equiv 0 \\pmod{p} \\implies x_1 + x_2 + x_3 \\equiv \\lambda^2 \\pmod{p}",
+          "operation_label": "曲線への代入とビエタの定理の適用",
+          "explanation": "直線の式を y^2 = x^3 + ax + b に代入して整理すると、x の3次方程式の x^2 の係数は -λ^2 となる。3つの交点のx座標 x1, x2, x3 はこの方程式の3解であるため、解と係数の関係から和が λ^2 に等しい。",
+          "used_node_ids": [
+            "cs.ecc.n01_chord_tangent_group_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_reflection",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x^3 - \\lambda^2 x^2 + (a + 2\\lambda^2 x_1 - 2\\lambda y_1)x + (b - (y_1 - \\lambda x_1)^2) \\equiv 0 \\pmod{p} \\implies x_1 + x_2 + x_3 \\equiv \\lambda^2 \\pmod{p}",
+          "to_latex": "\\lambda \\equiv \\frac{y_2 - y_1}{x_2 - x_1} \\pmod{p},\\quad x_3 \\equiv \\lambda^2 - x_1 - x_2 \\pmod{p},\\quad y_3 \\equiv \\lambda(x_1 - x_3) - y_1 \\pmod{p}",
+          "operation_label": "第3交点のx軸対称反転による和の座標決定",
+          "explanation": "第3の交点 R = (x3, y_R) は直線上にあるため y_R = λ(x3 - x1) + y1 である。P + Q = -R = (x3, -y_R) より y3 = -y_R = λ(x1 - x3) - y1 を得る。",
+          "used_node_ids": [
+            "cs.ecc.n01_chord_tangent_group_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ecc03_point_doubling",
+      "target_node_id": "cs.ecc.n03_point_doubling_formula",
+      "route_kind": "deductive",
+      "title": "接線の傾きと重解条件による点の2倍算公式の導出",
+      "premise_node_ids": [
+        "cs.ecc.n01_chord_tangent_group_law",
+        "cs.rsa.n01_extended_gcd_mod_inverse"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "P = (x1, y1) は y1 ≠ 0 (mod p) を満たす曲線上の点である。",
+        "p > 3 の素数であり、2y1 ≠ 0 (mod p) に対して mod p における乗法逆元が存在する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P=(x_1,y_1)\\in E(\\mathbb{F}_p),\\quad y_1 \\not\\equiv 0 \\pmod{p}",
+          "to_latex": "\\lambda \\equiv \\frac{3x_1^2 + a}{2y_1} \\pmod{p},\\quad x_3 \\equiv \\lambda^2 - 2x_1 \\pmod{p},\\quad y_3 \\equiv \\lambda(x_1 - x_3) - y_1 \\pmod{p}",
+          "operation_label": "接線の傾きと重解の解と係数の関係による2倍点座標の導出",
+          "explanation": "点 P における接線の傾き λ を曲線方程式の形式微分から求め、x1 を重解として持つ3次方程式の解と係数の関係から 2P の座標を得る。",
+          "used_node_ids": [
+            "cs.ecc.n01_chord_tangent_group_law",
+            "cs.rsa.n01_extended_gcd_mod_inverse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_tangent_slope",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P=(x_1,y_1)\\in E(\\mathbb{F}_p),\\quad y_1 \\not\\equiv 0 \\pmod{p}",
+          "to_latex": "2y_1 \\lambda \\equiv 3x_1^2 + a \\pmod{p} \\implies \\lambda \\equiv (3x_1^2 + a)(2y_1)^{-1} \\pmod{p}",
+          "operation_label": "曲線の形式微分による接線の傾きの計算",
+          "explanation": "y^2 - x^3 - ax - b = 0 を形式的に微分すると 2y(dy/dx) = 3x^2 + a となる。p > 3 かつ y1 ≠ 0 より 2y1 の逆元が mod p で存在し、接線の傾き λ が定まる。",
+          "used_node_ids": [
+            "cs.rsa.n01_extended_gcd_mod_inverse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_double_root_vieta",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "2y_1 \\lambda \\equiv 3x_1^2 + a \\pmod{p} \\implies \\lambda \\equiv (3x_1^2 + a)(2y_1)^{-1} \\pmod{p}",
+          "to_latex": "(x - x_1)^2(x - x_3) \\equiv x^3 - \\lambda^2 x^2 + \\dots \\pmod{p} \\implies 2x_1 + x_3 \\equiv \\lambda^2 \\pmod{p}",
+          "operation_label": "重解 x1 を持つ3次方程式へのビエタの定理の適用",
+          "explanation": "接線 y = λ(x - x1) + y1 を曲線に代入した3次方程式は x1 を重解に持つため、3解の和は x1 + x1 + x3 = 2x1 + x3 となり、これが x^2 の係数の符号反転 λ^2 に等しい。",
+          "used_node_ids": [
+            "cs.ecc.n01_chord_tangent_group_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_doubling_coords",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(x - x_1)^2(x - x_3) \\equiv x^3 - \\lambda^2 x^2 + \\dots \\pmod{p} \\implies 2x_1 + x_3 \\equiv \\lambda^2 \\pmod{p}",
+          "to_latex": "\\lambda \\equiv \\frac{3x_1^2 + a}{2y_1} \\pmod{p},\\quad x_3 \\equiv \\lambda^2 - 2x_1 \\pmod{p},\\quad y_3 \\equiv \\lambda(x_1 - x_3) - y_1 \\pmod{p}",
+          "operation_label": "x軸対称反転による2倍点のy座標の決定",
+          "explanation": "2x1 + x3 ≡ λ^2 より x3 が定まり、接線上の交点 R=(x3, y_R) のy座標を反転することで 2P = -R の座標 (x3, y3) を得る。",
+          "used_node_ids": [
+            "cs.ecc.n01_chord_tangent_group_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ecc04_scalar_mult_def",
+      "target_node_id": "cs.ecc.n04_scalar_multiplication_double_add",
+      "route_kind": "reformulation",
+      "title": "加算・2倍算公式からのスカラー倍算とバイナリ法の構成",
+      "premise_node_ids": [
+        "cs.ecc.n02_point_addition_formula",
+        "cs.ecc.n03_point_doubling_formula",
+        "eng.crypto.n08_elliptic_curve_group_intro"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "k は非負整数であり、点 P は有限体上の楕円曲線群 E(F_p) の元である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_binary_expansion",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "k = \\sum_{j=0}^{m-1} k_j 2^j\\;(k_j \\in \\{0,1\\}),\\quad P \\in E(\\mathbb{F}_p)",
+          "to_latex": "[k]P := \\underbrace{P + P + \\dots + P}_{k\\text{ times}} = \\sum_{j=0}^{m-1} k_j ([2^j]P)",
+          "operation_label": "2進展開によるスカラー倍算の分解定義",
+          "explanation": "点の2倍算を反復して [2^j]P を生成し、k の2進表現においてビットが1の位置でのみ点の加算を実行することで、スカラー倍 [k]P を効率的に定義・計算できる。",
+          "used_node_ids": [
+            "cs.ecc.n02_point_addition_formula",
+            "cs.ecc.n03_point_doubling_formula",
+            "eng.crypto.n08_elliptic_curve_group_intro"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ecc05_ecdh_correctness",
+      "target_node_id": "cs.ecc.n05_ecdh_key_exchange",
+      "route_kind": "deductive",
+      "title": "スカラー倍算の結合律・可換性に基づくECDH共有鍵一致の証明",
+      "premise_node_ids": [
+        "cs.ecc.n04_scalar_multiplication_double_add",
+        "eng.crypto.n07_diffie_hellman_key_exchange",
+        "eng.crypto.n08_elliptic_curve_group_intro"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ベースポイント G は標準化された楕円曲線群 E(F_p) の生成元（位数 n）である。",
+        "d_A, d_B はそれぞれアリスとボブが選んだ秘密整数（1 <= d_A, d_B < n）である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Q_A = [d_A]G,\\quad Q_B = [d_B]G\\quad (G \\in E(\\mathbb{F}_p),\\; d_A, d_B \\in \\mathbb{Z}_{>0})",
+          "to_latex": "S_A = [d_A]Q_B = [d_A d_B]G = [d_B]Q_A = S_B",
+          "operation_label": "スカラー乗法の結合性と可換性による共有点の一致",
+          "explanation": "乗法群上のDH鍵交換を加法表記の楕円曲線群へ写し、スカラー倍の結合性と整数積の可換性から双方の共有点が一致することを示す。",
+          "used_node_ids": [
+            "cs.ecc.n04_scalar_multiplication_double_add",
+            "eng.crypto.n07_diffie_hellman_key_exchange"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_alice_compute",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q_A = [d_A]G,\\quad Q_B = [d_B]G\\quad (G \\in E(\\mathbb{F}_p),\\; d_A, d_B \\in \\mathbb{Z}_{>0})",
+          "to_latex": "S_A = [d_A]Q_B = [d_A]([d_B]G) = [d_A d_B]G",
+          "operation_label": "アリスの共有点計算とスカラー倍の結合法則",
+          "explanation": "アリスはボブの公開点 Q_B = [d_B]G に自身の秘密鍵 d_A をスカラー倍する。群の結合律より [d_A]([d_B]G) は G を d_A d_B 回足した点 [d_A d_B]G に等しい。",
+          "used_node_ids": [
+            "cs.ecc.n04_scalar_multiplication_double_add",
+            "eng.crypto.n08_elliptic_curve_group_intro"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_bob_commute",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_A = [d_A]Q_B = [d_A]([d_B]G) = [d_A d_B]G",
+          "to_latex": "S_A = [d_A]Q_B = [d_A d_B]G = [d_B]Q_A = S_B",
+          "operation_label": "整数乗算の可換性によるボブの共有点との一致",
+          "explanation": "整数積の可換性 d_A d_B = d_B d_A より [d_A d_B]G = [d_B d_A]G = [d_B]([d_A]G) = [d_B]Q_A = S_B となり、盗聴者は ECDLP の困難性により共有点を得られない。",
+          "used_node_ids": [
+            "eng.crypto.n07_diffie_hellman_key_exchange",
+            "eng.crypto.n08_elliptic_curve_group_intro"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ecc06_ecdsa_def",
+      "target_node_id": "cs.ecc.n06_ecdsa_signature_scheme",
+      "route_kind": "reformulation",
+      "title": "位数 n の部分群とモジュラ逆元を用いたECDSA署名の定義",
+      "premise_node_ids": [
+        "cs.ecc.n04_scalar_multiplication_double_add",
+        "cs.rsa.n01_extended_gcd_mod_inverse",
+        "cs.rsa.n02_element_order_lagrange"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ベースポイント G の位数 n は大きな素数である。",
+        "一時乱数 k は署名ごとに一様かつ独立に {1, ..., n-1} から選ばれ、r ≠ 0 かつ s ≠ 0 (mod n) である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_ecdsa_sign_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\operatorname{ord}(G) = n\\text{ (prime)},\n\\; Q = [d]G,\\; z = H(m),\\; k \\in \\{1,\\dots,n-1\\}",
+          "to_latex": "R = (x_R, y_R) = [k]G,\\quad r \\equiv x_R \\pmod{n},\\quad s \\equiv k^{-1}(z + rd) \\pmod{n}\\quad (r, s \\not\\equiv 0 \\pmod{n})",
+          "operation_label": "一時点Rの生成と署名値(r, s)の計算式の定義",
+          "explanation": "一時乱数 k によるスカラー倍点 [k]G のx座標を mod n で縮約して r とし、n が素数であることから存在する k の mod n 逆元 k^{-1} を用いて s ≡ k^{-1}(z + rd) (mod n) と定義する。",
+          "used_node_ids": [
+            "cs.ecc.n04_scalar_multiplication_double_add",
+            "cs.rsa.n01_extended_gcd_mod_inverse",
+            "cs.rsa.n02_element_order_lagrange"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_ecc07_ecdsa_verify",
+      "target_node_id": "cs.ecc.n07_ecdsa_verification_correctness",
+      "route_kind": "deductive",
+      "title": "巡回群の位数と合同式変形によるECDSA検証等式の証明",
+      "premise_node_ids": [
+        "cs.ecc.n06_ecdsa_signature_scheme",
+        "cs.rsa.n01_extended_gcd_mod_inverse",
+        "cs.rsa.n02_element_order_lagrange"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "検証対象の署名 (r, s) は 1 <= r, s <= n-1 を満たす。",
+        "公開鍵 Q は Q = [d]G を満たし、G の位数は素数 n である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "u_1 \\equiv z s^{-1} \\pmod{n},\\; u_2 \\equiv r s^{-1} \\pmod{n}",
+          "to_latex": "u_1 \\equiv z s^{-1} \\pmod{n},\\; u_2 \\equiv r s^{-1} \\pmod{n} \\implies R' = [u_1]G + [u_2]Q = [k]G = R \\implies x_{R'} \\equiv r \\pmod{n}",
+          "operation_label": "検証点 R' と一時点 R の一致の証明",
+          "explanation": "公開鍵 Q = [d]G を検証式に代入して G のスカラー倍にまとめ、指数部分の mod n での合同関係と G の位数が n であることを用いて R' = [k]G を導く。",
+          "used_node_ids": [
+            "cs.ecc.n06_ecdsa_signature_scheme",
+            "cs.rsa.n01_extended_gcd_mod_inverse",
+            "cs.rsa.n02_element_order_lagrange"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_combine_g",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_1 \\equiv z s^{-1} \\pmod{n},\\; u_2 \\equiv r s^{-1} \\pmod{n}",
+          "to_latex": "R' = [u_1]G + [u_2]Q = [u_1]G + [u_2 d]G = [u_1 + u_2 d]G",
+          "operation_label": "公開鍵 Q = [d]G の代入とスカラー倍の統合",
+          "explanation": "Q = [d]G を代入すると [u2]Q = [u2 d]G となり、群の加法に関する分配性から [u1]G + [u2 d]G = [u1 + u2 d]G と単一のスカラー倍にまとまる。",
+          "used_node_ids": [
+            "cs.ecc.n06_ecdsa_signature_scheme"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_mod_n_algebra",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R' = [u_1]G + [u_2]Q = [u_1]G + [u_2 d]G = [u_1 + u_2 d]G",
+          "to_latex": "u_1 + u_2 d \\equiv (z + rd)s^{-1} \\equiv (z + rd)\\big(k(z + rd)^{-1}\\big) \\equiv k \\pmod{n}",
+          "operation_label": "署名式 s ≡ k^{-1}(z + rd) の逆元の代入",
+          "explanation": "s ≡ k^{-1}(z + rd) (mod n) かつ s ≠ 0 (mod n) より、s^{-1} ≡ k(z + rd)^{-1} (mod n) が存在する。これを u1 + u2 d に代入すると (z + rd) が約分され k (mod n) となる。",
+          "used_node_ids": [
+            "cs.ecc.n06_ecdsa_signature_scheme",
+            "cs.rsa.n01_extended_gcd_mod_inverse"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_order_reduction",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_1 + u_2 d \\equiv (z + rd)s^{-1} \\equiv (z + rd)\\big(k(z + rd)^{-1}\\big) \\equiv k \\pmod{n}",
+          "to_latex": "u_1 \\equiv z s^{-1} \\pmod{n},\\; u_2 \\equiv r s^{-1} \\pmod{n} \\implies R' = [u_1]G + [u_2]Q = [k]G = R \\implies x_{R'} \\equiv r \\pmod{n}",
+          "operation_label": "生成元 G の位数 n によるスカラー倍の簡約",
+          "explanation": "G の位数が n であるため [n]G = O となり、スカラー倍は mod n で不変である。よって R' = [u1 + u2 d]G = [k]G = R となり、x_{R'} ≡ x_R ≡ r (mod n) が成立する。",
+          "used_node_ids": [
+            "cs.rsa.n02_element_order_lagrange"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

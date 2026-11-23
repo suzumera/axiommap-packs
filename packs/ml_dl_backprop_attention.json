@@ -1,0 +1,717 @@
+{
+  "pack_meta": {
+    "pack_id": "ml.dl.backprop_attention",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "machine_learning",
+    "title": "深層学習数理：連鎖律からの誤差逆伝播法・Softmax交差エントロピー勾配とScaled Dot-Product Attention",
+    "language": "ja",
+    "description": "多変数連鎖律と行列微分から多層パーセプトロンの誤差逆伝播法、Softmax+交差エントロピーの勾配 y_hat - y、Attentionの√d_kスケーリングの分散根拠を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "ml.dl.n01_frobenius_matrix_differential",
+      "short_code": "DL01",
+      "kind": "definition",
+      "title": "フロベニウス内積による行列微分と勾配の定義",
+      "summary": "スカラー損失関数の行列パラメータに対する全微分を、トレースとフロベニウス内積を用いて表現し、行列勾配を定義する。",
+      "canonical_latex": "d\\mathcal{L} = \\langle \\nabla_W \\mathcal{L}, dW \\rangle_F = \\operatorname{tr}\\!\\left((\\nabla_W \\mathcal{L})^\\top dW\\right)",
+      "aliases_latex": [
+        "d\\mathcal{L} = \\sum_{i,j} \\frac{\\partial \\mathcal{L}}{\\partial W_{ij}} dW_{ij}"
+      ],
+      "keywords": [
+        "行列微分",
+        "フロベニウス内積",
+        "トレース",
+        "勾配"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "deep_learning",
+        "matrix_calculus"
+      ]
+    },
+    {
+      "id": "ml.dl.n02_vjp_reverse_mode_ad",
+      "short_code": "DL02",
+      "kind": "theorem_formula",
+      "title": "逆向き自動微分（VJP）の連鎖律と計算量構造",
+      "summary": "合成関数のヤコビアン積を出力側の随伴ベクトルとの左からの積（Vector-Jacobian Product）として順次計算する逆向き自動微分の基本公式。",
+      "canonical_latex": "\\mathbf{v}^\\top J_{g \\circ f}(\\mathbf{x}) = \\big(\\mathbf{v}^\\top J_g(\\mathbf{y})\\big) J_f(\\mathbf{x})\\quad (\\mathbf{y} = f(\\mathbf{x}))",
+      "aliases_latex": [
+        "\\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{x}} = \\left(\\frac{\\partial \\mathbf{y}}{\\partial \\mathbf{x}}\\right)^\\top \\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{y}}"
+      ],
+      "keywords": [
+        "逆向き自動微分",
+        "VJP",
+        "連鎖律",
+        "誤差逆伝播"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "deep_learning",
+        "automatic_differentiation"
+      ]
+    },
+    {
+      "id": "ml.dl.n03_vanishing_exploding_gradient",
+      "short_code": "DL03",
+      "kind": "theorem_formula",
+      "title": "多層パーセプトロンにおける勾配消失・爆発のヤコビアン積評価",
+      "summary": "誤差逆伝播における層間誤差信号の漸化式を繰り返し展開し、重み行列のスペクトルノルムと活性化導関数上界の積による勾配ノルム評価を与える。",
+      "canonical_latex": "\\left\\|\\boldsymbol{\\delta}^{(l)}\\right\\|_2 \\le \\left(\\prod_{k=l}^{L-1} \\gamma_k \\left\\|W^{(k+1)}\\right\\|_2\\right)\\left\\|\\boldsymbol{\\delta}^{(L)}\\right\\|_2\\quad \\left(\\left|\\sigma'(z)\\right| \\le \\gamma_k\\right)",
+      "aliases_latex": [
+        "\\boldsymbol{\\delta}^{(l)} = \\left(\\prod_{k=l}^{L-1} \\operatorname{diag}(\\sigma'(\\mathbf{z}^{(k)}))(W^{(k+1)})^\\top\\right)\\boldsymbol{\\delta}^{(L)}"
+      ],
+      "keywords": [
+        "勾配消失",
+        "勾配爆発",
+        "スペクトルノルム",
+        "ヤコビアン積"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "deep_learning"
+      ]
+    },
+    {
+      "id": "ml.dl.n04_softmax_logsumexp_convexity",
+      "short_code": "DL04",
+      "kind": "theorem_formula",
+      "title": "Log-Sum-Exp 関数のシフト不変性と Softmax 交差エントロピーの凸性",
+      "summary": "Log-Sum-Exp 関数の最大値シフトによる数値安定化と、Softmax 交差エントロピー損失のロジットに関するヘッセ行列が半正定値（凸）であることを示す。",
+      "canonical_latex": "\\operatorname{LSE}(\\mathbf{z}) := \\ln\\sum_{i=1}^{K} e^{z_i} = c + \\ln\\sum_{i=1}^{K} e^{z_i - c},\\qquad \\nabla_{\\mathbf{z}}^2 \\mathcal{L}_{\\mathrm{CE}}(\\mathbf{y},\\mathbf{p}) = \\operatorname{diag}(\\mathbf{p}) - \\mathbf{p}\\mathbf{p}^\\top \\succeq 0",
+      "aliases_latex": [
+        "\\mathbf{h}^\\top \\nabla_{\\mathbf{z}}^2 \\mathcal{L}_{\\mathrm{CE}} \\mathbf{h} = \\operatorname{Var}_{p}(h) \\ge 0"
+      ],
+      "keywords": [
+        "Log-Sum-Exp",
+        "Softmax",
+        "交差エントロピー",
+        "凸性"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "deep_learning",
+        "optimization"
+      ]
+    },
+    {
+      "id": "ml.dl.n05_softmax_temperature_saturation",
+      "short_code": "DL05",
+      "kind": "theorem_formula",
+      "title": "Softmax の低温極限（分散増大）による勾配飽和現象",
+      "summary": "Softmax への入力ロジットのスケール（逆温度 1/τ）が増大すると出力分布が one-hot に近づき、ヤコビ行列が零行列へ漸近して勾配が消失する理由を与える。",
+      "canonical_latex": "p_i(\\tau) = \\frac{e^{z_i/\\tau}}{\\sum_{j=1}^{K} e^{z_j/\\tau}} \\xrightarrow{\\tau \\to 0^+} \\mathbb{I}(i = i^*),\\qquad \\frac{\\partial \\mathbf{p}}{\\partial \\mathbf{z}} = \\frac{1}{\\tau}\\big(\\operatorname{diag}(\\mathbf{p}) - \\mathbf{p}\\mathbf{p}^\\top\\big) \\xrightarrow{\\tau \\to 0^+} O",
+      "aliases_latex": [
+        "\\lim_{\\tau \\to 0^+} J_{\\operatorname{softmax}}(\\mathbf{z}/\\tau) = O"
+      ],
+      "keywords": [
+        "温度スケーリング",
+        "勾配飽和",
+        "Attentionスケーリング",
+        "Softmax"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "deep_learning"
+      ]
+    },
+    {
+      "id": "ml.dl.n06_attention_key_value_gradients",
+      "short_code": "DL06",
+      "kind": "theorem_formula",
+      "title": "Scaled Dot-Product Attention における Key 行列の勾配公式",
+      "summary": "フロベニウス内積による行列微分を用いて、スコア行列の勾配から Key 行列 K に対する損失関数の勾配を導出する。",
+      "canonical_latex": "\\frac{\\partial \\mathcal{L}}{\\partial K} = \\frac{1}{\\sqrt{d_k}} \\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)^\\top Q\\quad \\left(S = \\frac{QK^\\top}{\\sqrt{d_k}}\\right)",
+      "aliases_latex": [
+        "\\nabla_K \\mathcal{L} = \\frac{1}{\\sqrt{d_k}} (\\nabla_S \\mathcal{L})^\\top Q"
+      ],
+      "keywords": [
+        "Attention",
+        "Key勾配",
+        "行列微分",
+        "誤差逆伝播"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "deep_learning",
+        "transformer"
+      ]
+    },
+    {
+      "id": "ml.dl.n07_multihead_attention_def",
+      "short_code": "DL07",
+      "kind": "definition",
+      "title": "Multi-Head Attention の定義と部分空間射影",
+      "summary": "Query・Key・Value を複数の異なる線形射影により低次元部分空間へ写像し、並列に Scaled Dot-Product Attention を適用して結合する機構を定義する。",
+      "canonical_latex": "\\operatorname{MHA}(Q,K,V) := \\operatorname{Concat}(\\mathrm{head}_1,\\dots,\\mathrm{head}_h)W^O,\\quad \\mathrm{head}_i := \\operatorname{Attention}(QW_i^Q, KW_i^K, VW_i^V)",
+      "aliases_latex": [
+        "\\operatorname{MultiHead}(Q,K,V) = [H_1; \\dots; H_h] W^O"
+      ],
+      "keywords": [
+        "Multi-Head Attention",
+        "Transformer",
+        "線形射影",
+        "部分空間"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "deep_learning",
+        "transformer"
+      ]
+    },
+    {
+      "id": "ml.dl.n08_residual_connection_gradient_highway",
+      "short_code": "DL08",
+      "kind": "theorem_formula",
+      "title": "残差接続（Residual Connection）による勾配伝播の恒等写像項",
+      "summary": "層間に入力の恒等写像を加算する残差接続により、逆伝播勾配に単位行列 I が加わり、深いネットワークでも勾配が直接下位層へ伝播することを導く。",
+      "canonical_latex": "\\mathbf{x}_{l+1} = \\mathbf{x}_l + \\mathcal{F}(\\mathbf{x}_l, W_l) \\implies \\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{x}_l} = \\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{x}_L}\\left(I + \\frac{\\partial}{\\partial \\mathbf{x}_l}\\sum_{k=l}^{L-1}\\mathcal{F}(\\mathbf{x}_k, W_k)\\right)",
+      "aliases_latex": [
+        "\\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{x}_l} = \\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{x}_{l+1}}\\left(I + \\frac{\\partial \\mathcal{F}}{\\partial \\mathbf{x}_l}\\right)"
+      ],
+      "keywords": [
+        "残差接続",
+        "ResNet",
+        "勾配消失対策",
+        "恒等写像"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "deep_learning"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "ml.dl.d01_frobenius_matrix_differential",
+      "target_node_id": "ml.dl.n01_frobenius_matrix_differential",
+      "route_kind": "reformulation",
+      "title": "全微分の成分和からフロベニウス内積による行列勾配定義への定式化",
+      "premise_node_ids": [
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m45_total_differentiability_def"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "スカラー損失関数は行列パラメータの各成分について全微分可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_1",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "d\\mathcal{L} = \\sum_{i,j} \\frac{\\partial \\mathcal{L}}{\\partial W_{ij}}\\, dW_{ij}",
+          "to_latex": "d\\mathcal{L} = \\langle \\nabla_W \\mathcal{L}, dW \\rangle_F = \\operatorname{tr}\\!\\left((\\nabla_W \\mathcal{L})^\\top dW\\right)",
+          "operation_label": "フロベニウス内積とトレース表現の導入",
+          "explanation": "行列空間における内積としてフロベニウス内積を採用し、各成分の偏微分をまとめた勾配行列と微小増分の積のトレースとして全微分を記述する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m45_total_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.dl.d02_vjp_reverse_mode_ad",
+      "target_node_id": "ml.dl.n02_vjp_reverse_mode_ad",
+      "route_kind": "deductive",
+      "title": "多変数連鎖律と行列積の結合法則による VJP 公式の導出",
+      "premise_node_ids": [
+        "math.calc.m35_multivariable_chain_rule",
+        "math.calc.m45_total_differentiability_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "写像 f と g はそれぞれの定義域で全微分可能である。",
+        "随伴ベクトル v は出力空間と同じ次元の列ベクトルである。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J_{g \\circ f}(\\mathbf{x}) = J_g(\\mathbf{y}) J_f(\\mathbf{x})",
+          "to_latex": "\\big(\\mathbf{v}^\\top J_g(\\mathbf{y})\\big) J_f(\\mathbf{x})",
+          "operation_label": "連鎖律の左からの随伴ベクトル積への結合変更",
+          "explanation": "合成関数のヤコビアン積に対して出力側から随伴行ベクトルを掛け、行列積の結合法則により左から順に評価する。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "math.calc.m45_total_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{g \\circ f}(\\mathbf{x}) = J_g(\\mathbf{y}) J_f(\\mathbf{x})",
+          "to_latex": "\\mathbf{v}^\\top J_{g \\circ f}(\\mathbf{x}) = \\mathbf{v}^\\top \\big(J_g(\\mathbf{y}) J_f(\\mathbf{x})\\big)",
+          "operation_label": "両辺への随伴行ベクトルの左乗算",
+          "explanation": "合成関数のヤコビ行列の左側から出力空間の随伴行ベクトルを掛ける。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v}^\\top \\big(J_g(\\mathbf{y}) J_f(\\mathbf{x})\\big)",
+          "to_latex": "\\big(\\mathbf{v}^\\top J_g(\\mathbf{y})\\big) J_f(\\mathbf{x})",
+          "operation_label": "行列積の結合法則の適用",
+          "explanation": "ヤコビ行列同士の重い行列積を避け、行ベクトルとヤコビ行列の積を出力側から順次計算する VJP 形式へ変形する。",
+          "used_node_ids": [
+            "math.calc.m45_total_differentiability_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.dl.d03_vanishing_exploding_gradient",
+      "target_node_id": "ml.dl.n03_vanishing_exploding_gradient",
+      "route_kind": "deductive",
+      "title": "誤差信号漸化式の展開と劣乗法ノルム不等式による勾配評価",
+      "premise_node_ids": [
+        "eng.ml2.n02_backprop_error_signal",
+        "eng.ml2.n01_mlp_layer_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m35_multivariable_chain_rule"
+      ],
+      "assumptions": [
+        "各層の活性化関数の導関数は有界であり上界値を持つ。",
+        "行列ノルムはL2誘導ノルム（スペクトルノルム）を用いる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\boldsymbol{\\delta}^{(k)} = \\operatorname{diag}\\!\\big(\\sigma'(\\mathbf{z}^{(k)})\\big)\\big(W^{(k+1)}\\big)^\\top \\boldsymbol{\\delta}^{(k+1)}",
+          "to_latex": "\\left\\|\\boldsymbol{\\delta}^{(l)}\\right\\|_2 \\le \\left(\\prod_{k=l}^{L-1} \\gamma_k \\left\\|W^{(k+1)}\\right\\|_2\\right)\\left\\|\\boldsymbol{\\delta}^{(L)}\\right\\|_2",
+          "operation_label": "層間漸化式の展開とスペクトルノルム上界評価",
+          "explanation": "出力層から第 l 層まで誤差信号の漸化式を反復適用し、作用素ノルムの劣乗法性を適用して勾配の指数的減衰・増大条件を導く。",
+          "used_node_ids": [
+            "eng.ml2.n01_mlp_layer_def",
+            "eng.ml2.n02_backprop_error_signal"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\boldsymbol{\\delta}^{(k)} = \\operatorname{diag}\\!\\big(\\sigma'(\\mathbf{z}^{(k)})\\big)\\big(W^{(k+1)}\\big)^\\top \\boldsymbol{\\delta}^{(k+1)}",
+          "to_latex": "\\boldsymbol{\\delta}^{(l)} = \\left(\\prod_{k=l}^{L-1} \\operatorname{diag}\\!\\big(\\sigma'(\\mathbf{z}^{(k)})\\big)\\big(W^{(k+1)}\\big)^\\top\\right) \\boldsymbol{\\delta}^{(L)}",
+          "operation_label": "誤差信号漸化式の第 l 層から第 L 層までの展開",
+          "explanation": "アダマール積を対角行列の左積に書き換え、第 l 層から出力層 L までの漸化式を連積として展開する。",
+          "used_node_ids": [
+            "eng.ml2.n02_backprop_error_signal"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\boldsymbol{\\delta}^{(l)} = \\left(\\prod_{k=l}^{L-1} \\operatorname{diag}\\!\\big(\\sigma'(\\mathbf{z}^{(k)})\\big)\\big(W^{(k+1)}\\big)^\\top\\right) \\boldsymbol{\\delta}^{(L)}",
+          "to_latex": "\\left\\|\\boldsymbol{\\delta}^{(l)}\\right\\|_2 \\le \\left(\\prod_{k=l}^{L-1} \\left\\|\\operatorname{diag}\\!\\big(\\sigma'(\\mathbf{z}^{(k)})\\big)\\right\\|_2 \\left\\|\\big(W^{(k+1)}\\big)^\\top\\right\\|_2\\right)\\left\\|\\boldsymbol{\\delta}^{(L)}\\right\\|_2",
+          "operation_label": "L2誘導ノルムの劣乗法性の適用",
+          "explanation": "ベクトルと行列のL2ノルムに関する劣乗法不等式を各層因子の積に繰り返し適用する。",
+          "used_node_ids": [
+            "eng.ml2.n01_mlp_layer_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left\\|\\boldsymbol{\\delta}^{(l)}\\right\\|_2 \\le \\left(\\prod_{k=l}^{L-1} \\left\\|\\operatorname{diag}\\!\\big(\\sigma'(\\mathbf{z}^{(k)})\\big)\\right\\|_2 \\left\\|\\big(W^{(k+1)}\\big)^\\top\\right\\|_2\\right)\\left\\|\\boldsymbol{\\delta}^{(L)}\\right\\|_2",
+          "to_latex": "\\left\\|\\boldsymbol{\\delta}^{(l)}\\right\\|_2 \\le \\left(\\prod_{k=l}^{L-1} \\gamma_k \\left\\|W^{(k+1)}\\right\\|_2\\right)\\left\\|\\boldsymbol{\\delta}^{(L)}\\right\\|_2",
+          "operation_label": "転置不変性と活性化導関数上界の代入",
+          "explanation": "転置行列のスペクトルノルムが元の行列と一致することと、対角行列のノルムが活性化導関数の上界で抑えられることを用いる。",
+          "used_node_ids": [
+            "eng.ml2.n02_backprop_error_signal"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.dl.d04_softmax_logsumexp_convexity",
+      "target_node_id": "ml.dl.n04_softmax_logsumexp_convexity",
+      "route_kind": "deductive",
+      "title": "Softmax 交差エントロピーのヘッセ行列と分散非負性による凸性証明",
+      "premise_node_ids": [
+        "eng.ml2.n04_softmax_def",
+        "eng.ml2.n05_softmax_jacobian",
+        "eng.ml2.n06_cross_entropy_softmax_grad"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e01_hessian_matrix_def",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "assumptions": [
+        "教師ラベル分布 y の各成分の総和は 1 である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial \\mathcal{L}_{\\mathrm{CE}}}{\\partial \\mathbf{z}} = \\mathbf{p} - \\mathbf{y},\\quad J_{\\operatorname{softmax}}(\\mathbf{z}) = \\operatorname{diag}(\\mathbf{p}) - \\mathbf{p}\\mathbf{p}^\\top",
+          "to_latex": "\\mathbf{h}^\\top \\nabla_{\\mathbf{z}}^2 \\mathcal{L}_{\\mathrm{CE}} \\mathbf{h} = \\sum_{i=1}^{K} p_i h_i^2 - \\left(\\sum_{i=1}^{K} p_i h_i\\right)^2 \\ge 0",
+          "operation_label": "ヘッセ行列の計算と二次形式の非負性評価",
+          "explanation": "交差エントロピーの勾配をさらにロジットで微分してヘッセ行列を得て、任意のベクトルに対する二次形式が確率分布 p の下での分散となり非負であることを示す。",
+          "used_node_ids": [
+            "eng.ml2.n05_softmax_jacobian",
+            "eng.ml2.n06_cross_entropy_softmax_grad"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathcal{L}_{\\mathrm{CE}}}{\\partial \\mathbf{z}} = \\mathbf{p} - \\mathbf{y},\\quad J_{\\operatorname{softmax}}(\\mathbf{z}) = \\operatorname{diag}(\\mathbf{p}) - \\mathbf{p}\\mathbf{p}^\\top",
+          "to_latex": "\\nabla_{\\mathbf{z}}^2 \\mathcal{L}_{\\mathrm{CE}} = \\frac{\\partial \\mathbf{p}}{\\partial \\mathbf{z}} = \\operatorname{diag}(\\mathbf{p}) - \\mathbf{p}\\mathbf{p}^\\top",
+          "operation_label": "勾配のロジット微分によるヘッセ行列の算出",
+          "explanation": "教師ラベル y はロジット z に依存しないため、1階勾配 p - y のロジット微分は Softmax のヤコビ行列に一致する。",
+          "used_node_ids": [
+            "eng.ml2.n05_softmax_jacobian",
+            "eng.ml2.n06_cross_entropy_softmax_grad",
+            "math.calc.e01_hessian_matrix_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\mathbf{z}}^2 \\mathcal{L}_{\\mathrm{CE}} = \\frac{\\partial \\mathbf{p}}{\\partial \\mathbf{z}} = \\operatorname{diag}(\\mathbf{p}) - \\mathbf{p}\\mathbf{p}^\\top",
+          "to_latex": "\\mathbf{h}^\\top \\nabla_{\\mathbf{z}}^2 \\mathcal{L}_{\\mathrm{CE}} \\mathbf{h} = \\sum_{i=1}^{K} p_i h_i^2 - \\left(\\sum_{i=1}^{K} p_i h_i\\right)^2",
+          "operation_label": "任意ベクトルに対する二次形式の展開",
+          "explanation": "任意の非零ベクトル h でヘッセ行列を挟み、各成分の積和表現へ展開する。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{h}^\\top \\nabla_{\\mathbf{z}}^2 \\mathcal{L}_{\\mathrm{CE}} \\mathbf{h} = \\sum_{i=1}^{K} p_i h_i^2 - \\left(\\sum_{i=1}^{K} p_i h_i\\right)^2",
+          "to_latex": "\\mathbf{h}^\\top \\nabla_{\\mathbf{z}}^2 \\mathcal{L}_{\\mathrm{CE}} \\mathbf{h} = \\sum_{i=1}^{K} p_i h_i^2 - \\left(\\sum_{i=1}^{K} p_i h_i\\right)^2 \\ge 0",
+          "operation_label": "分散の非負性による半正定値性の確定",
+          "explanation": "出力確率 p が非負かつ総和 1 であることから、二次形式は確率変数 h の分散に等しく常に 0 以上となる。",
+          "used_node_ids": [
+            "eng.ml2.n04_softmax_def",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.dl.d05_softmax_temperature_saturation",
+      "target_node_id": "ml.dl.n05_softmax_temperature_saturation",
+      "route_kind": "deductive",
+      "title": "温度パラメータの低温極限における Softmax 出力集中とヤコビアン零化",
+      "premise_node_ids": [
+        "eng.ml2.n04_softmax_def",
+        "eng.ml2.n05_softmax_jacobian",
+        "eng.ml2.n08_attention_variance_scaling"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "最大ロジットを与えるインデックス i* は一意に存在する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_i(\\tau) = \\frac{e^{z_i/\\tau}}{\\sum_{j=1}^{K} e^{z_j/\\tau}}",
+          "to_latex": "\\lim_{\\tau \\to 0^+} \\frac{\\partial \\mathbf{p}(\\tau)}{\\partial \\mathbf{z}} = O",
+          "operation_label": "低温極限での one-hot 収束とヤコビ行列の零化",
+          "explanation": "分母分子を最大ロジットの指数で割って低温極限を取り、出力分布が one-hot となることでヤコビ行列が零行列へ収束することを示す。",
+          "used_node_ids": [
+            "eng.ml2.n04_softmax_def",
+            "eng.ml2.n05_softmax_jacobian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_i(\\tau) = \\frac{e^{z_i/\\tau}}{\\sum_{j=1}^{K} e^{z_j/\\tau}}",
+          "to_latex": "p_i(\\tau) = \\frac{e^{(z_i - z_{i^*})/\\tau}}{1 + \\sum_{j \\neq i^*} e^{(z_j - z_{i^*})/\\tau}} \\xrightarrow{\\tau \\to 0^+} \\delta_{i, i^*}",
+          "operation_label": "最大ロジットによる規格化と低温極限の評価",
+          "explanation": "一意な最大ロジットとの差が負であるため、温度 τ を 0 に近づけると非最大成分の指数項が 0 へ収束し、確率は最大成分に集中する。",
+          "used_node_ids": [
+            "eng.ml2.n04_softmax_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_i(\\tau) = \\frac{e^{(z_i - z_{i^*})/\\tau}}{1 + \\sum_{j \\neq i^*} e^{(z_j - z_{i^*})/\\tau}} \\xrightarrow{\\tau \\to 0^+} \\delta_{i, i^*}",
+          "to_latex": "\\frac{\\partial \\mathbf{p}(\\tau)}{\\partial \\mathbf{z}} = \\frac{1}{\\tau}\\big(\\operatorname{diag}(\\mathbf{p}(\\tau)) - \\mathbf{p}(\\tau)\\mathbf{p}(\\tau)^\\top\\big)",
+          "operation_label": "連鎖律を用いた温度付きヤコビ行列の計算",
+          "explanation": "入力が z/τ であることから、Softmax のヤコビ行列にスケーリング係数 1/τ が掛かる。",
+          "used_node_ids": [
+            "eng.ml2.n05_softmax_jacobian",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathbf{p}(\\tau)}{\\partial \\mathbf{z}} = \\frac{1}{\\tau}\\big(\\operatorname{diag}(\\mathbf{p}(\\tau)) - \\mathbf{p}(\\tau)\\mathbf{p}(\\tau)^\\top\\big)",
+          "to_latex": "\\lim_{\\tau \\to 0^+} \\frac{\\partial \\mathbf{p}(\\tau)}{\\partial \\mathbf{z}} = O",
+          "operation_label": "指数減衰による極限の零化",
+          "explanation": "非最大成分 p_j(τ) が 1/τ の増大より速く指数的に 0 へ減衰し、かつ対角成分 p_{i*}(τ)(1 - p_{i*}(τ)) も同様に指数減衰するため極限は零行列となる。",
+          "used_node_ids": [
+            "eng.ml2.n08_attention_variance_scaling"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.dl.d06_attention_key_value_gradients",
+      "target_node_id": "ml.dl.n06_attention_key_value_gradients",
+      "route_kind": "deductive",
+      "title": "フロベニウス内積とトレース巡回性による Attention Key 勾配の導出",
+      "premise_node_ids": [
+        "eng.ml2.n07_scaled_dot_product_attention_def",
+        "eng.ml2.n09_attention_gradient_backprop",
+        "ml.dl.n01_frobenius_matrix_differential"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "Q を固定したときのスコア行列 S の微分のみを考慮する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S = \\frac{QK^\\top}{\\sqrt{d_k}},\\quad d\\mathcal{L} = \\operatorname{tr}\\!\\left(\\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)^\\top dS\\right)",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial K} = \\frac{1}{\\sqrt{d_k}}\\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)^\\top Q",
+          "operation_label": "行列微分とトレース転置不変性による Key 勾配の抽出",
+          "explanation": "スコア行列の全微分に Key の微小変分を代入し、トレースの転置不変性を用いて dK の係数行列として勾配を同定する。",
+          "used_node_ids": [
+            "eng.ml2.n07_scaled_dot_product_attention_def",
+            "ml.dl.n01_frobenius_matrix_differential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S = \\frac{QK^\\top}{\\sqrt{d_k}},\\quad d\\mathcal{L} = \\operatorname{tr}\\!\\left(\\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)^\\top dS\\right)",
+          "to_latex": "d\\mathcal{L} = \\frac{1}{\\sqrt{d_k}}\\operatorname{tr}\\!\\left(\\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)^\\top Q\\,dK^\\top\\right)",
+          "operation_label": "スコア行列の微小変分 dS の代入",
+          "explanation": "Q を固定して K のみに微小変化 dK を与えたときのスコア行列の変分 dS = Q dK^T / sqrt(d_k) を全微分に代入する。",
+          "used_node_ids": [
+            "eng.ml2.n07_scaled_dot_product_attention_def",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\mathcal{L} = \\frac{1}{\\sqrt{d_k}}\\operatorname{tr}\\!\\left(\\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)^\\top Q\\,dK^\\top\\right)",
+          "to_latex": "d\\mathcal{L} = \\operatorname{tr}\\!\\left(\\left(\\frac{1}{\\sqrt{d_k}}\\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)^\\top Q\\right)^\\top dK\\right)",
+          "operation_label": "トレースの転置不変性 tr(A) = tr(A^T) の適用",
+          "explanation": "トレース内の行列積全体を転置し、dK が右側に単独で現れるフロベニウス内積の標準形へ変形する。",
+          "used_node_ids": [
+            "ml.dl.n01_frobenius_matrix_differential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\mathcal{L} = \\operatorname{tr}\\!\\left(\\left(\\frac{1}{\\sqrt{d_k}}\\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)^\\top Q\\right)^\\top dK\\right)",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial K} = \\frac{1}{\\sqrt{d_k}}\\left(\\frac{\\partial \\mathcal{L}}{\\partial S}\\right)^\\top Q",
+          "operation_label": "勾配行列の同定",
+          "explanation": "フロベニウス内積による行列勾配の定義と照合し、Key 行列に対する勾配公式を確定する。",
+          "used_node_ids": [
+            "eng.ml2.n09_attention_gradient_backprop",
+            "ml.dl.n01_frobenius_matrix_differential"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.dl.d07_multihead_attention_def",
+      "target_node_id": "ml.dl.n07_multihead_attention_def",
+      "route_kind": "reformulation",
+      "title": "Scaled Dot-Product Attention の並列線形射影による Multi-Head 拡張",
+      "premise_node_ids": [
+        "eng.ml2.n07_scaled_dot_product_attention_def"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "各ヘッドの射影行列は学習可能な線形写像である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_1",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\operatorname{Attention}(Q,K,V) = \\operatorname{softmax}\\!\\left(\\frac{QK^\\top}{\\sqrt{d_k}}\\right)V",
+          "to_latex": "\\mathrm{head}_i := \\operatorname{Attention}(QW_i^Q, KW_i^K, VW_i^V)",
+          "operation_label": "各ヘッド固有の線形射影による部分空間注意の定義",
+          "explanation": "入力 Q, K, V をヘッドごとの射影行列で低次元部分空間へ写像し、それぞれ独立に Scaled Dot-Product Attention を計算する。",
+          "used_node_ids": [
+            "eng.ml2.n07_scaled_dot_product_attention_def",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s1_2",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathrm{head}_i := \\operatorname{Attention}(QW_i^Q, KW_i^K, VW_i^V)",
+          "to_latex": "\\operatorname{MHA}(Q,K,V) := \\operatorname{Concat}(\\mathrm{head}_1,\\dots,\\mathrm{head}_h)W^O",
+          "operation_label": "全ヘッド出力の連結と出力射影",
+          "explanation": "h 個のヘッドの出力ベクトルを特徴次元方向に連結し、出力重み行列で元のモデル次元へ射影して統合する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.dl.d08_residual_connection_gradient_highway",
+      "target_node_id": "ml.dl.n08_residual_connection_gradient_highway",
+      "route_kind": "deductive",
+      "title": "残差ブロックの展開と多変数連鎖律による恒等勾配項の導出",
+      "premise_node_ids": [
+        "ml.dl.n03_vanishing_exploding_gradient",
+        "ml.dl.n02_vjp_reverse_mode_ad"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m35_multivariable_chain_rule"
+      ],
+      "assumptions": [
+        "残差写像 F の入出力次元は一致している。",
+        "各残差写像 F は入力に関して微分可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}_{k+1} = \\mathbf{x}_k + \\mathcal{F}(\\mathbf{x}_k, W_k)",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{x}_l} = \\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{x}_L}\\left(I + \\frac{\\partial}{\\partial \\mathbf{x}_l}\\sum_{k=l}^{L-1}\\mathcal{F}(\\mathbf{x}_k, W_k)\\right)",
+          "operation_label": "残差和の展開と連鎖律による勾配の分解",
+          "explanation": "第 l 層から第 L 層までの残差ブロックを和の形に展開し、連鎖律を適用することで、恒等写像に由来する直接勾配項と残差項の和を得る。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "ml.dl.n02_vjp_reverse_mode_ad"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}_{k+1} = \\mathbf{x}_k + \\mathcal{F}(\\mathbf{x}_k, W_k)",
+          "to_latex": "\\mathbf{x}_L = \\mathbf{x}_l + \\sum_{k=l}^{L-1} \\mathcal{F}(\\mathbf{x}_k, W_k)",
+          "operation_label": "残差漸化式の第 l 層から第 L 層までの逐次代入",
+          "explanation": "k = l から L - 1 まで漸化式を順次代入し、L 層出力を l 層入力と残差写像の総和として表す。",
+          "used_node_ids": [
+            "ml.dl.n03_vanishing_exploding_gradient"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}_L = \\mathbf{x}_l + \\sum_{k=l}^{L-1} \\mathcal{F}(\\mathbf{x}_k, W_k)",
+          "to_latex": "\\frac{\\partial \\mathbf{x}_L}{\\partial \\mathbf{x}_l} = I + \\frac{\\partial}{\\partial \\mathbf{x}_l}\\sum_{k=l}^{L-1} \\mathcal{F}(\\mathbf{x}_k, W_k)",
+          "operation_label": "出力表現の入力 x_l による偏微分",
+          "explanation": "両辺を x_l で偏微分すると、直接項から単位行列 I が現れる。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathbf{x}_L}{\\partial \\mathbf{x}_l} = I + \\frac{\\partial}{\\partial \\mathbf{x}_l}\\sum_{k=l}^{L-1} \\mathcal{F}(\\mathbf{x}_k, W_k)",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{x}_l} = \\frac{\\partial \\mathcal{L}}{\\partial \\mathbf{x}_L}\\left(I + \\frac{\\partial}{\\partial \\mathbf{x}_l}\\sum_{k=l}^{L-1}\\mathcal{F}(\\mathbf{x}_k, W_k)\\right)",
+          "operation_label": "逆向き自動微分（VJP）の連鎖律の適用",
+          "explanation": "上位層からの勾配ベクトルを行左側から乗じることで、下位層への勾配に残差の和を通らない直接経路が確保されることを示す。",
+          "used_node_ids": [
+            "math.calc.m35_multivariable_chain_rule",
+            "ml.dl.n02_vjp_reverse_mode_ad"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

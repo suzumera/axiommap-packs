@@ -1,0 +1,743 @@
+{
+  "pack_meta": {
+    "pack_id": "ml.bayes.variational_elbo",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "machine_learning",
+    "title": "ベイズ推論と生成モデル：KLダイバージェンス・変分下界（ELBO）とEMアルゴリズム・VAE",
+    "language": "ja",
+    "description": "イェンセンの不等式とKLダイバージェンスの非負性から対数周辺尤度の変分下界（ELBO）、EMアルゴリズムの単調増加性、VAEの損失関数を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "ml.vi.n01_latent_generative_bayes_def",
+      "short_code": "VI01",
+      "kind": "definition",
+      "title": "潜在変数生成モデルと変分事後近似の定義",
+      "summary": "観測変数と潜在変数の同時分布から周辺尤度を定義し、積分計算が困難な真の事後分布をパラメータ化された変分分布で近似する変分ベイズ推論の枠組みを定義する。",
+      "canonical_latex": "p_\\theta(\\mathbf{x}) = \\int p_\\theta(\\mathbf{x} \\mid \\mathbf{z}) p(\\mathbf{z})\\,d\\mathbf{z},\\quad p_\\theta(\\mathbf{z} \\mid \\mathbf{x}) = \\frac{p_\\theta(\\mathbf{x}, \\mathbf{z})}{p_\\theta(\\mathbf{x})} \\approx q_\\phi(\\mathbf{z} \\mid \\mathbf{x})",
+      "aliases_latex": [
+        "p_\\theta(\\mathbf{x}) = \\int p_\\theta(\\mathbf{x}, \\mathbf{z})\\,d\\mathbf{z}"
+      ],
+      "keywords": [
+        "潜在変数モデル",
+        "変分推論",
+        "事後分布",
+        "周辺尤度",
+        "生成モデル"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "bayesian_inference"
+      ]
+    },
+    {
+      "id": "ml.vi.n02_elbo_recon_kl_form",
+      "short_code": "VI02",
+      "kind": "theorem_formula",
+      "title": "変分下界（ELBO）のイェンセン導出と再構成・KL正則化分解",
+      "summary": "イェンセンの不等式とKLダイバージェンスの非負性から対数周辺尤度の変分下界（ELBO）を導出し、期待対数尤度（再構成項）と事前分布へのKL正則化項の差として表現する。",
+      "canonical_latex": "\\ln p_\\theta(\\mathbf{x}) \\ge \\mathcal{L}(\\theta, \\phi; \\mathbf{x}) = \\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\big[\\ln p_\\theta(\\mathbf{x} \\mid \\mathbf{z})\\big] - D_{\\mathrm{KL}}\\big(q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) \\,\\|\\, p(\\mathbf{z})\\big)",
+      "aliases_latex": [
+        "\\mathcal{L}(\\theta, \\phi; \\mathbf{x}) = \\mathbb{E}_{q_\\phi}[\\ln p_\\theta(\\mathbf{x},\\mathbf{z}) - \\ln q_\\phi(\\mathbf{z}\\mid\\mathbf{x})]"
+      ],
+      "keywords": [
+        "ELBO",
+        "変分下界",
+        "イェンセンの不等式",
+        "KLダイバージェンス",
+        "再構成誤差"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "bayesian_inference"
+      ]
+    },
+    {
+      "id": "ml.vi.n03_em_free_energy_monotonicity",
+      "short_code": "VI03",
+      "kind": "theorem_formula",
+      "title": "EMアルゴリズムの変分下界最大化と対数尤度の単調増加性",
+      "summary": "EステップにおけるKLダイバージェンスのゼロ化とMステップにおけるELBOの最大化を組み合わせることで、EMアルゴリズムの各反復で対数周辺尤度が単調非減少であることを証明する。",
+      "canonical_latex": "\\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t+1)}) \\ge \\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t+1)}) \\ge \\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t)}) = \\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t)})",
+      "aliases_latex": [
+        "\\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t+1)}) - \\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t)}) \\ge 0"
+      ],
+      "keywords": [
+        "EMアルゴリズム",
+        "単調増加性",
+        "変分自由エネルギー",
+        "Eステップ",
+        "Mステップ"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "bayesian_inference"
+      ]
+    },
+    {
+      "id": "ml.vi.n04_mean_field_cavi_update",
+      "short_code": "VI04",
+      "kind": "theorem_formula",
+      "title": "平均場変分推論（Mean-Field VI）の最適変分分布と座標上昇更新則",
+      "summary": "変分分布が潜在変数の部分集合ごとに独立に因数分解されるという平均場近似のもとで、ELBOを最大化する各因子の最適分布が他変数の対数同時分布の期待値で与えられることを示す。",
+      "canonical_latex": "q(\\mathbf{z}) = \\prod_{j=1}^{M} q_j(\\mathbf{z}_j) \\implies \\ln q_j^*(\\mathbf{z}_j) = \\mathbb{E}_{q_{-j}}\\big[\\ln p(\\mathbf{x}, \\mathbf{z})\\big] + \\mathrm{const.}",
+      "aliases_latex": [
+        "q_j^*(\\mathbf{z}_j) \\propto \\exp\\big(\\mathbb{E}_{q_{-j}}[\\ln p(\\mathbf{x}, \\mathbf{z})]\\big)"
+      ],
+      "keywords": [
+        "平均場近似",
+        "変分ベイズ",
+        "CAVI",
+        "座標上昇法",
+        "因数分解"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "bayesian_inference"
+      ]
+    },
+    {
+      "id": "ml.vi.n05_vae_amortized_model_def",
+      "short_code": "VI05",
+      "kind": "definition",
+      "title": "変分オートエンコーダ（VAE）の償却変分推論とガウスエンコーダ定義",
+      "summary": "データ点ごとに変分パラメータを最適化する代わりに、ニューラルネットワーク（エンコーダ）で事後分布の平均と対角分散を出力する償却推論と、デコーダによる生成モデルを定義する。",
+      "canonical_latex": "p(\\mathbf{z}) = \\mathcal{N}(\\mathbf{z}; \\mathbf{0}, I),\\quad q_\\phi(\\mathbf{z} \\mid \\mathbf{x}) = \\mathcal{N}\\big(\\mathbf{z}; \\boldsymbol{\\mu}_\\phi(\\mathbf{x}), \\operatorname{diag}(\\boldsymbol{\\sigma}_\\phi^2(\\mathbf{x}))\\big),\\quad p_\\theta(\\mathbf{x} \\mid \\mathbf{z}) = \\mathrm{Decoder}_\\theta(\\mathbf{z})",
+      "aliases_latex": [
+        "q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) = \\prod_{j=1}^{d} \\mathcal{N}(z_j; \\mu_{\\phi,j}(\\mathbf{x}), \\sigma_{\\phi,j}^2(\\mathbf{x}))"
+      ],
+      "keywords": [
+        "VAE",
+        "変分オートエンコーダ",
+        "償却推論",
+        "エンコーダ",
+        "デコーダ"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "deep_learning"
+      ]
+    },
+    {
+      "id": "ml.vi.n06_reparameterization_trick",
+      "short_code": "VI06",
+      "kind": "theorem_formula",
+      "title": "再パラメータ化トリックによる変分パラメータ勾配のモンテカルロ推定",
+      "summary": "確率変数からのサンプリングをパラメータに依存しない標準正規雑音と決定論的微分可能写像に分離することで、期待値に対する勾配演算を積分内部へ移動し低分散な誤差逆伝播を可能にする。",
+      "canonical_latex": "\\mathbf{z} = g_\\phi(\\boldsymbol{\\epsilon}, \\mathbf{x}) = \\boldsymbol{\\mu}_\\phi(\\mathbf{x}) + \\boldsymbol{\\sigma}_\\phi(\\mathbf{x}) \\odot \\boldsymbol{\\epsilon}\\;(\\boldsymbol{\\epsilon} \\sim \\mathcal{N}(\\mathbf{0}, I)) \\implies \\nabla_\\phi \\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\big[f(\\mathbf{z})\\big] = \\mathbb{E}_{p(\\boldsymbol{\\epsilon})}\\big[\\nabla_\\phi f(g_\\phi(\\boldsymbol{\\epsilon}, \\mathbf{x}))\\big]",
+      "aliases_latex": [
+        "\\nabla_\\phi \\mathbb{E}_{q_\\phi}[f(\\mathbf{z})] = \\mathbb{E}_{p(\\boldsymbol{\\epsilon})}[\\nabla_{\\mathbf{z}} f(\\mathbf{z}) \\nabla_\\phi g_\\phi(\\boldsymbol{\\epsilon},\\mathbf{x})]"
+      ],
+      "keywords": [
+        "再パラメータ化トリック",
+        "Pathwise勾配",
+        "モンテカルロ推定",
+        "誤差逆伝播"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "deep_learning"
+      ]
+    },
+    {
+      "id": "ml.vi.n07_gaussian_kl_closed_form",
+      "short_code": "VI07",
+      "kind": "theorem_formula",
+      "title": "対角ガウス分布と標準正規事前分布間のKLダイバージェンス解析解",
+      "summary": "エンコーダが出力する対角ガウス変分事後分布と標準正規事前分布の間のKLダイバージェンスを、微分エントロピーと2次モーメントを用いて閉じた解析式として導出する。",
+      "canonical_latex": "D_{\\mathrm{KL}}\\Big(\\mathcal{N}\\big(\\boldsymbol{\\mu}, \\operatorname{diag}(\\boldsymbol{\\sigma}^2)\\big) \\,\\Big\\|\\, \\mathcal{N}(\\mathbf{0}, I_d)\\Big) = -\\frac{1}{2}\\sum_{j=1}^{d}\\Big(1 + \\ln(\\sigma_j^2) - \\mu_j^2 - \\sigma_j^2\\Big)",
+      "aliases_latex": [
+        "D_{\\mathrm{KL}}(q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) \\| p(\\mathbf{z})) = \\frac{1}{2}\\sum_{j=1}^{d}(\\mu_j^2 + \\sigma_j^2 - 1 - \\ln\\sigma_j^2)"
+      ],
+      "keywords": [
+        "KLダイバージェンス",
+        "ガウス分布",
+        "解析解",
+        "微分エントロピー",
+        "正則化"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "information_theory"
+      ]
+    },
+    {
+      "id": "ml.vi.n08_vae_loss_sgvb_objective",
+      "short_code": "VI08",
+      "kind": "theorem_formula",
+      "title": "VAEの損失関数（負のELBO）と確率的勾配変分ベイズ（SGVB）推定量",
+      "summary": "ELBOの符号反転に対して、再構成項に再パラメータ化トリックによるモンテカルロ推定、KL正則化項にガウス解析解を組み合わせることで、勾配降下法で同時最適化可能なVAEの損失関数を導出する。",
+      "canonical_latex": "\\mathcal{L}_{\\mathrm{VAE}}(\\theta, \\phi; \\mathbf{x}) := -\\mathcal{L}(\\theta, \\phi; \\mathbf{x}) \\approx -\\frac{1}{L}\\sum_{l=1}^{L}\\ln p_\\theta\\big(\\mathbf{x} \\mid \\boldsymbol{\\mu}_\\phi(\\mathbf{x}) + \\boldsymbol{\\sigma}_\\phi(\\mathbf{x}) \\odot \\boldsymbol{\\epsilon}^{(l)}\\big) - \\frac{1}{2}\\sum_{j=1}^{d}\\Big(1 + \\ln \\sigma_{\\phi,j}^2(\\mathbf{x}) - \\mu_{\\phi,j}^2(\\mathbf{x}) - \\sigma_{\\phi,j}^2(\\mathbf{x})\\Big)",
+      "aliases_latex": [
+        "\\mathcal{L}_{\\mathrm{VAE}}(\\theta,\\phi;\\mathbf{x}) = -\\mathbb{E}_{p(\\boldsymbol{\\epsilon})}[\\ln p_\\theta(\\mathbf{x}\\mid g_\\phi(\\boldsymbol{\\epsilon},\\mathbf{x}))] + D_{\\mathrm{KL}}(q_\\phi(\\mathbf{z}\\mid\\mathbf{x})\\|p(\\mathbf{z}))"
+      ],
+      "keywords": [
+        "VAE損失関数",
+        "SGVB",
+        "負のELBO",
+        "再構成損失",
+        "KL正則化"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "deep_learning"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "der_vi01_def",
+      "target_node_id": "ml.vi.n01_latent_generative_bayes_def",
+      "route_kind": "reformulation",
+      "title": "確率空間上の同時分布からの周辺尤度と変分事後近似の定式化",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms",
+        "eng.ml1.n01_mle_map_framework"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "観測変数と潜在変数が共通の確率空間上で同時確率密度関数（または確率質量関数）を持つこと。",
+        "変分分布族はパラメータに関して評価および期待値計算が可能であること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_marginal",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_\\theta(\\mathbf{x}, \\mathbf{z}) = p_\\theta(\\mathbf{x} \\mid \\mathbf{z}) p(\\mathbf{z})",
+          "to_latex": "p_\\theta(\\mathbf{x}) = \\int p_\\theta(\\mathbf{x} \\mid \\mathbf{z}) p(\\mathbf{z})\\,d\\mathbf{z}",
+          "operation_label": "潜在変数の周辺化による周辺尤度の定義",
+          "explanation": "同時分布を潜在変数空間全体で積分（離散の場合は総和）することにより、観測データの周辺尤度を定義する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_variational_approx",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_\\theta(\\mathbf{z} \\mid \\mathbf{x}) = \\frac{p_\\theta(\\mathbf{x}, \\mathbf{z})}{\\int p_\\theta(\\mathbf{x}, \\mathbf{z}')\\,d\\mathbf{z}'}",
+          "to_latex": "p_\\theta(\\mathbf{z} \\mid \\mathbf{x}) \\approx q_\\phi(\\mathbf{z} \\mid \\mathbf{x})",
+          "operation_label": "計算困難な真の事後分布に対する変分分布の約束",
+          "explanation": "分母の周辺尤度積分が解析的に計算できない場合、パラメータ付きの扱いやすい変分分布族で真の事後分布を近似する。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_vi02_elbo_jensen",
+      "target_node_id": "ml.vi.n02_elbo_recon_kl_form",
+      "route_kind": "deductive",
+      "title": "イェンセンの不等式からのELBO導出および再構成項・KL項への分解",
+      "premise_node_ids": [
+        "ml.vi.n01_latent_generative_bayes_def",
+        "eng.ml3.n05_jensen_inequality_concave",
+        "eng.info.n03_kl_divergence_gibbs",
+        "eng.ml3.n06_elbo_kl_decomposition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "対数関数が狭義凹関数であり、すべての期待値積分が有限値として収束すること。",
+        "変分分布の台が同時分布の台に含まれること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ln p_\\theta(\\mathbf{x}) = \\ln \\int q_\\phi(\\mathbf{z}\\mid\\mathbf{x})\\frac{p_\\theta(\\mathbf{x},\\mathbf{z})}{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\,d\\mathbf{z}",
+          "to_latex": "\\ln p_\\theta(\\mathbf{x}) \\ge \\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\big[\\ln p_\\theta(\\mathbf{x} \\mid \\mathbf{z})\\big] - D_{\\mathrm{KL}}\\big(q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) \\,\\|\\, p(\\mathbf{z})\\big)",
+          "operation_label": "イェンセンの不等式とベイズ分解によるELBO導出",
+          "explanation": "対数周辺尤度にイェンセンの不等式を適用して変分下界を得て、同時分布を尤度と事前分布に分解することで再構成項とKL正則化項の差に整理する。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "eng.ml3.n05_jensen_inequality_concave",
+            "eng.ml3.n06_elbo_kl_decomposition",
+            "ml.vi.n01_latent_generative_bayes_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_jensen",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln p_\\theta(\\mathbf{x}) = \\ln \\int q_\\phi(\\mathbf{z}\\mid\\mathbf{x})\\frac{p_\\theta(\\mathbf{x},\\mathbf{z})}{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\,d\\mathbf{z}",
+          "to_latex": "\\ln p_\\theta(\\mathbf{x}) \\ge \\int q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) \\ln\\frac{p_\\theta(\\mathbf{x},\\mathbf{z})}{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\,d\\mathbf{z}",
+          "operation_label": "凹関数に対するイェンセンの不等式の適用",
+          "explanation": "対数関数の凹性より、期待値の対数は対数の期待値以上となり、対数周辺尤度の下界（ELBO）が得られる。",
+          "used_node_ids": [
+            "eng.ml3.n05_jensen_inequality_concave",
+            "eng.ml3.n06_elbo_kl_decomposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_factorize",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln p_\\theta(\\mathbf{x}) \\ge \\int q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) \\ln\\frac{p_\\theta(\\mathbf{x},\\mathbf{z})}{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\,d\\mathbf{z}",
+          "to_latex": "\\ln p_\\theta(\\mathbf{x}) \\ge \\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\!\\left[\\ln p_\\theta(\\mathbf{x}\\mid\\mathbf{z}) - \\ln\\frac{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}{p(\\mathbf{z})}\\right]",
+          "operation_label": "同時分布の積分解と対数法則の適用",
+          "explanation": "同時分布を尤度と事前分布の積に分解し、対数商を条件付き対数尤度と密度比の対数に分ける。",
+          "used_node_ids": [
+            "ml.vi.n01_latent_generative_bayes_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_kl_split",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln p_\\theta(\\mathbf{x}) \\ge \\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\!\\left[\\ln p_\\theta(\\mathbf{x}\\mid\\mathbf{z}) - \\ln\\frac{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}{p(\\mathbf{z})}\\right]",
+          "to_latex": "\\ln p_\\theta(\\mathbf{x}) \\ge \\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\big[\\ln p_\\theta(\\mathbf{x} \\mid \\mathbf{z})\\big] - D_{\\mathrm{KL}}\\big(q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) \\,\\|\\, p(\\mathbf{z})\\big)",
+          "operation_label": "期待値の線形性とKLダイバージェンス定義の適用",
+          "explanation": "期待値の線形性により2項に分け、第2項をKLダイバージェンスの定義に置き換えて再構成・正則化表現を得る。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_vi03_em_monotonicity",
+      "target_node_id": "ml.vi.n03_em_free_energy_monotonicity",
+      "route_kind": "deductive",
+      "title": "ELBO分解とギブスの不等式によるEMアルゴリズム単調増加性の導出",
+      "premise_node_ids": [
+        "eng.ml3.n06_elbo_kl_decomposition",
+        "eng.ml3.n07_em_algorithm_general",
+        "eng.info.n03_kl_divergence_gibbs"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Eステップにおいて真の事後分布と一致する変分分布が設定できること。",
+        "MステップにおいてELBOを前ステップ以上の値へ更新できること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t)}) = \\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t)}) + D_{\\mathrm{KL}}\\big(q^{(t+1)} \\,\\|\\, p(\\cdot\\mid\\mathbf{X},\\boldsymbol{\\theta}^{(t)})\\big)",
+          "to_latex": "\\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t+1)}) \\ge \\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t+1)}) \\ge \\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t)}) = \\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t)})",
+          "operation_label": "Eステップの等号成立とMステップ・KL非負性の連鎖評価",
+          "explanation": "EステップでKL項をゼロにして対数尤度とELBOを一致させ、MステップでELBOを増加させた後、再びKL非負性により新パラメータの対数尤度がELBO以上となることを示す。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "eng.ml3.n06_elbo_kl_decomposition",
+            "eng.ml3.n07_em_algorithm_general"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_e_step_tight",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t)}) = \\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t)}) + D_{\\mathrm{KL}}\\big(q^{(t+1)} \\,\\|\\, p(\\cdot\\mid\\mathbf{X},\\boldsymbol{\\theta}^{(t)})\\big)",
+          "to_latex": "\\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t)}) = \\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t)})",
+          "operation_label": "EステップによるKLダイバージェンスの零化",
+          "explanation": "変分分布を現在の真の事後分布に等しく設定することで、ギブスの不等式の等号成立条件よりKL項が0となる。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "eng.ml3.n07_em_algorithm_general"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_m_step_increase",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t)}) = \\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t)})",
+          "to_latex": "\\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t+1)}) \\ge \\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t)}) = \\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t)})",
+          "operation_label": "MステップによるELBOの最大化",
+          "explanation": "変分分布を固定したままパラメータを更新してELBOを最大化（または非減少に更新）するため、下界値が更新前以上になる。",
+          "used_node_ids": [
+            "eng.ml3.n07_em_algorithm_general"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_kl_nonneg_bound",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t+1)}) \\ge \\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t)}) = \\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t)})",
+          "to_latex": "\\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t+1)}) \\ge \\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t+1)}) \\ge \\mathcal{L}(q^{(t+1)}, \\boldsymbol{\\theta}^{(t)}) = \\ln p(\\mathbf{X}\\mid\\boldsymbol{\\theta}^{(t)})",
+          "operation_label": "ギブスの不等式による更新後対数尤度の下界評価",
+          "explanation": "新パラメータに対する真の事後分布とのKLダイバージェンスは非負であるため、対数周辺尤度は更新後ELBO以上となり単調非減少性が従う。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "eng.ml3.n06_elbo_kl_decomposition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_vi04_mean_field",
+      "target_node_id": "ml.vi.n04_mean_field_cavi_update",
+      "route_kind": "deductive",
+      "title": "平均場因数分解仮定下でのELBO最大化による最適変分分布の導出",
+      "premise_node_ids": [
+        "ml.vi.n02_elbo_recon_kl_form",
+        "eng.info.n03_kl_divergence_gibbs",
+        "eng.ml3.n06_elbo_kl_decomposition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "変分分布が各潜在変数ブロックの積として独立に因数分解されること。",
+        "着目ブロック以外の因子を固定して座標上昇最適化を行うこと。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{L}(q) = \\int \\left(\\prod_{i=1}^{M} q_i(\\mathbf{z}_i)\\right) \\ln \\frac{p(\\mathbf{x}, \\mathbf{z})}{\\prod_{i=1}^{M} q_i(\\mathbf{z}_i)}\\,d\\mathbf{z}",
+          "to_latex": "q(\\mathbf{z}) = \\prod_{j=1}^{M} q_j(\\mathbf{z}_j) \\implies \\ln q_j^*(\\mathbf{z}_j) = \\mathbb{E}_{q_{-j}}\\big[\\ln p(\\mathbf{x}, \\mathbf{z})\\big] + \\mathrm{const.}",
+          "operation_label": "着目因子と他因子の分離およびKL最大化による最適解導出",
+          "explanation": "ELBOから着目因子に依存する項のみを抽出して負のKLダイバージェンスに書き換え、ギブスの不等式から最適変分分布を得る。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "eng.ml3.n06_elbo_kl_decomposition",
+            "ml.vi.n02_elbo_recon_kl_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_isolate_qj",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}(q) = \\int \\left(\\prod_{i=1}^{M} q_i(\\mathbf{z}_i)\\right) \\ln \\frac{p(\\mathbf{x}, \\mathbf{z})}{\\prod_{i=1}^{M} q_i(\\mathbf{z}_i)}\\,d\\mathbf{z}",
+          "to_latex": "\\mathcal{L}(q) = \\int q_j(\\mathbf{z}_j) \\mathbb{E}_{q_{-j}}\\big[\\ln p(\\mathbf{x},\\mathbf{z})\\big]\\,d\\mathbf{z}_j - \\int q_j(\\mathbf{z}_j)\\ln q_j(\\mathbf{z}_j)\\,d\\mathbf{z}_j + \\mathrm{const.}",
+          "operation_label": "着目因子以外の積分による期待値化",
+          "explanation": "着目因子以外の変数について積分を実行し、定数項をまとめることで着目因子のみの汎関数に整理する。",
+          "used_node_ids": [
+            "eng.ml3.n06_elbo_kl_decomposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_neg_kl_form",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}(q) = \\int q_j(\\mathbf{z}_j) \\mathbb{E}_{q_{-j}}\\big[\\ln p(\\mathbf{x},\\mathbf{z})\\big]\\,d\\mathbf{z}_j - \\int q_j(\\mathbf{z}_j)\\ln q_j(\\mathbf{z}_j)\\,d\\mathbf{z}_j + \\mathrm{const.}",
+          "to_latex": "\\mathcal{L}(q) = -D_{\\mathrm{KL}}\\big(q_j(\\mathbf{z}_j) \\,\\|\\, \\tilde{p}_j(\\mathbf{z}_j)\\big) + \\mathrm{const.'}\\quad \\big(\\ln \\tilde{p}_j(\\mathbf{z}_j) := \\mathbb{E}_{q_{-j}}[\\ln p(\\mathbf{x},\\mathbf{z})] - \\ln Z_j\\big)",
+          "operation_label": "正規化分布との負のKLダイバージェンスへの変形",
+          "explanation": "他因子の期待対数同時分布を指数化・正規化した分布を導入し、汎関数を負のKLダイバージェンスとして表す。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_gibbs_opt",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}(q) = -D_{\\mathrm{KL}}\\big(q_j(\\mathbf{z}_j) \\,\\|\\, \\tilde{p}_j(\\mathbf{z}_j)\\big) + \\mathrm{const.'}\\quad \\big(\\ln \\tilde{p}_j(\\mathbf{z}_j) := \\mathbb{E}_{q_{-j}}[\\ln p(\\mathbf{x},\\mathbf{z})] - \\ln Z_j\\big)",
+          "to_latex": "q(\\mathbf{z}) = \\prod_{j=1}^{M} q_j(\\mathbf{z}_j) \\implies \\ln q_j^*(\\mathbf{z}_j) = \\mathbb{E}_{q_{-j}}\\big[\\ln p(\\mathbf{x}, \\mathbf{z})\\big] + \\mathrm{const.}",
+          "operation_label": "ギブスの不等式による最適因子の決定",
+          "explanation": "KLダイバージェンスが最小値0をとるのは2つの分布が一致するときであるため、最適因子の対数は期待対数同時分布に定数を加えたものとなる。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_vi05_vae_def",
+      "target_node_id": "ml.vi.n05_vae_amortized_model_def",
+      "route_kind": "reformulation",
+      "title": "潜在変数モデルのニューラルネットワークによる償却推論定式化",
+      "premise_node_ids": [
+        "ml.vi.n01_latent_generative_bayes_def",
+        "eng.ml2.n01_mlp_layer_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "エンコーダとデコーダが多層パーセプトロン等の微分可能な関数族で構成されること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_amortization",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "q(\\mathbf{z}_i \\mid \\mathbf{x}_i)",
+          "to_latex": "q_\\phi(\\mathbf{z} \\mid \\mathbf{x}) = \\mathcal{N}\\big(\\mathbf{z}; \\boldsymbol{\\mu}_\\phi(\\mathbf{x}), \\operatorname{diag}(\\boldsymbol{\\sigma}_\\phi^2(\\mathbf{x}))\\big)",
+          "operation_label": "共有エンコーダによる償却変分分布の定義",
+          "explanation": "各データ点固有の局所変分パラメータの代わりに、入力から平均ベクトルと対角分散ベクトルを写像する共有ニューラルネットワークを導入する。",
+          "used_node_ids": [
+            "eng.ml2.n01_mlp_layer_def",
+            "ml.vi.n01_latent_generative_bayes_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_prior_decoder",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_\\theta(\\mathbf{x}, \\mathbf{z}) = p_\\theta(\\mathbf{x} \\mid \\mathbf{z}) p(\\mathbf{z})",
+          "to_latex": "p(\\mathbf{z}) = \\mathcal{N}(\\mathbf{z}; \\mathbf{0}, I),\\quad q_\\phi(\\mathbf{z} \\mid \\mathbf{x}) = \\mathcal{N}\\big(\\mathbf{z}; \\boldsymbol{\\mu}_\\phi(\\mathbf{x}), \\operatorname{diag}(\\boldsymbol{\\sigma}_\\phi^2(\\mathbf{x}))\\big),\\quad p_\\theta(\\mathbf{x} \\mid \\mathbf{z}) = \\mathrm{Decoder}_\\theta(\\mathbf{z})",
+          "operation_label": "標準正規事前分布とデコーダ生成モデルの規定",
+          "explanation": "潜在空間の事前分布を等方標準正規分布に設定し、観測分布のパラメータをデコーダネットワークで生成するVAEモデルを確定する。",
+          "used_node_ids": [
+            "eng.ml2.n01_mlp_layer_def",
+            "ml.vi.n01_latent_generative_bayes_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_vi06_reparam",
+      "target_node_id": "ml.vi.n06_reparameterization_trick",
+      "route_kind": "deductive",
+      "title": "変数変換と微分積分交換による再パラメータ化勾配の導出",
+      "premise_node_ids": [
+        "ml.vi.n05_vae_amortized_model_def",
+        "math.calc.m01_chain_rule",
+        "math.calc.mi04_change_of_variables_multiple_integral"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "被積分関数と位置・尺度変換写像がパラメータに関して連続微分可能であり、微分と積分の順序交換が可能であること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla_\\phi \\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\big[f(\\mathbf{z})\\big] = \\nabla_\\phi \\int q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) f(\\mathbf{z})\\,d\\mathbf{z}",
+          "to_latex": "\\mathbf{z} = g_\\phi(\\boldsymbol{\\epsilon}, \\mathbf{x}) = \\boldsymbol{\\mu}_\\phi(\\mathbf{x}) + \\boldsymbol{\\sigma}_\\phi(\\mathbf{x}) \\odot \\boldsymbol{\\epsilon}\\;(\\boldsymbol{\\epsilon} \\sim \\mathcal{N}(\\mathbf{0}, I)) \\implies \\nabla_\\phi \\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\big[f(\\mathbf{z})\\big] = \\mathbb{E}_{p(\\boldsymbol{\\epsilon})}\\big[\\nabla_\\phi f(g_\\phi(\\boldsymbol{\\epsilon}, \\mathbf{x}))\\big]",
+          "operation_label": "補助雑音への変数変換と勾配演算の積分内部への移動",
+          "explanation": "ガウス変数を標準正規雑音のアフィン変換として表し、積分測度からパラメータ依存性を除くことで、期待値と勾配の順序交換および連鎖律による微分を可能にする。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.mi04_change_of_variables_multiple_integral",
+            "ml.vi.n05_vae_amortized_model_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_change_var",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_\\phi \\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\big[f(\\mathbf{z})\\big] = \\nabla_\\phi \\int q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) f(\\mathbf{z})\\,d\\mathbf{z}",
+          "to_latex": "\\nabla_\\phi \\int p(\\boldsymbol{\\epsilon}) f\\big(g_\\phi(\\boldsymbol{\\epsilon}, \\mathbf{x})\\big)\\,d\\boldsymbol{\\epsilon}",
+          "operation_label": "位置・尺度変換による変数変換の適用",
+          "explanation": "潜在変数をパラメータ非依存の標準正規雑音を用いた決定論的写像に置き換え、確率要素保存の法則により積分変数を変換する。",
+          "used_node_ids": [
+            "math.calc.mi04_change_of_variables_multiple_integral",
+            "ml.vi.n05_vae_amortized_model_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_swap_grad",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_\\phi \\int p(\\boldsymbol{\\epsilon}) f\\big(g_\\phi(\\boldsymbol{\\epsilon}, \\mathbf{x})\\big)\\,d\\boldsymbol{\\epsilon}",
+          "to_latex": "\\int p(\\boldsymbol{\\epsilon}) \\nabla_\\phi f\\big(g_\\phi(\\boldsymbol{\\epsilon}, \\mathbf{x})\\big)\\,d\\boldsymbol{\\epsilon}",
+          "operation_label": "パラメータ非依存測度下での微分と積分の交換",
+          "explanation": "雑音分布が変分パラメータに依存しないため、勾配演算子を積分記号の内側へ直接移動できる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_mc_expectation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int p(\\boldsymbol{\\epsilon}) \\nabla_\\phi f\\big(g_\\phi(\\boldsymbol{\\epsilon}, \\mathbf{x})\\big)\\,d\\boldsymbol{\\epsilon}",
+          "to_latex": "\\mathbf{z} = g_\\phi(\\boldsymbol{\\epsilon}, \\mathbf{x}) = \\boldsymbol{\\mu}_\\phi(\\mathbf{x}) + \\boldsymbol{\\sigma}_\\phi(\\mathbf{x}) \\odot \\boldsymbol{\\epsilon}\\;(\\boldsymbol{\\epsilon} \\sim \\mathcal{N}(\\mathbf{0}, I)) \\implies \\nabla_\\phi \\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\big[f(\\mathbf{z})\\big] = \\mathbb{E}_{p(\\boldsymbol{\\epsilon})}\\big[\\nabla_\\phi f(g_\\phi(\\boldsymbol{\\epsilon}, \\mathbf{x}))\\big]",
+          "operation_label": "連鎖律と雑音期待値表現への帰着",
+          "explanation": "合成関数の微分（連鎖律）により逆伝播可能な勾配表現となり、雑音分布に関する期待値としてモンテカルロ推定が可能になる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_vi07_gaussian_kl",
+      "target_node_id": "ml.vi.n07_gaussian_kl_closed_form",
+      "route_kind": "deductive",
+      "title": "微分エントロピーと2次モーメントによるガウスKLダイバージェンス解析解の導出",
+      "premise_node_ids": [
+        "eng.info.n03_kl_divergence_gibbs",
+        "eng.info.n07_differential_entropy_gaussian",
+        "ml.vi.n05_vae_amortized_model_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "各次元の標準偏差が正であり、独立な対角共分散構造を持つこと。",
+        "KLダイバージェンスとエントロピーの対数の底として自然対数を用いること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "D_{\\mathrm{KL}}(q \\,\\|\\, p) = \\int q(\\mathbf{z})\\ln q(\\mathbf{z})\\,d\\mathbf{z} - \\int q(\\mathbf{z})\\ln p(\\mathbf{z})\\,d\\mathbf{z}",
+          "to_latex": "D_{\\mathrm{KL}}\\Big(\\mathcal{N}\\big(\\boldsymbol{\\mu}, \\operatorname{diag}(\\boldsymbol{\\sigma}^2)\\big) \\,\\Big\\|\\, \\mathcal{N}(\\mathbf{0}, I_d)\\Big) = -\\frac{1}{2}\\sum_{j=1}^{d}\\Big(1 + \\ln(\\sigma_j^2) - \\mu_j^2 - \\sigma_j^2\\Big)",
+          "operation_label": "負エントロピーと交差エントロピーのガウス積分評価",
+          "explanation": "KLダイバージェンスを負の微分エントロピーと事前分布に対する交差エントロピーに分け、各次元のガウスモーメントを代入して解析解を導く。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "eng.info.n07_differential_entropy_gaussian",
+            "ml.vi.n05_vae_amortized_model_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_entropy_term",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D_{\\mathrm{KL}}(q \\,\\|\\, p) = \\int q(\\mathbf{z})\\ln q(\\mathbf{z})\\,d\\mathbf{z} - \\int q(\\mathbf{z})\\ln p(\\mathbf{z})\\,d\\mathbf{z}",
+          "to_latex": "D_{\\mathrm{KL}}(q \\,\\|\\, p) = -\\frac{1}{2}\\sum_{j=1}^{d}\\big(1 + \\ln(2\\pi \\sigma_j^2)\\big) - \\mathbb{E}_{q}\\big[\\ln p(\\mathbf{z})\\big]",
+          "operation_label": "対角ガウス分布の微分エントロピーの代入",
+          "explanation": "独立な各次元に対するガウス分布の微分エントロピー公式を用い、第1項を分散の対数で表す。",
+          "used_node_ids": [
+            "eng.info.n07_differential_entropy_gaussian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_cross_entropy_term",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D_{\\mathrm{KL}}(q \\,\\|\\, p) = -\\frac{1}{2}\\sum_{j=1}^{d}\\big(1 + \\ln(2\\pi \\sigma_j^2)\\big) - \\mathbb{E}_{q}\\big[\\ln p(\\mathbf{z})\\big]",
+          "to_latex": "D_{\\mathrm{KL}}(q \\,\\|\\, p) = -\\frac{1}{2}\\sum_{j=1}^{d}\\big(1 + \\ln(2\\pi \\sigma_j^2)\\big) + \\frac{1}{2}\\sum_{j=1}^{d}\\big(\\ln(2\\pi) + \\mu_j^2 + \\sigma_j^2\\big)",
+          "operation_label": "標準正規事前分布の対数密度の期待値計算",
+          "explanation": "標準正規分布の対数密度を代入し、2次モーメントが平均の2乗と分散の和になることを用いて第2項を評価する。",
+          "used_node_ids": [
+            "ml.vi.n05_vae_amortized_model_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_simplify",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D_{\\mathrm{KL}}(q \\,\\|\\, p) = -\\frac{1}{2}\\sum_{j=1}^{d}\\big(1 + \\ln(2\\pi \\sigma_j^2)\\big) + \\frac{1}{2}\\sum_{j=1}^{d}\\big(\\ln(2\\pi) + \\mu_j^2 + \\sigma_j^2\\big)",
+          "to_latex": "D_{\\mathrm{KL}}\\Big(\\mathcal{N}\\big(\\boldsymbol{\\mu}, \\operatorname{diag}(\\boldsymbol{\\sigma}^2)\\big) \\,\\Big\\|\\, \\mathcal{N}(\\mathbf{0}, I_d)\\Big) = -\\frac{1}{2}\\sum_{j=1}^{d}\\Big(1 + \\ln(\\sigma_j^2) - \\mu_j^2 - \\sigma_j^2\\Big)",
+          "operation_label": "定数項の相殺と和の整理",
+          "explanation": "円周率を含む対数定数項が両項で相殺され、閉じた解析式が得られる。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_vi08_vae_loss",
+      "target_node_id": "ml.vi.n08_vae_loss_sgvb_objective",
+      "route_kind": "deductive",
+      "title": "ELBO・再パラメータ化トリック・ガウスKL解析解の統合によるVAE損失の導出",
+      "premise_node_ids": [
+        "ml.vi.n02_elbo_recon_kl_form",
+        "ml.vi.n06_reparameterization_trick",
+        "ml.vi.n07_gaussian_kl_closed_form"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "雑音サンプルが標準正規分布から独立同分布に生成されること。",
+        "勾配降下法による最小化問題として定式化するためELBOの符号を反転すること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{L}_{\\mathrm{VAE}}(\\theta, \\phi; \\mathbf{x}) = -\\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\big[\\ln p_\\theta(\\mathbf{x}\\mid\\mathbf{z})\\big] + D_{\\mathrm{KL}}\\big(q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) \\,\\|\\, p(\\mathbf{z})\\big)",
+          "to_latex": "\\mathcal{L}_{\\mathrm{VAE}}(\\theta, \\phi; \\mathbf{x}) := -\\mathcal{L}(\\theta, \\phi; \\mathbf{x}) \\approx -\\frac{1}{L}\\sum_{l=1}^{L}\\ln p_\\theta\\big(\\mathbf{x} \\mid \\boldsymbol{\\mu}_\\phi(\\mathbf{x}) + \\boldsymbol{\\sigma}_\\phi(\\mathbf{x}) \\odot \\boldsymbol{\\epsilon}^{(l)}\\big) - \\frac{1}{2}\\sum_{j=1}^{d}\\Big(1 + \\ln \\sigma_{\\phi,j}^2(\\mathbf{x}) - \\mu_{\\phi,j}^2(\\mathbf{x}) - \\sigma_{\\phi,j}^2(\\mathbf{x})\\Big)",
+          "operation_label": "再パラメータ化モンテカルロ推定とガウスKL解析解の統合",
+          "explanation": "負のELBOの再構成誤差項を再パラメータ化トリックによる標本平均で近似し、KL正則化項に解析解を代入してSGVB損失関数を構成する。",
+          "used_node_ids": [
+            "ml.vi.n02_elbo_recon_kl_form",
+            "ml.vi.n06_reparameterization_trick",
+            "ml.vi.n07_gaussian_kl_closed_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_reparam_recon",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}_{\\mathrm{VAE}}(\\theta, \\phi; \\mathbf{x}) = -\\mathbb{E}_{q_\\phi(\\mathbf{z}\\mid\\mathbf{x})}\\big[\\ln p_\\theta(\\mathbf{x}\\mid\\mathbf{z})\\big] + D_{\\mathrm{KL}}\\big(q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) \\,\\|\\, p(\\mathbf{z})\\big)",
+          "to_latex": "\\mathcal{L}_{\\mathrm{VAE}}(\\theta, \\phi; \\mathbf{x}) = -\\mathbb{E}_{p(\\boldsymbol{\\epsilon})}\\big[\\ln p_\\theta\\big(\\mathbf{x} \\mid \\boldsymbol{\\mu}_\\phi(\\mathbf{x}) + \\boldsymbol{\\sigma}_\\phi(\\mathbf{x}) \\odot \\boldsymbol{\\epsilon}\\big)\\big] + D_{\\mathrm{KL}}\\big(q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) \\,\\|\\, p(\\mathbf{z})\\big)",
+          "operation_label": "再構成期待値への再パラメータ化写像の適用",
+          "explanation": "変分事後分布に関する期待値を標準正規雑音に関する期待値へ書き換える。",
+          "used_node_ids": [
+            "ml.vi.n06_reparameterization_trick"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_kl_plug_in",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}_{\\mathrm{VAE}}(\\theta, \\phi; \\mathbf{x}) = -\\mathbb{E}_{p(\\boldsymbol{\\epsilon})}\\big[\\ln p_\\theta\\big(\\mathbf{x} \\mid \\boldsymbol{\\mu}_\\phi(\\mathbf{x}) + \\boldsymbol{\\sigma}_\\phi(\\mathbf{x}) \\odot \\boldsymbol{\\epsilon}\\big)\\big] + D_{\\mathrm{KL}}\\big(q_\\phi(\\mathbf{z}\\mid\\mathbf{x}) \\,\\|\\, p(\\mathbf{z})\\big)",
+          "to_latex": "\\mathcal{L}_{\\mathrm{VAE}}(\\theta, \\phi; \\mathbf{x}) = -\\mathbb{E}_{p(\\boldsymbol{\\epsilon})}\\big[\\ln p_\\theta\\big(\\mathbf{x} \\mid \\boldsymbol{\\mu}_\\phi(\\mathbf{x}) + \\boldsymbol{\\sigma}_\\phi(\\mathbf{x}) \\odot \\boldsymbol{\\epsilon}\\big)\\big] - \\frac{1}{2}\\sum_{j=1}^{d}\\Big(1 + \\ln \\sigma_{\\phi,j}^2(\\mathbf{x}) - \\mu_{\\phi,j}^2(\\mathbf{x}) - \\sigma_{\\phi,j}^2(\\mathbf{x})\\Big)",
+          "operation_label": "KL正則化項へのガウス解析解の代入",
+          "explanation": "事前分布と変分事後分布の間のKL項を対角ガウスKLの閉じた解析式で置き換える。",
+          "used_node_ids": [
+            "ml.vi.n07_gaussian_kl_closed_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_mc_estimator",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}_{\\mathrm{VAE}}(\\theta, \\phi; \\mathbf{x}) = -\\mathbb{E}_{p(\\boldsymbol{\\epsilon})}\\big[\\ln p_\\theta\\big(\\mathbf{x} \\mid \\boldsymbol{\\mu}_\\phi(\\mathbf{x}) + \\boldsymbol{\\sigma}_\\phi(\\mathbf{x}) \\odot \\boldsymbol{\\epsilon}\\big)\\big] - \\frac{1}{2}\\sum_{j=1}^{d}\\Big(1 + \\ln \\sigma_{\\phi,j}^2(\\mathbf{x}) - \\mu_{\\phi,j}^2(\\mathbf{x}) - \\sigma_{\\phi,j}^2(\\mathbf{x})\\Big)",
+          "to_latex": "\\mathcal{L}_{\\mathrm{VAE}}(\\theta, \\phi; \\mathbf{x}) := -\\mathcal{L}(\\theta, \\phi; \\mathbf{x}) \\approx -\\frac{1}{L}\\sum_{l=1}^{L}\\ln p_\\theta\\big(\\mathbf{x} \\mid \\boldsymbol{\\mu}_\\phi(\\mathbf{x}) + \\boldsymbol{\\sigma}_\\phi(\\mathbf{x}) \\odot \\boldsymbol{\\epsilon}^{(l)}\\big) - \\frac{1}{2}\\sum_{j=1}^{d}\\Big(1 + \\ln \\sigma_{\\phi,j}^2(\\mathbf{x}) - \\mu_{\\phi,j}^2(\\mathbf{x}) - \\sigma_{\\phi,j}^2(\\mathbf{x})\\Big)",
+          "operation_label": "雑音サンプルによるモンテカルロ期待値近似",
+          "explanation": "L個の標準正規雑音サンプルで期待値を近似し、ミニバッチ確率的勾配降下法で直接最適化できるSGVB損失関数を得る。",
+          "used_node_ids": [
+            "ml.vi.n02_elbo_recon_kl_form",
+            "ml.vi.n06_reparameterization_trick"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

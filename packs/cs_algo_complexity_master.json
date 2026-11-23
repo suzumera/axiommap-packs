@@ -1,0 +1,567 @@
+{
+  "pack_meta": {
+    "pack_id": "cs.algo.complexity_master",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "computer_science",
+    "title": "アルゴリズム解析：漸近記法・マスター定理・償却解析とPageRank（固有ベクトル中心性）",
+    "language": "ja",
+    "description": "漸化式 T(n)=aT(n/b)+f(n) の再帰木展開からマスター定理、マルコフ連鎖の定常分布とペロン＝フロベニウスの定理からPageRank方程式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "cs.algo.n01_asymptotic_notation",
+      "short_code": "ALGO01",
+      "kind": "definition",
+      "title": "漸近記法（Big-O, Big-Omega, Big-Theta）の定義",
+      "summary": "入力サイズ n が無限大に近づくときのアルゴリズムの計算量の増加オーダーを、定数倍と低次項を無視して評価するための漸近的上界 O、下界 Ω、タイトな限界 Θ の定義。",
+      "canonical_latex": "f(n) = O(g(n)) \\iff \\exists c > 0,\\, n_0 \\in \\mathbb{N}\\text{ s.t. } \\forall n \\ge n_0,\\; 0 \\le f(n) \\le c g(n);\\quad f(n) = \\Theta(g(n)) \\iff f(n) = O(g(n)) \\land f(n) = \\Omega(g(n))",
+      "aliases_latex": [
+        "f(n) = \\Omega(g(n)) \\iff \\exists c > 0,\\, n_0 \\in \\mathbb{N}\\text{ s.t. } \\forall n \\ge n_0,\\; 0 \\le c g(n) \\le f(n)"
+      ],
+      "keywords": [
+        "漸近記法",
+        "Big-O記法",
+        "計算量",
+        "オーダー"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "algorithms",
+        "asymptotic_analysis"
+      ]
+    },
+    {
+      "id": "cs.algo.n02_recursion_tree_expansion",
+      "short_code": "ALGO02",
+      "kind": "theorem_formula",
+      "title": "分割統治漸化式の再帰木展開公式",
+      "summary": "入力サイズ n を a 個のサイズ n/b の部分問題に分割し、分割・統合にコスト f(n) を要する分割統治アルゴリズムの漸化式 T(n) = aT(n/b) + f(n) を再帰木で展開した総コスト表示。",
+      "canonical_latex": "T(n) = aT\\left(\\frac{n}{b}\\right) + f(n) \\implies T(n) = \\Theta(n^{\\log_b a}) + \\sum_{j=0}^{\\log_b n - 1} a^j f\\left(\\frac{n}{b^j}\\right)\\quad (a \\ge 1,\\, b > 1,\\, T(1) = \\Theta(1))",
+      "aliases_latex": [
+        "T(n) = a^k T(n/b^k) + \\sum_{j=0}^{k-1} a^j f(n/b^j)"
+      ],
+      "keywords": [
+        "分割統治法",
+        "漸化式",
+        "再帰木",
+        "計算量解析"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "algorithms",
+        "recurrence_relations"
+      ]
+    },
+    {
+      "id": "cs.algo.n03_master_theorem",
+      "short_code": "ALGO03",
+      "kind": "theorem_formula",
+      "title": "マスター定理（Master Theorem）",
+      "summary": "分割統治法の漸化式 T(n) = aT(n/b) + f(n) について、再帰木の葉の総コスト n^(log_b a) と非再帰コスト f(n) の漸近的比較により、時間計算量を3つのケースに分類する定理。",
+      "canonical_latex": "T(n) = \\begin{cases} \\Theta(n^{\\log_b a}) & \\text{if } f(n) = O(n^{\\log_b a - \\epsilon})\\;(\\epsilon > 0) \\\\ \\Theta(n^{\\log_b a} \\log n) & \\text{if } f(n) = \\Theta(n^{\\log_b a}) \\\\ \\Theta(f(n)) & \\text{if } f(n) = \\Omega(n^{\\log_b a + \\epsilon})\\;(\\epsilon > 0) \\land a f(n/b) \\le c f(n)\\;(c < 1) \\end{cases}\\quad (a \\ge 1,\\, b > 1,\\, T(1)=\\Theta(1))",
+      "aliases_latex": [
+        "T(n) = aT(n/b) + f(n) \\implies \\text{Case 1, 2, 3}"
+      ],
+      "keywords": [
+        "マスター定理",
+        "分割統治法",
+        "漸近計算量",
+        "漸化式"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "algorithms",
+        "recurrence_relations"
+      ]
+    },
+    {
+      "id": "cs.algo.n04_amortized_potential_method",
+      "short_code": "ALGO04",
+      "kind": "theorem_formula",
+      "title": "償却解析のポテンシャル法（Potential Method）",
+      "summary": "データ構造の状態に対するポテンシャル関数 Φ(D_i) を導入し、各操作の償却コストを実コストとポテンシャル変化量の和として定義することで、操作列の総計算量の上界を評価する手法。",
+      "canonical_latex": "\\hat{c}_i := c_i + \\Phi(D_i) - \\Phi(D_{i-1}) \\implies \\sum_{i=1}^{n} c_i = \\sum_{i=1}^{n} \\hat{c}_i + \\Phi(D_0) - \\Phi(D_n) \\le \\sum_{i=1}^{n} \\hat{c}_i\\quad (\\Phi(D_n) \\ge \\Phi(D_0))",
+      "aliases_latex": [
+        "\\sum_{i=1}^{n} \\hat{c}_i = \\sum_{i=1}^{n} c_i + \\Phi(D_n) - \\Phi(D_0)"
+      ],
+      "keywords": [
+        "償却解析",
+        "ポテンシャル法",
+        "データ構造",
+        "計算量"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "algorithms",
+        "amortized_analysis"
+      ]
+    },
+    {
+      "id": "cs.algo.n05_markov_chain_stationary",
+      "short_code": "ALGO05",
+      "kind": "definition",
+      "title": "有限状態マルコフ連鎖と定常分布の定義",
+      "summary": "次の状態の確率分布が現在の状態のみに依存する確率過程において、列確率遷移行列 M による状態遷移に対して不変となる確率分布ベクトル π = Mπ の定義。",
+      "canonical_latex": "\\sum_{i=1}^{N} M_{ij} = 1,\\; M_{ij} \\ge 0;\\qquad \\boldsymbol{\\pi} = M\\boldsymbol{\\pi},\\quad \\sum_{i=1}^{N} \\pi_i = 1,\\; \\pi_i \\ge 0",
+      "aliases_latex": [
+        "\\boldsymbol{\\pi}^\\top P = \\boldsymbol{\\pi}^\\top"
+      ],
+      "keywords": [
+        "マルコフ連鎖",
+        "確率遷移行列",
+        "定常分布",
+        "ランダムウォーク"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "probability",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "cs.algo.n06_perron_frobenius_boundary",
+      "short_code": "ALGO06",
+      "kind": "math_boundary",
+      "title": "ペロン＝フロベニウスの定理（正の確率行列の固有値境界）",
+      "summary": "すべての成分が厳密に正である列確率行列は、単純で最大の固有値 1 を持ち、対応する定常分布固有ベクトルは一意かつすべての成分が正となり、任意の初期分布からのべき乗反復がこの固有ベクトルに収束するという線形代数の境界定理。",
+      "canonical_latex": "G \\in \\mathbb{R}^{N \\times N},\\; G_{ij} > 0,\\; \\sum_{i=1}^{N} G_{ij} = 1 \\implies \\lambda_1 = 1 > |\\lambda_2| \\ge \\dots \\ge |\\lambda_N|,\\quad \\exists!\\,\\mathbf{r} > \\mathbf{0}\\;(\\mathbf{1}^\\top\\mathbf{r}=1)\\text{ s.t. } G\\mathbf{r} = \\mathbf{r},\\; \\lim_{t \\to \\infty} G^t \\mathbf{r}^{(0)} = \\mathbf{r}\\;(\\mathbf{r}^{(0)} \\ge \\mathbf{0},\\, \\mathbf{1}^\\top\\mathbf{r}^{(0)}=1)\\quad (N \\ge 1,\\, \\mathbf{1}=(1,\\dots,1)^\\top\\in\\mathbb{R}^N,\\, \\lambda_i\\text{ eigenvalues})",
+      "aliases_latex": [
+        "\\lim_{t \\to \\infty} G^t \\mathbf{r}^{(0)} = \\mathbf{r}"
+      ],
+      "keywords": [
+        "ペロン＝フロベニウスの定理",
+        "固有値",
+        "正行列",
+        "収束性"
+      ],
+      "domain_tags": [
+        "mathematics",
+        "linear_algebra",
+        "computer_science"
+      ]
+    },
+    {
+      "id": "cs.algo.n07_google_matrix_damping",
+      "short_code": "ALGO07",
+      "kind": "definition",
+      "title": "ダンピングファクタを導入したGoogle行列の定義",
+      "summary": "有向グラフのリンク遷移行列 M に対し、ランダムサーファーが確率 d でリンクをたどり、確率 1-d で全ノードへ一様ランダムジャンプするモデルを表す正の確率行列 G の定義。",
+      "canonical_latex": "G := d M + \\frac{1 - d}{N} \\mathbf{1}\\mathbf{1}^\\top\\quad (0 < d < 1,\\; \\mathbf{1} = (1,\\dots,1)^\\top \\in \\mathbb{R}^N,\\; \\sum_{i=1}^{N} M_{ij} = 1,\\; M_{ij} \\ge 0)\\quad (G_{ij} > 0,\\; \\sum_{i=1}^{N} G_{ij} = 1)\\quad (\\text{Google Matrix})",
+      "aliases_latex": [
+        "G_{ij} = d M_{ij} + \\frac{1-d}{N}"
+      ],
+      "keywords": [
+        "Google行列",
+        "ダンピングファクタ",
+        "ランダムサーファー",
+        "リンク解析"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "graph_theory",
+        "information_retrieval"
+      ]
+    },
+    {
+      "id": "cs.algo.n08_pagerank_equation",
+      "short_code": "ALGO08",
+      "kind": "theorem_formula",
+      "title": "PageRank方程式と固有ベクトル中心性・べき乗法の収束定理",
+      "summary": "Google行列 G に対するペロン＝フロベニウスの定理から、一意の正の定常分布であるPageRankベクトル r が存在して固有値方程式 r = d M r + ((1-d)/N) 1 を満たすこと、およびべき乗法が r へ収束することを導く定理。",
+      "canonical_latex": "\\mathbf{r} = G\\mathbf{r} = d M\\mathbf{r} + \\frac{1 - d}{N}\\mathbf{1},\\quad \\mathbf{1}^\\top\\mathbf{r} = 1,\\quad \\lim_{t \\to \\infty} G^t \\mathbf{r}^{(0)} = \\mathbf{r}\\quad (0 < d < 1,\\; \\mathbf{r} > \\mathbf{0})",
+      "aliases_latex": [
+        "r_i = \\frac{1-d}{N} + d \\sum_{j \\in B_i} \\frac{r_j}{L(j)}"
+      ],
+      "keywords": [
+        "PageRank",
+        "固有ベクトル中心性",
+        "べき乗法",
+        "Webグラフ"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "graph_theory",
+        "information_retrieval"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_cs_algo_n01_asymptotic",
+      "target_node_id": "cs.algo.n01_asymptotic_notation",
+      "route_kind": "reformulation",
+      "title": "ランダウ記号の無限大極限への適用による計算量漸近記法の定義",
+      "premise_node_ids": [
+        "math.calc.m13_vector_landau_big_o_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "計算量関数 f(n), g(n) は自然数 n に対して非負の実数値をとる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{g}(\\tau) = \\mathcal{O}(\\tau^m)\\;(\\tau \\to 0) \\iff \\exists C > 0,\\; \\exists \\delta > 0\\text{ s.t. } |\\tau| \\le \\delta \\implies \\|\\mathbf{g}(\\tau)\\| \\le C|\\tau|^m",
+          "to_latex": "f(n) = O(g(n)) \\iff \\exists c > 0,\\, n_0 \\in \\mathbb{N}\\text{ s.t. } \\forall n \\ge n_0,\\; 0 \\le f(n) \\le c g(n);\\quad f(n) = \\Theta(g(n)) \\iff f(n) = O(g(n)) \\land f(n) = \\Omega(g(n))",
+          "operation_label": "極限領域の変換と上下界・同値オーダーの約束",
+          "explanation": "連続変数のゼロ近傍におけるランダウのBig-O記号を、離散入力サイズ n が十分に大きい領域（n -> ∞）の非負計算量関数へ適用し、上界 O、下界 Ω（f(n) >= c g(n)）、および両者を同時に満たす Θ を定義する。",
+          "used_node_ids": [
+            "math.calc.m13_vector_landau_big_o_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cs_algo_n02_recursion_tree",
+      "target_node_id": "cs.algo.n02_recursion_tree_expansion",
+      "route_kind": "deductive",
+      "title": "分割統治漸化式の再帰木展開による総コスト式の導出",
+      "premise_node_ids": [
+        "cs.algo.n01_asymptotic_notation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "a >= 1, b > 1 は定数であり、n = b^k (k = log_b n) と仮定する",
+        "基底条件は T(1) = Theta(1) である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T(n) = aT\\left(\\frac{n}{b}\\right) + f(n)\\quad (a \\ge 1,\\, b > 1,\\, T(1)=\\Theta(1))",
+          "to_latex": "T(n) = \\Theta(n^{\\log_b a}) + \\sum_{j=0}^{\\log_b n - 1} a^j f\\left(\\frac{n}{b^j}\\right)\\quad (a \\ge 1,\\, b > 1,\\, T(1)=\\Theta(1))",
+          "operation_label": "再帰木による漸化式の展開と基底コストの評価",
+          "explanation": "漸化式 T(n) = aT(n/b) + f(n) を深さ k = log_b n まで再帰的に展開し、葉の個数 a^(log_b n) = n^(log_b a) と各階層 j のコストの総和として表す。",
+          "used_node_ids": [
+            "cs.algo.n01_asymptotic_notation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_expand_k",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T(n) = aT\\left(\\frac{n}{b}\\right) + f(n)\\quad (a \\ge 1,\\, b > 1,\\, T(1)=\\Theta(1))",
+          "to_latex": "T(n) = a^k T\\left(\\frac{n}{b^k}\\right) + \\sum_{j=0}^{k-1} a^j f\\left(\\frac{n}{b^j}\\right)\\quad (k \\ge 1,\\, T(1)=\\Theta(1))",
+          "operation_label": "漸化式の k 段階反復代入",
+          "explanation": "T(n/b^j) = aT(n/b^(j+1)) + f(n/b^j) を j = 0, 1, ..., k-1 まで順次代入し、深さ j の a^j 個の部分問題における非再帰コストを集計する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_base_case",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T(n) = a^k T\\left(\\frac{n}{b^k}\\right) + \\sum_{j=0}^{k-1} a^j f\\left(\\frac{n}{b^j}\\right)\\quad (k \\ge 1,\\, T(1)=\\Theta(1))",
+          "to_latex": "T(n) = a^{\\log_b n} T(1) + \\sum_{j=0}^{\\log_b n - 1} a^j f\\left(\\frac{n}{b^j}\\right)\\quad (T(1)=\\Theta(1))",
+          "operation_label": "基底条件 k = log_b n の代入",
+          "explanation": "問題サイズが 1 になる深さ k = log_b n を代入すると、n/b^k = 1 となり、基底項が a^(log_b n) T(1) となる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_leaf_rewrite",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T(n) = a^{\\log_b n} T(1) + \\sum_{j=0}^{\\log_b n - 1} a^j f\\left(\\frac{n}{b^j}\\right)\\quad (T(1)=\\Theta(1))",
+          "to_latex": "T(n) = \\Theta(n^{\\log_b a}) + \\sum_{j=0}^{\\log_b n - 1} a^j f\\left(\\frac{n}{b^j}\\right)\\quad (a \\ge 1,\\, b > 1,\\, T(1)=\\Theta(1))",
+          "operation_label": "対数恒等式 a^(log_b n) = n^(log_b a) と Θ 記法の適用",
+          "explanation": "a^(log_b n) = n^(log_b a) の指数・対数恒等式と基底条件 T(1) = Θ(1) を用いて、葉の総コストを Θ(n^(log_b a)) と評価する。",
+          "used_node_ids": [
+            "cs.algo.n01_asymptotic_notation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cs_algo_n03_master_theorem",
+      "target_node_id": "cs.algo.n03_master_theorem",
+      "route_kind": "deductive",
+      "title": "再帰木展開の等比級数評価によるマスター定理の導出",
+      "premise_node_ids": [
+        "cs.algo.n02_recursion_tree_expansion",
+        "cs.algo.n01_asymptotic_notation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "a >= 1, b > 1 は定数であり、f(n) は漸近的に正である",
+        "ケース3では正則条件 a f(n/b) <= c f(n) (ある定数 c < 1) を仮定する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T(n) = \\Theta(n^{\\log_b a}) + \\sum_{j=0}^{\\log_b n - 1} a^j f\\left(\\frac{n}{b^j}\\right)\\quad (a \\ge 1,\\, b > 1,\\, T(1)=\\Theta(1))",
+          "to_latex": "T(n) = \\begin{cases} \\Theta(n^{\\log_b a}) & \\text{if } f(n) = O(n^{\\log_b a - \\epsilon})\\;(\\epsilon > 0) \\\\ \\Theta(n^{\\log_b a} \\log n) & \\text{if } f(n) = \\Theta(n^{\\log_b a}) \\\\ \\Theta(f(n)) & \\text{if } f(n) = \\Omega(n^{\\log_b a + \\epsilon})\\;(\\epsilon > 0) \\land a f(n/b) \\le c f(n)\\;(c < 1) \\end{cases}\\quad (a \\ge 1,\\, b > 1,\\, T(1)=\\Theta(1))",
+          "operation_label": "各階層のコスト和の漸近比較による3ケース分類",
+          "explanation": "再帰木の非再帰コストの総和 g(n) を、葉のコスト n^(log_b a) との比較に応じて増加・一定・減少の等比級数として評価し、T(n) の漸近限界を得る。",
+          "used_node_ids": [
+            "cs.algo.n01_asymptotic_notation",
+            "cs.algo.n02_recursion_tree_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_define_g",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T(n) = \\Theta(n^{\\log_b a}) + \\sum_{j=0}^{\\log_b n - 1} a^j f\\left(\\frac{n}{b^j}\\right)\\quad (a \\ge 1,\\, b > 1,\\, T(1)=\\Theta(1))",
+          "to_latex": "g(n) := \\sum_{j=0}^{\\log_b n - 1} a^j f\\left(\\frac{n}{b^j}\\right),\\quad T(n) = \\Theta(n^{\\log_b a}) + g(n)\\quad (a \\ge 1,\\, b > 1,\\, T(1)=\\Theta(1))",
+          "operation_label": "内部ノードの総コスト g(n) の分離定義",
+          "explanation": "再帰木の深さ 0 から log_b n - 1 までの非再帰コストの和を g(n) とおき、葉の総コスト Θ(n^(log_b a)) と比較する準備をする。",
+          "used_node_ids": [
+            "cs.algo.n02_recursion_tree_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_eval_g",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g(n) := \\sum_{j=0}^{\\log_b n - 1} a^j f\\left(\\frac{n}{b^j}\\right),\\quad T(n) = \\Theta(n^{\\log_b a}) + g(n)\\quad (a \\ge 1,\\, b > 1,\\, T(1)=\\Theta(1))",
+          "to_latex": "g(n) = \\begin{cases} O(n^{\\log_b a}) & \\text{if } f(n) = O(n^{\\log_b a - \\epsilon}) \\\\ \\Theta(n^{\\log_b a} \\log n) & \\text{if } f(n) = \\Theta(n^{\\log_b a}) \\\\ \\Theta(f(n)) & \\text{if } f(n) = \\Omega(n^{\\log_b a + \\epsilon}) \\land a f(n/b) \\le c f(n) \\end{cases}\\quad (T(n) = \\Theta(n^{\\log_b a}) + g(n))",
+          "operation_label": "3つの条件に応じた等比級数による g(n) の評価",
+          "explanation": "ケース1では a^j (n/b^j)^(log_b a - ε) が公比 b^ε > 1 の増加等比級数となり末項付近すなわち O(n^(log_b a)) で抑えられる。ケース2では全 log_b n 層が Θ(n^(log_b a)) となる。ケース3では正則条件により公比 c < 1 の減少等比級数となり根のコスト Θ(f(n)) が支配する。",
+          "used_node_ids": [
+            "cs.algo.n01_asymptotic_notation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_combine_cases",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g(n) = \\begin{cases} O(n^{\\log_b a}) & \\text{if } f(n) = O(n^{\\log_b a - \\epsilon}) \\\\ \\Theta(n^{\\log_b a} \\log n) & \\text{if } f(n) = \\Theta(n^{\\log_b a}) \\\\ \\Theta(f(n)) & \\text{if } f(n) = \\Omega(n^{\\log_b a + \\epsilon}) \\land a f(n/b) \\le c f(n) \\end{cases}\\quad (T(n) = \\Theta(n^{\\log_b a}) + g(n))",
+          "to_latex": "T(n) = \\begin{cases} \\Theta(n^{\\log_b a}) & \\text{if } f(n) = O(n^{\\log_b a - \\epsilon})\\;(\\epsilon > 0) \\\\ \\Theta(n^{\\log_b a} \\log n) & \\text{if } f(n) = \\Theta(n^{\\log_b a}) \\\\ \\Theta(f(n)) & \\text{if } f(n) = \\Omega(n^{\\log_b a + \\epsilon})\\;(\\epsilon > 0) \\land a f(n/b) \\le c f(n)\\;(c < 1) \\end{cases}\\quad (a \\ge 1,\\, b > 1,\\, T(1)=\\Theta(1))",
+          "operation_label": "支配項の統合によるマスター定理の完成",
+          "explanation": "T(n) = Θ(n^(log_b a)) + g(n) において支配的な漸近項を採用することで、3つのケースそれぞれの時間計算量を得る。",
+          "used_node_ids": [
+            "cs.algo.n01_asymptotic_notation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cs_algo_n04_amortized",
+      "target_node_id": "cs.algo.n04_amortized_potential_method",
+      "route_kind": "deductive",
+      "title": "望遠鏡和を用いたポテンシャル法による総実コスト上界の導出",
+      "premise_node_ids": [
+        "cs.algo.n01_asymptotic_notation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "初期状態 D_0 から n 回の操作を経て状態 D_n へ遷移する",
+        "すべての i >= 0 に対して Φ(D_i) >= Φ(D_0) が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{c}_i := c_i + \\Phi(D_i) - \\Phi(D_{i-1})\\quad (1 \\le i \\le n,\\; \\Phi(D_n) \\ge \\Phi(D_0))",
+          "to_latex": "\\sum_{i=1}^{n} c_i = \\sum_{i=1}^{n} \\hat{c}_i + \\Phi(D_0) - \\Phi(D_n) \\le \\sum_{i=1}^{n} \\hat{c}_i\\quad (\\Phi(D_n) \\ge \\Phi(D_0))",
+          "operation_label": "償却コストの総和と望遠鏡和による上界評価",
+          "explanation": "各操作の償却コストを i=1 から n まで足し合わせると、ポテンシャル変化の和が望遠鏡和によって相殺され、初期状態と最終状態のポテンシャル差のみが残る。",
+          "used_node_ids": [
+            "cs.algo.n01_asymptotic_notation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sum_def",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{c}_i := c_i + \\Phi(D_i) - \\Phi(D_{i-1})\\quad (1 \\le i \\le n,\\; \\Phi(D_n) \\ge \\Phi(D_0))",
+          "to_latex": "\\sum_{i=1}^{n} \\hat{c}_i = \\sum_{i=1}^{n} c_i + \\sum_{i=1}^{n} \\big(\\Phi(D_i) - \\Phi(D_{i-1})\\big)\\quad (\\Phi(D_n) \\ge \\Phi(D_0))",
+          "operation_label": "i = 1 から n までの総和の取得",
+          "explanation": "定義式の両辺について n 回の操作にわたる総和をとり、和の線形性により実コストの和とポテンシャル差の和に分解する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_telescope",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{n} \\hat{c}_i = \\sum_{i=1}^{n} c_i + \\sum_{i=1}^{n} \\big(\\Phi(D_i) - \\Phi(D_{i-1})\\big)\\quad (\\Phi(D_n) \\ge \\Phi(D_0))",
+          "to_latex": "\\sum_{i=1}^{n} c_i = \\sum_{i=1}^{n} \\hat{c}_i + \\Phi(D_0) - \\Phi(D_n)\\quad (\\Phi(D_n) \\ge \\Phi(D_0))",
+          "operation_label": "望遠鏡和（telescoping sum）による中間項の相殺と移項",
+          "explanation": "隣接項の差の総和は両端の差 Φ(D_n) - Φ(D_0) に帰着するため、これを移項して実コストの総和について整理する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_inequality",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{n} c_i = \\sum_{i=1}^{n} \\hat{c}_i + \\Phi(D_0) - \\Phi(D_n)\\quad (\\Phi(D_n) \\ge \\Phi(D_0))",
+          "to_latex": "\\sum_{i=1}^{n} c_i = \\sum_{i=1}^{n} \\hat{c}_i + \\Phi(D_0) - \\Phi(D_n) \\le \\sum_{i=1}^{n} \\hat{c}_i\\quad (\\Phi(D_n) \\ge \\Phi(D_0))",
+          "operation_label": "ポテンシャルの非負条件 Φ(D_n) >= Φ(D_0) の適用",
+          "explanation": "条件 Φ(D_0) - Φ(D_n) <= 0 を用いることで、n 回の操作の総実コストが総償却コストによって上から抑えられることが示される。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cs_algo_n05_markov",
+      "target_node_id": "cs.algo.n05_markov_chain_stationary",
+      "route_kind": "reformulation",
+      "title": "確率公理と線形空間に基づくマルコフ連鎖と定常分布の定式化",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "状態空間は有限集合 {1, ..., N} である",
+        "時刻は離散 t = 0, 1, 2, ... とし、遷移確率は時間に依存しない"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P(\\Omega) = 1,\\; P(A) \\ge 0,\\; \\mathbf{v} \\in \\mathbb{R}^N",
+          "to_latex": "\\sum_{i=1}^{N} M_{ij} = 1,\\; M_{ij} \\ge 0;\\qquad \\boldsymbol{\\pi} = M\\boldsymbol{\\pi},\\quad \\sum_{i=1}^{N} \\pi_i = 1,\\; \\pi_i \\ge 0",
+          "operation_label": "条件付き遷移確率の行列表現と不変分布の定義",
+          "explanation": "コルモゴロフの確率公理に従う状態 j から状態 i への遷移確率 M_ij を非負かつ列和 1 の列確率行列 M にまとめ、状態分布ベクトル空間 R^N 上で 1 ステップ遷移 Mπ により不変となる確率ベクトル π を定常分布として定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cs_algo_n07_google_matrix",
+      "target_node_id": "cs.algo.n07_google_matrix_damping",
+      "route_kind": "reformulation",
+      "title": "確率遷移行列へのランダムジャンプ混合によるGoogle行列の定義",
+      "premise_node_ids": [
+        "cs.algo.n05_markov_chain_stationary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "M はダングリングノード（出次数 0 の頂点）の列を 1/N で置換済みの列確率行列である",
+        "ダンピングファクタ d は 0 < d < 1 を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum_{i=1}^{N} M_{ij} = 1,\\; M_{ij} \\ge 0,\\; 0 < d < 1",
+          "to_latex": "G := d M + \\frac{1 - d}{N} \\mathbf{1}\\mathbf{1}^\\top\\quad (0 < d < 1,\\; \\mathbf{1} = (1,\\dots,1)^\\top \\in \\mathbb{R}^N,\\; \\sum_{i=1}^{N} M_{ij} = 1,\\; M_{ij} \\ge 0)\\quad (G_{ij} > 0,\\; \\sum_{i=1}^{N} G_{ij} = 1)\\quad (\\text{Google Matrix})",
+          "operation_label": "ランダムジャンプ項の凸結合によるGoogle行列の定義",
+          "explanation": "マルコフ遷移行列 M に確率 d で従い、確率 1-d で全 N 状態へ一様確率 1/N で遷移する行列 (1/N) 1 1^T を凸結合することで、全成分が厳密に正の列確率行列 G を定義する。",
+          "used_node_ids": [
+            "cs.algo.n05_markov_chain_stationary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_cs_algo_n08_pagerank",
+      "target_node_id": "cs.algo.n08_pagerank_equation",
+      "route_kind": "deductive",
+      "title": "Google行列へのペロン＝フロベニウスの定理適用によるPageRank方程式の導出",
+      "premise_node_ids": [
+        "cs.algo.n07_google_matrix_damping",
+        "cs.algo.n06_perron_frobenius_boundary",
+        "cs.algo.n05_markov_chain_stationary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "G = dM + ((1-d)/N) 1 1^T (0 < d < 1) は列確率行列である",
+        "初期ベクトル r^(0) は非負かつ成分和 1^T r^(0) = 1 を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "G := d M + \\frac{1 - d}{N} \\mathbf{1}\\mathbf{1}^\\top\\quad (0 < d < 1,\\; \\sum_{i=1}^{N} M_{ij} = 1,\\; M_{ij} \\ge 0)\\quad (\\text{Google Matrix})",
+          "to_latex": "\\mathbf{r} = G\\mathbf{r} = d M\\mathbf{r} + \\frac{1 - d}{N}\\mathbf{1},\\quad \\mathbf{1}^\\top\\mathbf{r} = 1,\\quad \\lim_{t \\to \\infty} G^t \\mathbf{r}^{(0)} = \\mathbf{r}\\quad (0 < d < 1,\\; \\mathbf{r} > \\mathbf{0})",
+          "operation_label": "正の確率行列性・ペロン＝フロベニウスの定理・確率規格化の統合",
+          "explanation": "Google行列 G が正の列確率行列であることを確認してペロン＝フロベニウスの定理を適用し、一意の定常分布 r の存在・べき乗法の収束および 1^T r = 1 を用いた PageRank 方程式を導く。",
+          "used_node_ids": [
+            "cs.algo.n05_markov_chain_stationary",
+            "cs.algo.n06_perron_frobenius_boundary",
+            "cs.algo.n07_google_matrix_damping"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_positivity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G := d M + \\frac{1 - d}{N} \\mathbf{1}\\mathbf{1}^\\top\\quad (0 < d < 1,\\; \\sum_{i=1}^{N} M_{ij} = 1,\\; M_{ij} \\ge 0)\\quad (\\text{Google Matrix})",
+          "to_latex": "G_{ij} = d M_{ij} + \\frac{1 - d}{N} > 0,\\quad \\sum_{i=1}^{N} G_{ij} = d\\sum_{i=1}^{N} M_{ij} + (1 - d) = 1",
+          "operation_label": "Google行列の正値性と列確率性の検証",
+          "explanation": "0 < d < 1 と M_ij >= 0 より (1-d)/N > 0 となるため G の全成分は厳密に正であり、列和も d*1 + (1-d) = 1 となる。",
+          "used_node_ids": [
+            "cs.algo.n07_google_matrix_damping"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_perron_apply",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G_{ij} = d M_{ij} + \\frac{1 - d}{N} > 0,\\quad \\sum_{i=1}^{N} G_{ij} = d\\sum_{i=1}^{N} M_{ij} + (1 - d) = 1",
+          "to_latex": "\\exists!\\,\\mathbf{r} > \\mathbf{0}\\;(\\mathbf{1}^\\top\\mathbf{r}=1)\\text{ s.t. } G\\mathbf{r} = \\mathbf{r},\\quad \\lim_{t \\to \\infty} G^t \\mathbf{r}^{(0)} = \\mathbf{r}\\quad (\\mathbf{r}^{(0)} \\ge \\mathbf{0},\\, \\mathbf{1}^\\top\\mathbf{r}^{(0)}=1)\\quad (G\\text{ positive})",
+          "operation_label": "ペロン＝フロベニウスの定理の適用",
+          "explanation": "正の列確率行列 G に対してペロン＝フロベニウスの定理を適用すると、固有値 1 に対応する正の定常分布ベクトル r が一意に存在し、べき乗反復 G^t r^(0) が r に収束することが保証される。",
+          "used_node_ids": [
+            "cs.algo.n05_markov_chain_stationary",
+            "cs.algo.n06_perron_frobenius_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_pagerank_eq",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists!\\,\\mathbf{r} > \\mathbf{0}\\;(\\mathbf{1}^\\top\\mathbf{r}=1)\\text{ s.t. } G\\mathbf{r} = \\mathbf{r},\\quad \\lim_{t \\to \\infty} G^t \\mathbf{r}^{(0)} = \\mathbf{r}\\quad (\\mathbf{r}^{(0)} \\ge \\mathbf{0},\\, \\mathbf{1}^\\top\\mathbf{r}^{(0)}=1)\\quad (G\\text{ positive})",
+          "to_latex": "\\mathbf{r} = G\\mathbf{r} = d M\\mathbf{r} + \\frac{1 - d}{N}\\mathbf{1},\\quad \\mathbf{1}^\\top\\mathbf{r} = 1,\\quad \\lim_{t \\to \\infty} G^t \\mathbf{r}^{(0)} = \\mathbf{r}\\quad (0 < d < 1,\\; \\mathbf{r} > \\mathbf{0})",
+          "operation_label": "行列 G の展開と確率規格化条件 1^T r = 1 の代入",
+          "explanation": "固有方程式 Gr = r に G の定義を代入し、1^T r = 1 を用いると ((1-d)/N) 1 (1^T r) = ((1-d)/N) 1 となり、PageRank方程式が導かれる。",
+          "used_node_ids": [
+            "cs.algo.n07_google_matrix_damping"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

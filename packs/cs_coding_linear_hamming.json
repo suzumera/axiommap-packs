@@ -1,0 +1,538 @@
+{
+  "pack_meta": {
+    "pack_id": "cs.coding.linear_hamming",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "coding_theory",
+    "title": "符号理論：ハミング距離・シングルトン限界・線形符号の生成/検査行列とシンドローム復号",
+    "language": "ja",
+    "description": "有限体ベクトル空間からハミング距離と誤り訂正能力、ハミング限界、生成行列Gとパリティ検査行列Hの直交条件GH^T=0、シンドローム復号を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "cs.code.n01_fq_hamming_space",
+      "short_code": "CODE01",
+      "kind": "definition",
+      "title": "有限体Fq上のハミング空間とq元ブロック符号(n,M,d)_qの定義",
+      "summary": "要素数qの有限体Fq上のn次元ベクトル空間におけるハミング重み・ハミング距離と、符号長n・符号語数M・最小距離dを持つq元ブロック符号(n,M,d)_qを定義する。",
+      "canonical_latex": "\\mathbb{F}_q^n,\\quad d_H(\\mathbf{x},\\mathbf{y}) := |\\{i \\in \\{1,\\dots,n\\} \\mid x_i \\neq y_i\\}|,\\quad d(\\mathcal{C}) := \\min_{\\mathbf{x},\\mathbf{y}\\in\\mathcal{C},\\,\\mathbf{x}\\neq\\mathbf{y}} d_H(\\mathbf{x},\\mathbf{y})",
+      "aliases_latex": [
+        "w_H(\\mathbf{x}) := |\\{i \\mid x_i \\neq 0\\}|,\\quad d_H(\\mathbf{x},\\mathbf{y}) = w_H(\\mathbf{x}-\\mathbf{y})"
+      ],
+      "keywords": [
+        "有限体",
+        "ハミング距離",
+        "ハミング重み",
+        "q元符号",
+        "符号長"
+      ],
+      "domain_tags": [
+        "coding_theory",
+        "information_theory",
+        "discrete_mathematics"
+      ]
+    },
+    {
+      "id": "cs.code.n02_hamming_ball_volume",
+      "short_code": "CODE02",
+      "kind": "theorem_formula",
+      "title": "ハミング球の体積（半径t以内のベクトル数）の公式",
+      "summary": "Fq^nにおいて、ある中心ベクトルからハミング距離がt以下であるベクトル全体の集合（ハミング球）に含まれる要素数Vq(n,t)の組合せ論的公式。",
+      "canonical_latex": "V_q(n, t) := |B_H(\\mathbf{x}, t)| = \\sum_{i=0}^{t} \\binom{n}{i}(q - 1)^i",
+      "aliases_latex": [
+        "|B_H(\\mathbf{x}, t)| = \\sum_{i=0}^{t} \\binom{n}{i}(q-1)^i"
+      ],
+      "keywords": [
+        "ハミング球",
+        "球の体積",
+        "二項係数",
+        "組合せ論"
+      ],
+      "domain_tags": [
+        "coding_theory",
+        "combinatorics"
+      ]
+    },
+    {
+      "id": "cs.code.n03_hamming_sphere_packing_bound",
+      "short_code": "CODE03",
+      "kind": "theorem_formula",
+      "title": "ハミング限界（球充填限界）と完全符号の条件",
+      "summary": "最小距離dの(n,M,d)_q符号がt=floor((d-1)/2)個の誤りを訂正できるとき、各符号語を中心とする半径tのハミング球が互いに素であることから符号語数Mの上界を与える定理。",
+      "canonical_latex": "M \\sum_{i=0}^{t} \\binom{n}{i}(q-1)^i \\le q^n,\\qquad t = \\left\\lfloor \\frac{d-1}{2} \\right\\rfloor",
+      "aliases_latex": [
+        "M \\cdot V_q(n, t) \\le q^n,\\quad q^{n-k} \\ge \\sum_{i=0}^{t} \\binom{n}{i}(q-1)^i"
+      ],
+      "keywords": [
+        "ハミング限界",
+        "球充填限界",
+        "完全符号",
+        "誤り訂正能力"
+      ],
+      "domain_tags": [
+        "coding_theory",
+        "information_theory"
+      ]
+    },
+    {
+      "id": "cs.code.n04_singleton_bound",
+      "short_code": "CODE04",
+      "kind": "theorem_formula",
+      "title": "シングルトン限界（Singleton Bound）とMDS符号の条件",
+      "summary": "任意の(n,M,d)_q符号において、先頭d-1座標を削除するパンクチャリング射影が単射となることから導かれる最小距離と情報量の上界定理。",
+      "canonical_latex": "M \\le q^{n - d + 1},\\qquad \\text{([n,k,d]}_q\\text{ linear code: } d \\le n - k + 1\\text{)}",
+      "aliases_latex": [
+        "d \\le n - \\log_q M + 1,\\quad k \\le n - d + 1"
+      ],
+      "keywords": [
+        "シングルトン限界",
+        "MDS符号",
+        "最小距離",
+        "パンクチャリング"
+      ],
+      "domain_tags": [
+        "coding_theory",
+        "discrete_mathematics"
+      ]
+    },
+    {
+      "id": "cs.code.n05_dual_code_rank_nullity",
+      "short_code": "CODE05",
+      "kind": "theorem_formula",
+      "title": "双対符号と線形符号の次元定理（GH^T=Oの線形代数的構造）",
+      "summary": "[n,k]線形符号Cに対して直交補空間として定義される双対符号C^perpの次元がn-kとなり、Cのパリティ検査行列HがC^perpの生成行列となることを示す定理。",
+      "canonical_latex": "\\mathcal{C}^\\perp := \\{\\mathbf{v} \\in \\mathbb{F}_q^n \\mid \\forall \\mathbf{c} \\in \\mathcal{C},\\; \\mathbf{c}\\cdot\\mathbf{v} = 0\\},\\quad \\dim \\mathcal{C} + \\dim \\mathcal{C}^\\perp = n,\\quad G H^\\top = O",
+      "aliases_latex": [
+        "\\mathcal{C}^\\perp = \\ker(G),\\quad \\dim \\mathcal{C}^\\perp = n - k"
+      ],
+      "keywords": [
+        "双対符号",
+        "次元定理",
+        "生成行列",
+        "パリティ検査行列"
+      ],
+      "domain_tags": [
+        "coding_theory",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "cs.code.n06_binary_hamming_code",
+      "short_code": "CODE06",
+      "kind": "theorem_formula",
+      "title": "2元ハミング符号の完全性とシンドロームによる1ビット誤り位置特定",
+      "summary": "非零のrビット列すべてを列に持つパリティ検査行列Hで定義される2元ハミング符号[2^r-1, 2^r-1-r, 3]_2がハミング限界の等号を満たす完全符号であり、単一誤りのシンドロームが誤り位置を示すこと。",
+      "canonical_latex": "n = 2^r - 1,\\; k = n - r,\\; d_{\\min} = 3,\\quad 2^k(1+n) = 2^n,\\quad \\mathbf{s} = (\\mathbf{c} \\oplus \\mathbf{e}_j) H^\\top = \\mathbf{h}_j^\\top",
+      "aliases_latex": [
+        "\\mathcal{H}_r = [2^r - 1, 2^r - 1 - r, 3]_2"
+      ],
+      "keywords": [
+        "ハミング符号",
+        "完全符号",
+        "シンドローム復号",
+        "1ビット誤り訂正"
+      ],
+      "domain_tags": [
+        "coding_theory",
+        "digital_communications"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_code01_fq_hamming_space",
+      "target_node_id": "cs.code.n01_fq_hamming_space",
+      "route_kind": "reformulation",
+      "title": "GF(2)から一般の有限体Fq上のハミング距離空間への拡張定義",
+      "premise_node_ids": [
+        "math.linalg.vs01_vector_space_axioms",
+        "eng.ecc.n01_gf2_vector_space"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "qは素数べきであり、Fqは要素数qの有限体である",
+        "ブロック符号CはFq^nの非空部分集合であり、符号語数M=|C|>=2とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbb{F}_2^n,\\quad d_H(\\mathbf{x},\\mathbf{y}) = w_H(\\mathbf{x}\\oplus\\mathbf{y})",
+          "to_latex": "\\mathbb{F}_q^n,\\quad d_H(\\mathbf{x},\\mathbf{y}) := |\\{i \\in \\{1,\\dots,n\\} \\mid x_i \\neq y_i\\}|,\\quad d(\\mathcal{C}) := \\min_{\\mathbf{x}\\neq\\mathbf{y}\\in\\mathcal{C}} d_H(\\mathbf{x},\\mathbf{y})",
+          "operation_label": "有限体Fq上のベクトル空間におけるハミング距離と最小距離の定義",
+          "explanation": "2元体F2上のハミング重み・ハミング距離の定義を一般の有限体Fq上のn次元ベクトル空間Fq^nに拡張し、符号語間の最小ハミング距離d(C)を定める。",
+          "used_node_ids": [
+            "eng.ecc.n01_gf2_vector_space",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_code02_hamming_ball_volume",
+      "target_node_id": "cs.code.n02_hamming_ball_volume",
+      "route_kind": "deductive",
+      "title": "ハミング球の体積公式の組合せ論的導出",
+      "premise_node_ids": [
+        "cs.code.n01_fq_hamming_space"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "半径tは 0 <= t <= n を満たす整数である",
+        "各座標は独立にq通りの値をとる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "B_H(\\mathbf{x}, t) := \\{\\mathbf{y} \\in \\mathbb{F}_q^n \\mid d_H(\\mathbf{x},\\mathbf{y}) \\le t\\}",
+          "to_latex": "V_q(n, t) = \\sum_{i=0}^{t} \\binom{n}{i}(q - 1)^i",
+          "operation_label": "距離ごとの球殻分解と組合せ積和による体積算出",
+          "explanation": "中心xからハミング距離がちょうどiであるベクトルの個数をi=0からtまで足し合わせることでハミング球の体積公式を得る。",
+          "used_node_ids": [
+            "cs.code.n01_fq_hamming_space"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_shell_decomp",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "B_H(\\mathbf{x}, t) := \\{\\mathbf{y} \\in \\mathbb{F}_q^n \\mid d_H(\\mathbf{x},\\mathbf{y}) \\le t\\}",
+          "to_latex": "|B_H(\\mathbf{x}, t)| = \\sum_{i=0}^{t} |\\{\\mathbf{y} \\in \\mathbb{F}_q^n \\mid d_H(\\mathbf{x},\\mathbf{y}) = i\\}|",
+          "operation_label": "距離iごとの互いに素な球殻への分割",
+          "explanation": "ハミング距離がt以下であるベクトルの集合を、距離がちょうどi（0 <= i <= t）である互いに素な部分集合に分割して要素数の和をとる。",
+          "used_node_ids": [
+            "cs.code.n01_fq_hamming_space"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_count_shell",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|B_H(\\mathbf{x}, t)| = \\sum_{i=0}^{t} |\\{\\mathbf{y} \\in \\mathbb{F}_q^n \\mid d_H(\\mathbf{x},\\mathbf{y}) = i\\}|",
+          "to_latex": "V_q(n, t) = \\sum_{i=0}^{t} \\binom{n}{i}(q - 1)^i",
+          "operation_label": "i個の異なる座標の選択と置換数(q-1)^iの積和",
+          "explanation": "xと異なるi個の座標を選ぶ方法がnCi通りあり、各座標で元の値以外のq-1通りの値を選べるため、距離iのベクトル数はnCi*(q-1)^i個となる。",
+          "used_node_ids": [
+            "cs.code.n01_fq_hamming_space"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_code03_hamming_bound",
+      "target_node_id": "cs.code.n03_hamming_sphere_packing_bound",
+      "route_kind": "deductive",
+      "title": "非交なハミング球の充填によるハミング限界の導出",
+      "premise_node_ids": [
+        "cs.code.n01_fq_hamming_space",
+        "cs.code.n02_hamming_ball_volume",
+        "eng.ecc.n05_error_detection_correction_bound"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "符号Cは(n,M,d)_q符号であり、訂正可能誤り数t = floor((d-1)/2)とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\forall \\mathbf{c}_1 \\neq \\mathbf{c}_2 \\in \\mathcal{C},\\; d_H(\\mathbf{c}_1,\\mathbf{c}_2) \\ge d \\ge 2t+1",
+          "to_latex": "M \\sum_{i=0}^{t} \\binom{n}{i}(q-1)^i \\le q^n",
+          "operation_label": "半径tのハミング球の非交性と空間全体の要素数との比較",
+          "explanation": "異なる符号語を中心とする半径tのハミング球が互いに交わらないことから、M個の球の体積の総和が全体空間Fq^nのサイズq^nを超えないというハミング限界を導く。",
+          "used_node_ids": [
+            "cs.code.n01_fq_hamming_space",
+            "cs.code.n02_hamming_ball_volume",
+            "eng.ecc.n05_error_detection_correction_bound"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_disjoint_balls",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall \\mathbf{c}_1 \\neq \\mathbf{c}_2 \\in \\mathcal{C},\\; d_H(\\mathbf{c}_1,\\mathbf{c}_2) \\ge d \\ge 2t+1",
+          "to_latex": "\\forall \\mathbf{c}_1 \\neq \\mathbf{c}_2 \\in \\mathcal{C},\\; B_H(\\mathbf{c}_1, t) \\cap B_H(\\mathbf{c}_2, t) = \\emptyset",
+          "operation_label": "三角不等式による半径tハミング球の非交性の証明",
+          "explanation": "もし共通元yが存在すれば三角不等式より d_H(c1,c2) <= d_H(c1,y)+d_H(y,c2) <= 2t となり、d_H(c1,c2) >= 2t+1 に矛盾するため球は互いに素である。",
+          "used_node_ids": [
+            "cs.code.n01_fq_hamming_space",
+            "eng.ecc.n05_error_detection_correction_bound"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_union_cardinality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall \\mathbf{c}_1 \\neq \\mathbf{c}_2 \\in \\mathcal{C},\\; B_H(\\mathbf{c}_1, t) \\cap B_H(\\mathbf{c}_2, t) = \\emptyset",
+          "to_latex": "\\left|\\bigcup_{\\mathbf{c}\\in\\mathcal{C}} B_H(\\mathbf{c}, t)\\right| = M \\cdot V_q(n, t) \\le |\\mathbb{F}_q^n| = q^n",
+          "operation_label": "和集合の要素数と全体空間サイズの比較",
+          "explanation": "M個の互いに素なハミング球の和集合はFq^nの部分集合であるため、その要素数 M*Vq(n,t) は q^n 以下となる。",
+          "used_node_ids": [
+            "cs.code.n01_fq_hamming_space",
+            "cs.code.n02_hamming_ball_volume"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_substitute_volume",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left|\\bigcup_{\\mathbf{c}\\in\\mathcal{C}} B_H(\\mathbf{c}, t)\\right| = M \\cdot V_q(n, t) \\le |\\mathbb{F}_q^n| = q^n",
+          "to_latex": "M \\sum_{i=0}^{t} \\binom{n}{i}(q-1)^i \\le q^n",
+          "operation_label": "ハミング球の体積公式Vq(n,t)の代入",
+          "explanation": "ハミング球の体積公式を代入することでハミング限界の不等式を得る。",
+          "used_node_ids": [
+            "cs.code.n02_hamming_ball_volume"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_code04_singleton_bound",
+      "target_node_id": "cs.code.n04_singleton_bound",
+      "route_kind": "deductive",
+      "title": "座標パンクチャリング射影の単射性によるシングルトン限界の導出",
+      "premise_node_ids": [
+        "cs.code.n01_fq_hamming_space",
+        "eng.ecc.n02_linear_block_code_generator"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "符号Cは(n,M,d)_q符号であり、1 <= d <= n を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\forall \\mathbf{c}_1 \\neq \\mathbf{c}_2 \\in \\mathcal{C},\\; d_H(\\mathbf{c}_1, \\mathbf{c}_2) \\ge d",
+          "to_latex": "M \\le q^{n - d + 1},\\quad d \\le n - k + 1",
+          "operation_label": "d-1座標削除射影の単射性による符号語数の上界評価",
+          "explanation": "先頭d-1座標を削除しても最小距離dの定義から異なる符号語が一致しないことを用い、残りのn-d+1座標の空間サイズでMを上から抑える。",
+          "used_node_ids": [
+            "cs.code.n01_fq_hamming_space",
+            "eng.ecc.n02_linear_block_code_generator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_projection_def",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall \\mathbf{c}_1 \\neq \\mathbf{c}_2 \\in \\mathcal{C},\\; d_H(\\mathbf{c}_1, \\mathbf{c}_2) \\ge d",
+          "to_latex": "\\pi: \\mathcal{C} \\to \\mathbb{F}_q^{n-d+1},\\; (c_1,\\dots,c_n) \\mapsto (c_d,\\dots,c_n)\\text{ is injective}",
+          "operation_label": "先頭d-1成分を消去する射影の単射性の証明",
+          "explanation": "異なる2つの符号語は少なくともd個の座標で異なるため、先頭d-1個の座標を削除しても残りのn-d+1個の座標のうち少なくとも1箇所で必ず異なり、射影piは単射となる。",
+          "used_node_ids": [
+            "cs.code.n01_fq_hamming_space"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_pigeonhole",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\pi: \\mathcal{C} \\to \\mathbb{F}_q^{n-d+1},\\; (c_1,\\dots,c_n) \\mapsto (c_d,\\dots,c_n)\\text{ is injective}",
+          "to_latex": "M = |\\mathcal{C}| \\le |\\mathbb{F}_q^{n-d+1}| = q^{n-d+1}",
+          "operation_label": "単射性による定義域と値域の要素数の比較",
+          "explanation": "単射写像の定義域の要素数は値域の要素数以下であるため、M <= q^(n-d+1) が成り立つ。",
+          "used_node_ids": [
+            "cs.code.n01_fq_hamming_space"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_linear_case",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M = |\\mathcal{C}| \\le |\\mathbb{F}_q^{n-d+1}| = q^{n-d+1}",
+          "to_latex": "M \\le q^{n - d + 1},\\quad d \\le n - k + 1",
+          "operation_label": "線形符号M=q^kの代入による次元・最小距離不等式への変形",
+          "explanation": "次元kのq元線形符号では符号語数 M = q^k であるため、指数を比較して k <= n - d + 1 すなわち d <= n - k + 1 を得る。",
+          "used_node_ids": [
+            "eng.ecc.n02_linear_block_code_generator"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_code05_dual_code_rank_nullity",
+      "target_node_id": "cs.code.n05_dual_code_rank_nullity",
+      "route_kind": "deductive",
+      "title": "生成行列の階数と核空間による双対符号の次元定理の導出",
+      "premise_node_ids": [
+        "eng.ecc.n02_linear_block_code_generator",
+        "eng.ecc.n03_parity_check_matrix",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "Gは[n,k]線形符号Cのk×n生成行列であり、rank(G)=kである"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{C} = \\{\\mathbf{u}G \\mid \\mathbf{u} \\in \\mathbb{F}_q^k\\},\\quad \\operatorname{rank}(G) = k",
+          "to_latex": "\\mathcal{C}^\\perp = \\ker(G),\\quad \\dim \\mathcal{C} + \\dim \\mathcal{C}^\\perp = n,\\quad G H^\\top = O",
+          "operation_label": "階数・退化次数定理による双対符号の次元とGH^T=Oの導出",
+          "explanation": "双対符号C^perpが生成行列Gの右零空間ker(G)に一致することを示し、線形代数の階数・退化次数定理から dim C + dim C^perp = n およびパリティ検査行列Hとの直交関係GH^T=Oを導く。",
+          "used_node_ids": [
+            "eng.ecc.n02_linear_block_code_generator",
+            "eng.ecc.n03_parity_check_matrix",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_kernel_equiv",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{C} = \\{\\mathbf{u}G \\mid \\mathbf{u} \\in \\mathbb{F}_q^k\\},\\quad \\operatorname{rank}(G) = k",
+          "to_latex": "\\mathbf{v} \\in \\mathcal{C}^\\perp \\iff \\forall \\mathbf{u}\\in\\mathbb{F}_q^k,\\; \\mathbf{u}(G\\mathbf{v}^\\top) = 0 \\iff G\\mathbf{v}^\\top = \\mathbf{0}",
+          "operation_label": "双対符号と生成行列の右零空間の同値変形",
+          "explanation": "Cの任意の符号語c=uGに対して c*v = u(Gv^T) = 0 が成り立つことは、Gv^T = 0 すなわち v がGの核空間に属することと同値である。",
+          "used_node_ids": [
+            "eng.ecc.n02_linear_block_code_generator",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_rank_nullity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v} \\in \\mathcal{C}^\\perp \\iff \\forall \\mathbf{u}\\in\\mathbb{F}_q^k,\\; \\mathbf{u}(G\\mathbf{v}^\\top) = 0 \\iff G\\mathbf{v}^\\top = \\mathbf{0}",
+          "to_latex": "\\dim \\mathcal{C}^\\perp = n - \\operatorname{rank}(G) = n - k,\\quad \\dim \\mathcal{C} + \\dim \\mathcal{C}^\\perp = n",
+          "operation_label": "線形写像の階数・退化次数定理の適用",
+          "explanation": "Gが定める線形写像 Fq^n -> Fq^k に階数・退化次数定理を適用すると、dim ker(G) = n - rank(G) = n - k となり、dim C + dim C^perp = n が従う。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_basis_h",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dim \\mathcal{C}^\\perp = n - \\operatorname{rank}(G) = n - k,\\quad \\dim \\mathcal{C} + \\dim \\mathcal{C}^\\perp = n",
+          "to_latex": "\\mathcal{C}^\\perp = \\ker(G),\\quad \\dim \\mathcal{C} + \\dim \\mathcal{C}^\\perp = n,\\quad G H^\\top = O",
+          "operation_label": "双対符号の基底によるパリティ検査行列Hの構成",
+          "explanation": "C^perpのn-k個の基底ベクトルを行に並べて (n-k)×n 行列Hを構成すれば、各行がker(G)に属するため G H^T = O となり、HはCのパリティ検査行列かつC^perpの生成行列となる。",
+          "used_node_ids": [
+            "eng.ecc.n03_parity_check_matrix"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_code06_binary_hamming_code",
+      "target_node_id": "cs.code.n06_binary_hamming_code",
+      "route_kind": "deductive",
+      "title": "2元ハミング符号の最小距離・完全符号性・シンドローム復号の導出",
+      "premise_node_ids": [
+        "eng.ecc.n03_parity_check_matrix",
+        "eng.ecc.n04_min_distance_weight_theorem",
+        "eng.ecc.n06_syndrome_decoding",
+        "cs.code.n03_hamming_sphere_packing_bound"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "r >= 2 の整数とし、HはF2上の非零r次元列ベクトルすべてを1回ずつ列に持つ r × (2^r-1) 行列とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "H = [\\mathbf{h}_1 \\mid \\mathbf{h}_2 \\mid \\cdots \\mid \\mathbf{h}_{2^r-1}] \\in \\mathbb{F}_2^{r \\times (2^r-1)},\\; \\mathbf{h}_j \\neq \\mathbf{0}\\text{ distinct}",
+          "to_latex": "n = 2^r - 1,\\; k = n - r,\\; d_{\\min} = 3,\\quad 2^k(1+n) = 2^n,\\quad \\mathbf{s} = (\\mathbf{c} \\oplus \\mathbf{e}_j) H^\\top = \\mathbf{h}_j^\\top",
+          "operation_label": "検査行列Hの列構造からの最小距離・完全性・シンドローム位置特定の導出",
+          "explanation": "非零rビット列をすべて並べたHの列の線形従属性から最小距離d_min=3を示し、ハミング限界の等号成立による完全性と、1ビット誤り時のシンドロームが誤り位置の列h_j^Tに一致することを導く。",
+          "used_node_ids": [
+            "cs.code.n03_hamming_sphere_packing_bound",
+            "eng.ecc.n03_parity_check_matrix",
+            "eng.ecc.n04_min_distance_weight_theorem",
+            "eng.ecc.n06_syndrome_decoding"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_min_distance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H = [\\mathbf{h}_1 \\mid \\mathbf{h}_2 \\mid \\cdots \\mid \\mathbf{h}_{2^r-1}] \\in \\mathbb{F}_2^{r \\times (2^r-1)},\\; \\mathbf{h}_j \\neq \\mathbf{0}\\text{ distinct}",
+          "to_latex": "\\forall i \\neq j,\\; \\mathbf{h}_i \\oplus \\mathbf{h}_j \\neq \\mathbf{0} \\implies \\exists \\ell,\\; \\mathbf{h}_i \\oplus \\mathbf{h}_j = \\mathbf{h}_\\ell \\implies d_{\\min} = 3",
+          "operation_label": "検査行列の列ベクトルの線形従属性による最小距離d_min=3の決定",
+          "explanation": "Hのすべての列が非零かつ相異なるため任意の1列および2列は線形独立であるが、異なる2列の和h_i+h_jは必ず非零のrビット列として別の列h_lと一致するため3列が線形従属となり、d_min=3が定まる。",
+          "used_node_ids": [
+            "eng.ecc.n04_min_distance_weight_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_perfect_code",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall i \\neq j,\\; \\mathbf{h}_i \\oplus \\mathbf{h}_j \\neq \\mathbf{0} \\implies \\exists \\ell,\\; \\mathbf{h}_i \\oplus \\mathbf{h}_j = \\mathbf{h}_\\ell \\implies d_{\\min} = 3",
+          "to_latex": "t = \\lfloor (3-1)/2 \\rfloor = 1,\\quad 2^k V_2(n,1) = 2^{n-r}(1 + 2^r - 1) = 2^n",
+          "operation_label": "ハミング限界の等号成立（完全符号）の検証",
+          "explanation": "d_min=3より1ビット誤り訂正（t=1）が可能であり、符号次元k=n-rをハミング限界の左辺に代入すると 2^(n-r)(1+n) = 2^(n-r)*2^r = 2^n となって等号が成立し、完全符号であることが示される。",
+          "used_node_ids": [
+            "cs.code.n03_hamming_sphere_packing_bound",
+            "eng.ecc.n03_parity_check_matrix"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_syndrome_locate",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "t = \\lfloor (3-1)/2 \\rfloor = 1,\\quad 2^k V_2(n,1) = 2^{n-r}(1 + 2^r - 1) = 2^n",
+          "to_latex": "n = 2^r - 1,\\; k = n - r,\\; d_{\\min} = 3,\\quad 2^k(1+n) = 2^n,\\quad \\mathbf{s} = (\\mathbf{c} \\oplus \\mathbf{e}_j) H^\\top = \\mathbf{h}_j^\\top",
+          "operation_label": "単一誤りベクトルe_jに対するシンドロームと誤り位置の対応付け",
+          "explanation": "第jビットのみが1の単一誤りベクトルe_jが生じたとき、c H^T = 0 よりシンドローム s = (c+e_j)H^T = e_j H^T = h_j^T となり、シンドロームがそのままHのj列目（誤り位置jの2進表現）を特定する。",
+          "used_node_ids": [
+            "eng.ecc.n03_parity_check_matrix",
+            "eng.ecc.n06_syndrome_decoding"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
