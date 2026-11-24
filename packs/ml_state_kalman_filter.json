@@ -14,28 +14,53 @@
       "short_code": "KF01",
       "kind": "definition",
       "title": "線形ガウス状態空間モデル（LGSSM）の定義",
-      "summary": "潜在状態ベクトルの線形マルコフ遷移と線形観測に独立な多変量ガウス雑音が加わる離散時間確率モデルを定義する。",
-      "canonical_latex": "\\mathbf{x}_t = F_t \\mathbf{x}_{t-1} + \\mathbf{w}_t,\\quad \\mathbf{y}_t = H_t \\mathbf{x}_t + \\mathbf{v}_t,\\quad \\mathbf{w}_t \\sim \\mathcal{N}(\\mathbf{0}, Q_t),\\quad \\mathbf{v}_t \\sim \\mathcal{N}(\\mathbf{0}, R_t),\\quad \\mathbf{x}_0 \\sim \\mathcal{N}(\\hat{\\mathbf{x}}_{0|0}, P_{0|0})",
+      "summary": "線形な状態遷移方程式と観測方程式、および互いに独立なガウス性プロセス雑音・観測雑音から構成される確率的状態空間モデルの定義。",
+      "canonical_latex": "\\mathbf{x}_k = F_k \\mathbf{x}_{k-1} + \\mathbf{w}_k\\;(\\mathbf{w}_k \\sim \\mathcal{N}(\\mathbf{0}, Q_k)),\\quad \\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k\\;(\\mathbf{v}_k \\sim \\mathcal{N}(\\mathbf{0}, R_k)),\\quad \\mathbf{x}_0 \\sim \\mathcal{N}(\\hat{\\mathbf{x}}_{0|0}, P_{0|0})",
       "aliases_latex": [
-        "p(\\mathbf{x}_t \\mid \\mathbf{x}_{t-1}) = \\mathcal{N}(F_t \\mathbf{x}_{t-1}, Q_t),\\quad p(\\mathbf{y}_t \\mid \\mathbf{x}_t) = \\mathcal{N}(H_t \\mathbf{x}_t, R_t)"
+        "p(\\mathbf{x}_k \\mid \\mathbf{x}_{k-1}) = \\mathcal{N}(\\mathbf{x}_k; F_k\\mathbf{x}_{k-1}, Q_k),\\quad p(\\mathbf{y}_k \\mid \\mathbf{x}_k) = \\mathcal{N}(\\mathbf{y}_k; H_k\\mathbf{x}_k, R_k)"
       ],
       "keywords": [
-        "線形ガウス状態空間モデル",
         "状態空間モデル",
-        "マルコフ連鎖",
-        "カルマンフィルタ"
+        "線形ガウスモデル",
+        "マルコフ性",
+        "状態遷移行列",
+        "観測行列"
       ],
       "domain_tags": [
         "machine_learning",
-        "state_space_model"
+        "control_theory",
+        "statistics"
       ]
     },
     {
-      "id": "ml.kf.n02_multivariate_gaussian_cond",
+      "id": "ml.kf.n02_mmse_conditional_expectation",
       "short_code": "KF02",
       "kind": "theorem_formula",
-      "title": "多変量正規分布の条件付き分布（平均とシューア補元による共分散）",
-      "summary": "結合多変量正規分布に従う2つの確率変数ベクトルについて、一方を観測したときの他方の条件付き分布が再び正規分布となり、その平均と共分散がブロック行列のシューア補元で与えられることを示す。",
+      "title": "最小平均二乗誤差（MMSE）推定量と条件付き期待値の一致",
+      "summary": "観測値に基づく任意の推定関数のうち、平均二乗誤差（MSE）を最小化する最適推定量（MMSE推定量）が事後条件付き期待値に一致することを示す定理。",
+      "canonical_latex": "\\hat{\\mathbf{x}}_{\\mathrm{MMSE}}(\\mathbf{y}) := \\arg\\min_{\\hat{\\mathbf{x}}(\\mathbf{y})} \\mathbb{E}\\big[\\|\\mathbf{x} - \\hat{\\mathbf{x}}(\\mathbf{y})\\|_2^2\\big] = \\mathbb{E}[\\mathbf{x} \\mid \\mathbf{y}]",
+      "aliases_latex": [
+        "\\min_{\\hat{\\mathbf{x}}} \\operatorname{tr}\\mathbb{E}[(\\mathbf{x}-\\hat{\\mathbf{x}})(\\mathbf{x}-\\hat{\\mathbf{x}})^\\top] \\implies \\hat{\\mathbf{x}}^* = \\mathbb{E}[\\mathbf{x}\\mid\\mathbf{y}]"
+      ],
+      "keywords": [
+        "MMSE",
+        "最小平均二乗誤差",
+        "条件付き期待値",
+        "ベイズ推定",
+        "直交原理"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "statistics",
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "ml.kf.n03_multivariate_gaussian_conditional",
+      "short_code": "KF03",
+      "kind": "theorem_formula",
+      "title": "多変量正規分布の条件付き分布（シュア補元による平均と共分散）",
+      "summary": "同時多変量正規分布に従う2つの確率ベクトルについて、一方を観測したときの他方の条件付き分布が再び正規分布となり、その平均と共分散がシュア補元で与えられる公式。",
       "canonical_latex": "\\begin{pmatrix}\\mathbf{x}\\\\\\mathbf{y}\\end{pmatrix} \\sim \\mathcal{N}\\!\\left(\\begin{pmatrix}\\boldsymbol{\\mu}_x\\\\\\boldsymbol{\\mu}_y\\end{pmatrix}, \\begin{pmatrix}\\Sigma_{xx} & \\Sigma_{xy}\\\\\\Sigma_{yx} & \\Sigma_{yy}\\end{pmatrix}\\right) \\implies \\mathbf{x}\\mid\\mathbf{y} \\sim \\mathcal{N}\\!\\left(\\boldsymbol{\\mu}_x + \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y),\\; \\Sigma_{xx} - \\Sigma_{xy}\\Sigma_{yy}^{-1}\\Sigma_{yx}\\right)",
       "aliases_latex": [
         "\\boldsymbol{\\mu}_{x|y} = \\boldsymbol{\\mu}_x + \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y),\\quad \\Sigma_{x|y} = \\Sigma_{xx} - \\Sigma_{xy}\\Sigma_{yy}^{-1}\\Sigma_{yx}"
@@ -43,13 +68,555 @@
       "keywords": [
         "多変量正規分布",
         "条件付き分布",
-        "シューア補元"
+        "シュア補元",
+        "ガウス過程"
       ],
       "domain_tags": [
         "machine_learning",
-        "probability"
+        "statistics"
+      ]
+    },
+    {
+      "id": "ml.kf.n04_kf_prediction_step",
+      "short_code": "KF04",
+      "kind": "theorem_formula",
+      "title": "カルマンフィルタの予測ステップ（事前状態推定と事前誤差共分散）",
+      "summary": "時刻k-1までの観測に基づく事後分布から、状態遷移方程式を用いて時刻kの事前状態推定値（予測平均）と事前誤差共分散行列を導出する時間更新式。",
+      "canonical_latex": "\\hat{\\mathbf{x}}_{k|k-1} = F_k \\hat{\\mathbf{x}}_{k-1|k-1},\\qquad P_{k|k-1} = F_k P_{k-1|k-1} F_k^\\top + Q_k",
+      "aliases_latex": [
+        "\\mathbf{x}_k \\mid \\mathbf{y}_{1:k-1} \\sim \\mathcal{N}(F_k\\hat{\\mathbf{x}}_{k-1|k-1},\\; F_k P_{k-1|k-1} F_k^\\top + Q_k)"
+      ],
+      "keywords": [
+        "カルマンフィルタ",
+        "予測ステップ",
+        "時間更新",
+        "事前誤差共分散"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "control_theory"
+      ]
+    },
+    {
+      "id": "ml.kf.n05_innovation_joint_gaussian",
+      "short_code": "KF05",
+      "kind": "theorem_formula",
+      "title": "イノベーション（観測残差）と状態・観測の同時条件付き分布",
+      "summary": "観測予測誤差（イノベーション）の定義と、時刻k-1までの観測を与えたもとでのイノベーション共分散および状態・観測間の相互共分散を与える公式。",
+      "canonical_latex": "\\tilde{\\mathbf{y}}_k := \\mathbf{y}_k - H_k\\hat{\\mathbf{x}}_{k|k-1},\\quad S_k := \\operatorname{Cov}(\\tilde{\\mathbf{y}}_k \\mid \\mathbf{y}_{1:k-1}) = H_k P_{k|k-1} H_k^\\top + R_k,\\quad \\operatorname{Cov}(\\mathbf{x}_k, \\mathbf{y}_k \\mid \\mathbf{y}_{1:k-1}) = P_{k|k-1} H_k^\\top",
+      "aliases_latex": [
+        "\\tilde{\\mathbf{y}}_k \\mid \\mathbf{y}_{1:k-1} \\sim \\mathcal{N}(\\mathbf{0}, H_k P_{k|k-1} H_k^\\top + R_k)"
+      ],
+      "keywords": [
+        "イノベーション",
+        "観測残差",
+        "イノベーション共分散",
+        "相互共分散"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "control_theory",
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "ml.kf.n06_optimal_kalman_gain",
+      "short_code": "KF06",
+      "kind": "theorem_formula",
+      "title": "最適カルマンゲインと状態推定の観測更新式",
+      "summary": "状態と観測の同時正規分布に対する条件付き期待値（MMSE推定量）から導かれる最適カルマンゲイン行列K_kと、イノベーションを用いた事後状態推定の更新式。",
+      "canonical_latex": "K_k = P_{k|k-1} H_k^\\top S_k^{-1} = P_{k|k-1} H_k^\\top (H_k P_{k|k-1} H_k^\\top + R_k)^{-1},\\qquad \\hat{\\mathbf{x}}_{k|k} = \\hat{\\mathbf{x}}_{k|k-1} + K_k(\\mathbf{y}_k - H_k\\hat{\\mathbf{x}}_{k|k-1})",
+      "aliases_latex": [
+        "\\hat{\\mathbf{x}}_{k|k} = \\hat{\\mathbf{x}}_{k|k-1} + K_k\\tilde{\\mathbf{y}}_k,\\quad K_k S_k = P_{k|k-1} H_k^\\top"
+      ],
+      "keywords": [
+        "カルマンゲイン",
+        "観測更新",
+        "MMSE",
+        "事後推定"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "control_theory",
+        "signal_processing"
+      ]
+    },
+    {
+      "id": "ml.kf.n07_covariance_update_joseph_form",
+      "short_code": "KF07",
+      "kind": "theorem_formula",
+      "title": "事後誤差共分散の更新式とジョセフ形式（Joseph Form）",
+      "summary": "任意のゲインに対する対称性と半正定値性を保つジョセフ形式の誤差共分散更新式、および最適カルマンゲインを代入して得られる簡略化された事後誤差共分散更新式。",
+      "canonical_latex": "P_{k|k} = (I - K_k H_k) P_{k|k-1} (I - K_k H_k)^\\top + K_k R_k K_k^\\top = (I - K_k H_k) P_{k|k-1}",
+      "aliases_latex": [
+        "P_{k|k} = P_{k|k-1} - K_k S_k K_k^\\top = P_{k|k-1} - K_k H_k P_{k|k-1}"
+      ],
+      "keywords": [
+        "事後誤差共分散",
+        "ジョセフ形式",
+        "半正定値性",
+        "数値安定性"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "control_theory"
       ]
     }
   ],
-  "derivations": []
+  "derivations": [
+    {
+      "id": "drv.kf.n01_lgssm_def",
+      "target_node_id": "ml.kf.n01_linear_gaussian_ssm_def",
+      "route_kind": "reformulation",
+      "title": "確率空間と潜在変数生成モデルに基づく線形ガウス状態空間モデルの定式化",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms",
+        "ml.vi.n01_latent_generative_bayes_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "状態空間および観測空間は有限次元実数ベクトル空間である",
+        "プロセス雑音w_kと観測雑音v_kは時刻間および相互に独立なゼロ平均ガウス白色雑音である",
+        "初期状態x_0は雑音列と独立な多変量正規分布に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p(\\mathbf{x}_{0:K}, \\mathbf{y}_{1:K}) = p(\\mathbf{x}_0)\\prod_{k=1}^{K} p(\\mathbf{x}_k\\mid\\mathbf{x}_{k-1})p(\\mathbf{y}_k\\mid\\mathbf{x}_k)",
+          "to_latex": "\\mathbf{x}_k = F_k\\mathbf{x}_{k-1} + \\mathbf{w}_k\\;(\\mathbf{w}_k\\sim\\mathcal{N}(\\mathbf{0},Q_k)),\\quad \\mathbf{y}_k = H_k\\mathbf{x}_k + \\mathbf{v}_k\\;(\\mathbf{v}_k\\sim\\mathcal{N}(\\mathbf{0},R_k))",
+          "operation_label": "マルコフ連鎖と線形ガウス構造の導入",
+          "explanation": "潜在変数生成モデルに1次マルコフ性を課し、遷移確率と観測尤度を線形変換とガウス雑音の和として定義することで線形ガウス状態空間モデルを得る。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms",
+            "ml.vi.n01_latent_generative_bayes_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.kf.n02_mmse_proof",
+      "target_node_id": "ml.kf.n02_mmse_conditional_expectation",
+      "route_kind": "deductive",
+      "title": "繰り返し期待値の法則と平方完成によるMMSE推定量の導出",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "確率変数xは2次モーメントが有限である（E[||x||_2^2] < \\infty）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathrm{MSE}(\\hat{\\mathbf{x}}) := \\mathbb{E}\\big[\\|\\mathbf{x} - \\hat{\\mathbf{x}}(\\mathbf{y})\\|_2^2\\big]",
+          "to_latex": "\\hat{\\mathbf{x}}_{\\mathrm{MMSE}}(\\mathbf{y}) = \\arg\\min_{\\hat{\\mathbf{x}}}\\mathrm{MSE}(\\hat{\\mathbf{x}}) = \\mathbb{E}[\\mathbf{x}\\mid\\mathbf{y}]",
+          "operation_label": "条件付き期待値周りの直交分解と最小化",
+          "explanation": "推定誤差を条件付き期待値との差と残差に分解し、繰り返し期待値の法則で交差項を消去することで、MSEの最小解が条件付き期待値であることを示す。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathrm{MSE}(\\hat{\\mathbf{x}}) := \\mathbb{E}\\big[\\|\\mathbf{x} - \\hat{\\mathbf{x}}(\\mathbf{y})\\|_2^2\\big]",
+          "to_latex": "\\mathbb{E}\\big[\\|\\mathbf{x} - \\mathbb{E}[\\mathbf{x}\\mid\\mathbf{y}] + \\mathbb{E}[\\mathbf{x}\\mid\\mathbf{y}] - \\hat{\\mathbf{x}}(\\mathbf{y})\\|_2^2\\big]",
+          "operation_label": "条件付き期待値の加減算",
+          "explanation": "ノルム内部に条件付き期待値 E[x|y] を足し引きして2つの項の和として表現する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}\\big[\\|\\mathbf{x} - \\mathbb{E}[\\mathbf{x}\\mid\\mathbf{y}] + \\mathbb{E}[\\mathbf{x}\\mid\\mathbf{y}] - \\hat{\\mathbf{x}}(\\mathbf{y})\\|_2^2\\big]",
+          "to_latex": "\\mathbb{E}\\big[\\|\\mathbf{x} - \\mathbb{E}[\\mathbf{x}\\mid\\mathbf{y}]\\|_2^2\\big] + \\mathbb{E}\\big[\\|\\mathbb{E}[\\mathbf{x}\\mid\\mathbf{y}] - \\hat{\\mathbf{x}}(\\mathbf{y})\\|_2^2\\big]",
+          "operation_label": "ノルム展開と繰り返し期待値による交差項の消去",
+          "explanation": "yを固定した条件付き期待値を先に取ると、E[x - E[x|y] | y] = 0 となるため、交差項の期待値は恒等的にゼロとなる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}\\big[\\|\\mathbf{x} - \\mathbb{E}[\\mathbf{x}\\mid\\mathbf{y}]\\|_2^2\\big] + \\mathbb{E}\\big[\\|\\mathbb{E}[\\mathbf{x}\\mid\\mathbf{y}] - \\hat{\\mathbf{x}}(\\mathbf{y})\\|_2^2\\big]",
+          "to_latex": "\\hat{\\mathbf{x}}_{\\mathrm{MMSE}}(\\mathbf{y}) = \\arg\\min_{\\hat{\\mathbf{x}}}\\mathrm{MSE}(\\hat{\\mathbf{x}}) = \\mathbb{E}[\\mathbf{x}\\mid\\mathbf{y}]",
+          "operation_label": "非負項の最小化",
+          "explanation": "第1項は推定器に依存せず、第2項は非負であるため、第2項をゼロにする選択が最小平均二乗誤差を与える。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.kf.n03_gaussian_cond",
+      "target_node_id": "ml.kf.n03_multivariate_gaussian_conditional",
+      "route_kind": "deductive",
+      "title": "ブロック行列の無相関化変換による多変量正規条件付き分布の導出",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "周辺共分散行列 \\Sigma_{yy} は正定値（正則）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\begin{pmatrix}\\mathbf{x}\\\\\\mathbf{y}\\end{pmatrix} \\sim \\mathcal{N}\\!\\left(\\begin{pmatrix}\\boldsymbol{\\mu}_x\\\\\\boldsymbol{\\mu}_y\\end{pmatrix}, \\begin{pmatrix}\\Sigma_{xx} & \\Sigma_{xy}\\\\\\Sigma_{yx} & \\Sigma_{yy}\\end{pmatrix}\\right)",
+          "to_latex": "\\mathbf{x} \\mid \\mathbf{y} \\sim \\mathcal{N}\\!\\left(\\boldsymbol{\\mu}_x + \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y),\\; \\Sigma_{xx} - \\Sigma_{xy}\\Sigma_{yy}^{-1}\\Sigma_{yx}\\right)",
+          "operation_label": "線形変換による無相関化と独立性の利用",
+          "explanation": "z = x - \\Sigma_{xy}\\Sigma_{yy}^{-1}y とおくことでyと無相関な正規確率変数を作り、正規分布における無相関性と独立性の等価性から条件付き分布を導く。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\begin{pmatrix}\\mathbf{x}\\\\\\mathbf{y}\\end{pmatrix} \\sim \\mathcal{N}\\!\\left(\\begin{pmatrix}\\boldsymbol{\\mu}_x\\\\\\boldsymbol{\\mu}_y\\end{pmatrix}, \\begin{pmatrix}\\Sigma_{xx} & \\Sigma_{xy}\\\\\\Sigma_{yx} & \\Sigma_{yy}\\end{pmatrix}\\right)",
+          "to_latex": "\\begin{pmatrix}\\mathbf{x} - \\boldsymbol{\\mu}_x - \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y)\\\\\\mathbf{y}-\\boldsymbol{\\mu}_y\\end{pmatrix} = \\begin{pmatrix}I & -\\Sigma_{xy}\\Sigma_{yy}^{-1}\\\\O & I\\end{pmatrix}\\begin{pmatrix}\\mathbf{x}-\\boldsymbol{\\mu}_x\\\\\\mathbf{y}-\\boldsymbol{\\mu}_y\\end{pmatrix}",
+          "operation_label": "ブロック下三角行列による線形変換",
+          "explanation": "xからyへの線形回帰成分を差し引く正則なブロック線形変換を構成する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\begin{pmatrix}\\mathbf{x} - \\boldsymbol{\\mu}_x - \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y)\\\\\\mathbf{y}-\\boldsymbol{\\mu}_y\\end{pmatrix} = \\begin{pmatrix}I & -\\Sigma_{xy}\\Sigma_{yy}^{-1}\\\\O & I\\end{pmatrix}\\begin{pmatrix}\\mathbf{x}-\\boldsymbol{\\mu}_x\\\\\\mathbf{y}-\\boldsymbol{\\mu}_y\\end{pmatrix}",
+          "to_latex": "\\operatorname{Cov}\\!\\Big(\\mathbf{x} - \\boldsymbol{\\mu}_x - \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y),\\; \\mathbf{y}-\\boldsymbol{\\mu}_y\\Big) = \\Sigma_{xy} - \\Sigma_{xy}\\Sigma_{yy}^{-1}\\Sigma_{yy} = O",
+          "operation_label": "相互共分散の計算と無相関性の確認",
+          "explanation": "変換後の第1ブロックとyとの共分散を計算するとゼロ行列になり、同時正規性から両者が確率的に独立であることが従う。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Cov}\\!\\Big(\\mathbf{x} - \\boldsymbol{\\mu}_x - \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y),\\; \\mathbf{y}-\\boldsymbol{\\mu}_y\\Big) = \\Sigma_{xy} - \\Sigma_{xy}\\Sigma_{yy}^{-1}\\Sigma_{yy} = O",
+          "to_latex": "\\mathbf{x} \\mid \\mathbf{y} \\sim \\mathcal{N}\\!\\left(\\boldsymbol{\\mu}_x + \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y),\\; \\Sigma_{xx} - \\Sigma_{xy}\\Sigma_{yy}^{-1}\\Sigma_{yx}\\right)",
+          "operation_label": "独立成分の条件付き分布とシュア補元の導出",
+          "explanation": "独立性によりyを固定した条件付き分布の平均は \\boldsymbol{\\mu}_x + \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y) となり、共分散は第1ブロックの周辺共分散（シュア補元）に一致する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.kf.n04_prediction",
+      "target_node_id": "ml.kf.n04_kf_prediction_step",
+      "route_kind": "deductive",
+      "title": "状態遷移方程式からの予測平均・予測共分散の導出",
+      "premise_node_ids": [
+        "ml.kf.n01_linear_gaussian_ssm_def",
+        "ml.kf.n02_mmse_conditional_expectation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "時刻k-1の事後分布は平均 \\hat{\\mathbf{x}}_{k-1|k-1}、共分散 P_{k-1|k-1} の正規分布である",
+        "プロセス雑音w_kは過去の観測列 y_{1:k-1} および状態 x_{k-1} と独立である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}_k = F_k \\mathbf{x}_{k-1} + \\mathbf{w}_k,\\quad \\mathbf{w}_k \\sim \\mathcal{N}(\\mathbf{0}, Q_k),\\quad \\mathbf{x}_{k-1}\\mid\\mathbf{y}_{1:k-1} \\sim \\mathcal{N}(\\hat{\\mathbf{x}}_{k-1|k-1}, P_{k-1|k-1})",
+          "to_latex": "\\hat{\\mathbf{x}}_{k|k-1} = F_k \\hat{\\mathbf{x}}_{k-1|k-1},\\quad P_{k|k-1} = F_k P_{k-1|k-1} F_k^\\top + Q_k",
+          "operation_label": "期待値・共分散の線形性と独立性の適用",
+          "explanation": "MMSE推定量である条件付き期待値と誤差共分散を状態遷移方程式に適用し、雑音の独立性から予測ステップの漸化式を得る。",
+          "used_node_ids": [
+            "ml.kf.n01_linear_gaussian_ssm_def",
+            "ml.kf.n02_mmse_conditional_expectation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}_k = F_k \\mathbf{x}_{k-1} + \\mathbf{w}_k,\\quad \\mathbf{w}_k \\sim \\mathcal{N}(\\mathbf{0}, Q_k),\\quad \\mathbf{x}_{k-1}\\mid\\mathbf{y}_{1:k-1} \\sim \\mathcal{N}(\\hat{\\mathbf{x}}_{k-1|k-1}, P_{k-1|k-1})",
+          "to_latex": "\\hat{\\mathbf{x}}_{k|k-1} = \\mathbb{E}[F_k \\mathbf{x}_{k-1} + \\mathbf{w}_k \\mid \\mathbf{y}_{1:k-1}] = F_k \\hat{\\mathbf{x}}_{k-1|k-1}",
+          "operation_label": "条件付き期待値による事前状態推定値の計算",
+          "explanation": "期待値の線形性と E[w_k | y_{1:k-1}] = E[w_k] = 0 を用いて事前推定値を求める。",
+          "used_node_ids": [
+            "ml.kf.n01_linear_gaussian_ssm_def",
+            "ml.kf.n02_mmse_conditional_expectation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{x}}_{k|k-1} = \\mathbb{E}[F_k \\mathbf{x}_{k-1} + \\mathbf{w}_k \\mid \\mathbf{y}_{1:k-1}] = F_k \\hat{\\mathbf{x}}_{k-1|k-1}",
+          "to_latex": "\\mathbf{e}_{k|k-1} := \\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1} = F_k(\\mathbf{x}_{k-1} - \\hat{\\mathbf{x}}_{k-1|k-1}) + \\mathbf{w}_k",
+          "operation_label": "事前推定誤差ベクトルの展開",
+          "explanation": "真の状態 x_k から予測推定値 \\hat{x}_{k|k-1} を引き、状態遷移誤差とプロセス雑音の和に分解する。",
+          "used_node_ids": [
+            "ml.kf.n01_linear_gaussian_ssm_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{e}_{k|k-1} := \\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1} = F_k(\\mathbf{x}_{k-1} - \\hat{\\mathbf{x}}_{k-1|k-1}) + \\mathbf{w}_k",
+          "to_latex": "P_{k|k-1} = \\mathbb{E}[\\mathbf{e}_{k|k-1}\\mathbf{e}_{k|k-1}^\\top \\mid \\mathbf{y}_{1:k-1}] = F_k P_{k-1|k-1} F_k^\\top + Q_k",
+          "operation_label": "誤差外積の条件付き期待値と交差項消去",
+          "explanation": "w_k と x_{k-1} - \\hat{x}_{k-1|k-1} が条件付きで独立かつゼロ平均であるため交差項が消え、事前誤差共分散が求まる。",
+          "used_node_ids": [
+            "ml.kf.n01_linear_gaussian_ssm_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.kf.n05_innovation",
+      "target_node_id": "ml.kf.n05_innovation_joint_gaussian",
+      "route_kind": "deductive",
+      "title": "観測モデルからのイノベーション共分散および状態・観測間共分散の導出",
+      "premise_node_ids": [
+        "ml.kf.n01_linear_gaussian_ssm_def",
+        "ml.kf.n04_kf_prediction_step"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "観測雑音v_kは時刻kの事前状態予測誤差および過去の観測列と独立である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k,\\quad \\mathbf{x}_k\\mid\\mathbf{y}_{1:k-1} \\sim \\mathcal{N}(\\hat{\\mathbf{x}}_{k|k-1}, P_{k|k-1})",
+          "to_latex": "S_k = H_k P_{k|k-1} H_k^\\top + R_k,\\quad \\operatorname{Cov}(\\mathbf{x}_k,\\mathbf{y}_k\\mid\\mathbf{y}_{1:k-1}) = P_{k|k-1}H_k^\\top",
+          "operation_label": "観測残差の2次モーメント計算",
+          "explanation": "予測された観測値と実測値の差であるイノベーションを展開し、自己共分散行列S_kと状態との相互共分散行列を導出する。",
+          "used_node_ids": [
+            "ml.kf.n01_linear_gaussian_ssm_def",
+            "ml.kf.n04_kf_prediction_step"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{y}_k = H_k \\mathbf{x}_k + \\mathbf{v}_k,\\quad \\mathbf{v}_k \\sim \\mathcal{N}(\\mathbf{0}, R_k),\\quad \\mathbf{x}_k\\mid\\mathbf{y}_{1:k-1} \\sim \\mathcal{N}(\\hat{\\mathbf{x}}_{k|k-1}, P_{k|k-1})",
+          "to_latex": "\\tilde{\\mathbf{y}}_k := \\mathbf{y}_k - \\mathbb{E}[\\mathbf{y}_k\\mid\\mathbf{y}_{1:k-1}] = H_k(\\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1}) + \\mathbf{v}_k",
+          "operation_label": "イノベーションの定義と誤差表現への展開",
+          "explanation": "E[y_k | y_{1:k-1}] = H_k \\hat{x}_{k|k-1} を用いて、イノベーションを事前状態誤差と観測雑音の線形結合として表す。",
+          "used_node_ids": [
+            "ml.kf.n01_linear_gaussian_ssm_def",
+            "ml.kf.n04_kf_prediction_step"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{\\mathbf{y}}_k := \\mathbf{y}_k - \\mathbb{E}[\\mathbf{y}_k\\mid\\mathbf{y}_{1:k-1}] = H_k(\\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1}) + \\mathbf{v}_k",
+          "to_latex": "S_k = \\operatorname{Cov}(\\tilde{\\mathbf{y}}_k\\mid\\mathbf{y}_{1:k-1}) = H_k P_{k|k-1} H_k^\\top + R_k,\\quad \\operatorname{Cov}(\\mathbf{x}_k,\\mathbf{y}_k\\mid\\mathbf{y}_{1:k-1}) = P_{k|k-1}H_k^\\top",
+          "operation_label": "共分散行列および相互共分散行列の計算",
+          "explanation": "観測雑音 v_k と事前状態誤差 x_k - \\hat{x}_{k|k-1} の独立性から交差項が消去され、S_k と相互共分散が確定する。",
+          "used_node_ids": [
+            "ml.kf.n01_linear_gaussian_ssm_def",
+            "ml.kf.n04_kf_prediction_step"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.kf.n06_kalman_gain",
+      "target_node_id": "ml.kf.n06_optimal_kalman_gain",
+      "route_kind": "deductive",
+      "title": "多変量正規条件付き平均とMMSE基準からの最適カルマンゲイン導出",
+      "premise_node_ids": [
+        "ml.kf.n02_mmse_conditional_expectation",
+        "ml.kf.n03_multivariate_gaussian_conditional",
+        "ml.kf.n05_innovation_joint_gaussian"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "イノベーション共分散行列 S_k = H_k P_{k|k-1} H_k^\\top + R_k は正則である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\begin{pmatrix}\\mathbf{x}_k\\\\\\mathbf{y}_k\\end{pmatrix}\\Big|\\mathbf{y}_{1:k-1} \\sim \\mathcal{N}\\!\\left(\\begin{pmatrix}\\hat{\\mathbf{x}}_{k|k-1}\\\\H_k\\hat{\\mathbf{x}}_{k|k-1}\\end{pmatrix}, \\begin{pmatrix}P_{k|k-1} & P_{k|k-1}H_k^\\top\\\\H_k P_{k|k-1} & S_k\\end{pmatrix}\\right)",
+          "to_latex": "K_k = P_{k|k-1}H_k^\\top S_k^{-1},\\quad \\hat{\\mathbf{x}}_{k|k} = \\hat{\\mathbf{x}}_{k|k-1} + K_k(\\mathbf{y}_k - H_k\\hat{\\mathbf{x}}_{k|k-1})",
+          "operation_label": "正規条件付き平均公式の適用によるカルマンゲインの同定",
+          "explanation": "y_{1:k-1}の下でのx_kとy_kの同時正規分布に対して多変量正規分布の条件付き平均公式を適用し、イノベーションにかかる係数行列として最適カルマンゲインを得る。",
+          "used_node_ids": [
+            "ml.kf.n02_mmse_conditional_expectation",
+            "ml.kf.n03_multivariate_gaussian_conditional",
+            "ml.kf.n05_innovation_joint_gaussian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\begin{pmatrix}\\mathbf{x}_k\\\\\\mathbf{y}_k\\end{pmatrix}\\Big|\\mathbf{y}_{1:k-1} \\sim \\mathcal{N}\\!\\left(\\begin{pmatrix}\\hat{\\mathbf{x}}_{k|k-1}\\\\H_k\\hat{\\mathbf{x}}_{k|k-1}\\end{pmatrix}, \\begin{pmatrix}P_{k|k-1} & P_{k|k-1}H_k^\\top\\\\H_k P_{k|k-1} & S_k\\end{pmatrix}\\right)",
+          "to_latex": "\\hat{\\mathbf{x}}_{k|k} = \\mathbb{E}[\\mathbf{x}_k\\mid\\mathbf{y}_{1:k}] = \\hat{\\mathbf{x}}_{k|k-1} + P_{k|k-1}H_k^\\top S_k^{-1}(\\mathbf{y}_k - H_k\\hat{\\mathbf{x}}_{k|k-1})",
+          "operation_label": "条件付き期待値（MMSE推定量）へのブロック共分散の代入",
+          "explanation": "多変量正規分布の条件付き平均公式 \\boldsymbol{\\mu}_x + \\Sigma_{xy}\\Sigma_{yy}^{-1}(\\mathbf{y}-\\boldsymbol{\\mu}_y) に予測統計量を代入する。",
+          "used_node_ids": [
+            "ml.kf.n02_mmse_conditional_expectation",
+            "ml.kf.n03_multivariate_gaussian_conditional",
+            "ml.kf.n05_innovation_joint_gaussian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{x}}_{k|k} = \\mathbb{E}[\\mathbf{x}_k\\mid\\mathbf{y}_{1:k}] = \\hat{\\mathbf{x}}_{k|k-1} + P_{k|k-1}H_k^\\top S_k^{-1}(\\mathbf{y}_k - H_k\\hat{\\mathbf{x}}_{k|k-1})",
+          "to_latex": "K_k := P_{k|k-1}H_k^\\top S_k^{-1} = P_{k|k-1}H_k^\\top(H_k P_{k|k-1}H_k^\\top + R_k)^{-1},\\quad \\hat{\\mathbf{x}}_{k|k} = \\hat{\\mathbf{x}}_{k|k-1} + K_k\\tilde{\\mathbf{y}}_k",
+          "operation_label": "カルマンゲインK_kの定義と更新式の整理",
+          "explanation": "係数行列 P_{k|k-1}H_k^\\top S_k^{-1} を最適カルマンゲイン K_k と定義することで、標準的な観測更新式を得る。",
+          "used_node_ids": [
+            "ml.kf.n05_innovation_joint_gaussian"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.kf.n07_cov_update",
+      "target_node_id": "ml.kf.n07_covariance_update_joseph_form",
+      "route_kind": "deductive",
+      "title": "事後推定誤差の展開によるジョセフ形式と簡略誤差共分散更新式の導出",
+      "premise_node_ids": [
+        "ml.kf.n03_multivariate_gaussian_conditional",
+        "ml.kf.n05_innovation_joint_gaussian",
+        "ml.kf.n06_optimal_kalman_gain"
+      ],
+      "required_math_node_ids": [
+        "ml.kf.n01_linear_gaussian_ssm_def"
+      ],
+      "assumptions": [
+        "事前誤差共分散 P_{k|k-1} と観測雑音共分散 R_k は対称半正定値行列である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{e}_{k|k} := \\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k} = \\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1} - K_k(\\mathbf{y}_k - H_k\\hat{\\mathbf{x}}_{k|k-1})",
+          "to_latex": "P_{k|k} = (I - K_k H_k)P_{k|k-1}(I - K_k H_k)^\\top + K_k R_k K_k^\\top = (I - K_k H_k)P_{k|k-1}",
+          "operation_label": "事後推定誤差の共分散計算と最適ゲイン条件の代入",
+          "explanation": "任意のゲインに対する事後誤差の共分散としてジョセフ形式を導出した後、最適カルマンゲインの条件 K_k S_k = P_{k|k-1}H_k^\\top を代入して簡略更新式を得る。",
+          "used_node_ids": [
+            "ml.kf.n03_multivariate_gaussian_conditional",
+            "ml.kf.n05_innovation_joint_gaussian",
+            "ml.kf.n06_optimal_kalman_gain"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{e}_{k|k} := \\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k} = \\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1} - K_k(\\mathbf{y}_k - H_k\\hat{\\mathbf{x}}_{k|k-1})",
+          "to_latex": "\\mathbf{e}_{k|k} = (I - K_k H_k)(\\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1}) - K_k \\mathbf{v}_k",
+          "operation_label": "観測方程式の代入による事後誤差の整理",
+          "explanation": "y_k = H_k x_k + v_k を代入し、事前状態誤差と観測雑音の線形結合として事後誤差を表す。",
+          "used_node_ids": [
+            "ml.kf.n01_linear_gaussian_ssm_def",
+            "ml.kf.n06_optimal_kalman_gain"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{e}_{k|k} = (I - K_k H_k)(\\mathbf{x}_k - \\hat{\\mathbf{x}}_{k|k-1}) - K_k \\mathbf{v}_k",
+          "to_latex": "P_{k|k} = (I - K_k H_k)P_{k|k-1}(I - K_k H_k)^\\top + K_k R_k K_k^\\top",
+          "operation_label": "誤差外積の期待値計算（ジョセフ形式の導出）",
+          "explanation": "事前状態誤差と観測雑音 v_k の独立性より交差項がゼロとなり、対称性と半正定値性が保証されたジョセフ形式を得る。",
+          "used_node_ids": [
+            "ml.kf.n05_innovation_joint_gaussian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{k|k} = (I - K_k H_k)P_{k|k-1}(I - K_k H_k)^\\top + K_k R_k K_k^\\top",
+          "to_latex": "P_{k|k} = P_{k|k-1} - K_k H_k P_{k|k-1} - P_{k|k-1} H_k^\\top K_k^\\top + K_k S_k K_k^\\top = (I - K_k H_k)P_{k|k-1}",
+          "operation_label": "S_kと最適カルマンゲインK_kの代入による簡略化",
+          "explanation": "展開式の K_k(H_k P_{k|k-1}H_k^\\top + R_k)K_k^\\top = K_k S_k K_k^\\top に最適条件 K_k S_k = P_{k|k-1}H_k^\\top を代入すると後ろ2項が相殺し、(I - K_k H_k)P_{k|k-1} に帰着する。",
+          "used_node_ids": [
+            "ml.kf.n03_multivariate_gaussian_conditional",
+            "ml.kf.n05_innovation_joint_gaussian",
+            "ml.kf.n06_optimal_kalman_gain"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
 }

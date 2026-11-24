@@ -205,7 +205,6 @@
           "operation_label": "同次座標と4x4行列による線形化",
           "explanation": "3次元位置ベクトルに第4成分1を付加した同次座標を導入し、回転と並進のアフィン変換を単一の4x4行列積にまとめる。",
           "used_node_ids": [
-            "eng.robo.n01_se3_homogeneous_transform",
             "math.alg.gr04_so3_su2_matrix_groups_def"
           ],
           "sympy_check_hint": null
@@ -233,9 +232,7 @@
           "to_latex": "T = \\begin{pmatrix} R & \\mathbf{p} \\\\ \\mathbf{0}^\\top & 1 \\end{pmatrix} \\in \\mathrm{SE}(3),\\quad \\tilde{\\mathbf{r}}' = T\\tilde{\\mathbf{r}}",
           "operation_label": "ブロック行列表現への整理",
           "explanation": "右辺をブロック行列 T と同次座標 r̃ の積として書き直し、SE(3) の元として定義する。",
-          "used_node_ids": [
-            "eng.robo.n01_se3_homogeneous_transform"
-          ],
+          "used_node_ids": [],
           "sympy_check_hint": null
         }
       ]
@@ -265,7 +262,6 @@
           "explanation": "ブロック行列の乗算則により合成公式を得て、さらに R^T R = I を用いて単位行列 I_4 を与える逆変換行列を導く。",
           "used_node_ids": [
             "eng.robo.n01_se3_homogeneous_transform",
-            "eng.robo.n02_se3_composition_inverse",
             "math.alg.gr04_so3_su2_matrix_groups_def"
           ],
           "sympy_check_hint": "Verify block matrix product and T * T_inv == eye(4) using R.T * R == eye(3)"
@@ -307,9 +303,7 @@
           "to_latex": "T_1 T_2 = \\begin{pmatrix} R_1 R_2 & R_1\\mathbf{p}_2 + \\mathbf{p}_1 \\\\ \\mathbf{0}^\\top & 1 \\end{pmatrix},\\quad T^{-1} = \\begin{pmatrix} R^\\top & -R^\\top \\mathbf{p} \\\\ \\mathbf{0}^\\top & 1 \\end{pmatrix}",
           "operation_label": "逆変換公式の確定",
           "explanation": "左右からの積が I_4 となるため T_inv が T^{-1} であることが確定し、合成則と逆変換公式を得る。",
-          "used_node_ids": [
-            "eng.robo.n02_se3_composition_inverse"
-          ],
+          "used_node_ids": [],
           "sympy_check_hint": null
         }
       ]
@@ -339,8 +333,7 @@
           "explanation": "z軸回転・z軸並進・x軸並進・x軸回転の各4x4同次変換行列を順に掛け合わせてDH隣接リンク変換行列を得る。",
           "used_node_ids": [
             "eng.robo.n01_se3_homogeneous_transform",
-            "eng.robo.n02_se3_composition_inverse",
-            "eng.robo.n03_dh_parameters_link_transform"
+            "eng.robo.n02_se3_composition_inverse"
           ],
           "sympy_check_hint": "Multiply Rot_z(theta)*Trans_z(d)*Trans_x(a)*Rot_x(alpha) in 4x4 homogeneous form"
         },
@@ -369,8 +362,7 @@
           "operation_label": "2つの同次変換行列の積",
           "explanation": "得られた2つの4x4行列を乗算し、DHリンク変換行列の標準形を得る。",
           "used_node_ids": [
-            "eng.robo.n02_se3_composition_inverse",
-            "eng.robo.n03_dh_parameters_link_transform"
+            "eng.robo.n02_se3_composition_inverse"
           ],
           "sympy_check_hint": null
         }
@@ -401,8 +393,7 @@
           "explanation": "各リンク間の座標変換を順番に代入し、ベース座標系から手先座標系への総同次変換行列を得る。",
           "used_node_ids": [
             "eng.robo.n02_se3_composition_inverse",
-            "eng.robo.n03_dh_parameters_link_transform",
-            "eng.robo.n04_forward_kinematics_chain"
+            "eng.robo.n03_dh_parameters_link_transform"
           ],
           "sympy_check_hint": null
         },
@@ -430,9 +421,7 @@
           "to_latex": "{}^0 T_n(\\mathbf{q}) = \\prod_{i=1}^{n} {}^{i-1}T_i(q_i) = \\begin{pmatrix} {}^0 R_n(\\mathbf{q}) & {}^0 \\mathbf{p}_n(\\mathbf{q}) \\\\ \\mathbf{0}^\\top & 1 \\end{pmatrix}",
           "operation_label": "手先同次変換行列の抽出",
           "explanation": "総積を {}^0 T_n(q) と定義し、その回転ブロック {}^0 R_n(q) と位置ベクトル {}^0 p_n(q) によって順運動学を記述する。",
-          "used_node_ids": [
-            "eng.robo.n04_forward_kinematics_chain"
-          ],
+          "used_node_ids": [],
           "sympy_check_hint": null
         }
       ]
@@ -464,7 +453,6 @@
           "explanation": "順運動学で得られる手先位置・姿勢を時間微分し、関節速度 q̇ に対する線形写像としてヤコビ行列を定義する。",
           "used_node_ids": [
             "eng.robo.n04_forward_kinematics_chain",
-            "eng.robo.n05_geometric_jacobian_def",
             "math.calc.m35_multivariable_chain_rule",
             "math.calc.mi03_jacobian_matrix_determinant"
           ],
@@ -496,7 +484,6 @@
           "operation_label": "角速度ヤコビアンとの統合",
           "explanation": "空間角速度 ω_e も各関節速度に線形依存する J_ω(q) q̇ で表されることから、両者を縦に並べて 6×n 幾何ヤコビ行列 J(q) を定義する。",
           "used_node_ids": [
-            "eng.robo.n05_geometric_jacobian_def",
             "math.geom.m12_generalized_coordinates"
           ],
           "sympy_check_hint": null
@@ -529,7 +516,6 @@
           "explanation": "第 i 関節のみを動かしたときのエンドエフェクタの並進速度と角速度を計算し、ヤコビ行列の第 i 列を得る。",
           "used_node_ids": [
             "eng.robo.n05_geometric_jacobian_def",
-            "eng.robo.n06_geometric_jacobian_formula",
             "math.alg.gr06_so3_generators_commutation",
             "math.vec.m03_dot_cross_product"
           ],
@@ -573,9 +559,7 @@
           "to_latex": "J_{i,\\mathrm{rev}} = \\begin{pmatrix} \\mathbf{z}_{i-1} \\times (\\mathbf{p}_e - \\mathbf{p}_{i-1}) \\\\ \\mathbf{z}_{i-1} \\end{pmatrix},\\quad J_{i,\\mathrm{pris}} = \\begin{pmatrix} \\mathbf{z}_{i-1} \\\\ \\mathbf{0} \\end{pmatrix}",
           "operation_label": "ヤコビ行列の第i列への整理",
           "explanation": "各関節の速度寄与から q̇_i の係数を取り出し、回転関節・直動関節ごとの列ベクトル公式を得る。",
-          "used_node_ids": [
-            "eng.robo.n06_geometric_jacobian_formula"
-          ],
+          "used_node_ids": [],
           "sympy_check_hint": null
         }
       ]
@@ -607,7 +591,6 @@
           "used_node_ids": [
             "eng.beam.n01_continuum_statics_hooke",
             "eng.robo.n05_geometric_jacobian_def",
-            "eng.robo.n07_statics_kinematics_duality",
             "math.geom.m12_generalized_coordinates"
           ],
           "sympy_check_hint": null
@@ -637,8 +620,7 @@
           "operation_label": "任意仮想変位に対する静的釣合条件",
           "explanation": "独立な一般化座標の仮想変位 δq が任意であることから係数が零ベクトルとなり、転置をとって τ = J(q)^T F_e を得る。",
           "used_node_ids": [
-            "eng.beam.n01_continuum_statics_hooke",
-            "eng.robo.n07_statics_kinematics_duality"
+            "eng.beam.n01_continuum_statics_hooke"
           ],
           "sympy_check_hint": null
         }
@@ -671,7 +653,6 @@
           "used_node_ids": [
             "eng.robo.n04_forward_kinematics_chain",
             "eng.robo.n05_geometric_jacobian_def",
-            "eng.robo.n08_numerical_ik_newton_dls",
             "math.calc.m13_taylor_expansion"
           ],
           "sympy_check_hint": null
@@ -715,9 +696,7 @@
           "to_latex": "\\mathbf{q}_{k+1} = \\mathbf{q}_k + J^\\top (J J^\\top + \\lambda^2 I)^{-1}\\big(\\mathbf{x}_d - \\mathbf{f}(\\mathbf{q}_k)\\big)",
           "operation_label": "反復更新則の構成",
           "explanation": "求めた変位増分 Δq を現在の関節角度 q_k に加算して数値逆運動学の反復更新式を完成させる（λ → 0 で通常の擬似逆行列解に一致する）。",
-          "used_node_ids": [
-            "eng.robo.n08_numerical_ik_newton_dls"
-          ],
+          "used_node_ids": [],
           "sympy_check_hint": null
         }
       ]

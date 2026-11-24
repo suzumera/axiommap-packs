@@ -135,28 +135,6 @@
         "operations_research",
         "convex_optimization"
       ]
-    },
-    {
-      "id": "or.kkt.n07_kkt_optimality_conditions",
-      "short_code": "KKT07",
-      "kind": "theorem_formula",
-      "title": "KKT条件（カルーシュ＝クーン＝タッカー条件）の導出と最適性",
-      "summary": "強双対性が成り立つ微分可能な最適化問題において、主最適解と双対最適解の組が満たすべき4つの条件（主実行可能性・双対実行可能性・相補性条件・停留性条件）を導出する。",
-      "canonical_latex": "f_i(\\mathbf{x}^*) \\le 0,\\; h_j(\\mathbf{x}^*) = 0,\\; \\lambda_i^* \\ge 0,\\; \\lambda_i^* f_i(\\mathbf{x}^*) = 0,\\; \\nabla f_0(\\mathbf{x}^*) + \\sum_{i=1}^{m} \\lambda_i^* \\nabla f_i(\\mathbf{x}^*) + \\sum_{j=1}^{p} \\nu_j^* \\nabla h_j(\\mathbf{x}^*) = \\mathbf{0}",
-      "aliases_latex": [
-        "\\nabla_{\\mathbf{x}} \\mathcal{L}(\\mathbf{x}^*, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*) = \\mathbf{0},\\; \\lambda_i^* f_i(\\mathbf{x}^*) = 0"
-      ],
-      "keywords": [
-        "KKT条件",
-        "相補性条件",
-        "主実行可能性",
-        "双対実行可能性",
-        "停留性条件"
-      ],
-      "domain_tags": [
-        "operations_research",
-        "convex_optimization"
-      ]
     }
   ],
   "derivations": [
@@ -447,87 +425,6 @@
           "explanation": "弱双対性定理より g(lambda*, nu*) <= d* <= p* が常に成り立つため、g(lambda*, nu*) >= p* と合わせて p* = d* = g(lambda*, nu*) が成立する。",
           "used_node_ids": [
             "or.kkt.n04_weak_duality_theorem"
-          ],
-          "sympy_check_hint": null
-        }
-      ]
-    },
-    {
-      "id": "or.kkt.d07_kkt_from_strong_duality",
-      "target_node_id": "or.kkt.n07_kkt_optimality_conditions",
-      "route_kind": "deductive",
-      "title": "強双対性と停留点条件からのKKT条件の導出",
-      "premise_node_ids": [
-        "or.kkt.n06_strong_duality_slater",
-        "or.kkt.n02_lagrangian_inequality_def",
-        "math.calc.e03_stationary_point_condition"
-      ],
-      "required_math_node_ids": [
-        "or.kkt.n01_convex_optimization_problem",
-        "or.kkt.n04_weak_duality_theorem"
-      ],
-      "assumptions": [
-        "目的関数 f_0 と制約関数 f_i, h_j は定義域の内点で微分可能である",
-        "主最適解 x* と双対最適解 (lambda*, nu*) が存在し強双対性が成り立つ"
-      ],
-      "steps": [
-        {
-          "step_id": "s1_overview",
-          "order": 1,
-          "granularity_level": 1,
-          "parent_step_id": null,
-          "from_latex": "f_0(\\mathbf{x}^*) = g(\\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*) = \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\mathcal{L}(\\mathbf{x}, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*)",
-          "to_latex": "f_i(\\mathbf{x}^*) \\le 0,\\; h_j(\\mathbf{x}^*) = 0,\\; \\lambda_i^* \\ge 0,\\; \\lambda_i^* f_i(\\mathbf{x}^*) = 0,\\; \\nabla_{\\mathbf{x}} \\mathcal{L}(\\mathbf{x}^*, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*) = \\mathbf{0}",
-          "operation_label": "強双対性からのKKT4条件の導出（全体概要）",
-          "explanation": "強双対性の等式をラグランジュ関数の値で挟み込むことで相補性条件とラグランジュ関数の最小化性を導き、停留点条件を適用してKKT条件全体を導出する。",
-          "used_node_ids": [
-            "math.calc.e03_stationary_point_condition",
-            "or.kkt.n02_lagrangian_inequality_def",
-            "or.kkt.n06_strong_duality_slater"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_1",
-          "order": 2,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "f_0(\\mathbf{x}^*) = g(\\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*) = \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\mathcal{L}(\\mathbf{x}, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*)",
-          "to_latex": "f_0(\\mathbf{x}^*) = \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\mathcal{L}(\\mathbf{x}, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*) \\le \\mathcal{L}(\\mathbf{x}^*, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*) = f_0(\\mathbf{x}^*) + \\sum_{i=1}^{m}\\lambda_i^* f_i(\\mathbf{x}^*) + \\sum_{j=1}^{p}\\nu_j^* h_j(\\mathbf{x}^*) \\le f_0(\\mathbf{x}^*)",
-          "operation_label": "インフィマムと実行可能性による挟み込み",
-          "explanation": "x* は主実行可能かつ (lambda*, nu*) は双対実行可能であるため、インフィマムの下界性と制約項の非正性により両端が f_0(x*) で一致する不等式鎖を得る。",
-          "used_node_ids": [
-            "or.kkt.n02_lagrangian_inequality_def",
-            "or.kkt.n04_weak_duality_theorem"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_2",
-          "order": 3,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "f_0(\\mathbf{x}^*) = \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\mathcal{L}(\\mathbf{x}, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*) \\le \\mathcal{L}(\\mathbf{x}^*, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*) = f_0(\\mathbf{x}^*) + \\sum_{i=1}^{m}\\lambda_i^* f_i(\\mathbf{x}^*) + \\sum_{j=1}^{p}\\nu_j^* h_j(\\mathbf{x}^*) \\le f_0(\\mathbf{x}^*)",
-          "to_latex": "\\lambda_i^* f_i(\\mathbf{x}^*) = 0\\;(\\forall i),\\quad \\mathcal{L}(\\mathbf{x}^*, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*) = \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\mathcal{L}(\\mathbf{x}, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*)",
-          "operation_label": "等号成立からの相補性条件と無制約最小性の抽出",
-          "explanation": "すべての不等号が等号で成り立つため、非正の和 sum lambda_i* f_i(x*) = 0 から各項が零（相補性条件）となり、同時に x* は L(x, lambda*, nu*) の最小点となる。",
-          "used_node_ids": [
-            "or.kkt.n02_lagrangian_inequality_def"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_3",
-          "order": 4,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "\\lambda_i^* f_i(\\mathbf{x}^*) = 0\\;(\\forall i),\\quad \\mathcal{L}(\\mathbf{x}^*, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*) = \\inf_{\\mathbf{x}\\in\\mathcal{D}} \\mathcal{L}(\\mathbf{x}, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*)",
-          "to_latex": "f_i(\\mathbf{x}^*) \\le 0,\\; h_j(\\mathbf{x}^*) = 0,\\; \\lambda_i^* \\ge 0,\\; \\lambda_i^* f_i(\\mathbf{x}^*) = 0,\\; \\nabla_{\\mathbf{x}} \\mathcal{L}(\\mathbf{x}^*, \\boldsymbol{\\lambda}^*, \\boldsymbol{\\nu}^*) = \\mathbf{0}",
-          "operation_label": "停留点条件の適用によるKKT条件の完成",
-          "explanation": "x* が L(x, lambda*, nu*) の無制約最小点であることから停留点条件（1階必要条件）により勾配が零となり、主実行可能性・双対実行可能性・相補性条件と合わせてKKT条件が導かれる。",
-          "used_node_ids": [
-            "math.calc.e03_stationary_point_condition",
-            "or.kkt.n01_convex_optimization_problem"
           ],
           "sympy_check_hint": null
         }

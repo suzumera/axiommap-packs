@@ -117,28 +117,6 @@
       ]
     },
     {
-      "id": "ml.stat.n06_cramer_rao_inequality",
-      "short_code": "STAT06",
-      "kind": "theorem_formula",
-      "title": "クラメール＝ラオの不等式（情報不等式）",
-      "summary": "正則条件を満たす統計モデルにおいて、任意の不偏推定量の分散はフィッシャー情報量の逆数を下回ることができないという、推定精度の理論的限界を与える定理。",
-      "canonical_latex": "\\mathbb{E}_\\theta[\\hat{\\theta}(\\mathbf{X})] = \\theta \\implies \\operatorname{Var}_\\theta\\big(\\hat{\\theta}(\\mathbf{X})\\big) \\ge \\frac{1}{I(\\theta)}",
-      "aliases_latex": [
-        "\\operatorname{Var}_\\theta(\\hat{\\theta}) \\ge I(\\theta)^{-1}"
-      ],
-      "keywords": [
-        "クラメール＝ラオの不等式",
-        "クラメール＝ラオ下界",
-        "不偏推定量",
-        "有効推定量",
-        "フィッシャー情報量"
-      ],
-      "domain_tags": [
-        "data_science",
-        "statistics"
-      ]
-    },
-    {
       "id": "ml.stat.n07_hypothesis_test_lrt_def",
       "short_code": "STAT07",
       "kind": "definition",
@@ -154,27 +132,6 @@
         "検出力",
         "尤度比",
         "第1種の過誤"
-      ],
-      "domain_tags": [
-        "data_science",
-        "statistics"
-      ]
-    },
-    {
-      "id": "ml.stat.n08_neyman_pearson_lemma",
-      "short_code": "STAT08",
-      "kind": "theorem_formula",
-      "title": "ネイマン＝ピアソンの基本補題（最強力検定）",
-      "summary": "単純帰無仮説対単純対立仮説の検定において、有意水準一定の制約のもとで検出力を最大化する最強力検定が尤度比検定によって与えられることを保証する基本定理。",
-      "canonical_latex": "\\phi^*(\\mathbf{x}) = \\mathbb{I}\\big(p(\\mathbf{x}\\mid\\theta_1) > k\\,p(\\mathbf{x}\\mid\\theta_0)\\big),\\; \\mathbb{E}_{\\theta_0}[\\phi^*]=\\alpha \\implies \\forall\\phi\\text{ s.t. }\\mathbb{E}_{\\theta_0}[\\phi]\\le\\alpha,\\; \\mathbb{E}_{\\theta_1}[\\phi^*(\\mathbf{X})] \\ge \\mathbb{E}_{\\theta_1}[\\phi(\\mathbf{X})]",
-      "aliases_latex": [
-        "\\Lambda(\\mathbf{x}) > k \\implies \\text{reject } H_0"
-      ],
-      "keywords": [
-        "ネイマン＝ピアソンの補題",
-        "最強力検定",
-        "尤度比検定",
-        "統計的仮説検定"
       ],
       "domain_tags": [
         "data_science",
@@ -412,97 +369,6 @@
       ]
     },
     {
-      "id": "ml.stat.d06_cramer_rao_inequality",
-      "target_node_id": "ml.stat.n06_cramer_rao_inequality",
-      "route_kind": "deductive",
-      "title": "コーシー＝シュワルツの不等式によるクラメール＝ラオ下界の導出",
-      "premise_node_ids": [
-        "ml.stat.n01_cauchy_schwarz_expectation",
-        "ml.stat.n03_score_expectation_zero",
-        "ml.stat.n04_fisher_information_def"
-      ],
-      "required_math_node_ids": [
-        "ml.stat.n02_log_likelihood_score_def"
-      ],
-      "assumptions": [
-        "推定量 theta_hat(X) は不偏であり有限の分散を持つ。",
-        "不偏性条件の積分の内部でパラメータ微分と積分の順序交換が可能である（正則条件）。",
-        "フィッシャー情報量 I(theta) > 0 である。"
-      ],
-      "steps": [
-        {
-          "step_id": "s1_overview",
-          "order": 1,
-          "granularity_level": 1,
-          "parent_step_id": null,
-          "from_latex": "\\mathbb{E}_\\theta[\\hat{\\theta}(\\mathbf{X})] = \\theta",
-          "to_latex": "\\operatorname{Var}_\\theta\\big(\\hat{\\theta}(\\mathbf{X})\\big) \\ge \\frac{1}{I(\\theta)}",
-          "operation_label": "不偏性条件の微分とコーシー＝シュワルツの不等式の適用",
-          "explanation": "不偏性条件をパラメータで微分して推定量とスコア関数の共分散が1であることを示し、共分散に関するコーシー＝シュワルツの不等式から分散下界を導く。",
-          "used_node_ids": [
-            "ml.stat.n01_cauchy_schwarz_expectation",
-            "ml.stat.n03_score_expectation_zero",
-            "ml.stat.n04_fisher_information_def"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_1",
-          "order": 2,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "\\int \\hat{\\theta}(\\mathbf{x}) p(\\mathbf{x}\\mid\\theta)\\,d\\mathbf{x} = \\theta",
-          "to_latex": "\\int \\hat{\\theta}(\\mathbf{x}) \\frac{\\partial p(\\mathbf{x}\\mid\\theta)}{\\partial\\theta}\\,d\\mathbf{x} = 1",
-          "operation_label": "不偏性条件の両辺のパラメータ微分",
-          "explanation": "不偏推定量の定義式の両辺を theta で微分し、正則条件により微分と積分の順序を交換する。",
-          "used_node_ids": [],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_2",
-          "order": 3,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "\\int \\hat{\\theta}(\\mathbf{x}) \\frac{\\partial p(\\mathbf{x}\\mid\\theta)}{\\partial\\theta}\\,d\\mathbf{x} = 1",
-          "to_latex": "\\operatorname{Cov}_\\theta\\big(\\hat{\\theta}(\\mathbf{X}), S(\\theta; \\mathbf{X})\\big) = 1",
-          "operation_label": "スコア関数の期待値ゼロ性を用いた共分散表示",
-          "explanation": "dp/dtheta = S p を代入し、E_theta[S] = 0 より E_theta[theta_hat * S] = Cov_theta(theta_hat, S) = 1 を得る。",
-          "used_node_ids": [
-            "ml.stat.n02_log_likelihood_score_def",
-            "ml.stat.n03_score_expectation_zero"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_3",
-          "order": 4,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "\\operatorname{Cov}_\\theta\\big(\\hat{\\theta}(\\mathbf{X}), S(\\theta; \\mathbf{X})\\big) = 1",
-          "to_latex": "1 \\le \\operatorname{Var}_\\theta\\big(\\hat{\\theta}(\\mathbf{X})\\big)\\,I(\\theta)",
-          "operation_label": "コーシー＝シュワルツの不等式とフィッシャー情報量の代入",
-          "explanation": "Cov(theta_hat, S)^2 <= Var(theta_hat) Var(S) に Cov=1 と Var(S)=I(theta) を代入する。",
-          "used_node_ids": [
-            "ml.stat.n01_cauchy_schwarz_expectation",
-            "ml.stat.n04_fisher_information_def"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_4",
-          "order": 5,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "1 \\le \\operatorname{Var}_\\theta\\big(\\hat{\\theta}(\\mathbf{X})\\big)\\,I(\\theta)",
-          "to_latex": "\\operatorname{Var}_\\theta\\big(\\hat{\\theta}(\\mathbf{X})\\big) \\ge \\frac{1}{I(\\theta)}",
-          "operation_label": "正の情報量 I(theta) > 0 による両辺の除算",
-          "explanation": "両辺を正のフィッシャー情報量 I(theta) で割ることでクラメール＝ラオの不等式を得る。",
-          "used_node_ids": [],
-          "sympy_check_hint": null
-        }
-      ]
-    },
-    {
       "id": "ml.stat.d07_hypothesis_test_lrt_def",
       "target_node_id": "ml.stat.n07_hypothesis_test_lrt_def",
       "route_kind": "reformulation",
@@ -528,92 +394,6 @@
           "used_node_ids": [
             "math.prob.pr01_kolmogorov_axioms",
             "ml.stat.n02_log_likelihood_score_def"
-          ],
-          "sympy_check_hint": null
-        }
-      ]
-    },
-    {
-      "id": "ml.stat.d08_neyman_pearson_lemma",
-      "target_node_id": "ml.stat.n08_neyman_pearson_lemma",
-      "route_kind": "deductive",
-      "title": "非負関数の積分評価によるネイマン＝ピアソンの補題の証明",
-      "premise_node_ids": [
-        "ml.stat.n07_hypothesis_test_lrt_def"
-      ],
-      "required_math_node_ids": [
-        "math.calc.m16_integral_linearity"
-      ],
-      "assumptions": [
-        "閾値 k >= 0 が存在し、尤度比検定 phi^* の有意水準がちょうど alpha に等しい（離散分布等の境界上の確率がある場合は確率化検定を許容する）。"
-      ],
-      "steps": [
-        {
-          "step_id": "s1_overview",
-          "order": 1,
-          "granularity_level": 1,
-          "parent_step_id": null,
-          "from_latex": "\\phi^*(\\mathbf{x}) = \\mathbb{I}\\big(p(\\mathbf{x}\\mid\\theta_1) > k\\,p(\\mathbf{x}\\mid\\theta_0)\\big),\\quad \\mathbb{E}_{\\theta_0}[\\phi] \\le \\alpha = \\mathbb{E}_{\\theta_0}[\\phi^*]",
-          "to_latex": "\\mathbb{E}_{\\theta_1}[\\phi^*(\\mathbf{X})] \\ge \\mathbb{E}_{\\theta_1}[\\phi(\\mathbf{X})]",
-          "operation_label": "検定差と尤度差の積の非負性を用いた検出力の最大化証明",
-          "explanation": "(phi^* - phi)(p_1 - k p_0) が標本空間全体で非負であることを積分し、有意水準の条件を適用することで phi^* が最強力検定であることを示す。",
-          "used_node_ids": [
-            "math.calc.m16_integral_linearity",
-            "ml.stat.n07_hypothesis_test_lrt_def"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_1",
-          "order": 2,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "\\phi^*(\\mathbf{x}) = \\mathbb{I}\\big(p(\\mathbf{x}\\mid\\theta_1) > k\\,p(\\mathbf{x}\\mid\\theta_0)\\big)",
-          "to_latex": "\\big(\\phi^*(\\mathbf{x}) - \\phi(\\mathbf{x})\\big)\\big(p(\\mathbf{x}\\mid\\theta_1) - k\\,p(\\mathbf{x}\\mid\\theta_0)\\big) \\ge 0",
-          "operation_label": "指示関数の定義による符号の一致評価",
-          "explanation": "p_1 > k p_0 の領域では phi^* = 1 >= phi なので両因子が非負、p_1 < k p_0 の領域では phi^* = 0 <= phi なので両因子が非正となり、積は常に0以上となる。",
-          "used_node_ids": [
-            "ml.stat.n07_hypothesis_test_lrt_def"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_2",
-          "order": 3,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "\\big(\\phi^*(\\mathbf{x}) - \\phi(\\mathbf{x})\\big)\\big(p(\\mathbf{x}\\mid\\theta_1) - k\\,p(\\mathbf{x}\\mid\\theta_0)\\big) \\ge 0",
-          "to_latex": "\\int \\big(\\phi^*(\\mathbf{x}) - \\phi(\\mathbf{x})\\big)\\big(p(\\mathbf{x}\\mid\\theta_1) - k\\,p(\\mathbf{x}\\mid\\theta_0)\\big)\\,d\\mathbf{x} \\ge 0",
-          "operation_label": "標本空間全体にわたる積分の単調性",
-          "explanation": "各点で非負の関数を標本空間全体で積分しても非負性が保たれる。",
-          "used_node_ids": [],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_3",
-          "order": 4,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "\\int \\big(\\phi^*(\\mathbf{x}) - \\phi(\\mathbf{x})\\big)\\big(p(\\mathbf{x}\\mid\\theta_1) - k\\,p(\\mathbf{x}\\mid\\theta_0)\\big)\\,d\\mathbf{x} \\ge 0",
-          "to_latex": "\\big(\\mathbb{E}_{\\theta_1}[\\phi^*] - \\mathbb{E}_{\\theta_1}[\\phi]\\big) - k\\big(\\mathbb{E}_{\\theta_0}[\\phi^*] - \\mathbb{E}_{\\theta_0}[\\phi]\\big) \\ge 0",
-          "operation_label": "積分の線形性による期待値の差への分解",
-          "explanation": "積分を線形性により分解し、各仮説下での期待値（検出力と有意水準）の差として表す。",
-          "used_node_ids": [
-            "math.calc.m16_integral_linearity"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_4",
-          "order": 5,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "\\big(\\mathbb{E}_{\\theta_1}[\\phi^*] - \\mathbb{E}_{\\theta_1}[\\phi]\\big) - k\\big(\\mathbb{E}_{\\theta_0}[\\phi^*] - \\mathbb{E}_{\\theta_0}[\\phi]\\big) \\ge 0",
-          "to_latex": "\\mathbb{E}_{\\theta_1}[\\phi^*(\\mathbf{X})] \\ge \\mathbb{E}_{\\theta_1}[\\phi(\\mathbf{X})]",
-          "operation_label": "有意水準の条件と k >= 0 の適用",
-          "explanation": "k >= 0 かつ E_{theta_0}[phi^*] = alpha >= E_{theta_0}[phi] より第2項 k(alpha - E_{theta_0}[phi]) >= 0 であるため、検出力の差 E_{theta_1}[phi^*] - E_{theta_1}[phi] >= 0 が従う。",
-          "used_node_ids": [
-            "ml.stat.n07_hypothesis_test_lrt_def"
           ],
           "sympy_check_hint": null
         }
