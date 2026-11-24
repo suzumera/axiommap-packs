@@ -1,0 +1,661 @@
+{
+  "pack_meta": {
+    "pack_id": "cv.vision.pinhole_epipolar",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "computer_vision",
+    "title": "コンピュータビジョン：ピンホールカメラ射影行列・ホモグラフィとエピポーラ幾何（基礎行列F/基本行列E）",
+    "language": "ja",
+    "description": "同次座標と3次元剛体変換からカメラ内部/外部パラメータ行列P=K[R|t]、2視点の共面条件から基本行列E=[t]_x Rと基礎行列F（x'^T F x=0）を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "cv.geo.n01_homogeneous_rigid_transform",
+      "short_code": "CV01",
+      "kind": "definition",
+      "title": "同次座標表現と3次元剛体変換（SE(3)）",
+      "summary": "ユークリッド空間の点にスケール成分1を付加した同次座標表現と、回転行列 R∈SO(3) および並進ベクトル t∈R^3 による3次元剛体変換の定義。",
+      "canonical_latex": "\\tilde{\\mathbf{X}} := \\begin{pmatrix} \\mathbf{X} \\\\ 1 \\end{pmatrix} \\in \\mathbb{R}^4,\\quad \\tilde{\\mathbf{X}}_c = T\\tilde{\\mathbf{X}}_w,\\quad T = \\begin{pmatrix} R & \\mathbf{t} \\\\ \\mathbf{0}^\\top & 1 \\end{pmatrix} \\in \\mathrm{SE}(3)\\quad (R \\in \\mathrm{SO}(3),\\; \\mathbf{t} \\in \\mathbb{R}^3)",
+      "aliases_latex": [
+        "\\mathbf{X}_c = R\\mathbf{X}_w + \\mathbf{t}",
+        "\\tilde{\\mathbf{x}} \\sim \\lambda \\tilde{\\mathbf{x}}\\quad (\\lambda \\neq 0)"
+      ],
+      "keywords": [
+        "同次座標",
+        "剛体変換",
+        "SE(3)",
+        "外部パラメータ",
+        "ユークリッド変換"
+      ],
+      "domain_tags": [
+        "computer_vision",
+        "projective_geometry",
+        "robotics"
+      ]
+    },
+    {
+      "id": "cv.geo.n02_pinhole_ideal_projection",
+      "short_code": "CV02",
+      "kind": "definition",
+      "title": "理想ピンホールカメラの透視投影モデル",
+      "summary": "カメラ座標系の原点（光学中心）から焦点距離 f だけ離れた画像平面へ、3次元点 (X_c, Y_c, Z_c) を中心射影する幾何学的モデル。",
+      "canonical_latex": "x_c = f\\frac{X_c}{Z_c},\\quad y_c = f\\frac{Y_c}{Z_c},\\qquad Z_c \\begin{pmatrix} x_c \\\\ y_c \\\\ 1 \\end{pmatrix} = \\begin{pmatrix} f & 0 & 0 & 0 \\\\ 0 & f & 0 & 0 \\\\ 0 & 0 & 1 & 0 \\end{pmatrix} \\begin{pmatrix} X_c \\\\ Y_c \\\\ Z_c \\\\ 1 \\end{pmatrix}\\quad (Z_c > 0)",
+      "aliases_latex": [
+        "\\tilde{\\mathbf{x}}_c \\sim \\operatorname{diag}(f, f, 1) [I_3 \\mid \\mathbf{0}] \\tilde{\\mathbf{X}}_c"
+      ],
+      "keywords": [
+        "ピンホールカメラ",
+        "透視投影",
+        "中心射影",
+        "焦点距離",
+        "光学中心"
+      ],
+      "domain_tags": [
+        "computer_vision",
+        "optics"
+      ]
+    },
+    {
+      "id": "cv.geo.n03_camera_intrinsics_extrinsics",
+      "short_code": "CV03",
+      "kind": "theorem_formula",
+      "title": "カメラ内部パラメータ行列 K と射影行列 P = K[R | t]",
+      "summary": "ピクセル座標へのスケーリング・主点オフセット・スキューを表す上三角行列 K（内部パラメータ）と剛体変換 [R|t]（外部パラメータ）を合成した 3×4 射影行列 P の公式。",
+      "canonical_latex": "s\\tilde{\\mathbf{x}} = P\\tilde{\\mathbf{X}}_w,\\quad P = K[R \\mid \\mathbf{t}],\\quad K = \\begin{pmatrix} f_x & \\gamma & c_x \\\\ 0 & f_y & c_y \\\\ 0 & 0 & 1 \\end{pmatrix}\\quad (s = Z_c)",
+      "aliases_latex": [
+        "\\tilde{\\mathbf{x}} \\sim K(R\\mathbf{X}_w + \\mathbf{t})",
+        "P = [KR \\mid K\\mathbf{t}]"
+      ],
+      "keywords": [
+        "カメラ射影行列",
+        "内部パラメータ",
+        "外部パラメータ",
+        "カメラキャリブレーション",
+        "主点"
+      ],
+      "domain_tags": [
+        "computer_vision",
+        "photogrammetry"
+      ]
+    },
+    {
+      "id": "cv.geo.n04_planar_homography_matrix",
+      "short_code": "CV04",
+      "kind": "theorem_formula",
+      "title": "平面ホモグラフィ行列 H による2視点射影変換",
+      "summary": "空間内の同一平面 n^T X + d = 0 上にある3次元点を異なる2視点から観測したとき、対応する画像座標が 3×3 正則行列 H で一意に結びつくこと。",
+      "canonical_latex": "s'\\tilde{\\mathbf{x}}' = H\\tilde{\\mathbf{x}},\\qquad H = K'\\left(R - \\frac{\\mathbf{t}\\mathbf{n}^\\top}{d}\\right)K^{-1} \\in \\mathbb{R}^{3\\times 3}",
+      "aliases_latex": [
+        "\\tilde{\\mathbf{x}}' \\sim H\\tilde{\\mathbf{x}}",
+        "H = K' R K^{-1}\\;(\\mathbf{t}=\\mathbf{0})"
+      ],
+      "keywords": [
+        "ホモグラフィ",
+        "射影変換",
+        "平面拘束",
+        "パノラマ合成"
+      ],
+      "domain_tags": [
+        "computer_vision",
+        "projective_geometry"
+      ]
+    },
+    {
+      "id": "cv.geo.n05_skew_symmetric_cross_product",
+      "short_code": "CV05",
+      "kind": "definition",
+      "title": "並進ベクトルの歪対称行列表現 [t]_x",
+      "summary": "3次元ベクトルの外積演算 t × x を 3×3 歪対称行列（反対称行列）との行列積 [t]_x x として表す線形代数表現の定義。",
+      "canonical_latex": "[\\mathbf{t}]_\\times := \\begin{pmatrix} 0 & -t_z & t_y \\\\ t_z & 0 & -t_x \\\\ -t_y & t_x & 0 \\end{pmatrix},\\quad [\\mathbf{t}]_\\times \\mathbf{x} = \\mathbf{t} \\times \\mathbf{x},\\quad [\\mathbf{t}]_\\times^\\top = -[\\mathbf{t}]_\\times,\\quad \\mathbf{t}^\\top [\\mathbf{t}]_\\times = \\mathbf{0}^\\top",
+      "aliases_latex": [
+        "[\\mathbf{t}]_\\times = \\sum_{i=1}^{3} t_i J_i",
+        "\\det([\\mathbf{t}]_\\times) = 0,\\; \\operatorname{rank}([\\mathbf{t}]_\\times) = 2\\;(\\mathbf{t}\\neq\\mathbf{0})"
+      ],
+      "keywords": [
+        "歪対称行列",
+        "外積行列",
+        "反対称行列",
+        "基線ベクトル"
+      ],
+      "domain_tags": [
+        "computer_vision",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "cv.geo.n06_essential_matrix_coplanarity",
+      "short_code": "CV06",
+      "kind": "theorem_formula",
+      "title": "2視点の共面条件と基本行列 E = [t]_x R",
+      "summary": "2つの正規化カメラ座標における視線ベクトルとカメラ間の並進（基線）ベクトルが同一平面上にある共面条件から導かれる基本行列 E と双線形拘束式。",
+      "canonical_latex": "\\hat{\\mathbf{x}}'^{\\top} E \\hat{\\mathbf{x}} = 0,\\qquad E := [\\mathbf{t}]_\\times R \\in \\mathbb{R}^{3\\times 3}",
+      "aliases_latex": [
+        "\\hat{\\mathbf{x}}'^{\\top} ([\\mathbf{t}]_\\times R) \\hat{\\mathbf{x}} = 0",
+        "\\sigma_1(E) = \\sigma_2(E) > 0,\\; \\sigma_3(E) = 0"
+      ],
+      "keywords": [
+        "基本行列",
+        "エッセンシャル行列",
+        "共面条件",
+        "エピポーラ幾何",
+        "正規化画像座標"
+      ],
+      "domain_tags": [
+        "computer_vision",
+        "multiview_geometry"
+      ]
+    },
+    {
+      "id": "cv.geo.n07_fundamental_matrix_epipolar",
+      "short_code": "CV07",
+      "kind": "theorem_formula",
+      "title": "基礎行列 F = K'^{-T} E K^{-1} とエピポーラ拘束式",
+      "summary": "カメラの内部パラメータ K, K' を含む一般のピクセル同次座標間で成立するエピポーラ拘束式 x'^T F x = 0 と基礎行列（ファンダメンタル行列）F の定義式。",
+      "canonical_latex": "\\tilde{\\mathbf{x}}'^{\\top} F \\tilde{\\mathbf{x}} = 0,\\qquad F := K'^{-\\top} E K^{-1} = K'^{-\\top}[\\mathbf{t}]_\\times R K^{-1}",
+      "aliases_latex": [
+        "\\tilde{\\mathbf{x}}'^{\\top} K'^{-\\top} [\\mathbf{t}]_\\times R K^{-1} \\tilde{\\mathbf{x}} = 0"
+      ],
+      "keywords": [
+        "基礎行列",
+        "ファンダメンタル行列",
+        "エピポーラ拘束",
+        "8点アルゴリズム"
+      ],
+      "domain_tags": [
+        "computer_vision",
+        "multiview_geometry"
+      ]
+    },
+    {
+      "id": "cv.geo.n08_epipolar_lines_epipoles",
+      "short_code": "CV08",
+      "kind": "theorem_formula",
+      "title": "エピポーラ線とエピポール（基礎行列の零空間）",
+      "summary": "基礎行列 F によって対応点の探索範囲が1次元直線（エピポーラ線）に限定されること、および全エピポーラ線が交わるエピポールが F の右・左零空間を張ること（rank F = 2）。",
+      "canonical_latex": "\\mathbf{l}' = F\\tilde{\\mathbf{x}},\\quad \\mathbf{l} = F^\\top \\tilde{\\mathbf{x}}',\\qquad F\\mathbf{e} = \\mathbf{0},\\quad F^\\top \\mathbf{e}' = \\mathbf{0},\\quad \\operatorname{rank}(F) = 2",
+      "aliases_latex": [
+        "\\tilde{\\mathbf{x}}'^{\\top} \\mathbf{l}' = 0,\\; \\tilde{\\mathbf{x}}^\\top \\mathbf{l} = 0",
+        "\\det(F) = 0"
+      ],
+      "keywords": [
+        "エピポーラ線",
+        "エピポール",
+        "零空間",
+        "ステレオマッチング"
+      ],
+      "domain_tags": [
+        "computer_vision",
+        "multiview_geometry"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_cv01_homogeneous_rigid",
+      "target_node_id": "cv.geo.n01_homogeneous_rigid_transform",
+      "route_kind": "reformulation",
+      "title": "SO(3)回転と並進の4×4同次変換行列による表現",
+      "premise_node_ids": [
+        "math.alg.gr04_so3_su2_matrix_groups_def",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "空間は3次元ユークリッド空間とし、剛体運動は距離と向きを保つとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{X}_c = R\\mathbf{X}_w + \\mathbf{t}\\quad (R \\in \\mathrm{SO}(3),\\; \\mathbf{t} \\in \\mathbb{R}^3)",
+          "to_latex": "\\tilde{\\mathbf{X}}_c = T\\tilde{\\mathbf{X}}_w,\\quad T = \\begin{pmatrix} R & \\mathbf{t} \\\\ \\mathbf{0}^\\top & 1 \\end{pmatrix} \\in \\mathrm{SE}(3)",
+          "operation_label": "同次座標の導入とアフィン変換の行列積化",
+          "explanation": "3次元座標に第4成分1を付加した同次座標を定義することで、回転 R と並進 t のアフィン変換を単一の 4×4 行列 T の積として統一的に記述できる。",
+          "used_node_ids": [
+            "math.alg.gr04_so3_su2_matrix_groups_def",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_cv02_pinhole_projection",
+      "target_node_id": "cv.geo.n02_pinhole_ideal_projection",
+      "route_kind": "deductive",
+      "title": "相似三角形に基づく理想ピンホールカメラ透視投影の定義",
+      "premise_node_ids": [
+        "cv.geo.n01_homogeneous_rigid_transform"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "レンズ歪みのない理想的なピンホールモデルであり、光軸は Z_c 軸に一致し、点はカメラ前方（Z_c > 0）にあるとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\tilde{\\mathbf{X}}_c = \\begin{pmatrix} X_c \\\\ Y_c \\\\ Z_c \\\\ 1 \\end{pmatrix}\\quad (Z_c > 0)",
+          "to_latex": "x_c = f\\frac{X_c}{Z_c},\\quad y_c = f\\frac{Y_c}{Z_c},\\qquad Z_c \\begin{pmatrix} x_c \\\\ y_c \\\\ 1 \\end{pmatrix} = \\begin{pmatrix} f & 0 & 0 & 0 \\\\ 0 & f & 0 & 0 \\\\ 0 & 0 & 1 & 0 \\end{pmatrix} \\tilde{\\mathbf{X}}_c",
+          "operation_label": "相似三角形の比例関係と正準射影行列の定義",
+          "explanation": "光学中心と3次元点・画像面上の像が作る直角三角形の相似比 x_c/f = X_c/Z_c, y_c/f = Y_c/Z_c を、同次座標のスケール不定性（Z_c 倍）を用いて線形な 3×4 行列積として表現する。",
+          "used_node_ids": [
+            "cv.geo.n01_homogeneous_rigid_transform"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_cv03_camera_projection_matrix",
+      "target_node_id": "cv.geo.n03_camera_intrinsics_extrinsics",
+      "route_kind": "deductive",
+      "title": "剛体変換・透視投影・ピクセル座標変換の合成による P = K[R|t] の導出",
+      "premise_node_ids": [
+        "cv.geo.n01_homogeneous_rigid_transform",
+        "cv.geo.n02_pinhole_ideal_projection"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "撮像素子の画素ピッチ（k_x, k_y）、主点座標（c_x, c_y）、および画素軸のスキュー（s_θ）がアフィン変換で記述できるとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\tilde{\\mathbf{X}}_w = \\begin{pmatrix} X_w \\\\ Y_w \\\\ Z_w \\\\ 1 \\end{pmatrix},\\quad x_c = f\\frac{X_c}{Z_c},\\; y_c = f\\frac{Y_c}{Z_c}",
+          "to_latex": "s\\tilde{\\mathbf{x}} = K[R \\mid \\mathbf{t}]\\tilde{\\mathbf{X}}_w = P\\tilde{\\mathbf{X}}_w,\\quad K = \\begin{pmatrix} f_x & \\gamma & c_x \\\\ 0 & f_y & c_y \\\\ 0 & 0 & 1 \\end{pmatrix}",
+          "operation_label": "外部変換・透視投影・内部パラメータ変換の合成",
+          "explanation": "世界座標からカメラ座標への剛体変換、焦点距離 f による透視投影、物理座標からピクセル座標へのアフィン変換の3段階を行列積として統合し、P = K[R|t] を得る。",
+          "used_node_ids": [
+            "cv.geo.n01_homogeneous_rigid_transform",
+            "cv.geo.n02_pinhole_ideal_projection"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{\\mathbf{X}}_w = \\begin{pmatrix} X_w \\\\ Y_w \\\\ Z_w \\\\ 1 \\end{pmatrix},\\quad x_c = f\\frac{X_c}{Z_c},\\; y_c = f\\frac{Y_c}{Z_c}",
+          "to_latex": "\\mathbf{X}_c = \\begin{pmatrix} X_c \\\\ Y_c \\\\ Z_c \\end{pmatrix} = [R \\mid \\mathbf{t}]\\tilde{\\mathbf{X}}_w,\\quad Z_c \\begin{pmatrix} x_c \\\\ y_c \\\\ 1 \\end{pmatrix} = \\begin{pmatrix} f & 0 & 0 \\\\ 0 & f & 0 \\\\ 0 & 0 & 1 \\end{pmatrix} \\mathbf{X}_c",
+          "operation_label": "外部パラメータの適用と3×3焦点距離行列の分離",
+          "explanation": "世界座標の点に外部パラメータ [R|t] を掛けてカメラ座標 X_c を求め、理想透視投影を対角行列 diag(f, f, 1) と X_c の積に分解する。",
+          "used_node_ids": [
+            "cv.geo.n01_homogeneous_rigid_transform",
+            "cv.geo.n02_pinhole_ideal_projection"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{X}_c = \\begin{pmatrix} X_c \\\\ Y_c \\\\ Z_c \\end{pmatrix} = [R \\mid \\mathbf{t}]\\tilde{\\mathbf{X}}_w,\\quad Z_c \\begin{pmatrix} x_c \\\\ y_c \\\\ 1 \\end{pmatrix} = \\begin{pmatrix} f & 0 & 0 \\\\ 0 & f & 0 \\\\ 0 & 0 & 1 \\end{pmatrix} \\mathbf{X}_c",
+          "to_latex": "\\tilde{\\mathbf{x}} = \\begin{pmatrix} u \\\\ v \\\\ 1 \\end{pmatrix} = \\begin{pmatrix} k_x & s_\\theta & c_x \\\\ 0 & k_y & c_y \\\\ 0 & 0 & 1 \\end{pmatrix} \\begin{pmatrix} x_c \\\\ y_c \\\\ 1 \\end{pmatrix}",
+          "operation_label": "画像平面の物理座標からピクセル座標への変換",
+          "explanation": "物理画像座標 (x_c, y_c) に画素密度 (k_x, k_y)、スキュー係数 s_θ、主点オフセット (c_x, c_y) を適用してピクセル同次座標 (u, v, 1)^T へ変換する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{\\mathbf{x}} = \\begin{pmatrix} u \\\\ v \\\\ 1 \\end{pmatrix} = \\begin{pmatrix} k_x & s_\\theta & c_x \\\\ 0 & k_y & c_y \\\\ 0 & 0 & 1 \\end{pmatrix} \\begin{pmatrix} x_c \\\\ y_c \\\\ 1 \\end{pmatrix}",
+          "to_latex": "s\\tilde{\\mathbf{x}} = K[R \\mid \\mathbf{t}]\\tilde{\\mathbf{X}}_w = P\\tilde{\\mathbf{X}}_w,\\quad K = \\begin{pmatrix} f_x & \\gamma & c_x \\\\ 0 & f_y & c_y \\\\ 0 & 0 & 1 \\end{pmatrix}",
+          "operation_label": "内部パラメータ行列 K の統合（s = Z_c, f_x = k_x f, f_y = k_y f, γ = s_θ f）",
+          "explanation": "ピクセル変換行列と diag(f, f, 1) の積を計算して上三角行列 K を定義し、X_c = [R|t]X_w を代入することで射影行列 P = K[R|t] を得る。",
+          "used_node_ids": [
+            "cv.geo.n01_homogeneous_rigid_transform",
+            "cv.geo.n02_pinhole_ideal_projection"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_cv04_planar_homography",
+      "target_node_id": "cv.geo.n04_planar_homography_matrix",
+      "route_kind": "deductive",
+      "title": "3次元平面拘束を用いた2視点間ホモグラフィ行列 H の導出",
+      "premise_node_ids": [
+        "cv.geo.n03_camera_intrinsics_extrinsics"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "第1カメラ座標系を基準（P = K[I_3|0]）とし、対象平面 n^T X + d = 0 は第1カメラの光学中心を通らない（d ≠ 0）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "s\\tilde{\\mathbf{x}} = K[I_3 \\mid \\mathbf{0}]\\tilde{\\mathbf{X}},\\quad s'\\tilde{\\mathbf{x}}' = K'[R \\mid \\mathbf{t}]\\tilde{\\mathbf{X}},\\quad \\mathbf{n}^\\top \\mathbf{X} + d = 0",
+          "to_latex": "s'\\tilde{\\mathbf{x}}' = H\\tilde{\\mathbf{x}},\\quad H = K'\\left(R - \\frac{\\mathbf{t}\\mathbf{n}^\\top}{d}\\right)K^{-1}",
+          "operation_label": "平面方程式による並進項の置換と逆射影の代入",
+          "explanation": "平面拘束式を用いて第2カメラ射影式の並進ベクトル t を線形項 (-t n^T / d)X に書き換え、第1カメラの逆射影 X = s K^{-1} x を代入して 3×3 ホモグラフィ行列 H を得る。",
+          "used_node_ids": [
+            "cv.geo.n03_camera_intrinsics_extrinsics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s\\tilde{\\mathbf{x}} = K[I_3 \\mid \\mathbf{0}]\\tilde{\\mathbf{X}},\\quad s'\\tilde{\\mathbf{x}}' = K'[R \\mid \\mathbf{t}]\\tilde{\\mathbf{X}},\\quad \\mathbf{n}^\\top \\mathbf{X} + d = 0",
+          "to_latex": "\\mathbf{X} = s K^{-1}\\tilde{\\mathbf{x}},\\quad -\\frac{\\mathbf{n}^\\top \\mathbf{X}}{d} = 1",
+          "operation_label": "第1視点の逆射影と平面方程式の正規化",
+          "explanation": "K が正則であることから第1視点の投影式より X = s K^{-1} x を解き、平面方程式 n^T X + d = 0 を -n^T X / d = 1 の形に変形する。",
+          "used_node_ids": [
+            "cv.geo.n03_camera_intrinsics_extrinsics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{X} = s K^{-1}\\tilde{\\mathbf{x}},\\quad -\\frac{\\mathbf{n}^\\top \\mathbf{X}}{d} = 1",
+          "to_latex": "s'\\tilde{\\mathbf{x}}' = K'\\left(R\\mathbf{X} + \\mathbf{t}\\left(-\\frac{\\mathbf{n}^\\top \\mathbf{X}}{d}\\right)\\right) = K'\\left(R - \\frac{\\mathbf{t}\\mathbf{n}^\\top}{d}\\right)\\mathbf{X}",
+          "operation_label": "第2視点射影式の並進項へのスカラー1の挿入",
+          "explanation": "第2視点の投影式 K'(RX + t) の定数ベクトル t に -n^T X / d = 1 を掛けることで、X に関する純粋な 3×3 線形変換にまとめる。",
+          "used_node_ids": [
+            "cv.geo.n03_camera_intrinsics_extrinsics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s'\\tilde{\\mathbf{x}}' = K'\\left(R\\mathbf{X} + \\mathbf{t}\\left(-\\frac{\\mathbf{n}^\\top \\mathbf{X}}{d}\\right)\\right) = K'\\left(R - \\frac{\\mathbf{t}\\mathbf{n}^\\top}{d}\\right)\\mathbf{X}",
+          "to_latex": "s'\\tilde{\\mathbf{x}}' = H\\tilde{\\mathbf{x}},\\quad H = K'\\left(R - \\frac{\\mathbf{t}\\mathbf{n}^\\top}{d}\\right)K^{-1}",
+          "operation_label": "第1視点座標の代入と同次スケール s の吸収",
+          "explanation": "X = s K^{-1} x を代入し、正のスカラー因子 s を左辺の同次スケール s' に吸収させることで平面ホモグラフィ変換式を得る。",
+          "used_node_ids": [
+            "cv.geo.n03_camera_intrinsics_extrinsics"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_cv05_skew_symmetric",
+      "target_node_id": "cv.geo.n05_skew_symmetric_cross_product",
+      "route_kind": "reformulation",
+      "title": "3次元ベクトルの外積演算の歪対称行列による表現",
+      "premise_node_ids": [
+        "math.vec.m03_dot_cross_product",
+        "math.alg.gr06_so3_generators_commutation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "右手系直交座標系における3次元実ベクトル空間 R^3 上の標準外積とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{t} \\times \\mathbf{x} = \\begin{pmatrix} t_y x_z - t_z x_y \\\\ t_z x_x - t_x x_z \\\\ t_x x_y - t_y x_x \\end{pmatrix}",
+          "to_latex": "[\\mathbf{t}]_\\times := \\begin{pmatrix} 0 & -t_z & t_y \\\\ t_z & 0 & -t_x \\\\ -t_y & t_x & 0 \\end{pmatrix},\\quad [\\mathbf{t}]_\\times \\mathbf{x} = \\mathbf{t} \\times \\mathbf{x},\\quad [\\mathbf{t}]_\\times^\\top = -[\\mathbf{t}]_\\times",
+          "operation_label": "外積の線形作用素としての行列表現",
+          "explanation": "so(3) の生成子 J_i を用いた線形結合 sum t_i J_i と一致する 3×3 歪対称行列 [t]_x を定義し、外積演算を行列積に置き換える。",
+          "used_node_ids": [
+            "math.alg.gr06_so3_generators_commutation",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_cv06_essential_matrix",
+      "target_node_id": "cv.geo.n06_essential_matrix_coplanarity",
+      "route_kind": "deductive",
+      "title": "2視点の共面条件（スカラー三重積=0）からの基本行列 E の導出",
+      "premise_node_ids": [
+        "cv.geo.n01_homogeneous_rigid_transform",
+        "cv.geo.n05_skew_symmetric_cross_product",
+        "math.vec.m14_scalar_triple_product"
+      ],
+      "required_math_node_ids": [
+        "cv.geo.n02_pinhole_ideal_projection"
+      ],
+      "assumptions": [
+        "両視点の光学中心は一致せず（t ≠ 0）、3次元点 X はカメラ前方にある（Z > 0, Z' > 0）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{X}' = R\\mathbf{X} + \\mathbf{t},\\quad \\hat{\\mathbf{x}} = \\frac{\\mathbf{X}}{Z},\\quad \\hat{\\mathbf{x}}' = \\frac{\\mathbf{X}'}{Z'}",
+          "to_latex": "\\hat{\\mathbf{x}}'^{\\top} E \\hat{\\mathbf{x}} = 0,\\quad E = [\\mathbf{t}]_\\times R",
+          "operation_label": "共面条件のスカラー三重積表現と歪対称行列の導入",
+          "explanation": "第2カメラ座標系における3ベクトル X', t, RX が同一エピポーラ平面上にあることからスカラー三重積が0となり、外積を行列 [t]_x で表して正規化座標へスケール変換することで E = [t]_x R を得る。",
+          "used_node_ids": [
+            "cv.geo.n01_homogeneous_rigid_transform",
+            "cv.geo.n05_skew_symmetric_cross_product",
+            "math.vec.m14_scalar_triple_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{X}' = R\\mathbf{X} + \\mathbf{t},\\quad \\hat{\\mathbf{x}} = \\frac{\\mathbf{X}}{Z},\\quad \\hat{\\mathbf{x}}' = \\frac{\\mathbf{X}'}{Z'}",
+          "to_latex": "\\mathbf{X}' \\cdot (\\mathbf{t} \\times R\\mathbf{X}) = (\\mathbf{t} + R\\mathbf{X}) \\cdot (\\mathbf{t} \\times R\\mathbf{X}) = 0",
+          "operation_label": "3ベクトルの共面性によるスカラー三重積の零化",
+          "explanation": "X' = t + RX より X' は t と RX の線形結合であるため、法線ベクトル t × RX と直交し、スカラー三重積 X'・(t × RX) は恒等的に0となる。",
+          "used_node_ids": [
+            "cv.geo.n01_homogeneous_rigid_transform",
+            "math.vec.m14_scalar_triple_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{X}' \\cdot (\\mathbf{t} \\times R\\mathbf{X}) = (\\mathbf{t} + R\\mathbf{X}) \\cdot (\\mathbf{t} \\times R\\mathbf{X}) = 0",
+          "to_latex": "\\mathbf{X}'^{\\top} ([\\mathbf{t}]_\\times R)\\mathbf{X} = 0",
+          "operation_label": "外積の歪対称行列積への書き換え",
+          "explanation": "外積 t × (RX) を歪対称行列 [t]_x を用いて [t]_x R X と書き換え、内積を転置ベクトル積で表す。",
+          "used_node_ids": [
+            "cv.geo.n05_skew_symmetric_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{X}'^{\\top} ([\\mathbf{t}]_\\times R)\\mathbf{X} = 0",
+          "to_latex": "\\hat{\\mathbf{x}}'^{\\top} E \\hat{\\mathbf{x}} = 0,\\quad E = [\\mathbf{t}]_\\times R",
+          "operation_label": "奥行き Z, Z' による除算と基本行列 E の定義",
+          "explanation": "両辺を非零の奥行き Z' Z で割ることで正規化画像座標 x_hat = X/Z, x'_hat = X'/Z' に関する拘束式となり、E = [t]_x R が得られる。",
+          "used_node_ids": [
+            "cv.geo.n02_pinhole_ideal_projection"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_cv07_fundamental_matrix",
+      "target_node_id": "cv.geo.n07_fundamental_matrix_epipolar",
+      "route_kind": "deductive",
+      "title": "内部パラメータ行列 K, K' の逆変換による基礎行列 F の導出",
+      "premise_node_ids": [
+        "cv.geo.n03_camera_intrinsics_extrinsics",
+        "cv.geo.n06_essential_matrix_coplanarity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "両カメラの内部パラメータ行列 K, K' は正則（f_x ≠ 0, f_y ≠ 0）であるとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{\\mathbf{x}}'^{\\top} E \\hat{\\mathbf{x}} = 0,\\quad \\tilde{\\mathbf{x}} = K\\hat{\\mathbf{x}},\\quad \\tilde{\\mathbf{x}}' = K'\\hat{\\mathbf{x}}'",
+          "to_latex": "\\tilde{\\mathbf{x}}'^{\\top} F \\tilde{\\mathbf{x}} = 0,\\quad F = K'^{-\\top} E K^{-1} = K'^{-\\top}[\\mathbf{t}]_\\times R K^{-1}",
+          "operation_label": "正規化座標とピクセル座標の関係式の代入",
+          "explanation": "基本行列の拘束式に x_hat = K^{-1} x_tilde, x'_hat = K'^{-1} x'_tilde を代入し、ピクセル同次座標間の双線形形式を定義する基礎行列 F を導く。",
+          "used_node_ids": [
+            "cv.geo.n03_camera_intrinsics_extrinsics",
+            "cv.geo.n06_essential_matrix_coplanarity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{x}}'^{\\top} E \\hat{\\mathbf{x}} = 0,\\quad \\tilde{\\mathbf{x}} = K\\hat{\\mathbf{x}},\\quad \\tilde{\\mathbf{x}}' = K'\\hat{\\mathbf{x}}'",
+          "to_latex": "\\hat{\\mathbf{x}} = K^{-1}\\tilde{\\mathbf{x}},\\quad \\hat{\\mathbf{x}}' = K'^{-1}\\tilde{\\mathbf{x}}'",
+          "operation_label": "内部パラメータ行列の逆行列による正規化座標の表現",
+          "explanation": "K, K' が上三角正則行列であるため逆行列が存在し、ピクセル同次座標から正規化画像座標を逆算できる。",
+          "used_node_ids": [
+            "cv.geo.n03_camera_intrinsics_extrinsics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\mathbf{x}} = K^{-1}\\tilde{\\mathbf{x}},\\quad \\hat{\\mathbf{x}}' = K'^{-1}\\tilde{\\mathbf{x}}'",
+          "to_latex": "(K'^{-1}\\tilde{\\mathbf{x}}')^\\top E (K^{-1}\\tilde{\\mathbf{x}}) = \\tilde{\\mathbf{x}}'^{\\top} (K'^{-\\top} E K^{-1}) \\tilde{\\mathbf{x}} = 0",
+          "operation_label": "基本行列拘束式への代入と行列積の転置法則",
+          "explanation": "正規化座標の表現を x'_hat^T E x_hat = 0 に代入し、積の転置法則 (AB)^T = B^T A^T を適用する。",
+          "used_node_ids": [
+            "cv.geo.n06_essential_matrix_coplanarity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(K'^{-1}\\tilde{\\mathbf{x}}')^\\top E (K^{-1}\\tilde{\\mathbf{x}}) = \\tilde{\\mathbf{x}}'^{\\top} (K'^{-\\top} E K^{-1}) \\tilde{\\mathbf{x}} = 0",
+          "to_latex": "\\tilde{\\mathbf{x}}'^{\\top} F \\tilde{\\mathbf{x}} = 0,\\quad F = K'^{-\\top} E K^{-1} = K'^{-\\top}[\\mathbf{t}]_\\times R K^{-1}",
+          "operation_label": "基礎行列 F の定義と E = [t]_x R の展開",
+          "explanation": "中央の 3×3 行列を基礎行列 F として定義し、E = [t]_x R を代入することで、内部・外部パラメータを含む完全な表現を得る。",
+          "used_node_ids": [
+            "cv.geo.n06_essential_matrix_coplanarity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_cv08_epipolar_lines_epipoles",
+      "target_node_id": "cv.geo.n08_epipolar_lines_epipoles",
+      "route_kind": "deductive",
+      "title": "基礎行列 F からのエピポーラ線と零空間（エピポール）の導出",
+      "premise_node_ids": [
+        "cv.geo.n07_fundamental_matrix_epipolar",
+        "cv.geo.n05_skew_symmetric_cross_product"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "t ≠ 0 かつ K, K', R はすべて階数3の正則行列であるとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\tilde{\\mathbf{x}}'^{\\top} F \\tilde{\\mathbf{x}} = 0,\\quad F = K'^{-\\top}[\\mathbf{t}]_\\times R K^{-1}",
+          "to_latex": "\\mathbf{l}' = F\\tilde{\\mathbf{x}},\\quad \\mathbf{l} = F^\\top \\tilde{\\mathbf{x}}',\\quad F\\mathbf{e} = \\mathbf{0},\\quad F^\\top \\mathbf{e}' = \\mathbf{0},\\quad \\operatorname{rank}(F) = 2",
+          "operation_label": "射影平面上の直線方程式への解釈と歪対称行列の零空間",
+          "explanation": "エピポーラ拘束式を点と直線の結合関係 x'^T l' = 0 として読み替えることでエピポーラ線を得て、[t]_x の階数が2であることから F の左右零空間（エピポール）が1次元となることを示す。",
+          "used_node_ids": [
+            "cv.geo.n05_skew_symmetric_cross_product",
+            "cv.geo.n07_fundamental_matrix_epipolar"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{\\mathbf{x}}'^{\\top} F \\tilde{\\mathbf{x}} = 0,\\quad F = K'^{-\\top}[\\mathbf{t}]_\\times R K^{-1}",
+          "to_latex": "\\tilde{\\mathbf{x}}'^{\\top} \\mathbf{l}' = 0\\;(\\mathbf{l}' := F\\tilde{\\mathbf{x}}),\\quad \\tilde{\\mathbf{x}}^\\top \\mathbf{l} = 0\\;(\\mathbf{l} := F^\\top \\tilde{\\mathbf{x}}')",
+          "operation_label": "一方の点を固定したエピポーラ線の同次座標定義",
+          "explanation": "x_tilde を固定すると x'_tilde^T (F x_tilde) = 0 は第2画像平面上の直線方程式 ax' + by' + c = 0 の形をしており、l' = F x_tilde が対応するエピポーラ線を表す（l も同様）。",
+          "used_node_ids": [
+            "cv.geo.n07_fundamental_matrix_epipolar"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{\\mathbf{x}}'^{\\top} \\mathbf{l}' = 0\\;(\\mathbf{l}' := F\\tilde{\\mathbf{x}}),\\quad \\tilde{\\mathbf{x}}^\\top \\mathbf{l} = 0\\;(\\mathbf{l} := F^\\top \\tilde{\\mathbf{x}}')",
+          "to_latex": "F^\\top \\mathbf{e}' = K^{-\\top} R^\\top [\\mathbf{t}]_\\times^\\top (K'^{-1} K'\\mathbf{t}) = -K^{-\\top} R^\\top (\\mathbf{t}\\times\\mathbf{t}) = \\mathbf{0},\\quad F\\mathbf{e} = K'^{-\\top}[\\mathbf{t}]_\\times R K^{-1}(-K R^\\top \\mathbf{t}) = \\mathbf{0}",
+          "operation_label": "光学中心の像（エピポール）の代入による零空間の検証",
+          "explanation": "第1カメラ光学中心の像 e' = K' t と第2カメラ光学中心の像 e = -K R^T t を代入すると、[t]_x t = t × t = 0 より F e = 0 かつ F^T e' = 0 が成り立つ。",
+          "used_node_ids": [
+            "cv.geo.n05_skew_symmetric_cross_product",
+            "cv.geo.n07_fundamental_matrix_epipolar"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F^\\top \\mathbf{e}' = K^{-\\top} R^\\top [\\mathbf{t}]_\\times^\\top (K'^{-1} K'\\mathbf{t}) = -K^{-\\top} R^\\top (\\mathbf{t}\\times\\mathbf{t}) = \\mathbf{0},\\quad F\\mathbf{e} = K'^{-\\top}[\\mathbf{t}]_\\times R K^{-1}(-K R^\\top \\mathbf{t}) = \\mathbf{0}",
+          "to_latex": "\\mathbf{l}' = F\\tilde{\\mathbf{x}},\\quad \\mathbf{l} = F^\\top \\tilde{\\mathbf{x}}',\\quad F\\mathbf{e} = \\mathbf{0},\\quad F^\\top \\mathbf{e}' = \\mathbf{0},\\quad \\operatorname{rank}(F) = 2",
+          "operation_label": "正則行列の積による階数保存と rank(F)=2 の確定",
+          "explanation": "K'^{-T}, R, K^{-1} はいずれも階数3の正則行列であるため、F の階数は [t]_x の階数に一致して rank(F) = 2 となり、すべてのエピポーラ線がエピポール e, e' を通る。",
+          "used_node_ids": [
+            "cv.geo.n05_skew_symmetric_cross_product",
+            "cv.geo.n07_fundamental_matrix_epipolar"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
