@@ -1,0 +1,670 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.nuclear.decay_bateman",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "nuclear_engineering",
+    "title": "放射線物理：放射性崩壊則・半減期・ベイトマン方程式（逐次崩壊）と永続平衡",
+    "language": "ja",
+    "description": "崩壊確率定数λから指数崩壊則と半減期、連立常微分方程式のラプラス変換から2核種/多核種逐次崩壊のベイトマン方程式と放射平衡条件を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.nuc1.n01_decay_constant_boundary",
+      "short_code": "NUC01",
+      "kind": "math_boundary",
+      "title": "放射性崩壊の無記憶性と崩壊確率定数（放射能の定義）",
+      "summary": "個々の原子核の崩壊が過去の履歴や外部環境に依存せず単位時間あたり一定の確率定数λで起こることを表す基礎境界と、放射能A(t)の定義。",
+      "canonical_latex": "\\frac{dN(t)}{dt} = -\\lambda N(t),\\quad N(0) = N_0,\\quad A(t) := -\\frac{dN(t)}{dt} = \\lambda N(t)",
+      "aliases_latex": [
+        "\\dot{N} = -\\lambda N,\\quad A = \\lambda N"
+      ],
+      "keywords": [
+        "崩壊定数",
+        "放射能",
+        "放射性崩壊",
+        "無記憶性",
+        "ベクレル"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "physics"
+      ]
+    },
+    {
+      "id": "eng.nuc1.n02_exponential_decay_law",
+      "short_code": "NUC02",
+      "kind": "theorem_formula",
+      "title": "指数崩壊則（ラザフォード＝ソディの法則）",
+      "summary": "崩壊定数λが一定のとき、未崩壊原子核数N(t)および放射能A(t)が時間に対して指数関数的に減少することを示す基本法則。",
+      "canonical_latex": "N(t) = N_0 e^{-\\lambda t},\\quad A(t) = A_0 e^{-\\lambda t}\\quad (A_0 = \\lambda N_0)",
+      "aliases_latex": [
+        "N(t) = N_0 \\exp(-\\lambda t)"
+      ],
+      "keywords": [
+        "指数崩壊則",
+        "ラザフォード・ソディの法則",
+        "放射能減衰"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "physics"
+      ]
+    },
+    {
+      "id": "eng.nuc1.n03_half_life_mean_life",
+      "short_code": "NUC03",
+      "kind": "theorem_formula",
+      "title": "半減期と平均寿命の関係式",
+      "summary": "原子核数が初期値の半分になる時間（半減期T_{1/2}）と、原子核1個が崩壊するまでの期待時間（平均寿命τ）の崩壊定数λによる表現。",
+      "canonical_latex": "T_{1/2} = \\frac{\\ln 2}{\\lambda},\\quad \\tau = \\frac{1}{\\lambda},\\quad T_{1/2} = \\tau \\ln 2",
+      "aliases_latex": [
+        "t_{1/2} = \\frac{\\ln 2}{\\lambda} \\approx \\frac{0.693}{\\lambda}"
+      ],
+      "keywords": [
+        "半減期",
+        "平均寿命",
+        "崩壊定数"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "physics"
+      ]
+    },
+    {
+      "id": "eng.nuc1.n04_serial_decay_ode_system",
+      "short_code": "NUC04",
+      "kind": "definition",
+      "title": "逐次崩壊（崩壊系列）の連立常微分方程式系",
+      "summary": "親核種から娘核種、孫核種へと連続的に崩壊するn核種系列における、各核種の生成率と崩壊率の収支を表す連立1階線形常微分方程式。",
+      "canonical_latex": "\\frac{dN_1}{dt} = -\\lambda_1 N_1,\\quad \\frac{dN_i}{dt} = \\lambda_{i-1} N_{i-1} - \\lambda_i N_i\\;(i=2,\\dots,n),\\quad N_1(0)=N_{1,0},\\; N_i(0)=0\\;(i\\ge 2)",
+      "aliases_latex": [
+        "\\dot{N}_i = \\lambda_{i-1}N_{i-1} - \\lambda_i N_i"
+      ],
+      "keywords": [
+        "逐次崩壊",
+        "崩壊系列",
+        "連立常微分方程式",
+        "親核種",
+        "娘核種"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "physics"
+      ]
+    },
+    {
+      "id": "eng.nuc1.n05_two_nuclide_bateman",
+      "short_code": "NUC05",
+      "kind": "theorem_formula",
+      "title": "2核種逐次崩壊のベイトマン方程式",
+      "summary": "初期に親核種のみが存在する2核種逐次崩壊（1→2）をラプラス変換により解いて得られる、娘核種の原子核数N_2(t)および放射能A_2(t)の厳密解。",
+      "canonical_latex": "N_2(t) = N_{1,0}\\frac{\\lambda_1}{\\lambda_2 - \\lambda_1}\\left(e^{-\\lambda_1 t} - e^{-\\lambda_2 t}\\right),\\quad A_2(t) = A_{1,0}\\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\left(e^{-\\lambda_1 t} - e^{-\\lambda_2 t}\\right)\\quad (\\lambda_1 \\neq \\lambda_2)",
+      "aliases_latex": [
+        "N_2(t) = \\frac{\\lambda_1 N_{1,0}}{\\lambda_2 - \\lambda_1}(e^{-\\lambda_1 t} - e^{-\\lambda_2 t})"
+      ],
+      "keywords": [
+        "ベイトマン方程式",
+        "2核種逐次崩壊",
+        "ラプラス変換",
+        "娘核種"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "physics"
+      ]
+    },
+    {
+      "id": "eng.nuc1.n06_general_bateman_equation",
+      "short_code": "NUC06",
+      "kind": "theorem_formula",
+      "title": "多核種逐次崩壊の一般ベイトマン方程式",
+      "summary": "すべての崩壊定数が相異なるn核種逐次崩壊系列において、第n核種の原子核数N_n(t)を指数関数の線形結合として与える一般解。",
+      "canonical_latex": "N_n(t) = N_{1,0}\\left(\\prod_{j=1}^{n-1}\\lambda_j\\right)\\sum_{i=1}^{n}\\frac{e^{-\\lambda_i t}}{\\prod_{j=1,\\,j\\neq i}^{n}(\\lambda_j - \\lambda_i)}\\quad (\\lambda_i \\neq \\lambda_j\\text{ for }i\\neq j)",
+      "aliases_latex": [
+        "N_n(t) = N_{1,0}\\sum_{i=1}^{n} C_i e^{-\\lambda_i t}"
+      ],
+      "keywords": [
+        "一般ベイトマン方程式",
+        "多核種逐次崩壊",
+        "部分分数分解",
+        "ヘビサイド展開"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "physics"
+      ]
+    },
+    {
+      "id": "eng.nuc1.n07_radioactive_equilibrium_conditions",
+      "short_code": "NUC07",
+      "kind": "theorem_formula",
+      "title": "放射平衡条件（過渡平衡と永続平衡）",
+      "summary": "親核種が娘核種より長寿命（λ_1 < λ_2）のとき十分長い時間後に成立する過渡平衡と、λ_1 ≪ λ_2 の極限で両者の放射能が等しくなる永続平衡。",
+      "canonical_latex": "\\frac{A_2(t)}{A_1(t)} \\approx \\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\;\\left(\\lambda_1 < \\lambda_2,\\; t \\gg \\frac{1}{\\lambda_2 - \\lambda_1},\\;\\text{transient}\\right);\\qquad A_2(t) \\approx A_1(t)\\;\\left(\\lambda_1 \\ll \\lambda_2,\\;\\text{secular}\\right)",
+      "aliases_latex": [
+        "\\lambda_1 N_1(t) \\approx \\lambda_2 N_2(t)"
+      ],
+      "keywords": [
+        "放射平衡",
+        "過渡平衡",
+        "永続平衡"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "physics"
+      ]
+    },
+    {
+      "id": "eng.nuc1.n08_no_equilibrium_condition",
+      "short_code": "NUC08",
+      "kind": "theorem_formula",
+      "title": "非平衡条件（娘核種が長寿命の場合）と最大放射能時刻",
+      "summary": "娘核種の放射能が最大となる時刻t_{max}、および親核種が娘核種より短寿命（λ_1 > λ_2）の場合に放射平衡が成立せず娘核種自身の崩壊定数で減衰する挙動。",
+      "canonical_latex": "t_{\\max} = \\frac{\\ln(\\lambda_2 / \\lambda_1)}{\\lambda_2 - \\lambda_1},\\qquad A_2(t) \\approx A_{1,0}\\frac{\\lambda_2}{\\lambda_1 - \\lambda_2}e^{-\\lambda_2 t} \\gg A_1(t)\\quad \\left(\\lambda_1 > \\lambda_2,\\; t \\gg \\frac{1}{\\lambda_1}\\right)",
+      "aliases_latex": [
+        "t_{\\text{peak}} = \\frac{\\ln(\\lambda_2/\\lambda_1)}{\\lambda_2 - \\lambda_1}"
+      ],
+      "keywords": [
+        "非平衡",
+        "最大放射能時刻",
+        "過渡応答"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "physics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv.nuc1.n02_exponential_decay",
+      "target_node_id": "eng.nuc1.n02_exponential_decay_law",
+      "route_kind": "deductive",
+      "title": "積分因子法による指数崩壊則の導出",
+      "premise_node_ids": [
+        "eng.nuc1.n01_decay_constant_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.calc.m26_zero_derivative_constant_lemma",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "崩壊定数λは時間に依存しない正の定数である",
+        "原子核数N(t)は連続実数値関数として近似できるほど十分大きい"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dN(t)}{dt} = -\\lambda N(t),\\quad N(0) = N_0,\\quad A(t) = \\lambda N(t)",
+          "to_latex": "N(t) = N_0 e^{-\\lambda t},\\quad A(t) = A_0 e^{-\\lambda t}\\quad (A_0 = \\lambda N_0)",
+          "operation_label": "1階線形常微分方程式の積分と初期条件適用",
+          "explanation": "積分因子e^{λt}を乗じて微分方程式を解き、初期条件N(0)=N_0および放射能の定義A(t)=λN(t)から指数崩壊則を得る。",
+          "used_node_ids": [
+            "eng.nuc1.n01_decay_constant_boundary",
+            "math.calc.m15_product_rule",
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_integrating_factor",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dN(t)}{dt} = -\\lambda N(t),\\quad N(0) = N_0",
+          "to_latex": "\\frac{d}{dt}\\big(N(t)e^{\\lambda t}\\big) = 0",
+          "operation_label": "積分因子の乗算と積の微分法則の逆適用",
+          "explanation": "方程式の両辺を移項して積分因子e^{λt}を乗じ、指数関数の導関数と積の微分法を用いて1つの導関数にまとめる。",
+          "used_node_ids": [
+            "eng.nuc1.n01_decay_constant_boundary",
+            "math.calc.m15_product_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_solve_initial_value",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\big(N(t)e^{\\lambda t}\\big) = 0",
+          "to_latex": "N(t) = N_0 e^{-\\lambda t}",
+          "operation_label": "導関数零の補題による積分と初期条件の代入",
+          "explanation": "導関数が恒等的に0であるためN(t)e^{λt}は定数Cとなり、t=0を代入してC=N_0を得る。",
+          "used_node_ids": [
+            "math.calc.m26_zero_derivative_constant_lemma"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_activity_formula",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "N(t) = N_0 e^{-\\lambda t}",
+          "to_latex": "N(t) = N_0 e^{-\\lambda t},\\quad A(t) = A_0 e^{-\\lambda t}\\quad (A_0 = \\lambda N_0)",
+          "operation_label": "放射能の定義式への代入",
+          "explanation": "A(t)=λN(t)および初期放射能A_0=λN_0を適用し、放射能も同一の時定数で指数減衰することを示す。",
+          "used_node_ids": [
+            "eng.nuc1.n01_decay_constant_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.nuc1.n03_half_life_mean_life",
+      "target_node_id": "eng.nuc1.n03_half_life_mean_life",
+      "route_kind": "deductive",
+      "title": "指数崩壊則からの半減期と平均寿命の導出",
+      "premise_node_ids": [
+        "eng.nuc1.n02_exponential_decay_law"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m10_integration_by_parts"
+      ],
+      "assumptions": [
+        "崩壊定数λ > 0である",
+        "広義積分はt→∞で収束する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "N(t) = N_0 e^{-\\lambda t}",
+          "to_latex": "T_{1/2} = \\frac{\\ln 2}{\\lambda},\\quad \\tau = \\frac{1}{\\lambda},\\quad T_{1/2} = \\tau \\ln 2",
+          "operation_label": "半減条件と期待値積分の評価",
+          "explanation": "N(T_{1/2})=N_0/2の条件から半減期を求め、崩壊確率密度λe^{-λt}による寿命の期待値積分から平均寿命τを導く。",
+          "used_node_ids": [
+            "eng.nuc1.n02_exponential_decay_law",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m10_integration_by_parts"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_half_life",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "N(t) = N_0 e^{-\\lambda t}",
+          "to_latex": "T_{1/2} = \\frac{\\ln 2}{\\lambda}",
+          "operation_label": "半減条件の代入と自然対数の適用",
+          "explanation": "N(T_{1/2})=N_0/2を代入してe^{-λT_{1/2}}=1/2とし、両辺の自然対数をとってT_{1/2}について解く。",
+          "used_node_ids": [
+            "eng.nuc1.n02_exponential_decay_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_mean_life",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{1/2} = \\frac{\\ln 2}{\\lambda}",
+          "to_latex": "T_{1/2} = \\frac{\\ln 2}{\\lambda},\\quad \\tau = \\int_{0}^{\\infty} t\\lambda e^{-\\lambda t}\\,dt = \\frac{1}{\\lambda}",
+          "operation_label": "部分積分による寿命期待値の計算",
+          "explanation": "時間区間[t, t+dt]に崩壊する割合(λN(t)dt)/N_0 = λe^{-λt}dtを用いて平均寿命τ=∫_0^∞ tλe^{-λt}dtを定義し、部分積分と基本定理で1/λを得る。",
+          "used_node_ids": [
+            "eng.nuc1.n02_exponential_decay_law",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m10_integration_by_parts"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_relation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{1/2} = \\frac{\\ln 2}{\\lambda},\\quad \\tau = \\int_{0}^{\\infty} t\\lambda e^{-\\lambda t}\\,dt = \\frac{1}{\\lambda}",
+          "to_latex": "T_{1/2} = \\frac{\\ln 2}{\\lambda},\\quad \\tau = \\frac{1}{\\lambda},\\quad T_{1/2} = \\tau \\ln 2",
+          "operation_label": "λの消去による関係式の整理",
+          "explanation": "1/λ=τをT_{1/2}の式に代入し、半減期と平均寿命の比例関係を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.nuc1.n04_serial_decay_ode",
+      "target_node_id": "eng.nuc1.n04_serial_decay_ode_system",
+      "route_kind": "reformulation",
+      "title": "単一崩壊則の拡張による逐次崩壊連立微分方程式の定式化",
+      "premise_node_ids": [
+        "eng.nuc1.n01_decay_constant_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "各核種iは分岐のない直鎖1→2→…→nの崩壊系列を形成する",
+        "外部からの核種の供給や取り出しは存在しない"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dN_i}{dt}_{\\text{decay}} = -\\lambda_i N_i",
+          "to_latex": "\\frac{dN_1}{dt} = -\\lambda_1 N_1,\\quad \\frac{dN_i}{dt} = \\lambda_{i-1} N_{i-1} - \\lambda_i N_i\\;(i=2,\\dots,n),\\quad N_1(0)=N_{1,0},\\; N_i(0)=0\\;(i\\ge 2)",
+          "operation_label": "物質収支（生成項と崩壊項の結合）の定義",
+          "explanation": "核種i-1の単位時間あたりの崩壊数λ_{i-1}N_{i-1}が核種iの生成率となることから、各核種の変化率を(生成率)-(崩壊率)として連立微分方程式系を定義する。",
+          "used_node_ids": [
+            "eng.nuc1.n01_decay_constant_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.nuc1.n05_two_nuclide_bateman",
+      "target_node_id": "eng.nuc1.n05_two_nuclide_bateman",
+      "route_kind": "deductive",
+      "title": "ラプラス変換による2核種ベイトマン方程式の導出",
+      "premise_node_ids": [
+        "eng.nuc1.n04_serial_decay_ode_system",
+        "eng.nuc1.n02_exponential_decay_law"
+      ],
+      "required_math_node_ids": [
+        "eng.nuc1.n01_decay_constant_boundary",
+        "med.pk.n01_pk_mass_balance_boundary"
+      ],
+      "assumptions": [
+        "初期時刻t=0で親核種のみが存在しN_2(0)=0である",
+        "親核種と娘核種の崩壊定数は相異なる（λ_1 ≠ λ_2）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dN_1}{dt} = -\\lambda_1 N_1,\\quad \\frac{dN_2}{dt} = \\lambda_1 N_1 - \\lambda_2 N_2,\\quad N_1(0)=N_{1,0},\\; N_2(0)=0",
+          "to_latex": "N_2(t) = N_{1,0}\\frac{\\lambda_1}{\\lambda_2 - \\lambda_1}\\left(e^{-\\lambda_1 t} - e^{-\\lambda_2 t}\\right),\\quad A_2(t) = A_{1,0}\\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\left(e^{-\\lambda_1 t} - e^{-\\lambda_2 t}\\right)",
+          "operation_label": "ラプラス変換・部分分数分解・逆変換による求解",
+          "explanation": "n=2の連立微分方程式にラプラス変換を適用し、部分分数分解と逆ラプラス変換を経て娘核種の数N_2(t)と放射能A_2(t)を導出する。",
+          "used_node_ids": [
+            "eng.nuc1.n02_exponential_decay_law",
+            "eng.nuc1.n04_serial_decay_ode_system",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_laplace_transform",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dN_1}{dt} = -\\lambda_1 N_1,\\quad \\frac{dN_2}{dt} = \\lambda_1 N_1 - \\lambda_2 N_2,\\quad N_1(0)=N_{1,0},\\; N_2(0)=0",
+          "to_latex": "(s+\\lambda_2)\\tilde{N}_2(s) = \\frac{\\lambda_1 N_{1,0}}{s+\\lambda_1}",
+          "operation_label": "微分方程式のラプラス変換と初期条件代入",
+          "explanation": "N_1(t)=N_{1,0}e^{-λ_1 t}のラプラス変換N_{1,0}/(s+λ_1)と微分のラプラス変換則を第2式に適用し、N_2(0)=0を用いる。",
+          "used_node_ids": [
+            "eng.nuc1.n02_exponential_decay_law",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_partial_fraction",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(s+\\lambda_2)\\tilde{N}_2(s) = \\frac{\\lambda_1 N_{1,0}}{s+\\lambda_1}",
+          "to_latex": "\\tilde{N}_2(s) = \\frac{\\lambda_1 N_{1,0}}{\\lambda_2 - \\lambda_1}\\left(\\frac{1}{s+\\lambda_1} - \\frac{1}{s+\\lambda_2}\\right)",
+          "operation_label": "s領域での代数解と部分分数分解",
+          "explanation": "両辺を(s+λ_2)で割り、λ_1 ≠ λ_2のもとで1/((s+λ_1)(s+λ_2))を部分分数に分解する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_inverse_laplace",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{N}_2(s) = \\frac{\\lambda_1 N_{1,0}}{\\lambda_2 - \\lambda_1}\\left(\\frac{1}{s+\\lambda_1} - \\frac{1}{s+\\lambda_2}\\right)",
+          "to_latex": "N_2(t) = N_{1,0}\\frac{\\lambda_1}{\\lambda_2 - \\lambda_1}\\left(e^{-\\lambda_1 t} - e^{-\\lambda_2 t}\\right),\\quad A_2(t) = A_{1,0}\\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\left(e^{-\\lambda_1 t} - e^{-\\lambda_2 t}\\right)",
+          "operation_label": "逆ラプラス変換と放射能への換算",
+          "explanation": "L{e^{-at}}=1/(s+a)の逆変換を各項に適用してN_2(t)を得て、さらにA_2=λ_2 N_2およびA_{1,0}=λ_1 N_{1,0}を代入してA_2(t)を得る。",
+          "used_node_ids": [
+            "eng.nuc1.n01_decay_constant_boundary",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.nuc1.n06_general_bateman",
+      "target_node_id": "eng.nuc1.n06_general_bateman_equation",
+      "route_kind": "deductive",
+      "title": "ラプラス変換とヘビサイド展開による一般ベイトマン方程式の導出",
+      "premise_node_ids": [
+        "eng.nuc1.n04_serial_decay_ode_system"
+      ],
+      "required_math_node_ids": [
+        "math.complex.lr04_residue_pole_formulas",
+        "med.pk.n01_pk_mass_balance_boundary"
+      ],
+      "assumptions": [
+        "初期時刻t=0で第1核種のみが存在する（N_i(0)=0 for i ≥ 2）",
+        "すべての崩壊定数λ_1, ..., λ_nは互いに相異なる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dN_1}{dt} = -\\lambda_1 N_1,\\quad \\frac{dN_i}{dt} = \\lambda_{i-1} N_{i-1} - \\lambda_i N_i\\;(i=2,\\dots,n),\\quad N_1(0)=N_{1,0},\\; N_i(0)=0\\;(i\\ge 2)",
+          "to_latex": "N_n(t) = N_{1,0}\\left(\\prod_{j=1}^{n-1}\\lambda_j\\right)\\sum_{i=1}^{n}\\frac{e^{-\\lambda_i t}}{\\prod_{j=1,\\,j\\neq i}^{n}(\\lambda_j - \\lambda_i)}",
+          "operation_label": "ラプラス領域での漸化式解法と単極部分分数分解",
+          "explanation": "n元連立微分方程式をラプラス変換して漸化式を解き、1位の極s=-λ_iにおける留数（ヘビサイド展開）を用いて部分分数分解し、逆変換することで一般ベイトマン方程式を得る。",
+          "used_node_ids": [
+            "eng.nuc1.n04_serial_decay_ode_system",
+            "math.complex.lr04_residue_pole_formulas",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_laplace_recurrence",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dN_1}{dt} = -\\lambda_1 N_1,\\quad \\frac{dN_i}{dt} = \\lambda_{i-1} N_{i-1} - \\lambda_i N_i\\;(i=2,\\dots,n),\\quad N_1(0)=N_{1,0},\\; N_i(0)=0\\;(i\\ge 2)",
+          "to_latex": "\\tilde{N}_n(s) = N_{1,0}\\frac{\\prod_{j=1}^{n-1}\\lambda_j}{\\prod_{j=1}^{n}(s+\\lambda_j)}",
+          "operation_label": "ラプラス変換と漸化式の逐次代入",
+          "explanation": "各式のラプラス変換より(s+λ_i)\\tilde{N}_i(s) = λ_{i-1}\\tilde{N}_{i-1}(s)が成り立つため、i=1からnまで逐次代入して\\tilde{N}_n(s)を有理関数として表す。",
+          "used_node_ids": [
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_heaviside_expansion",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{N}_n(s) = N_{1,0}\\frac{\\prod_{j=1}^{n-1}\\lambda_j}{\\prod_{j=1}^{n}(s+\\lambda_j)}",
+          "to_latex": "\\tilde{N}_n(s) = N_{1,0}\\left(\\prod_{j=1}^{n-1}\\lambda_j\\right)\\sum_{i=1}^{n}\\frac{1}{\\prod_{j=1,\\,j\\neq i}^{n}(\\lambda_j - \\lambda_i)}\\frac{1}{s+\\lambda_i}",
+          "operation_label": "1位の極の留数計算による部分分数分解",
+          "explanation": "λ_iが相異なることからs=-λ_iはすべて1位の極であり、各極での留数評価(s+λ_i)\\tilde{N}_n(s)|_{s=-λ_i}によって部分分数係数を決定する。",
+          "used_node_ids": [
+            "math.complex.lr04_residue_pole_formulas"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_termwise_inverse",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{N}_n(s) = N_{1,0}\\left(\\prod_{j=1}^{n-1}\\lambda_j\\right)\\sum_{i=1}^{n}\\frac{1}{\\prod_{j=1,\\,j\\neq i}^{n}(\\lambda_j - \\lambda_i)}\\frac{1}{s+\\lambda_i}",
+          "to_latex": "N_n(t) = N_{1,0}\\left(\\prod_{j=1}^{n-1}\\lambda_j\\right)\\sum_{i=1}^{n}\\frac{e^{-\\lambda_i t}}{\\prod_{j=1,\\,j\\neq i}^{n}(\\lambda_j - \\lambda_i)}",
+          "operation_label": "項別逆ラプラス変換",
+          "explanation": "各1次分数1/(s+λ_i)を逆ラプラス変換してe^{-λ_i t}に戻し、一般ベイトマン方程式を得る。",
+          "used_node_ids": [
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.nuc1.n07_radioactive_equilibrium",
+      "target_node_id": "eng.nuc1.n07_radioactive_equilibrium_conditions",
+      "route_kind": "deductive",
+      "title": "2核種ベイトマン方程式からの過渡平衡・永続平衡の導出",
+      "premise_node_ids": [
+        "eng.nuc1.n05_two_nuclide_bateman",
+        "eng.nuc1.n02_exponential_decay_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "親核種は娘核種より長寿命である（λ_1 < λ_2）",
+        "経過時間tは緩和時間1/(λ_2 - λ_1)に比べて十分大きい"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A_2(t) = A_{1,0}\\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\left(e^{-\\lambda_1 t} - e^{-\\lambda_2 t}\\right)",
+          "to_latex": "\\frac{A_2(t)}{A_1(t)} \\approx \\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\;(\\text{transient});\\qquad A_2(t) \\approx A_1(t)\\;(\\lambda_1 \\ll \\lambda_2,\\;\\text{secular})",
+          "operation_label": "放射能比の長時間漸近極限の評価",
+          "explanation": "A_1(t)=A_{1,0}e^{-λ_1 t}で割った放射能比A_2(t)/A_1(t)において、λ_1<λ_2のもとで長時間極限をとり過渡平衡と永続平衡を導く。",
+          "used_node_ids": [
+            "eng.nuc1.n02_exponential_decay_law",
+            "eng.nuc1.n05_two_nuclide_bateman"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_activity_ratio",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A_2(t) = A_{1,0}\\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\left(e^{-\\lambda_1 t} - e^{-\\lambda_2 t}\\right)",
+          "to_latex": "\\frac{A_2(t)}{A_1(t)} = \\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\left(1 - e^{-(\\lambda_2 - \\lambda_1)t}\\right)",
+          "operation_label": "親核種放射能による除算と指数項の整理",
+          "explanation": "A_1(t)=A_{1,0}e^{-λ_1 t}を用いて両辺を割り、指数法則によりe^{-(λ_2-λ_1)t}を括り出す。",
+          "used_node_ids": [
+            "eng.nuc1.n02_exponential_decay_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_transient_equilibrium",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{A_2(t)}{A_1(t)} = \\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\left(1 - e^{-(\\lambda_2 - \\lambda_1)t}\\right)",
+          "to_latex": "\\frac{A_2(t)}{A_1(t)} \\approx \\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\quad \\left(\\lambda_1 < \\lambda_2,\\; t \\gg \\frac{1}{\\lambda_2 - \\lambda_1}\\right)",
+          "operation_label": "過渡項の減衰による過渡平衡の導出",
+          "explanation": "λ_2 - λ_1 > 0かつt ≫ 1/(λ_2 - λ_1)のときe^{-(λ_2 - λ_1)t} → 0となり、放射能比が一定値λ_2/(λ_2 - λ_1)に収束する過渡平衡を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_secular_equilibrium",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{A_2(t)}{A_1(t)} \\approx \\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\quad \\left(\\lambda_1 < \\lambda_2,\\; t \\gg \\frac{1}{\\lambda_2 - \\lambda_1}\\right)",
+          "to_latex": "\\frac{A_2(t)}{A_1(t)} \\approx \\frac{\\lambda_2}{\\lambda_2 - \\lambda_1}\\;(\\text{transient});\\qquad A_2(t) \\approx A_1(t)\\;(\\lambda_1 \\ll \\lambda_2,\\;\\text{secular})",
+          "operation_label": "極長寿命親核種極限による永続平衡の導出",
+          "explanation": "さらにλ_1 ≪ λ_2（T_{1/2,1} ≫ T_{1/2,2}）の極限をとるとλ_2/(λ_2 - λ_1) ≈ 1となり、A_2(t) ≈ A_1(t)（永続平衡）が成り立つ。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.nuc1.n08_no_equilibrium",
+      "target_node_id": "eng.nuc1.n08_no_equilibrium_condition",
+      "route_kind": "deductive",
+      "title": "娘核種の最大放射能時刻と非平衡漸近挙動の導出",
+      "premise_node_ids": [
+        "eng.nuc1.n05_two_nuclide_bateman"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "λ_1 ≠ λ_2であり、t=0でN_2(0)=0である",
+        "非平衡極限では親核種が娘核種より短寿命（λ_1 > λ_2）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "N_2(t) = N_{1,0}\\frac{\\lambda_1}{\\lambda_2 - \\lambda_1}\\left(e^{-\\lambda_1 t} - e^{-\\lambda_2 t}\\right)",
+          "to_latex": "t_{\\max} = \\frac{\\ln(\\lambda_2 / \\lambda_1)}{\\lambda_2 - \\lambda_1},\\qquad A_2(t) \\approx A_{1,0}\\frac{\\lambda_2}{\\lambda_1 - \\lambda_2}e^{-\\lambda_2 t} \\gg A_1(t)\\quad \\left(\\lambda_1 > \\lambda_2,\\; t \\gg \\frac{1}{\\lambda_1}\\right)",
+          "operation_label": "停留点条件による最大時刻とλ_1>λ_2極限の評価",
+          "explanation": "N_2(t)の時間微分を0とおく停留点条件から最大放射能時刻t_{max}を求め、λ_1>λ_2での長時間漸近挙動を評価する。",
+          "used_node_ids": [
+            "eng.nuc1.n05_two_nuclide_bateman",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_derivative_zero",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "N_2(t) = N_{1,0}\\frac{\\lambda_1}{\\lambda_2 - \\lambda_1}\\left(e^{-\\lambda_1 t} - e^{-\\lambda_2 t}\\right)",
+          "to_latex": "\\frac{dN_2}{dt} = N_{1,0}\\frac{\\lambda_1}{\\lambda_2 - \\lambda_1}\\left(-\\lambda_1 e^{-\\lambda_1 t} + \\lambda_2 e^{-\\lambda_2 t}\\right) = 0",
+          "operation_label": "時間微分と極値の1階必要条件の適用",
+          "explanation": "N_2(t)（およびA_2(t)=λ_2 N_2(t)）が極大となる時刻を求めるため、時間微分を計算して0とおく。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_solve_tmax",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dN_2}{dt} = N_{1,0}\\frac{\\lambda_1}{\\lambda_2 - \\lambda_1}\\left(-\\lambda_1 e^{-\\lambda_1 t} + \\lambda_2 e^{-\\lambda_2 t}\\right) = 0",
+          "to_latex": "t_{\\max} = \\frac{\\ln(\\lambda_2 / \\lambda_1)}{\\lambda_2 - \\lambda_1}",
+          "operation_label": "指数方程式の対数による求解",
+          "explanation": "λ_1 e^{-λ_1 t} = λ_2 e^{-λ_2 t}よりe^{(λ_2-λ_1)t} = λ_2/λ_1とし、両辺の対数をとってt_{max}を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_asymptotic_no_eq",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "t_{\\max} = \\frac{\\ln(\\lambda_2 / \\lambda_1)}{\\lambda_2 - \\lambda_1}",
+          "to_latex": "t_{\\max} = \\frac{\\ln(\\lambda_2 / \\lambda_1)}{\\lambda_2 - \\lambda_1},\\qquad A_2(t) \\approx A_{1,0}\\frac{\\lambda_2}{\\lambda_1 - \\lambda_2}e^{-\\lambda_2 t} \\gg A_1(t)\\quad \\left(\\lambda_1 > \\lambda_2,\\; t \\gg \\frac{1}{\\lambda_1}\\right)",
+          "operation_label": "親核種短寿命極限での漸近評価",
+          "explanation": "λ_1 > λ_2かつt ≫ 1/λ_1ではe^{-λ_1 t} ≪ e^{-λ_2 t}となるため、親核種はほぼ消滅し娘核種は自身の崩壊定数λ_2で独立に減衰する非平衡状態となる。",
+          "used_node_ids": [
+            "eng.nuc1.n05_two_nuclide_bateman"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,614 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.nuclear.neutron_diffusion",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "nuclear_engineering",
+    "title": "原子炉物理：フィックの法則・1群中性子拡散方程式・4因子公式と臨界バックリング",
+    "language": "ja",
+    "description": "中性子束の連続の式とフィックの法則から1群中性子拡散方程式、実効増倍率keffと4因子公式、幾何学的バックリングと臨界条件を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.nuc2.n01_neutron_flux_reaction_boundary",
+      "short_code": "NUC2_01",
+      "kind": "math_boundary",
+      "title": "中性子束・巨視的断面積・核反応率の基礎境界",
+      "summary": "単色・1群近似における中性子数密度、スカラー中性子束、巨視的断面積と反応率、および中性子流密度ベクトルの定義を与える物理的基礎境界。",
+      "canonical_latex": "\\phi(\\mathbf{r},t) = n(\\mathbf{r},t)v,\\quad R_x = \\Sigma_x \\phi,\\quad \\Sigma_x = N\\sigma_x,\\quad \\mathbf{J}(\\mathbf{r},t) = \\int_{4\\pi} \\mathbf{\\Omega} v n(\\mathbf{r},\\mathbf{\\Omega},t)\\,d\\Omega",
+      "aliases_latex": [
+        "R_a = \\Sigma_a \\phi,\\quad R_f = \\Sigma_f \\phi"
+      ],
+      "keywords": [
+        "中性子束",
+        "巨視的断面積",
+        "核反応率",
+        "中性子流密度"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "neutron_transport"
+      ]
+    },
+    {
+      "id": "eng.nuc2.n02_neutron_continuity_fick",
+      "short_code": "NUC2_02",
+      "kind": "definition",
+      "title": "中性子の連続の式とフィックの法則",
+      "summary": "微小体積内の中性子数保存を表す連続の式と、中性子流密度がスカラー中性子束の勾配に比例して高密度側から低密度側へ流れるとするフィックの法則の定義。",
+      "canonical_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = S - \\Sigma_a \\phi - \\nabla\\cdot\\mathbf{J},\\qquad \\mathbf{J} = -D \\nabla \\phi\\quad \\left(D \\approx \\frac{1}{3\\Sigma_{\\mathrm{tr}}}\\right)",
+      "aliases_latex": [
+        "\\frac{\\partial n}{\\partial t} + \\nabla\\cdot\\mathbf{J} = S - \\Sigma_a \\phi"
+      ],
+      "keywords": [
+        "連続の式",
+        "フィックの法則",
+        "拡散係数",
+        "中性子収支"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "neutron_diffusion"
+      ]
+    },
+    {
+      "id": "eng.nuc2.n03_one_group_diffusion_eq",
+      "short_code": "NUC2_03",
+      "kind": "theorem_formula",
+      "title": "1群中性子拡散方程式",
+      "summary": "中性子の連続の式にフィックの法則を代入し、核分裂による中性子生成項と外部中性子源を組み込んで得られる均質媒質中の1群時間依存中性子拡散方程式。",
+      "canonical_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = D\\nabla^2 \\phi - \\Sigma_a \\phi + \\nu \\Sigma_f \\phi + S_{\\mathrm{ext}}",
+      "aliases_latex": [
+        "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} - D\\nabla^2 \\phi + \\Sigma_a \\phi = \\nu \\Sigma_f \\phi + S_{\\mathrm{ext}}"
+      ],
+      "keywords": [
+        "1群中性子拡散方程式",
+        "拡散近似",
+        "核分裂生成項"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "neutron_diffusion"
+      ]
+    },
+    {
+      "id": "eng.nuc2.n04_diffusion_length_helmholtz",
+      "short_code": "NUC2_04",
+      "kind": "theorem_formula",
+      "title": "拡散距離と定常臨界系のヘルムホルツ方程式",
+      "summary": "拡散係数と巨視的吸収断面積から定義される中性子拡散距離と、外部源のない定常炉心における1群拡散方程式のヘルムホルツ方程式形式および材料バックリング。",
+      "canonical_latex": "\\nabla^2 \\phi + B_m^2 \\phi = 0\\quad \\left(B_m^2 := \\frac{\\nu\\Sigma_f - \\Sigma_a}{D} = \\frac{k_\\infty - 1}{L^2},\\; L^2 := \\frac{D}{\\Sigma_a}\\right)",
+      "aliases_latex": [
+        "L = \\sqrt{\\frac{D}{\\Sigma_a}},\\quad \\nabla^2 \\phi + \\frac{k_\\infty - 1}{L^2}\\phi = 0"
+      ],
+      "keywords": [
+        "拡散距離",
+        "拡散面積",
+        "材料バックリング",
+        "ヘルムホルツ方程式"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "reactor_physics"
+      ]
+    },
+    {
+      "id": "eng.nuc2.n05_four_factor_formula",
+      "short_code": "NUC2_05",
+      "kind": "definition",
+      "title": "無限増倍率と4因子公式",
+      "summary": "無限大の体系において1世代の中性子が吸収されて次の世代に生じる中性子数の比である無限増倍率を、4つの物理因子（η, f, p, ε）の積として表す定義式。",
+      "canonical_latex": "k_\\infty = \\eta f p \\varepsilon,\\qquad \\eta = \\nu \\frac{\\Sigma_{f,\\mathrm{fuel}}}{\\Sigma_{a,\\mathrm{fuel}}},\\quad f = \\frac{\\Sigma_{a,\\mathrm{fuel}}}{\\Sigma_{a,\\mathrm{total}}}",
+      "aliases_latex": [
+        "k_\\infty = \\frac{\\nu\\Sigma_f}{\\Sigma_a}\\text{ (1群均質系)}"
+      ],
+      "keywords": [
+        "無限増倍率",
+        "4因子公式",
+        "熱中性子利用率",
+        "共鳴を逃れる確率"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "reactor_physics"
+      ]
+    },
+    {
+      "id": "eng.nuc2.n06_keff_six_factor_formula",
+      "short_code": "NUC2_06",
+      "kind": "theorem_formula",
+      "title": "実効増倍率と非漏洩確率（6因子公式）",
+      "summary": "有限体系における中性子の炉心外漏洩を考慮した実効増倍率を、無限増倍率と非漏洩確率の積および拡散距離・バックリングを用いて表す関係式。",
+      "canonical_latex": "k_{\\mathrm{eff}} = \\frac{k_\\infty}{1 + L^2 B_g^2} = k_\\infty P_{NL} = \\eta f p \\varepsilon P_{FNL} P_{TNL}",
+      "aliases_latex": [
+        "P_{NL} = \\frac{1}{1 + L^2 B_g^2}"
+      ],
+      "keywords": [
+        "実効増倍率",
+        "6因子公式",
+        "非漏洩確率"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "reactor_physics"
+      ]
+    },
+    {
+      "id": "eng.nuc2.n07_geometric_buckling_slab",
+      "short_code": "NUC2_07",
+      "kind": "theorem_formula",
+      "title": "幾何学的バックリングと1次元平板炉心の基本モード",
+      "summary": "外挿境界条件のもとでヘルムホルツ方程式を解くことにより定まる炉心形状固有の最小固有値（幾何学的バックリング）と、平板炉心における余弦型の中性子束分布。",
+      "canonical_latex": "\\phi(x) = \\phi_0 \\cos\\!\\left(\\frac{\\pi x}{\\tilde{a}}\\right),\\quad B_g^2 = \\left(\\frac{\\pi}{\\tilde{a}}\\right)^2",
+      "aliases_latex": [
+        "\\nabla^2 \\phi + B_g^2 \\phi = 0\\;(\\phi|_{\\partial \\tilde{V}} = 0)"
+      ],
+      "keywords": [
+        "幾何学的バックリング",
+        "外挿境界",
+        "平板炉心",
+        "基本モード"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "reactor_physics"
+      ]
+    },
+    {
+      "id": "eng.nuc2.n08_criticality_condition",
+      "short_code": "NUC2_08",
+      "kind": "theorem_formula",
+      "title": "原子炉の臨界条件（実効増倍率とバックリングの一致）",
+      "summary": "外部中性子源なしで定常な核分裂連鎖反応が持続する臨界状態において、実効増倍率が1となり材料バックリングと幾何学的バックリングが一致する条件。",
+      "canonical_latex": "k_{\\mathrm{eff}} = 1 \\iff B_g^2 = \\frac{k_\\infty - 1}{L^2} = B_m^2",
+      "aliases_latex": [
+        "\\frac{k_\\infty}{1 + L^2 B_g^2} = 1"
+      ],
+      "keywords": [
+        "臨界条件",
+        "臨界バックリング",
+        "臨界寸法"
+      ],
+      "domain_tags": [
+        "nuclear_engineering",
+        "reactor_physics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.nuc2.d01_continuity_fick_from_boundary",
+      "target_node_id": "eng.nuc2.n02_neutron_continuity_fick",
+      "route_kind": "reformulation",
+      "title": "中性子数収支と物質移動境界からの連続の式・フィックの法則の定式化",
+      "premise_node_ids": [
+        "eng.nuc2.n01_neutron_flux_reaction_boundary",
+        "eng.kin.n01_kinetics_diffusion_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "単色（1群）中性子を仮定する",
+        "中性子角度分布の異方性が弱く、P1近似が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_continuity_balance",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial C}{\\partial t} + \\nabla\\cdot\\mathbf{J} = R_v",
+          "to_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = S - \\Sigma_a \\phi - \\nabla\\cdot\\mathbf{J}",
+          "operation_label": "中性子密度と反応率への置換",
+          "explanation": "物質収支式の濃度 C を中性子数密度 n = φ/v に、体積反応率 R_v を生成率 S と吸収率 Σ_a φ の差に置き換えることで中性子の連続の式を得る。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "eng.nuc2.n01_neutron_flux_reaction_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_fick_definition",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{J}(\\mathbf{r},t) = \\int_{4\\pi} \\mathbf{\\Omega} v n(\\mathbf{r},\\mathbf{\\Omega},t)\\,d\\Omega",
+          "to_latex": "\\mathbf{J} = -D \\nabla \\phi\\quad \\left(D \\approx \\frac{1}{3\\Sigma_{\\mathrm{tr}}}\\right)",
+          "operation_label": "弱異方性近似によるフィックの法則の定義",
+          "explanation": "角度中性子束の1次球面調和展開（P1近似）において角度流の時間変化を無視することで、中性子流密度が中性子束勾配に比例するフィックの法則を定義する。",
+          "used_node_ids": [
+            "eng.nuc2.n01_neutron_flux_reaction_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.nuc2.d02_one_group_diffusion",
+      "target_node_id": "eng.nuc2.n03_one_group_diffusion_eq",
+      "route_kind": "deductive",
+      "title": "連続の式とフィックの法則からの1群中性子拡散方程式の導出",
+      "premise_node_ids": [
+        "eng.nuc2.n02_neutron_continuity_fick",
+        "eng.nuc2.n01_neutron_flux_reaction_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "媒質は均質であり、拡散係数 D は空間的に一定である",
+        "核分裂による中性子生成率は νΣ_f φ で与えられる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = S - \\Sigma_a \\phi - \\nabla\\cdot\\mathbf{J}",
+          "to_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = D\\nabla^2 \\phi - \\Sigma_a \\phi + \\nu \\Sigma_f \\phi + S_{\\mathrm{ext}}",
+          "operation_label": "フィックの法則と核分裂源の代入",
+          "explanation": "連続の式にフィックの法則と核分裂・外部中性子源の生成項を代入して1群中性子拡散方程式を得る。",
+          "used_node_ids": [
+            "eng.nuc2.n01_neutron_flux_reaction_boundary",
+            "eng.nuc2.n02_neutron_continuity_fick"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_fick_sub",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = S - \\Sigma_a \\phi - \\nabla\\cdot\\mathbf{J}",
+          "to_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = S - \\Sigma_a \\phi - \\nabla\\cdot(-D\\nabla\\phi)",
+          "operation_label": "フィックの法則の代入",
+          "explanation": "漏洩項の発散内にある中性子流密度ベクトル J に J = -D∇φ を代入する。",
+          "used_node_ids": [
+            "eng.nuc2.n02_neutron_continuity_fick"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_laplacian",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = S - \\Sigma_a \\phi - \\nabla\\cdot(-D\\nabla\\phi)",
+          "to_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = D\\nabla^2 \\phi - \\Sigma_a \\phi + S",
+          "operation_label": "定数拡散係数の括り出しとラプラシアン化",
+          "explanation": "媒質が一様で拡散係数 D が空間的に定数であるため、微分演算子の外に出して ∇・(∇φ) = ∇^2 φ と整理する。",
+          "used_node_ids": [
+            "eng.nuc2.n02_neutron_continuity_fick"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_fission_source",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = D\\nabla^2 \\phi - \\Sigma_a \\phi + S",
+          "to_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = D\\nabla^2 \\phi - \\Sigma_a \\phi + \\nu \\Sigma_f \\phi + S_{\\mathrm{ext}}",
+          "operation_label": "核分裂生成項と外部中性子源の明示",
+          "explanation": "全生成率 S を核分裂による生成率 νΣ_f φ と外部中性子源 S_ext の和として表す。",
+          "used_node_ids": [
+            "eng.nuc2.n01_neutron_flux_reaction_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.nuc2.d03_helmholtz_and_diffusion_length",
+      "target_node_id": "eng.nuc2.n04_diffusion_length_helmholtz",
+      "route_kind": "deductive",
+      "title": "定常無源条件による1群拡散方程式のヘルムホルツ形式への帰着",
+      "premise_node_ids": [
+        "eng.nuc2.n03_one_group_diffusion_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "外部中性子源は存在しない（S_ext = 0）",
+        "時間に対して定常状態（∂φ/∂t = 0）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = D\\nabla^2 \\phi - \\Sigma_a \\phi + \\nu \\Sigma_f \\phi + S_{\\mathrm{ext}}",
+          "to_latex": "\\nabla^2 \\phi + B_m^2 \\phi = 0\\quad \\left(B_m^2 := \\frac{\\nu\\Sigma_f - \\Sigma_a}{D} = \\frac{k_\\infty - 1}{L^2},\\; L^2 := \\frac{D}{\\Sigma_a}\\right)",
+          "operation_label": "定常無源化と拡散距離・材料バックリングの導入",
+          "explanation": "定常無源条件を課して両辺を D で割り、拡散面積 L^2 と材料バックリング B_m^2 を導入してヘルムホルツ方程式を得る。",
+          "used_node_ids": [
+            "eng.nuc2.n03_one_group_diffusion_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_steady_no_ext",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{v}\\frac{\\partial \\phi}{\\partial t} = D\\nabla^2 \\phi - \\Sigma_a \\phi + \\nu \\Sigma_f \\phi + S_{\\mathrm{ext}}",
+          "to_latex": "0 = D\\nabla^2 \\phi + (\\nu\\Sigma_f - \\Sigma_a)\\phi",
+          "operation_label": "定常条件と無源条件の適用",
+          "explanation": "∂φ/∂t = 0 および S_ext = 0 を代入し、反応項を φ でくくる。",
+          "used_node_ids": [
+            "eng.nuc2.n03_one_group_diffusion_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_divide_d",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 = D\\nabla^2 \\phi + (\\nu\\Sigma_f - \\Sigma_a)\\phi",
+          "to_latex": "\\nabla^2 \\phi + \\frac{\\nu\\Sigma_f - \\Sigma_a}{D}\\phi = 0",
+          "operation_label": "拡散係数による除算",
+          "explanation": "両辺を D (> 0) で割り、ラプラシアンの係数を1に正規化する。",
+          "used_node_ids": [
+            "eng.nuc2.n03_one_group_diffusion_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_define_l_bm",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla^2 \\phi + \\frac{\\nu\\Sigma_f - \\Sigma_a}{D}\\phi = 0",
+          "to_latex": "\\nabla^2 \\phi + B_m^2 \\phi = 0\\quad \\left(B_m^2 := \\frac{\\nu\\Sigma_f - \\Sigma_a}{D} = \\frac{k_\\infty - 1}{L^2},\\; L^2 := \\frac{D}{\\Sigma_a}\\right)",
+          "operation_label": "拡散距離と材料バックリングの定義",
+          "explanation": "L^2 := D/Σ_a および k_∞ = νΣ_f/Σ_a を用いて材料バックリング B_m^2 を定義し、ヘルムホルツ方程式の形にまとめる。",
+          "used_node_ids": [
+            "eng.nuc2.n03_one_group_diffusion_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.nuc2.d04_four_factor_definition",
+      "target_node_id": "eng.nuc2.n05_four_factor_formula",
+      "route_kind": "reformulation",
+      "title": "核反応率比に基づく無限増倍率と4因子公式の定式化",
+      "premise_node_ids": [
+        "eng.nuc2.n01_neutron_flux_reaction_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "無限大体系のため中性子の系外漏洩は存在しない"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_four_factors",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "R_a = \\Sigma_a \\phi,\\quad R_f = \\Sigma_f \\phi",
+          "to_latex": "k_\\infty = \\eta f p \\varepsilon,\\qquad \\eta = \\nu \\frac{\\Sigma_{f,\\mathrm{fuel}}}{\\Sigma_{a,\\mathrm{fuel}}},\\quad f = \\frac{\\Sigma_{a,\\mathrm{fuel}}}{\\Sigma_{a,\\mathrm{total}}}",
+          "operation_label": "反応率比の分解による4因子の定義",
+          "explanation": "熱中性子の全吸収のうち燃料への吸収割合 f、燃料吸収あたりの核分裂生成中性子数 η、高速核分裂因子 ε、減速中に共鳴吸収を逃れる確率 p の積として無限増倍率 k_∞ を定義する。",
+          "used_node_ids": [
+            "eng.nuc2.n01_neutron_flux_reaction_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.nuc2.d05_keff_from_balance",
+      "target_node_id": "eng.nuc2.n06_keff_six_factor_formula",
+      "route_kind": "deductive",
+      "title": "有限炉心の中性子収支からの実効増倍率と非漏洩確率の導出",
+      "premise_node_ids": [
+        "eng.nuc2.n03_one_group_diffusion_eq",
+        "eng.nuc2.n04_diffusion_length_helmholtz",
+        "eng.nuc2.n05_four_factor_formula"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "基本モードにおいて -∇^2 φ = B_g^2 φ が成り立つ",
+        "1群均質系では k_∞ = νΣ_f / Σ_a となる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "k_{\\mathrm{eff}} = \\frac{\\text{生成率}}{\\text{吸収率} + \\text{漏洩率}} = \\frac{\\nu\\Sigma_f \\phi}{\\Sigma_a \\phi - D\\nabla^2 \\phi}",
+          "to_latex": "k_{\\mathrm{eff}} = \\frac{k_\\infty}{1 + L^2 B_g^2} = k_\\infty P_{NL} = \\eta f p \\varepsilon P_{FNL} P_{TNL}",
+          "operation_label": "漏洩項のバックリング評価と非漏洩確率の導出",
+          "explanation": "生成率と吸収＋漏洩率の比から実効増倍率を評価し、非漏洩確率 P_NL = 1/(1+L^2 B_g^2) と4因子公式を組み合わせて6因子公式を得る。",
+          "used_node_ids": [
+            "eng.nuc2.n03_one_group_diffusion_eq",
+            "eng.nuc2.n04_diffusion_length_helmholtz",
+            "eng.nuc2.n05_four_factor_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_helmholtz_sub",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_{\\mathrm{eff}} = \\frac{\\text{生成率}}{\\text{吸収率} + \\text{漏洩率}} = \\frac{\\nu\\Sigma_f \\phi}{\\Sigma_a \\phi - D\\nabla^2 \\phi}",
+          "to_latex": "k_{\\mathrm{eff}} = \\frac{\\nu\\Sigma_f \\phi}{\\Sigma_a \\phi + D B_g^2 \\phi}",
+          "operation_label": "ラプラシアンへの幾何学的バックリングの代入",
+          "explanation": "基本モード関係式 ∇^2 φ = -B_g^2 φ を漏洩項 -D∇^2 φ に代入する。",
+          "used_node_ids": [
+            "eng.nuc2.n04_diffusion_length_helmholtz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_cancel_phi_divide",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_{\\mathrm{eff}} = \\frac{\\nu\\Sigma_f \\phi}{\\Sigma_a \\phi + D B_g^2 \\phi}",
+          "to_latex": "k_{\\mathrm{eff}} = \\frac{\\nu\\Sigma_f / \\Sigma_a}{1 + (D/\\Sigma_a) B_g^2}",
+          "operation_label": "中性子束の約分と吸収断面積による除算",
+          "explanation": "分母・分子の φ を約分し、さらに上下を Σ_a で割って無次元化する。",
+          "used_node_ids": [
+            "eng.nuc2.n03_one_group_diffusion_eq"
+          ],
+          "sympy_check_hint": "simplify((nu*Sigma_f*phi)/(Sigma_a*phi + D*B_g2*phi) - (nu*Sigma_f/Sigma_a)/(1 + (D/Sigma_a)*B_g2))"
+        },
+        {
+          "step_id": "s2_3_identify_kinf_pnl",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_{\\mathrm{eff}} = \\frac{\\nu\\Sigma_f / \\Sigma_a}{1 + (D/\\Sigma_a) B_g^2}",
+          "to_latex": "k_{\\mathrm{eff}} = \\frac{k_\\infty}{1 + L^2 B_g^2} = k_\\infty P_{NL} = \\eta f p \\varepsilon P_{FNL} P_{TNL}",
+          "operation_label": "無限増倍率・拡散面積・非漏洩確率の適用",
+          "explanation": "k_∞ = νΣ_f/Σ_a、L^2 = D/Σ_a、および非漏洩確率 P_NL = 1/(1+L^2 B_g^2)（高速・熱群の積 P_FNL P_TNL）を用いて表現する。",
+          "used_node_ids": [
+            "eng.nuc2.n04_diffusion_length_helmholtz",
+            "eng.nuc2.n05_four_factor_formula"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.nuc2.d06_slab_buckling_eigenvalue",
+      "target_node_id": "eng.nuc2.n07_geometric_buckling_slab",
+      "route_kind": "deductive",
+      "title": "1次元平板炉心におけるヘルムホルツ方程式の固有値解法",
+      "premise_node_ids": [
+        "eng.nuc2.n04_diffusion_length_helmholtz"
+      ],
+      "required_math_node_ids": [
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "y, z 方向に無限に広い厚さ a の平板炉心を考える",
+        "外挿境界 x = ±ã/2 において中性子束が零となる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d^2 \\phi}{dx^2} + B_g^2 \\phi = 0\\quad \\left(\\phi\\left(\\pm\\frac{\\tilde{a}}{2}\\right) = 0\\right)",
+          "to_latex": "\\phi(x) = \\phi_0 \\cos\\!\\left(\\frac{\\pi x}{\\tilde{a}}\\right),\\quad B_g^2 = \\left(\\frac{\\pi}{\\tilde{a}}\\right)^2",
+          "operation_label": "2階線形常微分方程式の境界値問題解法",
+          "explanation": "1次元ヘルムホルツ方程式の一般解に対称性と外挿境界条件を課し、非負の基本モード解と最小固有値 B_g^2 を求める。",
+          "used_node_ids": [
+            "eng.nuc2.n04_diffusion_length_helmholtz",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_general_sol",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 \\phi}{dx^2} + B_g^2 \\phi = 0\\quad \\left(\\phi\\left(\\pm\\frac{\\tilde{a}}{2}\\right) = 0\\right)",
+          "to_latex": "\\phi(x) = C_1 \\cos(B_g x) + C_2 \\sin(B_g x)",
+          "operation_label": "定数係数線形常微分方程式の一般解",
+          "explanation": "2階定数係数線形常微分方程式の公式より、一般解を三角関数の線形結合として書き下す。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_symmetry_bc",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\phi(x) = C_1 \\cos(B_g x) + C_2 \\sin(B_g x)",
+          "to_latex": "\\phi\\left(\\frac{\\tilde{a}}{2}\\right) = \\phi_0 \\cos\\!\\left(\\frac{B_g \\tilde{a}}{2}\\right) = 0",
+          "operation_label": "対称条件と外挿境界条件の適用",
+          "explanation": "炉心中心 x=0 に関する偶対称性から C_2 = 0（C_1 = φ_0）とし、外挿境界 x = ã/2 で零となる条件を課す。",
+          "used_node_ids": [
+            "eng.nuc2.n04_diffusion_length_helmholtz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_fundamental_mode",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\phi\\left(\\frac{\\tilde{a}}{2}\\right) = \\phi_0 \\cos\\!\\left(\\frac{B_g \\tilde{a}}{2}\\right) = 0",
+          "to_latex": "\\phi(x) = \\phi_0 \\cos\\!\\left(\\frac{\\pi x}{\\tilde{a}}\\right),\\quad B_g^2 = \\left(\\frac{\\pi}{\\tilde{a}}\\right)^2",
+          "operation_label": "基本固有値の選択",
+          "explanation": "炉心内で中性子束が常に非負（φ(x) > 0）となる最小の正の根 B_g ã/2 = π/2 を選び、基本モード解と幾何学的バックリング B_g^2 を確定する。",
+          "used_node_ids": [
+            "eng.nuc2.n04_diffusion_length_helmholtz"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.nuc2.d07_criticality_condition",
+      "target_node_id": "eng.nuc2.n08_criticality_condition",
+      "route_kind": "equivalence",
+      "title": "実効増倍率1の条件からの臨界バックリング一致条件の導出",
+      "premise_node_ids": [
+        "eng.nuc2.n06_keff_six_factor_formula",
+        "eng.nuc2.n07_geometric_buckling_slab",
+        "eng.nuc2.n04_diffusion_length_helmholtz"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "定常自立連鎖反応（k_eff = 1）が成立している"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "k_{\\mathrm{eff}} = \\frac{k_\\infty}{1 + L^2 B_g^2} = 1",
+          "to_latex": "k_{\\mathrm{eff}} = 1 \\iff B_g^2 = \\frac{k_\\infty - 1}{L^2} = B_m^2",
+          "operation_label": "臨界条件 k_eff = 1 のバックリング等式への変形",
+          "explanation": "実効増倍率の公式に k_eff = 1 を課して幾何学的バックリングについて解くことで、材料バックリングとの一致条件を得る。",
+          "used_node_ids": [
+            "eng.nuc2.n04_diffusion_length_helmholtz",
+            "eng.nuc2.n06_keff_six_factor_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_solve_bg2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_{\\mathrm{eff}} = \\frac{k_\\infty}{1 + L^2 B_g^2} = 1",
+          "to_latex": "1 + L^2 B_g^2 = k_\\infty",
+          "operation_label": "分母の払拭",
+          "explanation": "両辺に 1 + L^2 B_g^2 を掛けて線形化する。",
+          "used_node_ids": [
+            "eng.nuc2.n06_keff_six_factor_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_compare_bm2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "1 + L^2 B_g^2 = k_\\infty",
+          "to_latex": "k_{\\mathrm{eff}} = 1 \\iff B_g^2 = \\frac{k_\\infty - 1}{L^2} = B_m^2",
+          "operation_label": "材料バックリングとの同定",
+          "explanation": "B_g^2 について解き、右辺が材料バックリング B_m^2 の定義に一致することを確認する。",
+          "used_node_ids": [
+            "eng.nuc2.n04_diffusion_length_helmholtz",
+            "eng.nuc2.n07_geometric_buckling_slab"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
