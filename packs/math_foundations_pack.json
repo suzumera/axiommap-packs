@@ -302,7 +302,9 @@
       ],
       "domain_tags": [
         "math.vec"
-      ]
+      ],
+      "intuition_oneliner": "2つの矢印が「同じ方向にどれくらい揃っているか」を数値化する計算で、同じ成分どうしを掛けて足し合わせるだけで求まります。",
+      "diagram_svg": "<svg viewBox=\"0 0 600 260\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"80\" y1=\"210\" x2=\"420\" y2=\"210\" stroke=\"currentColor\" stroke-width=\"1.5\"/><line x1=\"80\" y1=\"210\" x2=\"80\" y2=\"40\" stroke=\"currentColor\" stroke-width=\"1.5\"/><line x1=\"80\" y1=\"210\" x2=\"350\" y2=\"160\" stroke=\"#3b82f6\" stroke-width=\"3\"/><line x1=\"80\" y1=\"210\" x2=\"260\" y2=\"70\" stroke=\"#f97316\" stroke-width=\"3\"/><line x1=\"260\" y1=\"70\" x2=\"285\" y2=\"172\" stroke=\"#10b981\" stroke-width=\"2\" stroke-dasharray=\"4,4\"/><text x=\"360\" y=\"165\" fill=\"#3b82f6\" font-size=\"15\">a = (a1, a2, a3)</text><text x=\"270\" y=\"70\" fill=\"#f97316\" font-size=\"15\">b = (b1, b2, b3)</text><text x=\"160\" y=\"235\" fill=\"#10b981\" font-size=\"14\">a・b = a1b1 + a2b2 + a3b3</text></svg>"
     },
     {
       "id": "math.vec.m29_cross_product_levi_civita_def",
@@ -363,7 +365,9 @@
       ],
       "domain_tags": [
         "calculus"
-      ]
+      ],
+      "intuition_oneliner": "波（サイン・コサイン）の「傾き」を調べると、元の波から90度だけ位相がズレた別の波になるという美しい性質です。",
+      "diagram_svg": "<svg viewBox=\"0 0 600 260\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"50\" y1=\"130\" x2=\"550\" y2=\"130\" stroke=\"currentColor\" stroke-width=\"1.5\"/><line x1=\"80\" y1=\"30\" x2=\"80\" y2=\"230\" stroke=\"currentColor\" stroke-width=\"1.5\"/><path d=\"M 80 130 C 130 50, 170 50, 220 130 C 270 210, 310 210, 360 130 C 410 50, 450 50, 500 130\" fill=\"none\" stroke=\"#3b82f6\" stroke-width=\"3\"/><path d=\"M 80 50 C 130 50, 170 210, 220 210 C 270 210, 310 50, 360 50 C 410 50, 450 210, 500 210\" fill=\"none\" stroke=\"#f97316\" stroke-width=\"2.5\" stroke-dasharray=\"5,4\"/><text x=\"130\" y=\"42\" fill=\"#3b82f6\" font-size=\"14\">sin θ</text><text x=\"240\" y=\"42\" fill=\"#f97316\" font-size=\"14\">傾き = cos θ</text><text x=\"530\" y=\"150\" fill=\"currentColor\" font-size=\"14\">θ</text></svg>"
     },
     {
       "id": "math.vec.m32_scalar_vector_product_rule",
@@ -646,7 +650,9 @@
         "mathematics",
         "calculus",
         "multivariable_analysis"
-      ]
+      ],
+      "intuition_oneliner": "立体的な地形（多変数関数）の傾きを測るとき、他の方向は固定して「東西」や「南北」など1つの軸方向だけ進んだときの傾きを取り出す操作です。",
+      "diagram_svg": "<svg viewBox=\"0 0 600 260\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"100\" y1=\"200\" x2=\"480\" y2=\"200\" stroke=\"currentColor\" stroke-width=\"1.5\"/><line x1=\"100\" y1=\"200\" x2=\"100\" y2=\"40\" stroke=\"currentColor\" stroke-width=\"1.5\"/><path d=\"M 140 160 Q 280 50, 440 140\" fill=\"none\" stroke=\"#3b82f6\" stroke-width=\"3\"/><line x1=\"200\" y1=\"130\" x2=\"360\" y2=\"70\" stroke=\"#f97316\" stroke-width=\"2.5\"/><circle cx=\"270\" cy=\"104\" r=\"5\" fill=\"#10b981\"/><text x=\"460\" y=\"220\" fill=\"currentColor\" font-size=\"14\">x_i 方向（他は固定）</text><text x=\"65\" y=\"50\" fill=\"currentColor\" font-size=\"14\">f</text><text x=\"365\" y=\"70\" fill=\"#f97316\" font-size=\"14\">接線の傾き (偏微分)</text><text x=\"280\" y=\"135\" fill=\"#3b82f6\" font-size=\"13\">断面曲線</text></svg>"
     },
     {
       "id": "math.calc.m45_total_differentiability_def",
@@ -5268,10 +5274,15 @@
         "math.calc.m20_derivative_definition",
         "math.calc.m23_limit_algebra"
       ],
-      "required_math_node_ids": [],
+      "required_math_node_ids": [
+        "math.alg.fraction_numerator_split",
+        "math.alg.real_distributive_law",
+        "math.calc.limit_linearity_constant"
+      ],
       "assumptions": [
-        "関数 f(t) および g(t) は対象区間で微分可能（高階については2階微分可能）である。",
-        "係数 \\alpha, \\beta は t に依存しない定数である。"
+        "関数 f(t) および g(t) は対象となる開区間上で定義された実数値関数であり、1階微分可能（2階導関数の導出においては2階微分可能）である。",
+        "係数 \\alpha, \\beta は変数 t に依存しない実数定数である。",
+        "差分商の評価においては、極限 h \\to 0 の過程で h \\neq 0 であるとする。"
       ],
       "steps": [
         {
@@ -5279,61 +5290,269 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "F(t) = \\alpha f(t) + \\beta g(t) \\quad (\\alpha, \\beta \\text{ const.})",
-          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t),\\quad \\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f''(t) + \\beta g''(t),",
-          "operation_label": "導関数の定義への適用と極限の線形性および反復微分",
-          "explanation": "線形結合 F(t) = \\alpha f(t) + \\beta g(t) の差分商を各項の差分商の線形結合へ整理し、極限の四則演算を用いて1階導関数の線形性を導いた上で、2階微分にも同様に適用する。",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t),\\quad \\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f''(t) + \\beta g''(t)",
+          "operation_label": "導関数の定義と極限の演算則による1階・2階微分の線形性導出",
+          "explanation": "線形結合 \\alpha f(t) + \\beta g(t) に導関数の定義を適用し、分配法則と分数分解によって各項の差分商の線形結合へ変形した上で、極限の加法性・乗法性および定数の極限を用いて1階導関数の線形性を導き、さらにその結果を f'(t), g'(t) へ反復適用して2階導関数の線形性を得る。",
           "used_node_ids": [
+            "math.alg.fraction_numerator_split",
+            "math.alg.real_distributive_law",
+            "math.calc.limit_linearity_constant",
             "math.calc.m20_derivative_definition",
             "math.calc.m23_limit_algebra"
           ],
-          "sympy_check_hint": "simplify(diff(alpha*f(t) + beta*g(t), t) - (alpha*diff(f(t), t) + beta*diff(g(t), t)))"
+          "sympy_check_hint": "diff(alpha*f(t) + beta*g(t), t) == alpha*diff(f(t), t) + beta*diff(g(t), t)"
         },
         {
-          "step_id": "s2_diff_quotient",
+          "step_id": "s2_1",
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\frac{\\big(\\alpha f(t+h) + \\beta g(t+h)\\big) - \\big(\\alpha f(t) + \\beta g(t)\\big)}{h},",
-          "to_latex": "\\lim_{h \\to 0} \\left(\\alpha \\frac{f(t+h) - f(t)}{h} + \\beta \\frac{g(t+h) - g(t)}{h}\\right),",
-          "operation_label": "導関数の定義による差分商の展開と線形結合への整理",
-          "explanation": "導関数の定義に従い F(t) = \\alpha f(t) + \\beta g(t) の差分商を立て、分子を f と g の増分にそれぞれ括り出して各項の差分商の和として表す。",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\frac{\\alpha\\big(f(t+h) - f(t)\\big) + \\beta\\big(g(t+h) - g(t)\\big)}{h}",
+          "operation_label": "導関数の定義の適用と分子の増分整理",
+          "explanation": "導関数の定義に従って線形結合 \\alpha f(t) + \\beta g(t) の差分商の極限を立て、実数の分配法則を用いて分子を f と g の増分ごとの項へまとめる。",
+          "used_node_ids": [
+            "math.alg.real_distributive_law",
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\frac{\\big(\\alpha f(t+h) + \\beta g(t+h)\\big) - \\big(\\alpha f(t) + \\beta g(t)\\big)}{h}",
+          "operation_label": "導関数の定義（差分商の極限）の適用",
+          "explanation": "F(t) = \\alpha f(t) + \\beta g(t) とおき、導関数の定義 F'(t) = \\lim_{h \\to 0} \\frac{F(t+h) - F(t)}{h} をそのまま適用する。",
           "used_node_ids": [
             "math.calc.m20_derivative_definition"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s3_limit_linearity",
-          "order": 3,
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\frac{\\big(\\alpha f(t+h) + \\beta g(t+h)\\big) - \\big(\\alpha f(t) + \\beta g(t)\\big)}{h}",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\frac{\\big(\\alpha f(t+h) - \\alpha f(t)\\big) + \\big(\\beta g(t+h) - \\beta g(t)\\big)}{h}",
+          "operation_label": "分配法則による負符号の展開とf・g項の組換え",
+          "explanation": "分子の減算 -(\\alpha f(t) + \\beta g(t)) に分配法則を適用して -\\alpha f(t) - \\beta g(t) と展開し、実数の加法の交換法則・結合法則により f に関する2項と g に関する2項へ組み換える。",
+          "used_node_ids": [
+            "math.alg.real_distributive_law"
+          ],
+          "sympy_check_hint": "((alpha*f(t+h) + beta*g(t+h)) - (alpha*f(t) + beta*g(t)))/h == ((alpha*f(t+h) - alpha*f(t)) + (beta*g(t+h) - beta*g(t)))/h"
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\frac{\\big(\\alpha f(t+h) - \\alpha f(t)\\big) + \\big(\\beta g(t+h) - \\beta g(t)\\big)}{h}",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\frac{\\alpha\\big(f(t+h) - f(t)\\big) + \\beta\\big(g(t+h) - g(t)\\big)}{h}",
+          "operation_label": "分配法則の逆適用による定数係数のくくり出し",
+          "explanation": "分子の各組に対して実数の分配法則 ca + cb = c(a + b) を適用し、共通因数 \\alpha および \\beta を括弧の外へくくり出す。",
+          "used_node_ids": [
+            "math.alg.real_distributive_law"
+          ],
+          "sympy_check_hint": "((alpha*f(t+h) - alpha*f(t)) + (beta*g(t+h) - beta*g(t)))/h == (alpha*(f(t+h) - f(t)) + beta*(g(t+h) - g(t)))/h"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 6,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\lim_{h \\to 0} \\left(\\alpha \\frac{f(t+h) - f(t)}{h} + \\beta \\frac{g(t+h) - g(t)}{h}\\right),",
-          "to_latex": "\\alpha \\lim_{h \\to 0}\\frac{f(t+h) - f(t)}{h} + \\beta \\lim_{h \\to 0}\\frac{g(t+h) - g(t)}{h} = \\alpha f'(t) + \\beta g'(t),",
-          "operation_label": "極限の四則演算による極限の分配と導関数の定義の再適用",
-          "explanation": "f(t) と g(t) の微分可能性により各項の差分商の極限が収束するため、極限の和と定数倍の法則を適用して1階導関数の線形性を得る。",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\frac{\\alpha\\big(f(t+h) - f(t)\\big) + \\beta\\big(g(t+h) - g(t)\\big)}{h}",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\left(\\alpha\\,\\frac{f(t+h) - f(t)}{h} + \\beta\\,\\frac{g(t+h) - g(t)}{h}\\right)",
+          "operation_label": "分数の分解と積の結合則による差分商の分離",
+          "explanation": "h \\neq 0 のもとで分数の分子の加法分解および積の結合則を順に適用し、被極限式を f と g の差分商の線形結合へ変形する。",
           "used_node_ids": [
+            "math.alg.fraction_numerator_split"
+          ],
+          "sympy_check_hint": "(alpha*(f(t+h) - f(t)) + beta*(g(t+h) - g(t)))/h == alpha*((f(t+h) - f(t))/h) + beta*((g(t+h) - g(t))/h)"
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 7,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\frac{\\alpha\\big(f(t+h) - f(t)\\big) + \\beta\\big(g(t+h) - g(t)\\big)}{h}",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\left(\\frac{\\alpha\\big(f(t+h) - f(t)\\big)}{h} + \\frac{\\beta\\big(g(t+h) - g(t)\\big)}{h}\\right)",
+          "operation_label": "分数の分子の加法分解",
+          "explanation": "h \\neq 0 であるため、分数の分子の加法分解 (A + B)/h = A/h + B/h を適用して1つの分数を2つの分数の和へ分割する。",
+          "used_node_ids": [
+            "math.alg.fraction_numerator_split"
+          ],
+          "sympy_check_hint": "(alpha*(f(t+h) - f(t)) + beta*(g(t+h) - g(t)))/h == (alpha*(f(t+h) - f(t)))/h + (beta*(g(t+h) - g(t)))/h"
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\left(\\frac{\\alpha\\big(f(t+h) - f(t)\\big)}{h} + \\frac{\\beta\\big(g(t+h) - g(t)\\big)}{h}\\right)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\left(\\alpha\\,\\frac{f(t+h) - f(t)}{h} + \\beta\\,\\frac{g(t+h) - g(t)}{h}\\right)",
+          "operation_label": "分数の積の結合則による定数因子の分離",
+          "explanation": "各分数に対して公式 (AB)/h = A(B/h) を適用し、定数 \\alpha, \\beta をそれぞれの差分商の前に分離する。",
+          "used_node_ids": [
+            "math.alg.fraction_numerator_split"
+          ],
+          "sympy_check_hint": "(alpha*(f(t+h) - f(t)))/h + (beta*(g(t+h) - g(t)))/h == alpha*((f(t+h) - f(t))/h) + beta*((g(t+h) - g(t))/h)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 9,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\left(\\alpha\\,\\frac{f(t+h) - f(t)}{h} + \\beta\\,\\frac{g(t+h) - g(t)}{h}\\right)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t)",
+          "operation_label": "極限の線形性と導関数の定義による1階線形性の確定",
+          "explanation": "f(t) と g(t) の微分可能性により各差分商の極限が存在することを用いて、極限の和・積の法則と定数の極限を適用し、最後に導関数の定義を再び適用して1階導関数の線形性を得る。",
+          "used_node_ids": [
+            "math.calc.limit_linearity_constant",
             "math.calc.m20_derivative_definition",
             "math.calc.m23_limit_algebra"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s4_higher_order",
-          "order": 4,
+          "step_id": "s3_3_1",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\left(\\alpha\\,\\frac{f(t+h) - f(t)}{h} + \\beta\\,\\frac{g(t+h) - g(t)}{h}\\right)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\left(\\alpha\\,\\frac{f(t+h) - f(t)}{h}\\right) + \\lim_{h \\to 0} \\left(\\beta\\,\\frac{g(t+h) - g(t)}{h}\\right)",
+          "operation_label": "極限の加法性の適用",
+          "explanation": "f(t) と g(t) が微分可能であり各項の極限が有限確定値へ収束するため、極限の加法性 \\lim_{h \\to 0}(F(h)+G(h)) = \\lim_{h \\to 0}F(h) + \\lim_{h \\to 0}G(h) を適用して極限を和に分配する。",
+          "used_node_ids": [
+            "math.calc.limit_linearity_constant"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\lim_{h \\to 0} \\left(\\alpha\\,\\frac{f(t+h) - f(t)}{h}\\right) + \\lim_{h \\to 0} \\left(\\beta\\,\\frac{g(t+h) - g(t)}{h}\\right)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\left(\\lim_{h \\to 0}\\alpha\\right)\\left(\\lim_{h \\to 0}\\frac{f(t+h) - f(t)}{h}\\right) + \\left(\\lim_{h \\to 0}\\beta\\right)\\left(\\lim_{h \\to 0}\\frac{g(t+h) - g(t)}{h}\\right)",
+          "operation_label": "極限の乗法性の適用",
+          "explanation": "定数関数と差分商がそれぞれ極限を持つため、極限の乗法性 \\lim_{h \\to 0}(A(h)B(h)) = (\\lim_{h \\to 0}A(h))(\\lim_{h \\to 0}B(h)) を各項へ適用する。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\left(\\lim_{h \\to 0}\\alpha\\right)\\left(\\lim_{h \\to 0}\\frac{f(t+h) - f(t)}{h}\\right) + \\left(\\lim_{h \\to 0}\\beta\\right)\\left(\\lim_{h \\to 0}\\frac{g(t+h) - g(t)}{h}\\right)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha \\lim_{h \\to 0}\\frac{f(t+h) - f(t)}{h} + \\beta \\lim_{h \\to 0}\\frac{g(t+h) - g(t)}{h}",
+          "operation_label": "定数関数の極限の評価",
+          "explanation": "\\alpha, \\beta が h に依存しない定数であることから、定数関数の極限則 \\lim_{h \\to 0} c = c を適用して \\lim_{h \\to 0}\\alpha = \\alpha、\\lim_{h \\to 0}\\beta = \\beta と評価する。",
+          "used_node_ids": [
+            "math.calc.limit_linearity_constant"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha \\lim_{h \\to 0}\\frac{f(t+h) - f(t)}{h} + \\beta \\lim_{h \\to 0}\\frac{g(t+h) - g(t)}{h}",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t)",
+          "operation_label": "導関数の定義による極限値の表記変換",
+          "explanation": "導関数の定義により \\lim_{h \\to 0}\\frac{f(t+h)-f(t)}{h} = f'(t) および \\lim_{h \\to 0}\\frac{g(t+h)-g(t)}{h} = g'(t) と置き換え、1階微分作用素の線形性を得る。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 14,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\frac{d}{dt}\\big(\\alpha f'(t) + \\beta g'(t)\\big),",
-          "to_latex": "\\alpha \\frac{d}{dt}f'(t) + \\beta \\frac{d}{dt}g'(t) = \\alpha f''(t) + \\beta g''(t),",
-          "operation_label": "1階線形性の反復適用による2階導関数の線形性導出",
-          "explanation": "f'(t) および g'(t) が微分可能であるとき、導出された1階微分作用素の線形性を再び \\alpha f'(t) + \\beta g'(t) に適用することで2階導関数の線形性が従う。",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t),\\quad \\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f''(t) + \\beta g''(t)",
+          "operation_label": "2階導関数の定義の導入と1階線形性の反復適用",
+          "explanation": "2階導関数を1階導関数の微分として表し、すでに示した1階導関数の線形性を代入した上で、微分可能な導関数 f'(t), g'(t) の線形結合へ再び1階線形性を適用して2階導関数の線形性を得る。",
           "used_node_ids": [
+            "math.alg.fraction_numerator_split",
+            "math.alg.real_distributive_law",
+            "math.calc.limit_linearity_constant",
             "math.calc.m20_derivative_definition",
             "math.calc.m23_limit_algebra"
           ],
-          "sympy_check_hint": "simplify(diff(alpha*f(t) + beta*g(t), t, 2) - (alpha*diff(f(t), t, 2) + beta*diff(g(t), t, 2)))"
+          "sympy_check_hint": "diff(alpha*f(t) + beta*g(t), t, 2) == alpha*diff(f(t), t, 2) + beta*diff(g(t), t, 2)"
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t),\\quad \\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\frac{d}{dt}\\left(\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big)\\right)",
+          "operation_label": "2階導関数の反復微分定義の代入・導入",
+          "explanation": "1階導関数の線形性を保持したまま、2階導関数の定義 \\frac{d^2}{dt^2}F(t) = \\frac{d}{dt}(\\frac{d}{dt}F(t)) を \\alpha f(t) + \\beta g(t) に対して導入する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t),\\quad \\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\frac{d}{dt}\\left(\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big)\\right)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t),\\quad \\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\frac{d}{dt}\\big(\\alpha f'(t) + \\beta g'(t)\\big)",
+          "operation_label": "導出した1階微分線形性の等式の代入",
+          "explanation": "直前までで証明された第1式 \\frac{d}{dt}(\\alpha f(t) + \\beta g(t)) = \\alpha f'(t) + \\beta g'(t) を2階導関数右辺の括弧内に代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t),\\quad \\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\frac{d}{dt}\\big(\\alpha f'(t) + \\beta g'(t)\\big)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t),\\quad \\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha\\frac{d}{dt}f'(t) + \\beta\\frac{d}{dt}g'(t)",
+          "operation_label": "導関数 f'(t), g'(t) への1階微分線形性の適用",
+          "explanation": "仮定より f'(t) と g'(t) が微分可能であるため、1階微分について確立した線形性（導関数の定義・分配法則・分数分解・極限法則の帰結）を \\alpha f'(t) + \\beta g'(t) へ適用する。",
+          "used_node_ids": [
+            "math.alg.fraction_numerator_split",
+            "math.alg.real_distributive_law",
+            "math.calc.limit_linearity_constant",
+            "math.calc.m20_derivative_definition",
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": "diff(alpha*diff(f(t), t) + beta*diff(g(t), t), t) == alpha*diff(diff(f(t), t), t) + beta*diff(diff(g(t), t), t)"
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t),\\quad \\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha\\frac{d}{dt}f'(t) + \\beta\\frac{d}{dt}g'(t)",
+          "to_latex": "\\frac{d}{dt}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f'(t) + \\beta g'(t),\\quad \\frac{d^2}{dt^2}\\big(\\alpha f(t) + \\beta g(t)\\big) = \\alpha f''(t) + \\beta g''(t)",
+          "operation_label": "2階導関数記号 f''(t), g''(t) への書き換え",
+          "explanation": "2階導関数の記法 \\frac{d}{dt}f'(t) = f''(t) および \\frac{d}{dt}g'(t) = g''(t) に従って右辺を書き換え、目標とする1階および2階微分作用素の線形性の公式に着地する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": "alpha*diff(diff(f(t), t), t) + beta*diff(diff(g(t), t), t) == alpha*diff(f(t), t, 2) + beta*diff(g(t), t, 2)"
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-24T02:27:07.391682+00:00"
     },
     {
       "id": "drv.link_m37",
