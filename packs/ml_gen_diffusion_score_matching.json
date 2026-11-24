@@ -1,0 +1,666 @@
+{
+  "pack_meta": {
+    "pack_id": "ml.gen.diffusion_score_matching",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "machine_learning",
+    "title": "生成モデル数理：スコアマッチング・拡散モデル（DDPM）と確率フローODE",
+    "language": "ja",
+    "description": "フォワード拡散過程、デノイジングスコアマッチング、DDPMの変分下界（ELBO）、確率微分方程式（SDE）と確率フローODEを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "ml.diff.n01_forward_diffusion_def",
+      "short_code": "DIFF01",
+      "kind": "definition",
+      "title": "DDPMフォワード拡散過程（マルコフ連鎖）の定義",
+      "summary": "データ分布から段階的に等方ガウス雑音を注入して標準正規分布へ近づける離散時間マルコフ連鎖の遷移核の定義。",
+      "canonical_latex": "q(\\mathbf{x}_{1:T} \\mid \\mathbf{x}_0) := \\prod_{t=1}^{T} q(\\mathbf{x}_t \\mid \\mathbf{x}_{t-1}),\\qquad q(\\mathbf{x}_t \\mid \\mathbf{x}_{t-1}) := \\mathcal{N}\\big(\\mathbf{x}_t; \\sqrt{1-\\beta_t}\\,\\mathbf{x}_{t-1},\\, \\beta_t I\\big)",
+      "aliases_latex": [
+        "q(\\mathbf{x}_t\\mid\\mathbf{x}_{t-1}) = \\mathcal{N}(\\mathbf{x}_t; \\sqrt{\\alpha_t}\\mathbf{x}_{t-1}, (1-\\alpha_t)I)"
+      ],
+      "keywords": [
+        "DDPM",
+        "フォワード拡散過程",
+        "マルコフ連鎖",
+        "分散スケジュール"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "generative_models"
+      ]
+    },
+    {
+      "id": "ml.diff.n02_forward_closed_form_kernel",
+      "short_code": "DIFF02",
+      "kind": "theorem_formula",
+      "title": "任意時刻へのフォワード遷移核の閉じた形と再パラメータ化",
+      "summary": "線形ガウス遷移核の再帰的合成により、初期データから任意時刻tの潜在状態への周辺遷移分布が1つのガウス分布として閉じた形で求まる定理。",
+      "canonical_latex": "\\alpha_t := 1-\\beta_t,\\quad \\bar{\\alpha}_t := \\prod_{s=1}^{t} \\alpha_s \\implies q(\\mathbf{x}_t \\mid \\mathbf{x}_0) = \\mathcal{N}\\big(\\mathbf{x}_t; \\sqrt{\\bar{\\alpha}_t}\\,\\mathbf{x}_0,\\, (1-\\bar{\\alpha}_t)I\\big),\\quad \\mathbf{x}_t = \\sqrt{\\bar{\\alpha}_t}\\,\\mathbf{x}_0 + \\sqrt{1-\\bar{\\alpha}_t}\\,\\boldsymbol{\\epsilon}",
+      "aliases_latex": [
+        "q(\\mathbf{x}_t\\mid\\mathbf{x}_0) = \\mathcal{N}(\\sqrt{\\bar{\\alpha}_t}\\mathbf{x}_0, (1-\\bar{\\alpha}_t)I)"
+      ],
+      "keywords": [
+        "再パラメータ化",
+        "閉じた形",
+        "フォワード遷移核",
+        "ガウス合成"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "generative_models"
+      ]
+    },
+    {
+      "id": "ml.diff.n03_ddpm_elbo_kl_decomposition",
+      "short_code": "DIFF03",
+      "kind": "theorem_formula",
+      "title": "DDPMの変分下界（ELBO）とマルコフKL分解",
+      "summary": "拡散モデルの負の対数尤度に対する変分上界をマルコフ性を利用して事前項・各時刻のKLダイバージェンス項・再構成項へ分解する定理。",
+      "canonical_latex": "-\\ln p_\\theta(\\mathbf{x}_0) \\le \\mathbb{E}_{q}\\!\\left[D_{\\mathrm{KL}}\\big(q(\\mathbf{x}_T\\mid\\mathbf{x}_0)\\,\\|\\,p(\\mathbf{x}_T)\\big) + \\sum_{t=2}^{T} D_{\\mathrm{KL}}\\big(q(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t,\\mathbf{x}_0)\\,\\|\\,p_\\theta(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t)\\big) - \\ln p_\\theta(\\mathbf{x}_0\\mid\\mathbf{x}_1)\\right]",
+      "aliases_latex": [
+        "L_{\\mathrm{VLB}} = L_T + \\sum_{t=2}^{T} L_{t-1} + L_0"
+      ],
+      "keywords": [
+        "変分下界",
+        "ELBO",
+        "KLダイバージェンス",
+        "マルコフ分解"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "generative_models"
+      ]
+    },
+    {
+      "id": "ml.diff.n04_ddpm_noise_prediction_loss",
+      "short_code": "DIFF04",
+      "kind": "theorem_formula",
+      "title": "真の逆事後分布とDDPMノイズ予測目的関数",
+      "summary": "初期状態条件付き逆事後分布の平均を注入雑音で表し、各時刻のKL最小化を雑音予測誤差の重み付き二乗ノルム最小化へ帰着させる公式。",
+      "canonical_latex": "\\tilde{\\boldsymbol{\\mu}}_t(\\mathbf{x}_t, \\boldsymbol{\\epsilon}) = \\frac{1}{\\sqrt{\\alpha_t}}\\left(\\mathbf{x}_t - \\frac{\\beta_t}{\\sqrt{1-\\bar{\\alpha}_t}}\\boldsymbol{\\epsilon}\\right),\\qquad L_{\\mathrm{simple}}(\\theta) = \\mathbb{E}_{t,\\mathbf{x}_0,\\boldsymbol{\\epsilon}}\\!\\left[\\big\\|\\boldsymbol{\\epsilon} - \\boldsymbol{\\epsilon}_\\theta(\\sqrt{\\bar{\\alpha}_t}\\,\\mathbf{x}_0 + \\sqrt{1-\\bar{\\alpha}_t}\\,\\boldsymbol{\\epsilon},\\, t)\\big\\|_2^2\\right]",
+      "aliases_latex": [
+        "L_{\\mathrm{simple}}(\\theta) = \\mathbb{E}[\\|\\boldsymbol{\\epsilon} - \\boldsymbol{\\epsilon}_\\theta(\\mathbf{x}_t, t)\\|_2^2]"
+      ],
+      "keywords": [
+        "ノイズ予測",
+        "逆事後分布",
+        "DDPM損失",
+        "スコア対応"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "generative_models"
+      ]
+    },
+    {
+      "id": "ml.diff.n05_stein_score_dsm_equivalence",
+      "short_code": "DIFF05",
+      "kind": "theorem_formula",
+      "title": "デノイジングスコアマッチング（DSM）の等価性とノイズ予測との対応",
+      "summary": "未知の周辺スコアに対する明示的スコアマッチング目的関数が、摂動核の条件付きスコアを教師とするデノイジングスコアマッチングとパラメータに関して等価である定理。",
+      "canonical_latex": "J_{\\mathrm{DSM}}(\\theta) := \\frac{1}{2}\\mathbb{E}_{p(\\mathbf{x})q_\\sigma(\\tilde{\\mathbf{x}}\\mid\\mathbf{x})}\\!\\left[\\big\\|\\mathbf{s}_\\theta(\\tilde{\\mathbf{x}}) - \\nabla_{\\tilde{\\mathbf{x}}}\\ln q_\\sigma(\\tilde{\\mathbf{x}}\\mid\\mathbf{x})\\big\\|_2^2\\right] = J_{\\mathrm{ESM}}(\\theta) + C,\\qquad \\mathbf{s}_\\theta(\\mathbf{x}_t, t) = -\\frac{\\boldsymbol{\\epsilon}_\\theta(\\mathbf{x}_t, t)}{\\sqrt{1-\\bar{\\alpha}_t}}",
+      "aliases_latex": [
+        "\\nabla_{\\mathbf{x}_t}\\ln q(\\mathbf{x}_t\\mid\\mathbf{x}_0) = -\\frac{\\boldsymbol{\\epsilon}}{\\sqrt{1-\\bar{\\alpha}_t}}"
+      ],
+      "keywords": [
+        "スコアマッチング",
+        "デノイジングスコアマッチング",
+        "スタインスコア",
+        "ノイズ予測"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "generative_models"
+      ]
+    },
+    {
+      "id": "ml.diff.n06_continuous_forward_sde_def",
+      "short_code": "DIFF06",
+      "kind": "definition",
+      "title": "連続時間フォワード拡散SDE（VP-SDE）の定義",
+      "summary": "離散ステップの極限としてフォワード拡散過程を確率微分方程式（伊藤SDE）として定式化する定義。",
+      "canonical_latex": "d\\mathbf{x} = \\mathbf{f}(\\mathbf{x}, t)\\,dt + g(t)\\,d\\mathbf{w},\\qquad \\text{VP-SDE: } d\\mathbf{x} = -\\frac{1}{2}\\beta(t)\\mathbf{x}\\,dt + \\sqrt{\\beta(t)}\\,d\\mathbf{w}",
+      "aliases_latex": [
+        "d\\mathbf{x} = -\\frac{1}{2}\\beta(t)\\mathbf{x}\\,dt + \\sqrt{\\beta(t)}\\,d\\mathbf{w}_t"
+      ],
+      "keywords": [
+        "確率微分方程式",
+        "SDE",
+        "VP-SDE",
+        "連続時間拡散"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "generative_models"
+      ]
+    },
+    {
+      "id": "ml.diff.n07_reverse_time_sde",
+      "short_code": "DIFF07",
+      "kind": "theorem_formula",
+      "title": "逆時間確率微分方程式（Andersonの逆時間SDE）",
+      "summary": "フォワードSDEに対応する時間反転過程が、周辺密度のスコア関数をドリフト補正項に含む逆時間SDEで与えられる定理。",
+      "canonical_latex": "d\\mathbf{x} = \\big[\\mathbf{f}(\\mathbf{x}, t) - g(t)^2 \\nabla_{\\mathbf{x}}\\ln p_t(\\mathbf{x})\\big]\\,dt + g(t)\\,d\\bar{\\mathbf{w}}",
+      "aliases_latex": [
+        "d\\mathbf{x} = [\\mathbf{f}(\\mathbf{x},t) - g(t)^2 \\mathbf{s}_\\theta(\\mathbf{x},t)]\\,dt + g(t)\\,d\\bar{\\mathbf{w}}"
+      ],
+      "keywords": [
+        "逆時間SDE",
+        "Andersonの定理",
+        "スコアベース生成モデル",
+        "フォッカー・プランク方程式"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "generative_models"
+      ]
+    },
+    {
+      "id": "ml.diff.n08_probability_flow_ode",
+      "short_code": "DIFF08",
+      "kind": "theorem_formula",
+      "title": "確率フローODE（決定論的連続時間サンプラー）",
+      "summary": "フォッカー＝プランク方程式の拡散項をドリフト項へ吸収することで、逆時間SDEと同一の周辺確率密度を保つ決定論的常微分方程式を導く定理。",
+      "canonical_latex": "d\\mathbf{x} = \\left[\\mathbf{f}(\\mathbf{x}, t) - \\frac{1}{2}g(t)^2 \\nabla_{\\mathbf{x}}\\ln p_t(\\mathbf{x})\\right]dt",
+      "aliases_latex": [
+        "\\frac{d\\mathbf{x}}{dt} = \\mathbf{f}(\\mathbf{x}, t) - \\frac{1}{2}g(t)^2 \\mathbf{s}_\\theta(\\mathbf{x}, t)"
+      ],
+      "keywords": [
+        "確率フローODE",
+        "連続正規化流",
+        "決定論的サンプリング",
+        "フォッカー・プランク方程式"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "generative_models"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_diff_01_forward_def",
+      "target_node_id": "ml.diff.n01_forward_diffusion_def",
+      "route_kind": "reformulation",
+      "title": "線形ガウス状態空間モデルと潜在変数モデルからのフォワード拡散過程の定式化",
+      "premise_node_ids": [
+        "ml.vi.n01_latent_generative_bayes_def",
+        "ml.kf.n01_linear_gaussian_ssm_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ノイズスケジュールは 0 < beta_1 < ... < beta_T < 1 を満たす固定値とする",
+        "遷移過程は1次マルコフ連鎖に従い、各時刻で等方ガウス雑音が付加される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}_t = F_t \\mathbf{x}_{t-1} + \\mathbf{w}_t,\\quad \\mathbf{w}_t \\sim \\mathcal{N}(\\mathbf{0}, Q_t)",
+          "to_latex": "q(\\mathbf{x}_{1:T} \\mid \\mathbf{x}_0) := \\prod_{t=1}^{T} q(\\mathbf{x}_t \\mid \\mathbf{x}_{t-1}),\\qquad q(\\mathbf{x}_t \\mid \\mathbf{x}_{t-1}) := \\mathcal{N}\\big(\\mathbf{x}_t; \\sqrt{1-\\beta_t}\\,\\mathbf{x}_{t-1},\\, \\beta_t I\\big)",
+          "operation_label": "フォワード拡散マルコフ連鎖の定義",
+          "explanation": "線形ガウス状態遷移において遷移行列を分散保存スケーリング sqrt(1-beta_t) I、過程雑音共分散を beta_t I とおくことで、データから等方ガウス分布へ漸近するフォワード拡散過程を定義する。",
+          "used_node_ids": [
+            "ml.kf.n01_linear_gaussian_ssm_def",
+            "ml.vi.n01_latent_generative_bayes_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_diff_02_closed_form",
+      "target_node_id": "ml.diff.n02_forward_closed_form_kernel",
+      "route_kind": "deductive",
+      "title": "再パラメータ化と独立ガウス分布の加法性による任意時刻遷移核の導出",
+      "premise_node_ids": [
+        "ml.diff.n01_forward_diffusion_def",
+        "ml.vi.n06_reparameterization_trick"
+      ],
+      "required_math_node_ids": [
+        "math.alg.real_distributive_law",
+        "math.logic.mathematical_induction"
+      ],
+      "assumptions": [
+        "各時刻の標準正規雑音 epsilon_t は互いに独立同分布である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "q(\\mathbf{x}_t \\mid \\mathbf{x}_{t-1}) = \\mathcal{N}\\big(\\mathbf{x}_t; \\sqrt{1-\\beta_t}\\,\\mathbf{x}_{t-1},\\, \\beta_t I\\big)",
+          "to_latex": "\\mathbf{x}_t = \\sqrt{\\bar{\\alpha}_t}\\,\\mathbf{x}_0 + \\sqrt{1-\\bar{\\alpha}_t}\\,\\boldsymbol{\\epsilon},\\quad q(\\mathbf{x}_t \\mid \\mathbf{x}_0) = \\mathcal{N}\\big(\\mathbf{x}_t; \\sqrt{\\bar{\\alpha}_t}\\,\\mathbf{x}_0,\\, (1-\\bar{\\alpha}_t)I\\big)",
+          "operation_label": "再帰展開と独立ガウス雑音の合成",
+          "explanation": "alpha_t = 1 - beta_t として1ステップ遷移を再パラメータ化で展開し、独立なガウス分布の線形結合の分散加法性を帰納的に適用することで、時刻tの閉じた遷移核を得る。",
+          "used_node_ids": [
+            "math.logic.mathematical_induction",
+            "ml.diff.n01_forward_diffusion_def",
+            "ml.vi.n06_reparameterization_trick"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}_t = \\sqrt{\\alpha_t}\\,\\mathbf{x}_{t-1} + \\sqrt{1-\\alpha_t}\\,\\boldsymbol{\\epsilon}_{t-1}",
+          "to_latex": "\\mathbf{x}_t = \\sqrt{\\alpha_t \\alpha_{t-1}}\\,\\mathbf{x}_{t-2} + \\sqrt{\\alpha_t(1-\\alpha_{t-1})}\\,\\boldsymbol{\\epsilon}_{t-2} + \\sqrt{1-\\alpha_t}\\,\\boldsymbol{\\epsilon}_{t-1}",
+          "operation_label": "1ステップ前の状態式の代入",
+          "explanation": "時刻 t-1 の再パラメータ化表現を時刻 t の式へ代入して展開する。",
+          "used_node_ids": [
+            "ml.diff.n01_forward_diffusion_def",
+            "ml.vi.n06_reparameterization_trick"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}_t = \\sqrt{\\alpha_t \\alpha_{t-1}}\\,\\mathbf{x}_{t-2} + \\sqrt{\\alpha_t(1-\\alpha_{t-1})}\\,\\boldsymbol{\\epsilon}_{t-2} + \\sqrt{1-\\alpha_t}\\,\\boldsymbol{\\epsilon}_{t-1}",
+          "to_latex": "\\mathbf{x}_t = \\sqrt{\\alpha_t \\alpha_{t-1}}\\,\\mathbf{x}_{t-2} + \\sqrt{1-\\alpha_t \\alpha_{t-1}}\\,\\bar{\\boldsymbol{\\epsilon}}_{t-2}",
+          "operation_label": "独立正規確率変数の分散加法",
+          "explanation": "独立な標準正規変数の和は分散が alpha_t(1-alpha_{t-1}) + (1-alpha_t) = 1 - alpha_t alpha_{t-1} の単一ガウス変数に帰着する。",
+          "used_node_ids": [
+            "math.alg.real_distributive_law"
+          ],
+          "sympy_check_hint": "simplify(a*(1-b) + (1-a) - (1-a*b))"
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}_t = \\sqrt{\\alpha_t \\alpha_{t-1}}\\,\\mathbf{x}_{t-2} + \\sqrt{1-\\alpha_t \\alpha_{t-1}}\\,\\bar{\\boldsymbol{\\epsilon}}_{t-2}",
+          "to_latex": "\\mathbf{x}_t = \\sqrt{\\bar{\\alpha}_t}\\,\\mathbf{x}_0 + \\sqrt{1-\\bar{\\alpha}_t}\\,\\boldsymbol{\\epsilon},\\quad q(\\mathbf{x}_t \\mid \\mathbf{x}_0) = \\mathcal{N}\\big(\\mathbf{x}_t; \\sqrt{\\bar{\\alpha}_t}\\,\\mathbf{x}_0,\\, (1-\\bar{\\alpha}_t)I\\big)",
+          "operation_label": "数学的帰納法による時刻0までの展開",
+          "explanation": "同様の結合を t=0 まで帰納的に繰り返すことで、累積積 alpha_bar_t を用いた閉じた遷移核が得られる。",
+          "used_node_ids": [
+            "math.logic.mathematical_induction"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_diff_03_elbo",
+      "target_node_id": "ml.diff.n03_ddpm_elbo_kl_decomposition",
+      "route_kind": "deductive",
+      "title": "ベイズ則とマルコフ性によるDDPM変分下界のKL分解",
+      "premise_node_ids": [
+        "ml.diff.n01_forward_diffusion_def",
+        "ml.diff.n02_forward_closed_form_kernel",
+        "ml.vi.n02_elbo_recon_kl_form"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "逆生成過程 p_theta(x_{0:T}) は標準正規事前分布 p(x_T) から始まるマルコフ連鎖である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-\\ln p_\\theta(\\mathbf{x}_0) \\le \\mathbb{E}_{q(\\mathbf{x}_{1:T}\\mid\\mathbf{x}_0)}\\!\\left[\\ln \\frac{q(\\mathbf{x}_{1:T}\\mid\\mathbf{x}_0)}{p_\\theta(\\mathbf{x}_{0:T})}\\right]",
+          "to_latex": "-\\ln p_\\theta(\\mathbf{x}_0) \\le \\mathbb{E}_{q}\\!\\left[D_{\\mathrm{KL}}\\big(q(\\mathbf{x}_T\\mid\\mathbf{x}_0)\\,\\|\\,p(\\mathbf{x}_T)\\big) + \\sum_{t=2}^{T} D_{\\mathrm{KL}}\\big(q(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t,\\mathbf{x}_0)\\,\\|\\,p_\\theta(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t)\\big) - \\ln p_\\theta(\\mathbf{x}_0\\mid\\mathbf{x}_1)\\right]",
+          "operation_label": "ベイズ則による条件付き逆事後分布の分離",
+          "explanation": "ELBOの対数密度比をマルコフ積に展開し、t>=2 の各項にベイズ則を適用して伸縮和（テレスコーピング和）を作ることで、解析可能なKLダイバージェンスの和に分解する。",
+          "used_node_ids": [
+            "ml.diff.n01_forward_diffusion_def",
+            "ml.vi.n02_elbo_recon_kl_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}_{q}\\!\\left[\\ln \\frac{q(\\mathbf{x}_{1:T}\\mid\\mathbf{x}_0)}{p_\\theta(\\mathbf{x}_{0:T})}\\right]",
+          "to_latex": "\\mathbb{E}_{q}\\!\\left[-\\ln p(\\mathbf{x}_T) + \\sum_{t=2}^{T} \\ln \\frac{q(\\mathbf{x}_t\\mid\\mathbf{x}_{t-1})}{p_\\theta(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t)} + \\ln \\frac{q(\\mathbf{x}_1\\mid\\mathbf{x}_0)}{p_\\theta(\\mathbf{x}_0\\mid\\mathbf{x}_1)}\\right]",
+          "operation_label": "同時分布のマルコフ連鎖展開",
+          "explanation": "フォワード過程と生成過程の同時分布をそれぞれ各時刻の遷移確率の積に分解し、対数を和へ変換する。",
+          "used_node_ids": [
+            "ml.diff.n01_forward_diffusion_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}_{q}\\!\\left[-\\ln p(\\mathbf{x}_T) + \\sum_{t=2}^{T} \\ln \\frac{q(\\mathbf{x}_t\\mid\\mathbf{x}_{t-1})}{p_\\theta(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t)} + \\ln \\frac{q(\\mathbf{x}_1\\mid\\mathbf{x}_0)}{p_\\theta(\\mathbf{x}_0\\mid\\mathbf{x}_1)}\\right]",
+          "to_latex": "\\mathbb{E}_{q}\\!\\left[\\ln \\frac{q(\\mathbf{x}_T\\mid\\mathbf{x}_0)}{p(\\mathbf{x}_T)} + \\sum_{t=2}^{T} \\ln \\frac{q(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t,\\mathbf{x}_0)}{p_\\theta(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t)} - \\ln p_\\theta(\\mathbf{x}_0\\mid\\mathbf{x}_1)\\right]",
+          "operation_label": "ベイズ則と伸縮和の整理",
+          "explanation": "q(x_t | x_{t-1}, x_0) = q(x_{t-1} | x_t, x_0) q(x_t | x_0) / q(x_{t-1} | x_0) を代入し、q(x_t | x_0) の比の和を相殺させると時刻 T と時刻 1 の項だけが残る。",
+          "used_node_ids": [
+            "ml.diff.n02_forward_closed_form_kernel"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}_{q}\\!\\left[\\ln \\frac{q(\\mathbf{x}_T\\mid\\mathbf{x}_0)}{p(\\mathbf{x}_T)} + \\sum_{t=2}^{T} \\ln \\frac{q(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t,\\mathbf{x}_0)}{p_\\theta(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t)} - \\ln p_\\theta(\\mathbf{x}_0\\mid\\mathbf{x}_1)\\right]",
+          "to_latex": "\\mathbb{E}_{q}\\!\\left[D_{\\mathrm{KL}}\\big(q(\\mathbf{x}_T\\mid\\mathbf{x}_0)\\,\\|\\,p(\\mathbf{x}_T)\\big) + \\sum_{t=2}^{T} D_{\\mathrm{KL}}\\big(q(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t,\\mathbf{x}_0)\\,\\|\\,p_\\theta(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t)\\big) - \\ln p_\\theta(\\mathbf{x}_0\\mid\\mathbf{x}_1)\\right]",
+          "operation_label": "条件付き期待値によるKLダイバージェンス表現",
+          "explanation": "対数比の期待値を周辺化して、各時刻のKLダイバージェンスの和として表記する。",
+          "used_node_ids": [
+            "ml.vi.n02_elbo_recon_kl_form"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_diff_04_noise_loss",
+      "target_node_id": "ml.diff.n04_ddpm_noise_prediction_loss",
+      "route_kind": "deductive",
+      "title": "逆事後ガウス分布の平均導出とノイズ予測目的関数への変換",
+      "premise_node_ids": [
+        "ml.diff.n02_forward_closed_form_kernel",
+        "ml.diff.n03_ddpm_elbo_kl_decomposition",
+        "ml.vi.n07_gaussian_kl_closed_form"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "モデル逆遷移 p_theta(x_{t-1}|x_t) の分散共分散行列は固定値 sigma_t^2 I とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L_{t-1} = \\mathbb{E}_{q}\\big[D_{\\mathrm{KL}}\\big(q(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t,\\mathbf{x}_0)\\,\\|\\,p_\\theta(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t)\\big)\\big]",
+          "to_latex": "\\tilde{\\boldsymbol{\\mu}}_t(\\mathbf{x}_t, \\boldsymbol{\\epsilon}) = \\frac{1}{\\sqrt{\\alpha_t}}\\left(\\mathbf{x}_t - \\frac{\\beta_t}{\\sqrt{1-\\bar{\\alpha}_t}}\\boldsymbol{\\epsilon}\\right),\\qquad L_{\\mathrm{simple}}(\\theta) = \\mathbb{E}_{t,\\mathbf{x}_0,\\boldsymbol{\\epsilon}}\\!\\left[\\big\\|\\boldsymbol{\\epsilon} - \\boldsymbol{\\epsilon}_\\theta(\\sqrt{\\bar{\\alpha}_t}\\,\\mathbf{x}_0 + \\sqrt{1-\\bar{\\alpha}_t}\\,\\boldsymbol{\\epsilon},\\, t)\\big\\|_2^2\\right]",
+          "operation_label": "ガウス事後分布の平方完成とノイズパラメータ化",
+          "explanation": "真の逆事後分布 q(x_{t-1}|x_t,x_0) の平均を x_0 の代わりに注入雑音 epsilon で表し、ガウスKL公式の平均差二乗項から重みを除いた簡略ノイズ予測損失を得る。",
+          "used_node_ids": [
+            "ml.diff.n02_forward_closed_form_kernel",
+            "ml.diff.n03_ddpm_elbo_kl_decomposition",
+            "ml.vi.n07_gaussian_kl_closed_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t,\\mathbf{x}_0) = \\frac{q(\\mathbf{x}_t\\mid\\mathbf{x}_{t-1},\\mathbf{x}_0)\\,q(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_0)}{q(\\mathbf{x}_t\\mid\\mathbf{x}_0)}",
+          "to_latex": "q(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t,\\mathbf{x}_0) = \\mathcal{N}\\big(\\mathbf{x}_{t-1}; \\tilde{\\boldsymbol{\\mu}}_t(\\mathbf{x}_t,\\mathbf{x}_0),\\, \\tilde{\\beta}_t I\\big),\\quad \\tilde{\\boldsymbol{\\mu}}_t = \\frac{\\sqrt{\\alpha_t}(1-\\bar{\\alpha}_{t-1})}{1-\\bar{\\alpha}_t}\\mathbf{x}_t + \\frac{\\sqrt{\\bar{\\alpha}_{t-1}}\\beta_t}{1-\\bar{\\alpha}_t}\\mathbf{x}_0",
+          "operation_label": "ガウス指数の平方完成",
+          "explanation": "3つのガウス密度の積・商の指数部を x_{t-1} について平方完成し、平均 mu_tilde_t と分散 beta_tilde_t = beta_t (1-alpha_bar_{t-1})/(1-alpha_bar_t) を求める。",
+          "used_node_ids": [
+            "ml.diff.n02_forward_closed_form_kernel"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q(\\mathbf{x}_{t-1}\\mid\\mathbf{x}_t,\\mathbf{x}_0) = \\mathcal{N}\\big(\\mathbf{x}_{t-1}; \\tilde{\\boldsymbol{\\mu}}_t(\\mathbf{x}_t,\\mathbf{x}_0),\\, \\tilde{\\beta}_t I\\big),\\quad \\tilde{\\boldsymbol{\\mu}}_t = \\frac{\\sqrt{\\alpha_t}(1-\\bar{\\alpha}_{t-1})}{1-\\bar{\\alpha}_t}\\mathbf{x}_t + \\frac{\\sqrt{\\bar{\\alpha}_{t-1}}\\beta_t}{1-\\bar{\\alpha}_t}\\mathbf{x}_0",
+          "to_latex": "\\tilde{\\boldsymbol{\\mu}}_t(\\mathbf{x}_t, \\boldsymbol{\\epsilon}) = \\frac{1}{\\sqrt{\\alpha_t}}\\left(\\mathbf{x}_t - \\frac{\\beta_t}{\\sqrt{1-\\bar{\\alpha}_t}}\\boldsymbol{\\epsilon}\\right)",
+          "operation_label": "x_0 の雑音表現による消去",
+          "explanation": "x_0 = (x_t - sqrt(1-alpha_bar_t) epsilon) / sqrt(alpha_bar_t) を mu_tilde_t に代入して整理する。",
+          "used_node_ids": [
+            "ml.diff.n02_forward_closed_form_kernel"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{\\boldsymbol{\\mu}}_t(\\mathbf{x}_t, \\boldsymbol{\\epsilon}) = \\frac{1}{\\sqrt{\\alpha_t}}\\left(\\mathbf{x}_t - \\frac{\\beta_t}{\\sqrt{1-\\bar{\\alpha}_t}}\\boldsymbol{\\epsilon}\\right)",
+          "to_latex": "L_{\\mathrm{simple}}(\\theta) = \\mathbb{E}_{t,\\mathbf{x}_0,\\boldsymbol{\\epsilon}}\\!\\left[\\big\\|\\boldsymbol{\\epsilon} - \\boldsymbol{\\epsilon}_\\theta(\\sqrt{\\bar{\\alpha}_t}\\,\\mathbf{x}_0 + \\sqrt{1-\\bar{\\alpha}_t}\\,\\boldsymbol{\\epsilon},\\, t)\\big\\|_2^2\\right]",
+          "operation_label": "固定分散ガウスKLの平均二乗誤差化",
+          "explanation": "モデル平均 mu_theta も同じ形式で epsilon_theta を用いてパラメータ化し、ガウス分布間のKL公式を適用して重み係数を省略すると簡略損失 L_simple を得る。",
+          "used_node_ids": [
+            "ml.diff.n03_ddpm_elbo_kl_decomposition",
+            "ml.vi.n07_gaussian_kl_closed_form"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_diff_05_dsm",
+      "target_node_id": "ml.diff.n05_stein_score_dsm_equivalence",
+      "route_kind": "equivalence",
+      "title": "明示的スコアマッチングからデノイジングスコアマッチングへの等価変換",
+      "premise_node_ids": [
+        "ml.igeom.n01_statistical_manifold_score",
+        "ml.diff.n02_forward_closed_form_kernel"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m10_integration_by_parts"
+      ],
+      "assumptions": [
+        "摂動周辺密度 p_sigma(x_tilde) は微分可能で、無限遠方で0に減衰する",
+        "スコアネットワーク s_theta と周辺密度の積に関する積分順序交換が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J_{\\mathrm{ESM}}(\\theta) = \\frac{1}{2}\\mathbb{E}_{p_\\sigma(\\tilde{\\mathbf{x}})}\\!\\left[\\big\\|\\mathbf{s}_\\theta(\\tilde{\\mathbf{x}}) - \\nabla_{\\tilde{\\mathbf{x}}}\\ln p_\\sigma(\\tilde{\\mathbf{x}})\\big\\|_2^2\\right]",
+          "to_latex": "J_{\\mathrm{DSM}}(\\theta) := \\frac{1}{2}\\mathbb{E}_{p(\\mathbf{x})q_\\sigma(\\tilde{\\mathbf{x}}\\mid\\mathbf{x})}\\!\\left[\\big\\|\\mathbf{s}_\\theta(\\tilde{\\mathbf{x}}) - \\nabla_{\\tilde{\\mathbf{x}}}\\ln q_\\sigma(\\tilde{\\mathbf{x}}\\mid\\mathbf{x})\\big\\|_2^2\\right] = J_{\\mathrm{ESM}}(\\theta) + C,\\qquad \\mathbf{s}_\\theta(\\mathbf{x}_t, t) = -\\frac{\\boldsymbol{\\epsilon}_\\theta(\\mathbf{x}_t, t)}{\\sqrt{1-\\bar{\\alpha}_t}}",
+          "operation_label": "周辺スコアの対数微分の条件付き展開",
+          "explanation": "明示的スコアマッチング（ESM）の交差項における周辺密度の勾配を条件付き摂動核の積分として書き換えることで、パラメータthetaに依存しない定数Cを除きDSMと一致することを示し、ガウス核でのノイズ予測との対応を得る。",
+          "used_node_ids": [
+            "math.calc.m10_integration_by_parts",
+            "ml.diff.n02_forward_closed_form_kernel",
+            "ml.igeom.n01_statistical_manifold_score"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{\\mathrm{ESM}}(\\theta) = \\frac{1}{2}\\mathbb{E}_{p_\\sigma(\\tilde{\\mathbf{x}})}[\\|\\mathbf{s}_\\theta(\\tilde{\\mathbf{x}})\\|_2^2] - \\int p_\\sigma(\\tilde{\\mathbf{x}})\\,\\mathbf{s}_\\theta(\\tilde{\\mathbf{x}})^\\top \\nabla_{\\tilde{\\mathbf{x}}}\\ln p_\\sigma(\\tilde{\\mathbf{x}})\\,d\\tilde{\\mathbf{x}} + C_1",
+          "to_latex": "J_{\\mathrm{ESM}}(\\theta) = \\frac{1}{2}\\mathbb{E}_{p_\\sigma(\\tilde{\\mathbf{x}})}[\\|\\mathbf{s}_\\theta(\\tilde{\\mathbf{x}})\\|_2^2] - \\iint p(\\mathbf{x})q_\\sigma(\\tilde{\\mathbf{x}}\\mid\\mathbf{x})\\,\\mathbf{s}_\\theta(\\tilde{\\mathbf{x}})^\\top \\nabla_{\\tilde{\\mathbf{x}}}\\ln q_\\sigma(\\tilde{\\mathbf{x}}\\mid\\mathbf{x})\\,d\\tilde{\\mathbf{x}}\\,d\\mathbf{x} + C_1",
+          "operation_label": "周辺密度勾配の同時期待値への書き換え",
+          "explanation": "p_sigma(x_tilde) nabla ln p_sigma(x_tilde) = nabla p_sigma(x_tilde) = int p(x) nabla q_sigma(x_tilde|x) dx = int p(x) q_sigma(x_tilde|x) nabla ln q_sigma(x_tilde|x) dx を交差項に代入する。",
+          "used_node_ids": [
+            "ml.igeom.n01_statistical_manifold_score"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{\\mathrm{ESM}}(\\theta) = \\frac{1}{2}\\mathbb{E}_{p_\\sigma(\\tilde{\\mathbf{x}})}[\\|\\mathbf{s}_\\theta(\\tilde{\\mathbf{x}})\\|_2^2] - \\iint p(\\mathbf{x})q_\\sigma(\\tilde{\\mathbf{x}}\\mid\\mathbf{x})\\,\\mathbf{s}_\\theta(\\tilde{\\mathbf{x}})^\\top \\nabla_{\\tilde{\\mathbf{x}}}\\ln q_\\sigma(\\tilde{\\mathbf{x}}\\mid\\mathbf{x})\\,d\\tilde{\\mathbf{x}}\\,d\\mathbf{x} + C_1",
+          "to_latex": "J_{\\mathrm{DSM}}(\\theta) := \\frac{1}{2}\\mathbb{E}_{p(\\mathbf{x})q_\\sigma(\\tilde{\\mathbf{x}}\\mid\\mathbf{x})}\\!\\left[\\big\\|\\mathbf{s}_\\theta(\\tilde{\\mathbf{x}}) - \\nabla_{\\tilde{\\mathbf{x}}}\\ln q_\\sigma(\\tilde{\\mathbf{x}}\\mid\\mathbf{x})\\big\\|_2^2\\right] = J_{\\mathrm{ESM}}(\\theta) + C,\\qquad \\mathbf{s}_\\theta(\\mathbf{x}_t, t) = -\\frac{\\boldsymbol{\\epsilon}_\\theta(\\mathbf{x}_t, t)}{\\sqrt{1-\\bar{\\alpha}_t}}",
+          "operation_label": "二乗ノルムの再構成とガウススコアの代入",
+          "explanation": "thetaに依存しない定数項 C_2 を補って条件付き二乗誤差にまとめ、q(x_t|x_0) がガウス分布のとき nabla ln q(x_t|x_0) = -epsilon / sqrt(1-alpha_bar_t) となることからスコア予測とノイズ予測の比例関係を得る。",
+          "used_node_ids": [
+            "ml.diff.n02_forward_closed_form_kernel"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_diff_06_forward_sde",
+      "target_node_id": "ml.diff.n06_continuous_forward_sde_def",
+      "route_kind": "reformulation",
+      "title": "離散フォワード拡散過程の連続時間極限によるVP-SDEの定式化",
+      "premise_node_ids": [
+        "ml.diff.n01_forward_diffusion_def",
+        "fin.bs.n01_gbm_brownian_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m13_taylor_expansion"
+      ],
+      "assumptions": [
+        "離散ステップ幅 Delta t = 1/T を 0 へ近づけ、beta_t = beta(t) Delta t とスケーリングする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}_{t+\\Delta t} = \\sqrt{1 - \\beta(t)\\Delta t}\\,\\mathbf{x}_t + \\sqrt{\\beta(t)\\Delta t}\\,\\boldsymbol{\\epsilon}_t",
+          "to_latex": "d\\mathbf{x} = \\mathbf{f}(\\mathbf{x}, t)\\,dt + g(t)\\,d\\mathbf{w},\\qquad \\text{VP-SDE: } d\\mathbf{x} = -\\frac{1}{2}\\beta(t)\\mathbf{x}\\,dt + \\sqrt{\\beta(t)}\\,d\\mathbf{w}",
+          "operation_label": "微小時間幅の1次テイラー展開と連続極限",
+          "explanation": "sqrt(1 - beta(t) Delta t) を Delta t について 1 - (1/2) beta(t) Delta t + O(Delta t^2) と展開し、sqrt(Delta t) epsilon_t をブラウン運動の増分 dw へ移行させることで連続時間VP-SDEを定義する。",
+          "used_node_ids": [
+            "fin.bs.n01_gbm_brownian_boundary",
+            "math.calc.m13_taylor_expansion",
+            "ml.diff.n01_forward_diffusion_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_diff_07_reverse_sde",
+      "target_node_id": "ml.diff.n07_reverse_time_sde",
+      "route_kind": "deductive",
+      "title": "フォッカー＝プランク方程式の時間反転対称性による逆時間SDEの導出",
+      "premise_node_ids": [
+        "ml.diff.n06_continuous_forward_sde_def",
+        "ml.diff.n05_stein_score_dsm_equivalence"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "周辺確率密度 p_t(x) は十分滑らかで、全空間で正かつ無限遠方で減衰する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "d\\mathbf{x} = \\mathbf{f}(\\mathbf{x}, t)\\,dt + g(t)\\,d\\mathbf{w},\\quad \\frac{\\partial p_t}{\\partial t} = -\\nabla\\cdot(\\mathbf{f}p_t) + \\frac{1}{2}g(t)^2\\Delta p_t",
+          "to_latex": "d\\mathbf{x} = \\big[\\mathbf{f}(\\mathbf{x}, t) - g(t)^2 \\nabla_{\\mathbf{x}}\\ln p_t(\\mathbf{x})\\big]\\,dt + g(t)\\,d\\bar{\\mathbf{w}}",
+          "operation_label": "時間反転フォッカー＝プランク方程式の恒等変形",
+          "explanation": "フォワードSDEのフォッカー＝プランク方程式において拡散項を2倍に分離し、一方を対数勾配（スコア）を用いたドリフト項へ吸収することで、逆向き時間に対するフォッカー＝プランク方程式と一致する逆時間SDEを得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "ml.diff.n05_stein_score_dsm_equivalence",
+            "ml.diff.n06_continuous_forward_sde_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial p_t}{\\partial t} = -\\nabla\\cdot(\\mathbf{f}(\\mathbf{x}, t)p_t) + \\frac{1}{2}g(t)^2\\nabla\\cdot(\\nabla p_t)",
+          "to_latex": "\\frac{\\partial p_t}{\\partial t} = -\\nabla\\cdot\\big([\\mathbf{f}(\\mathbf{x}, t) - g(t)^2\\nabla_{\\mathbf{x}}\\ln p_t(\\mathbf{x})]p_t\\big) - \\frac{1}{2}g(t)^2\\Delta p_t",
+          "operation_label": "拡散項の分割とスコア項のドリフトへの吸収",
+          "explanation": "(1/2) g^2 Delta p_t = g^2 nabla・(p_t nabla ln p_t) - (1/2) g^2 Delta p_t の恒等式を適用し、拡散項の符号を反転させる。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial p_t}{\\partial t} = -\\nabla\\cdot\\big([\\mathbf{f}(\\mathbf{x}, t) - g(t)^2\\nabla_{\\mathbf{x}}\\ln p_t(\\mathbf{x})]p_t\\big) - \\frac{1}{2}g(t)^2\\Delta p_t",
+          "to_latex": "d\\mathbf{x} = \\big[\\mathbf{f}(\\mathbf{x}, t) - g(t)^2 \\nabla_{\\mathbf{x}}\\ln p_t(\\mathbf{x})\\big]\\,dt + g(t)\\,d\\bar{\\mathbf{w}}",
+          "operation_label": "逆時間SDEへの対応付け",
+          "explanation": "時間変数を逆向き tau = T - t に変換すると符号が反転し、これが標準的な順方向フォッカー＝プランク方程式となるため、対応する逆時間SDEが確定する。",
+          "used_node_ids": [
+            "ml.diff.n05_stein_score_dsm_equivalence",
+            "ml.diff.n06_continuous_forward_sde_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_diff_08_prob_flow_ode",
+      "target_node_id": "ml.diff.n08_probability_flow_ode",
+      "route_kind": "deductive",
+      "title": "フォッカー＝プランク方程式の連続の式への変形による確率フローODEの導出",
+      "premise_node_ids": [
+        "ml.diff.n06_continuous_forward_sde_def",
+        "ml.diff.n07_reverse_time_sde"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "確率過程と同一の周辺確率密度 p_t(x) のみを再現する決定論的フローを構成する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial p_t}{\\partial t} = -\\nabla\\cdot(\\mathbf{f}(\\mathbf{x}, t)p_t) + \\frac{1}{2}g(t)^2\\Delta p_t",
+          "to_latex": "d\\mathbf{x} = \\left[\\mathbf{f}(\\mathbf{x}, t) - \\frac{1}{2}g(t)^2 \\nabla_{\\mathbf{x}}\\ln p_t(\\mathbf{x})\\right]dt",
+          "operation_label": "拡散項の完全吸収によるリュービル方程式への帰着",
+          "explanation": "フォッカー＝プランク方程式の拡散項全体を p_t nabla ln p_t を用いて発散の内側へ吸収すると、雑音項のない連続の式（リュービル方程式）になり、対応する確率フローODEが導かれる。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "ml.diff.n06_continuous_forward_sde_def",
+            "ml.diff.n07_reverse_time_sde"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial p_t}{\\partial t} = -\\nabla\\cdot(\\mathbf{f}(\\mathbf{x}, t)p_t) + \\frac{1}{2}g(t)^2\\nabla\\cdot(p_t \\nabla_{\\mathbf{x}}\\ln p_t(\\mathbf{x}))",
+          "to_latex": "\\frac{\\partial p_t}{\\partial t} = -\\nabla\\cdot\\left(\\left[\\mathbf{f}(\\mathbf{x}, t) - \\frac{1}{2}g(t)^2\\nabla_{\\mathbf{x}}\\ln p_t(\\mathbf{x})\\right]p_t\\right)",
+          "operation_label": "発散演算子の線形結合",
+          "explanation": "nabla p_t = p_t nabla ln p_t を用いて2階微分項を1階発散項に書き換え、ドリフト項と1つのベクトル場の発散としてまとめる。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial p_t}{\\partial t} = -\\nabla\\cdot\\left(\\left[\\mathbf{f}(\\mathbf{x}, t) - \\frac{1}{2}g(t)^2\\nabla_{\\mathbf{x}}\\ln p_t(\\mathbf{x})\\right]p_t\\right)",
+          "to_latex": "d\\mathbf{x} = \\left[\\mathbf{f}(\\mathbf{x}, t) - \\frac{1}{2}g(t)^2 \\nabla_{\\mathbf{x}}\\ln p_t(\\mathbf{x})\\right]dt",
+          "operation_label": "リュービル方程式からの決定論的ODE抽出",
+          "explanation": "拡散係数がゼロのフォッカー＝プランク方程式（連続の式）は、その速度場を右辺に持つ決定論的常微分方程式（確率フローODE）による確率密度の時間発展と一致する。",
+          "used_node_ids": [
+            "ml.diff.n06_continuous_forward_sde_def",
+            "ml.diff.n07_reverse_time_sde"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
