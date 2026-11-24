@@ -338,11 +338,18 @@
         "math.calc.m02_fundamental_theorem_calc"
       ],
       "required_math_node_ids": [
-        "math.calc.m16_integral_linearity"
+        "math.alg.real_additive_identity",
+        "math.calc.m13_vector_component_derivative",
+        "math.calc.m16_integral_linearity",
+        "math.calc.m52_continuous_function_integrability",
+        "math.calc.m54_integral_equality_preservation"
       ],
       "assumptions": [
         "領域 V は区分的に滑らかな閉曲面 ∂V で囲まれた3次元有界閉領域であり、x, y, z 単純領域の有限和に分割できる。",
-        "F は V の近傍で C1 級であり、n は ∂V 上の外向き単位法線ベクトルである。"
+        "ベクトル場 F = (F_x, F_y, F_z) は V を含む開領域上で C^1 級であり、各偏導関数 ∂F_x/∂x, ∂F_y/∂y, ∂F_z/∂z は V 上で連続かつリーマン可積分である。",
+        "n = (n_x, n_y, n_z) は ∂V の正則点上で定義された外向き単位法線ベクトルである。",
+        "各単純領域の境界を与える関数 z_1, z_2（D_{xy} 上）、x_1, x_2（D_{yz} 上）、y_1, y_2（D_{zx} 上）はそれぞれの射影閉領域上で連続かつ区分的に C^1 級である。",
+        "V を複数の単純小領域に分割した場合、隣接する小領域が共有する内部境界面上では外向き法線ベクトルが互いに逆向きとなるため、内部境界上の面積分は互いに打ち消し合う。"
       ],
       "steps": [
         {
@@ -352,10 +359,12 @@
           "parent_step_id": null,
           "from_latex": "\\iiint_{V} (\\nabla \\cdot \\mathbf{F})\\,dV",
           "to_latex": "\\iint_{\\partial V} (\\mathbf{F} \\cdot \\mathbf{n})\\,dS",
-          "operation_label": "各座標成分ごとの累次積分評価と表面流束への変換",
-          "explanation": "発散の定義により体積積分を3成分の和に分け、各軸方向の単純領域上でフビニの定理と微積分学の基本定理を適用して境界面の外向き法線面積分へ帰着させる。",
+          "operation_label": "発散の成分分解・累次積分評価・表面流束への統合",
+          "explanation": "発散の定義と積分の線形性により体積積分を3つの偏導関数の積分に分解し、各成分に対応する軸方向の単純領域上でフビニの定理と微積分学の基本定理を適用して境界上の値差を得る。さらに上下面・左右面・前後面および平行側面での外向き法線成分と面積素を対応付けて面積分へ変換し、3成分を合算してガウスの発散定理を導く。",
           "used_node_ids": [
             "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m16_integral_linearity",
+            "math.calc.mi01_multiple_integral_def",
             "math.calc.mi02_fubini_theorem",
             "math.vec.vc01_divergence_def",
             "math.vec.vc03_surface_integral_def"
@@ -369,45 +378,384 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\iiint_{V} (\\nabla \\cdot \\mathbf{F})\\,dV",
           "to_latex": "\\iiint_{V} \\frac{\\partial F_x}{\\partial x}\\,dV + \\iiint_{V} \\frac{\\partial F_y}{\\partial y}\\,dV + \\iiint_{V} \\frac{\\partial F_z}{\\partial z}\\,dV",
-          "operation_label": "発散の定義による成分展開",
-          "explanation": "発散の定義と積分の線形性を適用し、3つの偏導関数の体積積分の和に分解する。",
+          "operation_label": "発散の定義と積分の線形性による3成分展開",
+          "explanation": "被積分関数に発散の定義を代入し、偏導関数の連続性から保証されるリーマン可積分性と積分の線形性を逐次適用して3つの体積積分の和に分解する。",
           "used_node_ids": [
             "math.calc.m16_integral_linearity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.m54_integral_equality_preservation",
+            "math.calc.mi01_multiple_integral_def",
             "math.vec.vc01_divergence_def"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_2_z_simple_ftc",
+          "step_id": "s3_1_1",
           "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1_expand_divergence",
+          "from_latex": "\\iiint_{V} (\\nabla \\cdot \\mathbf{F})\\,dV",
+          "to_latex": "\\iiint_{V} \\left(\\frac{\\partial F_x}{\\partial x} + \\frac{\\partial F_y}{\\partial y} + \\frac{\\partial F_z}{\\partial z}\\right) dV",
+          "operation_label": "発散の定義の代入",
+          "explanation": "直交座標系における発散の定義 ∇·F = ∂F_x/∂x + ∂F_y/∂y + ∂F_z/∂z を被積分関数へ代入する。",
+          "used_node_ids": [
+            "math.calc.m54_integral_equality_preservation",
+            "math.vec.vc01_divergence_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1_expand_divergence",
+          "from_latex": "\\iiint_{V} \\left(\\frac{\\partial F_x}{\\partial x} + \\frac{\\partial F_y}{\\partial y} + \\frac{\\partial F_z}{\\partial z}\\right) dV",
+          "to_latex": "\\iiint_{V} \\frac{\\partial F_x}{\\partial x}\\,dV + \\iiint_{V} \\left(\\frac{\\partial F_y}{\\partial y} + \\frac{\\partial F_z}{\\partial z}\\right) dV",
+          "operation_label": "積分の線形性による第1項の分離",
+          "explanation": "F が C^1 級であることから各偏導関数は V 上で連続・可積分であり、定積分の線形性を適用して第1項 ∂F_x/∂x の体積積分を分離する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1_expand_divergence",
+          "from_latex": "\\iiint_{V} \\frac{\\partial F_x}{\\partial x}\\,dV + \\iiint_{V} \\left(\\frac{\\partial F_y}{\\partial y} + \\frac{\\partial F_z}{\\partial z}\\right) dV",
+          "to_latex": "\\iiint_{V} \\frac{\\partial F_x}{\\partial x}\\,dV + \\iiint_{V} \\frac{\\partial F_y}{\\partial y}\\,dV + \\iiint_{V} \\frac{\\partial F_z}{\\partial z}\\,dV",
+          "operation_label": "積分の線形性による第2項・第3項の分離",
+          "explanation": "残りの和 ∂F_y/∂y + ∂F_z/∂z の体積積分に対して再び定積分の線形性を適用し、3つの独立した体積積分の和を得る。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_z_simple_ftc",
+          "order": 6,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\iiint_{V} \\frac{\\partial F_z}{\\partial z}\\,dx\\,dy\\,dz",
-          "to_latex": "\\iint_{D_{xy}} \\Big(F_z(x,y,z_2(x,y)) - F_z(x,y,z_1(x,y))\\Big)\\,dx\\,dy",
-          "operation_label": "z単純領域でのフビニの定理と基本定理の適用",
-          "explanation": "z単純領域 V = {(x,y,z) : (x,y) ∈ D_xy, z_1(x,y) <= z <= z_2(x,y)} においてフビニの定理で z 積分を先に行い、微積分学の基本定理により上下面での値の差を得る。",
+          "from_latex": "\\iiint_{V} \\frac{\\partial F_z}{\\partial z}\\,dV",
+          "to_latex": "\\iint_{D_{xy}} F_z(x,y,z_2(x,y))\\,dx\\,dy - \\iint_{D_{xy}} F_z(x,y,z_1(x,y))\\,dx\\,dy",
+          "operation_label": "z成分の体積積分に対する累次積分と基本定理の適用",
+          "explanation": "z単純領域 V = {(x,y,z) : (x,y)∈D_{xy}, z_1(x,y) ≤ z ≤ z_2(x,y)} 上で直交座標体積素を導入し、フビニの定理で z 積分を内側に配置して微積分学の基本定理を適用した後、上下面の重積分の差へ分離する。",
           "used_node_ids": [
             "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m16_integral_linearity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.mi01_multiple_integral_def",
             "math.calc.mi02_fubini_theorem"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_3_surface_normal_flux",
-          "order": 4,
+          "step_id": "s3_2_1",
+          "order": 7,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2_z_simple_ftc",
+          "from_latex": "\\iiint_{V} \\frac{\\partial F_z}{\\partial z}\\,dV",
+          "to_latex": "\\iiint_{V} \\frac{\\partial F_z}{\\partial z}(x,y,z)\\,dx\\,dy\\,dz",
+          "operation_label": "直交座標体積素の導入",
+          "explanation": "重積分の定義に基づき、3次元体積素 dV を直交座標の微小体積要素 dx dy dz で表す。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2_z_simple_ftc",
+          "from_latex": "\\iiint_{V} \\frac{\\partial F_z}{\\partial z}(x,y,z)\\,dx\\,dy\\,dz",
+          "to_latex": "\\iint_{D_{xy}} \\left(\\int_{z_1(x,y)}^{z_2(x,y)} \\frac{\\partial F_z}{\\partial z}(x,y,z)\\,dz\\right) dx\\,dy",
+          "operation_label": "z単純領域へのフビニの定理の適用",
+          "explanation": "z単純領域 V = {(x,y,z) : (x,y)∈D_{xy}, z_1(x,y) ≤ z ≤ z_2(x,y)} において ∂F_z/∂z が連続であることからフビニの定理を適用し、z についての1変数積分を内側に持つ累次積分へ書き換える。",
+          "used_node_ids": [
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.mi02_fubini_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2_z_simple_ftc",
+          "from_latex": "\\iint_{D_{xy}} \\left(\\int_{z_1(x,y)}^{z_2(x,y)} \\frac{\\partial F_z}{\\partial z}(x,y,z)\\,dz\\right) dx\\,dy",
+          "to_latex": "\\iint_{D_{xy}} \\Big(F_z(x,y,z_2(x,y)) - F_z(x,y,z_1(x,y))\\Big)\\,dx\\,dy",
+          "operation_label": "z積分への微積分学の基本定理の適用",
+          "explanation": "各 (x,y)∈D_{xy} を固定して内側の z 積分に微積分学の基本定理を適用し、上限 z_2(x,y) と下限 z_1(x,y) における F_z の値の差へ評価する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m54_integral_equality_preservation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2_z_simple_ftc",
+          "from_latex": "\\iint_{D_{xy}} \\Big(F_z(x,y,z_2(x,y)) - F_z(x,y,z_1(x,y))\\Big)\\,dx\\,dy",
+          "to_latex": "\\iint_{D_{xy}} F_z(x,y,z_2(x,y))\\,dx\\,dy - \\iint_{D_{xy}} F_z(x,y,z_1(x,y))\\,dx\\,dy",
+          "operation_label": "重積分の線形性による上下面項の分離",
+          "explanation": "F_z(x,y,z_2(x,y)) と F_z(x,y,z_1(x,y)) が D_{xy} 上で連続・可積分であるため、定積分の線形性により2つの重積分の差へ分離する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_z_surface_flux",
+          "order": 11,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\iint_{D_{xy}} \\Big(F_z(x,y,z_2) - F_z(x,y,z_1)\\Big)\\,dx\\,dy",
-          "to_latex": "\\iint_{\\partial V} (\\mathbf{F} \\cdot \\mathbf{n})\\,dS",
-          "operation_label": "面積素と外向き法線成分の同一視および全成分合算",
-          "explanation": "上下面での外向き法線成分が n_z dS = +dx dy（上面）および -dx dy（下面）、側面で n_z = 0 であることを面積分の定義に適用すると F_z n_z の面積分が得られ、x, y 成分についても同様に加算することで発散定理が成立する。",
+          "from_latex": "\\iint_{D_{xy}} F_z(x,y,z_2(x,y))\\,dx\\,dy - \\iint_{D_{xy}} F_z(x,y,z_1(x,y))\\,dx\\,dy",
+          "to_latex": "\\iint_{\\partial V} F_z n_z\\,dS",
+          "operation_label": "z成分の上下面・側面における外向き法線流束への変換",
+          "explanation": "上面 S_2 と下面 S_1 の媒介変数表示の法線ベクトルからそれぞれ +dx dy = n_z dS および -dx dy = n_z dS を得て面積分に書き換え、z軸に平行な側面 S_0 上の零積分を加えた上で全境界面 ∂V 上の面積分へ統合する。",
           "used_node_ids": [
+            "math.alg.real_additive_identity",
+            "math.calc.m16_integral_linearity",
+            "math.calc.mi01_multiple_integral_def",
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3_z_surface_flux",
+          "from_latex": "\\iint_{D_{xy}} F_z(x,y,z_2(x,y))\\,dx\\,dy - \\iint_{D_{xy}} F_z(x,y,z_1(x,y))\\,dx\\,dy",
+          "to_latex": "\\iint_{S_2} F_z n_z\\,dS - \\iint_{D_{xy}} F_z(x,y,z_1(x,y))\\,dx\\,dy",
+          "operation_label": "上面 S_2 への面積分定義の代入",
+          "explanation": "上面 S_2 を r_2(x,y) = (x, y, z_2(x,y)) で媒介変数表示すると ∂r_2/∂x × ∂r_2/∂y = (-∂z_2/∂x, -∂z_2/∂y, 1) となり第3成分が正で外向きであるため、面積分の定義より dx dy = n_z dS が成り立ち、第1項を S_2 上の面積分へ書き換える。",
+          "used_node_ids": [
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3_z_surface_flux",
+          "from_latex": "\\iint_{S_2} F_z n_z\\,dS - \\iint_{D_{xy}} F_z(x,y,z_1(x,y))\\,dx\\,dy",
+          "to_latex": "\\iint_{S_2} F_z n_z\\,dS + \\iint_{S_1} F_z n_z\\,dS",
+          "operation_label": "下面 S_1 への面積分定義の代入と符号反転",
+          "explanation": "下面 S_1 を r_1(x,y) = (x, y, z_1(x,y)) で表すと外向き法線は下向きであるため、外向き面積ベクトル要素は -(∂r_1/∂x × ∂r_1/∂y) = (∂z_1/∂x, ∂z_1/∂y, -1) となり n_z dS = -dx dy が得られる。これを代入して負号を面積分内に吸収する。",
+          "used_node_ids": [
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3_z_surface_flux",
+          "from_latex": "\\iint_{S_2} F_z n_z\\,dS + \\iint_{S_1} F_z n_z\\,dS",
+          "to_latex": "\\iint_{S_2} F_z n_z\\,dS + \\iint_{S_1} F_z n_z\\,dS + \\iint_{S_0} F_z n_z\\,dS",
+          "operation_label": "側面 S_0 上の零流束項の加法導入",
+          "explanation": "z軸に平行な側面 S_0 上では外向き単位法線ベクトル n が xy 平面に平行となり n_z = 0 であるため ∬_{S_0} F_z n_z dS = 0 が成り立つ。加法単位元の公理によりこの零項を加える。",
+          "used_node_ids": [
+            "math.alg.real_additive_identity",
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3_z_surface_flux",
+          "from_latex": "\\iint_{S_2} F_z n_z\\,dS + \\iint_{S_1} F_z n_z\\,dS + \\iint_{S_0} F_z n_z\\,dS",
+          "to_latex": "\\iint_{\\partial V} F_z n_z\\,dS",
+          "operation_label": "境界表面の統合による ∂V 上の面積分表示",
+          "explanation": "z単純領域の境界 ∂V = S_2 ∪ S_1 ∪ S_0 に沿って面積分を統合する（V が有限個のz単純小領域の和に分割される場合も、隣接小領域間の内部境界面は外向き法線が逆向きで相殺するため、総和は外境界 ∂V 上の積分となる）。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.mi01_multiple_integral_def",
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4_xy_components_flux",
+          "order": 16,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_{V} \\frac{\\partial F_x}{\\partial x}\\,dV + \\iiint_{V} \\frac{\\partial F_y}{\\partial y}\\,dV",
+          "to_latex": "\\iint_{\\partial V} F_x n_x\\,dS + \\iint_{\\partial V} F_y n_y\\,dS",
+          "operation_label": "x成分およびy成分の体積積分の表面流束への変換",
+          "explanation": "V の x 単純分割と y 単純分割に対してそれぞれフビニの定理と微積分学の基本定理を適用し、各境界面の外向き法線成分 n_x dS = ±dy dz および n_y dS = ±dz dx を用いて ∂V 上の面積分へ変換する。",
+          "used_node_ids": [
+            "math.alg.real_additive_identity",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m16_integral_linearity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.m54_integral_equality_preservation",
+            "math.calc.mi01_multiple_integral_def",
+            "math.calc.mi02_fubini_theorem",
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4_xy_components_flux",
+          "from_latex": "\\iiint_{V} \\frac{\\partial F_x}{\\partial x}\\,dV + \\iiint_{V} \\frac{\\partial F_y}{\\partial y}\\,dV",
+          "to_latex": "\\iint_{D_{yz}} \\left(\\int_{x_1(y,z)}^{x_2(y,z)} \\frac{\\partial F_x}{\\partial x}(x,y,z)\\,dx\\right) dy\\,dz + \\iint_{D_{zx}} \\left(\\int_{y_1(z,x)}^{y_2(z,x)} \\frac{\\partial F_y}{\\partial y}(x,y,z)\\,dy\\right) dz\\,dx",
+          "operation_label": "x単純・y単純領域へのフビニの定理の適用",
+          "explanation": "x単純領域 x_1(y,z) ≤ x ≤ x_2(y,z)（(y,z)∈D_{yz}）および y単純領域 y_1(z,x) ≤ y ≤ y_2(z,x)（(z,x)∈D_{zx}）上でそれぞれフビニの定理を適用し、x 積分と y 積分を内側に配置した累次積分へ変換する。",
+          "used_node_ids": [
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.mi01_multiple_integral_def",
+            "math.calc.mi02_fubini_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4_xy_components_flux",
+          "from_latex": "\\iint_{D_{yz}} \\left(\\int_{x_1(y,z)}^{x_2(y,z)} \\frac{\\partial F_x}{\\partial x}(x,y,z)\\,dx\\right) dy\\,dz + \\iint_{D_{zx}} \\left(\\int_{y_1(z,x)}^{y_2(z,x)} \\frac{\\partial F_y}{\\partial y}(x,y,z)\\,dy\\right) dz\\,dx",
+          "to_latex": "\\iint_{D_{yz}} \\Big(F_x(x_2(y,z),y,z) - F_x(x_1(y,z),y,z)\\Big)\\,dy\\,dz + \\iint_{D_{zx}} \\Big(F_y(x,y_2(z,x),z) - F_y(x,y_1(z,x),z)\\Big)\\,dz\\,dx",
+          "operation_label": "x積分およびy積分への微積分学の基本定理の適用",
+          "explanation": "両項の内側の1変数定積分に対してそれぞれ微積分学の基本定理を適用し、境界表面 x = x_2(y,z), x_1(y,z) および y = y_2(z,x), y_1(z,x) 上の関数値の差へ評価する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m54_integral_equality_preservation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 19,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4_xy_components_flux",
+          "from_latex": "\\iint_{D_{yz}} \\Big(F_x(x_2(y,z),y,z) - F_x(x_1(y,z),y,z)\\Big)\\,dy\\,dz + \\iint_{D_{zx}} \\Big(F_y(x,y_2(z,x),z) - F_y(x,y_1(z,x),z)\\Big)\\,dz\\,dx",
+          "to_latex": "\\iint_{\\partial V} F_x n_x\\,dS + \\iint_{D_{zx}} \\Big(F_y(x,y_2(z,x),z) - F_y(x,y_1(z,x),z)\\Big)\\,dz\\,dx",
+          "operation_label": "x成分の境界面外向き法線面積分への変換",
+          "explanation": "x = x_2(y,z) 上で n_x dS = +dy dz、x = x_1(y,z) 上で n_x dS = -dy dz、x軸に平行な側面上で n_x = 0 であることを面積分の定義に適用し、内部境界面の相殺を経て第1項を ∂V 上の面積分へ変換する。",
+          "used_node_ids": [
+            "math.alg.real_additive_identity",
             "math.calc.m16_integral_linearity",
             "math.vec.vc03_surface_integral_def"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 20,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4_xy_components_flux",
+          "from_latex": "\\iint_{\\partial V} F_x n_x\\,dS + \\iint_{D_{zx}} \\Big(F_y(x,y_2(z,x),z) - F_y(x,y_1(z,x),z)\\Big)\\,dz\\,dx",
+          "to_latex": "\\iint_{\\partial V} F_x n_x\\,dS + \\iint_{\\partial V} F_y n_y\\,dS",
+          "operation_label": "y成分の境界面外向き法線面積分への変換",
+          "explanation": "y = y_2(z,x) 上で n_y dS = +dz dx、y = y_1(z,x) 上で n_y dS = -dz dx、y軸に平行な側面上で n_y = 0 であることを面積分の定義に適用し、内部境界面の相殺を経て第2項を ∂V 上の面積分へ変換する。",
+          "used_node_ids": [
+            "math.alg.real_additive_identity",
+            "math.calc.m16_integral_linearity",
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_5_combine_all_components",
+          "order": 21,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\iiint_{V} \\frac{\\partial F_x}{\\partial x}\\,dV + \\iiint_{V} \\frac{\\partial F_y}{\\partial y}\\,dV + \\iiint_{V} \\frac{\\partial F_z}{\\partial z}\\,dV",
+          "to_latex": "\\iint_{\\partial V} (\\mathbf{F} \\cdot \\mathbf{n})\\,dS",
+          "operation_label": "3成分の表面流束の統合とガウスの発散定理の完成",
+          "explanation": "各成分の表面流束表示を元の3成分和へ代入し、面積分の線形性を2段階適用して1つの面積分へまとめた後、直交成分の内積表示により目的の公式へ到達する。",
+          "used_node_ids": [
+            "math.calc.m13_vector_component_derivative",
+            "math.calc.m16_integral_linearity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.mi01_multiple_integral_def",
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_1",
+          "order": 22,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5_combine_all_components",
+          "from_latex": "\\iiint_{V} \\frac{\\partial F_x}{\\partial x}\\,dV + \\iiint_{V} \\frac{\\partial F_y}{\\partial y}\\,dV + \\iiint_{V} \\frac{\\partial F_z}{\\partial z}\\,dV",
+          "to_latex": "\\iint_{\\partial V} F_x n_x\\,dS + \\iint_{\\partial V} F_y n_y\\,dS + \\iint_{\\partial V} F_z n_z\\,dS",
+          "operation_label": "各成分の表面流束表示を代入・導入",
+          "explanation": "前段で導出した x 成分、y 成分、および z 成分の体積積分と ∂V 上の表面積分の等式をそれぞれ対応する項へ代入する。",
+          "used_node_ids": [
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_2",
+          "order": 23,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5_combine_all_components",
+          "from_latex": "\\iint_{\\partial V} F_x n_x\\,dS + \\iint_{\\partial V} F_y n_y\\,dS + \\iint_{\\partial V} F_z n_z\\,dS",
+          "to_latex": "\\iint_{\\partial V} (F_x n_x + F_y n_y)\\,dS + \\iint_{\\partial V} F_z n_z\\,dS",
+          "operation_label": "積分の線形性によるx・y成分面積分の統合",
+          "explanation": "F_x n_x と F_y n_y は区分的に滑らかな閉曲面 ∂V 上で区分的に連続・可積分であるため、積分の線形性を適用して第1項と第2項を1つの面積分へまとめる。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_3",
+          "order": 24,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5_combine_all_components",
+          "from_latex": "\\iint_{\\partial V} (F_x n_x + F_y n_y)\\,dS + \\iint_{\\partial V} F_z n_z\\,dS",
+          "to_latex": "\\iint_{\\partial V} (F_x n_x + F_y n_y + F_z n_z)\\,dS",
+          "operation_label": "積分の線形性によるz成分面積分の統合",
+          "explanation": "残る第2項の z 成分面積分についても積分の線形性を適用し、3成分の和を被積分関数とする単一の面積分へ統合する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.calc.m52_continuous_function_integrability",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_4",
+          "order": 25,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5_combine_all_components",
+          "from_latex": "\\iint_{\\partial V} (F_x n_x + F_y n_y + F_z n_z)\\,dS",
+          "to_latex": "\\iint_{\\partial V} (\\mathbf{F} \\cdot \\mathbf{n})\\,dS",
+          "operation_label": "正規直交基底による内積表示への書き換え",
+          "explanation": "正規直交基底の直交関係 e_i · e_j = δ_{ij} により F_x n_x + F_y n_y + F_z n_z = F · n と表されることを適用し、流束積分の標準形を得る。",
+          "used_node_ids": [
+            "math.calc.m13_vector_component_derivative",
+            "math.vec.vc03_surface_integral_def"
+          ],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-24T07:34:57.298003+00:00"
     },
     {
       "id": "deriv_vc06_stokes_theorem",
