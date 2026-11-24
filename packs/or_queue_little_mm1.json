@@ -1,0 +1,650 @@
+{
+  "pack_meta": {
+    "pack_id": "or.queue.little_mm1",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "operations_research",
+    "title": "待ち行列理論：ポアソン過程・出生死滅過程・リトルの法則とM/M/1・M/M/c待ち行列",
+    "language": "ja",
+    "description": "連続時間マルコフ連鎖の詳細釣り合い条件からM/M/1の定常確率分布、平均系内人数L=ρ/(1-ρ)、リトルの法則 L=λW、アーランC公式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "or.q.n01_poisson_birth_death_boundary",
+      "short_code": "Q01",
+      "kind": "math_boundary",
+      "title": "ポアソン過程・指数サービスと出生死滅過程の基礎境界",
+      "summary": "無記憶性を持つポアソン到着と指数分布サービス時間に基づく連続時間マルコフ連鎖（出生死滅過程）の遷移率と定常平衡方程式の境界。",
+      "canonical_latex": "P(\\text{arrival in }\\Delta t) = \\lambda_n \\Delta t + o(\\Delta t),\\quad P(\\text{departure in }\\Delta t) = \\mu_n \\Delta t + o(\\Delta t),\\quad \\lambda_{n-1} P_{n-1} + \\mu_{n+1} P_{n+1} = (\\lambda_n + \\mu_n) P_n\\;(n \\ge 1)",
+      "aliases_latex": [
+        "\\mu_1 P_1 - \\lambda_0 P_0 = 0,\\quad \\lambda_{n-1} P_{n-1} + \\mu_{n+1} P_{n+1} - (\\lambda_n + \\mu_n) P_n = 0"
+      ],
+      "keywords": [
+        "ポアソン過程",
+        "指数分布",
+        "無記憶性",
+        "出生死滅過程",
+        "平衡方程式"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "queueing_theory",
+        "stochastic_process"
+      ]
+    },
+    {
+      "id": "or.q.n02_detailed_balance_steady_state",
+      "short_code": "Q02",
+      "kind": "theorem_formula",
+      "title": "出生死滅過程の詳細釣り合い条件と定常確率分布の一般解",
+      "summary": "出生死滅過程の定常状態において隣接する2状態間の遷移流束が等しくなる詳細釣り合い条件と、それによる定常確率の積表示。",
+      "canonical_latex": "\\lambda_{n-1} P_{n-1} = \\mu_n P_n,\\qquad P_n = P_0 \\prod_{k=1}^{n} \\frac{\\lambda_{k-1}}{\\mu_k}\\quad (n \\ge 1)",
+      "aliases_latex": [
+        "P_n = \\frac{\\lambda_0 \\lambda_1 \\cdots \\lambda_{n-1}}{\\mu_1 \\mu_2 \\cdots \\mu_n} P_0"
+      ],
+      "keywords": [
+        "詳細釣り合い条件",
+        "定常確率分布",
+        "出生死滅過程",
+        "連続時間マルコフ連鎖"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "queueing_theory"
+      ]
+    },
+    {
+      "id": "or.q.n03_mm1_steady_state_dist",
+      "short_code": "Q03",
+      "kind": "theorem_formula",
+      "title": "M/M/1待ち行列の定常確率分布と安定条件",
+      "summary": "到着率λのポアソン到着・サービス率μの単一窓口（M/M/1）における定常状態の存在条件（ρ<1）と系内人数の幾何分布。",
+      "canonical_latex": "\\rho := \\frac{\\lambda}{\\mu} < 1 \\implies P_n = (1 - \\rho)\\rho^n\\quad (n = 0, 1, 2, \\dots)",
+      "aliases_latex": [
+        "P_0 = 1 - \\rho,\\quad P_n = P_0 \\rho^n"
+      ],
+      "keywords": [
+        "M/M/1",
+        "トラフィック密度",
+        "利用率",
+        "幾何分布",
+        "定常分布"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "queueing_theory"
+      ]
+    },
+    {
+      "id": "or.q.n04_mm1_mean_number_length",
+      "short_code": "Q04",
+      "kind": "theorem_formula",
+      "title": "M/M/1待ち行列の平均系内人数 L と平均待ち人数 L_q",
+      "summary": "M/M/1モデルの定常確率分布から導かれる、系内に存在する平均客数Lおよび待合室で待機中の平均客数L_qの閉じた公式。",
+      "canonical_latex": "L = \\frac{\\rho}{1 - \\rho},\\qquad L_q = \\frac{\\rho^2}{1 - \\rho}",
+      "aliases_latex": [
+        "L = \\frac{\\lambda}{\\mu - \\lambda},\\quad L_q = \\frac{\\lambda^2}{\\mu(\\mu - \\lambda)}"
+      ],
+      "keywords": [
+        "M/M/1",
+        "平均系内人数",
+        "平均待ち人数",
+        "べき級数"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "queueing_theory"
+      ]
+    },
+    {
+      "id": "or.q.n05_littles_law",
+      "short_code": "Q05",
+      "kind": "theorem_formula",
+      "title": "リトルの法則（平均系内人数・到着率・平均滞在時間の関係）",
+      "summary": "到着分布やサービス規律に依存せず、定常な待ち行列系一般に成り立つ平均人数L・平均到着率λ・平均時間Wの普遍的関係式。",
+      "canonical_latex": "L = \\lambda W,\\qquad L_q = \\lambda W_q",
+      "aliases_latex": [
+        "W = \\frac{L}{\\lambda},\\quad W_q = \\frac{L_q}{\\lambda}"
+      ],
+      "keywords": [
+        "リトルの法則",
+        "平均滞在時間",
+        "平均待ち時間",
+        "保存則"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "queueing_theory"
+      ]
+    },
+    {
+      "id": "or.q.n06_mm1_mean_sojourn_wait_time",
+      "short_code": "Q06",
+      "kind": "theorem_formula",
+      "title": "M/M/1待ち行列の平均系内滞在時間 W と平均待ち時間 W_q",
+      "summary": "M/M/1の平均人数公式とリトルの法則を組み合わせて得られる、客1人あたりの平均系内滞在時間Wおよび平均待ち時間W_q。",
+      "canonical_latex": "W = \\frac{1}{\\mu - \\lambda},\\qquad W_q = \\frac{\\rho}{\\mu - \\lambda}",
+      "aliases_latex": [
+        "W = W_q + \\frac{1}{\\mu},\\quad W_q = \\frac{\\lambda}{\\mu(\\mu - \\lambda)}"
+      ],
+      "keywords": [
+        "M/M/1",
+        "平均滞在時間",
+        "平均待ち時間",
+        "リトルの法則"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "queueing_theory"
+      ]
+    },
+    {
+      "id": "or.q.n07_mmc_steady_state_dist",
+      "short_code": "Q07",
+      "kind": "theorem_formula",
+      "title": "M/M/c待ち行列の定常確率分布と空き状態確率 P_0",
+      "summary": "並列するc個の同一窓口を持つM/M/c待ち行列において、稼働窓口数に応じたサービス率から導かれる定常確率分布とP_0の表現。",
+      "canonical_latex": "P_n = \\begin{cases} \\frac{(c\\rho)^n}{n!} P_0 & (0 \\le n < c) \\\\ \\frac{c^c \\rho^n}{c!} P_0 & (n \\ge c) \\end{cases},\\quad P_0 = \\left[\\sum_{n=0}^{c-1}\\frac{(c\\rho)^n}{n!} + \\frac{(c\\rho)^c}{c!(1 - \\rho)}\\right]^{-1}\\quad \\left(\\rho := \\frac{\\lambda}{c\\mu} < 1\\right)",
+      "aliases_latex": [
+        "P_n = \\frac{a^n}{n!} P_0\\;(n < c),\\quad P_n = \\frac{a^n}{c!\\,c^{n-c}} P_0\\;(n \\ge c)\\;\\left(a=\\frac{\\lambda}{\\mu}\\right)"
+      ],
+      "keywords": [
+        "M/M/c",
+        "複数窓口",
+        "定常確率分布",
+        "出生死滅過程"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "queueing_theory"
+      ]
+    },
+    {
+      "id": "or.q.n08_erlang_c_formula",
+      "short_code": "Q08",
+      "kind": "theorem_formula",
+      "title": "アーランC公式（M/M/cの待ち確率）と平均待ち人数",
+      "summary": "M/M/c待ち行列において到着した客が全窓口使用中のため待たされる確率（アーランC公式）と、それを用いた平均待ち人数L_q。",
+      "canonical_latex": "C(c, a) = \\frac{\\frac{a^c}{c!(1 - \\rho)}}{\\sum_{n=0}^{c-1}\\frac{a^n}{n!} + \\frac{a^c}{c!(1 - \\rho)}},\\qquad L_q = C(c, a)\\frac{\\rho}{1 - \\rho}\\quad \\left(a = \\frac{\\lambda}{\\mu} = c\\rho\\right)",
+      "aliases_latex": [
+        "P(\\text{wait}) = \\sum_{n=c}^{\\infty} P_n = C(c, a)"
+      ],
+      "keywords": [
+        "アーランC公式",
+        "M/M/c",
+        "待ち確率",
+        "コールセンター"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "queueing_theory"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_q02_detailed_balance",
+      "target_node_id": "or.q.n02_detailed_balance_steady_state",
+      "route_kind": "deductive",
+      "title": "大域平衡方程式からの詳細釣り合い条件と定常分布の導出",
+      "premise_node_ids": [
+        "or.q.n01_poisson_birth_death_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "連続時間マルコフ連鎖が既約かつ非周期的であり、定常分布が存在する。",
+        "状態遷移は隣接する状態（+1または-1）のみに限定される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mu_1 P_1 - \\lambda_0 P_0 = 0,\\quad \\lambda_{n-1} P_{n-1} + \\mu_{n+1} P_{n+1} - (\\lambda_n + \\mu_n) P_n = 0\\;(n \\ge 1)",
+          "to_latex": "\\lambda_{n-1} P_{n-1} = \\mu_n P_n,\\qquad P_n = P_0 \\prod_{k=1}^{n} \\frac{\\lambda_{k-1}}{\\mu_k}\\quad (n \\ge 1)",
+          "operation_label": "帰納法による詳細釣り合いと積表示の導出",
+          "explanation": "出生死滅過程の大域平衡方程式に数学的帰納法を適用して隣接状態間の詳細釣り合い条件を導き、漸化式を繰り返し展開してP_nをP_0の積表示で表す。",
+          "used_node_ids": [
+            "or.q.n01_poisson_birth_death_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu_1 P_1 - \\lambda_0 P_0 = 0,\\quad \\lambda_{n-1} P_{n-1} + \\mu_{n+1} P_{n+1} - (\\lambda_n + \\mu_n) P_n = 0\\;(n \\ge 1)",
+          "to_latex": "\\lambda_0 P_0 = \\mu_1 P_1,\\quad \\mu_{n+1} P_{n+1} - \\lambda_n P_n = \\mu_n P_n - \\lambda_{n-1} P_{n-1}\\;(n \\ge 1)",
+          "operation_label": "平衡方程式の隣接流束差への変形",
+          "explanation": "状態0の平衡式から基底ケースを分離し、状態nの平衡方程式を隣接状態間の正味遷移流束の等式として書き換える。",
+          "used_node_ids": [
+            "or.q.n01_poisson_birth_death_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lambda_0 P_0 = \\mu_1 P_1,\\quad \\mu_{n+1} P_{n+1} - \\lambda_n P_n = \\mu_n P_n - \\lambda_{n-1} P_{n-1}\\;(n \\ge 1)",
+          "to_latex": "\\lambda_{n-1} P_{n-1} = \\mu_n P_n\\quad (\\forall n \\ge 1)",
+          "operation_label": "数学的帰納法による詳細釣り合いの導出",
+          "explanation": "n=1で左辺と右辺の差が0であることから、帰納的にすべてのnについて隣接状態間の遷移流束が等しい詳細釣り合い条件が得られる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lambda_{n-1} P_{n-1} = \\mu_n P_n\\quad (\\forall n \\ge 1)",
+          "to_latex": "\\lambda_{n-1} P_{n-1} = \\mu_n P_n,\\qquad P_n = P_0 \\prod_{k=1}^{n} \\frac{\\lambda_{k-1}}{\\mu_k}\\quad (n \\ge 1)",
+          "operation_label": "漸化式の反復代入による一般解の構成",
+          "explanation": "P_k = (λ_{k-1}/μ_k) P_{k-1} を k=1 から n まで逐次代入し、P_0 を基準とした積の形を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_q03_mm1_steady_state",
+      "target_node_id": "or.q.n03_mm1_steady_state_dist",
+      "route_kind": "deductive",
+      "title": "定数遷移率と規格化条件によるM/M/1定常分布の導出",
+      "premise_node_ids": [
+        "or.q.n02_detailed_balance_steady_state",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "到着率λおよびサービス率μは系内人数nによらず一定（λ>0, μ>0）である。",
+        "系が安定であるための条件 ρ = λ/μ < 1 を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_n = P_0 \\prod_{k=1}^{n} \\frac{\\lambda_{k-1}}{\\mu_k},\\quad \\lambda_k = \\lambda,\\quad \\mu_k = \\mu,\\quad \\sum_{n=0}^{\\infty} P_n = 1",
+          "to_latex": "\\rho := \\frac{\\lambda}{\\mu} < 1 \\implies P_n = (1 - \\rho)\\rho^n\\quad (n = 0, 1, 2, \\dots)",
+          "operation_label": "定数パラメータ代入と確率規格化",
+          "explanation": "出生死滅過程の一般解に一定率λ, μを代入し、全確率の和が1となる規格化条件（無限等比級数の収束条件）からM/M/1の幾何分布を導く。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms",
+            "or.q.n02_detailed_balance_steady_state"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_n = P_0 \\prod_{k=1}^{n} \\frac{\\lambda_{k-1}}{\\mu_k},\\quad \\lambda_k = \\lambda,\\quad \\mu_k = \\mu,\\quad \\sum_{n=0}^{\\infty} P_n = 1",
+          "to_latex": "P_n = P_0 \\left(\\frac{\\lambda}{\\mu}\\right)^n = P_0 \\rho^n\\quad \\left(\\rho := \\frac{\\lambda}{\\mu}\\right)",
+          "operation_label": "一定遷移率の代入とρの定義",
+          "explanation": "すべてのkについて λ_{k-1}=λ, μ_k=μ を代入し、トラフィック密度 ρ = λ/μ を用いて累乗で表す。",
+          "used_node_ids": [
+            "or.q.n02_detailed_balance_steady_state"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_n = P_0 \\left(\\frac{\\lambda}{\\mu}\\right)^n = P_0 \\rho^n\\quad \\left(\\rho := \\frac{\\lambda}{\\mu}\\right)",
+          "to_latex": "P_0 \\sum_{n=0}^{\\infty} \\rho^n = 1 \\implies P_0 \\frac{1}{1 - \\rho} = 1\\quad (\\rho < 1)",
+          "operation_label": "確率公理による無限等比級数の規格化",
+          "explanation": "全事象の確率の和が1である条件から無限等比級数の和を計算し、収束条件 ρ < 1 のもとで P_0 = 1 - ρ を得る。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_0 \\sum_{n=0}^{\\infty} \\rho^n = 1 \\implies P_0 \\frac{1}{1 - \\rho} = 1\\quad (\\rho < 1)",
+          "to_latex": "\\rho := \\frac{\\lambda}{\\mu} < 1 \\implies P_n = (1 - \\rho)\\rho^n\\quad (n = 0, 1, 2, \\dots)",
+          "operation_label": "P_0 の代入による定常分布の確定",
+          "explanation": "求めた P_0 = 1 - ρ を P_n = P_0 ρ^n に代入し、M/M/1待ち行列の定常確率分布を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_q04_mm1_mean_length",
+      "target_node_id": "or.q.n04_mm1_mean_number_length",
+      "route_kind": "deductive",
+      "title": "定常分布の期待値計算による平均系内人数 L と L_q の導出",
+      "premise_node_ids": [
+        "or.q.n03_mm1_steady_state_dist"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "0 <= ρ < 1 が成り立ち、べき級数の項別微分が可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_n = (1 - \\rho)\\rho^n\\quad (0 \\le \\rho < 1)",
+          "to_latex": "L = \\frac{\\rho}{1 - \\rho},\\qquad L_q = \\frac{\\rho^2}{1 - \\rho}",
+          "operation_label": "期待値の定義とべき級数微分による評価",
+          "explanation": "系内人数Nの期待値および待ち人数(N-1)_+の期待値を、幾何分布に対するべき級数の微分を用いて閉じた式で計算する。",
+          "used_node_ids": [
+            "or.q.n03_mm1_steady_state_dist"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_n = (1 - \\rho)\\rho^n\\quad (0 \\le \\rho < 1)",
+          "to_latex": "L = \\sum_{n=0}^{\\infty} n(1 - \\rho)\\rho^n = (1 - \\rho)\\rho \\frac{d}{d\\rho}\\left(\\sum_{n=0}^{\\infty} \\rho^n\\right)",
+          "operation_label": "平均系内人数のべき級数微分への変形",
+          "explanation": "L = Σ n P_n に定常分布を代入し、n ρ^{n-1} が ρ^n の導関数であることを利用して微分の外に出す。",
+          "used_node_ids": [
+            "or.q.n03_mm1_steady_state_dist"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L = \\sum_{n=0}^{\\infty} n(1 - \\rho)\\rho^n = (1 - \\rho)\\rho \\frac{d}{d\\rho}\\left(\\sum_{n=0}^{\\infty} \\rho^n\\right)",
+          "to_latex": "L = (1 - \\rho)\\rho \\frac{d}{d\\rho}\\left(\\frac{1}{1 - \\rho}\\right) = \\frac{\\rho}{1 - \\rho}",
+          "operation_label": "等比級数の和の微分と整理",
+          "explanation": "1/(1-ρ) を ρ で微分して 1/(1-ρ)^2 を得て、前の因子 (1-ρ)ρ と掛け合わせることで L = ρ/(1-ρ) を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L = (1 - \\rho)\\rho \\frac{d}{d\\rho}\\left(\\frac{1}{1 - \\rho}\\right) = \\frac{\\rho}{1 - \\rho}",
+          "to_latex": "L = \\frac{\\rho}{1 - \\rho},\\qquad L_q = \\frac{\\rho^2}{1 - \\rho}",
+          "operation_label": "平均待ち人数 L_q の算出",
+          "explanation": "L_q = Σ_{n=1}^∞ (n-1)P_n = L - (1 - P_0) = ρ/(1-ρ) - ρ として整理し、L_q = ρ^2/(1-ρ) を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_q05_littles_law",
+      "target_node_id": "or.q.n05_littles_law",
+      "route_kind": "deductive",
+      "title": "サンプルパス上の時間積分面積保存によるリトルの法則の導出",
+      "premise_node_ids": [
+        "or.q.n01_poisson_birth_death_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "長期平均到着率 λ = lim_{T→∞} A(T)/T および長期平均滞在時間 W = lim_{N→∞} (1/N) Σ W_i が有限値として存在する。",
+        "時刻0からTの境界端における系内滞在客の寄与が T→∞ で相対的に無視できる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\int_{0}^{T} N(t)\\,dt = \\sum_{i=1}^{A(T)} W_i - \\text{boundary terms},\\quad \\lambda = \\lim_{T\\to\\infty}\\frac{A(T)}{T}",
+          "to_latex": "L = \\lambda W,\\qquad L_q = \\lambda W_q",
+          "operation_label": "時間平均と客平均の極限移行",
+          "explanation": "累積系内滞在時間の面積を時間軸と客軸の2通りで評価し、観測時間Tで割ってT→∞の極限をとることでリトルの法則を導く。",
+          "used_node_ids": [
+            "or.q.n01_poisson_birth_death_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{0}^{T} N(t)\\,dt = \\sum_{i=1}^{A(T)} W_i - \\text{boundary terms},\\quad \\lambda = \\lim_{T\\to\\infty}\\frac{A(T)}{T}",
+          "to_latex": "\\frac{1}{T}\\int_{0}^{T} N(t)\\,dt = \\frac{A(T)}{T} \\cdot \\frac{1}{A(T)}\\sum_{i=1}^{A(T)} W_i + o(1)",
+          "operation_label": "観測時間 T による除算と平均量の分離",
+          "explanation": "両辺をTで割り、右辺に到着客数 A(T) を掛けて割ることで、到着頻度 A(T)/T と客1人あたり平均滞在時間の積に分解する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{T}\\int_{0}^{T} N(t)\\,dt = \\frac{A(T)}{T} \\cdot \\frac{1}{A(T)}\\sum_{i=1}^{A(T)} W_i + o(1)",
+          "to_latex": "L = \\lambda W,\\qquad L_q = \\lambda W_q",
+          "operation_label": "T → ∞ の極限評価と待合室への適用",
+          "explanation": "T→∞で左辺はL、右辺はλWに収束する。対象を待合室のみに限定して同じ議論を行えば L_q = λ W_q も同様に得られる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_q06_mm1_sojourn_wait",
+      "target_node_id": "or.q.n06_mm1_mean_sojourn_wait_time",
+      "route_kind": "deductive",
+      "title": "M/M/1の平均人数公式とリトルの法則による平均滞在・待ち時間の導出",
+      "premise_node_ids": [
+        "or.q.n04_mm1_mean_number_length",
+        "or.q.n05_littles_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "安定条件 λ < μ（すなわち ρ < 1）が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L = \\frac{\\rho}{1 - \\rho},\\quad L_q = \\frac{\\rho^2}{1 - \\rho},\\quad L = \\lambda W,\\quad L_q = \\lambda W_q,\\quad \\rho = \\frac{\\lambda}{\\mu}",
+          "to_latex": "W = \\frac{1}{\\mu - \\lambda},\\qquad W_q = \\frac{\\rho}{\\mu - \\lambda}",
+          "operation_label": "リトルの法則への代入と代数整理",
+          "explanation": "M/M/1の平均系内人数Lおよび平均待ち人数L_qをリトルの法則に代入し、到着率λで割って平均時間W, W_qを得る。",
+          "used_node_ids": [
+            "or.q.n04_mm1_mean_number_length",
+            "or.q.n05_littles_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L = \\frac{\\rho}{1 - \\rho},\\quad L_q = \\frac{\\rho^2}{1 - \\rho},\\quad L = \\lambda W,\\quad L_q = \\lambda W_q,\\quad \\rho = \\frac{\\lambda}{\\mu}",
+          "to_latex": "W = \\frac{L}{\\lambda} = \\frac{\\lambda/\\mu}{\\lambda(1 - \\lambda/\\mu)} = \\frac{1}{\\mu - \\lambda}",
+          "operation_label": "平均系内滞在時間 W の計算",
+          "explanation": "W = L/λ に L = ρ/(1-ρ) と ρ = λ/μ を代入して約分し、1/(μ-λ) を得る。",
+          "used_node_ids": [
+            "or.q.n04_mm1_mean_number_length",
+            "or.q.n05_littles_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W = \\frac{L}{\\lambda} = \\frac{\\lambda/\\mu}{\\lambda(1 - \\lambda/\\mu)} = \\frac{1}{\\mu - \\lambda}",
+          "to_latex": "W = \\frac{1}{\\mu - \\lambda},\\qquad W_q = \\frac{\\rho}{\\mu - \\lambda}",
+          "operation_label": "平均待ち時間 W_q の計算",
+          "explanation": "同様に W_q = L_q/λ = ρ W = ρ/(μ-λ)（または W - 1/μ）を計算して平均待ち時間を得る。",
+          "used_node_ids": [
+            "or.q.n04_mm1_mean_number_length",
+            "or.q.n05_littles_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_q07_mmc_steady_state",
+      "target_node_id": "or.q.n07_mmc_steady_state_dist",
+      "route_kind": "deductive",
+      "title": "状態依存サービス率によるM/M/c定常確率分布とP_0の導出",
+      "premise_node_ids": [
+        "or.q.n02_detailed_balance_steady_state",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "c個の窓口は互いに独立かつ同一のサービス率μの指数分布に従う。",
+        "系の利用率 ρ = λ/(cμ) < 1 が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_n = P_0 \\prod_{k=1}^{n} \\frac{\\lambda_{k-1}}{\\mu_k},\\quad \\lambda_k = \\lambda,\\quad \\mu_k = \\min(k, c)\\mu,\\quad \\sum_{n=0}^{\\infty} P_n = 1",
+          "to_latex": "P_n = \\begin{cases} \\frac{(c\\rho)^n}{n!} P_0 & (0 \\le n < c) \\\\ \\frac{c^c \\rho^n}{c!} P_0 & (n \\ge c) \\end{cases},\\quad P_0 = \\left[\\sum_{n=0}^{c-1}\\frac{(c\\rho)^n}{n!} + \\frac{(c\\rho)^c}{c!(1 - \\rho)}\\right]^{-1}",
+          "operation_label": "状態依存サービス率の積評価と規格化",
+          "explanation": "系内人数kに応じた総サービス率 min(k, c)μ を出生死滅過程の一般解に代入し、n<cとn≥cに分けて確率を規格化する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms",
+            "or.q.n02_detailed_balance_steady_state"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_n = P_0 \\prod_{k=1}^{n} \\frac{\\lambda_{k-1}}{\\mu_k},\\quad \\lambda_k = \\lambda,\\quad \\mu_k = \\min(k, c)\\mu,\\quad \\sum_{n=0}^{\\infty} P_n = 1",
+          "to_latex": "P_n = \\begin{cases} \\frac{(\\lambda/\\mu)^n}{n!} P_0 & (0 \\le n < c) \\\\ \\frac{(\\lambda/\\mu)^n}{c!\\,c^{n-c}} P_0 & (n \\ge c) \\end{cases}",
+          "operation_label": "n < c と n ≥ c での積の展開",
+          "explanation": "k≤cの積は階乗 c! になり、k>cの部分はすべて係数 c が掛かるため c^{n-c} となる。",
+          "used_node_ids": [
+            "or.q.n02_detailed_balance_steady_state"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_n = \\begin{cases} \\frac{(\\lambda/\\mu)^n}{n!} P_0 & (0 \\le n < c) \\\\ \\frac{(\\lambda/\\mu)^n}{c!\\,c^{n-c}} P_0 & (n \\ge c) \\end{cases}",
+          "to_latex": "P_n = \\begin{cases} \\frac{(c\\rho)^n}{n!} P_0 & (0 \\le n < c) \\\\ \\frac{c^c \\rho^n}{c!} P_0 & (n \\ge c) \\end{cases},\\quad \\sum_{n=0}^{c-1}\\frac{(c\\rho)^n}{n!}P_0 + \\frac{c^c P_0}{c!}\\sum_{n=c}^{\\infty}\\rho^n = 1",
+          "operation_label": "ρ = λ/(cμ) の導入と全確率和の分割",
+          "explanation": "λ/μ = cρ を代入して P_n を書き換え、全確率が1となる条件を有限和 (n<c) と無限級数 (n≥c) に分ける。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_n = \\begin{cases} \\frac{(c\\rho)^n}{n!} P_0 & (0 \\le n < c) \\\\ \\frac{c^c \\rho^n}{c!} P_0 & (n \\ge c) \\end{cases},\\quad \\sum_{n=0}^{c-1}\\frac{(c\\rho)^n}{n!}P_0 + \\frac{c^c P_0}{c!}\\sum_{n=c}^{\\infty}\\rho^n = 1",
+          "to_latex": "P_n = \\begin{cases} \\frac{(c\\rho)^n}{n!} P_0 & (0 \\le n < c) \\\\ \\frac{c^c \\rho^n}{c!} P_0 & (n \\ge c) \\end{cases},\\quad P_0 = \\left[\\sum_{n=0}^{c-1}\\frac{(c\\rho)^n}{n!} + \\frac{(c\\rho)^c}{c!(1 - \\rho)}\\right]^{-1}",
+          "operation_label": "無限等比級数の計算と P_0 の決定",
+          "explanation": "ρ < 1 の下で Σ_{n=c}^∞ ρ^n = ρ^c/(1-ρ) を評価し、P_0 について解く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_q08_erlang_c",
+      "target_node_id": "or.q.n08_erlang_c_formula",
+      "route_kind": "deductive",
+      "title": "M/M/c定常分布からのアーランC公式と平均待ち人数 L_q の導出",
+      "premise_node_ids": [
+        "or.q.n07_mmc_steady_state_dist"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ポアソン到着のPASTA性質により、到着客が観測する系内人数の分布は定常確率分布 P_n と一致する。",
+        "系の利用率 ρ = a/c < 1 を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "C(c, a) := \\sum_{n=c}^{\\infty} P_n,\\quad P_n = \\frac{c^c \\rho^n}{c!} P_0\\;(n \\ge c),\\quad a := \\frac{\\lambda}{\\mu} = c\\rho",
+          "to_latex": "C(c, a) = \\frac{\\frac{a^c}{c!(1 - \\rho)}}{\\sum_{n=0}^{c-1}\\frac{a^n}{n!} + \\frac{a^c}{c!(1 - \\rho)}},\\qquad L_q = C(c, a)\\frac{\\rho}{1 - \\rho}",
+          "operation_label": "待ち事象の確率和と平均待ち人数の級数評価",
+          "explanation": "n≥c の確率和をとってアーランC公式を導き、さらに待ち人数 (n-c) の期待値を同様のべき級数微分で整理して C(c,a) と結びつける。",
+          "used_node_ids": [
+            "or.q.n07_mmc_steady_state_dist"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C(c, a) := \\sum_{n=c}^{\\infty} P_n,\\quad P_n = \\frac{c^c \\rho^n}{c!} P_0\\;(n \\ge c),\\quad a := \\frac{\\lambda}{\\mu} = c\\rho",
+          "to_latex": "C(c, a) = \\frac{c^c P_0}{c!}\\sum_{n=c}^{\\infty}\\rho^n = \\frac{a^c}{c!(1 - \\rho)} P_0",
+          "operation_label": "全窓口使用中確率の和の計算",
+          "explanation": "n≥c における P_n の和を等比級数として計算し、cρ = a を用いて整理する。",
+          "used_node_ids": [
+            "or.q.n07_mmc_steady_state_dist"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C(c, a) = \\frac{c^c P_0}{c!}\\sum_{n=c}^{\\infty}\\rho^n = \\frac{a^c}{c!(1 - \\rho)} P_0",
+          "to_latex": "C(c, a) = \\frac{\\frac{a^c}{c!(1 - \\rho)}}{\\sum_{n=0}^{c-1}\\frac{a^n}{n!} + \\frac{a^c}{c!(1 - \\rho)}},\\quad L_q = \\sum_{n=c}^{\\infty}(n - c)\\frac{c^c \\rho^n}{c!}P_0",
+          "operation_label": "P_0 の代入と平均待ち人数 L_q の定式化",
+          "explanation": "P_0 の表現を代入してアーランC公式を確定させ、同時に L_q を n≥c における (n-c)P_n の和として記述する。",
+          "used_node_ids": [
+            "or.q.n07_mmc_steady_state_dist"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C(c, a) = \\frac{\\frac{a^c}{c!(1 - \\rho)}}{\\sum_{n=0}^{c-1}\\frac{a^n}{n!} + \\frac{a^c}{c!(1 - \\rho)}},\\quad L_q = \\sum_{n=c}^{\\infty}(n - c)\\frac{c^c \\rho^n}{c!}P_0",
+          "to_latex": "C(c, a) = \\frac{\\frac{a^c}{c!(1 - \\rho)}}{\\sum_{n=0}^{c-1}\\frac{a^n}{n!} + \\frac{a^c}{c!(1 - \\rho)}},\\qquad L_q = C(c, a)\\frac{\\rho}{1 - \\rho}",
+          "operation_label": "添字置換 k = n - c による L_q の簡約",
+          "explanation": "k = n - c とおいて Σ_{k=0}^∞ k ρ^k = ρ/(1-ρ)^2 を用い、C(c, a) = [a^c / (c!(1-ρ))] P_0 で括ることで L_q の閉じた式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

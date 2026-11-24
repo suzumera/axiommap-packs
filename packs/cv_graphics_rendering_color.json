@@ -1,0 +1,528 @@
+{
+  "pack_meta": {
+    "pack_id": "cv.graphics.rendering_color",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "graphics",
+    "title": "CG・色彩工学：放射輝度・ランバート余弦則・カジアのレンダリング方程式とCIE XYZ色空間",
+    "language": "ja",
+    "description": "放射輸送のエネルギー保存からBRDFとレンダリング方程式、モンテカルロ積分の不偏推定量、等色関数積分によるCIE XYZ三刺激値とxy色度座標を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "cv.cg.n01_radiance_solid_angle",
+      "short_code": "CG01",
+      "kind": "definition",
+      "title": "立体角と放射輝度（Radiance）の定義",
+      "summary": "単位面積・投影面積・単位立体角あたりの放射束として放射輝度Lを定義し、幾何光学における光線に沿った不変量を記述する。",
+      "canonical_latex": "d\\omega = \\sin\\theta\\,d\\theta\\,d\\varphi,\\qquad L(\\mathbf{x},\\boldsymbol{\\omega}) := \\frac{d^2\\Phi}{dA_{\\perp}\\,d\\omega} = \\frac{d^2\\Phi}{dA\\cos\\theta\\,d\\omega}",
+      "aliases_latex": [
+        "L = \\frac{d^2\\Phi}{\\cos\\theta\\,dA\\,d\\omega}"
+      ],
+      "keywords": [
+        "立体角",
+        "放射輝度",
+        "放射束",
+        "投影面積",
+        "幾何光学"
+      ],
+      "domain_tags": [
+        "graphics",
+        "radiometry"
+      ]
+    },
+    {
+      "id": "cv.cg.n02_lambert_cosine_irradiance",
+      "short_code": "CG02",
+      "kind": "theorem_formula",
+      "title": "ランバートの余弦則と放射照度（Irradiance）の積分表示",
+      "summary": "面要素に入射する放射輝度を投影面積の余弦因子とともに上半球全体で積分し、放射照度Eおよび等方放射輝度時のpi倍関係を導く。",
+      "canonical_latex": "E(\\mathbf{x}) = \\int_{\\Omega} L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i,\\qquad L_i \\equiv L_0 \\implies E(\\mathbf{x}) = \\pi L_0",
+      "aliases_latex": [
+        "E(\\mathbf{x}) = \\int_{\\Omega} L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)(\\boldsymbol{\\omega}_i\\cdot\\mathbf{n})\\,d\\omega_i"
+      ],
+      "keywords": [
+        "ランバートの余弦則",
+        "放射照度",
+        "半球積分",
+        "等方放射"
+      ],
+      "domain_tags": [
+        "graphics",
+        "radiometry"
+      ]
+    },
+    {
+      "id": "cv.cg.n03_brdf_energy_conservation",
+      "short_code": "CG03",
+      "kind": "definition",
+      "title": "双方向反射率分布関数（BRDF）とヘルムホルツ相反性・エネルギー保存則",
+      "summary": "入射放射照度の微小寄与に対する出射放射輝度の比としてBRDFを定義し、物理的妥当性条件（非負性・相反性・エネルギー保存）を定式化する。",
+      "canonical_latex": "f_r(\\mathbf{x},\\boldsymbol{\\omega}_i,\\boldsymbol{\\omega}_o) := \\frac{dL_r(\\mathbf{x},\\boldsymbol{\\omega}_o)}{L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i} \\ge 0,\\quad f_r(\\boldsymbol{\\omega}_i,\\boldsymbol{\\omega}_o)=f_r(\\boldsymbol{\\omega}_o,\\boldsymbol{\\omega}_i),\\quad \\int_{\\Omega} f_r(\\mathbf{x},\\boldsymbol{\\omega}_i,\\boldsymbol{\\omega}_o)\\cos\\theta_i\\,d\\omega_i \\le 1",
+      "aliases_latex": [
+        "f_r = \\frac{dL_o}{dE_i}"
+      ],
+      "keywords": [
+        "BRDF",
+        "ヘルムホルツ相反性",
+        "エネルギー保存則",
+        "反射モデル"
+      ],
+      "domain_tags": [
+        "graphics",
+        "radiometry"
+      ]
+    },
+    {
+      "id": "cv.cg.n04_kajiya_rendering_equation",
+      "short_code": "CG04",
+      "kind": "theorem_formula",
+      "title": "カジアのレンダリング方程式（放射輸送の積分方程式）",
+      "summary": "表面の自己放射輝度とBRDFによる半球反射積分を統合し、大域照明を支配する第2種フレドホルム型積分方程式を導出する。",
+      "canonical_latex": "L_o(\\mathbf{x},\\boldsymbol{\\omega}_o) = L_e(\\mathbf{x},\\boldsymbol{\\omega}_o) + \\int_{\\Omega} f_r(\\mathbf{x},\\boldsymbol{\\omega}_i,\\boldsymbol{\\omega}_o)L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)(\\boldsymbol{\\omega}_i\\cdot\\mathbf{n})\\,d\\omega_i",
+      "aliases_latex": [
+        "L_o = L_e + \\mathcal{T}L_o"
+      ],
+      "keywords": [
+        "レンダリング方程式",
+        "大域照明",
+        "放射輸送",
+        "フレドホルム積分方程式"
+      ],
+      "domain_tags": [
+        "graphics",
+        "rendering"
+      ]
+    },
+    {
+      "id": "cv.cg.n05_monte_carlo_unbiased_estimator",
+      "short_code": "CG05",
+      "kind": "theorem_formula",
+      "title": "モンテカルロ積分の不偏推定量と重点サンプリング",
+      "summary": "確率密度関数p(x)から独立同分布に抽出した標本による平均推定量が、真の積分値に対して不偏推定量となることを証明する。",
+      "canonical_latex": "\\hat{I}_N := \\frac{1}{N}\\sum_{k=1}^{N}\\frac{g(X_k)}{p(X_k)}\\quad (X_k \\stackrel{\\mathrm{i.i.d.}}{\\sim} p) \\implies \\mathbb{E}[\\hat{I}_N] = \\int_{\\Omega} g(x)\\,dx = I",
+      "aliases_latex": [
+        "\\mathbb{E}\\left[\\frac{g(X)}{p(X)}\\right] = \\int_{\\Omega} g(x)\\,dx"
+      ],
+      "keywords": [
+        "モンテカルロ積分",
+        "不偏推定量",
+        "重点サンプリング",
+        "パストレーシング"
+      ],
+      "domain_tags": [
+        "graphics",
+        "probability",
+        "numerical_methods"
+      ]
+    },
+    {
+      "id": "cv.cg.n06_spectral_radiance_cie_xyz",
+      "short_code": "CG06",
+      "kind": "definition",
+      "title": "分光放射輝度と等色関数積分によるCIE XYZ三刺激値の定義",
+      "summary": "波長ごとの分光放射輝度にCIE 1931標準観測者の等色関数を乗じて可視波長域で積分し、人間の色覚に対応するXYZ三刺激値を定義する。",
+      "canonical_latex": "X = k\\int_{\\lambda_{\\min}}^{\\lambda_{\\max}} L_\\lambda(\\lambda)\\bar{x}(\\lambda)\\,d\\lambda,\\quad Y = k\\int_{\\lambda_{\\min}}^{\\lambda_{\\max}} L_\\lambda(\\lambda)\\bar{y}(\\lambda)\\,d\\lambda,\\quad Z = k\\int_{\\lambda_{\\min}}^{\\lambda_{\\max}} L_\\lambda(\\lambda)\\bar{z}(\\lambda)\\,d\\lambda",
+      "aliases_latex": [
+        "\\mathbf{T}_{XYZ} = k\\int L_\\lambda(\\lambda)\\bar{\\mathbf{t}}(\\lambda)\\,d\\lambda"
+      ],
+      "keywords": [
+        "CIE XYZ",
+        "三刺激値",
+        "等色関数",
+        "分光放射輝度"
+      ],
+      "domain_tags": [
+        "graphics",
+        "colorimetry"
+      ]
+    },
+    {
+      "id": "cv.cg.n07_cie_xy_chromaticity_coordinates",
+      "short_code": "CG07",
+      "kind": "theorem_formula",
+      "title": "CIE xy色度座標の導出と輝度分離（xyY表現）",
+      "summary": "XYZ三刺激値をその総和で正規化して輝度に依存しない色度座標(x,y)を導出し、逆に(x,y,Y)から(X,Y,Z)を一意に復元する公式を示す。",
+      "canonical_latex": "x = \\frac{X}{X+Y+Z},\\quad y = \\frac{Y}{X+Y+Z},\\quad z = 1 - x - y,\\qquad X = \\frac{x}{y}Y,\\quad Z = \\frac{1-x-y}{y}Y",
+      "aliases_latex": [
+        "(X,Y,Z) = \\left(\\frac{x}{y}Y,\\; Y,\\; \\frac{1-x-y}{y}Y\\right)"
+      ],
+      "keywords": [
+        "色度座標",
+        "xyY表色系",
+        "射影正規化",
+        "色空間"
+      ],
+      "domain_tags": [
+        "graphics",
+        "colorimetry"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "der.cv.cg.n01_from_ant_mi09",
+      "target_node_id": "cv.cg.n01_radiance_solid_angle",
+      "route_kind": "reformulation",
+      "title": "球面座標面積要素と放射電力保存からの立体角・放射輝度の定義",
+      "premise_node_ids": [
+        "eng.ant.n01_poynting_isotropic_flux",
+        "math.calc.mi09_spherical_volume_element"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "媒質は非吸収・非散乱かつ幾何光学極限（波長が物体寸法に比べ十分小さい）で光線伝播が成り立つこと。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_solid_angle_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_{\\mathrm{rad}} = \\oint_{S^2} S(R,\\theta,\\varphi)\\,R^2\\sin\\theta\\,d\\theta\\,d\\varphi",
+          "to_latex": "d\\omega = \\sin\\theta\\,d\\theta\\,d\\varphi,\\qquad L(\\mathbf{x},\\boldsymbol{\\omega}) := \\frac{d^2\\Phi}{dA_{\\perp}\\,d\\omega} = \\frac{d^2\\Phi}{dA\\cos\\theta\\,d\\omega}",
+          "operation_label": "単位球面上の立体角と投影面積あたり放射束密度の定義",
+          "explanation": "単位球面の微小面積要素を立体角dω=sinθdθdφとして抽出し、光線方向に垂直な投影微小面積dA⊥=dA cosθおよび単位立体角dωあたりの放射束d^2Φとして放射輝度Lを定義する。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "math.calc.mi09_spherical_volume_element"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.cv.cg.n02_from_n01",
+      "target_node_id": "cv.cg.n02_lambert_cosine_irradiance",
+      "route_kind": "deductive",
+      "title": "放射輝度の半球積分による放射照度とランバート余弦則の導出",
+      "premise_node_ids": [
+        "cv.cg.n01_radiance_solid_angle",
+        "math.calc.mi01_multiple_integral_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "面要素は局所的に平面であり、入射放射輝度L_iは上半球上で可積分であること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dE(\\mathbf{x}) = L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i",
+          "to_latex": "E(\\mathbf{x}) = \\int_{\\Omega} L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i,\\qquad L_i \\equiv L_0 \\implies E(\\mathbf{x}) = \\pi L_0",
+          "operation_label": "上半球積分による放射照度の算出",
+          "explanation": "微小立体角からの入射放射照度dEを上半球全体で積分してE(x)を得るとともに、等方放射輝度L_0に対して余弦加重立体角積分がpiとなることを示す。",
+          "used_node_ids": [
+            "cv.cg.n01_radiance_solid_angle",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_hemisphere_integral",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dE(\\mathbf{x}) = L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i",
+          "to_latex": "E(\\mathbf{x}) = \\int_{\\Omega} L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i = \\int_{0}^{2\\pi}\\int_{0}^{\\pi/2} L_i(\\mathbf{x},\\theta_i,\\varphi_i)\\cos\\theta_i\\sin\\theta_i\\,d\\theta_i\\,d\\varphi_i",
+          "operation_label": "球面座標による上半球重積分の展開",
+          "explanation": "立体角要素dω_i=sinθ_i dθ_i dφ_iを代入し、法線周りの上半球Ω（θ_i∈[0,π/2], φ_i∈[0,2π)）上で重積分を行う。",
+          "used_node_ids": [
+            "cv.cg.n01_radiance_solid_angle",
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_isotropic_eval",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E(\\mathbf{x}) = \\int_{\\Omega} L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i = \\int_{0}^{2\\pi}\\int_{0}^{\\pi/2} L_i(\\mathbf{x},\\theta_i,\\varphi_i)\\cos\\theta_i\\sin\\theta_i\\,d\\theta_i\\,d\\varphi_i",
+          "to_latex": "E(\\mathbf{x}) = \\int_{\\Omega} L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i,\\qquad L_i \\equiv L_0 \\implies E(\\mathbf{x}) = \\pi L_0",
+          "operation_label": "等方放射輝度に対する三角関数積分の評価",
+          "explanation": "L_iが定数L_0のとき、φ_i積分が2π、cosθ_i sinθ_iの0からπ/2までの積分が1/2となり、総積としてE(x)=πL_0が得られる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": "integrate(cos(theta)*sin(theta), (theta, 0, pi/2))*2*pi"
+        }
+      ]
+    },
+    {
+      "id": "der.cv.cg.n03_from_n01_n02",
+      "target_node_id": "cv.cg.n03_brdf_energy_conservation",
+      "route_kind": "reformulation",
+      "title": "放射輝度と微小放射照度からのBRDFおよび物理的拘束条件の定義",
+      "premise_node_ids": [
+        "cv.cg.n01_radiance_solid_angle",
+        "cv.cg.n02_lambert_cosine_irradiance"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "表面反射は局所的（表面下散乱なし）かつ時間不変・波長独立の線形応答であること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_brdf_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dE_i(\\mathbf{x},\\boldsymbol{\\omega}_i) = L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i",
+          "to_latex": "f_r(\\mathbf{x},\\boldsymbol{\\omega}_i,\\boldsymbol{\\omega}_o) := \\frac{dL_r(\\mathbf{x},\\boldsymbol{\\omega}_o)}{L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i} \\ge 0,\\quad f_r(\\boldsymbol{\\omega}_i,\\boldsymbol{\\omega}_o)=f_r(\\boldsymbol{\\omega}_o,\\boldsymbol{\\omega}_i),\\quad \\int_{\\Omega} f_r(\\mathbf{x},\\boldsymbol{\\omega}_i,\\boldsymbol{\\omega}_o)\\cos\\theta_i\\,d\\omega_i \\le 1",
+          "operation_label": "BRDFの定義と相反性・エネルギー保存条件の付与",
+          "explanation": "入射微小放射照度dE_iに対する反射放射輝度dL_rの比例係数としてBRDFを定義し、光学の相反性による対称性と反射エネルギーが入射エネルギーを超えないための半球積分不等式を課す。",
+          "used_node_ids": [
+            "cv.cg.n01_radiance_solid_angle",
+            "cv.cg.n02_lambert_cosine_irradiance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.cv.cg.n04_from_n01_n03",
+      "target_node_id": "cv.cg.n04_kajiya_rendering_equation",
+      "route_kind": "deductive",
+      "title": "放射輝度の重ね合わせとBRDF積分によるレンダリング方程式の導出",
+      "premise_node_ids": [
+        "cv.cg.n01_radiance_solid_angle",
+        "cv.cg.n03_brdf_energy_conservation",
+        "math.calc.m16_integral_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "真空または非参与媒質中の表面間放射輸送のみを考慮し、表面は線形反射に従うこと。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L_o(\\mathbf{x},\\boldsymbol{\\omega}_o) = L_e(\\mathbf{x},\\boldsymbol{\\omega}_o) + L_r(\\mathbf{x},\\boldsymbol{\\omega}_o)",
+          "to_latex": "L_o(\\mathbf{x},\\boldsymbol{\\omega}_o) = L_e(\\mathbf{x},\\boldsymbol{\\omega}_o) + \\int_{\\Omega} f_r(\\mathbf{x},\\boldsymbol{\\omega}_i,\\boldsymbol{\\omega}_o)L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)(\\boldsymbol{\\omega}_i\\cdot\\mathbf{n})\\,d\\omega_i",
+          "operation_label": "BRDF定義式の全入射方向積分によるレンダリング方程式導出",
+          "explanation": "出射放射輝度を自己発光L_eと反射成分L_rの和とし、L_rを上半球の全入射方向についてのBRDF加重積分で表すことでカジアのレンダリング方程式を得る。",
+          "used_node_ids": [
+            "cv.cg.n03_brdf_energy_conservation",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_brdf",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L_o(\\mathbf{x},\\boldsymbol{\\omega}_o) = L_e(\\mathbf{x},\\boldsymbol{\\omega}_o) + L_r(\\mathbf{x},\\boldsymbol{\\omega}_o)",
+          "to_latex": "L_o(\\mathbf{x},\\boldsymbol{\\omega}_o) = L_e(\\mathbf{x},\\boldsymbol{\\omega}_o) + \\int_{\\Omega} dL_r(\\mathbf{x},\\boldsymbol{\\omega}_o)",
+          "operation_label": "反射放射輝度の上半球積分への分解",
+          "explanation": "重ね合わせの原理により、全反射放射輝度L_rを上半球Ω上の各微小立体角からの寄与dL_rの積分として表現する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_hemisphere_radiance",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L_o(\\mathbf{x},\\boldsymbol{\\omega}_o) = L_e(\\mathbf{x},\\boldsymbol{\\omega}_o) + \\int_{\\Omega} dL_r(\\mathbf{x},\\boldsymbol{\\omega}_o)",
+          "to_latex": "L_o(\\mathbf{x},\\boldsymbol{\\omega}_o) = L_e(\\mathbf{x},\\boldsymbol{\\omega}_o) + \\int_{\\Omega} f_r(\\mathbf{x},\\boldsymbol{\\omega}_i,\\boldsymbol{\\omega}_o)L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i",
+          "operation_label": "BRDFの定義式の代入",
+          "explanation": "BRDFの定義よりdL_r = f_r L_i cosθ_i dω_iを被積分関数に代入する。",
+          "used_node_ids": [
+            "cv.cg.n03_brdf_energy_conservation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_cosine_dot_form",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L_o(\\mathbf{x},\\boldsymbol{\\omega}_o) = L_e(\\mathbf{x},\\boldsymbol{\\omega}_o) + \\int_{\\Omega} f_r(\\mathbf{x},\\boldsymbol{\\omega}_i,\\boldsymbol{\\omega}_o)L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)\\cos\\theta_i\\,d\\omega_i",
+          "to_latex": "L_o(\\mathbf{x},\\boldsymbol{\\omega}_o) = L_e(\\mathbf{x},\\boldsymbol{\\omega}_o) + \\int_{\\Omega} f_r(\\mathbf{x},\\boldsymbol{\\omega}_i,\\boldsymbol{\\omega}_o)L_i(\\mathbf{x},\\boldsymbol{\\omega}_i)(\\boldsymbol{\\omega}_i\\cdot\\mathbf{n})\\,d\\omega_i",
+          "operation_label": "余弦因子の内積表現への書き換え",
+          "explanation": "単位入射方向ベクトルω_iと単位表面法線ベクトルnの内積を用いてcosθ_i = ω_i・nと表し、標準的なレンダリング方程式の形式を得る。",
+          "used_node_ids": [
+            "cv.cg.n01_radiance_solid_angle"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.cv.cg.n05_from_pr01_m16",
+      "target_node_id": "cv.cg.n05_monte_carlo_unbiased_estimator",
+      "route_kind": "deductive",
+      "title": "期待値の線形性と重点サンプリング密度によるモンテカルロ不偏性の証明",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms",
+        "math.calc.m16_integral_linearity",
+        "cv.cg.n04_kajiya_rendering_equation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "被積分関数g(x)が0でない領域において確率密度関数p(x) > 0（台条件）を満たし、標本X_kは互いに独立同分布であること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I = \\int_{\\Omega} g(x)\\,dx,\\qquad \\hat{I}_N = \\frac{1}{N}\\sum_{k=1}^{N}\\frac{g(X_k)}{p(X_k)}\\quad (X_k \\stackrel{\\mathrm{i.i.d.}}{\\sim} p)",
+          "to_latex": "\\mathbb{E}[\\hat{I}_N] = \\int_{\\Omega} g(x)\\,dx = I",
+          "operation_label": "モンテカルロ推定量の期待値評価と不偏性の証明",
+          "explanation": "重点サンプリングによる標本平均推定量Î_Nの期待値を取り、密度関数p(x)が分母分子で打ち消し合うことから真の積分値Iに一致することを示す。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_linearity_expectation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I = \\int_{\\Omega} g(x)\\,dx,\\qquad \\hat{I}_N = \\frac{1}{N}\\sum_{k=1}^{N}\\frac{g(X_k)}{p(X_k)}\\quad (X_k \\stackrel{\\mathrm{i.i.d.}}{\\sim} p)",
+          "to_latex": "\\mathbb{E}[\\hat{I}_N] = \\frac{1}{N}\\sum_{k=1}^{N}\\mathbb{E}\\!\\left[\\frac{g(X_k)}{p(X_k)}\\right] = \\mathbb{E}\\!\\left[\\frac{g(X_1)}{p(X_1)}\\right]",
+          "operation_label": "期待値の線形性と同分布性の適用",
+          "explanation": "積分の線形性により和の期待値を期待値の和に分解し、X_kが同分布であることから第1標本の期待値へ帰着させる。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_density_cancellation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[\\hat{I}_N] = \\frac{1}{N}\\sum_{k=1}^{N}\\mathbb{E}\\!\\left[\\frac{g(X_k)}{p(X_k)}\\right] = \\mathbb{E}\\!\\left[\\frac{g(X_1)}{p(X_1)}\\right]",
+          "to_latex": "\\mathbb{E}[\\hat{I}_N] = \\int_{\\Omega}\\frac{g(x)}{p(x)}p(x)\\,dx",
+          "operation_label": "確率密度関数による期待値の積分表示",
+          "explanation": "連続確率変数X_1の確率密度p(x)を用いて期待値を領域Ω上の積分として書き下す。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_unbiased_result",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[\\hat{I}_N] = \\int_{\\Omega}\\frac{g(x)}{p(x)}p(x)\\,dx",
+          "to_latex": "\\mathbb{E}[\\hat{I}_N] = \\int_{\\Omega} g(x)\\,dx = I",
+          "operation_label": "密度関数の約分による不偏性の確定",
+          "explanation": "g(x)≠0上でp(x)>0より分母分子のp(x)が約分され、任意の標本数Nに対して不偏推定量であることが確定する。",
+          "used_node_ids": [
+            "cv.cg.n04_kajiya_rendering_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.cv.cg.n06_from_n01_rd01",
+      "target_node_id": "cv.cg.n06_spectral_radiance_cie_xyz",
+      "route_kind": "reformulation",
+      "title": "分光放射輝度と標準観測者等色関数に基づくCIE XYZ三刺激値の定義",
+      "premise_node_ids": [
+        "cv.cg.n01_radiance_solid_angle",
+        "astro.radio.n01_planck_blackbody_boundary",
+        "math.calc.m16_integral_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "人間の網膜上の3種の錐体応答は線形重ね合わせ（グラスマンの法則）に従い、標準観測者の等色関数で近似できること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_xyz_integral_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L(\\mathbf{x},\\boldsymbol{\\omega}) = \\int_{0}^{\\infty} L_\\lambda(\\lambda)\\,d\\lambda",
+          "to_latex": "X = k\\int_{\\lambda_{\\min}}^{\\lambda_{\\max}} L_\\lambda(\\lambda)\\bar{x}(\\lambda)\\,d\\lambda,\\quad Y = k\\int_{\\lambda_{\\min}}^{\\lambda_{\\max}} L_\\lambda(\\lambda)\\bar{y}(\\lambda)\\,d\\lambda,\\quad Z = k\\int_{\\lambda_{\\min}}^{\\lambda_{\\max}} L_\\lambda(\\lambda)\\bar{z}(\\lambda)\\,d\\lambda",
+          "operation_label": "等色関数による線形加重積分の定義",
+          "explanation": "波長あたりの分光放射輝度L_λ(λ)に対し、CIE標準観測者の等色関数(x̄,ȳ,z̄)を重みとして可視光域で積分し、比例定数kを乗じて三刺激値X,Y,Zを定義する。",
+          "used_node_ids": [
+            "astro.radio.n01_planck_blackbody_boundary",
+            "cv.cg.n01_radiance_solid_angle",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.cv.cg.n07_from_n06",
+      "target_node_id": "cv.cg.n07_cie_xy_chromaticity_coordinates",
+      "route_kind": "deductive",
+      "title": "CIE XYZ三刺激値の射影正規化によるxy色度座標とxyY逆変換の導出",
+      "premise_node_ids": [
+        "cv.cg.n06_spectral_radiance_cie_xyz"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "無放射状態（X=Y=Z=0）を除き、総刺激値X+Y+Z > 0かつ輝度Y > 0であること。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(X, Y, Z) \\in \\mathbb{R}_{\\ge 0}^3,\\quad X+Y+Z > 0,\\quad Y > 0",
+          "to_latex": "x = \\frac{X}{X+Y+Z},\\quad y = \\frac{Y}{X+Y+Z},\\quad z = 1 - x - y,\\qquad X = \\frac{x}{y}Y,\\quad Z = \\frac{1-x-y}{y}Y",
+          "operation_label": "三刺激値の正規化とxyYからの復元式の導出",
+          "explanation": "XYZ空間のベクトルをX+Y+Z=1の平面へ射影して色度座標(x,y)を定義し、輝度Yと組み合わせた(x,y,Y)から元の三刺激値(X,Y,Z)を代数的に復元する。",
+          "used_node_ids": [
+            "cv.cg.n06_spectral_radiance_cie_xyz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_normalize_tristimulus",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(X, Y, Z) \\in \\mathbb{R}_{\\ge 0}^3,\\quad X+Y+Z > 0,\\quad Y > 0",
+          "to_latex": "x := \\frac{X}{S},\\quad y := \\frac{Y}{S},\\quad z := \\frac{Z}{S}\\quad (S := X+Y+Z),\\qquad x + y + z = 1",
+          "operation_label": "総刺激値Sによる射影正規化",
+          "explanation": "S=X+Y+Zで各成分を除することで、輝度スケールに不変な正規化座標(x,y,z)を定義し、恒等式x+y+z=1を得る。",
+          "used_node_ids": [
+            "cv.cg.n06_spectral_radiance_cie_xyz"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_reconstruct_xyz",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "x := \\frac{X}{S},\\quad y := \\frac{Y}{S},\\quad z := \\frac{Z}{S}\\quad (S := X+Y+Z),\\qquad x + y + z = 1",
+          "to_latex": "x = \\frac{X}{X+Y+Z},\\quad y = \\frac{Y}{X+Y+Z},\\quad z = 1 - x - y,\\qquad X = \\frac{x}{y}Y,\\quad Z = \\frac{1-x-y}{y}Y",
+          "operation_label": "輝度Yを用いたSの消去とX, Zの逆算",
+          "explanation": "S = Y/yをX = xSおよびZ = zS = (1-x-y)Sに代入し、xyYからXYZへの逆変換公式を得る。",
+          "used_node_ids": [
+            "cv.cg.n06_spectral_radiance_cie_xyz"
+          ],
+          "sympy_check_hint": "Eq(X, (x/y)*Y)"
+        }
+      ]
+    }
+  ]
+}

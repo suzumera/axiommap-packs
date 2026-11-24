@@ -1,0 +1,560 @@
+{
+  "pack_meta": {
+    "pack_id": "fin.quant.ito_black_scholes",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "finance",
+    "title": "金融工学1：幾何ブラウン運動・伊藤の補題・ブラック＝ショールズ偏微分方程式とコール価格公式",
+    "language": "ja",
+    "description": "幾何ブラウン運動と伊藤の補題、デルタヘッジによる無裁定条件からブラック＝ショールズPDEを導出し、熱伝導方程式への帰着でヨーロピアンコール公式を導く。"
+  },
+  "nodes": [
+    {
+      "id": "fin.bs.n01_gbm_brownian_boundary",
+      "short_code": "BS01",
+      "kind": "math_boundary",
+      "title": "標準ブラウン運動の2次変分と幾何ブラウン運動の確率微分方程式",
+      "summary": "ウィーナー過程の増分則・2次変分法則と、株価などの非負資産価格を記述する幾何ブラウン運動（GBM）の確率微分方程式を与える数理境界。",
+      "canonical_latex": "dW_t \\sim \\mathcal{N}(0, dt),\\quad (dW_t)^2 = dt,\\quad dt\\,dW_t = (dt)^2 = 0,\\qquad dS_t = \\mu S_t\\,dt + \\sigma S_t\\,dW_t",
+      "aliases_latex": [
+        "\\frac{dS_t}{S_t} = \\mu\\,dt + \\sigma\\,dW_t"
+      ],
+      "keywords": [
+        "幾何ブラウン運動",
+        "ウィーナー過程",
+        "2次変分",
+        "確率微分方程式",
+        "伊藤乗積表"
+      ],
+      "domain_tags": [
+        "finance",
+        "stochastic_calculus"
+      ]
+    },
+    {
+      "id": "fin.bs.n02_itos_lemma",
+      "short_code": "BS02",
+      "kind": "theorem_formula",
+      "title": "伊藤の補題（確率過程に対する2次連鎖律）",
+      "summary": "確率過程に従う変数を含む滑らかな関数の微分において、2次変分(dW_t)^2 = dtの寄与により2階偏微分項が現れる伊藤微積分の基本定理。",
+      "canonical_latex": "df(t, S_t) = \\left(\\frac{\\partial f}{\\partial t} + \\mu S_t \\frac{\\partial f}{\\partial S} + \\frac{1}{2}\\sigma^2 S_t^2 \\frac{\\partial^2 f}{\\partial S^2}\\right)dt + \\sigma S_t \\frac{\\partial f}{\\partial S}\\,dW_t",
+      "aliases_latex": [
+        "df = \\frac{\\partial f}{\\partial t}dt + \\frac{\\partial f}{\\partial S}dS_t + \\frac{1}{2}\\frac{\\partial^2 f}{\\partial S^2}(dS_t)^2"
+      ],
+      "keywords": [
+        "伊藤の補題",
+        "伊藤微積分",
+        "2次変分",
+        "確率連鎖律"
+      ],
+      "domain_tags": [
+        "finance",
+        "stochastic_calculus"
+      ]
+    },
+    {
+      "id": "fin.bs.n03_gbm_lognormal_solution",
+      "short_code": "BS03",
+      "kind": "theorem_formula",
+      "title": "幾何ブラウン運動の厳密解と対数正規分布",
+      "summary": "対数変換に伊藤の補題を適用して得られる幾何ブラウン運動の閉じた解であり、対数収益率の正規性と伊藤補正項-sigma^2/2を示す。",
+      "canonical_latex": "S_t = S_0 \\exp\\!\\left(\\left(\\mu - \\frac{1}{2}\\sigma^2\\right)t + \\sigma W_t\\right),\\qquad \\ln\\frac{S_t}{S_0} \\sim \\mathcal{N}\\!\\left(\\left(\\mu - \\frac{1}{2}\\sigma^2\\right)t,\\; \\sigma^2 t\\right)",
+      "aliases_latex": [
+        "S_t = S_0 e^{(\\mu - \\sigma^2/2)t + \\sigma W_t}"
+      ],
+      "keywords": [
+        "対数正規分布",
+        "幾何ブラウン運動の解",
+        "伊藤補正",
+        "対数収益率"
+      ],
+      "domain_tags": [
+        "finance",
+        "stochastic_calculus"
+      ]
+    },
+    {
+      "id": "fin.bs.n04_risk_free_no_arbitrage_def",
+      "short_code": "BS04",
+      "kind": "definition",
+      "title": "自己金融デルタヘッジ・ポートフォリオと無裁定条件の定義",
+      "summary": "派生証券1単位と原資産Delta_t単位のショートからなる複製ポートフォリオを構成し、リスク消去時に無リスク利子率rで成長すべきとする無裁定原理の定式化。",
+      "canonical_latex": "\\Pi_t = V(t, S_t) - \\Delta_t S_t,\\quad d\\Pi_t = dV - \\Delta_t\\,dS_t,\\quad d\\Pi_t = r\\Pi_t\\,dt\\;(\\text{risk-free})",
+      "aliases_latex": [
+        "d\\Pi_t = r(V - \\Delta_t S_t)\\,dt"
+      ],
+      "keywords": [
+        "デルタヘッジ",
+        "無裁定条件",
+        "自己金融ポートフォリオ",
+        "複製ポートフォリオ"
+      ],
+      "domain_tags": [
+        "finance",
+        "asset_pricing"
+      ]
+    },
+    {
+      "id": "fin.bs.n05_black_scholes_pde",
+      "short_code": "BS05",
+      "kind": "theorem_formula",
+      "title": "ブラック＝ショールズ偏微分方程式（BS-PDE）",
+      "summary": "デルタヘッジにより確率項dW_tを消去し無裁定条件を課すことで導かれる、原資産期待収益率muに依存しない派生証券価格V(t, S)の2階放物型偏微分方程式。",
+      "canonical_latex": "\\frac{\\partial V}{\\partial t} + \\frac{1}{2}\\sigma^2 S^2 \\frac{\\partial^2 V}{\\partial S^2} + r S \\frac{\\partial V}{\\partial S} - r V = 0,\\qquad V(T, S) = \\max(S - K, 0)",
+      "aliases_latex": [
+        "V_t + \\frac{1}{2}\\sigma^2 S^2 V_{SS} + r S V_S - r V = 0"
+      ],
+      "keywords": [
+        "ブラック＝ショールズ方程式",
+        "偏微分方程式",
+        "リスク中立評価",
+        "無裁定価格"
+      ],
+      "domain_tags": [
+        "finance",
+        "pde"
+      ]
+    },
+    {
+      "id": "fin.bs.n06_bs_heat_equation_reduction",
+      "short_code": "BS06",
+      "kind": "theorem_formula",
+      "title": "対数変数・無次元時間変換による1次元熱伝導方程式への帰着",
+      "summary": "株価の対数変換と残存期間の無次元化、さらに指数因子によるドリフト・割引項の消去によって、ブラック＝ショールズPDEを標準1次元熱伝導方程式へ帰着させる定理。",
+      "canonical_latex": "V(t, S) = K e^{-\\alpha x - \\beta \\tau} u(\\tau, x),\\; x = \\ln\\frac{S}{K},\\; \\tau = \\frac{1}{2}\\sigma^2(T-t) \\implies \\frac{\\partial u}{\\partial \\tau} = \\frac{\\partial^2 u}{\\partial x^2}",
+      "aliases_latex": [
+        "u_\\tau = u_{xx}"
+      ],
+      "keywords": [
+        "熱伝導方程式",
+        "変数変換",
+        "拡散方程式",
+        "放物型PDE"
+      ],
+      "domain_tags": [
+        "finance",
+        "pde"
+      ]
+    },
+    {
+      "id": "fin.bs.n07_european_call_bs_formula",
+      "short_code": "BS07",
+      "kind": "theorem_formula",
+      "title": "ヨーロピアン・コールオプションのブラック＝ショールズ価格公式",
+      "summary": "熱伝導方程式の熱核（ガウス核）畳み込み積分を評価して得られる、ヨーロピアン・コールオプションの解析的理論価格公式。",
+      "canonical_latex": "C(t, S) = S\\,\\Phi(d_1) - K e^{-r(T-t)}\\,\\Phi(d_2),\\qquad d_{1,2} = \\frac{\\ln(S/K) + (r \\pm \\frac{1}{2}\\sigma^2)(T-t)}{\\sigma\\sqrt{T-t}}",
+      "aliases_latex": [
+        "C(t, S) = S N(d_1) - K e^{-r(T-t)} N(d_2)"
+      ],
+      "keywords": [
+        "ブラック＝ショールズ公式",
+        "ヨーロピアンコール",
+        "標準正規累積分布",
+        "オプション価格"
+      ],
+      "domain_tags": [
+        "finance",
+        "asset_pricing"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_bs02_itos_lemma",
+      "target_node_id": "fin.bs.n02_itos_lemma",
+      "route_kind": "deductive",
+      "title": "2次テイラー展開と2次変分則からの伊藤の補題の導出",
+      "premise_node_ids": [
+        "fin.bs.n01_gbm_brownian_boundary",
+        "math.calc.e02_multivariable_taylor_2nd"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "関数f(t, S)はtに関して1階連続微分可能、Sに関して2階連続微分可能である",
+        "確率微分方程式はdS_t = mu*S_t*dt + sigma*S_t*dW_tに従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f(t+dt, S_t+dS_t) - f(t, S_t) = \\frac{\\partial f}{\\partial t}dt + \\frac{\\partial f}{\\partial S}dS_t + \\frac{1}{2}\\frac{\\partial^2 f}{\\partial S^2}(dS_t)^2 + \\cdots",
+          "to_latex": "df(t, S_t) = \\left(\\frac{\\partial f}{\\partial t} + \\mu S_t \\frac{\\partial f}{\\partial S} + \\frac{1}{2}\\sigma^2 S_t^2 \\frac{\\partial^2 f}{\\partial S^2}\\right)dt + \\sigma S_t \\frac{\\partial f}{\\partial S}\\,dW_t",
+          "operation_label": "テイラー展開へのGBM代入と2次変分則の適用",
+          "explanation": "f(t, S_t)を2次までテイラー展開し、GBMの式を代入して(dW_t)^2 = dt、dt*dW_t = (dt)^2 = 0を用いることで伊藤の補題を得る。",
+          "used_node_ids": [
+            "fin.bs.n01_gbm_brownian_boundary",
+            "math.calc.e02_multivariable_taylor_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_taylor",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(t+dt, S_t+dS_t) - f(t, S_t) = \\frac{\\partial f}{\\partial t}dt + \\frac{\\partial f}{\\partial S}dS_t + \\frac{1}{2}\\frac{\\partial^2 f}{\\partial S^2}(dS_t)^2 + \\frac{\\partial^2 f}{\\partial t\\partial S}dt\\,dS_t + \\frac{1}{2}\\frac{\\partial^2 f}{\\partial t^2}(dt)^2 + o(dt)",
+          "to_latex": "df = \\frac{\\partial f}{\\partial t}dt + \\frac{\\partial f}{\\partial S}(\\mu S_t\\,dt + \\sigma S_t\\,dW_t) + \\frac{1}{2}\\frac{\\partial^2 f}{\\partial S^2}(\\mu S_t\\,dt + \\sigma S_t\\,dW_t)^2 + \\text{higher-order terms}",
+          "operation_label": "多変数2次テイラー展開へのSDE代入",
+          "explanation": "2変数関数の2次テイラー展開に幾何ブラウン運動dS_t = mu*S_t*dt + sigma*S_t*dW_tを代入する。",
+          "used_node_ids": [
+            "fin.bs.n01_gbm_brownian_boundary",
+            "math.calc.e02_multivariable_taylor_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_ito_rules",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "df = \\frac{\\partial f}{\\partial t}dt + \\frac{\\partial f}{\\partial S}(\\mu S_t\\,dt + \\sigma S_t\\,dW_t) + \\frac{1}{2}\\frac{\\partial^2 f}{\\partial S^2}(\\mu S_t\\,dt + \\sigma S_t\\,dW_t)^2 + \\text{higher-order terms}",
+          "to_latex": "df = \\frac{\\partial f}{\\partial t}dt + \\mu S_t \\frac{\\partial f}{\\partial S}dt + \\sigma S_t \\frac{\\partial f}{\\partial S}dW_t + \\frac{1}{2}\\sigma^2 S_t^2 \\frac{\\partial^2 f}{\\partial S^2}dt",
+          "operation_label": "伊藤の乗積表による高次微小項の消去",
+          "explanation": "(dW_t)^2 = dt、dt*dW_t = 0、(dt)^2 = 0を適用すると、2階偏微分のうち(sigma*S_t)^2*(dW_t)^2の項のみがdtのオーダーとして残る。",
+          "used_node_ids": [
+            "fin.bs.n01_gbm_brownian_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_collect",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "df = \\frac{\\partial f}{\\partial t}dt + \\mu S_t \\frac{\\partial f}{\\partial S}dt + \\sigma S_t \\frac{\\partial f}{\\partial S}dW_t + \\frac{1}{2}\\sigma^2 S_t^2 \\frac{\\partial^2 f}{\\partial S^2}dt",
+          "to_latex": "df(t, S_t) = \\left(\\frac{\\partial f}{\\partial t} + \\mu S_t \\frac{\\partial f}{\\partial S} + \\frac{1}{2}\\sigma^2 S_t^2 \\frac{\\partial^2 f}{\\partial S^2}\\right)dt + \\sigma S_t \\frac{\\partial f}{\\partial S}\\,dW_t",
+          "operation_label": "ドリフト項と拡散項の整理",
+          "explanation": "dtの係数（ドリフト項）とdW_tの係数（拡散項）で括り、伊藤の補題を完成させる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_bs03_gbm_solution",
+      "target_node_id": "fin.bs.n03_gbm_lognormal_solution",
+      "route_kind": "deductive",
+      "title": "対数変換と伊藤の補題による幾何ブラウン運動の厳密解の導出",
+      "premise_node_ids": [
+        "fin.bs.n01_gbm_brownian_boundary",
+        "fin.bs.n02_itos_lemma",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "初期価格S_0 > 0は確定的定数であり、ドリフトmuおよびボラティリティsigmaは定数である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dS_t = \\mu S_t\\,dt + \\sigma S_t\\,dW_t",
+          "to_latex": "S_t = S_0 \\exp\\!\\left(\\left(\\mu - \\frac{1}{2}\\sigma^2\\right)t + \\sigma W_t\\right)",
+          "operation_label": "対数変換への伊藤の補題適用と積分",
+          "explanation": "f(S) = ln Sに伊藤の補題を適用して定数係数SDEへ変換し、区間[0, t]で積分して指数関数で解く。",
+          "used_node_ids": [
+            "fin.bs.n02_itos_lemma",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_apply_ito_log",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(S_t) = \\ln S_t,\\quad \\frac{\\partial f}{\\partial S} = \\frac{1}{S_t},\\quad \\frac{\\partial^2 f}{\\partial S^2} = -\\frac{1}{S_t^2}",
+          "to_latex": "d(\\ln S_t) = \\left(\\mu S_t \\cdot \\frac{1}{S_t} + \\frac{1}{2}\\sigma^2 S_t^2 \\left(-\\frac{1}{S_t^2}\\right)\\right)dt + \\sigma S_t \\cdot \\frac{1}{S_t}\\,dW_t",
+          "operation_label": "対数関数に対する伊藤の補題の適用",
+          "explanation": "f(S) = ln Sの1階・2階導関数を伊藤の補題に代入する。",
+          "used_node_ids": [
+            "fin.bs.n02_itos_lemma"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_simplify_dlog",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d(\\ln S_t) = \\left(\\mu S_t \\cdot \\frac{1}{S_t} + \\frac{1}{2}\\sigma^2 S_t^2 \\left(-\\frac{1}{S_t^2}\\right)\\right)dt + \\sigma S_t \\cdot \\frac{1}{S_t}\\,dW_t",
+          "to_latex": "d(\\ln S_t) = \\left(\\mu - \\frac{1}{2}\\sigma^2\\right)dt + \\sigma\\,dW_t",
+          "operation_label": "S_tの約分による定数係数化",
+          "explanation": "係数中のS_tがすべて相殺し、-sigma^2/2の伊藤補正項が現れる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_integrate_exp",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d(\\ln S_t) = \\left(\\mu - \\frac{1}{2}\\sigma^2\\right)dt + \\sigma\\,dW_t",
+          "to_latex": "S_t = S_0 \\exp\\!\\left(\\left(\\mu - \\frac{1}{2}\\sigma^2\\right)t + \\sigma W_t\\right)",
+          "operation_label": "時間[0, t]での積分と指数変換",
+          "explanation": "W_0 = 0のもとで両辺を[0, t]で積分し指数をとることで厳密解と対数正規分布が従う。",
+          "used_node_ids": [
+            "fin.bs.n01_gbm_brownian_boundary",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_bs04_portfolio_def",
+      "target_node_id": "fin.bs.n04_risk_free_no_arbitrage_def",
+      "route_kind": "reformulation",
+      "title": "デルタヘッジ・ポートフォリオと無裁定条件の定式化",
+      "premise_node_ids": [
+        "fin.bs.n01_gbm_brownian_boundary",
+        "fin.act.n04_discount_factor_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "市場は摩擦がなく連続的なリバランスが可能であり、安全資産の無リスク金利rは一定である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_portfolio_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S_t,\\; V(t, S_t),\\; \\Delta_t",
+          "to_latex": "\\Pi_t = V(t, S_t) - \\Delta_t S_t,\\quad d\\Pi_t = dV - \\Delta_t\\,dS_t",
+          "operation_label": "自己金融ポートフォリオの定義",
+          "explanation": "派生証券Vを1単位ロングし原資産SをDelta_t単位ショートしたポートフォリオPi_tと、外部資金の出入りがない自己金融条件dPi_t = dV - Delta_t*dS_tを定める。",
+          "used_node_ids": [
+            "fin.bs.n01_gbm_brownian_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_no_arbitrage",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Pi_t = V(t, S_t) - \\Delta_t S_t,\\quad d\\Pi_t = dV - \\Delta_t\\,dS_t",
+          "to_latex": "d\\Pi_t = r \\Pi_t\\,dt\\quad (\\text{when }dW_t\\text{ term vanishes})",
+          "operation_label": "無裁定条件の課定",
+          "explanation": "ポートフォリオから確率的変動dW_tが消去されて無リスクとなった場合、裁定機会が存在しないため収益率は連続複利の無リスク金利rに一致する。",
+          "used_node_ids": [
+            "fin.act.n04_discount_factor_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_bs05_black_scholes_pde",
+      "target_node_id": "fin.bs.n05_black_scholes_pde",
+      "route_kind": "deductive",
+      "title": "デルタヘッジと無裁定条件からのブラック＝ショールズPDEの導出",
+      "premise_node_ids": [
+        "fin.bs.n02_itos_lemma",
+        "fin.bs.n04_risk_free_no_arbitrage_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "オプション価格V(t, S)はtについてC1級、SについてC2級であり、満期ペイオフV(T, S) = max(S - K, 0)を満たす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "d\\Pi_t = dV(t, S_t) - \\Delta_t\\,dS_t,\\quad d\\Pi_t = r\\Pi_t\\,dt",
+          "to_latex": "\\frac{\\partial V}{\\partial t} + \\frac{1}{2}\\sigma^2 S^2 \\frac{\\partial^2 V}{\\partial S^2} + r S \\frac{\\partial V}{\\partial S} - r V = 0",
+          "operation_label": "伊藤の補題・デルタ選択・無裁定条件の結合",
+          "explanation": "dVを伊藤の補題で展開し、Delta_t = dV/dSと選んでdW_t項を消去したのち、dPi_t = r*Pi_t*dtと等置してBS-PDEを導く。",
+          "used_node_ids": [
+            "fin.bs.n02_itos_lemma",
+            "fin.bs.n04_risk_free_no_arbitrage_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_expand_dpi",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\Pi_t = dV(t, S_t) - \\Delta_t\\,dS_t",
+          "to_latex": "d\\Pi_t = \\left(\\frac{\\partial V}{\\partial t} + \\mu S \\frac{\\partial V}{\\partial S} + \\frac{1}{2}\\sigma^2 S^2 \\frac{\\partial^2 V}{\\partial S^2} - \\Delta_t \\mu S\\right)dt + \\sigma S\\left(\\frac{\\partial V}{\\partial S} - \\Delta_t\\right)dW_t",
+          "operation_label": "ポートフォリオ増分への伊藤の補題適用",
+          "explanation": "dVに伊藤の補題を、dS_tにGBMを代入し、dtの項とdW_tの項に整理する。",
+          "used_node_ids": [
+            "fin.bs.n02_itos_lemma",
+            "fin.bs.n04_risk_free_no_arbitrage_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_delta_hedge",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\Pi_t = \\left(\\frac{\\partial V}{\\partial t} + \\mu S \\frac{\\partial V}{\\partial S} + \\frac{1}{2}\\sigma^2 S^2 \\frac{\\partial^2 V}{\\partial S^2} - \\Delta_t \\mu S\\right)dt + \\sigma S\\left(\\frac{\\partial V}{\\partial S} - \\Delta_t\\right)dW_t",
+          "to_latex": "d\\Pi_t = \\left(\\frac{\\partial V}{\\partial t} + \\frac{1}{2}\\sigma^2 S^2 \\frac{\\partial^2 V}{\\partial S^2}\\right)dt\\quad \\left(\\Delta_t = \\frac{\\partial V}{\\partial S}\\right)",
+          "operation_label": "デルタヘッジによる確率項およびドリフトmuの消去",
+          "explanation": "ヘッジ比率をDelta_t = dV/dSと選ぶと拡散項dW_tだけでなく期待収益率muを含む項も同時に相殺される。",
+          "used_node_ids": [
+            "fin.bs.n04_risk_free_no_arbitrage_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_equate_r_pi",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\Pi_t = \\left(\\frac{\\partial V}{\\partial t} + \\frac{1}{2}\\sigma^2 S^2 \\frac{\\partial^2 V}{\\partial S^2}\\right)dt\\quad \\left(\\Delta_t = \\frac{\\partial V}{\\partial S}\\right)",
+          "to_latex": "\\frac{\\partial V}{\\partial t} + \\frac{1}{2}\\sigma^2 S^2 \\frac{\\partial^2 V}{\\partial S^2} + r S \\frac{\\partial V}{\\partial S} - r V = 0",
+          "operation_label": "無裁定条件dPi_t = r*Pi_t*dtとの等置",
+          "explanation": "無裁定条件dPi_t = r*(V - (dV/dS)*S)*dtと等置し、整理することでブラック＝ショールズ偏微分方程式を得る。",
+          "used_node_ids": [
+            "fin.bs.n04_risk_free_no_arbitrage_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_bs06_heat_reduction",
+      "target_node_id": "fin.bs.n06_bs_heat_equation_reduction",
+      "route_kind": "deductive",
+      "title": "変数変換と指数因子によるBS-PDEの熱伝導方程式への帰着",
+      "premise_node_ids": [
+        "fin.bs.n05_black_scholes_pde",
+        "math.calc.m01_chain_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ボラティリティsigma > 0および権利行使価格K > 0は正の定数である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial V}{\\partial t} + \\frac{1}{2}\\sigma^2 S^2 \\frac{\\partial^2 V}{\\partial S^2} + r S \\frac{\\partial V}{\\partial S} - r V = 0",
+          "to_latex": "\\frac{\\partial u}{\\partial \\tau} = \\frac{\\partial^2 u}{\\partial x^2}\\quad \\left(x = \\ln\\frac{S}{K},\\; \\tau = \\frac{1}{2}\\sigma^2(T-t)\\right)",
+          "operation_label": "対数・無次元時間変換と指数因子によるドリフト消去",
+          "explanation": "変数変換x = ln(S/K), tau = sigma^2*(T-t)/2で定数係数PDEにし、さらにv = exp(-alpha*x - beta*tau)*uと置いて1階空間微分と0階項を消去する。",
+          "used_node_ids": [
+            "fin.bs.n05_black_scholes_pde",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_log_dimless",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial V}{\\partial t} + \\frac{1}{2}\\sigma^2 S^2 \\frac{\\partial^2 V}{\\partial S^2} + r S \\frac{\\partial V}{\\partial S} - r V = 0",
+          "to_latex": "\\frac{\\partial v}{\\partial \\tau} = \\frac{\\partial^2 v}{\\partial x^2} + (k - 1)\\frac{\\partial v}{\\partial x} - k v\\quad \\left(V = K v(\\tau, x),\\; k = \\frac{2r}{\\sigma^2}\\right)",
+          "operation_label": "対数株価と無次元残存時間への連鎖律適用",
+          "explanation": "x = ln(S/K), tau = sigma^2*(T-t)/2に対して連鎖律を適用し、Sに関する変数係数を消去して前向き時間の定数係数PDEへ変換する。",
+          "used_node_ids": [
+            "fin.bs.n05_black_scholes_pde",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_remove_drift",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial v}{\\partial \\tau} = \\frac{\\partial^2 v}{\\partial x^2} + (k - 1)\\frac{\\partial v}{\\partial x} - k v\\quad \\left(V = K v(\\tau, x),\\; k = \\frac{2r}{\\sigma^2}\\right)",
+          "to_latex": "\\frac{\\partial u}{\\partial \\tau} = \\frac{\\partial^2 u}{\\partial x^2}\\quad \\left(v = e^{-\\alpha x - \\beta \\tau}u,\\; \\alpha = \\frac{k-1}{2},\\; \\beta = \\frac{(k+1)^2}{4}\\right)",
+          "operation_label": "指数変換による1階微分項・定数項の消去",
+          "explanation": "alpha = (k-1)/2と選んでdv/dx項を、beta = (k+1)^2/4と選んでv項を消去し、純粋な1次元熱伝導方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_bs07_call_formula",
+      "target_node_id": "fin.bs.n07_european_call_bs_formula",
+      "route_kind": "deductive",
+      "title": "熱核畳み込み積分からのブラック＝ショールズ・コール公式の導出",
+      "premise_node_ids": [
+        "fin.bs.n06_bs_heat_equation_reduction",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "無限遠での成長条件のもとで熱伝導方程式の解は熱核との畳み込み積分で一意に与えられる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial u}{\\partial \\tau} = \\frac{\\partial^2 u}{\\partial x^2},\\quad u(0, x) = \\max\\left(e^{\\frac{k+1}{2}x} - e^{\\frac{k-1}{2}x},\\, 0\\right)",
+          "to_latex": "C(t, S) = S\\,\\Phi(d_1) - K e^{-r(T-t)}\\,\\Phi(d_2)",
+          "operation_label": "熱核畳み込み積分の評価と元変数への復元",
+          "explanation": "初期条件u(0, x)に熱核を畳み込んで平方完成と変数置換で正規累積分布関数Phiに評価し、元の変数(t, S)へ戻してコール公式を得る。",
+          "used_node_ids": [
+            "fin.bs.n06_bs_heat_equation_reduction",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_heat_kernel",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial u}{\\partial \\tau} = \\frac{\\partial^2 u}{\\partial x^2},\\quad u(0, x) = \\max\\left(e^{\\frac{k+1}{2}x} - e^{\\frac{k-1}{2}x},\\, 0\\right)",
+          "to_latex": "u(\\tau, x) = \\frac{1}{\\sqrt{4\\pi\\tau}} \\int_{0}^{\\infty} \\left(e^{\\frac{k+1}{2}\\xi} - e^{\\frac{k-1}{2}\\xi}\\right) \\exp\\!\\left(-\\frac{(x-\\xi)^2}{4\\tau}\\right)d\\xi",
+          "operation_label": "1次元熱伝導方程式の基本解（熱核）による積分表示",
+          "explanation": "xi < 0で初期値u(0, xi) = 0であるため積分範囲が[0, inf)となり、ガウス熱核との畳み込み積分が得られる。",
+          "used_node_ids": [
+            "fin.bs.n06_bs_heat_equation_reduction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_gaussian_eval",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(\\tau, x) = \\frac{1}{\\sqrt{4\\pi\\tau}} \\int_{0}^{\\infty} \\left(e^{\\frac{k+1}{2}\\xi} - e^{\\frac{k-1}{2}\\xi}\\right) \\exp\\!\\left(-\\frac{(x-\\xi)^2}{4\\tau}\\right)d\\xi",
+          "to_latex": "u(\\tau, x) = e^{\\frac{k+1}{2}x + \\frac{(k+1)^2}{4}\\tau}\\Phi(d_1) - e^{\\frac{k-1}{2}x + \\frac{(k-1)^2}{4}\\tau}\\Phi(d_2)",
+          "operation_label": "平方完成と置換積分によるガウス積分の評価",
+          "explanation": "2つの指数積分の肩をxiについて平方完成し、z = (xi - x - (k+-1)*tau)/sqrt(2*tau)と置換積分することで標準正規累積分布関数Phi(d_1), Phi(d_2)で表す。",
+          "used_node_ids": [
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_back_to_S",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(\\tau, x) = e^{\\frac{k+1}{2}x + \\frac{(k+1)^2}{4}\\tau}\\Phi(d_1) - e^{\\frac{k-1}{2}x + \\frac{(k-1)^2}{4}\\tau}\\Phi(d_2)",
+          "to_latex": "C(t, S) = S\\,\\Phi(d_1) - K e^{-r(T-t)}\\,\\Phi(d_2)",
+          "operation_label": "元の変数(t, S)への逆変換",
+          "explanation": "V = K*exp(-alpha*x - beta*tau)*uにx = ln(S/K), tau = sigma^2*(T-t)/2, k = 2r/sigma^2を戻すと、第1項の指数がS/K、第2項の指数がexp(-r(T-t))となり公式が完成する。",
+          "used_node_ids": [
+            "fin.bs.n06_bs_heat_equation_reduction"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

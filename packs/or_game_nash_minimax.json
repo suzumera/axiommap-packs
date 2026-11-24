@@ -1,0 +1,429 @@
+{
+  "pack_meta": {
+    "pack_id": "or.game.nash_minimax",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "game_theory",
+    "title": "ゲーム理論：混合戦略ナッシュ均衡・ミニマックス定理と進化安定戦略（ESS）",
+    "language": "ja",
+    "description": "期待利得の無差別条件から混合戦略ナッシュ均衡、線形計画法の双対定理からのフォン・ノイマンのミニマックス定理、レプリケーター方程式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "or.game.n01_normal_form_mixed_boundary",
+      "short_code": "GAME01",
+      "kind": "math_boundary",
+      "title": "有限標準形ゲーム・混合戦略確率単体と期待利得の基礎境界",
+      "summary": "有限個の純粋戦略に対する確率分布（確率単体）として混合戦略を定義し、期待利得を双線形形式として定式化する基礎境界。",
+      "canonical_latex": "S_i = \\{1,\\dots,m_i\\},\\quad \\Delta(S_i) := \\left\\{\\mathbf{x} \\in \\mathbb{R}^{m_i}_{\\ge 0} \\;\\middle|\\; \\sum_{k=1}^{m_i} x_k = 1\\right\\},\\quad u_1(\\mathbf{x},\\mathbf{y}) = \\mathbf{x}^\\top A \\mathbf{y},\\quad u_2(\\mathbf{x},\\mathbf{y}) = \\mathbf{x}^\\top B \\mathbf{y} \\quad (\\Delta_m := \\Delta(S_1),\\; \\Delta_n := \\Delta(S_2))",
+      "aliases_latex": [
+        "u_1(\\mathbf{x},\\mathbf{y}) = \\sum_{i=1}^{m}\\sum_{j=1}^{n} x_i a_{ij} y_j"
+      ],
+      "keywords": [
+        "標準形ゲーム",
+        "混合戦略",
+        "確率単体",
+        "期待利得",
+        "双線形形式"
+      ],
+      "domain_tags": [
+        "game_theory",
+        "operations_research",
+        "decision_theory",
+        "or.game.nash_minimax"
+      ]
+    },
+    {
+      "id": "or.game.n02_nash_equilibrium_indifference",
+      "short_code": "GAME02",
+      "kind": "theorem_formula",
+      "title": "混合戦略ナッシュ均衡と期待利得の無差別条件",
+      "summary": "混合戦略ナッシュ均衡において、正の確率で選ばれる（支持集合に属する）すべての純粋戦略は同一の最大期待利得を与え、それ以外の戦略の利得はそれを超えないという必要十分条件。",
+      "canonical_latex": "\\mathbf{x}^* \\in \\arg\\max_{\\mathbf{x}\\in\\Delta_m} \\mathbf{x}^\\top A \\mathbf{y}^* \\iff \\big(\\forall i \\in \\operatorname{supp}(\\mathbf{x}^*),\\; \\mathbf{e}_i^\\top A \\mathbf{y}^* = v_1^*\\big) \\land \\big(\\forall k,\\; \\mathbf{e}_k^\\top A \\mathbf{y}^* \\le v_1^*\\big) \\quad (v_1^* := (\\mathbf{x}^*)^\\top A \\mathbf{y}^*)",
+      "aliases_latex": [
+        "x_i^* > 0 \\implies (A\\mathbf{y}^*)_i = \\max_k (A\\mathbf{y}^*)_k"
+      ],
+      "keywords": [
+        "ナッシュ均衡",
+        "混合戦略",
+        "無差別原理",
+        "支持集合",
+        "最適反応"
+      ],
+      "domain_tags": [
+        "game_theory",
+        "operations_research",
+        "or.game.nash_minimax"
+      ]
+    },
+    {
+      "id": "or.game.n03_zero_sum_lp_formulation",
+      "short_code": "GAME03",
+      "kind": "definition",
+      "title": "2人零和ゲームの線形計画問題（主問題・双対問題）による定式化",
+      "summary": "2人零和ゲームにおけるマックスミニ戦略とミニマックス戦略の探索を、互いに双対な線形計画問題 (P) と (D) として定式化する定義。",
+      "canonical_latex": "\\text{(P) }\\max_{\\mathbf{x},v}\\{v \\mid A^\\top \\mathbf{x} \\ge v\\mathbf{1}_n,\\; \\mathbf{1}_m^\\top \\mathbf{x}=1,\\; \\mathbf{x}\\ge\\mathbf{0}\\},\\qquad \\text{(D) }\\min_{\\mathbf{y},w}\\{w \\mid A\\mathbf{y} \\le w\\mathbf{1}_m,\\; \\mathbf{1}_n^\\top \\mathbf{y}=1,\\; \\mathbf{y}\\ge\\mathbf{0}\\} \\quad (B = -A,\\; \\mathbf{1}_k=(1,\\dots,1)^\\top\\in\\mathbb{R}^k,\\; \\mathbf{e}_i\\text{ unit vectors})",
+      "aliases_latex": [
+        "\\max_{\\mathbf{x}\\in\\Delta_m}\\min_{j} (A^\\top\\mathbf{x})_j,\\quad \\min_{\\mathbf{y}\\in\\Delta_n}\\max_{i} (A\\mathbf{y})_i"
+      ],
+      "keywords": [
+        "零和ゲーム",
+        "線形計画法",
+        "主問題",
+        "双対問題",
+        "マックスミニ"
+      ],
+      "domain_tags": [
+        "game_theory",
+        "operations_research",
+        "optimization",
+        "or.game.nash_minimax"
+      ]
+    },
+    {
+      "id": "or.game.n04_von_neumann_minimax",
+      "short_code": "GAME04",
+      "kind": "theorem_formula",
+      "title": "フォン・ノイマンのミニマックス定理（零和ゲームの値と強双対性）",
+      "summary": "有限2人零和ゲームの混合戦略空間において、マックスミニ値とミニマックス値が一致し、一意のゲームの値が存在することを保証する基本定理。",
+      "canonical_latex": "\\max_{\\mathbf{x}\\in\\Delta_m}\\min_{\\mathbf{y}\\in\\Delta_n} \\mathbf{x}^\\top A \\mathbf{y} = \\min_{\\mathbf{y}\\in\\Delta_n}\\max_{\\mathbf{x}\\in\\Delta_m} \\mathbf{x}^\\top A \\mathbf{y} = v^*",
+      "aliases_latex": [
+        "v^*_{\\text{P}} = w^*_{\\text{D}} = (\\mathbf{x}^*)^\\top A \\mathbf{y}^*"
+      ],
+      "keywords": [
+        "ミニマックス定理",
+        "フォン・ノイマン",
+        "強双対性",
+        "ゲームの値",
+        "鞍点"
+      ],
+      "domain_tags": [
+        "game_theory",
+        "operations_research",
+        "optimization",
+        "or.game.nash_minimax"
+      ]
+    },
+    {
+      "id": "or.game.n05_symmetric_ess_definition",
+      "short_code": "GAME05",
+      "kind": "definition",
+      "title": "対称ゲームにおける進化安定戦略（ESS）の定義",
+      "summary": "集団の大半が採用している戦略に対し、少数の任意の変異戦略が侵入しても平均利得で上回ることができないという進化的安定性の定義。",
+      "canonical_latex": "\\forall \\mathbf{y}\\neq \\mathbf{x}^*,\\; \\Big(\\mathbf{x}^{*\\top} A \\mathbf{x}^* > \\mathbf{y}^\\top A \\mathbf{x}^*\\Big) \\lor \\Big(\\mathbf{x}^{*\\top} A \\mathbf{x}^* = \\mathbf{y}^\\top A \\mathbf{x}^* \\land \\mathbf{x}^{*\\top} A \\mathbf{y} > \\mathbf{y}^\\top A \\mathbf{y}\\Big) \\quad (\\mathbf{x}^*,\\mathbf{y}\\in\\Delta_m,\\; B=A^\\top,\\; u(\\mathbf{x},\\mathbf{y})=\\mathbf{x}^\\top A\\mathbf{y})",
+      "aliases_latex": [
+        "u(\\mathbf{x}^*, (1-\\varepsilon)\\mathbf{x}^*+\\varepsilon\\mathbf{y}) > u(\\mathbf{y}, (1-\\varepsilon)\\mathbf{x}^*+\\varepsilon\\mathbf{y})\\;(\\forall \\varepsilon\\in(0,\\bar{\\varepsilon}))"
+      ],
+      "keywords": [
+        "進化安定戦略",
+        "ESS",
+        "進化ゲーム理論",
+        "対称ゲーム",
+        "侵入耐性"
+      ],
+      "domain_tags": [
+        "game_theory",
+        "evolutionary_biology",
+        "operations_research",
+        "or.game.nash_minimax"
+      ]
+    },
+    {
+      "id": "or.game.n06_replicator_equation",
+      "short_code": "GAME06",
+      "kind": "theorem_formula",
+      "title": "レプリケーター方程式（適応度差による戦略頻度ダイナミクス）",
+      "summary": "各戦略の個体数成長率がその期待利得（適応度）に比例するとき、集団内の戦略頻度の時間変化が適応度と集団平均適応度の差に比例することを記述する微分方程式。",
+      "canonical_latex": "\\dot{x}_i = x_i \\big((A\\mathbf{x})_i - \\mathbf{x}^\\top A \\mathbf{x}\\big)\\quad (i=1,\\dots,m,\\; \\mathbf{x}\\in\\Delta_m,\\; r_0\\text{ background fitness})",
+      "aliases_latex": [
+        "\\frac{dx_i}{dt} = x_i \\big(f_i(\\mathbf{x}) - \\bar{f}(\\mathbf{x})\\big)"
+      ],
+      "keywords": [
+        "レプリケーター方程式",
+        "進化ダイナミクス",
+        "平均適応度",
+        "自然選択",
+        "進化ゲーム"
+      ],
+      "domain_tags": [
+        "game_theory",
+        "evolutionary_biology",
+        "dynamical_systems",
+        "or.game.nash_minimax"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_game_n02_indifference",
+      "target_node_id": "or.game.n02_nash_equilibrium_indifference",
+      "route_kind": "deductive",
+      "title": "混合戦略の最適反応条件からの期待利得無差別条件の導出",
+      "premise_node_ids": [
+        "or.game.n01_normal_form_mixed_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "プレイヤー1の戦略集合は有限であり、期待利得は混合戦略確率に対して線形である。",
+        "均衡戦略 y* に対して x* は最適反応である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\forall \\mathbf{x}\\in\\Delta_m,\\; \\mathbf{x}^\\top A \\mathbf{y}^* \\le (\\mathbf{x}^*)^\\top A \\mathbf{y}^*",
+          "to_latex": "\\big(i \\in \\operatorname{supp}(\\mathbf{x}^*) \\implies \\mathbf{e}_i^\\top A \\mathbf{y}^* = v_1^*\\big) \\land \\big(\\forall k,\\; \\mathbf{e}_k^\\top A \\mathbf{y}^* \\le v_1^*\\big) \\quad (v_1^* := (\\mathbf{x}^*)^\\top A \\mathbf{y}^*)",
+          "operation_label": "最適反応条件から支持集合上の無差別条件を導く",
+          "explanation": "確率単体上の線形最適化の性質を用い、均衡で正の確率を持つ純粋戦略の期待利得がすべて最大値 v_1* に等しいことを示す。",
+          "used_node_ids": [
+            "or.game.n01_normal_form_mixed_boundary"
+          ]
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall \\mathbf{x}\\in\\Delta_m,\\; \\mathbf{x}^\\top A \\mathbf{y}^* \\le (\\mathbf{x}^*)^\\top A \\mathbf{y}^*",
+          "to_latex": "\\max_{k\\in\\{1,\\dots,m\\}} (A\\mathbf{y}^*)_k = \\sum_{i=1}^{m} x_i^* (A\\mathbf{y}^*)_i =: v_1^*",
+          "operation_label": "確率単体上の最大値を純粋戦略利得で評価する",
+          "explanation": "期待利得は純粋戦略の利得の凸結合であるため、確率単体上の最大値は端点である純粋戦略のいずれかで達成され、最適反応条件により均衡利得 v_1* と一致する。",
+          "used_node_ids": [
+            "or.game.n01_normal_form_mixed_boundary"
+          ]
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\max_{k\\in\\{1,\\dots,m\\}} (A\\mathbf{y}^*)_k = \\sum_{i=1}^{m} x_i^* (A\\mathbf{y}^*)_i =: v_1^*",
+          "to_latex": "\\sum_{i\\in\\operatorname{supp}(\\mathbf{x}^*)} x_i^* \\big(v_1^* - (A\\mathbf{y}^*)_i\\big) = 0,\\quad v_1^* - (A\\mathbf{y}^*)_k \\ge 0\\;\\;(\\forall k \\in \\{1,\\dots,m\\})",
+          "operation_label": "確率の和が1であることを用いて非負偏差の和へ変形する",
+          "explanation": "確率の総和が1であることから v_1* を和の中に取り込むと、各項が非負である重み付き和が0になる関係を得る。",
+          "used_node_ids": [
+            "or.game.n01_normal_form_mixed_boundary"
+          ]
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i\\in\\operatorname{supp}(\\mathbf{x}^*)} x_i^* \\big(v_1^* - (A\\mathbf{y}^*)_i\\big) = 0,\\quad v_1^* - (A\\mathbf{y}^*)_k \\ge 0\\;\\;(\\forall k \\in \\{1,\\dots,m\\})",
+          "to_latex": "\\big(i \\in \\operatorname{supp}(\\mathbf{x}^*) \\implies \\mathbf{e}_i^\\top A \\mathbf{y}^* = v_1^*\\big) \\land \\big(\\forall k,\\; \\mathbf{e}_k^\\top A \\mathbf{y}^* \\le v_1^*\\big) \\quad (v_1^* := (\\mathbf{x}^*)^\\top A \\mathbf{y}^*)",
+          "operation_label": "正の重みを持つ非負項の消滅から無差別条件を結論づける",
+          "explanation": "支持集合上では x_i^* > 0 かつ偏差が非負であるため、すべての支持集合内の純粋戦略で期待利得が v_1* に一致しなければならない。",
+          "used_node_ids": []
+        }
+      ]
+    },
+    {
+      "id": "drv_game_n03_lp_form",
+      "target_node_id": "or.game.n03_zero_sum_lp_formulation",
+      "route_kind": "reformulation",
+      "title": "零和ゲームのマックスミニ・ミニマックス問題の線形計画問題への言い換え",
+      "premise_node_ids": [
+        "or.game.n01_normal_form_mixed_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "2人零和ゲーム（B = -A）であり、両プレイヤーの混合戦略は確率単体上の独立なベクトルである。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\max_{\\mathbf{x}\\in\\Delta_m}\\min_{\\mathbf{y}\\in\\Delta_n} \\mathbf{x}^\\top A \\mathbf{y},\\quad \\min_{\\mathbf{y}\\in\\Delta_n}\\max_{\\mathbf{x}\\in\\Delta_m} \\mathbf{x}^\\top A \\mathbf{y} \\quad (B = -A,\\; \\Delta_m:=\\Delta(S_1),\\; \\Delta_n:=\\Delta(S_2))",
+          "to_latex": "\\text{(P) }\\max_{\\mathbf{x},v}\\{v \\mid A^\\top \\mathbf{x} \\ge v\\mathbf{1}_n,\\; \\mathbf{1}_m^\\top \\mathbf{x}=1,\\; \\mathbf{x}\\ge\\mathbf{0}\\},\\qquad \\text{(D) }\\min_{\\mathbf{y},w}\\{w \\mid A\\mathbf{y} \\le w\\mathbf{1}_m,\\; \\mathbf{1}_n^\\top \\mathbf{y}=1,\\; \\mathbf{y}\\ge\\mathbf{0}\\} \\quad (B = -A,\\; \\mathbf{1}_k=(1,\\dots,1)^\\top\\in\\mathbb{R}^k,\\; \\mathbf{e}_i\\text{ unit vectors})",
+          "operation_label": "内側の線形最適化を端点評価に置き換えて補助変数を導入する",
+          "explanation": "確率単体上の線形関数の最小化・最大化が純粋戦略の端点で達成されることを用い、下界 v と上界 w を導入して互いに双対な線形計画問題 (P), (D) として定義する。",
+          "used_node_ids": [
+            "or.game.n01_normal_form_mixed_boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drv_game_n04_minimax",
+      "target_node_id": "or.game.n04_von_neumann_minimax",
+      "route_kind": "deductive",
+      "title": "線形計画法の双対定理を用いたフォン・ノイマンのミニマックス定理の導出",
+      "premise_node_ids": [
+        "or.game.n03_zero_sum_lp_formulation"
+      ],
+      "required_math_node_ids": [
+        "math.opt.opt05_hyperplane_separation"
+      ],
+      "assumptions": [
+        "主問題 (P) と双対問題 (D) は非空かつ有界な最適解を持ち、凸集合の分離超平面定理による強双対性が成立する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\text{(P) }\\max_{\\mathbf{x},v}\\{v \\mid A^\\top \\mathbf{x} \\ge v\\mathbf{1}_n,\\; \\mathbf{1}_m^\\top\\mathbf{x}=1,\\; \\mathbf{x}\\ge\\mathbf{0}\\},\\quad \\text{(D) }\\min_{\\mathbf{y},w}\\{w \\mid A\\mathbf{y} \\le w\\mathbf{1}_m,\\; \\mathbf{1}_n^\\top\\mathbf{y}=1,\\; \\mathbf{y}\\ge\\mathbf{0}\\} \\quad (B = -A,\\; \\mathbf{1}_k=(1,\\dots,1)^\\top\\in\\mathbb{R}^k,\\; \\mathbf{e}_i\\text{ unit vectors})",
+          "to_latex": "\\max_{\\mathbf{x}\\in\\Delta_m}\\min_{\\mathbf{y}\\in\\Delta_n} \\mathbf{x}^\\top A \\mathbf{y} = \\min_{\\mathbf{y}\\in\\Delta_n}\\max_{\\mathbf{x}\\in\\Delta_m} \\mathbf{x}^\\top A \\mathbf{y} = v^*",
+          "operation_label": "弱双対性と分離超平面定理に基づく強双対性により値を一致させる",
+          "explanation": "(P) と (D) の弱双対性および分離超平面定理（OPT05）から従う線形計画法の強双対性により最適値が一致し、ゲームの値 v* の存在を得る。",
+          "used_node_ids": [
+            "math.opt.opt05_hyperplane_separation",
+            "or.game.n03_zero_sum_lp_formulation"
+          ]
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\text{(P) }\\max_{\\mathbf{x},v}\\{v \\mid A^\\top \\mathbf{x} \\ge v\\mathbf{1}_n,\\; \\mathbf{1}_m^\\top\\mathbf{x}=1,\\; \\mathbf{x}\\ge\\mathbf{0}\\},\\quad \\text{(D) }\\min_{\\mathbf{y},w}\\{w \\mid A\\mathbf{y} \\le w\\mathbf{1}_m,\\; \\mathbf{1}_n^\\top\\mathbf{y}=1,\\; \\mathbf{y}\\ge\\mathbf{0}\\} \\quad (B = -A,\\; \\mathbf{1}_k=(1,\\dots,1)^\\top\\in\\mathbb{R}^k,\\; \\mathbf{e}_i\\text{ unit vectors})",
+          "to_latex": "v \\le \\mathbf{x}^\\top A \\mathbf{y} \\le w \\implies v^*_{\\text{P}} \\le w^*_{\\text{D}}",
+          "operation_label": "制約不等式の内積をとって弱双対性を示す",
+          "explanation": "非負ベクトル y と x をそれぞれ (P), (D) の制約不等式に掛けて総和をとると、確率の和が1であることから v <= x^T A y <= w（弱双対性）が得られる。",
+          "used_node_ids": [
+            "or.game.n03_zero_sum_lp_formulation"
+          ]
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v \\le \\mathbf{x}^\\top A \\mathbf{y} \\le w \\implies v^*_{\\text{P}} \\le w^*_{\\text{D}}",
+          "to_latex": "\\exists (\\mathbf{x}^*, v^*),\\; (\\mathbf{y}^*, w^*)\\text{ s.t. } v^* = w^*",
+          "operation_label": "分離超平面定理に基づく線形計画の強双対性を適用する",
+          "explanation": "(P) と (D) の実行可能領域は非空の凸錐・多面体であり最適解が存在するため、分離超平面定理（OPT05）から導かれる線形計画の強双対定理により双対ギャップがゼロとなり v* = w* が成立する。",
+          "used_node_ids": [
+            "math.opt.opt05_hyperplane_separation"
+          ]
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists (\\mathbf{x}^*, v^*),\\; (\\mathbf{y}^*, w^*)\\text{ s.t. } v^* = w^*",
+          "to_latex": "\\max_{\\mathbf{x}\\in\\Delta_m}\\min_{\\mathbf{y}\\in\\Delta_n} \\mathbf{x}^\\top A \\mathbf{y} = \\min_{\\mathbf{y}\\in\\Delta_n}\\max_{\\mathbf{x}\\in\\Delta_m} \\mathbf{x}^\\top A \\mathbf{y} = v^*",
+          "operation_label": "最適値を元のマックスミニ値・ミニマックス値に戻す",
+          "explanation": "(P) と (D) の定義を逆に辿ることで、マックスミニ値とミニマックス値が共通のゲームの値 v* に等しいことが結論づけられる。",
+          "used_node_ids": [
+            "or.game.n03_zero_sum_lp_formulation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drv_game_n05_ess_def",
+      "target_node_id": "or.game.n05_symmetric_ess_definition",
+      "route_kind": "reformulation",
+      "title": "変異侵入に対する適応度優位条件からの進化安定戦略（ESS）の定式化",
+      "premise_node_ids": [
+        "or.game.n01_normal_form_mixed_boundary",
+        "or.game.n02_nash_equilibrium_indifference"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "対称2人ゲーム（B = A^T）であり、無限大集団でのランダムマッチングを仮定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\forall \\mathbf{y}\\neq \\mathbf{x}^*,\\; \\exists \\bar{\\varepsilon}>0:\\; \\forall \\varepsilon\\in(0,\\bar{\\varepsilon}),\\; u(\\mathbf{x}^*, (1-\\varepsilon)\\mathbf{x}^*+\\varepsilon\\mathbf{y}) > u(\\mathbf{y}, (1-\\varepsilon)\\mathbf{x}^*+\\varepsilon\\mathbf{y})",
+          "to_latex": "\\forall \\mathbf{y}\\neq \\mathbf{x}^*,\\; \\Big(\\mathbf{x}^{*\\top} A \\mathbf{x}^* > \\mathbf{y}^\\top A \\mathbf{x}^*\\Big) \\lor \\Big(\\mathbf{x}^{*\\top} A \\mathbf{x}^* = \\mathbf{y}^\\top A \\mathbf{x}^* \\land \\mathbf{x}^{*\\top} A \\mathbf{y} > \\mathbf{y}^\\top A \\mathbf{y}\\Big) \\quad (\\mathbf{x}^*,\\mathbf{y}\\in\\Delta_m,\\; B=A^\\top,\\; u(\\mathbf{x},\\mathbf{y})=\\mathbf{x}^\\top A\\mathbf{y})",
+          "operation_label": "混合集団での期待利得を侵入割合のべきで比較する",
+          "explanation": "期待利得の双線形性を用いて (1-ε) の定数項（均衡条件）と ε の1次項（侵入耐性条件）を比較し、任意の微小侵入に対して厳密に適応度が上回るための同値な2条件を得る。",
+          "used_node_ids": [
+            "or.game.n01_normal_form_mixed_boundary",
+            "or.game.n02_nash_equilibrium_indifference"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drv_game_n06_replicator",
+      "target_node_id": "or.game.n06_replicator_equation",
+      "route_kind": "deductive",
+      "title": "個体数成長式からのレプリケーター方程式の導出",
+      "premise_node_ids": [
+        "or.game.n01_normal_form_mixed_boundary",
+        "bio.pop.n01_population_mass_action_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "集団サイズは連続近似可能であり、各戦略の1人あたり純増殖率は背景増殖率と期待利得の和で与えられる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{n}_i = n_i \\big(r_0 + (A\\mathbf{x})_i\\big),\\quad N = \\sum_{j=1}^{m} n_j,\\quad x_i = \\frac{n_i}{N} \\quad (N > 0,\\; x_i \\in \\Delta_m,\\; r_0\\text{ background fitness})",
+          "to_latex": "\\dot{x}_i = x_i \\big((A\\mathbf{x})_i - \\mathbf{x}^\\top A \\mathbf{x}\\big)\\quad (i=1,\\dots,m,\\; \\mathbf{x}\\in\\Delta_m,\\; r_0\\text{ background fitness})",
+          "operation_label": "戦略頻度 x_i = n_i / N を時間微分して平均適応度を分離する",
+          "explanation": "全個体数 N の成長率と各戦略の成長率から頻度 x_i の微分を計算し、背景増殖率を消去してレプリケーター方程式を導出する。",
+          "used_node_ids": [
+            "bio.pop.n01_population_mass_action_boundary",
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule",
+            "or.game.n01_normal_form_mixed_boundary"
+          ]
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{n}_i = n_i \\big(r_0 + (A\\mathbf{x})_i\\big),\\quad N = \\sum_{j=1}^{m} n_j,\\quad x_i = \\frac{n_i}{N} \\quad (N > 0,\\; x_i \\in \\Delta_m,\\; r_0\\text{ background fitness})",
+          "to_latex": "\\dot{N} = \\sum_{j=1}^{m} \\dot{n}_j = N \\big(r_0 + \\mathbf{x}^\\top A \\mathbf{x}\\big) \\quad (N > 0,\\; \\mathbf{x}\\in\\Delta_m,\\; r_0\\text{ background fitness})",
+          "operation_label": "全個体数の時間変化率を集団平均適応度で表す",
+          "explanation": "各戦略の増殖式の総和をとり、x_j = n_j/N を代入することで、全体の増加率が背景増殖率と平均適応度 x^T A x の和になることを示す。",
+          "used_node_ids": [
+            "bio.pop.n01_population_mass_action_boundary",
+            "or.game.n01_normal_form_mixed_boundary"
+          ]
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{N} = \\sum_{j=1}^{m} \\dot{n}_j = N \\big(r_0 + \\mathbf{x}^\\top A \\mathbf{x}\\big) \\quad (N > 0,\\; \\mathbf{x}\\in\\Delta_m,\\; r_0\\text{ background fitness})",
+          "to_latex": "\\dot{x}_i = \\frac{\\dot{n}_i N - n_i \\dot{N}}{N^2} = x_i \\left(\\frac{\\dot{n}_i}{n_i} - \\frac{\\dot{N}}{N}\\right) \\quad (n_i > 0,\\; N > 0,\\; x_i \\in \\Delta_m,\\; r_0\\text{ background fitness})",
+          "operation_label": "積の微分法と連鎖律により頻度の時間微分を計算する",
+          "explanation": "x_i = n_i N^{-1} に対して積の微分法（M15）および逆数関数の連鎖律（M01）を適用し、相対成長率の差に整理する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule"
+          ]
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{x}_i = \\frac{\\dot{n}_i N - n_i \\dot{N}}{N^2} = x_i \\left(\\frac{\\dot{n}_i}{n_i} - \\frac{\\dot{N}}{N}\\right) \\quad (n_i > 0,\\; N > 0,\\; x_i \\in \\Delta_m,\\; r_0\\text{ background fitness})",
+          "to_latex": "\\dot{x}_i = x_i \\big((A\\mathbf{x})_i - \\mathbf{x}^\\top A \\mathbf{x}\\big)\\quad (i=1,\\dots,m,\\; \\mathbf{x}\\in\\Delta_m,\\; r_0\\text{ background fitness})",
+          "operation_label": "各戦略と全体の相対成長率を代入して基礎増殖率を消去する",
+          "explanation": "n_i'/n_i = r_0 + (Ax)_i および N'/N = r_0 + x^T A x を代入すると r_0 が相殺され、レプリケーター方程式（境界 x_i = 0 でも連続的に成立）を得る。",
+          "used_node_ids": [
+            "bio.pop.n01_population_mass_action_boundary",
+            "or.game.n01_normal_form_mixed_boundary"
+          ]
+        }
+      ]
+    }
+  ]
+}
