@@ -1,0 +1,610 @@
+{
+  "pack_meta": {
+    "pack_id": "math.category.functors_monads",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "category_theory",
+    "title": "圏論入門：圏の公理・関手・自然変換・米田の補題と随伴・モナド則",
+    "language": "ja",
+    "description": "射の合成則と恒等射から同型射の一意性、関手の合成保存、自然変換の可換図式、米田の補題の主張、随伴関手対 F⊣G から誘導されるモナド則を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "math.cat.n01_category_axioms",
+      "short_code": "CAT01",
+      "kind": "axiom",
+      "title": "圏の公理（対象・射・合成の結合律と恒等射）",
+      "summary": "対象の集まりと射の集まり、射の合成および各対象に対する恒等射からなり、合成の結合律と左右の単位律を満たす代数構造としての圏を定める公理系。",
+      "canonical_latex": "\\forall f:A\\to B,\\; g:B\\to C,\\; h:C\\to D:\\; (h\\circ g)\\circ f = h\\circ (g\\circ f),\\quad \\exists!\\,\\mathrm{id}_A:A\\to A\\text{ s.t. } f\\circ \\mathrm{id}_A = f,\\; \\mathrm{id}_B\\circ f = f",
+      "aliases_latex": [
+        "\\mathcal{C} = (\\mathrm{Ob}(\\mathcal{C}), \\mathrm{Hom}_{\\mathcal{C}}, \\circ, \\mathrm{id})"
+      ],
+      "keywords": [
+        "圏",
+        "対象",
+        "射",
+        "結合律",
+        "恒等射"
+      ],
+      "domain_tags": [
+        "category_theory",
+        "mathematics"
+      ]
+    },
+    {
+      "id": "math.cat.n02_isomorphism_uniqueness",
+      "short_code": "CAT02",
+      "kind": "theorem_formula",
+      "title": "同型射の定義と逆射の一意性定理",
+      "summary": "両側逆射が存在する射を同型射といい、射の合成の結合律と恒等射の単位律から、同型射に対する逆射は存在すれば一意に定まる。",
+      "canonical_latex": "g\\circ f = \\mathrm{id}_A \\land f\\circ g = \\mathrm{id}_B \\land h\\circ f = \\mathrm{id}_A \\land f\\circ h = \\mathrm{id}_B \\implies g = h",
+      "aliases_latex": [
+        "f^{-1} \\text{ is unique if } f\\in \\mathrm{Iso}(\\mathcal{C})"
+      ],
+      "keywords": [
+        "同型射",
+        "逆射",
+        "一意性",
+        "単位律"
+      ],
+      "domain_tags": [
+        "category_theory",
+        "mathematics"
+      ]
+    },
+    {
+      "id": "math.cat.n03_functor_definition",
+      "short_code": "CAT03",
+      "kind": "definition",
+      "title": "関手（共変関手）と合成・恒等射の保存則",
+      "summary": "2つの圏の間で対象と射を対応づけ、射の合成と恒等射を保存する構造保存写像としての共変関手の定義。",
+      "canonical_latex": "F:\\mathcal{C}\\to\\mathcal{D}:\\; A\\mapsto F(A),\\; (f:A\\to B)\\mapsto (F(f):F(A)\\to F(B)),\\quad F(g\\circ f)=F(g)\\circ F(f),\\; F(\\mathrm{id}_A)=\\mathrm{id}_{F(A)}",
+      "aliases_latex": [
+        "F^{\\mathrm{op}}:\\mathcal{C}^{\\mathrm{op}}\\to\\mathcal{D},\\quad F(g\\circ f)=F(f)\\circ F(g)"
+      ],
+      "keywords": [
+        "関手",
+        "共変関手",
+        "合成保存",
+        "恒等射保存"
+      ],
+      "domain_tags": [
+        "category_theory",
+        "mathematics"
+      ]
+    },
+    {
+      "id": "math.cat.n04_natural_transformation",
+      "short_code": "CAT04",
+      "kind": "definition",
+      "title": "自然変換と自然性の可換図式",
+      "summary": "同じ始圏と終圏をもつ2つの関手の間の射として、各対象に割り当てられた射の族がすべての射に対して可換図式を満たすという自然変換の定義。",
+      "canonical_latex": "\\alpha:F\\Rightarrow G:\\; \\forall A\\in\\mathrm{Ob}(\\mathcal{C}),\\; \\alpha_A:F(A)\\to G(A),\\quad \\forall f:A\\to B,\\; G(f)\\circ \\alpha_A = \\alpha_B\\circ F(f)",
+      "aliases_latex": [
+        "\\alpha\\in\\mathrm{Nat}(F,G)"
+      ],
+      "keywords": [
+        "自然変換",
+        "自然性",
+        "可換図式",
+        "成分"
+      ],
+      "domain_tags": [
+        "category_theory",
+        "mathematics"
+      ]
+    },
+    {
+      "id": "math.cat.n05_yoneda_lemma",
+      "short_code": "CAT05",
+      "kind": "theorem_formula",
+      "title": "米田の補題（表現可能関手からの自然変換と値の全単射）",
+      "summary": "局所小圏上の表現可能関手から集合値関手への自然変換全体の集合と、その集合値関手の対象における値との間に自然な全単射が存在することを主張する定理。",
+      "canonical_latex": "\\mathrm{Nat}(\\mathcal{C}(A,-), F) \\cong F(A),\\quad \\Phi(\\alpha)=\\alpha_A(\\mathrm{id}_A),\\quad \\Psi(x)_X(f)=F(f)(x)",
+      "aliases_latex": [
+        "\\mathrm{Hom}_{[\\mathcal{C},\\mathbf{Set}]}(\\mathcal{C}(A,-),F)\\cong F(A)"
+      ],
+      "keywords": [
+        "米田の補題",
+        "表現可能関手",
+        "自然同型",
+        "米田埋め込み"
+      ],
+      "domain_tags": [
+        "category_theory",
+        "mathematics"
+      ]
+    },
+    {
+      "id": "math.cat.n06_adjunction_unit_counit",
+      "short_code": "CAT06",
+      "kind": "definition",
+      "title": "随伴関手対（F ⊣ G）と単位・余単位の三角恒等式",
+      "summary": "ホム集合の自然同型および単位自然変換・余単位自然変換と三角恒等式によって特徴づけられる随伴関手対の定義。",
+      "canonical_latex": "F\\dashv G:\\; \\mathcal{D}(F(A),B)\\cong\\mathcal{C}(A,G(B)),\\quad \\eta:\\mathrm{Id}_{\\mathcal{C}}\\Rightarrow GF,\\; \\varepsilon:FG\\Rightarrow\\mathrm{Id}_{\\mathcal{D}},\\quad \\varepsilon_F\\circ F\\eta=\\mathrm{id}_F,\\; G\\varepsilon\\circ\\eta_G=\\mathrm{id}_G",
+      "aliases_latex": [
+        "(F,G,\\eta,\\varepsilon):\\mathcal{C}\\rightleftarrows\\mathcal{D}"
+      ],
+      "keywords": [
+        "随伴関手",
+        "単位",
+        "余単位",
+        "三角恒等式"
+      ],
+      "domain_tags": [
+        "category_theory",
+        "mathematics"
+      ]
+    },
+    {
+      "id": "math.cat.n07_monad_axioms_def",
+      "short_code": "CAT07",
+      "kind": "definition",
+      "title": "モナド（自己関手・単位・乗法）とモナド則の定義",
+      "summary": "圏上の自己関手と単位・乗法の2つの自然変換の組で、乗法の結合律と左右の単位律（モナド則）を満たす構造の定義。",
+      "canonical_latex": "(T,\\eta,\\mu):\\; T:\\mathcal{C}\\to\\mathcal{C},\\; \\eta:\\mathrm{Id}_{\\mathcal{C}}\\Rightarrow T,\\; \\mu:T^2\\Rightarrow T,\\quad \\mu\\circ T\\mu = \\mu\\circ\\mu_T,\\quad \\mu\\circ T\\eta = \\mathrm{id}_T = \\mu\\circ\\eta_T",
+      "aliases_latex": [
+        "\\mu\\circ T\\mu = \\mu\\circ\\mu T"
+      ],
+      "keywords": [
+        "モナド",
+        "自己関手",
+        "モナド則",
+        "結合律",
+        "単位律"
+      ],
+      "domain_tags": [
+        "category_theory",
+        "mathematics"
+      ]
+    },
+    {
+      "id": "math.cat.n08_monad_from_adjunction",
+      "short_code": "CAT08",
+      "kind": "theorem_formula",
+      "title": "随伴関手対 F ⊣ G から誘導されるモナド則の導出定理",
+      "summary": "随伴関手対の合成自己関手 T=GF に単位 η と乗法 μ=Gε_F を与えると、三角恒等式と自然性からモナド則が自動的に導かれることを示す定理。",
+      "canonical_latex": "F\\dashv G,\\; T:=GF,\\; \\mu:=G\\varepsilon_F \\implies \\mu\\circ T\\mu = \\mu\\circ\\mu_T \\land \\mu\\circ T\\eta = \\mathrm{id}_T = \\mu\\circ\\eta_T",
+      "aliases_latex": [
+        "(GF, \\eta, G\\varepsilon_F) \\text{ is a monad on } \\mathcal{C}"
+      ],
+      "keywords": [
+        "随伴からモナド",
+        "モナド則",
+        "三角恒等式",
+        "自然性"
+      ],
+      "domain_tags": [
+        "category_theory",
+        "mathematics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.cat.n02_isomorphism_uniqueness",
+      "target_node_id": "math.cat.n02_isomorphism_uniqueness",
+      "route_kind": "deductive",
+      "title": "圏の結合律と恒等射の単位律からの逆射の一意性の証明",
+      "premise_node_ids": [
+        "math.cat.n01_category_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "f: A -> B に対して g, h: B -> A がともに両側逆射であるとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "g\\circ f = \\mathrm{id}_A,\\; f\\circ h = \\mathrm{id}_B",
+          "to_latex": "g = h",
+          "operation_label": "結合律と恒等射の適用による逆射の一意性導出",
+          "explanation": "恒等射の右単位律、逆射の定義、合成の結合律、左単位律を順に適用することで 2 つの逆射が一致することを示す。",
+          "used_node_ids": [
+            "math.cat.n01_category_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_right_unit",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g\\circ f = \\mathrm{id}_A,\\; f\\circ h = \\mathrm{id}_B",
+          "to_latex": "g = g\\circ \\mathrm{id}_B = g\\circ (f\\circ h)",
+          "operation_label": "右単位律と逆射関係式の代入",
+          "explanation": "恒等射の性質から g = g o id_B であり、f o h = id_B を代入して g = g o (f o h) を得る。",
+          "used_node_ids": [
+            "math.cat.n01_category_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_associativity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g = g\\circ \\mathrm{id}_B = g\\circ (f\\circ h)",
+          "to_latex": "g = (g\\circ f)\\circ h = \\mathrm{id}_A\\circ h",
+          "operation_label": "合成の結合律と左逆射条件の適用",
+          "explanation": "射の合成の結合律より括弧を付け替え、g o f = id_A を代入して id_A o h と変形する。",
+          "used_node_ids": [
+            "math.cat.n01_category_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_left_unit",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g = (g\\circ f)\\circ h = \\mathrm{id}_A\\circ h",
+          "to_latex": "g = h",
+          "operation_label": "左単位律の適用",
+          "explanation": "恒等射の左単位律 id_A o h = h により g = h が従い、逆射の一意性が示される。",
+          "used_node_ids": [
+            "math.cat.n01_category_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cat.n03_functor_definition",
+      "target_node_id": "math.cat.n03_functor_definition",
+      "route_kind": "reformulation",
+      "title": "圏の公理に基づく関手の定義と構造保存条件の導入",
+      "premise_node_ids": [
+        "math.cat.n01_category_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "C と D は圏である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_map_data",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{C},\\; \\mathcal{D}\\text{ categories}",
+          "to_latex": "F:\\mathrm{Ob}(\\mathcal{C})\\to\\mathrm{Ob}(\\mathcal{D}),\\; F:\\mathrm{Hom}_{\\mathcal{C}}(A,B)\\to\\mathrm{Hom}_{\\mathcal{D}}(F(A),F(B))",
+          "operation_label": "対象と射に対する対応規則の定義",
+          "explanation": "圏 C の各対象を圏 D の対象へ、各射 f: A -> B を射 F(f): F(A) -> F(B) へ写す対応 F を定める。",
+          "used_node_ids": [
+            "math.cat.n01_category_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s1_preserve_laws",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F:\\mathrm{Ob}(\\mathcal{C})\\to\\mathrm{Ob}(\\mathcal{D}),\\; F:\\mathrm{Hom}_{\\mathcal{C}}(A,B)\\to\\mathrm{Hom}_{\\mathcal{D}}(F(A),F(B))",
+          "to_latex": "F(g\\circ f)=F(g)\\circ F(f),\\quad F(\\mathrm{id}_A)=\\mathrm{id}_{F(A)}",
+          "operation_label": "合成と恒等射の保存条件の付加",
+          "explanation": "圏の構造を保つため、射の合成の保存と恒等射の保存を公理として課すことで共変関手が定義される。",
+          "used_node_ids": [
+            "math.cat.n01_category_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cat.n04_natural_transformation",
+      "target_node_id": "math.cat.n04_natural_transformation",
+      "route_kind": "reformulation",
+      "title": "平行な関手の間の射としての自然変換の定義",
+      "premise_node_ids": [
+        "math.cat.n01_category_axioms",
+        "math.cat.n03_functor_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "F, G: C -> D は同じ始圏と終圏をもつ関手である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_component_family",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F,G:\\mathcal{C}\\to\\mathcal{D}",
+          "to_latex": "\\{\\alpha_A:F(A)\\to G(A)\\}_{A\\in\\mathrm{Ob}(\\mathcal{C})}",
+          "operation_label": "対象ごとの成分射の族の指定",
+          "explanation": "圏 C の各対象 A に対して、終圏 D における射 alpha_A: F(A) -> G(A) を指定する。",
+          "used_node_ids": [
+            "math.cat.n01_category_axioms",
+            "math.cat.n03_functor_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s1_naturality_square",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\{\\alpha_A:F(A)\\to G(A)\\}_{A\\in\\mathrm{Ob}(\\mathcal{C})}",
+          "to_latex": "\\forall f:A\\to B,\\; G(f)\\circ \\alpha_A = \\alpha_B\\circ F(f)",
+          "operation_label": "自然性条件（可換図式）の導入",
+          "explanation": "任意の射 f: A -> B について、F(f) による遷移と alpha による遷移が可換となる自然性条件を課す。",
+          "used_node_ids": [
+            "math.cat.n03_functor_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cat.n05_yoneda_lemma",
+      "target_node_id": "math.cat.n05_yoneda_lemma",
+      "route_kind": "deductive",
+      "title": "自然性条件と恒等射の評価による米田の補題の証明",
+      "premise_node_ids": [
+        "math.cat.n01_category_axioms",
+        "math.cat.n03_functor_definition",
+        "math.cat.n04_natural_transformation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "C は局所小圏であり、F: C -> Set は集合値共変関手である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\alpha\\in\\mathrm{Nat}(\\mathcal{C}(A,-),F)",
+          "to_latex": "\\Phi(\\alpha):=\\alpha_A(\\mathrm{id}_A)\\in F(A),\\quad \\Psi(x)_X(f):=F(f)(x),\\quad \\Psi\\circ\\Phi=\\mathrm{id},\\; \\Phi\\circ\\Psi=\\mathrm{id}",
+          "operation_label": "自然性の評価による全単射の構成と検証",
+          "explanation": "自然変換の自然性を恒等射に適用して値が alpha_A(id_A) で一意に決まることを示し、逆写像 Psi との相互逆性を確認する。",
+          "used_node_ids": [
+            "math.cat.n01_category_axioms",
+            "math.cat.n03_functor_definition",
+            "math.cat.n04_natural_transformation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_eval_naturality",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\alpha\\in\\mathrm{Nat}(\\mathcal{C}(A,-),F)",
+          "to_latex": "\\alpha_X(f)=\\alpha_X(f\\circ\\mathrm{id}_A)=F(f)(\\alpha_A(\\mathrm{id}_A))",
+          "operation_label": "射 f に対する自然性図式の恒等射への適用",
+          "explanation": "射 f: A -> X が誘導する自然性 F(f) o alpha_A = alpha_X o (f o -) を id_A に適用し、alpha_X(f) を alpha_A(id_A) で表す。",
+          "used_node_ids": [
+            "math.cat.n01_category_axioms",
+            "math.cat.n04_natural_transformation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_define_maps",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\alpha_X(f)=\\alpha_X(f\\circ\\mathrm{id}_A)=F(f)(\\alpha_A(\\mathrm{id}_A))",
+          "to_latex": "\\Phi(\\alpha):=\\alpha_A(\\mathrm{id}_A),\\quad \\Psi(x)_X(f):=F(f)(x)\\implies \\Psi(\\Phi(\\alpha))_X(f)=F(f)(\\alpha_A(\\mathrm{id}_A))=\\alpha_X(f)",
+          "operation_label": "双方向の写像の定義と Psi o Phi = id の確認",
+          "explanation": "Phi(alpha) = alpha_A(id_A) および Psi(x)_X(f) = F(f)(x) と定めると、前ステップの結果から Psi(Phi(alpha)) = alpha が成り立つ。",
+          "used_node_ids": [
+            "math.cat.n03_functor_definition",
+            "math.cat.n04_natural_transformation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_verify_inverse",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Phi(\\alpha):=\\alpha_A(\\mathrm{id}_A),\\quad \\Psi(x)_X(f):=F(f)(x)\\implies \\Psi(\\Phi(\\alpha))_X(f)=F(f)(\\alpha_A(\\mathrm{id}_A))=\\alpha_X(f)",
+          "to_latex": "\\Phi(\\alpha):=\\alpha_A(\\mathrm{id}_A)\\in F(A),\\quad \\Psi(x)_X(f):=F(f)(x),\\quad \\Psi\\circ\\Phi=\\mathrm{id},\\; \\Phi\\circ\\Psi=\\mathrm{id}",
+          "operation_label": "Phi o Psi = id と全単射性の完結",
+          "explanation": "F の関手性より Psi(x) は自然変換となり、さらに Phi(Psi(x)) = F(id_A)(x) = x が成り立つため全単射が証明される。",
+          "used_node_ids": [
+            "math.cat.n03_functor_definition",
+            "math.cat.n04_natural_transformation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cat.n06_adjunction_unit_counit",
+      "target_node_id": "math.cat.n06_adjunction_unit_counit",
+      "route_kind": "equivalence",
+      "title": "ホム集合の自然同型と単位・余単位による随伴関手対の定義",
+      "premise_node_ids": [
+        "math.cat.n01_category_axioms",
+        "math.cat.n03_functor_definition",
+        "math.cat.n04_natural_transformation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "F: C -> D と G: D -> C は関手である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_hom_isomorphism",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F:\\mathcal{C}\\to\\mathcal{D},\\; G:\\mathcal{D}\\to\\mathcal{C}",
+          "to_latex": "\\mathcal{D}(F(A),B)\\cong\\mathcal{C}(A,G(B))\\text{ natural in }A,B",
+          "operation_label": "ホム集合の自然同型による随伴の定義",
+          "explanation": "対象 A, B に関して自然なホム集合の全単射 D(F(A), B) ≅ C(A, G(B)) が存在するとき F ⊣ G と定義する。",
+          "used_node_ids": [
+            "math.cat.n03_functor_definition",
+            "math.cat.n04_natural_transformation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s1_triangle_identities",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{D}(F(A),B)\\cong\\mathcal{C}(A,G(B))\\text{ natural in }A,B",
+          "to_latex": "\\eta_A:=\\Phi(\\mathrm{id}_{F(A)}),\\; \\varepsilon_B:=\\Phi^{-1}(\\mathrm{id}_{G(B)}),\\quad \\varepsilon_F\\circ F\\eta=\\mathrm{id}_F,\\; G\\varepsilon\\circ\\eta_G=\\mathrm{id}_G",
+          "operation_label": "単位・余単位自然変換と三角恒等式の導入",
+          "explanation": "恒等射の対応像として単位 eta と余単位 varepsilon を取り出すと、自然同型と等価な三角恒等式が得られる。",
+          "used_node_ids": [
+            "math.cat.n01_category_axioms",
+            "math.cat.n04_natural_transformation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cat.n07_monad_axioms_def",
+      "target_node_id": "math.cat.n07_monad_axioms_def",
+      "route_kind": "reformulation",
+      "title": "自己関手と自然変換に基づくモナドとモナド則の定義",
+      "premise_node_ids": [
+        "math.cat.n01_category_axioms",
+        "math.cat.n03_functor_definition",
+        "math.cat.n04_natural_transformation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "T: C -> C は圏 C 上の自己関手である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_monad_structure",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T:\\mathcal{C}\\to\\mathcal{C}",
+          "to_latex": "(T,\\eta,\\mu),\\quad \\eta:\\mathrm{Id}_{\\mathcal{C}}\\Rightarrow T,\\; \\mu:T^2\\Rightarrow T",
+          "operation_label": "単位と乗法の自然変換の指定",
+          "explanation": "自己関手 T に対して単位 eta: Id_C => T および乗法 mu: T^2 => T の2つの自然変換を組にする。",
+          "used_node_ids": [
+            "math.cat.n03_functor_definition",
+            "math.cat.n04_natural_transformation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s1_monad_axioms",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(T,\\eta,\\mu),\\quad \\eta:\\mathrm{Id}_{\\mathcal{C}}\\Rightarrow T,\\; \\mu:T^2\\Rightarrow T",
+          "to_latex": "\\mu\\circ T\\mu = \\mu\\circ\\mu_T,\\quad \\mu\\circ T\\eta = \\mathrm{id}_T = \\mu\\circ\\eta_T",
+          "operation_label": "結合律と左右単位律（モナド則）の付与",
+          "explanation": "自然変換の合成に関して乗法の結合律と単位変換に関する左右の単位律（モナド則）を公理として課す。",
+          "used_node_ids": [
+            "math.cat.n01_category_axioms",
+            "math.cat.n04_natural_transformation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.cat.n08_monad_from_adjunction",
+      "target_node_id": "math.cat.n08_monad_from_adjunction",
+      "route_kind": "deductive",
+      "title": "随伴関手対の三角恒等式と自然性からのモナド則の導出",
+      "premise_node_ids": [
+        "math.cat.n03_functor_definition",
+        "math.cat.n04_natural_transformation",
+        "math.cat.n06_adjunction_unit_counit",
+        "math.cat.n07_monad_axioms_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "F ⊣ G は単位 eta と余単位 varepsilon をもつ随伴関手対である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F\\dashv G,\\; (\\eta:\\mathrm{Id}_{\\mathcal{C}}\\Rightarrow GF,\\; \\varepsilon:FG\\Rightarrow\\mathrm{Id}_{\\mathcal{D}}),\\quad T:=GF,\\; \\mu:=G\\varepsilon_F",
+          "to_latex": "\\mu\\circ T\\mu = \\mu\\circ\\mu_T \\;\\land\\; \\mu\\circ T\\eta = \\mathrm{id}_T = \\mu\\circ\\eta_T",
+          "operation_label": "三角恒等式と自然性によるモナド則の導出",
+          "explanation": "T=GF, mu=G varepsilon_F とおき、2つの三角恒等式から左右の単位律を、varepsilon の自然性から結合律を導く。",
+          "used_node_ids": [
+            "math.cat.n03_functor_definition",
+            "math.cat.n04_natural_transformation",
+            "math.cat.n06_adjunction_unit_counit",
+            "math.cat.n07_monad_axioms_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_left_unit_law",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F\\dashv G,\\; (\\eta:\\mathrm{Id}_{\\mathcal{C}}\\Rightarrow GF,\\; \\varepsilon:FG\\Rightarrow\\mathrm{Id}_{\\mathcal{D}}),\\quad T:=GF,\\; \\mu:=G\\varepsilon_F",
+          "to_latex": "\\mu\\circ T\\eta = G\\varepsilon_F\\circ GF\\eta = G(\\varepsilon_F\\circ F\\eta) = G(\\mathrm{id}_F) = \\mathrm{id}_T",
+          "operation_label": "第1の三角恒等式による単位律の導出",
+          "explanation": "関手 G の合成保存性と第1の三角恒等式 varepsilon_F o F eta = id_F を用いて mu o T eta = id_T を示す。",
+          "used_node_ids": [
+            "math.cat.n03_functor_definition",
+            "math.cat.n06_adjunction_unit_counit"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_right_unit_law",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu\\circ T\\eta = G\\varepsilon_F\\circ GF\\eta = G(\\varepsilon_F\\circ F\\eta) = G(\\mathrm{id}_F) = \\mathrm{id}_T",
+          "to_latex": "\\mu\\circ\\eta_T = G\\varepsilon_F\\circ\\eta_{GF} = \\mathrm{id}_{GF} = \\mathrm{id}_T",
+          "operation_label": "第2の三角恒等式によるもう一方の単位律の導出",
+          "explanation": "第2の三角恒等式 G varepsilon o eta_G = id_G を関手 F の像に適用することで mu o eta_T = id_T を得る。",
+          "used_node_ids": [
+            "math.cat.n06_adjunction_unit_counit"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_assoc_law",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu\\circ\\eta_T = G\\varepsilon_F\\circ\\eta_{GF} = \\mathrm{id}_{GF} = \\mathrm{id}_T",
+          "to_latex": "\\mu\\circ T\\mu = G(\\varepsilon_F\\circ FG\\varepsilon_F) = G(\\varepsilon_F\\circ\\varepsilon_{FGF}) = \\mu\\circ\\mu_T",
+          "operation_label": "余単位の自然性による結合律の導出",
+          "explanation": "余単位 varepsilon の自然性図式を射 varepsilon_F: FGF => F に適用すると varepsilon_F o FG varepsilon_F = varepsilon_F o varepsilon_{FGF} となり、G を施して結合律が従う。",
+          "used_node_ids": [
+            "math.cat.n03_functor_definition",
+            "math.cat.n04_natural_transformation",
+            "math.cat.n06_adjunction_unit_counit"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_conclude_monad",
+          "order": 5,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu\\circ T\\mu = G(\\varepsilon_F\\circ FG\\varepsilon_F) = G(\\varepsilon_F\\circ\\varepsilon_{FGF}) = \\mu\\circ\\mu_T",
+          "to_latex": "\\mu\\circ T\\mu = \\mu\\circ\\mu_T \\;\\land\\; \\mu\\circ T\\eta = \\mathrm{id}_T = \\mu\\circ\\eta_T",
+          "operation_label": "モナド則の成立の確認",
+          "explanation": "以上の結合律と左右の単位律がすべて満たされるため、(GF, eta, G varepsilon_F) は圏 C 上のモナドをなす。",
+          "used_node_ids": [
+            "math.cat.n07_monad_axioms_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
