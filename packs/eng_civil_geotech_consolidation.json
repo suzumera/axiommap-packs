@@ -1,0 +1,601 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.civil.geotech_consolidation",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "civil_engineering",
+    "title": "土質力学：有効応力の原理・モール＝クーロン破壊規準・ダルシー則とテルツァーギの圧密方程式",
+    "language": "ja",
+    "description": "テルツァーギの有効応力 σ'=σ-u、モールの応力円からモール＝クーロン破壊規準、ダルシー則と連続の式から1次元圧密拡散方程式 ∂u/∂t=cv ∂^2u/∂z^2 を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.soil.n01_saturated_soil_boundary",
+      "short_code": "SOIL01",
+      "kind": "math_boundary",
+      "title": "飽和土の二相混合体モデルと間隙比・応力状態の基礎境界",
+      "summary": "土粒子骨格と非圧縮性間隙水からなる飽和土において、全応力・間隙比・間隙率・飽和単位体積重量を定義する基礎境界。",
+      "canonical_latex": "\\sigma = \\sigma' + u,\\quad e = \\frac{V_v}{V_s},\\quad n = \\frac{e}{1+e},\\quad \\mathbf{F}_{\\text{body}} = \\rho_{\\text{sat}}\\mathbf{g}",
+      "aliases_latex": [
+        "n = \\frac{V_v}{V} = \\frac{e}{1+e},\\quad \\gamma_{\\text{sat}} = \\frac{G_s + e}{1+e}\\gamma_w"
+      ],
+      "keywords": [
+        "飽和土",
+        "二相混合体",
+        "間隙比",
+        "間隙水圧"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "geotechnical_engineering"
+      ]
+    },
+    {
+      "id": "eng.soil.n02_terzaghi_effective_stress",
+      "short_code": "SOIL02",
+      "kind": "definition",
+      "title": "テルツァーギの有効応力の原理",
+      "summary": "飽和土に作用する全応力から等方的な間隙水圧を差し引いた残余として、土粒子骨格が担う有効応力を定義する。",
+      "canonical_latex": "\\sigma' = \\sigma - u,\\quad \\tau' = \\tau",
+      "aliases_latex": [
+        "\\boldsymbol{\\sigma}' = \\boldsymbol{\\sigma} - u\\mathbf{I}"
+      ],
+      "keywords": [
+        "有効応力",
+        "テルツァーギ",
+        "全応力",
+        "間隙水圧"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "geotechnical_engineering"
+      ]
+    },
+    {
+      "id": "eng.soil.n03_mohr_coulomb_failure_criterion",
+      "short_code": "SOIL03",
+      "kind": "theorem_formula",
+      "title": "モール＝クーロンの破壊規準（有効応力表示・主応力表示）",
+      "summary": "モールの応力円とクーロンのせん断破壊包絡線の接線条件から、有効粘着力と有効内部摩擦角による土の破壊規準を導出する。",
+      "canonical_latex": "\\tau_f = c' + \\sigma'_f \\tan\\phi',\\qquad \\frac{\\sigma'_1 - \\sigma'_3}{2} = c'\\cos\\phi' + \\frac{\\sigma'_1 + \\sigma'_3}{2}\\sin\\phi'",
+      "aliases_latex": [
+        "\\sigma'_1 = \\sigma'_3 \\tan^2\\!\\left(45^\\circ + \\frac{\\phi'}{2}\\right) + 2c'\\tan\\!\\left(45^\\circ + \\frac{\\phi'}{2}\\right)"
+      ],
+      "keywords": [
+        "モール＝クーロン",
+        "破壊規準",
+        "せん断強度",
+        "内部摩擦角"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "geotechnical_engineering"
+      ]
+    },
+    {
+      "id": "eng.soil.n04_darcy_law",
+      "short_code": "SOIL04",
+      "kind": "definition",
+      "title": "ダルシー則と水理水頭・動水勾配の定義",
+      "summary": "飽和多孔質体中の層流浸透において、ダルシー流速が全水頭の空間勾配（動水勾配）と透水係数の積に比例することを定義する。",
+      "canonical_latex": "v = -k \\frac{\\partial h}{\\partial z} = k i,\\quad h = z + \\frac{u}{\\gamma_w},\\quad i = -\\frac{\\partial h}{\\partial z}",
+      "aliases_latex": [
+        "\\mathbf{v} = -k \\nabla h"
+      ],
+      "keywords": [
+        "ダルシー則",
+        "透水係数",
+        "動水勾配",
+        "全水頭"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "geotechnical_engineering"
+      ]
+    },
+    {
+      "id": "eng.soil.n05_1d_seepage_continuity",
+      "short_code": "SOIL05",
+      "kind": "theorem_formula",
+      "title": "1次元飽和土の間隙水連続の式",
+      "summary": "微小土要素に出入りする間隙水の質量保存則とダルシー則を結び付け、圧縮体積ひずみ速度と過剰間隙水圧の2階空間微分の関係式を導く。",
+      "canonical_latex": "\\frac{\\partial \\varepsilon_v}{\\partial t} = \\frac{\\partial v}{\\partial z} = -\\frac{k}{\\gamma_w}\\frac{\\partial^2 u}{\\partial z^2}",
+      "aliases_latex": [
+        "\\frac{\\partial e}{\\partial t} = -(1+e_0)\\frac{\\partial v}{\\partial z}"
+      ],
+      "keywords": [
+        "連続の式",
+        "浸透流",
+        "体積ひずみ速度",
+        "質量保存"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "geotechnical_engineering"
+      ]
+    },
+    {
+      "id": "eng.soil.n06_volume_compressibility_mv",
+      "short_code": "SOIL06",
+      "kind": "definition",
+      "title": "体積圧縮係数 mv と1次元圧縮構成則",
+      "summary": "1次元側方拘束条件下において、有効応力の増分に対する体積ひずみ（圧縮正）の比例定数として体積圧縮係数 mv を定義する。",
+      "canonical_latex": "m_v := -\\frac{1}{1+e_0}\\frac{de}{d\\sigma'} = \\frac{d\\varepsilon_v}{d\\sigma'},\\quad \\frac{\\partial \\varepsilon_v}{\\partial t} = m_v \\frac{\\partial \\sigma'}{\\partial t}",
+      "aliases_latex": [
+        "m_v = \\frac{a_v}{1+e_0}"
+      ],
+      "keywords": [
+        "体積圧縮係数",
+        "圧密沈下",
+        "間隙比",
+        "圧縮構成則"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "geotechnical_engineering"
+      ]
+    },
+    {
+      "id": "eng.soil.n07_terzaghi_consolidation_eq",
+      "short_code": "SOIL07",
+      "kind": "theorem_formula",
+      "title": "テルツァーギの1次元圧密方程式",
+      "summary": "有効応力の原理、1次元間隙水連続の式、体積圧縮係数の線形関係から、過剰間隙水圧の時間発展を記述する1次元拡散方程式を導出する。",
+      "canonical_latex": "\\frac{\\partial u}{\\partial t} = c_v \\frac{\\partial^2 u}{\\partial z^2},\\qquad c_v := \\frac{k}{m_v \\gamma_w}",
+      "aliases_latex": [
+        "\\frac{\\partial u_e}{\\partial t} = c_v \\frac{\\partial^2 u_e}{\\partial z^2}"
+      ],
+      "keywords": [
+        "テルツァーギ",
+        "圧密方程式",
+        "圧密係数",
+        "拡散方程式"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "geotechnical_engineering"
+      ]
+    },
+    {
+      "id": "eng.soil.n08_terzaghi_consolidation_solution",
+      "short_code": "SOIL08",
+      "kind": "theorem_formula",
+      "title": "両面排水条件におけるテルツァーギ圧密方程式のフーリエ級数解",
+      "summary": "上下両面排水境界と一様初期過剰間隙水圧のもとで、変数分離法とフーリエ正弦級数展開により過剰間隙水圧の厳密解と時間係数 Tv を導出する。",
+      "canonical_latex": "u(z,t) = \\sum_{m=0}^{\\infty} \\frac{4 u_0}{(2m+1)\\pi}\\sin\\!\\left(\\frac{(2m+1)\\pi z}{2H}\\right)\\exp\\!\\left(-\\frac{(2m+1)^2 \\pi^2}{4} T_v\\right),\\quad T_v := \\frac{c_v t}{H^2}",
+      "aliases_latex": [
+        "U(T_v) = 1 - \\sum_{m=0}^{\\infty} \\frac{8}{(2m+1)^2 \\pi^2}\\exp\\!\\left(-\\frac{(2m+1)^2 \\pi^2}{4} T_v\\right)"
+      ],
+      "keywords": [
+        "圧密解析解",
+        "フーリエ級数",
+        "時間係数",
+        "両面排水"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "geotechnical_engineering"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_soil02_effective_stress",
+      "target_node_id": "eng.soil.n02_terzaghi_effective_stress",
+      "route_kind": "reformulation",
+      "title": "二相混合体の応力釣合いからの有効応力の定義",
+      "premise_node_ids": [
+        "eng.soil.n01_saturated_soil_boundary",
+        "eng.yield.n01_stress_beam_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "土粒子と間隙水はそれぞれ非圧縮性であり、接触面積は極めて小さいとする",
+        "間隙水圧は等方的でありせん断応力を負担しない"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma = \\sigma' + u",
+          "to_latex": "\\sigma' = \\sigma - u,\\quad \\tau' = \\tau",
+          "operation_label": "有効応力の定義とせん断応力の不変性",
+          "explanation": "飽和土の微小要素の静的釣合いにおいて、全垂直応力から間隙水圧を差し引いた値を土粒子骨格が担う有効垂直応力として定義する。水は静的せん断抵抗を持たないため、せん断応力は全応力と有効応力で等しい。",
+          "used_node_ids": [
+            "eng.soil.n01_saturated_soil_boundary",
+            "eng.yield.n01_stress_beam_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_soil03_mohr_coulomb",
+      "target_node_id": "eng.soil.n03_mohr_coulomb_failure_criterion",
+      "route_kind": "deductive",
+      "title": "モールの応力円とせん断破壊包絡線からのモール＝クーロン破壊規準の導出",
+      "premise_node_ids": [
+        "eng.soil.n02_terzaghi_effective_stress",
+        "eng.yield.n02_plane_stress_transformation",
+        "eng.yield.n03_principal_stresses_mohr_circle"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "assumptions": [
+        "破壊面は最小主応力面と角度 45度 + φ'/2 をなす",
+        "破壊包絡線は有効粘着力 c' と有効内部摩擦角 φ' による直線で表される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma'_f = \\frac{\\sigma'_1 + \\sigma'_3}{2} + \\frac{\\sigma'_1 - \\sigma'_3}{2}\\cos 2\\theta,\\quad \\tau_f = \\frac{\\sigma'_1 - \\sigma'_3}{2}\\sin 2\\theta",
+          "to_latex": "\\frac{\\sigma'_1 - \\sigma'_3}{2} = c'\\cos\\phi' + \\frac{\\sigma'_1 + \\sigma'_3}{2}\\sin\\phi'",
+          "operation_label": "モールの応力円とクーロン包絡線の接線条件による主応力関係式の導出",
+          "explanation": "有効主応力によるモールの応力円と破壊包絡線 τ_f = c' + σ'_f tan(φ') が接する条件 2θ = 90° + φ' を代入し、三角恒等式で整理することで主応力表示の破壊規準を得る。",
+          "used_node_ids": [
+            "eng.soil.n02_terzaghi_effective_stress",
+            "eng.yield.n02_plane_stress_transformation",
+            "eng.yield.n03_principal_stresses_mohr_circle",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma'_f = \\frac{\\sigma'_1 + \\sigma'_3}{2} + \\frac{\\sigma'_1 - \\sigma'_3}{2}\\cos 2\\theta,\\quad \\tau_f = \\frac{\\sigma'_1 - \\sigma'_3}{2}\\sin 2\\theta",
+          "to_latex": "\\sigma'_f = \\frac{\\sigma'_1 + \\sigma'_3}{2} - \\frac{\\sigma'_1 - \\sigma'_3}{2}\\sin\\phi',\\quad \\tau_f = \\frac{\\sigma'_1 - \\sigma'_3}{2}\\cos\\phi'",
+          "operation_label": "破壊面角度の代入",
+          "explanation": "モールの応力円と直線包絡線の接点における法線角条件 2θ = 90° + φ' を応力変換式に代入し、cos(90°+φ') = -sin(φ') および sin(90°+φ') = cos(φ') を適用する。",
+          "used_node_ids": [
+            "eng.soil.n02_terzaghi_effective_stress",
+            "eng.yield.n02_plane_stress_transformation",
+            "eng.yield.n03_principal_stresses_mohr_circle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma'_f = \\frac{\\sigma'_1 + \\sigma'_3}{2} - \\frac{\\sigma'_1 - \\sigma'_3}{2}\\sin\\phi',\\quad \\tau_f = \\frac{\\sigma'_1 - \\sigma'_3}{2}\\cos\\phi'",
+          "to_latex": "\\frac{\\sigma'_1 - \\sigma'_3}{2}\\cos\\phi' = c' + \\left(\\frac{\\sigma'_1 + \\sigma'_3}{2} - \\frac{\\sigma'_1 - \\sigma'_3}{2}\\sin\\phi'\\right)\\tan\\phi'",
+          "operation_label": "クーロン破壊規準への代入",
+          "explanation": "破壊面上の有効垂直応力 σ'_f とせん断応力 τ_f をクーロンの線形破壊規準 τ_f = c' + σ'_f tan(φ') に代入する。",
+          "used_node_ids": [
+            "eng.soil.n02_terzaghi_effective_stress"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\sigma'_1 - \\sigma'_3}{2}\\cos\\phi' = c' + \\left(\\frac{\\sigma'_1 + \\sigma'_3}{2} - \\frac{\\sigma'_1 - \\sigma'_3}{2}\\sin\\phi'\\right)\\tan\\phi'",
+          "to_latex": "\\frac{\\sigma'_1 - \\sigma'_3}{2} = c'\\cos\\phi' + \\frac{\\sigma'_1 + \\sigma'_3}{2}\\sin\\phi'",
+          "operation_label": "三角恒等式による整理",
+          "explanation": "両辺に cos(φ') を掛けて移項し、cos^2(φ') + sin^2(φ') = 1 を用いて主応力差と平均主応力の線形関係式を導く。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_soil04_darcy_law",
+      "target_node_id": "eng.soil.n04_darcy_law",
+      "route_kind": "reformulation",
+      "title": "飽和土の間隙水頭とダルシー則の定式化",
+      "premise_node_ids": [
+        "eng.soil.n01_saturated_soil_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "間隙水の流速は小さく慣性項が無視できる層流領域である",
+        "透水係数 k は空間的・時間的に一定とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "h = z + \\frac{u}{\\gamma_w},\\quad i = -\\frac{\\partial h}{\\partial z}",
+          "to_latex": "v = -k \\frac{\\partial h}{\\partial z} = k i",
+          "operation_label": "全水頭勾配とダルシー流速の比例関係の定義",
+          "explanation": "位置水頭 z と圧力水頭 u/γ_w の和として全水頭 h を定義し、全水頭の空間減少率である動水勾配 i に透水係数 k を乗じて見かけの平均浸透流速（ダルシー流速）を定める。",
+          "used_node_ids": [
+            "eng.soil.n01_saturated_soil_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_soil05_continuity",
+      "target_node_id": "eng.soil.n05_1d_seepage_continuity",
+      "route_kind": "deductive",
+      "title": "間隙水の質量保存則とダルシー則による1次元連続の式の導出",
+      "premise_node_ids": [
+        "eng.soil.n04_darcy_law",
+        "eng.kin.n01_kinetics_diffusion_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "飽和土であり、土粒子と間隙水は非圧縮性である",
+        "水の流れおよび変形は鉛直 z 方向の1次元のみに限定される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial V_v}{\\partial t} = -\\left(v\\left(z+\\frac{dz}{2}\\right) - v\\left(z-\\frac{dz}{2}\\right)\\right)A",
+          "to_latex": "\\frac{\\partial \\varepsilon_v}{\\partial t} = \\frac{\\partial v}{\\partial z} = -\\frac{k}{\\gamma_w}\\frac{\\partial^2 u}{\\partial z^2}",
+          "operation_label": "連続の式とダルシー則の結合",
+          "explanation": "微小土要素からの間隙水の正味流出量と圧縮体積ひずみ速度の等値関係にダルシー則を代入し、過剰間隙水圧の2階空間微分による連続の式を導出する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary",
+            "eng.soil.n04_darcy_law",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial V_v}{\\partial t} = -\\left(v\\left(z+\\frac{dz}{2}\\right) - v\\left(z-\\frac{dz}{2}\\right)\\right)A",
+          "to_latex": "\\frac{\\partial \\varepsilon_v}{\\partial t} = \\frac{\\partial v}{\\partial z}",
+          "operation_label": "微小要素の体積収支と体積ひずみ速度の同定",
+          "explanation": "体積 V = A dz で除し、圧縮を正とする体積ひずみ ε_v = -ΔV_v / V の時間変化率が間隙水の正味流出勾配 ∂v/∂z に等しいことを導く。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\varepsilon_v}{\\partial t} = \\frac{\\partial v}{\\partial z}",
+          "to_latex": "\\frac{\\partial \\varepsilon_v}{\\partial t} = -\\frac{\\partial}{\\partial z}\\left(k\\frac{\\partial}{\\partial z}\\left(z + \\frac{u}{\\gamma_w}\\right)\\right)",
+          "operation_label": "ダルシー則の代入",
+          "explanation": "浸透流速 v にダルシー則 v = -k ∂h/∂z と全水頭 h = z + u/γ_w を代入する。",
+          "used_node_ids": [
+            "eng.soil.n04_darcy_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\varepsilon_v}{\\partial t} = -\\frac{\\partial}{\\partial z}\\left(k\\frac{\\partial}{\\partial z}\\left(z + \\frac{u}{\\gamma_w}\\right)\\right)",
+          "to_latex": "\\frac{\\partial \\varepsilon_v}{\\partial t} = -\\frac{k}{\\gamma_w}\\frac{\\partial^2 u}{\\partial z^2}",
+          "operation_label": "微分の線形性による簡約",
+          "explanation": "透水係数 k および水の単位体積重量 γ_w を定数とし、∂^2 z / ∂z^2 = 0 を用いて間隙水圧の2階導関数で表す。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_soil06_mv_def",
+      "target_node_id": "eng.soil.n06_volume_compressibility_mv",
+      "route_kind": "reformulation",
+      "title": "間隙比と体積ひずみの関係からの体積圧縮係数 mv の定義",
+      "premise_node_ids": [
+        "eng.soil.n01_saturated_soil_boundary",
+        "eng.soil.n02_terzaghi_effective_stress"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "微小ひずみ範囲で間隙比変化は有効応力変化に線形比例する",
+        "側方変位が拘束された1次元圧縮状態である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m_v := -\\frac{1}{1+e_0}\\frac{de}{d\\sigma'} = \\frac{d\\varepsilon_v}{d\\sigma'}",
+          "to_latex": "\\frac{\\partial \\varepsilon_v}{\\partial t} = m_v \\frac{\\partial \\sigma'}{\\partial t}",
+          "operation_label": "体積圧縮係数の定義と連鎖律の適用",
+          "explanation": "初期体積 1+e_0 に対する間隙比減少率と有効応力増分の比として体積圧縮係数 mv を定義し、合成関数の微分法則（連鎖律）により体積ひずみ速度を有効応力変化速度へ変換する。",
+          "used_node_ids": [
+            "eng.soil.n01_saturated_soil_boundary",
+            "eng.soil.n02_terzaghi_effective_stress",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_soil07_consolidation_eq",
+      "target_node_id": "eng.soil.n07_terzaghi_consolidation_eq",
+      "route_kind": "deductive",
+      "title": "有効応力原理・連続の式・圧縮則からのテルツァーギ1次元圧密方程式の導出",
+      "premise_node_ids": [
+        "eng.soil.n02_terzaghi_effective_stress",
+        "eng.soil.n05_1d_seepage_continuity",
+        "eng.soil.n06_volume_compressibility_mv"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "載荷後に全応力は時間に対して一定（∂σ/∂t = 0）に保たれる",
+        "透水係数 k および体積圧縮係数 mv は圧密過程を通じて一定である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma' = \\sigma - u,\\quad \\frac{\\partial \\sigma}{\\partial t} = 0",
+          "to_latex": "\\frac{\\partial u}{\\partial t} = c_v \\frac{\\partial^2 u}{\\partial z^2},\\quad c_v := \\frac{k}{m_v \\gamma_w}",
+          "operation_label": "有効応力変化と間隙水流出の結合による圧密拡散方程式の導出",
+          "explanation": "一定全応力下で過剰間隙水圧の消散がそのまま有効応力の増加となる関係を用い、1次元圧縮則と連続の式を等置して圧密係数 cv を含む拡散方程式を得る。",
+          "used_node_ids": [
+            "eng.soil.n02_terzaghi_effective_stress",
+            "eng.soil.n05_1d_seepage_continuity",
+            "eng.soil.n06_volume_compressibility_mv",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma' = \\sigma - u,\\quad \\frac{\\partial \\sigma}{\\partial t} = 0",
+          "to_latex": "\\frac{\\partial \\sigma'}{\\partial t} = -\\frac{\\partial u}{\\partial t}",
+          "operation_label": "有効応力の時間微分",
+          "explanation": "全応力一定条件の下で有効応力の定義式を時間 t で偏微分し、有効応力増加速度が過剰間隙水圧の減少速度に等しいことを示す。",
+          "used_node_ids": [
+            "eng.soil.n02_terzaghi_effective_stress",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\sigma'}{\\partial t} = -\\frac{\\partial u}{\\partial t}",
+          "to_latex": "-m_v \\frac{\\partial u}{\\partial t} = -\\frac{k}{\\gamma_w}\\frac{\\partial^2 u}{\\partial z^2}",
+          "operation_label": "圧縮構成則と連続の式の等置",
+          "explanation": "体積圧縮係数の関係 ∂ε_v/∂t = m_v ∂σ'/∂t に代入して体積ひずみ速度を求め、1次元間隙水連続の式と等置する。",
+          "used_node_ids": [
+            "eng.soil.n05_1d_seepage_continuity",
+            "eng.soil.n06_volume_compressibility_mv"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-m_v \\frac{\\partial u}{\\partial t} = -\\frac{k}{\\gamma_w}\\frac{\\partial^2 u}{\\partial z^2}",
+          "to_latex": "\\frac{\\partial u}{\\partial t} = c_v \\frac{\\partial^2 u}{\\partial z^2},\\quad c_v := \\frac{k}{m_v \\gamma_w}",
+          "operation_label": "圧密係数 cv の定義と整理",
+          "explanation": "両辺を -m_v で割り、圧密係数 c_v = k / (m_v γ_w) を定義することで1次元圧密拡散方程式を得る。",
+          "used_node_ids": [
+            "eng.soil.n06_volume_compressibility_mv"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_soil08_consolidation_solution",
+      "target_node_id": "eng.soil.n08_terzaghi_consolidation_solution",
+      "route_kind": "deductive",
+      "title": "変数分離法とフーリエ級数展開による圧密方程式の厳密解の導出",
+      "premise_node_ids": [
+        "eng.soil.n07_terzaghi_consolidation_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity",
+        "math.fourier.ft01_trig_orthogonality",
+        "math.fourier.ft02_real_fourier_series"
+      ],
+      "assumptions": [
+        "層厚 2H の粘土層の上下面（z=0, z=2H）が完全排水境界（u=0）である",
+        "時刻 t=0 における初期過剰間隙水圧は深さ方向に一様な値 u_0 である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\partial u}{\\partial t} = c_v \\frac{\\partial^2 u}{\\partial z^2},\\quad u(0,t)=u(2H,t)=0,\\quad u(z,0)=u_0",
+          "to_latex": "u(z,t) = \\sum_{m=0}^{\\infty} \\frac{4 u_0}{(2m+1)\\pi}\\sin\\!\\left(\\frac{(2m+1)\\pi z}{2H}\\right)\\exp\\!\\left(-\\frac{(2m+1)^2 \\pi^2}{4} T_v\\right)",
+          "operation_label": "変数分離法とフーリエ正弦級数展開による初期値境界値問題の求解",
+          "explanation": "両面排水境界条件を満たす固有モードを導出し、重ね合わせの原理と一様初期条件のフーリエ正弦級数展開により、時間係数 Tv = c_v t / H^2 を用いた解析解を得る。",
+          "used_node_ids": [
+            "eng.soil.n07_terzaghi_consolidation_eq",
+            "math.calc.m36_derivative_linearity",
+            "math.fourier.ft01_trig_orthogonality",
+            "math.fourier.ft02_real_fourier_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial u}{\\partial t} = c_v \\frac{\\partial^2 u}{\\partial z^2},\\quad u(0,t) = u(2H,t) = 0",
+          "to_latex": "u_n(z,t) = B_n \\sin\\!\\left(\\frac{n\\pi z}{2H}\\right)\\exp\\!\\left(-\\frac{n^2 \\pi^2 c_v t}{4 H^2}\\right)\\quad (n \\ge 1)",
+          "operation_label": "変数分離と境界条件による固有関数の決定",
+          "explanation": "u(z,t)=Z(z)T(t) とおいて空間・時間の常微分方程式に分離し、境界条件 u(0,t)=u(2H,t)=0 から正弦関数の固有モードと指数減衰項を得る。",
+          "used_node_ids": [
+            "eng.soil.n07_terzaghi_consolidation_eq",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_n(z,t) = B_n \\sin\\!\\left(\\frac{n\\pi z}{2H}\\right)\\exp\\!\\left(-\\frac{n^2 \\pi^2 c_v t}{4 H^2}\\right)\\quad (n \\ge 1)",
+          "to_latex": "B_n = \\frac{1}{H}\\int_{0}^{2H} u_0 \\sin\\!\\left(\\frac{n\\pi z}{2H}\\right)dz = \\begin{cases} \\frac{4 u_0}{n\\pi} & (n = 2m+1) \\\\ 0 & (n = 2m) \\end{cases}",
+          "operation_label": "初期条件のフーリエ正弦級数展開による係数決定",
+          "explanation": "t=0 の線形重ね合わせに三角関数系の直交関係とフーリエ係数の公式を適用し、一様初期圧 u_0 に対する奇数次のみの展開係数 B_n を決定する。",
+          "used_node_ids": [
+            "math.fourier.ft01_trig_orthogonality",
+            "math.fourier.ft02_real_fourier_series"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "B_n = \\frac{1}{H}\\int_{0}^{2H} u_0 \\sin\\!\\left(\\frac{n\\pi z}{2H}\\right)dz = \\begin{cases} \\frac{4 u_0}{n\\pi} & (n = 2m+1) \\\\ 0 & (n = 2m) \\end{cases}",
+          "to_latex": "u(z,t) = \\sum_{m=0}^{\\infty} \\frac{4 u_0}{(2m+1)\\pi}\\sin\\!\\left(\\frac{(2m+1)\\pi z}{2H}\\right)\\exp\\!\\left(-\\frac{(2m+1)^2 \\pi^2}{4} T_v\\right)",
+          "operation_label": "時間係数 Tv の導入と級数解の完成",
+          "explanation": "求めた係数 B_{2m+1} と無次元時間係数 T_v = c_v t / H^2 を代入し、過剰間隙水圧の時空間分布を与える厳密級数解を完成させる。",
+          "used_node_ids": [
+            "eng.soil.n07_terzaghi_consolidation_eq",
+            "math.fourier.ft02_real_fourier_series"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

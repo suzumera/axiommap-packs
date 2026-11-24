@@ -1,0 +1,559 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.civil.beam_buckling",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "civil_engineering",
+    "title": "構造力学：オイラー＝ベルヌーイ梁のたわみ方程式・曲げ応力とオイラー座屈荷重",
+    "language": "ja",
+    "description": "平面保持の仮定とつり合い式から曲げ応力式 σ=My/I、4階常微分方程式 EI d^4w/dx^4=q(x)、境界条件から柱のオイラー座屈荷重 Pcr=π^2EI/L^2 を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.civil.n01_section_modulus_def",
+      "short_code": "CB01",
+      "kind": "definition",
+      "title": "断面係数と最大曲げ応力の定義",
+      "summary": "断面二次モーメントを中立軸からの最大距離で除した断面係数を定義し、梁断面に生じる最大曲げ応力を表す。",
+      "canonical_latex": "Z := \\frac{I}{y_{\\max}},\\qquad \\sigma_{\\max} = \\frac{|M|}{Z} = \\frac{|M|\\,y_{\\max}}{I}",
+      "aliases_latex": [
+        "W = \\frac{I}{y_{\\max}}",
+        "Z_{\\text{rect}} = \\frac{bh^2}{6}"
+      ],
+      "keywords": [
+        "断面係数",
+        "最大曲げ応力",
+        "断面二次モーメント",
+        "中立軸",
+        "構造設計"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "structural_mechanics"
+      ]
+    },
+    {
+      "id": "eng.civil.n02_beam_column_ode",
+      "short_code": "CB02",
+      "kind": "theorem_formula",
+      "title": "軸圧縮力と横荷重を受ける梁柱（ビーム・コラム）の4階常微分方程式",
+      "summary": "オイラー＝ベルヌーイ梁の曲げ釣合い式に軸圧縮力による付加曲げモーメント（P-Δ効果）を組み込んだ4階線形常微分方程式。",
+      "canonical_latex": "EI\\frac{d^4 w}{dx^4} + P\\frac{d^2 w}{dx^2} = q(x)",
+      "aliases_latex": [
+        "EI w''''(x) + P w''(x) = q(x)"
+      ],
+      "keywords": [
+        "ビーム・コラム",
+        "4階常微分方程式",
+        "P-Δ効果",
+        "オイラー＝ベルヌーイ梁",
+        "複合荷重"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "structural_mechanics"
+      ]
+    },
+    {
+      "id": "eng.civil.n03_effective_buckling_length",
+      "short_code": "CB03",
+      "kind": "theorem_formula",
+      "title": "境界条件に応じた有効座屈長と一般化オイラー座屈荷重",
+      "summary": "柱の両端の支持条件（ピン支持・固定端・自由端）から座屈モードの固有値問題を解き、有効座屈長係数 K を用いて一般化したオイラー座屈荷重公式。",
+      "canonical_latex": "P_{\\mathrm{cr}} = \\frac{\\pi^2 E I}{L_e^2} = \\frac{\\pi^2 E I}{(K L)^2}\\quad \\left(K = 1\\text{ (両端ピン)},\\; 2\\text{ (一端固定・他端自由)},\\; 0.5\\text{ (両端固定)},\\; \\approx 0.699\\text{ (一端固定・他端ピン)}\\right)",
+      "aliases_latex": [
+        "P_{\\mathrm{cr}} = \\frac{\\pi^2 EI}{(\\mu L)^2}",
+        "L_e = K L"
+      ],
+      "keywords": [
+        "有効座屈長",
+        "座屈長係数",
+        "オイラー座屈荷重",
+        "境界条件",
+        "固有値問題"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "structural_mechanics"
+      ]
+    },
+    {
+      "id": "eng.civil.n04_slenderness_ratio_def",
+      "short_code": "CB04",
+      "kind": "definition",
+      "title": "断面二次半径（回転半径）と細長比の定義",
+      "summary": "断面積と断面二次モーメントから定まる断面二次半径と、有効座屈長を無次元化した細長比の定義。",
+      "canonical_latex": "r := \\sqrt{\\frac{I}{A}},\\qquad \\lambda := \\frac{L_e}{r} = \\frac{K L}{\\sqrt{I/A}}",
+      "aliases_latex": [
+        "i = \\sqrt{\\frac{I}{A}}",
+        "\\lambda = \\frac{K L}{r}"
+      ],
+      "keywords": [
+        "細長比",
+        "断面二次半径",
+        "回転半径",
+        "座屈指標",
+        "断面諸量"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "structural_mechanics"
+      ]
+    },
+    {
+      "id": "eng.civil.n05_euler_buckling_stress",
+      "short_code": "CB05",
+      "kind": "theorem_formula",
+      "title": "オイラー座屈応力（オイラー双曲線）と弾性座屈の適用限界",
+      "summary": "一般化オイラー座屈荷重を断面積で除して得られる座屈応力式と、材料の比例限度から定まる限界細長比。",
+      "canonical_latex": "\\sigma_{\\mathrm{cr}} = \\frac{P_{\\mathrm{cr}}}{A} = \\frac{\\pi^2 E}{\\lambda^2}\\quad \\left(\\lambda \\ge \\lambda_p := \\pi\\sqrt{\\frac{E}{\\sigma_p}}\\right)",
+      "aliases_latex": [
+        "\\sigma_{\\mathrm{cr}} = \\frac{\\pi^2 E}{(L_e / r)^2}"
+      ],
+      "keywords": [
+        "座屈応力",
+        "オイラー双曲線",
+        "限界細長比",
+        "弾性座屈",
+        "比例限度"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "structural_mechanics"
+      ]
+    },
+    {
+      "id": "eng.civil.n06_eccentric_secant_formula",
+      "short_code": "CB06",
+      "kind": "theorem_formula",
+      "title": "偏心軸圧縮を受ける柱の最大たわみと割線公式（セカント公式）",
+      "summary": "断面の図心から偏心距離 e だけずれて軸圧縮力が作用する両端ピン支持柱の最大たわみおよび最大圧縮応力を与える割線公式。",
+      "canonical_latex": "w_{\\max} = e\\left(\\sec\\!\\left(\\frac{L}{2}\\sqrt{\\frac{P}{EI}}\\right) - 1\\right),\\qquad \\sigma_{\\max} = \\frac{P}{A}\\left(1 + \\frac{e\\,y_{\\max}}{r^2}\\sec\\!\\left(\\frac{L}{2}\\sqrt{\\frac{P}{EI}}\\right)\\right)",
+      "aliases_latex": [
+        "\\sigma_{\\max} = \\frac{P}{A}\\left(1 + \\frac{ec}{r^2}\\sec\\!\\left(\\frac{\\pi}{2}\\sqrt{\\frac{P}{P_{\\mathrm{cr}}}}\\right)\\right)"
+      ],
+      "keywords": [
+        "割線公式",
+        "セカント公式",
+        "偏心圧縮",
+        "非線形増幅",
+        "最大圧縮応力"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "structural_mechanics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "der_cb01_section_modulus",
+      "target_node_id": "eng.civil.n01_section_modulus_def",
+      "route_kind": "reformulation",
+      "title": "ナビエの曲げ応力公式からの断面係数の導入",
+      "premise_node_ids": [
+        "eng.beam.n04_second_moment_of_area",
+        "eng.beam.n06_bending_stress_formula"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "断面は一様かつ線形弾性材料であり、平面保持の仮定が成り立つ。",
+        "曲げモーメント M のもとで最大の垂直応力は中立軸から最も遠い縁（|y| = y_max）に生じる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma(x,y) = \\frac{M(x)\\,y}{I},\\quad I = \\int_A y^2\\,dA",
+          "to_latex": "Z := \\frac{I}{y_{\\max}}",
+          "operation_label": "断面形状のみに依存する断面係数の定義",
+          "explanation": "曲げ応力の最大値を求める際、材料定数を含まない純粋な断面幾何量 I と最外縁距離 y_max の比を断面係数 Z として定義する。",
+          "used_node_ids": [
+            "eng.beam.n04_second_moment_of_area",
+            "eng.beam.n06_bending_stress_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma_{\\max} = \\frac{|M|\\,y_{\\max}}{I},\\quad Z := \\frac{I}{y_{\\max}}",
+          "to_latex": "\\sigma_{\\max} = \\frac{|M|}{Z}",
+          "operation_label": "最大曲げ応力の断面係数による書き換え",
+          "explanation": "ナビエの式において |y| = y_max を代入し、I/y_max = Z を用いることで、最大曲げ応力を曲げモーメントと断面係数の商として簡潔に表す。",
+          "used_node_ids": [
+            "eng.beam.n06_bending_stress_formula"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_cb02_beam_column_ode",
+      "target_node_id": "eng.civil.n02_beam_column_ode",
+      "route_kind": "deductive",
+      "title": "梁の釣合い式とP-Δ効果によるビーム・コラム4階微分方程式の導出",
+      "premise_node_ids": [
+        "eng.beam.n03_shear_bending_equilibrium",
+        "eng.beam.n07_beam_deflection_ode",
+        "eng.yield.n07_euler_buckling_ode"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "微小変形理論が成り立ち、軸圧縮力 P は梁軸方向に沿って一定である。",
+        "たわみ w(x) は下向き正、分布荷重 q(x) も下向き正と定義する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d^2 M_0}{dx^2} = -q(x),\\quad M = M_0 + P w(x),\\quad EI\\frac{d^2 w}{dx^2} = -M(x)",
+          "to_latex": "EI\\frac{d^4 w}{dx^4} + P\\frac{d^2 w}{dx^2} = q(x)",
+          "operation_label": "横荷重と軸圧縮力による曲げモーメント釣合いと構成則の統合",
+          "explanation": "分布荷重による曲げモーメントに軸圧縮力 P による二次モーメント P w(x) を加え、オイラー＝ベルヌーイ梁の曲げ剛性関係式を代入して2回微分することで4階常微分方程式を得る。",
+          "used_node_ids": [
+            "eng.beam.n03_shear_bending_equilibrium",
+            "eng.beam.n07_beam_deflection_ode",
+            "eng.yield.n07_euler_buckling_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 M_0}{dx^2} = -q(x),\\quad M(x) = M_0(x) + P\\,w(x)",
+          "to_latex": "\\frac{d^2 M(x)}{dx^2} = -q(x) + P\\frac{d^2 w}{dx^2}",
+          "operation_label": "全曲げモーメントの2階微分（P-Δ効果の導入）",
+          "explanation": "横荷重 q(x) によるモーメント M_0 に軸圧縮力 P がたわみ w(x) を介して生じる付加モーメント P w(x) を加えた全モーメント M(x) を x で2回微分する。",
+          "used_node_ids": [
+            "eng.beam.n03_shear_bending_equilibrium",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 M(x)}{dx^2} = -q(x) + P\\frac{d^2 w}{dx^2},\\quad M(x) = -EI\\frac{d^2 w}{dx^2}",
+          "to_latex": "\\frac{d^2}{dx^2}\\left(-EI\\frac{d^2 w}{dx^2}\\right) = -q(x) + P\\frac{d^2 w}{dx^2}",
+          "operation_label": "オイラー＝ベルヌーイ梁のモーメント・曲率関係式の代入",
+          "explanation": "断面一様（EI 一定）の梁に対する曲げ構成則 M(x) = -EI d^2w/dx^2 を釣合い式の左辺に代入する。",
+          "used_node_ids": [
+            "eng.beam.n07_beam_deflection_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2}{dx^2}\\left(-EI\\frac{d^2 w}{dx^2}\\right) = -q(x) + P\\frac{d^2 w}{dx^2}",
+          "to_latex": "EI\\frac{d^4 w}{dx^4} + P\\frac{d^2 w}{dx^2} = q(x)",
+          "operation_label": "微分演算の整理と移項",
+          "explanation": "EI を定数として微分の外に出し、各項を整理・移項することでビーム・コラムの基礎微分方程式が得られる。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_cb03_effective_buckling_length",
+      "target_node_id": "eng.civil.n03_effective_buckling_length",
+      "route_kind": "deductive",
+      "title": "各種境界条件における座屈固有値問題の解法と有効座屈長の導出",
+      "premise_node_ids": [
+        "eng.yield.n07_euler_buckling_ode",
+        "eng.yield.n08_euler_critical_buckling_load",
+        "eng.civil.n02_beam_column_ode"
+      ],
+      "required_math_node_ids": [
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "横荷重は作用せず（q(x) = 0）、柱は完全に真直ぐかつ均質である。",
+        "曲げ剛性 EI は全長にわたって一定である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d^4 w}{dx^4} + k^2 \\frac{d^2 w}{dx^2} = 0\\quad \\left(k^2 := \\frac{P}{EI}\\right)",
+          "to_latex": "P_{\\mathrm{cr}} = \\frac{\\pi^2 E I}{(K L)^2}",
+          "operation_label": "一般解への境界条件適用による最小正固有値の決定",
+          "explanation": "q(x)=0 とおいた座屈方程式の一般解に各端部の支持条件（変位・たわみ角・曲げモーメント・せん断力）を課し、非自明解が存在する最小固有値から有効座屈長係数 K を定める。",
+          "used_node_ids": [
+            "eng.civil.n02_beam_column_ode",
+            "eng.yield.n07_euler_buckling_ode",
+            "eng.yield.n08_euler_critical_buckling_load",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^4 w}{dx^4} + k^2 \\frac{d^2 w}{dx^2} = 0",
+          "to_latex": "w(x) = C_1\\cos(kx) + C_2\\sin(kx) + C_3 x + C_4",
+          "operation_label": "4階同次線形常微分方程式の一般解の構成",
+          "explanation": "w'' に関する2階線形常微分方程式の解と、2回積分から生じる1次多項式項を合わせて4つの積分定数を含む一般解を得る。",
+          "used_node_ids": [
+            "eng.civil.n02_beam_column_ode",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "w(x) = C_1\\cos(kx) + C_2\\sin(kx) + C_3 x + C_4",
+          "to_latex": "\\cos(kL)=0\\;(\\text{固定-自由}: kL=\\frac{\\pi}{2}),\\quad \\sin\\frac{kL}{2}=0\\;(\\text{両端固定}: kL=2\\pi),\\quad \\tan(kL)=kL\\;(\\text{固定-ピン}: kL\\approx 4.4934)",
+          "operation_label": "各支持条件の境界条件代入による特性方程式の導出",
+          "explanation": "一端固定・他端自由（w(0)=w'(0)=0, w''(L)=0, w'''(L)+k^2 w'(L)=0）、両端固定（w(0)=w'(0)=w(L)=w'(L)=0）、一端固定・他端ピンなどの境界条件を課し、非自明解条件を得る。",
+          "used_node_ids": [
+            "eng.yield.n07_euler_buckling_ode"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k_{\\mathrm{cr}} L = \\frac{\\pi}{K},\\quad k^2 = \\frac{P}{EI}",
+          "to_latex": "P_{\\mathrm{cr}} = \\frac{\\pi^2 E I}{L_e^2} = \\frac{\\pi^2 E I}{(K L)^2}",
+          "operation_label": "有効座屈長 L_e = KL による座屈荷重の統一表示",
+          "explanation": "最小固有値 k_cr = π/(KL) を k^2 = P/EI に代入して P について解くことで、両端ピン支持（K=1）を基準とした一般化公式を得る。",
+          "used_node_ids": [
+            "eng.yield.n08_euler_critical_buckling_load"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_cb04_slenderness_ratio",
+      "target_node_id": "eng.civil.n04_slenderness_ratio_def",
+      "route_kind": "reformulation",
+      "title": "断面二次モーメントと有効座屈長からの断面二次半径・細長比の導入",
+      "premise_node_ids": [
+        "eng.beam.n04_second_moment_of_area",
+        "eng.civil.n03_effective_buckling_length"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "柱の断面積 A および座屈方向の断面二次モーメント I は正の定数である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_radius",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I = \\int_A y^2\\,dA,\\quad A = \\int_A dA",
+          "to_latex": "r := \\sqrt{\\frac{I}{A}}",
+          "operation_label": "断面二次半径（回転半径）の定義",
+          "explanation": "断面積 A 全体が中立軸から距離 r に集中したとみなしたときの等価距離として、断面二次半径 r = √(I/A) を定義する。",
+          "used_node_ids": [
+            "eng.beam.n04_second_moment_of_area"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_slenderness",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L_e = K L,\\quad r = \\sqrt{\\frac{I}{A}}",
+          "to_latex": "\\lambda := \\frac{L_e}{r} = \\frac{K L}{\\sqrt{I/A}}",
+          "operation_label": "無次元指標としての細長比の定義",
+          "explanation": "有効座屈長 L_e = KL を断面二次半径 r で除すことで、柱の幾何学的な細長さを表す無次元量 λ を定義する。",
+          "used_node_ids": [
+            "eng.civil.n03_effective_buckling_length"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_cb05_euler_buckling_stress",
+      "target_node_id": "eng.civil.n05_euler_buckling_stress",
+      "route_kind": "deductive",
+      "title": "オイラー座屈荷重から座屈応力と限界細長比の導出",
+      "premise_node_ids": [
+        "eng.civil.n03_effective_buckling_length",
+        "eng.civil.n04_slenderness_ratio_def",
+        "eng.beam.n01_continuum_statics_hooke"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "材料は比例限度 σ_p 以下でフックの法則（線形弾性）に従う。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_{\\mathrm{cr}} = \\frac{\\pi^2 E I}{L_e^2},\\quad \\lambda = \\frac{L_e}{\\sqrt{I/A}}",
+          "to_latex": "\\sigma_{\\mathrm{cr}} = \\frac{\\pi^2 E}{\\lambda^2}\\quad \\left(\\lambda \\ge \\pi\\sqrt{\\frac{E}{\\sigma_p}}\\right)",
+          "operation_label": "座屈荷重の断面積除算と細長比による表現および弾性限界条件",
+          "explanation": "一般化オイラー座屈荷重を断面積 A で割り、細長比 λ を用いて座屈応力を表すとともに、比例限度 σ_p 以下の弾性域で成り立つ条件を導く。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "eng.civil.n03_effective_buckling_length",
+            "eng.civil.n04_slenderness_ratio_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{\\mathrm{cr}} = \\frac{P_{\\mathrm{cr}}}{A},\\quad P_{\\mathrm{cr}} = \\frac{\\pi^2 E I}{L_e^2}",
+          "to_latex": "\\sigma_{\\mathrm{cr}} = \\frac{\\pi^2 E (I/A)}{L_e^2}",
+          "operation_label": "臨界圧縮応力の定義とオイラー公式の代入",
+          "explanation": "座屈発生時の平均圧縮応力 σ_cr = P_cr / A にオイラー座屈荷重式を代入し、断面諸量の比 I/A をまとめる。",
+          "used_node_ids": [
+            "eng.civil.n03_effective_buckling_length"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{\\mathrm{cr}} = \\frac{\\pi^2 E r^2}{L_e^2},\\quad \\lambda = \\frac{L_e}{r}",
+          "to_latex": "\\sigma_{\\mathrm{cr}} = \\frac{\\pi^2 E}{\\lambda^2}",
+          "operation_label": "断面二次半径と細長比による整理",
+          "explanation": "I/A = r^2 および λ = L_e / r を代入し、座屈応力がヤング率 E と細長比 λ のみで決まることを示す。",
+          "used_node_ids": [
+            "eng.civil.n04_slenderness_ratio_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{\\mathrm{cr}} = \\frac{\\pi^2 E}{\\lambda^2} \\le \\sigma_p",
+          "to_latex": "\\lambda \\ge \\lambda_p := \\pi\\sqrt{\\frac{E}{\\sigma_p}}",
+          "operation_label": "比例限度応力による弾性座屈適用限界の導出",
+          "explanation": "フックの法則が成り立つ上限である比例限度 σ_p を座屈応力が超えない条件 σ_cr <= σ_p を λ について解き、限界細長比 λ_p を得る。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_cb06_eccentric_secant_formula",
+      "target_node_id": "eng.civil.n06_eccentric_secant_formula",
+      "route_kind": "deductive",
+      "title": "偏心荷重を受ける両端ピン支持柱の微分方程式解法と割線公式の導出",
+      "premise_node_ids": [
+        "eng.civil.n01_section_modulus_def",
+        "eng.civil.n02_beam_column_ode",
+        "eng.civil.n04_slenderness_ratio_def",
+        "eng.beam.n02_axial_torsion_stress"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "長さ L の両端ピン支持柱の両端に、断面図心から同方向に偏心距離 e だけ離れた位置へ軸圧縮力 P が作用する。",
+        "横荷重は作用せず（q(x)=0）、微小変形と線形弾性が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "EI\\frac{d^2 w}{dx^2} + P\\big(w(x) + e\\big) = 0,\\quad w(0)=w(L)=0",
+          "to_latex": "w_{\\max} = e\\left(\\sec\\!\\left(\\frac{L}{2}\\sqrt{\\frac{P}{EI}}\\right) - 1\\right),\\quad \\sigma_{\\max} = \\frac{P}{A}\\left(1 + \\frac{e\\,y_{\\max}}{r^2}\\sec\\!\\left(\\frac{L}{2}\\sqrt{\\frac{P}{EI}}\\right)\\right)",
+          "operation_label": "偏心曲げモーメントを含む2階微分方程式の解法と軸力・曲げ応力の重ね合わせ",
+          "explanation": "偏心量 e による定数モーメント Pe を加えた釣合い方程式を両端ピン支持条件のもとで解き、中央最大曲げモーメント M_max = P(w_max + e) から軸圧縮応力と最大曲げ応力を合成して割線公式を得る。",
+          "used_node_ids": [
+            "eng.beam.n02_axial_torsion_stress",
+            "eng.civil.n01_section_modulus_def",
+            "eng.civil.n02_beam_column_ode",
+            "eng.civil.n04_slenderness_ratio_def",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 w}{dx^2} + k^2 w = -k^2 e\\quad \\left(k := \\sqrt{\\frac{P}{EI}}\\right),\\quad w(0)=w(L)=0",
+          "to_latex": "w(x) = e\\left(\\tan\\frac{kL}{2}\\sin(kx) + \\cos(kx) - 1\\right)",
+          "operation_label": "非同次2階線形常微分方程式の境界値問題の解法",
+          "explanation": "一般解 w(x) = C_1 cos(kx) + C_2 sin(kx) - e に境界条件 w(0)=0 と w(L)=0 を代入し、C_1 = e, C_2 = e(1-cos(kL))/sin(kL) = e tan(kL/2) を決定する。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "w_{\\max} = w\\!\\left(\\frac{L}{2}\\right) = e\\left(\\tan\\frac{kL}{2}\\sin\\frac{kL}{2} + \\cos\\frac{kL}{2} - 1\\right)",
+          "to_latex": "w_{\\max} = e\\left(\\sec\\frac{kL}{2} - 1\\right),\\quad M_{\\max} = P(w_{\\max} + e) = P e\\sec\\frac{kL}{2}",
+          "operation_label": "柱中央での最大たわみと最大曲げモーメントの算出",
+          "explanation": "x = L/2 を代入し、三角関数の恒等式 sin^2(θ) + cos^2(θ) = 1 を用いて整理することで、最大たわみと最大曲げモーメントを sec(kL/2) で表す。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{\\max} = \\frac{P}{A} + \\frac{M_{\\max}}{Z},\\quad Z = \\frac{I}{y_{\\max}} = \\frac{A r^2}{y_{\\max}}",
+          "to_latex": "\\sigma_{\\max} = \\frac{P}{A}\\left(1 + \\frac{e\\,y_{\\max}}{r^2}\\sec\\!\\left(\\frac{L}{2}\\sqrt{\\frac{P}{EI}}\\right)\\right)",
+          "operation_label": "軸圧縮応力と最大曲げ応力の重ね合わせ",
+          "explanation": "軸力による一様圧縮応力 P/A と最大曲げモーメントによる曲げ応力 M_max/Z を重ね合わせ、I = A r^2 および k = √(P/EI) を代入して割線公式を得る。",
+          "used_node_ids": [
+            "eng.beam.n02_axial_torsion_stress",
+            "eng.civil.n01_section_modulus_def",
+            "eng.civil.n04_slenderness_ratio_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

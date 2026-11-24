@@ -1,0 +1,576 @@
+{
+  "pack_meta": {
+    "pack_id": "fin.actuarial.life_premium",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "actuarial",
+    "title": "保険数理（アクチュアリー）：死力・生存確率・生命年金現価と収支相当の原則による純保険料",
+    "language": "ja",
+    "description": "生存関数S(x)から死力μ_x=-S'(x)/S(x)、割引因子v=1/(1+i)を用いた終身保険一時払純保険料Axと生命年金現価axの関係式、収支相当の原則による平準純保険料を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "fin.act.n01_survival_function_def",
+      "short_code": "ACT01",
+      "kind": "definition",
+      "title": "生存関数と条件付き生存確率・死亡確率の定義",
+      "summary": "出生時からの将来余命確率変数 T_0 に基づき、年齢 x までの生存確率を表す生存関数 S(x) と、x 歳から t 年間の条件付き生存確率 {}_t p_x および死亡確率 {}_t q_x を定義する。",
+      "canonical_latex": "S(x) := P(T_0 > x),\\quad {}_t p_x := P(T_x > t) = \\frac{S(x+t)}{S(x)},\\quad {}_t q_x := 1 - {}_t p_x",
+      "aliases_latex": [
+        "{}_1 p_x = p_x,\\quad {}_1 q_x = q_x,\\quad {}_{k+m} p_x = {}_k p_x \\cdot {}_m p_{x+k}"
+      ],
+      "keywords": [
+        "生存関数",
+        "条件付き生存確率",
+        "死亡確率",
+        "将来余命"
+      ],
+      "domain_tags": [
+        "actuarial",
+        "probability"
+      ]
+    },
+    {
+      "id": "fin.act.n02_force_of_mortality_def",
+      "short_code": "ACT02",
+      "kind": "definition",
+      "title": "死力（瞬間死亡率）の定義",
+      "summary": "年齢 x における微小時間あたりの条件付き死亡確率の極限として死力（瞬間死亡率）\\mu_x を定義し、生存関数 S(x) の対数微分の符号反転として表す。",
+      "canonical_latex": "\\mu_x := \\lim_{\\Delta x \\to 0^+} \\frac{{}_{\\Delta x} q_x}{\\Delta x} = -\\frac{S'(x)}{S(x)} = -\\frac{d}{dx}\\ln S(x)",
+      "aliases_latex": [
+        "\\mu_{x+t} = -\\frac{1}{{}_t p_x}\\frac{d}{dt}{}_t p_x"
+      ],
+      "keywords": [
+        "死力",
+        "瞬間死亡率",
+        "ハザード率",
+        "対数微分"
+      ],
+      "domain_tags": [
+        "actuarial",
+        "calculus"
+      ]
+    },
+    {
+      "id": "fin.act.n03_survival_prob_from_force",
+      "short_code": "ACT03",
+      "kind": "theorem_formula",
+      "title": "死力による生存確率の指数積分表示",
+      "summary": "死力 \\mu_{x+s} を区間 [0, t] で積分して指数関数に代入することで、条件付き生存確率 {}_t p_x および将来余命の確率密度関数 {}_t p_x \\mu_{x+t} を導出する。",
+      "canonical_latex": "{}_t p_x = \\exp\\!\\left(-\\int_0^t \\mu_{x+s}\\,ds\\right),\\qquad {}_t p_x \\mu_{x+t} = -\\frac{d}{dt}{}_t p_x",
+      "aliases_latex": [
+        "S(x) = \\exp\\!\\left(-\\int_0^x \\mu_s\\,ds\\right)"
+      ],
+      "keywords": [
+        "生存確率",
+        "死力",
+        "指数積分表示",
+        "確率密度関数"
+      ],
+      "domain_tags": [
+        "actuarial",
+        "calculus"
+      ]
+    },
+    {
+      "id": "fin.act.n04_discount_factor_def",
+      "short_code": "ACT04",
+      "kind": "definition",
+      "title": "予定利率・割引因子および割引率の定義",
+      "summary": "一定の年予定利率 i に対して、1年後の1単位の金額の現在価値を表す割引因子 v と、期首における割引率 d を定義する。",
+      "canonical_latex": "v := \\frac{1}{1+i},\\qquad d := iv = 1 - v = \\frac{i}{1+i} \\quad (i > 0)",
+      "aliases_latex": [
+        "v = 1 - d,\\quad \\delta := \\ln(1+i) = -\\ln v"
+      ],
+      "keywords": [
+        "予定利率",
+        "割引因子",
+        "割引率",
+        "現在価値"
+      ],
+      "domain_tags": [
+        "actuarial",
+        "finance"
+      ]
+    },
+    {
+      "id": "fin.act.n05_whole_life_insurance_pv_def",
+      "short_code": "ACT05",
+      "kind": "definition",
+      "title": "終身保険の一時払純保険料（保険現価）の定義",
+      "summary": "x 歳で加入し死亡年度末に保険金 1 を支払う終身保険について、切捨て将来余命 K_x を用いた確率的割引現在価値の期待値として一時払純保険料 A_x を定義する。",
+      "canonical_latex": "A_x := \\mathbb{E}\\big[v^{K_x + 1}\\big] = \\sum_{k=0}^{\\infty} v^{k+1}\\,{}_k p_x\\, q_{x+k} \\quad (q_{x+k} = 1 - p_{x+k})",
+      "aliases_latex": [
+        "A_x = \\sum_{k=0}^{\\infty} v^{k+1}({}_k p_x - {}_{k+1} p_x)"
+      ],
+      "keywords": [
+        "終身保険",
+        "一時払純保険料",
+        "保険現価",
+        "切捨て将来余命"
+      ],
+      "domain_tags": [
+        "actuarial",
+        "finance"
+      ]
+    },
+    {
+      "id": "fin.act.n06_life_annuity_pv_def",
+      "short_code": "ACT06",
+      "kind": "definition",
+      "title": "期首払終身生命年金現価の定義",
+      "summary": "x 歳から生存している限り毎期首に 1 を支払う期首払終身生命年金の期待現在価値 \\ddot{a}_x を定義し、期末払終身生命年金現価 a_x との関係を明示する。",
+      "canonical_latex": "\\ddot{a}_x := \\mathbb{E}\\!\\left[\\sum_{k=0}^{K_x} v^k\\right] = \\sum_{k=0}^{\\infty} v^k\\,{}_k p_x = 1 + a_x",
+      "aliases_latex": [
+        "a_x := \\sum_{k=1}^{\\infty} v^k\\,{}_k p_x = \\ddot{a}_x - 1"
+      ],
+      "keywords": [
+        "生命年金現価",
+        "期首払終身年金",
+        "期待現在価値"
+      ],
+      "domain_tags": [
+        "actuarial",
+        "finance"
+      ]
+    },
+    {
+      "id": "fin.act.n07_insurance_annuity_identity",
+      "short_code": "ACT07",
+      "kind": "theorem_formula",
+      "title": "終身保険現価と生命年金現価の基本関係式",
+      "summary": "死亡確率を生存確率の差分で表し和の添字をずらすことで、終身保険の一時払純保険料 A_x と期首払生命年金現価 \\ddot{a}_x を結びつける基本恒等式を導出する。",
+      "canonical_latex": "A_x = 1 - d\\,\\ddot{a}_x = v\\,\\ddot{a}_x - a_x",
+      "aliases_latex": [
+        "A_x + d\\,\\ddot{a}_x = 1,\\quad A_x = v - d\\,a_x"
+      ],
+      "keywords": [
+        "保険現価",
+        "年金現価",
+        "恒等式",
+        "アーベル変換"
+      ],
+      "domain_tags": [
+        "actuarial",
+        "finance"
+      ]
+    },
+    {
+      "id": "fin.act.n08_equivalence_principle_net_premium",
+      "short_code": "ACT08",
+      "kind": "theorem_formula",
+      "title": "収支相当の原則による平準純保険料の公式",
+      "summary": "保険給付の期待現在価値と純保険料収入の期待現在価値が等しいとする収支相当の原則から、終身保険の年払平準純保険料 P_x の公式を導出する。",
+      "canonical_latex": "P_x\\,\\ddot{a}_x = A_x \\implies P_x = \\frac{A_x}{\\ddot{a}_x} = \\frac{1}{\\ddot{a}_x} - d",
+      "aliases_latex": [
+        "P_x = \\frac{1 - d\\,\\ddot{a}_x}{\\ddot{a}_x}"
+      ],
+      "keywords": [
+        "収支相当の原則",
+        "平準純保険料",
+        "終身保険"
+      ],
+      "domain_tags": [
+        "actuarial",
+        "finance"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "fin.act.d01_survival_function_def",
+      "target_node_id": "fin.act.n01_survival_function_def",
+      "route_kind": "reformulation",
+      "title": "確率空間上の余命分布からの生存関数と条件付き確率の定義",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "将来余命 T_0 は非負の連続型確率変数であり、任意の年齢 x に対して S(x) > 0（極限年齢未満）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_define_survival",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(\\Omega, \\mathcal{F}, P),\\quad T_0 : \\Omega \\to \\mathbb{R}_{\\ge 0}",
+          "to_latex": "S(x) := P(T_0 > x),\\quad {}_t p_x := P(T_x > t) = \\frac{S(x+t)}{S(x)},\\quad {}_t q_x := 1 - {}_t p_x",
+          "operation_label": "条件付き確率の定義の適用",
+          "explanation": "コルモゴロフの確率空間上で将来余命 T_0 の上側確率を生存関数 S(x) と定義し、x 歳生存を条件とする t 年生存確率 {}_t p_x = P(T_0 > x+t \\mid T_0 > x) を S(x+t)/S(x) で与える。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "fin.act.d02_force_of_mortality_def",
+      "target_node_id": "fin.act.n02_force_of_mortality_def",
+      "route_kind": "reformulation",
+      "title": "条件付き死亡確率の微分極限としての死力の定義",
+      "premise_node_ids": [
+        "fin.act.n01_survival_function_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m20_derivative_definition"
+      ],
+      "assumptions": [
+        "生存関数 S(x) は x において微分可能かつ S(x) > 0 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_limit_definition",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "{}_{\\Delta x} q_x = 1 - \\frac{S(x+\\Delta x)}{S(x)} = -\\frac{S(x+\\Delta x) - S(x)}{S(x)}",
+          "to_latex": "\\mu_x := \\lim_{\\Delta x \\to 0^+} \\frac{{}_{\\Delta x} q_x}{\\Delta x} = -\\frac{S'(x)}{S(x)} = -\\frac{d}{dx}\\ln S(x)",
+          "operation_label": "導関数の定義と対数微分の連鎖律",
+          "explanation": "微小時間 \\Delta x あたりの死亡確率を \\Delta x で割った極限に導関数の定義を適用すると -S'(x)/S(x) が得られ、合成関数の微分法則より -d(\\ln S(x))/dx と表せる。",
+          "used_node_ids": [
+            "fin.act.n01_survival_function_def",
+            "math.calc.m01_chain_rule",
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "fin.act.d03_survival_prob_from_force",
+      "target_node_id": "fin.act.n03_survival_prob_from_force",
+      "route_kind": "deductive",
+      "title": "死力の定積分と指数関数による生存確率表示の導出",
+      "premise_node_ids": [
+        "fin.act.n01_survival_function_def",
+        "fin.act.n02_force_of_mortality_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "死力 \\mu_{x+s} は区間 [0, t] 上で連続かつ可積分であるとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mu_{x+s} = -\\frac{S'(x+s)}{S(x+s)}",
+          "to_latex": "{}_t p_x = \\exp\\!\\left(-\\int_0^t \\mu_{x+s}\\,ds\\right),\\qquad {}_t p_x \\mu_{x+t} = -\\frac{d}{dt}{}_t p_x",
+          "operation_label": "死力の積分と指数変換による生存確率の導出",
+          "explanation": "対数微分で書かれた死力を区間 [0, t] で積分し、両辺の指数をとることで {}_t p_x の積分表示とその時間微分関係を得る。",
+          "used_node_ids": [
+            "fin.act.n01_survival_function_def",
+            "fin.act.n02_force_of_mortality_def",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_log_deriv",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu_{x+s} = -\\frac{S'(x+s)}{S(x+s)}",
+          "to_latex": "\\mu_{x+s} = -\\frac{d}{ds}\\ln S(x+s)",
+          "operation_label": "対数微分表示への書換え",
+          "explanation": "死力の定義により、年齢 x+s における死力を生存関数の対数の導関数として表す。",
+          "used_node_ids": [
+            "fin.act.n02_force_of_mortality_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_integrate",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu_{x+s} = -\\frac{d}{ds}\\ln S(x+s)",
+          "to_latex": "\\int_0^t \\mu_{x+s}\\,ds = -\\big(\\ln S(x+t) - \\ln S(x)\\big) = -\\ln\\frac{S(x+t)}{S(x)}",
+          "operation_label": "微積分学の基本定理による定積分",
+          "explanation": "変数 s について 0 から t まで積分し、微積分学の基本定理と対数の性質を適用する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_exponentiate",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_0^t \\mu_{x+s}\\,ds = -\\big(\\ln S(x+t) - \\ln S(x)\\big) = -\\ln\\frac{S(x+t)}{S(x)}",
+          "to_latex": "{}_t p_x = \\exp\\!\\left(-\\int_0^t \\mu_{x+s}\\,ds\\right),\\qquad {}_t p_x \\mu_{x+t} = -\\frac{d}{dt}{}_t p_x",
+          "operation_label": "指数関数の適用と微分による密度関係の導出",
+          "explanation": "両辺に負号を付けて指数関数をとり {}_t p_x = S(x+t)/S(x) を代入すると生存確率の指数積分表示が得られ、t で微分することで将来余命の確率密度関数 {}_t p_x \\mu_{x+t} を得る。",
+          "used_node_ids": [
+            "fin.act.n01_survival_function_def",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "fin.act.d04_discount_factor_def",
+      "target_node_id": "fin.act.n04_discount_factor_def",
+      "route_kind": "reformulation",
+      "title": "通時的割引の離散版としての予定利率と割引因子の定義",
+      "premise_node_ids": [
+        "econ.mac.n05_ramsey_optimization_problem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "年予定利率 i > 0 は全保険期間を通じて一定であるとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_define_discount",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "e^{-\\rho t} \\quad (\\text{continuous time discounting})",
+          "to_latex": "v := \\frac{1}{1+i},\\qquad d := iv = 1 - v = \\frac{i}{1+i} \\quad (i > 0)",
+          "operation_label": "離散複利による割引因子と割引率の定義",
+          "explanation": "連続時間の時間選好率による割引の離散版として、年利率 i に対する1年間の現在価値係数 v = 1/(1+i) と、期首払の割引率 d = 1 - v を定義する。",
+          "used_node_ids": [
+            "econ.mac.n05_ramsey_optimization_problem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "fin.act.d05_whole_life_insurance_pv_def",
+      "target_node_id": "fin.act.n05_whole_life_insurance_pv_def",
+      "route_kind": "reformulation",
+      "title": "確率的現在価値の期待値としての終身保険一時払純保険料の定義",
+      "premise_node_ids": [
+        "fin.act.n01_survival_function_def",
+        "fin.act.n04_discount_factor_def",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "保険金 1 は被保険者が死亡した保険年度の期末に支払われる（期末払）とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_define_insurance_pv",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P(K_x = k) = {}_k p_x\\,q_{x+k},\\qquad Z = v^{K_x+1}",
+          "to_latex": "A_x := \\mathbb{E}\\big[v^{K_x + 1}\\big] = \\sum_{k=0}^{\\infty} v^{k+1}\\,{}_k p_x\\, q_{x+k} \\quad (q_{x+k} = 1 - p_{x+k})",
+          "operation_label": "死亡年度ごとの割引現在価値の期待値計算",
+          "explanation": "切捨て将来余命 K_x が k となる確率は x 歳から k 年生存して次の1年で死亡する確率 {}_k p_x q_{x+k} であり、その際の保険金 1 の現在価値 v^{k+1} との積を全期間で和をとって A_x を定義する。",
+          "used_node_ids": [
+            "fin.act.n01_survival_function_def",
+            "fin.act.n04_discount_factor_def",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "fin.act.d06_life_annuity_pv_def",
+      "target_node_id": "fin.act.n06_life_annuity_pv_def",
+      "route_kind": "reformulation",
+      "title": "生存指標確率変数の和としての生命年金現価の定義",
+      "premise_node_ids": [
+        "fin.act.n01_survival_function_def",
+        "fin.act.n04_discount_factor_def",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "年金 1 は被保険者が各保険年度の期首に生存している場合に支払われるとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_define_annuity_pv",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Y = \\sum_{k=0}^{K_x} v^k = \\sum_{k=0}^{\\infty} v^k\\,\\mathbf{1}_{\\{T_x > k\\}}",
+          "to_latex": "\\ddot{a}_x := \\mathbb{E}\\!\\left[\\sum_{k=0}^{K_x} v^k\\right] = \\sum_{k=0}^{\\infty} v^k\\,{}_k p_x = 1 + a_x",
+          "operation_label": "指示関数の期待値と線形性による年金現価の定義",
+          "explanation": "k 年目の期首生存を示す指示関数 \\mathbf{1}_{\\{T_x > k\\}} の期待値が {}_k p_x に等しいことから、各期の割引現在価値の期待値の和として期首払終身生命年金現価 \\ddot{a}_x を定義する。",
+          "used_node_ids": [
+            "fin.act.n01_survival_function_def",
+            "fin.act.n04_discount_factor_def",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "fin.act.d07_insurance_annuity_identity",
+      "target_node_id": "fin.act.n07_insurance_annuity_identity",
+      "route_kind": "deductive",
+      "title": "終身保険現価と生命年金現価の関係式の級数変形による導出",
+      "premise_node_ids": [
+        "fin.act.n01_survival_function_def",
+        "fin.act.n04_discount_factor_def",
+        "fin.act.n05_whole_life_insurance_pv_def",
+        "fin.act.n06_life_annuity_pv_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "終身保険と生命年金に共通の予定利率 i および共通の生命表（生存関数 S(x)）を用いる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A_x = \\sum_{k=0}^{\\infty} v^{k+1}\\,{}_k p_x\\, q_{x+k}",
+          "to_latex": "A_x = 1 - d\\,\\ddot{a}_x",
+          "operation_label": "級数の差分分解と添字シフトによる恒等式の導出",
+          "explanation": "死亡確率を生存確率の差分に分解し、級数の添字をずらして生命年金現価 \\ddot{a}_x と割引率 d で整理する。",
+          "used_node_ids": [
+            "fin.act.n01_survival_function_def",
+            "fin.act.n04_discount_factor_def",
+            "fin.act.n05_whole_life_insurance_pv_def",
+            "fin.act.n06_life_annuity_pv_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_diff_survival",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A_x = \\sum_{k=0}^{\\infty} v^{k+1}\\,{}_k p_x\\, q_{x+k}",
+          "to_latex": "A_x = \\sum_{k=0}^{\\infty} v^{k+1}\\,{}_k p_x - \\sum_{k=0}^{\\infty} v^{k+1}\\,{}_{k+1} p_x",
+          "operation_label": "死亡確率の生存確率差分への展開",
+          "explanation": "q_{x+k} = 1 - p_{x+k} および結合則 {}_k p_x p_{x+k} = {}_{k+1} p_x を用いて和を2つの級数に分離する。",
+          "used_node_ids": [
+            "fin.act.n01_survival_function_def",
+            "fin.act.n05_whole_life_insurance_pv_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_index_shift",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A_x = \\sum_{k=0}^{\\infty} v^{k+1}\\,{}_k p_x - \\sum_{k=0}^{\\infty} v^{k+1}\\,{}_{k+1} p_x",
+          "to_latex": "A_x = v\\sum_{k=0}^{\\infty} v^k\\,{}_k p_x - \\left(\\sum_{m=0}^{\\infty} v^m\\,{}_m p_x - 1\\right)",
+          "operation_label": "割引因子の括り出しと添字のシフト",
+          "explanation": "第1項から v を括り出し、第2項で m = k + 1 と添字をずらした上で {}_{0} p_x = 1 を補う。",
+          "used_node_ids": [
+            "fin.act.n01_survival_function_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_substitute_annuity",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A_x = v\\sum_{k=0}^{\\infty} v^k\\,{}_k p_x - \\left(\\sum_{m=0}^{\\infty} v^m\\,{}_m p_x - 1\\right)",
+          "to_latex": "A_x = 1 - (1 - v)\\ddot{a}_x = 1 - d\\,\\ddot{a}_x",
+          "operation_label": "年金現価と割引率の定義の代入",
+          "explanation": "級数部分を \\ddot{a}_x で置き換え、割引率の定義 d = 1 - v を代入して基本関係式を得る。",
+          "used_node_ids": [
+            "fin.act.n04_discount_factor_def",
+            "fin.act.n06_life_annuity_pv_def"
+          ],
+          "sympy_check_hint": "v*a - (a - 1) - (1 - (1-v)*a)"
+        }
+      ]
+    },
+    {
+      "id": "fin.act.d08_equivalence_principle_net_premium",
+      "target_node_id": "fin.act.n08_equivalence_principle_net_premium",
+      "route_kind": "deductive",
+      "title": "収支相当の原則からの終身保険平準純保険料の導出",
+      "premise_node_ids": [
+        "fin.act.n05_whole_life_insurance_pv_def",
+        "fin.act.n06_life_annuity_pv_def",
+        "fin.act.n07_insurance_annuity_identity",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "純保険料 P_x は被保険者が生存する限り毎年期首に一定額支払われるものとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbb{E}\\!\\left[v^{K_x+1} - P_x \\sum_{k=0}^{K_x} v^k\\right] = 0",
+          "to_latex": "P_x = \\frac{A_x}{\\ddot{a}_x} = \\frac{1}{\\ddot{a}_x} - d",
+          "operation_label": "収支相当の原則の適用と純保険料の求解",
+          "explanation": "損失確率変数の期待値を0とする収支相当の原則から P_x \\ddot{a}_x = A_x を導き、保険現価と年金現価の関係式を用いて平準純保険料を表す。",
+          "used_node_ids": [
+            "fin.act.n05_whole_life_insurance_pv_def",
+            "fin.act.n06_life_annuity_pv_def",
+            "fin.act.n07_insurance_annuity_identity",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_expectation_linearity",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}\\!\\left[v^{K_x+1} - P_x \\sum_{k=0}^{K_x} v^k\\right] = 0",
+          "to_latex": "A_x - P_x\\,\\ddot{a}_x = 0",
+          "operation_label": "期待値の線形性と保険現価・年金現価の代入",
+          "explanation": "期待値の線形性を適用し、保険金給付現価 A_x と年金支払現価 \\ddot{a}_x の定義を代入する。",
+          "used_node_ids": [
+            "fin.act.n05_whole_life_insurance_pv_def",
+            "fin.act.n06_life_annuity_pv_def",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_solve_px",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A_x - P_x\\,\\ddot{a}_x = 0",
+          "to_latex": "P_x = \\frac{A_x}{\\ddot{a}_x}",
+          "operation_label": "平準純保険料 P_x についての整理",
+          "explanation": "\\ddot{a}_x \\ge 1 > 0 であることから両辺を \\ddot{a}_x で割り、P_x を求める。",
+          "used_node_ids": [
+            "fin.act.n06_life_annuity_pv_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_substitute_identity",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_x = \\frac{A_x}{\\ddot{a}_x}",
+          "to_latex": "P_x = \\frac{1 - d\\,\\ddot{a}_x}{\\ddot{a}_x} = \\frac{1}{\\ddot{a}_x} - d",
+          "operation_label": "保険現価と年金現価の基本関係式の代入",
+          "explanation": "A_x = 1 - d\\,\\ddot{a}_x を代入して整理することで、年金現価のみを用いた平準純保険料の表現を得る。",
+          "used_node_ids": [
+            "fin.act.n07_insurance_annuity_identity"
+          ],
+          "sympy_check_hint": "(1 - d*a)/a - (1/a - d)"
+        }
+      ]
+    }
+  ]
+}

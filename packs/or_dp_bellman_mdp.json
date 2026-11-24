@@ -1,0 +1,560 @@
+{
+  "pack_meta": {
+    "pack_id": "or.dp.bellman_mdp",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "operations_research",
+    "title": "動的計画法・強化学習基礎：マルコフ決定過程（MDP）とベルマン期待/最適方程式",
+    "language": "ja",
+    "description": "割引報酬和の再帰構造から状態価値関数・行動価値関数のベルマン方程式、縮小写像の不動点定理による価値反復法の収束を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "or.dp.n01_mdp_definition",
+      "short_code": "DP01",
+      "kind": "definition",
+      "title": "マルコフ決定過程（MDP）と方策・割引報酬和の定義",
+      "summary": "状態空間・行動空間・マルコフ遷移確率・報酬関数・割引率の5つ組としてMDPを定義し、定常方策および無限時間領域の割引収益を定める。",
+      "canonical_latex": "\\mathcal{M} = (\\mathcal{S}, \\mathcal{A}, P, R, \\gamma),\\quad P(s' \\mid s, a) := \\Pr(S_{t+1}=s' \\mid S_t=s, A_t=a),\\quad G_t := \\sum_{k=0}^{\\infty} \\gamma^k R_{t+k+1}\\;(0 \\le \\gamma < 1)",
+      "aliases_latex": [
+        "R(s, a) := \\mathbb{E}[R_{t+1} \\mid S_t = s, A_t = a],\\quad \\pi(a \\mid s) := \\Pr(A_t = a \\mid S_t = s)"
+      ],
+      "keywords": [
+        "マルコフ決定過程",
+        "MDP",
+        "マルコフ性",
+        "方策",
+        "割引収益"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "reinforcement_learning",
+        "stochastic_control"
+      ]
+    },
+    {
+      "id": "or.dp.n02_value_functions_def",
+      "short_code": "DP02",
+      "kind": "definition",
+      "title": "状態価値関数と行動価値関数の定義",
+      "summary": "与えられた方策のもとでの状態価値関数および行動価値関数を割引収益の条件付き期待値として定義し、両者の関係式を与える。",
+      "canonical_latex": "V^\\pi(s) := \\mathbb{E}_\\pi[G_t \\mid S_t = s],\\quad Q^\\pi(s, a) := \\mathbb{E}_\\pi[G_t \\mid S_t = s, A_t = a],\\quad V^\\pi(s) = \\sum_{a \\in \\mathcal{A}} \\pi(a \\mid s) Q^\\pi(s, a)",
+      "aliases_latex": [
+        "V^\\pi(s) = \\mathbb{E}_{a \\sim \\pi(\\cdot \\mid s)}[Q^\\pi(s, a)]"
+      ],
+      "keywords": [
+        "状態価値関数",
+        "行動価値関数",
+        "Q関数",
+        "期待収益"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "reinforcement_learning"
+      ]
+    },
+    {
+      "id": "or.dp.n03_bellman_expectation_eq",
+      "short_code": "DP03",
+      "kind": "theorem_formula",
+      "title": "ベルマン期待方程式（状態価値・行動価値の再帰関係）",
+      "summary": "割引収益の再帰構造とマルコフ性を用いて、状態価値関数および行動価値関数が満たす線形連立再帰方程式を導出する。",
+      "canonical_latex": "V^\\pi(s) = \\sum_{a \\in \\mathcal{A}} \\pi(a \\mid s)\\left(R(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a) V^\\pi(s')\\right),\\quad Q^\\pi(s, a) = R(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a)\\sum_{a' \\in \\mathcal{A}} \\pi(a' \\mid s') Q^\\pi(s', a')",
+      "aliases_latex": [
+        "V^\\pi = R^\\pi + \\gamma P^\\pi V^\\pi"
+      ],
+      "keywords": [
+        "ベルマン期待方程式",
+        "再帰関係",
+        "マルコフ性",
+        "全期待値の法則"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "reinforcement_learning"
+      ]
+    },
+    {
+      "id": "or.dp.n04_optimal_value_functions_def",
+      "short_code": "DP04",
+      "kind": "definition",
+      "title": "最適状態価値関数と最適行動価値関数の定義",
+      "summary": "すべての方策にわたる状態価値・行動価値の上限として最適価値関数を定義し、グリーディ方策による最適行動選択を定める。",
+      "canonical_latex": "V^*(s) := \\sup_{\\pi} V^\\pi(s),\\quad Q^*(s, a) := \\sup_{\\pi} Q^\\pi(s, a),\\quad \\pi^*(a \\mid s) > 0 \\implies a \\in \\arg\\max_{a' \\in \\mathcal{A}} Q^*(s, a')",
+      "aliases_latex": [
+        "V^*(s) = \\max_{a \\in \\mathcal{A}} Q^*(s, a)"
+      ],
+      "keywords": [
+        "最適価値関数",
+        "最適方策",
+        "最適行動価値関数"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "reinforcement_learning"
+      ]
+    },
+    {
+      "id": "or.dp.n05_bellman_optimality_eq",
+      "short_code": "DP05",
+      "kind": "theorem_formula",
+      "title": "ベルマン最適方程式（最適性の原理）",
+      "summary": "動的計画法における最適性の原理に基づき、最適状態価値関数および最適行動価値関数が満たす非線形再帰方程式を導出する。",
+      "canonical_latex": "V^*(s) = \\max_{a \\in \\mathcal{A}} \\left( R(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a) V^*(s') \\right),\\quad Q^*(s, a) = R(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a) \\max_{a' \\in \\mathcal{A}} Q^*(s', a')",
+      "aliases_latex": [
+        "V^* = \\mathcal{T}^* V^*"
+      ],
+      "keywords": [
+        "ベルマン最適方程式",
+        "最適性の原理",
+        "動的計画法"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "reinforcement_learning"
+      ]
+    },
+    {
+      "id": "or.dp.n06_banach_fixed_point_boundary",
+      "short_code": "DP06",
+      "kind": "math_boundary",
+      "title": "バナッハの不動点定理（縮小写像の原理）",
+      "summary": "完備距離空間上の縮小写像には一意の不動点が存在し、任意の初期点からの反復列がその不動点へ幾何級数的に収束することを与える数学的境界条件。",
+      "canonical_latex": "(X, d)\\text{ complete},\\; d(Tx, Ty) \\le \\gamma d(x, y)\\;(0 \\le \\gamma < 1) \\implies \\exists!\\, x^* \\in X\\text{ s.t. } T x^* = x^*,\\quad d(T^k x_0, x^*) \\le \\frac{\\gamma^k}{1-\\gamma} d(T x_0, x_0)",
+      "aliases_latex": [
+        "d(T^k x_0, x^*) \\le \\gamma^k d(x_0, x^*)"
+      ],
+      "keywords": [
+        "バナッハの不動点定理",
+        "縮小写像",
+        "完備距離空間",
+        "不動点"
+      ],
+      "domain_tags": [
+        "functional_analysis",
+        "operations_research"
+      ]
+    },
+    {
+      "id": "or.dp.n07_bellman_operator_contraction",
+      "short_code": "DP07",
+      "kind": "theorem_formula",
+      "title": "ベルマン最適作用素の最大値ノルムにおける縮小性",
+      "summary": "ベルマン最適作用素が有界実数値関数空間の最大値ノルムに関して縮小率ガンの縮小写像であることを確率遷移の凸結合性から示す。",
+      "canonical_latex": "(\\mathcal{T}^* V)(s) := \\max_{a \\in \\mathcal{A}}\\left(R(s,a) + \\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a) V(s')\\right) \\implies \\|\\mathcal{T}^* U - \\mathcal{T}^* V\\|_\\infty \\le \\gamma \\|U - V\\|_\\infty",
+      "aliases_latex": [
+        "\\|\\mathcal{T}^\\pi U - \\mathcal{T}^\\pi V\\|_\\infty \\le \\gamma \\|U - V\\|_\\infty"
+      ],
+      "keywords": [
+        "ベルマン作用素",
+        "縮小写像",
+        "最大値ノルム",
+        "L無限ノルム"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "reinforcement_learning"
+      ]
+    },
+    {
+      "id": "or.dp.n08_value_iteration_convergence",
+      "short_code": "DP08",
+      "kind": "theorem_formula",
+      "title": "価値反復法の収束定理（最適価値関数への指数収束）",
+      "summary": "ベルマン最適作用素の縮小性とバナッハの不動点定理を組み合わせ、価値反復法の更新列が任意の初期値から一意解である最適価値関数へ指数的に収束することを導く。",
+      "canonical_latex": "V_{k+1} := \\mathcal{T}^* V_k \\implies \\lim_{k \\to \\infty} \\|V_k - V^*\\|_\\infty = 0,\\quad \\|V_k - V^*\\|_\\infty \\le \\gamma^k \\|V_0 - V^*\\|_\\infty",
+      "aliases_latex": [
+        "V_k = (\\mathcal{T}^*)^k V_0 \\to V^*"
+      ],
+      "keywords": [
+        "価値反復法",
+        "指数収束",
+        "動的計画法",
+        "不動点"
+      ],
+      "domain_tags": [
+        "operations_research",
+        "reinforcement_learning"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_dp01_from_pr01",
+      "target_node_id": "or.dp.n01_mdp_definition",
+      "route_kind": "reformulation",
+      "title": "確率空間の公理からのMDP・マルコフ遷移確率と割引収益の構成",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "状態空間および行動空間は離散（有限または可算）であり、遷移確率は現在状態と行動のみに依存する（マルコフ性）。",
+        "報酬は有界であり、割引率は 0 <= gamma < 1 を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_mdp_setup",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(\\Omega, \\mathcal{F}, P),\\quad (S_t, A_t, R_{t+1})_{t \\ge 0}",
+          "to_latex": "\\mathcal{M} = (\\mathcal{S}, \\mathcal{A}, P, R, \\gamma),\\quad P(s' \\mid s, a) := \\Pr(S_{t+1}=s' \\mid S_t=s, A_t=a),\\quad G_t := \\sum_{k=0}^{\\infty} \\gamma^k R_{t+k+1}",
+          "operation_label": "マルコフ決定過程の5つ組と割引収益の定義",
+          "explanation": "コルモゴロフの確率空間上に定義された状態・行動・報酬の確率過程に対し、遷移確率が直前の状態と行動のみに依存するマルコフ性を仮定し、5つ組と割引収益を定義する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_dp02_from_dp01",
+      "target_node_id": "or.dp.n02_value_functions_def",
+      "route_kind": "deductive",
+      "title": "割引収益の条件付き期待値としての状態・行動価値関数の定義",
+      "premise_node_ids": [
+        "or.dp.n01_mdp_definition",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "方策は定常確率分布 pi(a|s) で与えられる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_value_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "G_t = \\sum_{k=0}^{\\infty} \\gamma^k R_{t+k+1},\\quad \\pi(a \\mid s) = \\Pr(A_t = a \\mid S_t = s)",
+          "to_latex": "V^\\pi(s) := \\mathbb{E}_\\pi[G_t \\mid S_t = s],\\quad Q^\\pi(s, a) := \\mathbb{E}_\\pi[G_t \\mid S_t = s, A_t = a]",
+          "operation_label": "条件付き期待値による価値関数の定義",
+          "explanation": "状態 s から方策 pi に従って行動したときの割引収益の条件付き期待値を状態価値関数、行動 a を取った後の期待値を行動価値関数と定義する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms",
+            "or.dp.n01_mdp_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_vq_relation",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V^\\pi(s) = \\mathbb{E}_\\pi[G_t \\mid S_t = s]",
+          "to_latex": "V^\\pi(s) = \\sum_{a \\in \\mathcal{A}} \\pi(a \\mid s) Q^\\pi(s, a)",
+          "operation_label": "行動に関する全期待値の法則の適用",
+          "explanation": "状態 s で選択される行動 A_t の確率分布 pi(a|s) で条件付き期待値を周辺化することで、状態価値と行動価値の関係式を得る。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_dp03_bellman_exp",
+      "target_node_id": "or.dp.n03_bellman_expectation_eq",
+      "route_kind": "deductive",
+      "title": "割引収益の再帰分解とマルコフ性によるベルマン期待方程式の導出",
+      "premise_node_ids": [
+        "or.dp.n01_mdp_definition",
+        "or.dp.n02_value_functions_def"
+      ],
+      "required_math_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "assumptions": [
+        "状態遷移および報酬はマルコフ性を満たし、方策 pi は定常である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V^\\pi(s) = \\mathbb{E}_\\pi\\left[\\sum_{k=0}^{\\infty} \\gamma^k R_{t+k+1} \\,\\middle|\\, S_t = s\\right]",
+          "to_latex": "V^\\pi(s) = \\sum_{a \\in \\mathcal{A}} \\pi(a \\mid s)\\left(R(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a) V^\\pi(s')\\right)",
+          "operation_label": "再帰分解とマルコフ性によるベルマン期待方程式の導出",
+          "explanation": "割引収益を即時報酬と次ステップ以降の割引収益に分解し、方策と状態遷移確率について期待値を展開することで、状態価値関数の再帰方程式を導く。",
+          "used_node_ids": [
+            "or.dp.n01_mdp_definition",
+            "or.dp.n02_value_functions_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_recursive_return",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V^\\pi(s) = \\mathbb{E}_\\pi\\left[\\sum_{k=0}^{\\infty} \\gamma^k R_{t+k+1} \\,\\middle|\\, S_t = s\\right]",
+          "to_latex": "V^\\pi(s) = \\mathbb{E}_\\pi\\left[R_{t+1} + \\gamma G_{t+1} \\mid S_t = s\\right]",
+          "operation_label": "割引収益の初項と後続和への分離",
+          "explanation": "無限和の k=0 の項 R_{t+1} を取り出し、k>=1 の和を gamma * G_{t+1} としてくくり出す。",
+          "used_node_ids": [
+            "or.dp.n01_mdp_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_action_conditioning",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V^\\pi(s) = \\mathbb{E}_\\pi\\left[R_{t+1} + \\gamma G_{t+1} \\mid S_t = s\\right]",
+          "to_latex": "V^\\pi(s) = \\sum_{a \\in \\mathcal{A}} \\pi(a \\mid s)\\left(R(s,a) + \\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a)\\,\\mathbb{E}_\\pi[G_{t+1} \\mid S_{t+1}=s', S_t=s, A_t=a]\\right)",
+          "operation_label": "行動と次状態に関する全期待値の法則の適用",
+          "explanation": "行動 A_t と次状態 S_{t+1} で条件付けし、それぞれの遷移確率 pi(a|s) および P(s'|s,a) で重み付け和をとる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms",
+            "or.dp.n01_mdp_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_markov_property",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V^\\pi(s) = \\sum_{a \\in \\mathcal{A}} \\pi(a \\mid s)\\left(R(s,a) + \\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a)\\,\\mathbb{E}_\\pi[G_{t+1} \\mid S_{t+1}=s', S_t=s, A_t=a]\\right)",
+          "to_latex": "V^\\pi(s) = \\sum_{a \\in \\mathcal{A}} \\pi(a \\mid s)\\left(R(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a) V^\\pi(s')\\right)",
+          "operation_label": "マルコフ性と定常性による V^pi(s') への置換",
+          "explanation": "将来の収益 G_{t+1} の条件付き分布は S_{t+1}=s' が与えられれば過去の (S_t, A_t) と独立であるため、期待値が V^pi(s') に一致する。Q^pi(s,a) についても同様に展開できる。",
+          "used_node_ids": [
+            "or.dp.n01_mdp_definition",
+            "or.dp.n02_value_functions_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_dp04_from_dp02",
+      "target_node_id": "or.dp.n04_optimal_value_functions_def",
+      "route_kind": "deductive",
+      "title": "方策空間上の上限としての最適価値関数の定義",
+      "premise_node_ids": [
+        "or.dp.n02_value_functions_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "有限MDPではすべての方策の中で各状態・行動の価値を同時に最大化する定常決定論的方策が存在する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_opt_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V^\\pi(s),\\quad Q^\\pi(s, a)",
+          "to_latex": "V^*(s) := \\sup_{\\pi} V^\\pi(s),\\quad Q^*(s, a) := \\sup_{\\pi} Q^\\pi(s, a),\\quad \\pi^*(a \\mid s) > 0 \\implies a \\in \\arg\\max_{a' \\in \\mathcal{A}} Q^*(s, a')",
+          "operation_label": "方策全体にわたる上限と最適方策の定義",
+          "explanation": "任意の状態・行動に対して方策 pi を動かしたときの上限を最適価値関数と定め、最適行動価値を最大化する行動を選ぶグリーディ方策を最適方策として特徴づける。",
+          "used_node_ids": [
+            "or.dp.n02_value_functions_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_dp05_bellman_opt",
+      "target_node_id": "or.dp.n05_bellman_optimality_eq",
+      "route_kind": "deductive",
+      "title": "最適性の原理とベルマン期待方程式からのベルマン最適方程式の導出",
+      "premise_node_ids": [
+        "or.dp.n03_bellman_expectation_eq",
+        "or.dp.n04_optimal_value_functions_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "行動空間は有限であり、最適行動を最大値 max として取得できる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V^*(s) = \\max_{\\pi} \\sum_{a \\in \\mathcal{A}} \\pi(a \\mid s) Q^\\pi(s, a)",
+          "to_latex": "V^*(s) = \\max_{a \\in \\mathcal{A}} \\left( R(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a) V^*(s') \\right)",
+          "operation_label": "最適方策の代入によるベルマン最適方程式の導出",
+          "explanation": "最適価値が最適行動価値の最大値に等しいことと、次状態以降で最適価値 V^*(s') が達成されることを用いて、非線形再帰方程式を導く。",
+          "used_node_ids": [
+            "or.dp.n03_bellman_expectation_eq",
+            "or.dp.n04_optimal_value_functions_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_max_action_relation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V^*(s) = \\max_{\\pi} \\sum_{a \\in \\mathcal{A}} \\pi(a \\mid s) Q^\\pi(s, a)",
+          "to_latex": "V^*(s) = \\max_{a \\in \\mathcal{A}} Q^*(s, a)",
+          "operation_label": "最適グリーディ方策による最大化の簡約",
+          "explanation": "状態 s における期待値の最大化は、Q^*(s,a) を最大にする行動に確率 1 を割り当てることで達成されるため、V^*(s) = max_a Q^*(s,a) が成り立つ。",
+          "used_node_ids": [
+            "or.dp.n04_optimal_value_functions_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_q_star_expansion",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V^*(s) = \\max_{a \\in \\mathcal{A}} Q^*(s, a)",
+          "to_latex": "V^*(s) = \\max_{a \\in \\mathcal{A}} \\left( R(s, a) + \\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a) V^*(s') \\right)",
+          "operation_label": "最適行動価値の1ステップ展開",
+          "explanation": "行動 a を選択した後の次状態 s' からは再び最適方策 pi^* に従うことで期待収益が V^*(s') に一致するため、ベルマン期待方程式の形を代入してベルマン最適方程式を得る。",
+          "used_node_ids": [
+            "or.dp.n03_bellman_expectation_eq",
+            "or.dp.n04_optimal_value_functions_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_dp07_contraction",
+      "target_node_id": "or.dp.n07_bellman_operator_contraction",
+      "route_kind": "deductive",
+      "title": "最大値作用素の差の絶対値評価によるベルマン作用素の縮小性証明",
+      "premise_node_ids": [
+        "or.dp.n05_bellman_optimality_eq",
+        "or.dp.n01_mdp_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "状態空間上の有界実数値関数空間に最大値ノルム ||V||_inf = sup_s |V(s)| を入れ、0 <= gamma < 1 とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|(\\mathcal{T}^* U)(s) - (\\mathcal{T}^* V)(s)| = \\left|\\max_{a}\\left(R(s,a)+\\gamma\\sum_{s'}P(s'|s,a)U(s')\\right) - \\max_{a}\\left(R(s,a)+\\gamma\\sum_{s'}P(s'|s,a)V(s')\\right)\\right|",
+          "to_latex": "\\|\\mathcal{T}^* U - \\mathcal{T}^* V\\|_\\infty \\le \\gamma \\|U - V\\|_\\infty",
+          "operation_label": "ベルマン最適作用素のガンマ縮小性の証明",
+          "explanation": "最大値関数の差の絶対値が差の最大値の絶対値で抑えられることと、遷移確率の和が 1 であることを用いて、最大値ノルムに関するガンマ縮小性を示す。",
+          "used_node_ids": [
+            "or.dp.n01_mdp_definition",
+            "or.dp.n05_bellman_optimality_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_max_diff_bound",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|(\\mathcal{T}^* U)(s) - (\\mathcal{T}^* V)(s)| = \\left|\\max_{a}\\left(R(s,a)+\\gamma\\sum_{s'}P(s'|s,a)U(s')\\right) - \\max_{a}\\left(R(s,a)+\\gamma\\sum_{s'}P(s'|s,a)V(s')\\right)\\right|",
+          "to_latex": "|(\\mathcal{T}^* U)(s) - (\\mathcal{T}^* V)(s)| \\le \\max_{a \\in \\mathcal{A}} \\left|\\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a)\\big(U(s') - V(s')\\big)\\right|",
+          "operation_label": "最大値の差に関する不等式 |max f - max g| <= max |f - g| の適用",
+          "explanation": "共通する即時報酬 R(s,a) が相殺され、最大値関数の差が行動 a にわたる差の絶対値の最大値で上から抑えられる。",
+          "used_node_ids": [
+            "or.dp.n05_bellman_optimality_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_prob_convex_bound",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|(\\mathcal{T}^* U)(s) - (\\mathcal{T}^* V)(s)| \\le \\max_{a \\in \\mathcal{A}} \\left|\\gamma \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a)\\big(U(s') - V(s')\\big)\\right|",
+          "to_latex": "|(\\mathcal{T}^* U)(s) - (\\mathcal{T}^* V)(s)| \\le \\gamma \\|U - V\\|_\\infty \\max_{a \\in \\mathcal{A}} \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a) = \\gamma \\|U - V\\|_\\infty",
+          "operation_label": "三角不等式と確率和が1であることの適用",
+          "explanation": "各状態 s' での差を最大値ノルム ||U - V||_inf で抑え、非負かつ総和が 1 の確率分布 P(s'|s,a) で和をとることで gamma ||U - V||_inf を得る。",
+          "used_node_ids": [
+            "or.dp.n01_mdp_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_sup_over_s",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|(\\mathcal{T}^* U)(s) - (\\mathcal{T}^* V)(s)| \\le \\gamma \\|U - V\\|_\\infty \\max_{a \\in \\mathcal{A}} \\sum_{s' \\in \\mathcal{S}} P(s' \\mid s, a) = \\gamma \\|U - V\\|_\\infty",
+          "to_latex": "\\|\\mathcal{T}^* U - \\mathcal{T}^* V\\|_\\infty \\le \\gamma \\|U - V\\|_\\infty",
+          "operation_label": "すべての状態 s に関する上限の取得",
+          "explanation": "右辺が状態 s に依存しない定数であるため、左辺について s にわたる上限をとることで縮小写像の不等式が完成する。",
+          "used_node_ids": [
+            "or.dp.n05_bellman_optimality_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_dp08_vi_convergence",
+      "target_node_id": "or.dp.n08_value_iteration_convergence",
+      "route_kind": "deductive",
+      "title": "バナッハの不動点定理による価値反復法の収束証明",
+      "premise_node_ids": [
+        "or.dp.n07_bellman_operator_contraction",
+        "or.dp.n06_banach_fixed_point_boundary",
+        "or.dp.n05_bellman_optimality_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "有界実数値関数空間は最大値ノルムに関して完備距離空間であり、0 <= gamma < 1 を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V_{k+1} = \\mathcal{T}^* V_k,\\quad \\mathcal{T}^* V^* = V^*",
+          "to_latex": "\\|V_k - V^*\\|_\\infty \\le \\gamma^k \\|V_0 - V^*\\|_\\infty \\xrightarrow{k \\to \\infty} 0",
+          "operation_label": "縮小写像の不動点定理による価値反復法の指数収束証明",
+          "explanation": "ベルマン最適作用素のガンマ縮小性と完備空間上のバナッハ不動点定理により、一意の不動点 V^* へ誤差が gamma^k 倍で指数的に減少して収束する。",
+          "used_node_ids": [
+            "or.dp.n05_bellman_optimality_eq",
+            "or.dp.n06_banach_fixed_point_boundary",
+            "or.dp.n07_bellman_operator_contraction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_banach_existence",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V_{k+1} = \\mathcal{T}^* V_k,\\quad \\mathcal{T}^* V^* = V^*",
+          "to_latex": "\\|V_{k+1} - V^*\\|_\\infty = \\|\\mathcal{T}^* V_k - \\mathcal{T}^* V^*\\|_\\infty \\le \\gamma \\|V_k - V^*\\|_\\infty",
+          "operation_label": "不動点の存在・一意性と1ステップ誤差評価",
+          "explanation": "バナッハの不動点定理からベルマン最適方程式の解 V^* が一意に存在し、縮小性の不等式を V_k と V^* に適用することで1反復ごとの誤差縮小を得る。",
+          "used_node_ids": [
+            "or.dp.n06_banach_fixed_point_boundary",
+            "or.dp.n07_bellman_operator_contraction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_induction_bound",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\|V_{k+1} - V^*\\|_\\infty = \\|\\mathcal{T}^* V_k - \\mathcal{T}^* V^*\\|_\\infty \\le \\gamma \\|V_k - V^*\\|_\\infty",
+          "to_latex": "\\|V_k - V^*\\|_\\infty \\le \\gamma^k \\|V_0 - V^*\\|_\\infty \\xrightarrow{k \\to \\infty} 0",
+          "operation_label": "数学的帰納法と割引率条件による収束極限の導出",
+          "explanation": "誤差縮小不等式を k 回反復適用し、0 <= gamma < 1 より gamma^k -> 0 となるため、任意の初期関数 V_0 から V^* へ一様収束することが示される。",
+          "used_node_ids": [
+            "or.dp.n05_bellman_optimality_eq",
+            "or.dp.n06_banach_fixed_point_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

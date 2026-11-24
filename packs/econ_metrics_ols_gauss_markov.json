@@ -1,0 +1,699 @@
+{
+  "pack_meta": {
+    "pack_id": "econ.metrics.ols_gauss_markov",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "econometrics",
+    "title": "計量経済学：最小二乗推定量（OLS）・ガウス＝マルコフの定理（BLUE）と操作変数法（2SLS）",
+    "language": "ja",
+    "description": "行列微分からOLS正規方程式と推定量 β_hat=(X^TX)^-1 X^Ty、不偏性と最小分散性（ガウス＝マルコフの定理）、内生性バイアスと操作変数推定量を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "econ.met.n01_clrm_assumptions",
+      "short_code": "MET01",
+      "kind": "definition",
+      "title": "古典的線形回帰モデル（CLRM）とガウス＝マルコフ仮定の定義",
+      "summary": "線形回帰モデルにおける説明変数行列のフルカラムランク性、誤差項の条件付き期待値ゼロ（厳密外生性）、および条件付き等分散・無相関の仮定を定式化する。",
+      "canonical_latex": "\\mathbf{y} = X\\boldsymbol{\\beta} + \\boldsymbol{\\varepsilon},\\quad \\operatorname{rank}(X) = k,\\quad \\mathbb{E}[\\boldsymbol{\\varepsilon} \\mid X] = \\mathbf{0},\\quad \\operatorname{Var}(\\boldsymbol{\\varepsilon} \\mid X) = \\sigma^2 I_n\\;(\\sigma^2 > 0)",
+      "aliases_latex": [
+        "y_i = \\mathbf{x}_i^\\top \\boldsymbol{\\beta} + \\varepsilon_i,\\; \\mathbb{E}[\\varepsilon_i \\mid X] = 0,\\; \\mathbb{E}[\\boldsymbol{\\varepsilon}\\boldsymbol{\\varepsilon}^\\top \\mid X] = \\sigma^2 I_n"
+      ],
+      "keywords": [
+        "古典的線形回帰モデル",
+        "ガウス＝マルコフ仮定",
+        "厳密外生性",
+        "等分散性",
+        "多重共線性の不在"
+      ],
+      "domain_tags": [
+        "econometrics",
+        "statistics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "econ.met.n02_ols_estimator_closed_form",
+      "short_code": "MET02",
+      "kind": "theorem_formula",
+      "title": "行列微分によるOLS正規方程式と閉形式推定量",
+      "summary": "残差平方和（RSS）の最小化問題に対して行列微分による1階停留点条件を適用し、正規方程式とOLS推定量の閉形式解を導出する。",
+      "canonical_latex": "\\min_{\\boldsymbol{\\beta}} (\\mathbf{y} - X\\boldsymbol{\\beta})^\\top(\\mathbf{y} - X\\boldsymbol{\\beta}) \\implies X^\\top X \\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = X^\\top \\mathbf{y} \\implies \\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = (X^\\top X)^{-1} X^\\top \\mathbf{y}",
+      "aliases_latex": [
+        "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = (X^\\top X)^{-1} X^\\top \\mathbf{y}"
+      ],
+      "keywords": [
+        "最小二乗法",
+        "OLS推定量",
+        "正規方程式",
+        "行列微分",
+        "残差平方和"
+      ],
+      "domain_tags": [
+        "econometrics",
+        "optimization",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "econ.met.n03_ols_unbiasedness_covariance",
+      "short_code": "MET03",
+      "kind": "theorem_formula",
+      "title": "OLS推定量の条件付き不偏性と共分散行列",
+      "summary": "ガウス＝マルコフ仮定の下で、OLS推定量が真の母数ベクトルの条件付き不偏推定量であること、およびその条件付き共分散行列の閉形式を示す。",
+      "canonical_latex": "\\mathbb{E}[\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X] = \\boldsymbol{\\beta},\\qquad \\operatorname{Var}(\\hat{\\boldsymbol{\beta}}_{\\mathrm{OLS}} \\mid X) = \\sigma^2 (X^\\top X)^{-1}",
+      "aliases_latex": [
+        "\\operatorname{Cov}(\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X) = \\sigma^2 (X^\\top X)^{-1}"
+      ],
+      "keywords": [
+        "不偏性",
+        "条件付き期待値",
+        "共分散行列",
+        "OLS推定量"
+      ],
+      "domain_tags": [
+        "econometrics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "econ.met.n04_gauss_markov_theorem_blue",
+      "short_code": "MET04",
+      "kind": "theorem_formula",
+      "title": "ガウス＝マルコフの定理（BLUE：最良線形不偏推定量）",
+      "summary": "ガウス＝マルコフ仮定が成立するとき、任意の線形不偏推定量に対してOLS推定量の共分散行列との差が半正定値となり、OLSが最小分散性（BLUE）を持つことを証明する。",
+      "canonical_latex": "\\tilde{\\boldsymbol{\\beta}} = C\\mathbf{y},\\; \\mathbb{E}[\\tilde{\\boldsymbol{\\beta}} \\mid X] = \\boldsymbol{\\beta} \\implies \\operatorname{Var}(\\tilde{\\boldsymbol{\\beta}} \\mid X) - \\operatorname{Var}(\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X) = \\sigma^2 D D^\\top \\succeq 0\\;\\big(D := C - (X^\\top X)^{-1}X^\\top\\big)",
+      "aliases_latex": [
+        "\\operatorname{Var}(\\mathbf{c}^\\top \\tilde{\\boldsymbol{\\beta}} \\mid X) \\ge \\operatorname{Var}(\\mathbf{c}^\\top \\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X)"
+      ],
+      "keywords": [
+        "ガウス＝マルコフの定理",
+        "BLUE",
+        "最良線形不偏推定量",
+        "半正定値",
+        "効率性"
+      ],
+      "domain_tags": [
+        "econometrics",
+        "statistics",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "econ.met.n05_endogeneity_ols_bias",
+      "short_code": "MET05",
+      "kind": "theorem_formula",
+      "title": "内生性によるOLS推定量のバイアスと不一致",
+      "summary": "説明変数と誤差項の相関（内生性）が存在する場合、OLS推定量の確率極限が真の母数から乖離し、不偏性および一致性が破綻することを示す。",
+      "canonical_latex": "\\mathbb{E}[\\mathbf{x}_i \\varepsilon_i] \\neq \\mathbf{0} \\implies \\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} - \\boldsymbol{\\beta} = \\left(\\frac{1}{n}X^\\top X\\right)^{-1}\\left(\\frac{1}{n}X^\\top \\boldsymbol{\\varepsilon}\\right) \\xrightarrow{p} \\mathbb{E}[\\mathbf{x}_i \\mathbf{x}_i^\\top]^{-1} \\mathbb{E}[\\mathbf{x}_i \\varepsilon_i] \\neq \\mathbf{0}",
+      "aliases_latex": [
+        "\\operatorname{plim}\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = \\boldsymbol{\\beta} + \\mathbb{E}[\\mathbf{x}_i \\mathbf{x}_i^\\top]^{-1}\\mathbb{E}[\\mathbf{x}_i \\varepsilon_i]"
+      ],
+      "keywords": [
+        "内生性",
+        "欠落変数バイアス",
+        "同時方程式バイアス",
+        "測定誤差",
+        "一致性"
+      ],
+      "domain_tags": [
+        "econometrics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "econ.met.n06_iv_relevance_exogeneity_def",
+      "short_code": "MET06",
+      "kind": "definition",
+      "title": "操作変数（IV）の関連性条件・外生性条件の定義",
+      "summary": "内生性問題を解決するために導入される操作変数ベクトルが満たすべき2つの基本条件（関連性条件と除外制約を含む外生性条件）および次数条件を定義する。",
+      "canonical_latex": "\\text{Relevance: }\\operatorname{rank}(\\mathbb{E}[\\mathbf{z}_i \\mathbf{x}_i^\\top]) = k,\\qquad \\text{Exogeneity: }\\mathbb{E}[\\mathbf{z}_i \\varepsilon_i] = \\mathbf{0},\\qquad l \\ge k",
+      "aliases_latex": [
+        "\\mathbb{E}[\\mathbf{z}_i \\varepsilon_i] = \\mathbf{0},\\; \\operatorname{rank}(\\Sigma_{zx}) = k"
+      ],
+      "keywords": [
+        "操作変数",
+        "関連性条件",
+        "外生性条件",
+        "識別条件",
+        "次数条件"
+      ],
+      "domain_tags": [
+        "econometrics",
+        "causal_inference"
+      ]
+    },
+    {
+      "id": "econ.met.n07_iv_just_identified_estimator",
+      "short_code": "MET07",
+      "kind": "theorem_formula",
+      "title": "ちょうど識別された操作変数推定量（IV推定量）と一致性",
+      "summary": "操作変数の数と説明変数の数が等しい（ちょうど識別された）場合に、標本モーメント条件から操作変数推定量を導出し、その一致性を示す。",
+      "canonical_latex": "l = k \\implies \\hat{\\boldsymbol{\\beta}}_{\\mathrm{IV}} = (Z^\\top X)^{-1} Z^\\top \\mathbf{y} = \\boldsymbol{\\beta} + (Z^\\top X)^{-1} Z^\\top \\boldsymbol{\\varepsilon} \\xrightarrow{p} \\boldsymbol{\\beta}",
+      "aliases_latex": [
+        "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{IV}} = (Z^\\top X)^{-1} Z^\\top \\mathbf{y}"
+      ],
+      "keywords": [
+        "IV推定量",
+        "ちょうど識別",
+        "モーメント法",
+        "一致性"
+      ],
+      "domain_tags": [
+        "econometrics",
+        "causal_inference"
+      ]
+    },
+    {
+      "id": "econ.met.n08_2sls_estimator",
+      "short_code": "MET08",
+      "kind": "theorem_formula",
+      "title": "2段階最小二乗推定量（2SLS）の導出",
+      "summary": "過剰識別を含む一般の操作変数モデルにおいて、第1段階の射影行列による説明変数の予測値を用いた第2段階OLS回帰から2SLS推定量を導出する。",
+      "canonical_latex": "\\hat{X} := P_Z X = Z(Z^\\top Z)^{-1} Z^\\top X,\\qquad \\hat{\\boldsymbol{\\beta}}_{\\mathrm{2SLS}} = (\\hat{X}^\\top \\hat{X})^{-1} \\hat{X}^\\top \\mathbf{y} = (X^\\top P_Z X)^{-1} X^\\top P_Z \\mathbf{y}",
+      "aliases_latex": [
+        "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{2SLS}} = \\big(X^\\top Z(Z^\\top Z)^{-1} Z^\\top X\\big)^{-1} X^\\top Z(Z^\\top Z)^{-1} Z^\\top \\mathbf{y}"
+      ],
+      "keywords": [
+        "2段階最小二乗法",
+        "2SLS",
+        "射影行列",
+        "過剰識別",
+        "操作変数法"
+      ],
+      "domain_tags": [
+        "econometrics",
+        "causal_inference",
+        "linear_algebra"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "econ.met.d01_clrm_assumptions",
+      "target_node_id": "econ.met.n01_clrm_assumptions",
+      "route_kind": "reformulation",
+      "title": "確率空間と線形空間の公理に基づくCLRMとガウス＝マルコフ仮定の定式化",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "標本サイズ n が説明変数の数 k より大きい（n > k）。",
+        "観測データ (y, X) は確率空間上の確率変数として定義される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{y} \\in \\mathbb{R}^n,\\; X \\in \\mathbb{R}^{n \\times k},\\; \\boldsymbol{\\varepsilon} \\in \\mathbb{R}^n",
+          "to_latex": "\\mathbf{y} = X\\boldsymbol{\\beta} + \\boldsymbol{\\varepsilon},\\quad \\operatorname{rank}(X) = k,\\quad \\mathbb{E}[\\boldsymbol{\\varepsilon} \\mid X] = \\mathbf{0},\\quad \\operatorname{Var}(\\boldsymbol{\\varepsilon} \\mid X) = \\sigma^2 I_n\\;(\\sigma^2 > 0)",
+          "operation_label": "CLRMの線形構造とモーメント条件の定義",
+          "explanation": "ベクトル空間上の線形写像 Xβ に確率空間上の誤差項 ε を加えた線形モデルを設定し、説明変数の線形独立性（フルランク性）および誤差項の条件付き期待値ゼロ・等分散無相関を課すことでガウス＝マルコフ仮定を定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "econ.met.d02_ols_estimator_closed_form",
+      "target_node_id": "econ.met.n02_ols_estimator_closed_form",
+      "route_kind": "deductive",
+      "title": "残差平方和の行列微分によるOLS正規方程式と閉形式解の導出",
+      "premise_node_ids": [
+        "econ.met.n01_clrm_assumptions",
+        "math.calc.e03_stationary_point_condition",
+        "eng.ml1.n02_linear_regression_ols_mle"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "説明変数行列 X はフルカラムランク（rank(X) = k）であり、X^T X は正則である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S(\\boldsymbol{\\beta}) = (\\mathbf{y} - X\\boldsymbol{\\beta})^\\top(\\mathbf{y} - X\\boldsymbol{\\beta})",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = (X^\\top X)^{-1} X^\\top \\mathbf{y}",
+          "operation_label": "残差平方和の最小化によるOLS推定量の導出",
+          "explanation": "残差平方和 S(β) を展開してベクトル β で微分し、停留点条件から正規方程式を得た上で、X^T X の正則性を用いて閉形式解を導く。",
+          "used_node_ids": [
+            "econ.met.n01_clrm_assumptions",
+            "eng.ml1.n02_linear_regression_ols_mle",
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S(\\boldsymbol{\\beta}) = (\\mathbf{y} - X\\boldsymbol{\\beta})^\\top(\\mathbf{y} - X\\boldsymbol{\\beta})",
+          "to_latex": "S(\\boldsymbol{\\beta}) = \\mathbf{y}^\\top\\mathbf{y} - 2\\boldsymbol{\\beta}^\\top X^\\top\\mathbf{y} + \\boldsymbol{\\beta}^\\top X^\\top X\\boldsymbol{\\beta}",
+          "operation_label": "二次形式への展開",
+          "explanation": "転置の分配則およびスカラー量 y^T Xβ = β^T X^T y の対称性を利用して残差平方和を β の2次式に展開する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S(\\boldsymbol{\\beta}) = \\mathbf{y}^\\top\\mathbf{y} - 2\\boldsymbol{\\beta}^\\top X^\\top\\mathbf{y} + \\boldsymbol{\\beta}^\\top X^\\top X\\boldsymbol{\\beta}",
+          "to_latex": "\\nabla_{\\boldsymbol{\\beta}} S(\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}}) = -2 X^\\top\\mathbf{y} + 2 X^\\top X\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = \\mathbf{0}",
+          "operation_label": "行列微分と1階停留点条件の適用",
+          "explanation": "多変数関数の極値の1階必要条件に従い、S(β) の勾配をゼロとおいて正規方程式 X^T X β_hat = X^T y を得る。",
+          "used_node_ids": [
+            "eng.ml1.n02_linear_regression_ols_mle",
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\boldsymbol{\\beta}} S(\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}}) = -2 X^\\top\\mathbf{y} + 2 X^\\top X\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = \\mathbf{0}",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = (X^\\top X)^{-1} X^\\top \\mathbf{y}",
+          "operation_label": "逆行列の左乗による閉形式解の導出",
+          "explanation": "仮定 rank(X) = k により対称行列 X^T X は正定値かつ正則であるため、両辺に (X^T X)^(-1) を左から掛けてOLS推定量を得る。",
+          "used_node_ids": [
+            "econ.met.n01_clrm_assumptions"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "econ.met.d03_ols_unbiasedness_covariance",
+      "target_node_id": "econ.met.n03_ols_unbiasedness_covariance",
+      "route_kind": "deductive",
+      "title": "OLS推定量の条件付き不偏性と共分散行列の導出",
+      "premise_node_ids": [
+        "econ.met.n01_clrm_assumptions",
+        "econ.met.n02_ols_estimator_closed_form"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "CLRMの仮定（y = Xβ + ε、E[ε | X] = 0、Var(ε | X) = σ^2 I_n）が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = (X^\\top X)^{-1} X^\\top \\mathbf{y},\\quad \\mathbf{y} = X\\boldsymbol{\\beta} + \\boldsymbol{\\varepsilon}",
+          "to_latex": "\\mathbb{E}[\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X] = \\boldsymbol{\\beta},\\quad \\operatorname{Var}(\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X) = \\sigma^2 (X^\\top X)^{-1}",
+          "operation_label": "条件付き期待値と分散の線形変換公式の適用",
+          "explanation": "OLS推定量にデータ生成過程を代入して誤差項の線形変換として表し、厳密外生性と等分散無相関の仮定を適用して不偏性と共分散行列を導出する。",
+          "used_node_ids": [
+            "econ.met.n01_clrm_assumptions",
+            "econ.met.n02_ols_estimator_closed_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = (X^\\top X)^{-1} X^\\top \\mathbf{y},\\quad \\mathbf{y} = X\\boldsymbol{\\beta} + \\boldsymbol{\\varepsilon}",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = \\boldsymbol{\\beta} + (X^\\top X)^{-1} X^\\top \\boldsymbol{\\varepsilon}",
+          "operation_label": "真のモデル式の代入と簡約",
+          "explanation": "y = Xβ + ε をOLS推定量の式に代入し、(X^T X)^(-1) X^T X = I_k を用いて真の母数 β と推定誤差項に分離する。",
+          "used_node_ids": [
+            "econ.met.n02_ols_estimator_closed_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = \\boldsymbol{\\beta} + (X^\\top X)^{-1} X^\\top \\boldsymbol{\\varepsilon}",
+          "to_latex": "\\mathbb{E}[\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X] = \\boldsymbol{\\beta} + (X^\\top X)^{-1} X^\\top \\mathbb{E}[\\boldsymbol{\\varepsilon} \\mid X] = \\boldsymbol{\\beta}",
+          "operation_label": "厳密外生性による条件付き不偏性の導出",
+          "explanation": "X で条件付けた期待値の線形性と E[ε | X] = 0 を用いて、OLS推定量の条件付き期待値が真の母数 β に一致することを示す。",
+          "used_node_ids": [
+            "econ.met.n01_clrm_assumptions"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X] = \\boldsymbol{\\beta} + (X^\\top X)^{-1} X^\\top \\mathbb{E}[\\boldsymbol{\\varepsilon} \\mid X] = \\boldsymbol{\\beta}",
+          "to_latex": "\\mathbb{E}[\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X] = \\boldsymbol{\\beta},\\quad \\operatorname{Var}(\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X) = \\sigma^2 (X^\\top X)^{-1}",
+          "operation_label": "等分散無相関の仮定による共分散行列の計算",
+          "explanation": "線形変換 A = (X^T X)^(-1) X^T に対し Var(Aε | X) = A Var(ε | X) A^T = σ^2 A A^T を計算し、A A^T = (X^T X)^(-1) を得る。",
+          "used_node_ids": [
+            "econ.met.n01_clrm_assumptions"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "econ.met.d04_gauss_markov_theorem_blue",
+      "target_node_id": "econ.met.n04_gauss_markov_theorem_blue",
+      "route_kind": "deductive",
+      "title": "ガウス＝マルコフの定理（OLS推定量のBLUE性）の証明",
+      "premise_node_ids": [
+        "econ.met.n01_clrm_assumptions",
+        "econ.met.n03_ols_unbiasedness_covariance",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "対抗する推定量 β_tilde = Cy は y に関して線形かつ条件付き不偏である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\tilde{\\boldsymbol{\\beta}} = C\\mathbf{y},\\quad \\mathbb{E}[\\tilde{\\boldsymbol{\\beta}} \\mid X] = \\boldsymbol{\\beta}",
+          "to_latex": "\\operatorname{Var}(\\tilde{\\boldsymbol{\\beta}} \\mid X) - \\operatorname{Var}(\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X) = \\sigma^2 D D^\\top \\succeq 0",
+          "operation_label": "任意の線形不偏推定量との分散比較",
+          "explanation": "線形不偏性条件 CX = I_k から係数行列の差 D の直交性 DX = 0 を導き、共分散行列の差が半正定値行列 σ^2 D D^T になることを示す。",
+          "used_node_ids": [
+            "econ.met.n01_clrm_assumptions",
+            "econ.met.n03_ols_unbiasedness_covariance",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{\\boldsymbol{\\beta}} = C\\mathbf{y},\\quad \\mathbb{E}[\\tilde{\\boldsymbol{\\beta}} \\mid X] = \\boldsymbol{\\beta}",
+          "to_latex": "CX = I_k,\\quad D := C - (X^\\top X)^{-1} X^\\top \\implies DX = 0",
+          "operation_label": "不偏性条件の導出と差行列の直交性",
+          "explanation": "E[Cy | X] = CXβ = β が全ての β で成り立つため CX = I_k が必要十分であり、差行列 D に対して DX = CX - I_k = 0 が従う。",
+          "used_node_ids": [
+            "econ.met.n01_clrm_assumptions"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "CX = I_k,\\quad D := C - (X^\\top X)^{-1} X^\\top \\implies DX = 0",
+          "to_latex": "\\operatorname{Var}(\\tilde{\\boldsymbol{\\beta}} \\mid X) = \\sigma^2 C C^\\top = \\sigma^2 (X^\\top X)^{-1} + \\sigma^2 D D^\\top",
+          "operation_label": "共分散行列の直交分解",
+          "explanation": "C = (X^T X)^(-1) X^T + D を CC^T に代入すると、DX = 0 により交差項が消滅し、OLSの共分散行列と非負定値項の和に分解される。",
+          "used_node_ids": [
+            "econ.met.n03_ols_unbiasedness_covariance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Var}(\\tilde{\\boldsymbol{\\beta}} \\mid X) = \\sigma^2 C C^\\top = \\sigma^2 (X^\\top X)^{-1} + \\sigma^2 D D^\\top",
+          "to_latex": "\\operatorname{Var}(\\tilde{\\boldsymbol{\\beta}} \\mid X) - \\operatorname{Var}(\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} \\mid X) = \\sigma^2 D D^\\top \\succeq 0",
+          "operation_label": "半正定値性の確認とBLUE性の結論",
+          "explanation": "任意のベクトル h に対し h^T (D D^T) h = ||D^T h||_2^2 >= 0 であるため差行列は半正定値となり、OLS推定量が最小分散性（BLUE）を持つことが示される。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "econ.met.d05_endogeneity_ols_bias",
+      "target_node_id": "econ.met.n05_endogeneity_ols_bias",
+      "route_kind": "deductive",
+      "title": "内生性下におけるOLS推定量の確率極限と漸近バイアスの導出",
+      "premise_node_ids": [
+        "econ.met.n02_ols_estimator_closed_form",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "標本モーメント (1/n)X^T X と (1/n)X^T ε に対して大数の法則が適用可能であり、E[x_i x_i^T] は正則である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = (X^\\top X)^{-1} X^\\top \\mathbf{y},\\quad \\mathbb{E}[\\mathbf{x}_i \\varepsilon_i] \\neq \\mathbf{0}",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} - \\boldsymbol{\\beta} \\xrightarrow{p} \\mathbb{E}[\\mathbf{x}_i \\mathbf{x}_i^\\top]^{-1} \\mathbb{E}[\\mathbf{x}_i \\varepsilon_i] \\neq \\mathbf{0}",
+          "operation_label": "内生性による漸近バイアスの導出",
+          "explanation": "OLS推定誤差を標本平均の積として書き直し、大数の法則と連続写像定理を適用することで、内生性 E[x_i ε_i] != 0 がある限り一致性が失われることを示す。",
+          "used_node_ids": [
+            "econ.met.n02_ols_estimator_closed_form",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} = (X^\\top X)^{-1} X^\\top \\mathbf{y},\\quad \\mathbb{E}[\\mathbf{x}_i \\varepsilon_i] \\neq \\mathbf{0}",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} - \\boldsymbol{\\beta} = \\left(\\frac{1}{n} X^\\top X\\right)^{-1} \\left(\\frac{1}{n} X^\\top \\boldsymbol{\\varepsilon}\\right)",
+          "operation_label": "標本サイズ n によるスケーリング",
+          "explanation": "y = Xβ + ε を代入して得られる推定誤差 (X^T X)^(-1) X^T ε の分子と分母を 1/n で割り、標本平均の形に整理する。",
+          "used_node_ids": [
+            "econ.met.n02_ols_estimator_closed_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} - \\boldsymbol{\\beta} = \\left(\\frac{1}{n} X^\\top X\\right)^{-1} \\left(\\frac{1}{n} X^\\top \\boldsymbol{\\varepsilon}\\right)",
+          "to_latex": "\\frac{1}{n} X^\\top X \\xrightarrow{p} \\mathbb{E}[\\mathbf{x}_i \\mathbf{x}_i^\\top],\\quad \\frac{1}{n} X^\\top \\boldsymbol{\\varepsilon} \\xrightarrow{p} \\mathbb{E}[\\mathbf{x}_i \\varepsilon_i]",
+          "operation_label": "大数の弱法則による確率収束の評価",
+          "explanation": "大数の弱法則により、各標本平均が対応する母集団の2次モーメントおよび交差モーメントへ確率収束する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{n} X^\\top X \\xrightarrow{p} \\mathbb{E}[\\mathbf{x}_i \\mathbf{x}_i^\\top],\\quad \\frac{1}{n} X^\\top \\boldsymbol{\\varepsilon} \\xrightarrow{p} \\mathbb{E}[\\mathbf{x}_i \\varepsilon_i]",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{OLS}} - \\boldsymbol{\\beta} \\xrightarrow{p} \\mathbb{E}[\\mathbf{x}_i \\mathbf{x}_i^\\top]^{-1} \\mathbb{E}[\\mathbf{x}_i \\varepsilon_i] \\neq \\mathbf{0}",
+          "operation_label": "スルツキーの定理による漸近バイアスの確定",
+          "explanation": "逆行列の連続性とスルツキーの定理により、OLS推定量は真の値 β ではなく非ゼロのバイアス項を加えた値に収束する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "econ.met.d06_iv_relevance_exogeneity_def",
+      "target_node_id": "econ.met.n06_iv_relevance_exogeneity_def",
+      "route_kind": "reformulation",
+      "title": "内生性バイアス克服のための操作変数条件の定式化",
+      "premise_node_ids": [
+        "econ.met.n05_endogeneity_ols_bias"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "操作変数ベクトル z_i は l 次元であり、説明変数 x_i は k 次元である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbb{E}[\\mathbf{x}_i \\varepsilon_i] \\neq \\mathbf{0}",
+          "to_latex": "\\text{Relevance: }\\operatorname{rank}(\\mathbb{E}[\\mathbf{z}_i \\mathbf{x}_i^\\top]) = k,\\qquad \\text{Exogeneity: }\\mathbb{E}[\\mathbf{z}_i \\varepsilon_i] = \\mathbf{0},\\qquad l \\ge k",
+          "operation_label": "識別条件としての関連性・外生性・次数条件の定義",
+          "explanation": "説明変数の直交条件 E[x_i ε_i] = 0 が破綻した状況において、誤差項と無相関（外生性）かつ説明変数と十分に相関する（関連性）変数群 z_i を導入し、母数識別のため l >= k を要請する。",
+          "used_node_ids": [
+            "econ.met.n05_endogeneity_ols_bias"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "econ.met.d07_iv_just_identified_estimator",
+      "target_node_id": "econ.met.n07_iv_just_identified_estimator",
+      "route_kind": "deductive",
+      "title": "モーメント条件からのちょうど識別されたIV推定量と一致性の導出",
+      "premise_node_ids": [
+        "econ.met.n06_iv_relevance_exogeneity_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "操作変数と説明変数の次元が一致し（l = k）、E[z_i x_i^T] は正則である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbb{E}[\\mathbf{z}_i \\varepsilon_i] = \\mathbf{0},\\quad \\mathbb{E}[\\mathbf{z}_i (y_i - \\mathbf{x}_i^\\top \\boldsymbol{\\beta})] = \\mathbf{0}",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{IV}} = (Z^\\top X)^{-1} Z^\\top \\mathbf{y} \\xrightarrow{p} \\boldsymbol{\\beta}",
+          "operation_label": "標本モーメント法によるIV推定量と一致性の導出",
+          "explanation": "外生性条件に対応する標本モーメント方程式を解き、関連性条件による正則性と大数の法則を用いてIV推定量の一致性を導く。",
+          "used_node_ids": [
+            "econ.met.n06_iv_relevance_exogeneity_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[\\mathbf{z}_i \\varepsilon_i] = \\mathbf{0},\\quad \\mathbb{E}[\\mathbf{z}_i (y_i - \\mathbf{x}_i^\\top \\boldsymbol{\\beta})] = \\mathbf{0}",
+          "to_latex": "\\frac{1}{n} Z^\\top (\\mathbf{y} - X\\hat{\\boldsymbol{\\beta}}_{\\mathrm{IV}}) = \\mathbf{0} \\implies Z^\\top X \\hat{\\boldsymbol{\\beta}}_{\\mathrm{IV}} = Z^\\top \\mathbf{y}",
+          "operation_label": "標本類似体への置換",
+          "explanation": "母集団の直交条件 E[z_i(y_i - x_i^T β)] = 0 を標本平均に置き換え、連立一次方程式 Z^T X β_IV = Z^T y を立てる。",
+          "used_node_ids": [
+            "econ.met.n06_iv_relevance_exogeneity_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{n} Z^\\top (\\mathbf{y} - X\\hat{\\boldsymbol{\\beta}}_{\\mathrm{IV}}) = \\mathbf{0} \\implies Z^\\top X \\hat{\\boldsymbol{\\beta}}_{\\mathrm{IV}} = Z^\\top \\mathbf{y}",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{IV}} = (Z^\\top X)^{-1} Z^\\top \\mathbf{y} = \\boldsymbol{\\beta} + \\left(\\frac{1}{n} Z^\\top X\\right)^{-1}\\left(\\frac{1}{n} Z^\\top \\boldsymbol{\\varepsilon}\\right)",
+          "operation_label": "正方行列の逆転と真のモデルの代入",
+          "explanation": "l = k かつ関連性条件により Z^T X が正則であるため逆行列を乗じて解き、さらに y = Xβ + ε を代入して誤差表現を得る。",
+          "used_node_ids": [
+            "econ.met.n06_iv_relevance_exogeneity_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{IV}} = (Z^\\top X)^{-1} Z^\\top \\mathbf{y} = \\boldsymbol{\\beta} + \\left(\\frac{1}{n} Z^\\top X\\right)^{-1}\\left(\\frac{1}{n} Z^\\top \\boldsymbol{\\varepsilon}\\right)",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{IV}} = (Z^\\top X)^{-1} Z^\\top \\mathbf{y} \\xrightarrow{p} \\boldsymbol{\\beta}",
+          "operation_label": "大数の法則による一致性の確認",
+          "explanation": "外生性条件より (1/n)Z^T ε が 0 へ確率収束し、関連性条件より (1/n)Z^T X が正則行列へ確率収束するため、IV推定量は β に一致収束する。",
+          "used_node_ids": [
+            "econ.met.n06_iv_relevance_exogeneity_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "econ.met.d08_2sls_estimator",
+      "target_node_id": "econ.met.n08_2sls_estimator",
+      "route_kind": "deductive",
+      "title": "第1段階OLS射影による2段階最小二乗推定量（2SLS）の導出",
+      "premise_node_ids": [
+        "econ.met.n02_ols_estimator_closed_form",
+        "econ.met.n06_iv_relevance_exogeneity_def",
+        "econ.met.n07_iv_just_identified_estimator"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "操作変数行列 Z はフルカラムランク（rank(Z) = l >= k）であり、Z^T Z および X^T P_Z X は正則である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{X} := P_Z X,\\quad P_Z := Z(Z^\\top Z)^{-1} Z^\\top",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{2SLS}} = (X^\\top P_Z X)^{-1} X^\\top P_Z \\mathbf{y}",
+          "operation_label": "2段階OLSと射影行列の性質による2SLS推定量の導出",
+          "explanation": "第1段階で X を Z にOLS回帰した予測値 X_hat = P_Z X を作成し、第2段階で y を X_hat にOLS回帰した式に射影行列の対称性と冪等性を適用して2SLS推定量を得る。",
+          "used_node_ids": [
+            "econ.met.n02_ols_estimator_closed_form",
+            "econ.met.n06_iv_relevance_exogeneity_def",
+            "econ.met.n07_iv_just_identified_estimator"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{X} := P_Z X,\\quad P_Z := Z(Z^\\top Z)^{-1} Z^\\top",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{2SLS}} = (\\hat{X}^\\top \\hat{X})^{-1} \\hat{X}^\\top \\mathbf{y}",
+          "operation_label": "第2段階OLS推定量の適用",
+          "explanation": "第1段階回帰で得られた外生的予測値 X_hat を説明変数として y をOLS回帰し、OLS閉形式公式を適用する。",
+          "used_node_ids": [
+            "econ.met.n02_ols_estimator_closed_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{2SLS}} = (\\hat{X}^\\top \\hat{X})^{-1} \\hat{X}^\\top \\mathbf{y}",
+          "to_latex": "P_Z^\\top = P_Z,\\quad P_Z^2 = P_Z \\implies \\hat{X}^\\top \\hat{X} = X^\\top P_Z X,\\quad \\hat{X}^\\top \\mathbf{y} = X^\\top P_Z \\mathbf{y}",
+          "operation_label": "射影行列の対称性と冪等性の適用",
+          "explanation": "P_Z が対称行列（P_Z^T = P_Z）かつ冪等行列（P_Z^2 = P_Z）である性質を用いて、X_hat^T X_hat と X_hat^T y を簡約する。",
+          "used_node_ids": [
+            "econ.met.n06_iv_relevance_exogeneity_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_Z^\\top = P_Z,\\quad P_Z^2 = P_Z \\implies \\hat{X}^\\top \\hat{X} = X^\\top P_Z X,\\quad \\hat{X}^\\top \\mathbf{y} = X^\\top P_Z \\mathbf{y}",
+          "to_latex": "\\hat{\\boldsymbol{\\beta}}_{\\mathrm{2SLS}} = (X^\\top P_Z X)^{-1} X^\\top P_Z \\mathbf{y}",
+          "operation_label": "2SLS閉形式推定量の完成",
+          "explanation": "簡約した行列を第2段階OLS式に代入して2SLS推定量の閉形式表現を得る（l = k のとき Z^T X の正則性によりIV推定量と一致する）。",
+          "used_node_ids": [
+            "econ.met.n07_iv_just_identified_estimator"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

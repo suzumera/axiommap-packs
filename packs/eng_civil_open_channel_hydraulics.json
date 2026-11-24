@@ -1,0 +1,499 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.civil.open_channel_hydraulics",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "civil_engineering",
+    "title": "水理学：開水路の比エネルギー・フルード数・跳水（運動量保存）とマニングの平均流速公式",
+    "language": "ja",
+    "description": "ベルヌーイの式から開水路の比エネルギーと限界水深（Fr=1）、運動量方程式から跳水の共役水深式、壁面せん断応力バランスからシェジー/マニング公式を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.hyd.n01_open_channel_boundary",
+      "short_code": "HYD01",
+      "kind": "math_boundary",
+      "title": "開水路1次元流の基礎境界（連続式・静水圧・ベルヌーイ・運動量・抵抗則）",
+      "summary": "自由表面を持つ非圧縮定常1次元開水路流れにおける質量保存則（連続の式）、静水圧分布仮定、ベルヌーイのエネルギー式、検査体積の運動量方程式、および等流時の壁面せん断応力と抵抗係数の基礎境界。",
+      "canonical_latex": "Q = A v,\\quad H = z + h + \\frac{v^2}{2g},\\quad F_{p1} - F_{p2} = \\rho Q(v_2 - v_1),\\quad \\tau_0 = \\rho g R_h I_0 = \\frac{f}{8}\\rho v^2",
+      "aliases_latex": [
+        "H = z + h + \\frac{Q^2}{2g A^2}",
+        "\\sum F_x = \\rho Q(v_2 - v_1)"
+      ],
+      "keywords": [
+        "開水路",
+        "ベルヌーイの式",
+        "運動量方程式",
+        "静水圧分布",
+        "壁面せん断応力"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "hydraulics"
+      ]
+    },
+    {
+      "id": "eng.hyd.n02_specific_energy_def",
+      "short_code": "HYD02",
+      "kind": "definition",
+      "title": "比エネルギーの定義と開水路の流量表示",
+      "summary": "水路床を基準面（z=0）として測った単位重量あたりのエネルギーである比エネルギー E の定義と、連続の式を用いた流量 Q または単位幅流量 q による表現。",
+      "canonical_latex": "E := h + \\frac{v^2}{2g} = h + \\frac{Q^2}{2g A(h)^2},\\qquad E_{\\text{rect}} = h + \\frac{q^2}{2g h^2}\\;\\left(q := \\frac{Q}{B}\\right)",
+      "aliases_latex": [
+        "E = h + \\frac{v^2}{2g}"
+      ],
+      "keywords": [
+        "比エネルギー",
+        "開水路",
+        "単位幅流量"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "hydraulics"
+      ]
+    },
+    {
+      "id": "eng.hyd.n03_froude_number_def",
+      "short_code": "HYD03",
+      "kind": "definition",
+      "title": "フルード数と開水路の流れの遷移（常流・限界流・射流）",
+      "summary": "慣性力と重力の比、あるいは断面平均流速 v と微小重力波の伝播速度 √(g D_h) の比として定義される無次元数（フルード数 Fr）と、それによる常流・限界流・射流の分類。",
+      "canonical_latex": "\\mathrm{Fr} := \\frac{v}{\\sqrt{g D_h}} = \\frac{Q}{\\sqrt{g A^3 / B}},\\quad D_h := \\frac{A}{B};\\quad \\mathrm{Fr}<1\\text{ (subcritical)},\\; \\mathrm{Fr}=1\\text{ (critical)},\\; \\mathrm{Fr}>1\\text{ (supercritical)}",
+      "aliases_latex": [
+        "\\mathrm{Fr} = \\frac{v}{\\sqrt{gh}}"
+      ],
+      "keywords": [
+        "フルード数",
+        "常流",
+        "射流",
+        "限界流",
+        "水理水深"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "hydraulics"
+      ]
+    },
+    {
+      "id": "eng.hyd.n04_critical_depth_condition",
+      "short_code": "HYD04",
+      "kind": "theorem_formula",
+      "title": "比エネルギー最小条件と限界水深（Fr = 1）",
+      "summary": "流量 Q 一定の条件のもとで比エネルギー E が最小となる水深（限界水深 h_c）においてフルード数 Fr = 1 が成立すること、および長方形断面における限界水深と最小比エネルギーの公式。",
+      "canonical_latex": "\\left.\\frac{\\partial E}{\\partial h}\\right|_{Q} = 1 - \\frac{Q^2 B}{g A^3} = 1 - \\mathrm{Fr}^2 = 0 \\iff \\mathrm{Fr} = 1,\\qquad h_c = \\left(\\frac{q^2}{g}\\right)^{1/3},\\quad E_{\\min} = \\frac{3}{2}h_c",
+      "aliases_latex": [
+        "\\frac{Q^2 B}{g A^3} = 1",
+        "h_c = \\sqrt[3]{\\frac{q^2}{g}}"
+      ],
+      "keywords": [
+        "限界水深",
+        "比エネルギー最小",
+        "フルード数",
+        "限界流"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "hydraulics"
+      ]
+    },
+    {
+      "id": "eng.hyd.n05_hydraulic_jump_conjugate_depth",
+      "short_code": "HYD05",
+      "kind": "theorem_formula",
+      "title": "跳水の共役水深公式（ベランジェの式）とエネルギー損失",
+      "summary": "水平・平滑な長方形断面水路において射流から常流へ急変する跳水現象に対し、検査体積への運動量保存則と静水圧合力から導かれる跳水前後の共役水深比およびエネルギー損失の公式。",
+      "canonical_latex": "\\frac{h_2}{h_1} = \\frac{1}{2}\\left(\\sqrt{1 + 8\\mathrm{Fr}_1^2} - 1\\right),\\qquad \\Delta E = E_1 - E_2 = \\frac{(h_2 - h_1)^3}{4 h_1 h_2}",
+      "aliases_latex": [
+        "\\frac{h_2}{h_1} = \\frac{\\sqrt{1 + 8\\mathrm{Fr}_1^2} - 1}{2}"
+      ],
+      "keywords": [
+        "跳水",
+        "共役水深",
+        "ベランジェの式",
+        "運動量保存",
+        "エネルギー損失"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "hydraulics"
+      ]
+    },
+    {
+      "id": "eng.hyd.n06_uniform_flow_chezy_formula",
+      "short_code": "HYD06",
+      "kind": "theorem_formula",
+      "title": "等流のせん断応力釣合とシェジーの平均流速公式",
+      "summary": "等流状態における重力成分と壁面せん断応力の釣合および乱流抵抗則から導出される、径深と河床勾配を用いたシェジーの平均流速公式。",
+      "canonical_latex": "v = C\\sqrt{R_h I_0},\\qquad C = \\sqrt{\\frac{8g}{f}},\\quad R_h := \\frac{A}{P}",
+      "aliases_latex": [
+        "v = C\\sqrt{R I}"
+      ],
+      "keywords": [
+        "等流",
+        "シェジー公式",
+        "径深",
+        "壁面せん断応力"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "hydraulics"
+      ]
+    },
+    {
+      "id": "eng.hyd.n07_manning_formula",
+      "short_code": "HYD07",
+      "kind": "theorem_formula",
+      "title": "マニングの平均流速公式と流量公式",
+      "summary": "シェジーの流速係数 C にマニングの経験的関係式 C = (1/n) R_h^(1/6) を代入して得られる、粗度係数 n、径深 R_h、河床勾配 I_0 による開水路等流の標準的な平均流速・流量公式。",
+      "canonical_latex": "v = \\frac{1}{n} R_h^{2/3} I_0^{1/2},\\qquad Q = A v = \\frac{1}{n} A R_h^{2/3} I_0^{1/2}",
+      "aliases_latex": [
+        "v = \\frac{1}{n} R^{2/3} I^{1/2}"
+      ],
+      "keywords": [
+        "マニング公式",
+        "粗度係数",
+        "等流",
+        "平均流速"
+      ],
+      "domain_tags": [
+        "civil_engineering",
+        "hydraulics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "eng.hyd.d01_specific_energy",
+      "target_node_id": "eng.hyd.n02_specific_energy_def",
+      "route_kind": "reformulation",
+      "title": "ベルヌーイの全水頭から水路床基準の比エネルギーへの定義変換",
+      "premise_node_ids": [
+        "eng.hyd.n01_open_channel_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "水路床高を基準面 z = 0 にとる。",
+        "断面内の流速分布は一様で、静水圧分布が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "H = z + h + \\frac{v^2}{2g},\\quad Q = A v",
+          "to_latex": "E := h + \\frac{v^2}{2g} = h + \\frac{Q^2}{2g A(h)^2},\\quad E_{\\text{rect}} = h + \\frac{q^2}{2g h^2}",
+          "operation_label": "水路床基準化と連続式の代入による定義",
+          "explanation": "全水頭 H から水路床標高 z を差し引いた水路床基準のエネルギーを比エネルギー E と定義し、連続の式 v = Q/A を代入して水深 h の関数として表す。",
+          "used_node_ids": [
+            "eng.hyd.n01_open_channel_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.hyd.d02_froude_number",
+      "target_node_id": "eng.hyd.n03_froude_number_def",
+      "route_kind": "reformulation",
+      "title": "開水路の流れの慣性力と重力の比としてのフルード数の定義",
+      "premise_node_ids": [
+        "eng.hyd.n01_open_channel_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "自由表面上の微小撹乱は浅水長波の波速 √(g D_h) で伝播する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Q = A v,\\quad D_h := \\frac{A}{B},\\quad c = \\sqrt{g D_h}",
+          "to_latex": "\\mathrm{Fr} := \\frac{v}{\\sqrt{g D_h}} = \\frac{Q}{\\sqrt{g A^3 / B}}",
+          "operation_label": "流速と重力波速の無次元比の定義",
+          "explanation": "断面平均流速 v と水理水深 D_h = A/B に対する長波の伝播速度 c = √(g D_h) の比としてフルード数 Fr を定義し、Fr < 1 を常流、Fr = 1 を限界流、Fr > 1 を射流と分類する。",
+          "used_node_ids": [
+            "eng.hyd.n01_open_channel_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "eng.hyd.d03_critical_depth",
+      "target_node_id": "eng.hyd.n04_critical_depth_condition",
+      "route_kind": "deductive",
+      "title": "流量一定下での比エネルギー最小条件からの限界水深と Fr = 1 の導出",
+      "premise_node_ids": [
+        "eng.hyd.n02_specific_energy_def",
+        "eng.hyd.n03_froude_number_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "流量 Q は水深 h に対して一定である。",
+        "水深の微小変化 dh に対する断面積増分は水面幅 B を用いて dA = B dh で与えられる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "E = h + \\frac{Q^2}{2g A(h)^2}",
+          "to_latex": "\\mathrm{Fr} = 1,\\quad h_c = \\left(\\frac{q^2}{g}\\right)^{1/3},\\quad E_{\\min} = \\frac{3}{2}h_c",
+          "operation_label": "比エネルギーの停留条件からの限界流導出",
+          "explanation": "流量 Q 一定のもとで比エネルギー E(h) を水深 h で微分して 0 とおくことで限界流条件 Fr = 1 および長方形断面の限界水深 h_c と最小比エネルギー E_min を得る。",
+          "used_node_ids": [
+            "eng.hyd.n02_specific_energy_def",
+            "eng.hyd.n03_froude_number_def",
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E = h + \\frac{Q^2}{2g A(h)^2}",
+          "to_latex": "\\left.\\frac{\\partial E}{\\partial h}\\right|_{Q} = 1 - \\frac{Q^2}{g A(h)^3}\\frac{dA}{dh}",
+          "operation_label": "連鎖律を用いた水深 h による偏微分",
+          "explanation": "Q を定数として比エネルギー E を水深 h で微分し、合成関数の微分法則を A(h)^(-2) に適用する。",
+          "used_node_ids": [
+            "eng.hyd.n02_specific_energy_def",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": "diff(h + Q**2 / (2*g*A(h)**2), h)"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left.\\frac{\\partial E}{\\partial h}\\right|_{Q} = 1 - \\frac{Q^2}{g A(h)^3}\\frac{dA}{dh}",
+          "to_latex": "1 - \\frac{Q^2 B}{g A^3} = 1 - \\mathrm{Fr}^2 = 0 \\iff \\mathrm{Fr} = 1",
+          "operation_label": "幾何関係 dA/dh = B の代入と停留点条件の適用",
+          "explanation": "水面幅 B = dA/dh を代入し、極値の1階必要条件 ∂E/∂h = 0 を課すとフルード数の定義から 1 - Fr^2 = 0、すなわち Fr = 1 が得られる。",
+          "used_node_ids": [
+            "eng.hyd.n03_froude_number_def",
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "1 - \\frac{Q^2 B}{g A^3} = 1 - \\mathrm{Fr}^2 = 0 \\iff \\mathrm{Fr} = 1",
+          "to_latex": "\\mathrm{Fr} = 1,\\quad h_c = \\left(\\frac{q^2}{g}\\right)^{1/3},\\quad E_{\\min} = \\frac{3}{2}h_c",
+          "operation_label": "長方形断面における限界水深と最小比エネルギーの算出",
+          "explanation": "長方形断面（A = B h, q = Q/B）を Fr = 1 に適用して 1 - q^2/(g h_c^3) = 0 を解き、限界水深 h_c と比エネルギー式への代入から E_min = (3/2) h_c を得る。",
+          "used_node_ids": [
+            "eng.hyd.n02_specific_energy_def"
+          ],
+          "sympy_check_hint": "solve(1 - q**2/(g*h**3), h)"
+        }
+      ]
+    },
+    {
+      "id": "eng.hyd.d04_hydraulic_jump",
+      "target_node_id": "eng.hyd.n05_hydraulic_jump_conjugate_depth",
+      "route_kind": "deductive",
+      "title": "運動量保存則と静水圧分布からの跳水の共役水深公式の導出",
+      "premise_node_ids": [
+        "eng.hyd.n01_open_channel_boundary",
+        "eng.hyd.n02_specific_energy_def",
+        "eng.hyd.n03_froude_number_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "水路は水平かつ長方形断面であり、跳水区間の壁面摩擦は無視できる。",
+        "跳水前（断面1）と跳水後（断面2）の断面では静水圧分布が成り立ち、水深は異なる（h_1 ≠ h_2）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{1}{2}\\rho g h_1^2 - \\frac{1}{2}\\rho g h_2^2 = \\rho q(v_2 - v_1),\\quad q = v_1 h_1 = v_2 h_2",
+          "to_latex": "\\frac{h_2}{h_1} = \\frac{1}{2}\\left(\\sqrt{1 + 8\\mathrm{Fr}_1^2} - 1\\right),\\quad \\Delta E = \\frac{(h_2 - h_1)^3}{4 h_1 h_2}",
+          "operation_label": "検査体積の運動量保存則と静水圧差の連立求解",
+          "explanation": "単位幅あたりの静水圧合力差と運動量流束変化の釣合から水深比 h_2/h_1 に関する2次方程式を導いて解き、さらに比エネルギー差 ΔE を整理する。",
+          "used_node_ids": [
+            "eng.hyd.n01_open_channel_boundary",
+            "eng.hyd.n02_specific_energy_def",
+            "eng.hyd.n03_froude_number_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2}\\rho g h_1^2 - \\frac{1}{2}\\rho g h_2^2 = \\rho q(v_2 - v_1),\\quad q = v_1 h_1 = v_2 h_2",
+          "to_latex": "\\frac{g}{2}(h_1^2 - h_2^2) = q^2\\left(\\frac{1}{h_2} - \\frac{1}{h_1}\\right) = \\frac{q^2(h_1 - h_2)}{h_1 h_2}",
+          "operation_label": "連続式を用いた流速の消去と密度 ρ の約分",
+          "explanation": "両辺を密度 ρ で割り、v_1 = q/h_1, v_2 = q/h_2 を代入して右辺を通分整理する。",
+          "used_node_ids": [
+            "eng.hyd.n01_open_channel_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{g}{2}(h_1^2 - h_2^2) = q^2\\left(\\frac{1}{h_2} - \\frac{1}{h_1}\\right) = \\frac{q^2(h_1 - h_2)}{h_1 h_2}",
+          "to_latex": "\\left(\\frac{h_2}{h_1}\\right)^2 + \\frac{h_2}{h_1} - 2\\mathrm{Fr}_1^2 = 0\\quad \\left(\\mathrm{Fr}_1^2 = \\frac{q^2}{g h_1^3},\\; h_1 \\neq h_2\\right)",
+          "operation_label": "因子 (h_1 - h_2) の除算とフルード数による無次元化",
+          "explanation": "h_1 ≠ h_2 により両辺を (h_1 - h_2) で割り、さらに h_1^2 と g/2 で整理して上流側フルード数 Fr_1 を導入すると、水深比 h_2/h_1 に関する2次方程式が得られる。",
+          "used_node_ids": [
+            "eng.hyd.n03_froude_number_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{h_2}{h_1}\\right)^2 + \\frac{h_2}{h_1} - 2\\mathrm{Fr}_1^2 = 0\\quad \\left(\\mathrm{Fr}_1^2 = \\frac{q^2}{g h_1^3},\\; h_1 \\neq h_2\\right)",
+          "to_latex": "\\frac{h_2}{h_1} = \\frac{1}{2}\\left(\\sqrt{1 + 8\\mathrm{Fr}_1^2} - 1\\right),\\quad \\Delta E = \\frac{(h_2 - h_1)^3}{4 h_1 h_2}",
+          "operation_label": "解の公式による正根の選択とエネルギー損失の計算",
+          "explanation": "h_2/h_1 > 0 の解を2次方程式の解の公式から選びベランジェの式を得る。さらに運動量関係から q^2 = (g/2) h_1 h_2 (h_1 + h_2) を用いて ΔE = E_1 - E_2 を因数分解するとエネルギー損失式が導かれる。",
+          "used_node_ids": [
+            "eng.hyd.n02_specific_energy_def"
+          ],
+          "sympy_check_hint": "solve(x**2 + x - 2*Fr**2, x)"
+        }
+      ]
+    },
+    {
+      "id": "eng.hyd.d05_chezy_formula",
+      "target_node_id": "eng.hyd.n06_uniform_flow_chezy_formula",
+      "route_kind": "deductive",
+      "title": "等流の力の釣合と乱流抵抗則からのシェジー公式の導出",
+      "premise_node_ids": [
+        "eng.hyd.n01_open_channel_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "流れは等流（水深・断面積・流速が流下方向に一様）であり、慣性項はゼロである。",
+        "河床勾配は緩やかであり、sinθ ≈ tanθ = I_0 と近似できる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\tau_0 P \\Delta x = \\rho g A \\Delta x \\sin\\theta \\approx \\rho g A \\Delta x I_0,\\quad \\tau_0 = \\frac{f}{8}\\rho v^2",
+          "to_latex": "v = C\\sqrt{R_h I_0}\\quad \\left(C := \\sqrt{\\frac{8g}{f}},\\; R_h := \\frac{A}{P}\\right)",
+          "operation_label": "壁面せん断応力の釣合と摩擦損失係数の整理",
+          "explanation": "微小水柱に働く重力の流下方向成分と壁面せん断力の釣合式に、乱流の壁面せん断応力式 τ_0 = (f/8)ρ v^2 を代入し、流速 v について解くことでシェジー公式を得る。",
+          "used_node_ids": [
+            "eng.hyd.n01_open_channel_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tau_0 P \\Delta x = \\rho g A \\Delta x \\sin\\theta \\approx \\rho g A \\Delta x I_0,\\quad \\tau_0 = \\frac{f}{8}\\rho v^2",
+          "to_latex": "\\frac{f}{8}\\rho v^2 = \\rho g R_h I_0\\quad \\left(R_h := \\frac{A}{P}\\right)",
+          "operation_label": "径深 R_h の導入とせん断応力式の代入",
+          "explanation": "釣合式の両辺を潤辺 P と区間長 Δx で割って径深 R_h = A/P を導入し、τ_0 に乱流抵抗則を代入する。",
+          "used_node_ids": [
+            "eng.hyd.n01_open_channel_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{f}{8}\\rho v^2 = \\rho g R_h I_0\\quad \\left(R_h := \\frac{A}{P}\\right)",
+          "to_latex": "v = C\\sqrt{R_h I_0}\\quad \\left(C := \\sqrt{\\frac{8g}{f}},\\; R_h := \\frac{A}{P}\\right)",
+          "operation_label": "流速 v についての求解とシェジー係数 C の定義",
+          "explanation": "両辺を ρ で割り v について解いた上で、√(8g/f) をシェジーの流速係数 C とおいて平均流速公式を得る。",
+          "used_node_ids": [
+            "eng.hyd.n01_open_channel_boundary"
+          ],
+          "sympy_check_hint": "solve((f/8)*rho*v**2 - rho*g*Rh*I0, v)"
+        }
+      ]
+    },
+    {
+      "id": "eng.hyd.d06_manning_formula",
+      "target_node_id": "eng.hyd.n07_manning_formula",
+      "route_kind": "deductive",
+      "title": "シェジー公式とマニングの粗度係数関係からのマニング公式の導出",
+      "premise_node_ids": [
+        "eng.hyd.n06_uniform_flow_chezy_formula",
+        "eng.hyd.n01_open_channel_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "SI単位系（長さ m、時間 s）において、シェジー係数 C は粗度係数 n と径深 R_h により C = (1/n) R_h^(1/6) と表される（完全粗面乱流の経験則）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "v = C\\sqrt{R_h I_0},\\quad C = \\frac{1}{n} R_h^{1/6}",
+          "to_latex": "v = \\frac{1}{n} R_h^{2/3} I_0^{1/2},\\quad Q = A v = \\frac{1}{n} A R_h^{2/3} I_0^{1/2}",
+          "operation_label": "シェジー係数の経験則代入と連続式の適用",
+          "explanation": "シェジー公式の係数 C にマニングの経験関係 C = (1/n) R_h^(1/6) を代入してべき乗をまとめ、さらに連続の式 Q = A v を掛けて流量公式を導く。",
+          "used_node_ids": [
+            "eng.hyd.n01_open_channel_boundary",
+            "eng.hyd.n06_uniform_flow_chezy_formula"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v = C\\sqrt{R_h I_0},\\quad C = \\frac{1}{n} R_h^{1/6}",
+          "to_latex": "v = \\frac{1}{n} R_h^{1/6} R_h^{1/2} I_0^{1/2} = \\frac{1}{n} R_h^{2/3} I_0^{1/2}",
+          "operation_label": "C の代入と径深 R_h の指数法則による整理",
+          "explanation": "R_h^(1/6) と R_h^(1/2) の積を指数法則 (1/6 + 1/2 = 2/3) により整理し、マニングの平均流速公式を得る。",
+          "used_node_ids": [
+            "eng.hyd.n06_uniform_flow_chezy_formula"
+          ],
+          "sympy_check_hint": "Rh**(Rational(1,6)) * Rh**(Rational(1,2)) - Rh**(Rational(2,3))"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v = \\frac{1}{n} R_h^{1/6} R_h^{1/2} I_0^{1/2} = \\frac{1}{n} R_h^{2/3} I_0^{1/2}",
+          "to_latex": "v = \\frac{1}{n} R_h^{2/3} I_0^{1/2},\\quad Q = A v = \\frac{1}{n} A R_h^{2/3} I_0^{1/2}",
+          "operation_label": "連続の式 Q = A v による流量公式への変換",
+          "explanation": "得られた平均流速 v に流積 A を乗じることで、開水路設計に用いられるマニングの流量公式を得る。",
+          "used_node_ids": [
+            "eng.hyd.n01_open_channel_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
