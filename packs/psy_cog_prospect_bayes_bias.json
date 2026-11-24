@@ -1,0 +1,491 @@
+{
+  "pack_meta": {
+    "pack_id": "psy.cog.prospect_bayes_bias",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "cognitive_science",
+    "title": "認知科学・行動経済学：プロスペクト理論・ベイズ脳仮説とヒューリスティクス",
+    "language": "ja",
+    "description": "期待効用理論の限界から価値関数（損失回避・感応度逓減）、確率加重関数、二重過程理論（System 1/2）、ベイズ更新による予測符号化モデルを構造化する。"
+  },
+  "nodes": [
+    {
+      "id": "psy.cog.n01_expected_utility_boundary",
+      "short_code": "COG01",
+      "kind": "math_boundary",
+      "title": "期待効用理論と独立性公理・アレのパラドックス境界",
+      "summary": "意思決定論におけるフォン・ノイマン＝モルゲンシュテルン期待効用関数と、イェンセンの不等式によるリスク回避の定式化、および確実性効果によって独立性公理が破綻する経験的境界。",
+      "canonical_latex": "EU(L) = \\sum_{i} p_i u(w + x_i),\\quad u''(w) < 0 \\implies u\\big(\\mathbb{E}[W]\\big) > \\mathbb{E}[u(W)]",
+      "aliases_latex": [
+        "EU(L) = \\mathbb{E}_L[u(w+X)]"
+      ],
+      "keywords": [
+        "期待効用理論",
+        "リスク回避",
+        "独立性公理",
+        "アレのパラドックス",
+        "確実性効果"
+      ],
+      "domain_tags": [
+        "cognitive_science",
+        "behavioral_economics",
+        "decision_theory"
+      ]
+    },
+    {
+      "id": "psy.cog.n02_prospect_value_function",
+      "short_code": "COG02",
+      "kind": "definition",
+      "title": "プロスペクト理論の価値関数（参照点依存・損失回避・感応度逓減）",
+      "summary": "富の絶対水準ではなく参照点からの変化量に対して定義され、利得領域で凹（リスク回避）、損失領域で凸（リスク追求）、かつ原点で損失側が急峻（損失回避係数）となる非対称S字型の価値関数。",
+      "canonical_latex": "v(x) = \\begin{cases} x^\\alpha & (x \\ge 0) \\\\ -\\lambda (-x)^\\beta & (x < 0) \\end{cases}\\quad (0 < \\alpha, \\beta < 1,\\; \\lambda > 1)$",
+      "aliases_latex": [
+        "v(x) = x^\\alpha\\;(x\\ge 0),\\; -\\lambda(-x)^\\beta\\;(x<0)"
+      ],
+      "keywords": [
+        "プロスペクト理論",
+        "価値関数",
+        "参照点依存",
+        "損失回避",
+        "感応度逓減"
+      ],
+      "domain_tags": [
+        "cognitive_science",
+        "behavioral_economics"
+      ]
+    },
+    {
+      "id": "psy.cog.n03_probability_weighting_function",
+      "short_code": "COG03",
+      "kind": "definition",
+      "title": "確率加重関数（非線形確率歪みと過大・過小評価）",
+      "summary": "客観的確率を主観的な意思決定ウェイトへ写像する逆S字型の単調増加関数であり、低確率の過大評価（可能性効果）と中高確率の過小評価（確実性効果）を表現する。",
+      "canonical_latex": "w(p) = \\frac{p^\\gamma}{\\big(p^\\gamma + (1-p)^\\gamma\\big)^{1/\\gamma}}\\quad (0 < \\gamma < 1,\\; w(0)=0,\\; w(1)=1)$",
+      "aliases_latex": [
+        "\\pi_i = w(p_i)"
+      ],
+      "keywords": [
+        "確率加重関数",
+        "累積プロスペクト理論",
+        "可能性効果",
+        "確実性効果"
+      ],
+      "domain_tags": [
+        "cognitive_science",
+        "behavioral_economics"
+      ]
+    },
+    {
+      "id": "psy.cog.n04_cumulative_prospect_valuation",
+      "short_code": "COG04",
+      "kind": "theorem_formula",
+      "title": "プロスペクト理論の主観的価値評価式とリスク選好の4重パターン",
+      "summary": "価値関数と確率加重関数の積和によってくじの主観的価値を評価し、確率の大小と利得・損失の符号の組み合わせによってリスク追求とリスク回避が反転する4重パターンを導く関係式。",
+      "canonical_latex": "V(L) = \\sum_{i} \\pi_i v(x_i),\\quad V(x, p; 0, 1-p) = w(p)v(x) \\implies \\begin{cases} w(p)v(x) > v(px) & (x > 0,\\; p \\text{ small}) \\\\ w(p)v(x) < v(px) & (x > 0,\\; p \\text{ large}) \\end{cases}$",
+      "aliases_latex": [
+        "V(L) = \\sum_i w(p_i) v(x_i)"
+      ],
+      "keywords": [
+        "リスク選好の4重パターン",
+        "累積プロスペクト理論",
+        "確実性等価",
+        "意思決定ウェイト"
+      ],
+      "domain_tags": [
+        "cognitive_science",
+        "behavioral_economics"
+      ]
+    },
+    {
+      "id": "psy.cog.n05_dual_process_heuristics",
+      "short_code": "COG05",
+      "kind": "definition",
+      "title": "二重過程理論（System 1 / System 2）と認知コスト最適化ヒューリスティクス",
+      "summary": "高速・自動的・低負荷な直観的処理（System 1）と、低速・熟慮的・高負荷な分析的処理（System 2）の二重過程を、予測誤差と認知努力コストのトレードオフ最小化として定式化した限定合理性モデル。",
+      "canonical_latex": "a_{\\text{heur}} = \\arg\\min_{a \\in A} \\Big(\\mathbb{E}[\\text{Loss}(a)] + \\eta \\cdot \\text{Effort}(a)\\Big),\\quad \\text{Effort}(\\text{S1}) \\ll \\text{Effort}(\\text{S2})",
+      "aliases_latex": [
+        "C_{\\text{total}} = C_{\\text{S1}} + C_{\\text{S2}}"
+      ],
+      "keywords": [
+        "二重過程理論",
+        "System 1",
+        "System 2",
+        "ヒューリスティクス",
+        "認知バイアス",
+        "限定合理性"
+      ],
+      "domain_tags": [
+        "cognitive_science",
+        "psychology"
+      ]
+    },
+    {
+      "id": "psy.cog.n06_bayesian_brain_posterior",
+      "short_code": "COG06",
+      "kind": "theorem_formula",
+      "title": "ベイズ脳仮説における事後信念更新と精度重み付け統合",
+      "summary": "脳が事前分布と感覚尤度をベイズの定理で統合して潜在状態を推論するモデルにおいて、ガウス分布の仮定下で事後平均が事前期待と感覚入力の精度（分散の逆数）による重み付け平均となる定理。",
+      "canonical_latex": "\\mu_{\\text{post}} = \\frac{\\pi_p \\mu_p + \\pi_y y}{\\pi_p + \\pi_y} = \\mu_p + \\frac{\\pi_y}{\\pi_p + \\pi_y}(y - \\mu_p)\\quad \\left(\\pi_p = \\sigma_p^{-2},\\; \\pi_y = \\sigma_y^{-2}\\right)$",
+      "aliases_latex": [
+        "\\mu_{\\text{post}} = \\mu_p + K(y - \\mu_p)"
+      ],
+      "keywords": [
+        "ベイズ脳仮説",
+        "事後信念",
+        "精度重み付け",
+        "予測誤差",
+        "カルマンゲイン"
+      ],
+      "domain_tags": [
+        "cognitive_science",
+        "computational_neuroscience"
+      ]
+    },
+    {
+      "id": "psy.cog.n07_predictive_coding_free_energy",
+      "short_code": "COG07",
+      "kind": "theorem_formula",
+      "title": "予測符号化と変分自由エネルギー最小化（予測誤差の階層的更新則）",
+      "summary": "イェンセンの不等式によってサプライズの上界となる変分自由エネルギーを定義し、その勾配降下法によって内部表現が感覚予測誤差と事前予測誤差の精度重み付け和で更新される予測符号化の基本定理。",
+      "canonical_latex": "F(q,y) = D_{\\mathrm{KL}}\\big(q(s)\\,\\|\\,p(s\\mid y)\\big) - \\ln p(y) \\ge -\\ln p(y),\\quad \\dot{\\mu} = -\\kappa\\frac{\\partial F}{\\partial \\mu} = \\kappa\\big(\\pi_y g'(\\mu)\\varepsilon_y - \\pi_p \\varepsilon_p\\big)$",
+      "aliases_latex": [
+        "F = \\mathbb{E}_q[\\ln q(s) - \\ln p(y,s)]"
+      ],
+      "keywords": [
+        "予測符号化",
+        "自由エネルギー原理",
+        "変分自由エネルギー",
+        "KLダイバージェンス",
+        "予測誤差"
+      ],
+      "domain_tags": [
+        "cognitive_science",
+        "computational_neuroscience"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_cog02_value_function",
+      "target_node_id": "psy.cog.n02_prospect_value_function",
+      "route_kind": "reformulation",
+      "title": "期待効用関数から参照点依存・非対称な価値関数への再定式化",
+      "premise_node_ids": [
+        "psy.cog.n01_expected_utility_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "意思決定者は最終資産ではなく参照点からの利得・損失の変化量 x を評価する",
+        "感応度逓減（0 < α, β < 1）および損失回避（λ > 1）が経験的に成立する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "EU(L) = \\sum_{i} p_i u(w + x_i),\\quad u''(w) < 0 \\implies u\\big(\\mathbb{E}[W]\\big) > \\mathbb{E}[u(W)]",
+          "to_latex": "v(x) = \\begin{cases} x^\\alpha & (x \\ge 0) \\\\ -\\lambda (-x)^\\beta & (x < 0) \\end{cases}\\quad (0 < \\alpha, \\beta < 1,\\; \\lambda > 1)$",
+          "operation_label": "参照点変換とべき型価値関数の導入",
+          "explanation": "絶対資産 w+x_i の単調凹関数 u から、参照点（x=0）を境に利得側で凹（感応度逓減）、損失側で凸かつ急峻（損失回避係数 λ>1）な価値関数 v(x) へと再定義する。",
+          "used_node_ids": [
+            "psy.cog.n01_expected_utility_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_cog03_prob_weighting",
+      "target_node_id": "psy.cog.n03_probability_weighting_function",
+      "route_kind": "reformulation",
+      "title": "客観的確率測度から非線形確率加重関数への拡張定義",
+      "premise_node_ids": [
+        "psy.cog.n01_expected_utility_boundary",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "意思決定における確率の評価は線形ではなく、0と1の境界付近で感応度が高い逆S字型の歪みを持つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_i \\in [0, 1],\\quad \\sum_{i} p_i = 1",
+          "to_latex": "w(p) = \\frac{p^\\gamma}{\\big(p^\\gamma + (1-p)^\\gamma\\big)^{1/\\gamma}}\\quad (0 < \\gamma < 1,\\; w(0)=0,\\; w(1)=1)$",
+          "operation_label": "確率単体上の非線形加重写像の定義",
+          "explanation": "コルモゴロフ確率公理に基づく客観確率 p に対し、パラメータ γ∈(0,1) を持つ逆S字型の確率加重関数 w(p) を導入し、低確率の過大評価と高確率の過小評価を数理的に表現する。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms",
+            "psy.cog.n01_expected_utility_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_cog04_prospect_fourfold",
+      "target_node_id": "psy.cog.n04_cumulative_prospect_valuation",
+      "route_kind": "deductive",
+      "title": "価値関数と確率加重関数からのリスク選好4重パターンの導出",
+      "premise_node_ids": [
+        "psy.cog.n02_prospect_value_function",
+        "psy.cog.n03_probability_weighting_function"
+      ],
+      "required_math_node_ids": [
+        "math.alg.finite_sum_linearity"
+      ],
+      "assumptions": [
+        "単純プロスペクト (x, p; 0, 1-p) において参照点 v(0)=0 とする",
+        "小確率では w(p) > p^α が成立し、大確率では w(p) < p^α が成立する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V(L) = \\sum_{i} \\pi_i v(x_i),\\quad \\pi_i = w(p_i) \\text{ (simple prospect)}",
+          "to_latex": "V(x, p; 0, 1-p) = w(p)v(x) \\implies \\begin{cases} w(p)v(x) > v(px) & (x > 0,\\; p \\text{ small}) \\\\ w(p)v(x) < v(px) & (x > 0,\\; p \\text{ large}) \\end{cases}$",
+          "operation_label": "単純プロスペクトの期待値比較による選好反転の導出",
+          "explanation": "主観的価値評価式を2値くじに適用し、確率加重 w(p) と価値関数のべき乗則 p^α の大小関係から、低確率利得でのリスク追求と高確率利得でのリスク回避（および損失側での対称な反転）を導く。",
+          "used_node_ids": [
+            "math.alg.finite_sum_linearity",
+            "psy.cog.n02_prospect_value_function",
+            "psy.cog.n03_probability_weighting_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_single_prospect",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(L) = \\sum_{i} \\pi_i v(x_i),\\quad \\pi_i = w(p_i) \\text{ (simple prospect)}",
+          "to_latex": "V(x, p; 0, 1-p) = w(p)v(x) + w(1-p)v(0) = w(p)v(x)\\quad (v(0)=0)$",
+          "operation_label": "2値プロスペクトへの展開と参照点値の消去",
+          "explanation": "結果が x（確率 p）または 0（確率 1-p）の単純プロスペクトについて線形和を展開し、v(0)=0 を代入して単項式を得る。",
+          "used_node_ids": [
+            "math.alg.finite_sum_linearity",
+            "psy.cog.n02_prospect_value_function",
+            "psy.cog.n03_probability_weighting_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_small_prob_gain",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "V(x, p; 0, 1-p) = w(p)v(x) + w(1-p)v(0) = w(p)v(x)\\quad (v(0)=0)$",
+          "to_latex": "\\frac{w(p)}{p^\\alpha} > 1 \\implies w(p)x^\\alpha > (px)^\\alpha = v(px)\\quad (x > 0,\\; p \\ll 1)$",
+          "operation_label": "べき型価値関数と期待値評価の比較",
+          "explanation": "利得 x>0 の期待値 px の主観的価値 v(px)=p^α x^α と比較すると、小確率で w(p)>p^α が成り立つ領域ではくじの価値が確実な期待値を上回り、リスク追求が生じる。",
+          "used_node_ids": [
+            "psy.cog.n02_prospect_value_function",
+            "psy.cog.n03_probability_weighting_function"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_fourfold_summary",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{w(p)}{p^\\alpha} > 1 \\implies w(p)x^\\alpha > (px)^\\alpha = v(px)\\quad (x > 0,\\; p \\ll 1)$",
+          "to_latex": "V(x, p; 0, 1-p) = w(p)v(x) \\implies \\begin{cases} w(p)v(x) > v(px) & (x > 0,\\; p \\text{ small}) \\\\ w(p)v(x) < v(px) & (x > 0,\\; p \\text{ large}) \\end{cases}$",
+          "operation_label": "大確率領域での不等号反転と4重パターンの確立",
+          "explanation": "大確率では w(p)<p^α となるため不等号が逆転してリスク回避となり、損失領域（x<0）では v(x)<0 によりさらに符号が反転して4重パターンが完成する。",
+          "used_node_ids": [
+            "psy.cog.n02_prospect_value_function",
+            "psy.cog.n03_probability_weighting_function"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_cog05_dual_process",
+      "target_node_id": "psy.cog.n05_dual_process_heuristics",
+      "route_kind": "alternative_perspective",
+      "title": "規範的期待効用最大化から認知コスト制約下の二重過程モデルへの拡張",
+      "premise_node_ids": [
+        "psy.cog.n01_expected_utility_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "認知資源（時間・ワーキングメモリ）は有限であり、計算努力 Effort(a) にはコスト η>0 が伴う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "a^* = \\arg\\max_{a \\in A} \\sum_{i} p_i u(w + x_i(a))",
+          "to_latex": "a_{\\text{heur}} = \\arg\\min_{a \\in A} \\Big(\\mathbb{E}[\\text{Loss}(a)] + \\eta \\cdot \\text{Effort}(a)\\Big),\\quad \\text{Effort}(\\text{S1}) \\ll \\text{Effort}(\\text{S2})",
+          "operation_label": "認知努力ペナルティ項の付加による限定合理的定式化",
+          "explanation": "計算コストをゼロと仮定する規範的期待効用最大化に対し、意思決定に伴う認知努力 Effort(a) のペナルティ項を加えることで、低コストな System 1（ヒューリスティクス）が選択される条件を定義する。",
+          "used_node_ids": [
+            "psy.cog.n01_expected_utility_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_cog06_bayesian_brain",
+      "target_node_id": "psy.cog.n06_bayesian_brain_posterior",
+      "route_kind": "deductive",
+      "title": "ベイズの定理とガウス分布仮定からの精度重み付け事後更新の導出",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e03_stationary_point_condition"
+      ],
+      "assumptions": [
+        "潜在状態 s の事前分布と感覚観測 y の尤度がともに1次元ガウス分布に従う",
+        "精度パラメータ π_p, π_y > 0 は定数である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p(s \\mid y) = \\frac{p(y \\mid s)p(s)}{p(y)},\\quad s \\sim \\mathcal{N}(\\mu_p, \\pi_p^{-1}),\\; y\\mid s \\sim \\mathcal{N}(s, \\pi_y^{-1})",
+          "to_latex": "\\mu_{\\text{post}} = \\frac{\\pi_p \\mu_p + \\pi_y y}{\\pi_p + \\pi_y} = \\mu_p + \\frac{\\pi_y}{\\pi_p + \\pi_y}(y - \\mu_p)\\quad \\left(\\pi_p = \\sigma_p^{-2},\\; \\pi_y = \\sigma_y^{-2}\\right)$",
+          "operation_label": "対数事後確率の極大化による精度重み付け平均の導出",
+          "explanation": "ガウス事前分布とガウス尤度の積の対数をとり、停留点条件を解くことで、事後平均（MAP推定値）が事前期待と予測誤差の精度比による線形結合になることを示す。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": "Eq(pi_y*(y - mu_post) - pi_p*(mu_post - mu_p), 0)"
+        },
+        {
+          "step_id": "s2_log_posterior",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(s \\mid y) = \\frac{p(y \\mid s)p(s)}{p(y)},\\quad s \\sim \\mathcal{N}(\\mu_p, \\pi_p^{-1}),\\; y\\mid s \\sim \\mathcal{N}(s, \\pi_y^{-1})",
+          "to_latex": "\\ln p(s \\mid y) = -\\frac{\\pi_y}{2}(y - s)^2 - \\frac{\\pi_p}{2}(s - \\mu_p)^2 + C",
+          "operation_label": "ガウス密度関数の代入と対数事後確率の展開",
+          "explanation": "正規分布の確率密度関数をベイズの定理に代入し、s に依存しない正規化定数を C にまとめて対数をとる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_stationary_eq",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln p(s \\mid y) = -\\frac{\\pi_y}{2}(y - s)^2 - \\frac{\\pi_p}{2}(s - \\mu_p)^2 + C",
+          "to_latex": "\\left.\\frac{\\partial \\ln p(s \\mid y)}{\\partial s}\\right|_{s=\\mu_{\\text{post}}} = \\pi_y(y - \\mu_{\\text{post}}) - \\pi_p(\\mu_{\\text{post}} - \\mu_p) = 0",
+          "operation_label": "s に関する1階微分と停留点条件の適用",
+          "explanation": "対数事後確率は s に関する厳密な凹2次関数であるため、1階導関数を0とおく停留点条件により一意の大域最大値 μ_post が決まる。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": "diff(-pi_y/2*(y-s)**2 - pi_p/2*(s-mu_p)**2, s)"
+        },
+        {
+          "step_id": "s4_solve_mu_post",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left.\\frac{\\partial \\ln p(s \\mid y)}{\\partial s}\\right|_{s=\\mu_{\\text{post}}} = \\pi_y(y - \\mu_{\\text{post}}) - \\pi_p(\\mu_{\\text{post}} - \\mu_p) = 0",
+          "to_latex": "\\mu_{\\text{post}} = \\frac{\\pi_p \\mu_p + \\pi_y y}{\\pi_p + \\pi_y} = \\mu_p + \\frac{\\pi_y}{\\pi_p + \\pi_y}(y - \\mu_p)\\quad \\left(\\pi_p = \\sigma_p^{-2},\\; \\pi_y = \\sigma_y^{-2}\\right)$",
+          "operation_label": "線形方程式の求解と予測誤差形式への整理",
+          "explanation": "μ_post について解き、事前平均 μ_p と予測誤差 (y - μ_p) の精度重み付け和の形へ整理する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "solve(pi_y*(y - mu_post) - pi_p*(mu_post - mu_p), mu_post)"
+        }
+      ]
+    },
+    {
+      "id": "drv_cog07_predictive_coding",
+      "target_node_id": "psy.cog.n07_predictive_coding_free_energy",
+      "route_kind": "deductive",
+      "title": "イェンセンの不等式による変分自由エネルギー上界と予測誤差更新則の導出",
+      "premise_node_ids": [
+        "psy.cog.n06_bayesian_brain_posterior",
+        "eng.ml3.n05_jensen_inequality_concave"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "変分事後分布 q(s) は平均 μ まわりに集中したガウス分布（ラプラス近似）をとる",
+        "生成モデル y = g(s) + ε_y, s = μ_p + ε_p において誤差は独立なガウス雑音に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-\\ln p(y) = -\\ln \\int q(s)\\frac{p(y,s)}{q(s)}\\,ds",
+          "to_latex": "F(q,y) = D_{\\mathrm{KL}}\\big(q(s)\\,\\|\\,p(s\\mid y)\\big) - \\ln p(y) \\ge -\\ln p(y),\\quad \\dot{\\mu} = -\\kappa\\frac{\\partial F}{\\partial \\mu} = \\kappa\\big(\\pi_y g'(\\mu)\\varepsilon_y - \\pi_p \\varepsilon_p\\big)$",
+          "operation_label": "変分自由エネルギーの上界評価と勾配降下更新則の導出",
+          "explanation": "対数関数の凹性に対するイェンセンの不等式から変分自由エネルギー F を導き、KLダイバージェンス分解とラプラス近似下の勾配降下法によって予測誤差に基づく状態更新則を得る。",
+          "used_node_ids": [
+            "eng.ml3.n05_jensen_inequality_concave",
+            "math.calc.m01_chain_rule",
+            "psy.cog.n06_bayesian_brain_posterior"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_jensen_bound",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\ln p(y) = -\\ln \\int q(s)\\frac{p(y,s)}{q(s)}\\,ds",
+          "to_latex": "-\\ln p(y) \\le -\\int q(s)\\ln\\frac{p(y,s)}{q(s)}\\,ds =: F(q,y)$",
+          "operation_label": "凹関数（対数）へのイェンセンの不等式の適用",
+          "explanation": "周辺尤度 p(y) の積分に認識分布 q(s) を導入し、-ln の凸性（ln の凹性）にイェンセンの不等式を適用して変分自由エネルギー F(q,y) による上界を得る。",
+          "used_node_ids": [
+            "eng.ml3.n05_jensen_inequality_concave"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_kl_decomposition",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\ln p(y) \\le -\\int q(s)\\ln\\frac{p(y,s)}{q(s)}\\,ds =: F(q,y)$",
+          "to_latex": "F(q,y) = \\int q(s)\\ln\\frac{q(s)}{p(s\\mid y)p(y)}\\,ds = D_{\\mathrm{KL}}\\big(q(s)\\,\\|\\,p(s\\mid y)\\big) - \\ln p(y)$",
+          "operation_label": "同時分布の条件付き分解とKLダイバージェンス表現",
+          "explanation": "p(y,s) = p(s|y)p(y) を代入して積分を分離し、F(q,y) が真の事後分布とのKLダイバージェンスとサプライズの和になることを示す。",
+          "used_node_ids": [
+            "psy.cog.n06_bayesian_brain_posterior"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_prediction_error_dynamics",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F(q,y) = \\int q(s)\\ln\\frac{q(s)}{p(s\\mid y)p(y)}\\,ds = D_{\\mathrm{KL}}\\big(q(s)\\,\\|\\,p(s\\mid y)\\big) - \\ln p(y)$",
+          "to_latex": "F(q,y) = D_{\\mathrm{KL}}\\big(q(s)\\,\\|\\,p(s\\mid y)\\big) - \\ln p(y) \\ge -\\ln p(y),\\quad \\dot{\\mu} = -\\kappa\\frac{\\partial F}{\\partial \\mu} = \\kappa\\big(\\pi_y g'(\\mu)\\varepsilon_y - \\pi_p \\varepsilon_p\\big)$",
+          "operation_label": "ラプラス近似と連鎖律による予測誤差勾配流の導出",
+          "explanation": "KL非負性から上界を確認した上で、ガウス生成モデルの対数同時確率を平均 μ で連鎖律により偏微分し、感覚予測誤差 ε_y = y - g(μ) と事前誤差 ε_p = μ - μ_p による勾配降下則を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "psy.cog.n06_bayesian_brain_posterior"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
