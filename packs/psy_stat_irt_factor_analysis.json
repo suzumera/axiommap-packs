@@ -1,0 +1,623 @@
+{
+  "pack_meta": {
+    "pack_id": "psy.stat.irt_factor_analysis",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "psychology",
+    "title": "計量心理学：古典的テスト理論・因子分析と項目反応理論（IRT・ラッシュモデル）",
+    "language": "ja",
+    "description": "真値と誤差の分散分解（信頼性係数）、潜在因子モデルと因子負荷量、ロジスティック型項目反応関数（識別力・困難度）を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "psy.irt.n01_ctt_measurement_boundary",
+      "short_code": "IRT01",
+      "kind": "math_boundary",
+      "title": "古典的テスト理論と潜在特性測定の基礎境界",
+      "summary": "観測得点の加法誤差モデル（真値と誤差の無相関性）および潜在特性に基づく項目反応の局所独立性・単調性の確率的基礎を与える境界。",
+      "canonical_latex": "X = T + E,\\quad \\mathbb{E}[E]=0,\\quad \\operatorname{Cov}(T,E)=0,\\quad P(\\mathbf{U}=\\mathbf{u}\\mid\\theta)=\\prod_{j=1}^{J} P_j(\\theta)^{u_j}(1-P_j(\\theta))^{1-u_j}",
+      "aliases_latex": [
+        "X_i = T_i + E_i,\\quad \\mathbb{E}[E_i\\mid T_i]=0",
+        "P(U_1=u_1,\\dots,U_J=u_J\\mid\\theta)=\\prod_{j=1}^{J} P(U_j=u_j\\mid\\theta)"
+      ],
+      "keywords": [
+        "古典的テスト理論",
+        "真値",
+        "測定誤差",
+        "局所独立性",
+        "潜在特性"
+      ],
+      "domain_tags": [
+        "psychology",
+        "psychometrics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "psy.irt.n02_reliability_variance_decomp",
+      "short_code": "IRT02",
+      "kind": "theorem_formula",
+      "title": "観測得点の分散分解と信頼性係数",
+      "summary": "真値と誤差の無相関性から観測得点の分散が真値分散と誤差分散の和に分解されることを導き、信頼性係数を定式化する。",
+      "canonical_latex": "\\sigma_X^2 = \\sigma_T^2 + \\sigma_E^2,\\qquad \\rho_{XX'} := \\frac{\\sigma_T^2}{\\sigma_X^2} = 1 - \\frac{\\sigma_E^2}{\\sigma_X^2}",
+      "aliases_latex": [
+        "\\operatorname{Var}(X) = \\operatorname{Var}(T) + \\operatorname{Var}(E),\\quad \\rho_{XX'} = \\frac{\\operatorname{Var}(T)}{\\operatorname{Var}(X)}"
+      ],
+      "keywords": [
+        "信頼性係数",
+        "分散分解",
+        "真値分散",
+        "誤差分散"
+      ],
+      "domain_tags": [
+        "psychology",
+        "psychometrics"
+      ]
+    },
+    {
+      "id": "psy.irt.n03_parallel_test_correlation",
+      "short_code": "IRT03",
+      "kind": "theorem_formula",
+      "title": "平行テストの相関係数と信頼性係数の等価性",
+      "summary": "同一の真値と等分散・無相関の誤差を持つ2つの平行テスト間のピアソン相関係数が信頼性係数に一致することを示す。",
+      "canonical_latex": "X_1 = T + E_1,\\; X_2 = T + E_2 \\implies \\operatorname{Corr}(X_1, X_2) = \\frac{\\sigma_T^2}{\\sigma_X^2} = \\rho_{XX'}",
+      "aliases_latex": [
+        "\\rho_{X_1 X_2} = \\frac{\\operatorname{Cov}(X_1, X_2)}{\\sigma_{X_1}\\sigma_{X_2}} = \\rho_{XX'}"
+      ],
+      "keywords": [
+        "平行テスト",
+        "相関係数",
+        "信頼性係数",
+        "古典的テスト理論"
+      ],
+      "domain_tags": [
+        "psychology",
+        "psychometrics"
+      ]
+    },
+    {
+      "id": "psy.irt.n04_factor_analysis_model_def",
+      "short_code": "IRT04",
+      "kind": "definition",
+      "title": "線形潜在因子モデルと因子負荷量の定義",
+      "summary": "複数の観測変数を少数の潜在共通因子と独自因子の線形結合として表現する因子分析モデルと因子負荷量行列を定義する。",
+      "canonical_latex": "\\mathbf{x} - \\boldsymbol{\\mu} = \\Lambda \\mathbf{f} + \\boldsymbol{\\varepsilon},\\quad \\mathbb{E}[\\mathbf{f}] = \\mathbf{0},\\; \\mathbb{E}[\\boldsymbol{\\varepsilon}] = \\mathbf{0},\\; \\operatorname{Cov}(\\mathbf{f},\\boldsymbol{\\varepsilon}) = O,\\; \\operatorname{Cov}(\\boldsymbol{\\varepsilon}) = \\Psi = \\operatorname{diag}(\\psi_1,\\dots,\\psi_p)",
+      "aliases_latex": [
+        "x_i - \\mu_i = \\sum_{m=1}^{k} \\lambda_{im} f_m + \\varepsilon_i"
+      ],
+      "keywords": [
+        "因子分析",
+        "潜在因子",
+        "因子負荷量",
+        "独自因子"
+      ],
+      "domain_tags": [
+        "psychology",
+        "psychometrics",
+        "multivariate_statistics"
+      ]
+    },
+    {
+      "id": "psy.irt.n05_covariance_communality_decomp",
+      "short_code": "IRT05",
+      "kind": "theorem_formula",
+      "title": "因子分析の基本方程式と共通性の分散分解",
+      "summary": "因子モデルから共分散行列の分解式を導出し、直交因子モデルにおける各変数の分散の共通性と独自性への分解を示す。",
+      "canonical_latex": "\\Sigma = \\Lambda \\Phi \\Lambda^\\top + \\Psi,\\qquad \\Phi = I_k \\implies \\operatorname{Var}(x_i) = h_i^2 + \\psi_i,\\quad h_i^2 := \\sum_{m=1}^{k} \\lambda_{im}^2",
+      "aliases_latex": [
+        "\\Sigma = \\Lambda \\Lambda^\\top + \\Psi,\\quad \\sigma_{ii} = \\sum_{m=1}^{k} \\lambda_{im}^2 + \\psi_i"
+      ],
+      "keywords": [
+        "因子分析の基本方程式",
+        "共通性",
+        "独自性",
+        "共分散構造"
+      ],
+      "domain_tags": [
+        "psychology",
+        "psychometrics",
+        "multivariate_statistics"
+      ]
+    },
+    {
+      "id": "psy.irt.n06_irt_2pl_logistic_def",
+      "short_code": "IRT06",
+      "kind": "definition",
+      "title": "2パラメータ・ロジスティック（2PL）項目反応モデルの定義",
+      "summary": "潜在特性と項目の識別力・困難度パラメータを用いて正答確率を記述するロジスティック型項目反応関数を定義する。",
+      "canonical_latex": "P_j(\\theta) := P(U_j = 1 \\mid \\theta) = \\frac{1}{1 + \\exp\\big(-D a_j(\\theta - b_j)\\big)}\\quad (a_j > 0,\\; D = 1.702\\text{ or }1)",
+      "aliases_latex": [
+        "P_j(\\theta) = \\frac{\\exp\\big(D a_j(\\theta - b_j)\\big)}{1 + \\exp\\big(D a_j(\\theta - b_j)\\big)}"
+      ],
+      "keywords": [
+        "項目反応理論",
+        "2PLモデル",
+        "識別力",
+        "困難度",
+        "項目特性曲線"
+      ],
+      "domain_tags": [
+        "psychology",
+        "psychometrics"
+      ]
+    },
+    {
+      "id": "psy.irt.n07_rasch_1pl_specific_objectivity",
+      "short_code": "IRT07",
+      "kind": "theorem_formula",
+      "title": "ラッシュモデル（1PL）と対数オッズの加法分離性",
+      "summary": "2PLモデルで識別力を共通定数としたラッシュモデルを導き、ロジット変換によって能力値と困難度が加法分離される特定客観性を示す。",
+      "canonical_latex": "P_j(\\theta) = \\frac{\\exp(\\theta - b_j)}{1 + \\exp(\\theta - b_j)} \\iff \\ln\\frac{P_j(\\theta)}{1 - P_j(\\theta)} = \\theta - b_j",
+      "aliases_latex": [
+        "\\operatorname{logit}\\big(P_j(\\theta)\\big) = \\theta - b_j"
+      ],
+      "keywords": [
+        "ラッシュモデル",
+        "1PLモデル",
+        "ロジット変換",
+        "特定客観性"
+      ],
+      "domain_tags": [
+        "psychology",
+        "psychometrics"
+      ]
+    },
+    {
+      "id": "psy.irt.n08_item_information_function",
+      "short_code": "IRT08",
+      "kind": "theorem_formula",
+      "title": "2PL項目反応モデルの項目情報関数（フィッシャー情報量）",
+      "summary": "2PLモデルの正答確率の微分とベルヌーイ分散から、潜在特性の推定精度を表す項目情報関数を導出する。",
+      "canonical_latex": "I_j(\\theta) = \\frac{\\big(P_j'(\\theta)\\big)^2}{P_j(\\theta)\\big(1 - P_j(\\theta)\\big)} = D^2 a_j^2 P_j(\\theta)\\big(1 - P_j(\\theta)\\big)",
+      "aliases_latex": [
+        "I_j(\\theta) = -\\mathbb{E}\\left[\\frac{\\partial^2 \\ln L_j(\\theta)}{\\partial \\theta^2}\\right] = D^2 a_j^2 P_j(\\theta)Q_j(\\theta)"
+      ],
+      "keywords": [
+        "項目情報関数",
+        "フィッシャー情報量",
+        "項目反応理論",
+        "測定精度"
+      ],
+      "domain_tags": [
+        "psychology",
+        "psychometrics",
+        "statistics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "psy.irt.d01_reliability_variance_decomp",
+      "target_node_id": "psy.irt.n02_reliability_variance_decomp",
+      "route_kind": "deductive",
+      "title": "真値・誤差分解からの信頼性係数の導出",
+      "premise_node_ids": [
+        "psy.irt.n01_ctt_measurement_boundary",
+        "ml.stat.n01_cauchy_schwarz_expectation"
+      ],
+      "required_math_node_ids": [
+        "math.alg.real_transposition"
+      ],
+      "assumptions": [
+        "観測得点は真値と誤差の和 X = T + E で表され、真値と誤差の共分散は Cov(T, E) = 0 である",
+        "観測得点の分散は正（sigma_X^2 > 0）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\operatorname{Var}(X) = \\operatorname{Var}(T + E)",
+          "to_latex": "\\rho_{XX'} = \\frac{\\sigma_T^2}{\\sigma_X^2} = 1 - \\frac{\\sigma_E^2}{\\sigma_X^2}",
+          "operation_label": "分散の加法分解と信頼性係数の導出",
+          "explanation": "真値と誤差の無相関性より観測得点の分散が真値分散と誤差分散の和に分解され、全分散に占める真値分散の割合として信頼性係数が得られる。",
+          "used_node_ids": [
+            "math.alg.real_transposition",
+            "ml.stat.n01_cauchy_schwarz_expectation",
+            "psy.irt.n01_ctt_measurement_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_expand_var",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Var}(X) = \\operatorname{Var}(T + E)",
+          "to_latex": "\\operatorname{Var}(X) = \\sigma_T^2 + \\sigma_E^2 + 2\\operatorname{Cov}(T,E)",
+          "operation_label": "和の分散の展開",
+          "explanation": "2つの確率変数の和の分散公式を適用し、各項の分散と共分散の2倍に展開する。",
+          "used_node_ids": [
+            "ml.stat.n01_cauchy_schwarz_expectation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_apply_uncorr",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Var}(X) = \\sigma_T^2 + \\sigma_E^2 + 2\\operatorname{Cov}(T,E)",
+          "to_latex": "\\sigma_X^2 = \\sigma_T^2 + \\sigma_E^2",
+          "operation_label": "無相関条件の代入",
+          "explanation": "古典的テスト理論の仮定 Cov(T, E) = 0 を代入し、観測得点の分散を真値分散と誤差分散の和で表す。",
+          "used_node_ids": [
+            "psy.irt.n01_ctt_measurement_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_reliability_ratio",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_X^2 = \\sigma_T^2 + \\sigma_E^2",
+          "to_latex": "\\rho_{XX'} = \\frac{\\sigma_T^2}{\\sigma_X^2} = 1 - \\frac{\\sigma_E^2}{\\sigma_X^2}",
+          "operation_label": "両辺の除算と移項による信頼性係数表示",
+          "explanation": "両辺を sigma_X^2 で割り、sigma_T^2 / sigma_X^2 を信頼性係数と定義して誤差分散比による別表現を得る。",
+          "used_node_ids": [
+            "math.alg.real_transposition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "psy.irt.d02_parallel_test_correlation",
+      "target_node_id": "psy.irt.n03_parallel_test_correlation",
+      "route_kind": "deductive",
+      "title": "平行テストの相関係数と信頼性係数の一致",
+      "premise_node_ids": [
+        "psy.irt.n01_ctt_measurement_boundary",
+        "psy.irt.n02_reliability_variance_decomp"
+      ],
+      "required_math_node_ids": [
+        "ml.stat.n01_cauchy_schwarz_expectation"
+      ],
+      "assumptions": [
+        "2つのテストは同一の真値 T と等分散の誤差 E_1, E_2 を持ち、Var(E_1) = Var(E_2) = sigma_E^2 である",
+        "誤差同士および真値と誤差は互いに無相関（Cov(E_1, E_2) = Cov(T, E_1) = Cov(T, E_2) = 0）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\operatorname{Corr}(X_1, X_2) = \\frac{\\operatorname{Cov}(T+E_1, T+E_2)}{\\sqrt{\\operatorname{Var}(X_1)\\operatorname{Var}(X_2)}}",
+          "to_latex": "\\operatorname{Corr}(X_1, X_2) = \\frac{\\sigma_T^2}{\\sigma_X^2} = \\rho_{XX'}",
+          "operation_label": "平行テスト間の共分散評価と信頼性係数との同値化",
+          "explanation": "平行テストの共分散を双線形性で展開して誤差項の無相関性を適用することで、相関係数が信頼性係数に等しいことを導く。",
+          "used_node_ids": [
+            "ml.stat.n01_cauchy_schwarz_expectation",
+            "psy.irt.n01_ctt_measurement_boundary",
+            "psy.irt.n02_reliability_variance_decomp"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_cov_expand",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Corr}(X_1, X_2) = \\frac{\\operatorname{Cov}(T+E_1, T+E_2)}{\\sqrt{\\operatorname{Var}(X_1)\\operatorname{Var}(X_2)}}",
+          "to_latex": "\\operatorname{Corr}(X_1, X_2) = \\frac{\\operatorname{Var}(T) + \\operatorname{Cov}(T,E_2) + \\operatorname{Cov}(E_1,T) + \\operatorname{Cov}(E_1,E_2)}{\\sigma_X^2}",
+          "operation_label": "共分散の双線形展開と等分散性の適用",
+          "explanation": "分子の共分散を展開し、平行テストの等分散性 Var(X_1) = Var(X_2) = sigma_X^2 を分母に代入する。",
+          "used_node_ids": [
+            "ml.stat.n01_cauchy_schwarz_expectation",
+            "psy.irt.n02_reliability_variance_decomp"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_zero_cov",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Corr}(X_1, X_2) = \\frac{\\operatorname{Var}(T) + \\operatorname{Cov}(T,E_2) + \\operatorname{Cov}(E_1,T) + \\operatorname{Cov}(E_1,E_2)}{\\sigma_X^2}",
+          "to_latex": "\\operatorname{Corr}(X_1, X_2) = \\frac{\\sigma_T^2}{\\sigma_X^2} = \\rho_{XX'}",
+          "operation_label": "誤差の無相関性による消去",
+          "explanation": "誤差に関する共分散項をすべて 0 とおくことで、相関係数が信頼性係数に一致する結果を得る。",
+          "used_node_ids": [
+            "psy.irt.n01_ctt_measurement_boundary",
+            "psy.irt.n02_reliability_variance_decomp"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "psy.irt.d03_factor_analysis_model_def",
+      "target_node_id": "psy.irt.n04_factor_analysis_model_def",
+      "route_kind": "reformulation",
+      "title": "潜在変数モデルへの多次元拡張としての因子モデルの定義",
+      "premise_node_ids": [
+        "psy.irt.n01_ctt_measurement_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "assumptions": [
+        "p次元の観測変数ベクトル x は k 個（k < p）の共通因子 f と p 個の独自因子 varepsilon の線形結合で表される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "X_i = T_i + E_i",
+          "to_latex": "\\mathbf{x} - \\boldsymbol{\\mu} = \\Lambda \\mathbf{f} + \\boldsymbol{\\varepsilon},\\quad \\Lambda = (\\lambda_{im}) \\in \\mathbb{R}^{p \\times k}",
+          "operation_label": "真値・誤差モデルの多変量潜在因子モデルへの定式化",
+          "explanation": "1変数の真値と誤差の分解をベクトル空間上の線形結合へ拡張し、中心化された観測ベクトルを因子負荷量行列 Lambda と共通因子ベクトル f の積と独自因子 varepsilon の和として定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "psy.irt.n01_ctt_measurement_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "psy.irt.d04_covariance_communality_decomp",
+      "target_node_id": "psy.irt.n05_covariance_communality_decomp",
+      "route_kind": "deductive",
+      "title": "因子モデルからの共分散行列分解と共通性の導出",
+      "premise_node_ids": [
+        "psy.irt.n04_factor_analysis_model_def"
+      ],
+      "required_math_node_ids": [
+        "math.alg.finite_sum_linearity"
+      ],
+      "assumptions": [
+        "共通因子と独自因子は無相関 Cov(f, varepsilon) = O であり、独自因子の共分散行列は対角行列 Psi である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Sigma = \\mathbb{E}[(\\mathbf{x}-\\boldsymbol{\\mu})(\\mathbf{x}-\\boldsymbol{\\mu})^\\top]",
+          "to_latex": "\\Sigma = \\Lambda \\Phi \\Lambda^\\top + \\Psi,\\quad \\operatorname{Var}(x_i) = \\sum_{m=1}^{k}\\lambda_{im}^2 + \\psi_i",
+          "operation_label": "共分散行列の因子分解と対角成分の共通性分解",
+          "explanation": "因子モデルの線形表現を共分散行列の定義に代入し、無相関条件を用いて因子負荷量行列と因子間相関行列による分解および各変数の分散分解を導く。",
+          "used_node_ids": [
+            "math.alg.finite_sum_linearity",
+            "psy.irt.n04_factor_analysis_model_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub_model",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Sigma = \\mathbb{E}[(\\mathbf{x}-\\boldsymbol{\\mu})(\\mathbf{x}-\\boldsymbol{\\mu})^\\top]",
+          "to_latex": "\\Sigma = \\mathbb{E}[(\\Lambda\\mathbf{f}+\\boldsymbol{\\varepsilon})(\\Lambda\\mathbf{f}+\\boldsymbol{\\varepsilon})^\\top]",
+          "operation_label": "線形因子モデルの代入",
+          "explanation": "中心化観測ベクトル x - mu に因子分析モデルの定義式を代入する。",
+          "used_node_ids": [
+            "psy.irt.n04_factor_analysis_model_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_expand_cov",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Sigma = \\mathbb{E}[(\\Lambda\\mathbf{f}+\\boldsymbol{\\varepsilon})(\\Lambda\\mathbf{f}+\\boldsymbol{\\varepsilon})^\\top]",
+          "to_latex": "\\Sigma = \\Lambda \\mathbb{E}[\\mathbf{f}\\mathbf{f}^\\top]\\Lambda^\\top + \\Lambda\\mathbb{E}[\\mathbf{f}\\boldsymbol{\\varepsilon}^\\top] + \\mathbb{E}[\\boldsymbol{\\varepsilon}\\mathbf{f}^\\top]\\Lambda^\\top + \\mathbb{E}[\\boldsymbol{\\varepsilon}\\boldsymbol{\\varepsilon}^\\top]",
+          "operation_label": "期待値の線形性による展開",
+          "explanation": "行列積を展開し、定数行列 Lambda を期待値演算の外に出す。",
+          "used_node_ids": [
+            "math.alg.finite_sum_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_diag_elem",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Sigma = \\Lambda \\mathbb{E}[\\mathbf{f}\\mathbf{f}^\\top]\\Lambda^\\top + \\Lambda\\mathbb{E}[\\mathbf{f}\\boldsymbol{\\varepsilon}^\\top] + \\mathbb{E}[\\boldsymbol{\\varepsilon}\\mathbf{f}^\\top]\\Lambda^\\top + \\mathbb{E}[\\boldsymbol{\\varepsilon}\\boldsymbol{\\varepsilon}^\\top]",
+          "to_latex": "\\Sigma = \\Lambda \\Phi \\Lambda^\\top + \\Psi,\\quad \\operatorname{Var}(x_i) = \\sum_{m=1}^{k}\\lambda_{im}^2 + \\psi_i",
+          "operation_label": "無相関条件の適用と直交因子での対角成分抽出",
+          "explanation": "Cov(f, varepsilon) = O を代入して基本方程式を得て、直交因子 Phi = I_k のときの第 i 対角成分をとることで共通性と独自性の和を得る。",
+          "used_node_ids": [
+            "math.alg.finite_sum_linearity",
+            "psy.irt.n04_factor_analysis_model_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "psy.irt.d05_irt_2pl_logistic_def",
+      "target_node_id": "psy.irt.n06_irt_2pl_logistic_def",
+      "route_kind": "reformulation",
+      "title": "潜在特性モデルにおける2PL項目反応関数の定義",
+      "premise_node_ids": [
+        "psy.irt.n01_ctt_measurement_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "各項目は二値反応 U_j in {0, 1} をとり、正答確率は潜在特性 theta の単調増加ロジスティック関数で与えられる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P(\\mathbf{U}=\\mathbf{u}\\mid\\theta)=\\prod_{j=1}^{J} P_j(\\theta)^{u_j}(1-P_j(\\theta))^{1-u_j}",
+          "to_latex": "P_j(\\theta) := \\frac{1}{1 + \\exp\\big(-D a_j(\\theta - b_j)\\big)}",
+          "operation_label": "ロジスティック型項目反応関数のパラメトリック定義",
+          "explanation": "局所独立性を満たす各項目 j の正答確率 P_j(theta) に対して、識別力パラメータ a_j と困難度パラメータ b_j を持つ2パラメータ・ロジスティック関数を定義する。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives",
+            "psy.irt.n01_ctt_measurement_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "psy.irt.d06_rasch_1pl_specific_objectivity",
+      "target_node_id": "psy.irt.n07_rasch_1pl_specific_objectivity",
+      "route_kind": "deductive",
+      "title": "2PLモデルからのラッシュモデルとロジット加法分離性の導出",
+      "premise_node_ids": [
+        "psy.irt.n06_irt_2pl_logistic_def"
+      ],
+      "required_math_node_ids": [
+        "math.alg.real_transposition"
+      ],
+      "assumptions": [
+        "すべての項目で識別力が共通の定数（正規化により D a_j = 1）であるとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_j(\\theta) = \\frac{1}{1 + \\exp\\big(-D a_j(\\theta - b_j)\\big)}",
+          "to_latex": "\\ln\\frac{P_j(\\theta)}{1 - P_j(\\theta)} = \\theta - b_j",
+          "operation_label": "識別力一定制約とロジット変換による加法分離",
+          "explanation": "2PLモデルで識別力を均一化したラッシュモデルから正答と誤答のオッズ比を計算し、対数をとることで潜在特性と困難度の差を導く。",
+          "used_node_ids": [
+            "math.alg.real_transposition",
+            "psy.irt.n06_irt_2pl_logistic_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_set_1pl",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_j(\\theta) = \\frac{1}{1 + \\exp\\big(-D a_j(\\theta - b_j)\\big)}",
+          "to_latex": "P_j(\\theta) = \\frac{1}{1 + \\exp\\big(-(\\theta - b_j)\\big)}",
+          "operation_label": "識別力パラメータの均一化（D a_j = 1）",
+          "explanation": "すべての項目で識別力を等しく1に正規化し、1パラメータ・ロジスティック（ラッシュ）モデルを得る。",
+          "used_node_ids": [
+            "psy.irt.n06_irt_2pl_logistic_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_odds_ratio",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_j(\\theta) = \\frac{1}{1 + \\exp\\big(-(\\theta - b_j)\\big)}",
+          "to_latex": "\\frac{P_j(\\theta)}{1 - P_j(\\theta)} = \\exp(\\theta - b_j)",
+          "operation_label": "正答オッズ比の計算",
+          "explanation": "正答確率と余事象の確率 1 - P_j(theta) の比をとり、指数関数を整理する。",
+          "used_node_ids": [
+            "math.alg.real_transposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_logit",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{P_j(\\theta)}{1 - P_j(\\theta)} = \\exp(\\theta - b_j)",
+          "to_latex": "\\ln\\frac{P_j(\\theta)}{1 - P_j(\\theta)} = \\theta - b_j",
+          "operation_label": "自然対数（ロジット変換）の適用",
+          "explanation": "両辺の自然対数をとることで、対数オッズが能力値 theta と困難度 b_j の差に線形分離されることを示す。",
+          "used_node_ids": [
+            "math.alg.real_transposition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "psy.irt.d07_item_information_function",
+      "target_node_id": "psy.irt.n08_item_information_function",
+      "route_kind": "deductive",
+      "title": "2PL項目反応関数の微分による項目情報関数の導出",
+      "premise_node_ids": [
+        "psy.irt.n06_irt_2pl_logistic_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "二値反応 U_j は条件付きでベルヌーイ分布 Bern(P_j(theta)) に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_j(\\theta) = \\frac{\\big(P_j'(\\theta)\\big)^2}{P_j(\\theta)\\big(1 - P_j(\\theta)\\big)}",
+          "to_latex": "I_j(\\theta) = D^2 a_j^2 P_j(\\theta)\\big(1 - P_j(\\theta)\\big)",
+          "operation_label": "ロジスティック関数の導関数を用いた情報関数の簡約",
+          "explanation": "2PL項目反応関数の導関数 P_j'(theta) = D a_j P_j(theta)(1 - P_j(theta)) を計算してフィッシャー情報量の公式に代入し、約分により項目情報関数を導出する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.t06_exp_power_derivatives",
+            "psy.irt.n06_irt_2pl_logistic_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_diff_p",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_j(\\theta) = \\frac{\\big(P_j'(\\theta)\\big)^2}{P_j(\\theta)\\big(1 - P_j(\\theta)\\big)}",
+          "to_latex": "P_j'(\\theta) = \\frac{D a_j \\exp\\big(-D a_j(\\theta - b_j)\\big)}{\\big(1 + \\exp(-D a_j(\\theta - b_j))\\big)^2},\\quad I_j(\\theta) = \\frac{\\big(P_j'(\\theta)\\big)^2}{P_j(\\theta)\\big(1 - P_j(\\theta)\\big)}",
+          "operation_label": "項目反応関数の連鎖律による微分",
+          "explanation": "合成関数の微分法と指数関数の導関数を用いて P_j(theta) を theta で微分する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.t06_exp_power_derivatives",
+            "psy.irt.n06_irt_2pl_logistic_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_factor_p",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_j'(\\theta) = \\frac{D a_j \\exp\\big(-D a_j(\\theta - b_j)\\big)}{\\big(1 + \\exp(-D a_j(\\theta - b_j))\\big)^2},\\quad I_j(\\theta) = \\frac{\\big(P_j'(\\theta)\\big)^2}{P_j(\\theta)\\big(1 - P_j(\\theta)\\big)}",
+          "to_latex": "P_j'(\\theta) = D a_j P_j(\\theta)\\big(1 - P_j(\\theta)\\big),\\quad I_j(\\theta) = \\frac{\\big(D a_j P_j(\\theta)(1 - P_j(\\theta))\\big)^2}{P_j(\\theta)\\big(1 - P_j(\\theta)\\big)}",
+          "operation_label": "導関数の P_j(theta) による表現と代入",
+          "explanation": "1 - P_j(theta) = exp(-D a_j(theta - b_j)) / (1 + exp(-D a_j(theta - b_j))) を用いて P_j'(theta) を書き換え、情報関数の式へ代入する。",
+          "used_node_ids": [
+            "psy.irt.n06_irt_2pl_logistic_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_cancel",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_j'(\\theta) = D a_j P_j(\\theta)\\big(1 - P_j(\\theta)\\big),\\quad I_j(\\theta) = \\frac{\\big(D a_j P_j(\\theta)(1 - P_j(\\theta))\\big)^2}{P_j(\\theta)\\big(1 - P_j(\\theta)\\big)}",
+          "to_latex": "I_j(\\theta) = D^2 a_j^2 P_j(\\theta)\\big(1 - P_j(\\theta)\\big)",
+          "operation_label": "共通因数の約分",
+          "explanation": "分母と分子の共通因数 P_j(theta)(1 - P_j(theta)) を約分し、2PLモデルの項目情報関数を得る。",
+          "used_node_ids": [
+            "psy.irt.n06_irt_2pl_logistic_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,594 @@
+{
+  "pack_meta": {
+    "pack_id": "cs.theory.computability_np",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "computer_science",
+    "title": "計算理論：チューリングマシン・停止性問題・P vs NPとクック＝レビンの定理",
+    "language": "ja",
+    "description": "有限オートマトンとチューリングマシン、対角線論法による停止性問題の決定不能性、多項式時間帰着、NP完全性とSATの枠組みを整理する。"
+  },
+  "nodes": [
+    {
+      "id": "cs.comp.n01_dfa_regular_language",
+      "short_code": "COMP01",
+      "kind": "definition",
+      "title": "決定性有限オートマトン（DFA）と正規言語の定義",
+      "summary": "有限個の状態集合と決定的な遷移関数によって入力記号列を受理または拒否する計算モデル（DFA）およびその受理言語族である正規言語を定義する。",
+      "canonical_latex": "M = (Q, \\Sigma, \\delta, q_0, F),\\quad \\delta: Q \\times \\Sigma \\to Q,\\quad L(M) := \\{w \\in \\Sigma^* \\mid \\hat{\\delta}(q_0, w) \\in F\\}",
+      "aliases_latex": [
+        "\\hat{\\delta}(q, \\varepsilon) = q,\\quad \\hat{\\delta}(q, wa) = \\delta(\\hat{\\delta}(q, w), a)"
+      ],
+      "keywords": [
+        "有限オートマトン",
+        "DFA",
+        "正規言語",
+        "状態遷移"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "theory_of_computation"
+      ]
+    },
+    {
+      "id": "cs.comp.n02_turing_machine_decidability",
+      "short_code": "COMP02",
+      "kind": "definition",
+      "title": "チューリングマシンと決定可能性・認識可能性の定義",
+      "summary": "無限長のテープと読み書き可能なヘッドを備えたチューリングマシン（TM）を定義し、任意の入力に対して必ず停止して判定する決定可能言語（R）と受理時のみ停止を保証する認識可能言語（RE）を区別する。",
+      "canonical_latex": "M = (Q, \\Sigma, \\Gamma, \\delta, q_0, q_{\\mathrm{acc}}, q_{\\mathrm{rej}}),\\quad \\delta: Q \\times \\Gamma \\to Q \\times \\Gamma \\times \\{L, R\\},\\quad \\mathbf{R} \\subsetneq \\mathbf{RE}",
+      "aliases_latex": [
+        "L(M) = \\{w \\in \\Sigma^* \\mid q_0 w \\vdash^* u\\, q_{\\mathrm{acc}}\\, v\\}"
+      ],
+      "keywords": [
+        "チューリングマシン",
+        "決定可能性",
+        "チューリング認識可能性",
+        "チャーチ＝チューリングのテーゼ"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "theory_of_computation"
+      ]
+    },
+    {
+      "id": "cs.comp.n03_halting_problem_undecidability",
+      "short_code": "COMP03",
+      "kind": "theorem_formula",
+      "title": "停止性問題の決定不能性（対角線論法による証明）",
+      "summary": "任意のチューリングマシンと入力の組が停止するか否かを判定する言語 H_TM は決定不能であることを、自己言及的マシン D を構成する対角線論法と背理法により示す。",
+      "canonical_latex": "H_{\\mathrm{TM}} := \\{\\langle M, w \\rangle \\mid M \\text{ is a TM and } M \\text{ halts on } w\\} \\notin \\mathbf{R}",
+      "aliases_latex": [
+        "A_{\\mathrm{TM}} := \\{\\langle M, w \\rangle \\mid M \\text{ accepts } w\\} \\notin \\mathbf{R}"
+      ],
+      "keywords": [
+        "停止性問題",
+        "決定不能性",
+        "対角線論法",
+        "計算限界"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "theory_of_computation"
+      ]
+    },
+    {
+      "id": "cs.comp.n04_complexity_classes_p_np",
+      "short_code": "COMP04",
+      "kind": "definition",
+      "title": "計算量クラス P と NP の定義",
+      "summary": "決定性チューリングマシンで多項式時間に解ける言語のクラス P と、多項式長の証拠（証明書）を用いて多項式時間で検証できる言語のクラス NP を定義する。",
+      "canonical_latex": "\\mathrm{P} := \\bigcup_{k \\ge 1} \\mathrm{TIME}(n^k),\\qquad L \\in \\mathrm{NP} \\iff \\exists V \\in \\mathrm{P},\\; \\exists c \\ge 1:\\; L = \\{x \\mid \\exists y \\in \\Sigma^{O(|x|^c)},\\% V(x,y) = 1\\}",
+      "aliases_latex": [
+        "\\mathrm{NP} = \\bigcup_{k \\ge 1} \\mathrm{NTIME}(n^k),\\quad \\mathrm{P} \\subseteq \\mathrm{NP}"
+      ],
+      "keywords": [
+        "クラスP",
+        "クラスNP",
+        "多項式時間",
+        "検証器"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "computational_complexity"
+      ]
+    },
+    {
+      "id": "cs.comp.n05_poly_time_reduction",
+      "short_code": "COMP05",
+      "kind": "definition",
+      "title": "多項式時間多対一帰着（Karp帰着）の定義",
+      "summary": "ある決定問題 A のインスタンスを別の決定問題 B のインスタンスへ多項式時間で変換し、かつ答えが一致するような写像が存在する関係（多項式時間帰着）を定義する。",
+      "canonical_latex": "A \\le_p B \\iff \\exists f: \\Sigma^* \\to \\Sigma^*\\; (f \\in \\mathrm{FP}) \\text{ s.t. } \\forall x \\in \\Sigma^*,\\; (x \\in A \\iff f(x) \\in B)",
+      "aliases_latex": [
+        "A \\le_p B \\land B \\le_p C \\implies A \\le_p C"
+      ],
+      "keywords": [
+        "多項式時間帰着",
+        "Karp帰着",
+        "問題変換",
+        "推移律"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "computational_complexity"
+      ]
+    },
+    {
+      "id": "cs.comp.n06_np_completeness_def",
+      "short_code": "COMP06",
+      "kind": "definition",
+      "title": "NP困難とNP完全の定義",
+      "summary": "NPに属するすべての問題から多項式時間帰着可能な問題を NP困難と定義し、さらにその問題自身が NP に属する場合を NP完全と定義する。",
+      "canonical_latex": "B \\in \\mathrm{NPH} \\iff \\forall A \\in \\mathrm{NP},\\; A \\le_p B;\\qquad B \\in \\mathrm{NPC} \\iff B \\in \\mathrm{NP} \\land B \\in \\mathrm{NPH}",
+      "aliases_latex": [
+        "B \\in \\mathrm{NPC} \\iff B \\in \\mathrm{NP} \\land (\\forall A \\in \\mathrm{NP},\\; A \\le_p B)"
+      ],
+      "keywords": [
+        "NP完全",
+        "NP困難",
+        "最難問題",
+        "多項式時間帰着"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "computational_complexity"
+      ]
+    },
+    {
+      "id": "cs.comp.n07_sat_and_cook_levin_theorem",
+      "short_code": "COMP07",
+      "kind": "theorem_formula",
+      "title": "充足可能性問題（SAT）とクック＝レビンの定理",
+      "summary": "非決定性チューリングマシンの多項式時間計算過程を命題論理式のタブローとして多項式サイズで符号化することにより、ブール充足可能性問題 SAT が NP完全であることを示す。",
+      "canonical_latex": "\\mathrm{SAT} := \\{\\langle \\phi \\rangle \\mid \\exists v: \\mathrm{Var}(\\phi) \\to \\{0,1\\},\\; v(\\phi) = 1\\} \\in \\mathrm{NPC}",
+      "aliases_latex": [
+        "\\forall L \\in \\mathrm{NP},\\; L \\le_p \\mathrm{SAT} \\le_p \\mathrm{3SAT}"
+      ],
+      "keywords": [
+        "SAT",
+        "充足可能性問題",
+        "クック＝レビンの定理",
+        "計算タブロー"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "computational_complexity"
+      ]
+    },
+    {
+      "id": "cs.comp.n08_p_vs_np_reduction_closure",
+      "short_code": "COMP08",
+      "kind": "theorem_formula",
+      "title": "多項式時間帰着による P = NP 判定定理",
+      "summary": "NP完全問題が1つでもクラス P に属すれば、帰着の多項式時間合成によりすべての NP 問題が多項式時間で解けることになり、P = NP が成立することを示す。",
+      "canonical_latex": "(\\exists B \\in \\mathrm{NPC},\\; B \\in \\mathrm{P}) \\iff \\mathrm{P} = \\mathrm{NP}",
+      "aliases_latex": [
+        "B \\in \\mathrm{NPC} \\land \\mathrm{P} \\neq \\mathrm{NP} \\implies B \\notin \\mathrm{P}"
+      ],
+      "keywords": [
+        "P対NP問題",
+        "NP完全性",
+        "多項式時間合成",
+        "計算複雑性"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "computational_complexity"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "cs.comp.d01_dfa_from_boolean_valuation",
+      "target_node_id": "cs.comp.n01_dfa_regular_language",
+      "route_kind": "deductive",
+      "title": "命題論理の2値付値から有限状態受理器としてのDFAの定義",
+      "premise_node_ids": [
+        "math.log.n01_propositional_valuation_boundary"
+      ],
+      "required_math_node_ids": [
+        "cs.comp.n01_dfa_regular_language"
+      ],
+      "assumptions": [
+        "入力アルファベット Σ は空でない有限集合とする",
+        "状態集合 Q は有限であり、各状態と入力記号に対して遷移先が一意に定まる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_dfa_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "v: \\mathcal{P} \\to \\{0, 1\\}",
+          "to_latex": "M = (Q, \\Sigma, \\delta, q_0, F),\\quad L(M) = \\{w \\in \\Sigma^* \\mid \\hat{\\delta}(q_0, w) \\in F\\}",
+          "operation_label": "有限状態遷移による文字列受理の定式化",
+          "explanation": "命題を真偽値 {0,1} に写す論理付値の枠組みを文字列 Σ* に対する受理・拒否の判定へ拡張し、有限個の状態 Q と決定的遷移関数 δ を用いて受理状態集合 F への到達有無で正規言語 L(M) を定義する。",
+          "used_node_ids": [
+            "cs.comp.n01_dfa_regular_language",
+            "math.log.n01_propositional_valuation_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "cs.comp.d02_tm_from_dfa",
+      "target_node_id": "cs.comp.n02_turing_machine_decidability",
+      "route_kind": "reformulation",
+      "title": "有限オートマトンへの無限テープ付加によるチューリングマシンの定義",
+      "premise_node_ids": [
+        "cs.comp.n01_dfa_regular_language"
+      ],
+      "required_math_node_ids": [
+        "cs.comp.n02_turing_machine_decidability"
+      ],
+      "assumptions": [
+        "テープは無限長であり、初期状態では入力文字列の右側に空白記号が無限に並んでいる",
+        "有限制御部は各ステップでテープ記号の読み書きと左右1マスへのヘッド移動を行う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_tm_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "M_{\\mathrm{DFA}} = (Q, \\Sigma, \\delta, q_0, F)",
+          "to_latex": "M = (Q, \\Sigma, \\Gamma, \\delta, q_0, q_{\\mathrm{acc}}, q_{\\mathrm{rej}}),\\quad \\mathbf{R} \\subsetneq \\mathbf{RE}",
+          "operation_label": "外部記憶テープと双方向ヘッドの導入",
+          "explanation": "読み取り専用・一方向走査のDFAの有限制御部に対し、書き換え可能な無限テープ Γ^* と左右移動可能なヘッドを付加することで汎用計算モデルであるチューリングマシンを定義し、全入力で停止する決定可能言語 R と受理時のみ停止する認識可能言語 RE を区別する。",
+          "used_node_ids": [
+            "cs.comp.n01_dfa_regular_language",
+            "cs.comp.n02_turing_machine_decidability"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "cs.comp.d03_halting_undecidable",
+      "target_node_id": "cs.comp.n03_halting_problem_undecidability",
+      "route_kind": "deductive",
+      "title": "対角線論法と背理法による停止性問題の決定不能性の証明",
+      "premise_node_ids": [
+        "cs.comp.n02_turing_machine_decidability",
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "required_math_node_ids": [
+        "cs.comp.n03_halting_problem_undecidability"
+      ],
+      "assumptions": [
+        "任意のチューリングマシン M と入力 w の組は有限文字列 ⟨M, w⟩ として符号化できる",
+        "万能チューリングマシンによる他マシンの模倣が可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\exists M_H \\text{ (decider for } H_{\\mathrm{TM}}\\text{)}",
+          "to_latex": "\\bot \\implies H_{\\mathrm{TM}} \\notin \\mathbf{R}",
+          "operation_label": "対角線論法による停止性判定器の不在証明",
+          "explanation": "停止性問題 H_TM を決定するチューリングマシン M_H の存在を仮定し、その出力を反転させる対角化マシン D を自身に入力することで論理的矛盾を導き、H_TM の決定不能性を結論づける。",
+          "used_node_ids": [
+            "cs.comp.n02_turing_machine_decidability",
+            "cs.comp.n03_halting_problem_undecidability",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_construct_diag",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists M_H \\text{ (decider for } H_{\\mathrm{TM}}\\text{)}",
+          "to_latex": "D(\\langle M \\rangle) := \\begin{cases} \\text{loop} & \\text{if } M_H(\\langle M, \\langle M \\rangle \\rangle) = \\text{accept} \\\\ \\text{accept} & \\text{if } M_H(\\langle M, \\langle M \\rangle \\rangle) = \\text{reject} \\end{cases}",
+          "operation_label": "自己対角化マシン D の構成",
+          "explanation": "M_H をサブルーチンとして用い、入力 ⟨M⟩ に対して M_H(⟨M, ⟨M⟩⟩) が受理（停止判定）なら無限ループに入り、拒否（非停止判定）なら即座に受理停止する新たなチューリングマシン D を構成する。",
+          "used_node_ids": [
+            "cs.comp.n02_turing_machine_decidability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_self_apply",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D(\\langle M \\rangle) := \\begin{cases} \\text{loop} & \\text{if } M_H(\\langle M, \\langle M \\rangle \\rangle) = \\text{accept} \\\\ \\text{accept} & \\text{if } M_H(\\langle M, \\langle M \\rangle \\rangle) = \\text{reject} \\end{cases}",
+          "to_latex": "D(\\langle D \\rangle) \\text{ halts} \\iff M_H(\\langle D, \\langle D \\rangle \\rangle) = \\text{reject} \\iff D(\\langle D \\rangle) \\text{ does not halt}",
+          "operation_label": "D 自身への自己適用",
+          "explanation": "D 自身の記述 ⟨D⟩ を入力として与えると、D(⟨D⟩) が停止することと M_H が非停止と判定することが同値になり、さらに M_H の正当性から D(⟨D⟩) が停止しないことと同値になる。",
+          "used_node_ids": [
+            "cs.comp.n02_turing_machine_decidability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_contradiction",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D(\\langle D \\rangle) \\text{ halts} \\iff M_H(\\langle D, \\langle D \\rangle \\rangle) = \\text{reject} \\iff D(\\langle D \\rangle) \\text{ does not halt}",
+          "to_latex": "\\bot \\implies H_{\\mathrm{TM}} \\notin \\mathbf{R}",
+          "operation_label": "背理法による決定不能性の帰結",
+          "explanation": "D(⟨D⟩) が停止することと停止しないことが同値になる矛盾が生じるため、背理法により停止性判定器 M_H は存在せず、H_TM は決定不能であると結論される。",
+          "used_node_ids": [
+            "cs.comp.n03_halting_problem_undecidability",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "cs.comp.d04_p_np_from_tm_asymptotic",
+      "target_node_id": "cs.comp.n04_complexity_classes_p_np",
+      "route_kind": "deductive",
+      "title": "チューリングマシンと漸近記法による計算量クラス P・NP の定義",
+      "premise_node_ids": [
+        "cs.comp.n02_turing_machine_decidability",
+        "cs.algo.n01_asymptotic_notation"
+      ],
+      "required_math_node_ids": [
+        "cs.comp.n04_complexity_classes_p_np"
+      ],
+      "assumptions": [
+        "入力長 n = |x| に対するチューリングマシンの遷移ステップ数を時間計算量とみなす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_p_np_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "M = (Q, \\Sigma, \\Gamma, \\delta, q_0, q_{\\mathrm{acc}}, q_{\\mathrm{rej}}),\\quad f(n) = O(n^k)",
+          "to_latex": "\\mathrm{P} = \\bigcup_{k \\ge 1} \\mathrm{TIME}(n^k),\\quad L \\in \\mathrm{NP} \\iff \\exists V \\in \\mathrm{P},\\; \\exists c \\ge 1:\\; L = \\{x \\mid \\exists y \\in \\Sigma^{O(|x|^c)},\\; V(x,y) = 1\\}",
+          "operation_label": "多項式時間決定と多項式時間検証の定式化",
+          "explanation": "漸近記法 O(n^k) で表される多項式時間内に決定性TMで判定可能な言語族を P とし、多項式長の証拠 y を与えたときに多項式時間検証器 V で確認できる言語族を NP として定義する。",
+          "used_node_ids": [
+            "cs.algo.n01_asymptotic_notation",
+            "cs.comp.n02_turing_machine_decidability",
+            "cs.comp.n04_complexity_classes_p_np"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "cs.comp.d05_poly_reduction_def",
+      "target_node_id": "cs.comp.n05_poly_time_reduction",
+      "route_kind": "deductive",
+      "title": "多項式時間計算可能関数による Karp 帰着の定義",
+      "premise_node_ids": [
+        "cs.comp.n04_complexity_classes_p_np",
+        "cs.algo.n01_asymptotic_notation"
+      ],
+      "required_math_node_ids": [
+        "cs.comp.n05_poly_time_reduction"
+      ],
+      "assumptions": [
+        "多項式時間計算可能関数族 FP に属する関数の合成も多項式時間計算可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_reduction_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A, B \\subseteq \\Sigma^*,\\quad f \\in \\mathrm{FP}",
+          "to_latex": "A \\le_p B \\iff \\exists f \\in \\mathrm{FP} \\text{ s.t. } \\forall x \\in \\Sigma^*,\\; (x \\in A \\iff f(x) \\in B)",
+          "operation_label": "答えを保存する多項式時間変換の定義",
+          "explanation": "問題 A の任意の入力 x を多項式時間計算可能な関数 f によって問題 B の入力 f(x) へ写像し、かつ所属関係が保存される関係として多項式時間多対一帰着 A ≤_p B を定義する。",
+          "used_node_ids": [
+            "cs.algo.n01_asymptotic_notation",
+            "cs.comp.n04_complexity_classes_p_np",
+            "cs.comp.n05_poly_time_reduction"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "cs.comp.d06_npc_from_np_and_reduction",
+      "target_node_id": "cs.comp.n06_np_completeness_def",
+      "route_kind": "deductive",
+      "title": "クラス NP と多項式時間帰着による NP困難・NP完全の定義",
+      "premise_node_ids": [
+        "cs.comp.n04_complexity_classes_p_np",
+        "cs.comp.n05_poly_time_reduction"
+      ],
+      "required_math_node_ids": [
+        "cs.comp.n06_np_completeness_def"
+      ],
+      "assumptions": [
+        "多項式時間帰着 ≤_p は言語族上の前順序（反射律と推移律）をなす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_npc_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A \\le_p B,\\quad \\mathrm{NP}",
+          "to_latex": "B \\in \\mathrm{NPH} \\iff \\forall A \\in \\mathrm{NP},\\; A \\le_p B;\\quad B \\in \\mathrm{NPC} \\iff B \\in \\mathrm{NP} \\land B \\in \\mathrm{NPH}",
+          "operation_label": "帰着順序における極大元としてのNP完全性の定式化",
+          "explanation": "すべての NP 問題が多項式時間帰着できる言語を NP困難（NPH）と定義し、さらに自身が NP に属する言語を NP 内で最も難しいクラスである NP完全（NPC）として定義する。",
+          "used_node_ids": [
+            "cs.comp.n04_complexity_classes_p_np",
+            "cs.comp.n05_poly_time_reduction",
+            "cs.comp.n06_np_completeness_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "cs.comp.d07_cook_levin_proof",
+      "target_node_id": "cs.comp.n07_sat_and_cook_levin_theorem",
+      "route_kind": "deductive",
+      "title": "計算タブローの論理式符号化によるクック＝レビンの定理の導出",
+      "premise_node_ids": [
+        "cs.comp.n06_np_completeness_def",
+        "cs.comp.n02_turing_machine_decidability",
+        "math.log.n01_propositional_valuation_boundary"
+      ],
+      "required_math_node_ids": [
+        "cs.comp.n04_complexity_classes_p_np",
+        "cs.comp.n05_poly_time_reduction",
+        "cs.comp.n07_sat_and_cook_levin_theorem"
+      ],
+      "assumptions": [
+        "任意の言語 L ∈ NP に対し、入力長 n に対して O(n^k) 時間で停止する非決定性チューリングマシン N が存在する",
+        "命題論理式の付値は変数の真偽割り当てに対して多項式時間で評価可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L \\in \\mathrm{NP},\\; \\exists \\text{ NTM } N \\text{ deciding } L \\text{ in } O(n^k) \\text{ time}",
+          "to_latex": "\\forall L \\in \\mathrm{NP},\\; L \\le_p \\mathrm{SAT} \\land \\mathrm{SAT} \\in \\mathrm{NP} \\implies \\mathrm{SAT} \\in \\mathrm{NPC}",
+          "operation_label": "NTMの計算過程のSATへの多項式時間帰着",
+          "explanation": "任意の NP 言語 L を受理する多項式時間 NTM の計算履歴を O(n^{2k}) 個の命題変数からなるブール式 Φ_{N,x} に変換し、SAT が NP に属することと合わせて SAT ∈ NPC を示す。",
+          "used_node_ids": [
+            "cs.comp.n02_turing_machine_decidability",
+            "cs.comp.n06_np_completeness_def",
+            "cs.comp.n07_sat_and_cook_levin_theorem",
+            "math.log.n01_propositional_valuation_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_tableau",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L \\in \\mathrm{NP},\\; \\exists \\text{ NTM } N \\text{ deciding } L \\text{ in } O(n^k) \\text{ time}",
+          "to_latex": "\\exists \\text{ tableau } T_{N,x} \\text{ of size } O(n^k) \\times O(n^k) \\text{ representing accepting computation of } N(x)",
+          "operation_label": "計算履歴の2次元タブロー表現",
+          "explanation": "NTM の実行時間は O(n^k) であるため、テープの使用領域も O(n^k) に抑えられる。各時刻の計算状況を行として並べた O(n^k) × O(n^k) のタブロー T_{N,x} により受理計算を表現する。",
+          "used_node_ids": [
+            "cs.comp.n02_turing_machine_decidability",
+            "cs.comp.n04_complexity_classes_p_np"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_cnf_encode",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists \\text{ tableau } T_{N,x} \\text{ of size } O(n^k) \\times O(n^k) \\text{ representing accepting computation of } N(x)",
+          "to_latex": "\\exists f \\in \\mathrm{FP}:\\; x \\mapsto \\Phi_{N,x} = \\phi_{\\mathrm{cell}} \\land \\phi_{\\mathrm{start}} \\land \\phi_{\\mathrm{move}} \\land \\phi_{\\mathrm{accept}},\\quad (x \\in L \\iff \\Phi_{N,x} \\in \\mathrm{SAT})",
+          "operation_label": "タブロー制約の命題論理式への符号化",
+          "explanation": "タブローの各セル (i, j) に記号・状態 s が入ることを表す命題変数 x_{i,j,s} を導入し、セル一意性・初期状態・2×3局所窓の遷移規則・受理状態出現の4条件の論理積 Φ_{N,x} を多項式時間で構成する。",
+          "used_node_ids": [
+            "cs.comp.n05_poly_time_reduction",
+            "math.log.n01_propositional_valuation_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_npc_conclude",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists f \\in \\mathrm{FP}:\\; x \\mapsto \\Phi_{N,x} = \\phi_{\\mathrm{cell}} \\land \\phi_{\\mathrm{start}} \\land \\phi_{\\mathrm{move}} \\land \\phi_{\\mathrm{accept}},\\quad (x \\in L \\iff \\Phi_{N,x} \\in \\mathrm{SAT})",
+          "to_latex": "\\forall L \\in \\mathrm{NP},\\; L \\le_p \\mathrm{SAT} \\land \\mathrm{SAT} \\in \\mathrm{NP} \\implies \\mathrm{SAT} \\in \\mathrm{NPC}",
+          "operation_label": "SAT の NP所属性と NP完全性の帰結",
+          "explanation": "充足割り当てを証拠とすれば SAT ∈ NP であることは明らかであり、任意の L ∈ NP に対して L ≤_p SAT が成立したため、SAT は NP完全（SAT ∈ NPC）である。",
+          "used_node_ids": [
+            "cs.comp.n06_np_completeness_def",
+            "cs.comp.n07_sat_and_cook_levin_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "cs.comp.d08_p_eq_np_from_npc_in_p",
+      "target_node_id": "cs.comp.n08_p_vs_np_reduction_closure",
+      "route_kind": "deductive",
+      "title": "NP完全問題の多項式時間可解性と P = NP の同値性の導出",
+      "premise_node_ids": [
+        "cs.comp.n04_complexity_classes_p_np",
+        "cs.comp.n05_poly_time_reduction",
+        "cs.comp.n06_np_completeness_def"
+      ],
+      "required_math_node_ids": [
+        "cs.comp.n08_p_vs_np_reduction_closure"
+      ],
+      "assumptions": [
+        "多項式関数同士の合成は再び多項式関数となる",
+        "NP完全問題は少なくとも1つ存在する（クック＝レビンの定理）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "B \\in \\mathrm{NPC} \\land B \\in \\mathrm{P}",
+          "to_latex": "\\mathrm{P} = \\mathrm{NP}",
+          "operation_label": "多項式時間帰着の閉包性による P = NP の導出",
+          "explanation": "ある NP完全問題 B がクラス P に属するとき、すべての NP 問題 A から B への多項式時間帰着と B の多項式時間アルゴリズムを合成することで NP ⊆ P が従い、P ⊆ NP と合わせて P = NP が導かれる。",
+          "used_node_ids": [
+            "cs.comp.n04_complexity_classes_p_np",
+            "cs.comp.n05_poly_time_reduction",
+            "cs.comp.n06_np_completeness_def",
+            "cs.comp.n08_p_vs_np_reduction_closure"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_all_np_reduce",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "B \\in \\mathrm{NPC} \\land B \\in \\mathrm{P}",
+          "to_latex": "\\forall A \\in \\mathrm{NP},\\; A \\le_p B \\land B \\in \\mathrm{P}",
+          "operation_label": "NP完全性の定義の展開",
+          "explanation": "B ∈ NPC の定義より、NP に属する任意の問題 A に対して A ≤_p B が成立する。",
+          "used_node_ids": [
+            "cs.comp.n06_np_completeness_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_poly_compose",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall A \\in \\mathrm{NP},\\; A \\le_p B \\land B \\in \\mathrm{P}",
+          "to_latex": "\\forall A \\in \\mathrm{NP},\\; \\exists f \\in \\mathrm{FP},\\; M_B \\in \\mathrm{P}:\\; M_B(f(x)) \\text{ decides } A \\text{ in } O(n^{c_1 c_2}) \\text{ time}",
+          "operation_label": "帰着関数と判定アルゴリズムの合成",
+          "explanation": "帰着関数 f が O(n^{c_1}) 時間で出力長も O(n^{c_1}) 以下に抑えられ、B の判定器 M_B が入力長 m に対し O(m^{c_2}) 時間で動作するため、合成手順 M_B(f(x)) は O(n^{c_1 c_2}) 時間で A を判定する。",
+          "used_node_ids": [
+            "cs.comp.n04_complexity_classes_p_np",
+            "cs.comp.n05_poly_time_reduction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_p_eq_np",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall A \\in \\mathrm{NP},\\; \\exists f \\in \\mathrm{FP},\\; M_B \\in \\mathrm{P}:\\; M_B(f(x)) \\text{ decides } A \\text{ in } O(n^{c_1 c_2}) \\text{ time}",
+          "to_latex": "\\mathrm{P} = \\mathrm{NP}",
+          "operation_label": "クラス P と NP の一致の結論",
+          "explanation": "すべての A ∈ NP が P に属するため NP ⊆ P となり、自明な包含関係 P ⊆ NP と合わせて P = NP が成立する（逆方向は NP完全問題の存在より自明）。",
+          "used_node_ids": [
+            "cs.comp.n04_complexity_classes_p_np",
+            "cs.comp.n08_p_vs_np_reduction_closure"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
