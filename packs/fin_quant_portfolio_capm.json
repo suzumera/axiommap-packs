@@ -1,0 +1,603 @@
+{
+  "pack_meta": {
+    "pack_id": "fin.quant.portfolio_capm",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "finance",
+    "title": "金融工学2：マーコウィッツの平均・分散ポートフォリオ最適化、シャープレシオとCAPM",
+    "language": "ja",
+    "description": "ラグランジュ未定乗数法による分散最小化から効率的フロンティア、接点ポートフォリオ、資本市場線（CML）および資本資産価格モデル（CAPM: E[Ri]=Rf+βi(E[Rm]-Rf)）を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "fin.capm.n01_portfolio_return_variance_def",
+      "short_code": "CAPM01",
+      "kind": "definition",
+      "title": "ポートフォリオの期待収益率と分散（平均・分散モデルの基本定義）",
+      "summary": "N個のリスク資産への投資比率ベクトルwに対し、ポートフォリオの期待収益率を線形結合、分散を共分散行列Σの2次形式として定義する。",
+      "canonical_latex": "\\mu_p = \\mathbf{w}^\\top \\boldsymbol{\\mu},\\quad \\sigma_p^2 = \\mathbf{w}^\\top \\Sigma \\mathbf{w},\\quad \\mathbf{w}^\\top \\mathbf{1} = 1\\quad (\\boldsymbol{\\mu} = \\mathbb{E}[\\mathbf{R}],\\; \\Sigma = \\operatorname{Cov}(\\mathbf{R}) \\succ 0))",
+      "aliases_latex": [
+        "R_p = \\sum_{i=1}^N w_i R_i,\\quad \\operatorname{Var}(R_p) = \\sum_{i,j=1}^N w_i w_j \\sigma_{ij}"
+      ],
+      "keywords": [
+        "ポートフォリオ",
+        "期待収益率",
+        "共分散行列",
+        "平均・分散モデル"
+      ],
+      "domain_tags": [
+        "finance",
+        "portfolio_theory",
+        "statistics"
+      ]
+    },
+    {
+      "id": "fin.capm.n02_markowitz_mvp_problem",
+      "short_code": "CAPM02",
+      "kind": "definition",
+      "title": "マーコウィッツの平均・分散最適化問題（最小分散ポートフォリオの定式化）",
+      "summary": "目標期待収益率μ_pと予算制約w^T 1 = 1の下で、ポートフォリオ分散（1/2 w^T Σ w）を最小化する2次計画問題として定式化する。",
+      "canonical_latex": "\\min_{\\mathbf{w} \\in \\mathbb{R}^N} \\frac{1}{2}\\mathbf{w}^\\top \\Sigma \\mathbf{w} \\quad \\text{s.t.} \\quad \\mathbf{w}^\\top \\boldsymbol{\\mu} = \\mu_p,\\quad \\mathbf{w}^\\top \\mathbf{1} = 1",
+      "aliases_latex": [
+        "\\min_{\\mathbf{w}} \\mathbf{w}^\\top \\Sigma \\mathbf{w} \\text{ s.t. } \\mathbf{w}^\\top \\boldsymbol{\\mu} = \\mu_p,\\; \\mathbf{w}^\\top \\mathbf{1} = 1"
+      ],
+      "keywords": [
+        "マーコウィッツ",
+        "最小分散ポートフォリオ",
+        "2次計画問題",
+        "等式制約"
+      ],
+      "domain_tags": [
+        "finance",
+        "portfolio_theory",
+        "optimization"
+      ]
+    },
+    {
+      "id": "fin.capm.n03_efficient_frontier_hyperbola",
+      "short_code": "CAPM03",
+      "kind": "theorem_formula",
+      "title": "効率的フロンティアと最小分散境界（双曲線方程式）",
+      "summary": "ラグランジュ未定乗数法により最小分散ポートフォリオの最適ウェイトを解析的に解き、期待収益率μ_pと標準偏差σ_pの関係が双曲線（分散については放物線）を描くことを示す。",
+      "canonical_latex": "\\mathbf{w}^*(\\mu_p) = \\Sigma^{-1}(\\lambda_1 \\boldsymbol{\\mu} + \\lambda_2 \\mathbf{1}),\\quad \\sigma_p^2 = \\frac{A - 2B\\mu_p + C\\mu_p^2}{AC - B^2}\\quad (A=\\boldsymbol{\\mu}^\\top\\Sigma^{-1}\\boldsymbol{\\mu},\\; B=\\boldsymbol{\\mu}^\\top\\Sigma^{-1}\\mathbf{1},\\; C=\\mathbf{1}^\\top\\Sigma^{-1}\\mathbf{1})",
+      "aliases_latex": [
+        "\\frac{\\sigma_p^2}{1/C} - \\frac{(\\mu_p - B/C)^2}{(AC-B^2)/C^2} = 1"
+      ],
+      "keywords": [
+        "効率的フロンティア",
+        "最小分散境界",
+        "ラグランジュ未定乗数法",
+        "双曲線"
+      ],
+      "domain_tags": [
+        "finance",
+        "portfolio_theory",
+        "optimization"
+      ]
+    },
+    {
+      "id": "fin.capm.n04_sharpe_ratio_tangency_def",
+      "short_code": "CAPM04",
+      "kind": "definition",
+      "title": "無リスク資産・シャープレシオおよび接点ポートフォリオの定義",
+      "summary": "無リスク利子率R_fを導入し、超過リターンを標準偏差で割ったリスク調整後指標（シャープレシオ）と、それを最大化する接点ポートフォリオを定義する。",
+      "canonical_latex": "\\mathrm{SR}(\\mathbf{w}) := \\frac{\\mathbb{E}[R_p] - R_f}{\\sigma_p} = \\frac{\\mathbf{w}^\\top(\\boldsymbol{\\mu} - R_f\\mathbf{1})}{\\sqrt{\\mathbf{w}^\\top \\Sigma \\mathbf{w}}},\\qquad \\mathbf{w}_T := \\arg\\max_{\\mathbf{w}^\\top\\mathbf{1}=1} \\mathrm{SR}(\\mathbf{w})",
+      "aliases_latex": [
+        "S_p = \\frac{\\mu_p - R_f}{\\sigma_p}"
+      ],
+      "keywords": [
+        "シャープレシオ",
+        "無リスク資産",
+        "接点ポートフォリオ",
+        "超過収益率"
+      ],
+      "domain_tags": [
+        "finance",
+        "portfolio_theory"
+      ]
+    },
+    {
+      "id": "fin.capm.n05_tangency_portfolio_weights",
+      "short_code": "CAPM05",
+      "kind": "theorem_formula",
+      "title": "接点ポートフォリオの最適ウェイト公式（トービンの分離定理）",
+      "summary": "シャープレシオ最大化の1階条件から、投資家のリスク回避度に依存しないリスク資産の最適構成比（接点ポートフォリオ）が解析的に一意に定まることを導出する。",
+      "canonical_latex": "\\mathbf{w}_T = \\frac{\\Sigma^{-1}(\\boldsymbol{\\mu} - R_f \\mathbf{1})}{\\mathbf{1}^\\top \\Sigma^{-1}(\\boldsymbol{\\mu} - R_f \\mathbf{1})}",
+      "aliases_latex": [
+        "\\mathbf{w}_T \\propto \\Sigma^{-1}(\\boldsymbol{\\mu} - R_f\\mathbf{1})"
+      ],
+      "keywords": [
+        "接点ポートフォリオ",
+        "分離定理",
+        "シャープレシオ最大化",
+        "最適ウェイト"
+      ],
+      "domain_tags": [
+        "finance",
+        "portfolio_theory",
+        "optimization"
+      ]
+    },
+    {
+      "id": "fin.capm.n06_capital_market_line",
+      "short_code": "CAPM06",
+      "kind": "theorem_formula",
+      "title": "資本市場線（CML）の導出",
+      "summary": "無リスク資産と接点ポートフォリオを組み合わせた効率的ポートフォリオの期待収益率と標準偏差が、無リスク金利を切片とし最大シャープレシオを傾きとする直線（資本市場線）上に乗ることを示す。",
+      "canonical_latex": "\\mathbb{E}[R_p] = R_f + \\frac{\\mathbb{E}[R_T] - R_f}{\\sigma_T}\\,\\sigma_p = R_f + \\mathrm{SR}(\\mathbf{w}_T)\\,\\sigma_p",
+      "aliases_latex": [
+        "\\mu_p = R_f + \\frac{\\mu_T - R_f}{\\sigma_T}\\sigma_p"
+      ],
+      "keywords": [
+        "資本市場線",
+        "CML",
+        "効率的ポートフォリオ",
+        "リスク・リターン線形関係"
+      ],
+      "domain_tags": [
+        "finance",
+        "portfolio_theory",
+        "asset_pricing"
+      ]
+    },
+    {
+      "id": "fin.capm.n07_market_equilibrium_beta_def",
+      "short_code": "CAPM07",
+      "kind": "definition",
+      "title": "市場均衡と市場ポートフォリオ・ベータ（系統的リスク感応度）の定義",
+      "summary": "すべての投資家が同質的期待を持つ市場均衡において接点ポートフォリオが市場ポートフォリオw_Mに一致することを確認し、個別資産iの市場全体に対する感応度ベータを定義する。",
+      "canonical_latex": "\\mathbf{w}_M = \\mathbf{w}_T,\\qquad \\beta_i := \\frac{\\operatorname{Cov}(R_i, R_M)}{\\operatorname{Var}(R_M)} = \\frac{(\\Sigma \\mathbf{w}_M)_i}{\\mathbf{w}_M^\\top \\Sigma \\mathbf{w}_M}\\quad (\\mathbf{1}^\\top \\mathbf{w}_M = 1,\\; \\sigma_M^2 = \\mathbf{w}_M^\\top \\Sigma \\mathbf{w}_M > 0))",
+      "aliases_latex": [
+        "\\beta_i = \\frac{\\sigma_{iM}}{\\sigma_M^2}"
+      ],
+      "keywords": [
+        "市場均衡",
+        "市場ポートフォリオ",
+        "ベータ",
+        "系統的リスク"
+      ],
+      "domain_tags": [
+        "finance",
+        "asset_pricing"
+      ]
+    },
+    {
+      "id": "fin.capm.n08_capm_sml_theorem",
+      "short_code": "CAPM08",
+      "kind": "theorem_formula",
+      "title": "資本資産価格モデル（CAPM）と証券市場線（SML）",
+      "summary": "市場ポートフォリオが接点ポートフォリオに一致する均衡条件から、個別資産の期待超過収益率が市場リスクプレミアムとベータの積に比例するCAPM基本公式（証券市場線）を導出する。",
+      "canonical_latex": "\\mathbb{E}[R_i] = R_f + \\beta_i\\big(\\mathbb{E}[R_M] - R_f\\big),\\qquad \\beta_i = \\frac{\\operatorname{Cov}(R_i, R_M)}{\\sigma_M^2}\\quad (i = 1,\\dots,N))",
+      "aliases_latex": [
+        "\\mu_i - R_f = \\beta_i(\\mu_M - R_f)"
+      ],
+      "keywords": [
+        "CAPM",
+        "資本資産価格モデル",
+        "証券市場線",
+        "SML",
+        "リスクプレミアム"
+      ],
+      "domain_tags": [
+        "finance",
+        "asset_pricing"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_capm01",
+      "target_node_id": "fin.capm.n01_portfolio_return_variance_def",
+      "route_kind": "reformulation",
+      "title": "確率空間上の期待値・分散と正定値2次形式によるポートフォリオ定義",
+      "premise_node_ids": [
+        "math.prob.pr01_kolmogorov_axioms",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "各資産の収益率ベクトルRは2次モーメントが有限な確率変数であり、共分散行列Σは正定値対称行列である。",
+        "空売り制約は設けず投資比率の総和が1（w^T 1 = 1）である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "R_p = \\mathbf{w}^\\top \\mathbf{R},\\quad \\mathbf{w}^\\top \\mathbf{1} = 1",
+          "to_latex": "\\mu_p = \\mathbf{w}^\\top \\boldsymbol{\\mu},\\quad \\sigma_p^2 = \\mathbf{w}^\\top \\Sigma \\mathbf{w} > 0\\;(\\mathbf{w}\\neq\\mathbf{0})",
+          "operation_label": "期待値線形性と2次形式による表現",
+          "explanation": "確率空間上の期待値の線形性よりポートフォリオの期待収益率をw^T μと定義し、分散を正定値対称行列Σを用いた2次形式w^T Σ wとして表現する。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_capm02",
+      "target_node_id": "fin.capm.n02_markowitz_mvp_problem",
+      "route_kind": "reformulation",
+      "title": "等式制約付き極値問題としての平均・分散最適化の定式化",
+      "premise_node_ids": [
+        "fin.capm.n01_portfolio_return_variance_def",
+        "math.calc.e06_constrained_extremum_problem"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "すべての資産の期待収益率が同一ではなく（μと1が線形独立）、制約想定の正則性条件を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mu_p = \\mathbf{w}^\\top \\boldsymbol{\\mu},\\quad \\sigma_p^2 = \\mathbf{w}^\\top \\Sigma \\mathbf{w},\\quad \\mathbf{w}^\\top \\mathbf{1} = 1",
+          "to_latex": "\\min_{\\mathbf{w} \\in \\mathbb{R}^N} \\frac{1}{2}\\mathbf{w}^\\top \\Sigma \\mathbf{w} \\quad \\text{s.t.} \\quad \\mathbf{w}^\\top \\boldsymbol{\\mu} = \\mu_p,\\quad \\mathbf{w}^\\top \\mathbf{1} = 1",
+          "operation_label": "等式制約付き2次計画問題の定式化",
+          "explanation": "目標期待収益率μ_pと予算制約w^T 1 = 1の2本の線形等式制約の下で、微分時の係数1/2を付した分散1/2 w^T Σ wを目的関数とする制約付き最小化問題として定式化する。",
+          "used_node_ids": [
+            "fin.capm.n01_portfolio_return_variance_def",
+            "math.calc.e06_constrained_extremum_problem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_capm03",
+      "target_node_id": "fin.capm.n03_efficient_frontier_hyperbola",
+      "route_kind": "deductive",
+      "title": "ラグランジュ未定乗数法による最小分散フロンティアの導出",
+      "premise_node_ids": [
+        "fin.capm.n02_markowitz_mvp_problem",
+        "math.calc.e07_lagrange_multiplier_theorem",
+        "math.calc.e08_constrained_hessian_2nd_order"
+      ],
+      "required_math_node_ids": [
+        "fin.capm.n03_efficient_frontier_hyperbola",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "assumptions": [
+        "Σは正定値対称行列であり、ヘッセ行列Σが接空間上でも正定値であるため1階条件の停留点は大域的最小解となる。",
+        "μと1は線形独立であり、コーシー＝シュワルツの不等式よりAC - B^2 > 0が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{L}(\\mathbf{w},\\lambda_1,\\lambda_2) = \\frac{1}{2}\\mathbf{w}^\\top\\Sigma\\mathbf{w} - \\lambda_1(\\mathbf{w}^\\top\\boldsymbol{\\mu}-\\mu_p) - \\lambda_2(\\mathbf{w}^\\top\\mathbf{1}-1))",
+          "to_latex": "\\mathbf{w}^*(\\mu_p) = \\Sigma^{-1}(\\lambda_1 \\boldsymbol{\\mu} + \\lambda_2 \\mathbf{1}),\\quad \\sigma_p^2 = \\frac{A - 2B\\mu_p + C\\mu_p^2}{AC - B^2})",
+          "operation_label": "ラグランジュ法による最適解と分散境界の導出",
+          "explanation": "ラグランジュ関数の1階条件から最適ウェイトを未定乗数の線形結合で表し、制約式に代入して未定乗数を消去することでμ_pとσ_p^2の双曲線関係を得る。",
+          "used_node_ids": [
+            "fin.capm.n02_markowitz_mvp_problem",
+            "math.calc.e07_lagrange_multiplier_theorem",
+            "math.calc.e08_constrained_hessian_2nd_order"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_lagrangian",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}(\\mathbf{w},\\lambda_1,\\lambda_2) = \\frac{1}{2}\\mathbf{w}^\\top\\Sigma\\mathbf{w} - \\lambda_1(\\mathbf{w}^\\top\\boldsymbol{\\mu}-\\mu_p) - \\lambda_2(\\mathbf{w}^\\top\\mathbf{1}-1))",
+          "to_latex": "\\Sigma\\mathbf{w}^* = \\lambda_1\\boldsymbol{\\mu} + \\lambda_2\\mathbf{1})",
+          "operation_label": "ラグランジュ関数の勾配と1階条件",
+          "explanation": "ラグランジュ関数をwで偏微分して零とおくことで、1階必要条件Σ w^* = λ_1 μ + λ_2 1を得る。なおラグランジアンのヘッセ行列はΣ ≻ 0であるため2階十分条件も満たされる。",
+          "used_node_ids": [
+            "math.calc.e07_lagrange_multiplier_theorem",
+            "math.calc.e08_constrained_hessian_2nd_order"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_solve_w",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Sigma\\mathbf{w}^* = \\lambda_1\\boldsymbol{\\mu} + \\lambda_2\\mathbf{1})",
+          "to_latex": "\\mathbf{w}^* = \\Sigma^{-1}(\\lambda_1\\boldsymbol{\\mu} + \\lambda_2\\mathbf{1}),\\quad \\sigma_p^2 = \\lambda_1\\mu_p + \\lambda_2",
+          "operation_label": "最適ウェイトの求解と最小分散の表現",
+          "explanation": "Σの逆行列を掛けてw^*を求め、分散σ_p^2 = (w^*)^T Σ w^*に代入すると、制約条件w^*^T μ = μ_pおよびw^*^T 1 = 1よりσ_p^2 = λ_1 μ_p + λ_2と表せる。",
+          "used_node_ids": [
+            "fin.capm.n02_markowitz_mvp_problem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_variance",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{w}^* = \\Sigma^{-1}(\\lambda_1\\boldsymbol{\\mu} + \\lambda_2\\mathbf{1}),\\quad \\sigma_p^2 = \\lambda_1\\mu_p + \\lambda_2",
+          "to_latex": "\\sigma_p^2 = \\frac{A - 2B\\mu_p + C\\mu_p^2}{AC - B^2})",
+          "operation_label": "情報行列による未定乗数の消去",
+          "explanation": "w^*を2本の制約式に代入して得られる連立方程式((A, B), (B, C))(λ_1, λ_2)^T = (μ_p, 1)^Tを解き、λ_1 = (C μ_p - B)/(AC - B^2), λ_2 = (A - B μ_p)/(AC - B^2)を代入して最小分散境界の式を得る。",
+          "used_node_ids": [
+            "fin.capm.n03_efficient_frontier_hyperbola"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_capm04",
+      "target_node_id": "fin.capm.n04_sharpe_ratio_tangency_def",
+      "route_kind": "reformulation",
+      "title": "無リスク資産の導入によるシャープレシオと接点ポートフォリオの定義",
+      "premise_node_ids": [
+        "fin.capm.n01_portfolio_return_variance_def",
+        "fin.capm.n03_efficient_frontier_hyperbola"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "無リスク利子率R_fで無制限に貸借が可能である。",
+        "接点ポートフォリオの期待収益率はR_fを上回る（μ_T > R_f）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mu_p = \\mathbf{w}^\\top\\boldsymbol{\\mu},\\quad \\sigma_p = \\sqrt{\\mathbf{w}^\\top\\Sigma\\mathbf{w}},\\quad \\mathbf{w}^\\top\\mathbf{1} = 1",
+          "to_latex": "\\mathrm{SR}(\\mathbf{w}) := \\frac{\\mathbf{w}^\\top(\\boldsymbol{\\mu} - R_f\\mathbf{1})}{\\sqrt{\\mathbf{w}^\\top \\Sigma \\mathbf{w}}},\\qquad \\mathbf{w}_T := \\arg\\max_{\\mathbf{w}^\\top\\mathbf{1}=1} \\mathrm{SR}(\\mathbf{w}))",
+          "operation_label": "超過リターン対リスク比としてのシャープレシオ定義",
+          "explanation": "無リスク利子率R_fを基準とした期待超過収益率w^T(μ - R_f 1)を標準偏差σ_pで除した傾きをシャープレシオと定義し、最小分散境界上の接点となる最大化問題を定義する。",
+          "used_node_ids": [
+            "fin.capm.n01_portfolio_return_variance_def",
+            "fin.capm.n03_efficient_frontier_hyperbola"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_capm05",
+      "target_node_id": "fin.capm.n05_tangency_portfolio_weights",
+      "route_kind": "deductive",
+      "title": "シャープレシオ最大化による接点ポートフォリオの導出",
+      "premise_node_ids": [
+        "fin.capm.n04_sharpe_ratio_tangency_def",
+        "math.calc.e03_stationary_point_condition"
+      ],
+      "required_math_node_ids": [
+        "fin.capm.n05_tangency_portfolio_weights"
+      ],
+      "assumptions": [
+        "1^T Σ^{-1}(μ - R_f 1) > 0 が成り立ち、接点ポートフォリオは効率的フロンティアの上側（正の傾き側）に位置する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathrm{SR}(\\mathbf{w}) = \\frac{\\mathbf{w}^\\top(\\boldsymbol{\\mu}-R_f\\mathbf{1})}{(\\mathbf{w}^\\top\\Sigma\\mathbf{w})^{1/2}}",
+          "to_latex": "\\mathbf{w}_T = \\frac{\\Sigma^{-1}(\\boldsymbol{\\mu} - R_f \\mathbf{1})}{\\mathbf{1}^\\top \\Sigma^{-1}(\\boldsymbol{\\mu} - R_f \\mathbf{1})})",
+          "operation_label": "シャープレシオの勾配零化と正規化による導出",
+          "explanation": "シャープレシオがwの正の定数倍に関して0次同次であることを利用し、無制約での停留点条件から方向ベクトルを求めた後、和が1になるよう正規化して接点ポートフォリオを得る。",
+          "used_node_ids": [
+            "fin.capm.n04_sharpe_ratio_tangency_def",
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_grad_sr",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathrm{SR}(\\mathbf{w}) = \\frac{\\mathbf{w}^\\top(\\boldsymbol{\\mu}-R_f\\mathbf{1})}{(\\mathbf{w}^\\top\\Sigma\\mathbf{w})^{1/2}}",
+          "to_latex": "(\\boldsymbol{\\mu}-R_f\\mathbf{1})(\\mathbf{w}_T^\\top\\Sigma\\mathbf{w}_T) = \\mathbf{w}_T^\\top(\\boldsymbol{\\mu}-R_f\\mathbf{1})\\Sigma\\mathbf{w}_T",
+          "operation_label": "商の微分と停留点条件の適用",
+          "explanation": "SR(w)をwで微分して∇_w SR(w_T) = 0とおき、分母(w^T Σ w)^{3/2} > 0を払うことで1階条件の方程式を得る。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_proportional",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\boldsymbol{\\mu}-R_f\\mathbf{1})(\\mathbf{w}_T^\\top\\Sigma\\mathbf{w}_T) = \\mathbf{w}_T^\\top(\\boldsymbol{\\mu}-R_f\\mathbf{1})\\Sigma\\mathbf{w}_T",
+          "to_latex": "\\mathbf{w}_T = c\\,\\Sigma^{-1}(\\boldsymbol{\\mu} - R_f \\mathbf{1})",
+          "operation_label": "スカラー係数の整理とΣの逆行列作用",
+          "explanation": "スカラー定数c := (w_T^T Σ w_T) / (w_T^T(μ - R_f 1))とおいてΣ^{-1}を左から掛けることで、w_TがΣ^{-1}(μ - R_f 1)に比例することを示す。",
+          "used_node_ids": [
+            "fin.capm.n04_sharpe_ratio_tangency_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_normalize",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{w}_T = c\\,\\Sigma^{-1}(\\boldsymbol{\\mu} - R_f \\mathbf{1})",
+          "to_latex": "\\mathbf{w}_T = \\frac{\\Sigma^{-1}(\\boldsymbol{\\mu} - R_f \\mathbf{1})}{\\mathbf{1}^\\top \\Sigma^{-1}(\\boldsymbol{\\mu} - R_f \\mathbf{1})})",
+          "operation_label": "予算制約による比例定数の決定",
+          "explanation": "投資比率の総和制約1^T w_T = 1を課してc = 1 / (1^T Σ^{-1}(μ - R_f 1))を決定し、接点ポートフォリオの陽解法を得る。",
+          "used_node_ids": [
+            "fin.capm.n05_tangency_portfolio_weights"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_capm06",
+      "target_node_id": "fin.capm.n06_capital_market_line",
+      "route_kind": "deductive",
+      "title": "無リスク資産と接点ポートフォリオの結合による資本市場線の導出",
+      "premise_node_ids": [
+        "fin.capm.n04_sharpe_ratio_tangency_def",
+        "fin.capm.n05_tangency_portfolio_weights"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "無リスク資産の分散および他資産との共分散はすべて0である。",
+        "効率的ポートフォリオでは接点ポートフォリオへの配分比率αが非負（α ≧ 0）である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "R_p = (1-\\alpha)R_f + \\alpha R_T,\\quad \\alpha \\ge 0",
+          "to_latex": "\\mathbb{E}[R_p] = R_f + \\frac{\\mathbb{E}[R_T] - R_f}{\\sigma_T}\\,\\sigma_p = R_f + \\mathrm{SR}(\\mathbf{w}_T)\\,\\sigma_p",
+          "operation_label": "2資産結合ポートフォリオの期待値・標準偏差からの消去",
+          "explanation": "無リスク資産と接点ポートフォリオを比率(1-α, α)で組み合わせた収益率の期待値と標準偏差を計算し、パラメータαを消去して線形関係（資本市場線）を導く。",
+          "used_node_ids": [
+            "fin.capm.n04_sharpe_ratio_tangency_def",
+            "fin.capm.n05_tangency_portfolio_weights"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_mix_return",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_p = (1-\\alpha)R_f + \\alpha R_T,\\quad \\alpha \\ge 0",
+          "to_latex": "\\mathbb{E}[R_p] = R_f + \\alpha(\\mathbb{E}[R_T] - R_f),\\quad \\sigma_p = \\alpha\\sigma_T",
+          "operation_label": "線形結合の期待値と標準偏差の計算",
+          "explanation": "R_fが定数であるため分散への寄与が0となり、期待収益率はR_f + α(E[R_T] - R_f)、標準偏差はα ≧ 0よりσ_p = α σ_Tとなる。",
+          "used_node_ids": [
+            "fin.capm.n04_sharpe_ratio_tangency_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_elim_alpha",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}[R_p] = R_f + \\alpha(\\mathbb{E}[R_T] - R_f),\\quad \\sigma_p = \\alpha\\sigma_T",
+          "to_latex": "\\mathbb{E}[R_p] = R_f + \\frac{\\mathbb{E}[R_T] - R_f}{\\sigma_T}\\,\\sigma_p = R_f + \\mathrm{SR}(\\mathbf{w}_T)\\,\\sigma_p",
+          "operation_label": "投資比率αの消去による資本市場線",
+          "explanation": "α = σ_p / σ_Tを期待収益率の式に代入することで、リスクσ_pに対する期待収益率の線形関係（資本市場線）が得られる。",
+          "used_node_ids": [
+            "fin.capm.n05_tangency_portfolio_weights"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_capm07",
+      "target_node_id": "fin.capm.n07_market_equilibrium_beta_def",
+      "route_kind": "reformulation",
+      "title": "市場均衡条件と共分散に基づくベータの定義",
+      "premise_node_ids": [
+        "fin.capm.n05_tangency_portfolio_weights",
+        "ml.stat.n01_cauchy_schwarz_expectation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "すべての投資家が同一の期待収益率ベクトルμと共分散行列Σを共有し（同質的期待）、市場が需給均衡している。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{w}_T = \\frac{\\Sigma^{-1}(\\boldsymbol{\\mu} - R_f \\mathbf{1})}{\\mathbf{1}^\\top \\Sigma^{-1}(\\boldsymbol{\\mu} - R_f \\mathbf{1})},\\quad \\operatorname{Cov}(R_i, R_M) = (\\Sigma \\mathbf{w}_M)_i",
+          "to_latex": "\\mathbf{w}_M = \\mathbf{w}_T,\\qquad \\beta_i := \\frac{\\operatorname{Cov}(R_i, R_M)}{\\operatorname{Var}(R_M)} = \\frac{(\\Sigma \\mathbf{w}_M)_i}{\\mathbf{w}_M^\\top \\Sigma \\mathbf{w}_M})",
+          "operation_label": "市場清算条件と共分散比によるベータの定義",
+          "explanation": "全投資家が同じ接点ポートフォリオw_Tを保有するため、市場均衡での市場ポートフォリオw_Mはw_Tに一致する。このw_Mとの共分散を市場分散で正規化した値をベータβ_iと定義する。",
+          "used_node_ids": [
+            "fin.capm.n05_tangency_portfolio_weights",
+            "ml.stat.n01_cauchy_schwarz_expectation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_capm08",
+      "target_node_id": "fin.capm.n08_capm_sml_theorem",
+      "route_kind": "deductive",
+      "title": "接点ポートフォリオの1階条件からのCAPM（証券市場線）の導出",
+      "premise_node_ids": [
+        "fin.capm.n05_tangency_portfolio_weights",
+        "fin.capm.n07_market_equilibrium_beta_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "市場ポートフォリオは接点ポートフォリオと一致し、σ_M^2 > 0である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{w}_M = c\\,\\Sigma^{-1}(\\boldsymbol{\\mu} - R_f\\mathbf{1})",
+          "to_latex": "\\mathbb{E}[R_i] = R_f + \\beta_i\\big(\\mathbb{E}[R_M] - R_f\\big))",
+          "operation_label": "市場ポートフォリオの最適条件からのCAPM導出",
+          "explanation": "市場ポートフォリオが満たす接点ポートフォリオの比例関係式に左からΣとw_M^Tを作用させて比例定数を市場超過収益率で特定し、第i成分を取り出すことでCAPM公式を導出する。",
+          "used_node_ids": [
+            "fin.capm.n05_tangency_portfolio_weights",
+            "fin.capm.n07_market_equilibrium_beta_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_foc_market",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{w}_M = c\\,\\Sigma^{-1}(\\boldsymbol{\\mu} - R_f\\mathbf{1})",
+          "to_latex": "\\boldsymbol{\\mu} - R_f\\mathbf{1} = \\frac{1}{c}\\Sigma\\mathbf{w}_M",
+          "operation_label": "左からのΣ乗算による超過収益率ベクトルの表示",
+          "explanation": "w_M = w_Tの比例関係式に左から共分散行列Σを掛け、超過期待収益率ベクトルμ - R_f 1をΣ w_Mの定数倍として表す。",
+          "used_node_ids": [
+            "fin.capm.n05_tangency_portfolio_weights"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_find_const",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\boldsymbol{\\mu} - R_f\\mathbf{1} = \\frac{1}{c}\\Sigma\\mathbf{w}_M",
+          "to_latex": "\\boldsymbol{\\mu} - R_f\\mathbf{1} = \\frac{\\mathbb{E}[R_M] - R_f}{\\sigma_M^2}\\Sigma\\mathbf{w}_M",
+          "operation_label": "w_M^Tとの内積による比例定数の決定",
+          "explanation": "両辺に左からw_M^Tを掛けるとw_M^T(μ - R_f 1) = E[R_M] - R_f、右辺は(1/c) w_M^T Σ w_M = (1/c) σ_M^2となるため、1/c = (E[R_M] - R_f)/σ_M^2が決定される。",
+          "used_node_ids": [
+            "fin.capm.n07_market_equilibrium_beta_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_component",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\boldsymbol{\\mu} - R_f\\mathbf{1} = \\frac{\\mathbb{E}[R_M] - R_f}{\\sigma_M^2}\\Sigma\\mathbf{w}_M",
+          "to_latex": "\\mathbb{E}[R_i] = R_f + \\beta_i\\big(\\mathbb{E}[R_M] - R_f\\big))",
+          "operation_label": "第i成分の抽出とベータの代入",
+          "explanation": "ベクトル等式の第i成分を取り出し、(Σ w_M)_i / σ_M^2 = β_iの定義を代入することで、個別資産iに対するCAPM（証券市場線）の公式を得る。",
+          "used_node_ids": [
+            "fin.capm.n07_market_equilibrium_beta_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
