@@ -770,6 +770,189 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_vc01",
+      "target_node_id": "math.vec.vc01_divergence_def",
+      "route_kind": "deductive",
+      "title": "ベクトル場の発散（div）の導入",
+      "premise_node_ids": [
+        "math.calc.m44_partial_derivative_def",
+        "math.calc.m13_vector_component_derivative"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ベクトル場 F の各成分は偏微分可能である",
+        "3次元直交直線座標 (x, y, z) を用いる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{F}(\\mathbf{r}) = \\sum_{i=1}^{3} F_i(x_1, x_2, x_3)\\mathbf{e}_i",
+          "to_latex": "\\nabla \\cdot \\mathbf{F}(\\mathbf{r}) = \\operatorname{div}\\mathbf{F}(\\mathbf{r}) := \\sum_{i=1}^{3} \\frac{\\partial F_i}{\\partial x_i} = \\frac{\\partial F_x}{\\partial x} + \\frac{\\partial F_y}{\\partial y} + \\frac{\\partial F_z}{\\partial z}",
+          "operation_label": "ベクトル場の発散の定義",
+          "explanation": "直交座標成分に分解されたベクトル場に対し、各成分を対応する座標変数で偏微分して和をとることで発散を定義する。",
+          "used_node_ids": [
+            "math.calc.m13_vector_component_derivative",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_partial_components",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F}(\\mathbf{r}) = F_x\\mathbf{e}_x + F_y\\mathbf{e}_y + F_z\\mathbf{e}_z",
+          "to_latex": "\\frac{\\partial F_i}{\\partial x_i}(\\mathbf{r}) = \\lim_{h \\to 0} \\frac{F_i(\\mathbf{r} + h\\mathbf{e}_i) - F_i(\\mathbf{r})}{h}",
+          "operation_label": "各成分の偏導関数の評価",
+          "explanation": "ベクトル場の各成分関数 F_i について、対応する座標方向 x_i の偏微分係数を考える。",
+          "used_node_ids": [
+            "math.calc.m13_vector_component_derivative",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_sum_divergence",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{\\partial F_x}{\\partial x},\\; \\frac{\\partial F_y}{\\partial y},\\; \\frac{\\partial F_z}{\\partial z}\\right)",
+          "to_latex": "\\nabla \\cdot \\mathbf{F}(\\mathbf{r}) := \\sum_{i=1}^{3} \\frac{\\partial F_i}{\\partial x_i} = \\frac{\\partial F_x}{\\partial x} + \\frac{\\partial F_y}{\\partial y} + \\frac{\\partial F_z}{\\partial z}",
+          "operation_label": "偏導関数の総和によるスカラー場の構成",
+          "explanation": "3方向の偏導関数をすべて足し合わせたスカラー場をベクトル場の発散 div F として定義する。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_vc02",
+      "target_node_id": "math.vec.vc02_curl_def",
+      "route_kind": "deductive",
+      "title": "ベクトル場の回転（rot / curl）の導入",
+      "premise_node_ids": [
+        "math.calc.m44_partial_derivative_def",
+        "math.calc.m13_vector_component_derivative"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ベクトル場 F の各成分は偏微分可能である",
+        "右手系の3次元直交直線座標 (x, y, z) を用いる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{F}(\\mathbf{r}) = \\sum_{k=1}^{3} F_k(x_1, x_2, x_3)\\mathbf{e}_k",
+          "to_latex": "(\\nabla \\times \\mathbf{F})_i := \\sum_{j,k=1}^{3} \\varepsilon_{ijk} \\frac{\\partial F_k}{\\partial x_j}",
+          "operation_label": "ベクトル場の回転の定義",
+          "explanation": "直交座標成分の偏微分とエディントンのイプシロンを用いて、ベクトル場の局所的な回転を表すベクトル場を定義する。",
+          "used_node_ids": [
+            "math.calc.m13_vector_component_derivative",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_antisymmetric_derivatives",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial F_k}{\\partial x_j}",
+          "to_latex": "(\\nabla \\times \\mathbf{F})_i = \\sum_{j,k=1}^{3} \\varepsilon_{ijk} \\frac{\\partial F_k}{\\partial x_j}",
+          "operation_label": "反対称偏微分結合の構成",
+          "explanation": "各成分の偏導関数に対して完全反対称テンソル（エディントンのイプシロン）を縮約し、i 成分を定める。",
+          "used_node_ids": [
+            "math.calc.m13_vector_component_derivative",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_explicit_components",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\nabla \\times \\mathbf{F})_i = \\sum_{j,k=1}^{3} \\varepsilon_{ijk} \\frac{\\partial F_k}{\\partial x_j}",
+          "to_latex": "\\nabla \\times \\mathbf{F} = \\left(\\frac{\\partial F_z}{\\partial y} - \\frac{\\partial F_y}{\\partial z},\\; \\frac{\\partial F_x}{\\partial z} - \\frac{\\partial F_z}{\\partial x},\\; \\frac{\\partial F_y}{\\partial x} - \\frac{\\partial F_x}{\\partial y}\\right)^\\top",
+          "operation_label": "直交座標成分の明示表示",
+          "explanation": "i = 1, 2, 3 について和を書き下すことで、3次元直交座標における回転の成分表示を得る。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_vc03",
+      "target_node_id": "math.vec.vc03_surface_integral_def",
+      "route_kind": "deductive",
+      "title": "向き付けられた曲面上のベクトル場の面積分（流束積分）の導入",
+      "premise_node_ids": [
+        "math.calc.mi01_multiple_integral_def",
+        "math.geom.dg02_second_fundamental_form"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "曲面 S はパラメータ領域 D 上で滑らかかつ正則なパラメータ表示 r(u, v) を持つ",
+        "曲面 S は単位法線ベクトル n により向き付けられている"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}(u, v)\\;((u, v) \\in D),\\quad \\mathbf{n} = \\frac{\\mathbf{r}_u \\times \\mathbf{r}_v}{\\|\\mathbf{r}_u \\times \\mathbf{r}_v\\|}",
+          "to_latex": "\\iint_{S} \\mathbf{F} \\cdot d\\mathbf{S} := \\iint_{D} \\mathbf{F}(\\mathbf{r}(u,v)) \\cdot \\left(\\frac{\\partial \\mathbf{r}}{\\partial u} \\times \\frac{\\partial \\mathbf{r}}{\\partial v}\\right) du\\,dv = \\iint_{S} (\\mathbf{F} \\cdot \\mathbf{n})\\,dS",
+          "operation_label": "ベクトル場の面積分（流束積分）の定義",
+          "explanation": "曲面の向きを与える単位法線ベクトルと面積要素の積を用いて、パラメータ領域上の重積分としてベクトル場の流束積分を定義する。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "math.geom.dg02_second_fundamental_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_surface_normal_element",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{n} := \\frac{\\mathbf{r}_u \\times \\mathbf{r}_v}{\\|\\mathbf{r}_u \\times \\mathbf{r}_v\\|},\\quad dS := \\|\\mathbf{r}_u \\times \\mathbf{r}_v\\|\\,du\\,dv",
+          "to_latex": "d\\mathbf{S} := \\mathbf{n}\\,dS = \\left(\\frac{\\partial \\mathbf{r}}{\\partial u} \\times \\frac{\\partial \\mathbf{r}}{\\partial v}\\right) du\\,dv",
+          "operation_label": "有向面積要素 dS の構成",
+          "explanation": "単位法線ベクトルとスカラー面積要素を掛け合わせることで、向きを持った有向面積要素ベクトル dS を得る。",
+          "used_node_ids": [
+            "math.geom.dg02_second_fundamental_form"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_flux_integral",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{F}(\\mathbf{r}(u,v)) \\cdot d\\mathbf{S}",
+          "to_latex": "\\iint_{S} \\mathbf{F} \\cdot d\\mathbf{S} := \\iint_{D} \\mathbf{F}(\\mathbf{r}(u,v)) \\cdot \\left(\\frac{\\partial \\mathbf{r}}{\\partial u} \\times \\frac{\\partial \\mathbf{r}}{\\partial v}\\right) du\\,dv = \\iint_{S} (\\mathbf{F} \\cdot \\mathbf{n})\\,dS",
+          "operation_label": "重積分による流束積分の定義",
+          "explanation": "ベクトル場と有向面積要素の内積をパラメータ領域 D 上で2重積分することにより、曲面を通過する流束を定義する。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def",
+            "math.geom.dg02_second_fundamental_form"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }

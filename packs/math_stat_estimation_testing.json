@@ -620,6 +620,237 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "drv.link_st01",
+      "target_node_id": "math.stat.st01_likelihood_def",
+      "route_kind": "reformulation",
+      "title": "パラメトリック統計モデルからの尤度関数および対数尤度関数の導入",
+      "premise_node_ids": [
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "標本 X_1, ..., X_n は未知母数 theta に依存する確率密度（または質量）関数 f(x; theta) に独立同一分布（i.i.d.）に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f(\\mathbf{x};\\theta) = \\prod_{i=1}^{n} f(x_i;\\theta)",
+          "to_latex": "L(\\theta;\\mathbf{x}) := f(\\mathbf{x};\\theta),\\quad \\ell(\\theta;\\mathbf{x}) := \\ln L(\\theta;\\mathbf{x}) = \\sum_{i=1}^{n} \\ln f(x_i;\\theta)",
+          "operation_label": "尤度・対数尤度の定義",
+          "explanation": "観測データ x を固定し同時分布をパラメータ theta の関数とみなして尤度関数 L を定義し、その自然対数として対数尤度関数 l を定義する。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X_1,\\dots,X_n \\stackrel{\\text{i.i.d.}}{\\sim} f(\\cdot;\\theta),\\quad \\theta\\in\\Theta\\subseteq\\mathbb{R}^p",
+          "to_latex": "L(\\theta;\\mathbf{x}) := f(\\mathbf{x};\\theta) = \\prod_{i=1}^{n} f(x_i;\\theta)",
+          "operation_label": "同時分布の積表示と尤度関数",
+          "explanation": "独立性により同時確率密度関数が各標本の密度の積で表され、これを theta の関数として尤度関数 L(theta; x) とおく。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L(\\theta;\\mathbf{x}) = \\prod_{i=1}^{n} f(x_i;\\theta)",
+          "to_latex": "\\ell(\\theta;\\mathbf{x}) := \\ln L(\\theta;\\mathbf{x}) = \\sum_{i=1}^{n} \\ln f(x_i;\\theta)",
+          "operation_label": "対数変換による和への分解",
+          "explanation": "尤度関数の自然対数をとることで積を和に変換し、微分や最適化が容易な対数尤度関数 l(theta; x) を定義する。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_st02",
+      "target_node_id": "math.stat.st02_sufficient_statistic_def",
+      "route_kind": "deductive",
+      "title": "条件付き分布の母数非依存性による十分統計量の導入",
+      "premise_node_ids": [
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "統計モデル {P_theta : theta in Theta} と標本 X の関数である統計量 T(X) が与えられている"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_{\\theta}(\\mathbf{X}=\\mathbf{x}\\mid T(\\mathbf{X})=t)",
+          "to_latex": "T(\\mathbf{X})\\text{ is sufficient for }\\theta \\iff P_{\\theta}(\\mathbf{X}=\\mathbf{x}\\mid T(\\mathbf{X})=t)\\text{ does not depend on }\\theta",
+          "operation_label": "十分統計量の定義",
+          "explanation": "統計量 T(X)=t が与えられたもとでの標本 X の条件付き分布が未知母数 theta に依存しないとき、T(X) を十分統計量と定義する。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\theta}(T(\\mathbf{X})=t) > 0",
+          "to_latex": "P_{\\theta}(\\mathbf{X}=\\mathbf{x}\\mid T(\\mathbf{X})=t) = \\frac{P_{\\theta}(\\mathbf{X}=\\mathbf{x},\\; T(\\mathbf{X})=t)}{P_{\\theta}(T(\\mathbf{X})=t)}",
+          "operation_label": "条件付き確率の構成",
+          "explanation": "統計量 T(X)=t の事象のもとで標本 X=x が生じる条件付き確率を考える。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\theta}(\\mathbf{X}=\\mathbf{x}\\mid T(\\mathbf{X})=t)",
+          "to_latex": "T(\\mathbf{X})\\text{ is sufficient for }\\theta \\iff P_{\\theta}(\\mathbf{X}=\\mathbf{x}\\mid T(\\mathbf{X})=t)\\text{ does not depend on }\\theta",
+          "operation_label": "母数非依存条件の定式化",
+          "explanation": "この条件付き分布がすべての theta に対して一定（theta に無関係）であるとき、T(X) は theta に関する情報をすべて保持しているとみなし十分統計量と定義する。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_st04",
+      "target_node_id": "math.stat.st04_mle_score_def",
+      "route_kind": "deductive",
+      "title": "極値条件と偏微分による最尤推定量（MLE）およびスコア関数の導入",
+      "premise_node_ids": [
+        "math.calc.e03_stationary_point_condition",
+        "math.calc.m44_partial_derivative_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "尤度関数 L(theta; x) および対数尤度関数 l(theta; x) は theta に関して微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L(\\theta;\\mathbf{x}),\\quad \\ell(\\theta;\\mathbf{x}) = \\ln L(\\theta;\\mathbf{x})",
+          "to_latex": "\\hat{\\theta}_{\\mathrm{MLE}}(\\mathbf{x}) \\in \\arg\\max_{\\theta\\in\\Theta} \\ell(\\theta;\\mathbf{x}),\\quad \\mathbf{s}(\\theta;\\mathbf{x}) := \\nabla_{\\theta}\\ell(\\theta;\\mathbf{x})",
+          "operation_label": "MLEとスコア関数の定義",
+          "explanation": "対数尤度関数の最大化点として最尤推定量を定義し、その勾配ベクトルとしてスコア関数を定義する。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L(\\theta;\\mathbf{x}) > 0",
+          "to_latex": "\\hat{\\theta}_{\\mathrm{MLE}}(\\mathbf{x}) \\in \\arg\\max_{\\theta\\in\\Theta} L(\\theta;\\mathbf{x}) = \\arg\\max_{\\theta\\in\\Theta} \\ell(\\theta;\\mathbf{x})",
+          "operation_label": "対数単調性による最大化問題の等価性",
+          "explanation": "対数関数は狭義単調増加であるため、尤度関数 L の最大化と対数尤度関数 l の最大化は一致し、その解を最尤推定量と定義する。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ell(\\theta;\\mathbf{x}) = \\ln f(\\mathbf{x};\\theta)",
+          "to_latex": "\\mathbf{s}(\\theta;\\mathbf{x}) := \\nabla_{\\theta}\\ell(\\theta;\\mathbf{x}) = \\frac{\\nabla_{\\theta}f(\\mathbf{x};\\theta)}{f(\\mathbf{x};\\theta)}",
+          "operation_label": "勾配によるスコア関数の定義",
+          "explanation": "対数尤度関数をパラメータ theta で偏微分して得られる勾配ベクトルをスコア関数 s(theta; x) と定義する。",
+          "used_node_ids": [
+            "math.calc.e03_stationary_point_condition",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_st08",
+      "target_node_id": "math.stat.st08_hypothesis_test_def",
+      "route_kind": "deductive",
+      "title": "重積分の枠組みに基づく仮説検定関数と過誤確率・検出力の定義",
+      "premise_node_ids": [
+        "math.calc.mi01_multiple_integral_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "標本空間 X 上で帰無仮説 H0 (theta = theta0) と対立仮説 H1 (theta = theta1) が設定されている"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\phi:\\mathcal{X}\\to[0,1]",
+          "to_latex": "\\alpha(\\phi):=\\mathbb{E}_{\\theta_0}[\\phi(\\mathbf{X})]\\le\\alpha,\\quad \\beta(\\phi):=\\mathbb{E}_{\\theta_1}[\\phi(\\mathbf{X})]=1-P_{\\theta_1}(\\text{accept }H_0\\mid H_1\\text{ true})",
+          "operation_label": "検定関数・有意水準・検出力の定義",
+          "explanation": "標本に対して H0 を棄却する確率を与える検定関数 phi を定め、theta0 および theta1 のもとでの期待値として過誤確率と検出力を定義する。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\phi:\\mathcal{X}\\to[0,1]",
+          "to_latex": "\\alpha(\\phi):=\\mathbb{E}_{\\theta_0}[\\phi(\\mathbf{X})]=P_{\\theta_0}(\\text{reject }H_0)\\le\\alpha",
+          "operation_label": "第1種の過誤確率と有意水準",
+          "explanation": "帰無仮説 H0 が真のときに H0 を棄却する確率（第1種の過誤確率）を期待値 E_{theta0}[phi(X)] として表し、その上限を有意水準 alpha とする。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}_{\\theta_1}[\\phi(\\mathbf{X})]",
+          "to_latex": "\\beta(\\phi):=\\mathbb{E}_{\\theta_1}[\\phi(\\mathbf{X})]=1-P_{\\theta_1}(\\text{accept }H_0\\mid H_1\\text{ true})",
+          "operation_label": "第2種の過誤確率と検出力",
+          "explanation": "対立仮説 H1 が真のときに正しく H0 を棄却する確率を検出力 beta(phi) として定義し、1 から第2種の過誤確率を引いた値に等しいことを示す。",
+          "used_node_ids": [
+            "math.calc.mi01_multiple_integral_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }

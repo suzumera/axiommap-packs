@@ -6826,6 +6826,423 @@
         }
       ],
       "rigor_version": 2
+    },
+    {
+      "id": "drv.link_m13d",
+      "target_node_id": "math.calc.m13_componentwise_big_o_lemma",
+      "route_kind": "deductive",
+      "title": "三角不等式による成分別 Big-O 評価のベクトル合成",
+      "premise_node_ids": [
+        "math.calc.m13_vector_landau_big_o_def",
+        "math.calc.m13_vector_component_derivative"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "基底ベクトルは正規直交基底であり ||e_i|| = 1 を満たす",
+        "すべての成分 i = 1,...,d について |g_i(τ)| <= C_i |τ|^m が |τ| <= δ で成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\forall i \\in \\{1,\\dots,d\\},\\; |g_i(\\tau)| \\le C_i |\\tau|^m \\;(|\\tau|\\le\\delta)",
+          "to_latex": "\\sum_{i=1}^{d} g_i(\\tau)\\mathbf{e}_i = \\mathcal{O}(\\tau^m)",
+          "operation_label": "三角不等式とBig-O定義の適用",
+          "explanation": "各成分の評価式をノルムの三角不等式で足し合わせ、ベクトル値関数のBig-O定義に当てはめることで合成補題を得る。",
+          "used_node_ids": [
+            "math.calc.m13_vector_component_derivative",
+            "math.calc.m13_vector_landau_big_o_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_triangle_ineq",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left\\|\\sum_{i=1}^{d} g_i(\\tau)\\mathbf{e}_i\\right\\|",
+          "to_latex": "\\sum_{i=1}^{d} |g_i(\\tau)|\\,\\|\\mathbf{e}_i\\| = \\sum_{i=1}^{d} |g_i(\\tau)|",
+          "operation_label": "三角不等式と単位基底のノルム",
+          "explanation": "ノルムの三角不等式および正規直交基底の性質 ||e_i|| = 1 を適用する。",
+          "used_node_ids": [
+            "math.calc.m13_vector_component_derivative"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_bound_sum",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{d} |g_i(\\tau)| \\le \\sum_{i=1}^{d} C_i|\\tau|^m",
+          "to_latex": "\\left\\|\\sum_{i=1}^{d} g_i(\\tau)\\mathbf{e}_i\\right\\| \\le \\left(\\sum_{i=1}^{d} C_i\\right)|\\tau|^m \\implies \\mathcal{O}(\\tau^m)",
+          "operation_label": "定数和による上界評価とBig-O判定",
+          "explanation": "各成分の上界を代入して定数 C = sum(C_i) を得ることで、ベクトル値関数のBig-O定義を満たす。",
+          "used_node_ids": [
+            "math.calc.m13_vector_landau_big_o_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m13b",
+      "target_node_id": "math.calc.m13_continuous_compact_boundedness",
+      "route_kind": "deductive",
+      "title": "閉区間上の連続性からの有界性の導出",
+      "premise_node_ids": [
+        "math.calc.m52_continuous_function_integrability",
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "h は開区間または閉区間 I 上で連続である",
+        "[t_0 - δ, t_0 + δ] は I に含まれる有界閉区間である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "h \\in C(I),\\; [t_0-\\delta, t_0+\\delta] \\subset I",
+          "to_latex": "\\exists M > 0\\text{ s.t. } \\forall t \\in [t_0-\\delta, t_0+\\delta],\\; |h(t)| \\le M",
+          "operation_label": "コンパクト閉区間上の連続関数の有界性",
+          "explanation": "有界閉区間上で連続な関数は最大値・最小値をとる（あるいは背理法と点列コンパクト性により非有界性が否定される）ため、正の上界 M が存在する。",
+          "used_node_ids": [
+            "math.calc.m52_continuous_function_integrability",
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_compact_interval",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "h \\in C([t_0-\\delta, t_0+\\delta])",
+          "to_latex": "\\sup_{t \\in [t_0-\\delta, t_0+\\delta]} |h(t)| < \\infty",
+          "operation_label": "閉区間上の連続関数の最大値存在",
+          "explanation": "有界閉区間 [t_0-δ, t_0+δ] 上で |h(t)| も連続であり、最大値定理により上界が有限値として存在する。",
+          "used_node_ids": [
+            "math.calc.m52_continuous_function_integrability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_positive_bound",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sup_{t \\in [t_0-\\delta, t_0+\\delta]} |h(t)| = M_0 \\ge 0",
+          "to_latex": "\\exists M > 0\\; (M := M_0 + 1),\\; \\forall t \\in [t_0-\\delta, t_0+\\delta],\\; |h(t)| \\le M",
+          "operation_label": "正の上界定数の構成",
+          "explanation": "上限 M_0 に対して M = M_0 + 1 > 0 とおけば、区間全体で |h(t)| <= M が成立する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m13a",
+      "target_node_id": "math.calc.m13_vector_component_derivative",
+      "route_kind": "reformulation",
+      "title": "正規直交基底展開と微分線形性によるベクトル導関数の成分表示",
+      "premise_node_ids": [
+        "math.linalg.vs04_basis_and_dimension",
+        "math.calc.m36_derivative_linearity",
+        "math.calc.m20_derivative_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "基底 {e_i} は時間 t に依存しない固定された正規直交基底である",
+        "各成分関数 x_i(t) は k 回微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r}(t) = \\sum_{i=1}^{d} x_i(t)\\mathbf{e}_i,\\quad \\dot{\\mathbf{e}}_i = \\mathbf{0}",
+          "to_latex": "\\mathbf{r}^{(k)}(t) = \\sum_{i=1}^{d} x_i^{(k)}(t)\\mathbf{e}_i",
+          "operation_label": "基底の不変性と微分の線形性の適用",
+          "explanation": "ベクトル値関数を時間不変な正規直交基底で展開し、微分作用素の線形性を k 回適用することで各成分の k 階導関数の和を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.linalg.vs04_basis_and_dimension"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_first_deriv",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\mathbf{r}(t) = \\frac{d}{dt}\\left(\\sum_{i=1}^{d} x_i(t)\\mathbf{e}_i\\right)",
+          "to_latex": "\\sum_{i=1}^{d} \\dot{x}_i(t)\\mathbf{e}_i",
+          "operation_label": "1階微分の線形展開",
+          "explanation": "微分の線形性と基底ベクトルの時間不変性により、時間微分が各スカラー成分に作用する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_kth_deriv",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^k}{dt^k}\\left(\\sum_{i=1}^{d} x_i(t)\\mathbf{e}_i\\right)",
+          "to_latex": "\\mathbf{r}^{(k)}(t) = \\sum_{i=1}^{d} x_i^{(k)}(t)\\mathbf{e}_i",
+          "operation_label": "高階微分への帰納的適用",
+          "explanation": "1階微分の操作を k 回繰り返すことで、k 階導関数の成分表示が定義される。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_m13c",
+      "target_node_id": "math.calc.m13_vector_landau_big_o_def",
+      "route_kind": "reformulation",
+      "title": "スカラー漸近評価と内積ノルムによるベクトル Big-O 定義の構成",
+      "premise_node_ids": [
+        "math.calc.t10_taylor_asymptotic_approx",
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ベクトル空間には標準内積から誘導されるユークリッドノルム ||g|| = sqrt(<g, g>) が備わっている"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{g}(\\tau) \\in \\mathbb{R}^d,\\; \\|\\mathbf{g}(\\tau)\\| = \\sqrt{\\langle \\mathbf{g}(\\tau), \\mathbf{g}(\\tau)\\rangle}",
+          "to_latex": "\\mathbf{g}(\\tau) = \\mathcal{O}(\\tau^m) \\iff \\exists C>0,\\,\\exists\\delta>0\\text{ s.t. } |\\tau|\\le\\delta \\implies \\|\\mathbf{g}(\\tau)\\| \\le C|\\tau|^m",
+          "operation_label": "ノルムによるベクトル値Big-Oの定式化",
+          "explanation": "スカラー関数のランダウ記号（Big-O）の絶対値評価を、内積から定まるユークリッドノルムに置き換えてベクトル値関数へ拡張する。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx",
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_norm_def",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle \\mathbf{g}(\\tau), \\mathbf{g}(\\tau)\\rangle",
+          "to_latex": "\\|\\mathbf{g}(\\tau)\\| := \\sqrt{\\langle \\mathbf{g}(\\tau), \\mathbf{g}(\\tau)\\rangle} \\ge 0",
+          "operation_label": "非負スカラー量としてのノルム定義",
+          "explanation": "ベクトル値関数の大きさを測るため、標準内積に基づく非負のノルムを定める。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_asymptotic_bound",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|\\tau| \\le \\delta \\implies \\|\\mathbf{g}(\\tau)\\| \\le C|\\tau|^m",
+          "to_latex": "\\mathbf{g}(\\tau) = \\mathcal{O}(\\tau^m)\\;(\\tau \\to 0)",
+          "operation_label": "近傍でのべき乗上界による定義",
+          "explanation": "原点近傍 |τ| <= δ においてノルムが |τ|^m の定数倍で抑えられることをもって O(τ^m) と定義する。",
+          "used_node_ids": [
+            "math.calc.t10_taylor_asymptotic_approx"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_v01",
+      "target_node_id": "math.vec.v01_cartesian_dot_product_def",
+      "route_kind": "deductive",
+      "title": "一般の標準内積とベクトル空間の公理からの3次元ドット積の導出",
+      "premise_node_ids": [
+        "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "3次元実数空間 R^3 における正規直交基底の成分表示を用いる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\langle \\mathbf{u},\\mathbf{v}\\rangle := \\mathbf{u}^*\\mathbf{v} = \\sum_{i=1}^{n}\\overline{u_i}v_i",
+          "to_latex": "\\mathbf{u}\\cdot\\mathbf{v} := \\sum_{i=1}^{3} u_i v_i,\\quad (\\alpha\\mathbf{u}+\\beta\\mathbf{w})\\cdot\\mathbf{v} = \\alpha(\\mathbf{u}\\cdot\\mathbf{v}) + \\beta(\\mathbf{w}\\cdot\\mathbf{v})",
+          "operation_label": "実3次元空間への特殊化と双線形性の確認",
+          "explanation": "一般の複素n次元標準内積をn=3の実空間に制限することで3次元ドット積が得られ、実数空間の線形性から双線形性が従う。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def",
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle \\mathbf{u},\\mathbf{v}\\rangle = \\sum_{i=1}^{n}\\overline{u_i}v_i",
+          "to_latex": "\\mathbf{u}\\cdot\\mathbf{v} = \\sum_{i=1}^{3} u_i v_i = u_1 v_1 + u_2 v_2 + u_3 v_3",
+          "operation_label": "n=3および実数成分への制限",
+          "explanation": "次元をn=3とし、成分を実数とすることで複素共役が外れ、成分ごとの積の和としてドット積が定義される。",
+          "used_node_ids": [
+            "math.linalg.eig05_inner_product_hermitian_orthogonal_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\alpha\\mathbf{u}+\\beta\\mathbf{w})\\cdot\\mathbf{v} = \\sum_{i=1}^{3} (\\alpha u_i + \\beta w_i)v_i",
+          "to_latex": "\\alpha\\sum_{i=1}^{3} u_i v_i + \\beta\\sum_{i=1}^{3} w_i v_i = \\alpha(\\mathbf{u}\\cdot\\mathbf{v}) + \\beta(\\mathbf{w}\\cdot\\mathbf{v})",
+          "operation_label": "和とスカラー倍の分配法則の適用",
+          "explanation": "実ベクトル空間の公理に基づく成分の線形結合と和の分配法則により、内積の線形性が導かれる。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_v02",
+      "target_node_id": "math.vec.v02_cross_product_component_def",
+      "route_kind": "deductive",
+      "title": "レヴィ＝チヴィタ記号と反対称生成子からの3次元クロス積成分表示の導出",
+      "premise_node_ids": [
+        "math.alg.gr06_so3_generators_commutation",
+        "math.linalg.det01_alternating_multilinear_def"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "3次元右手系直交座標系における完全反対称記号 ε_ijk を用いる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(J_i)_{jk} = -\\varepsilon_{ijk},\\quad J_i\\mathbf{v} = \\mathbf{e}_i\\times\\mathbf{v}",
+          "to_latex": "(\\mathbf{b}\\times\\mathbf{c})_i := \\sum_{j,k=1}^{3} \\varepsilon_{ijk} b_j c_k,\\quad \\mathbf{b}\\times\\mathbf{c} = (b_2 c_3 - b_3 c_2,\\; b_3 c_1 - b_1 c_3,\\; b_1 c_2 - b_2 c_1)^\\top",
+          "operation_label": "反対称記号による成分展開",
+          "explanation": "SO(3)生成子の反対称表現から得られるレヴィ＝チヴィタ記号を用いて、双線形かつ交代的な3次元ベクトル積の成分公式を導く。",
+          "used_node_ids": [
+            "math.alg.gr06_so3_generators_commutation",
+            "math.linalg.det01_alternating_multilinear_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\mathbf{b}\\times\\mathbf{c})_i = \\sum_{j,k=1}^{3} \\varepsilon_{ijk} b_j c_k",
+          "to_latex": "(\\mathbf{b}\\times\\mathbf{c})_1 = \\varepsilon_{123}b_2 c_3 + \\varepsilon_{132}b_3 c_2 = b_2 c_3 - b_3 c_2",
+          "operation_label": "i=1成分の非零項の抽出",
+          "explanation": "完全反対称記号 ε_1jk は (j,k)=(2,3) で +1、(3,2) で -1 となり他は0であるため、第1成分が b_2 c_3 - b_3 c_2 と決まる。",
+          "used_node_ids": [
+            "math.alg.gr06_so3_generators_commutation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\mathbf{b}\\times\\mathbf{c})_1 = b_2 c_3 - b_3 c_2",
+          "to_latex": "\\mathbf{b}\\times\\mathbf{c} = (b_2 c_3 - b_3 c_2,\\; b_3 c_1 - b_1 c_3,\\; b_1 c_2 - b_2 c_1)^\\top",
+          "operation_label": "添字の巡回置換による第2・第3成分の決定",
+          "explanation": "添字 (1,2,3) の巡回置換対称性により、i=2, 3 の成分も同様に計算され、3次元ベクトル表示が得られる。",
+          "used_node_ids": [
+            "math.linalg.det01_alternating_multilinear_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_v03",
+      "target_node_id": "math.vec.v03_det3_cofactor_sarrus_expansion",
+      "route_kind": "deductive",
+      "title": "ラプラスの余因子展開による3次行列式の第1列展開公式の導出",
+      "premise_node_ids": [
+        "math.linalg.det05_minor_cofactor_def",
+        "math.linalg.det06_cofactor_expansion"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "3つの3次元列ベクトル a, b, c を並べた3次正方行列 A = [a, b, c] を対象とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum_{k=1}^{n} A_{ki} C_{kj}(A) = \\delta_{ij}\\det(A)",
+          "to_latex": "\\det[\\mathbf{a},\\mathbf{b},\\mathbf{c}] = a_1(b_2 c_3 - b_3 c_2) - a_2(b_1 c_3 - b_3 c_1) + a_3(b_1 c_2 - b_2 c_1)",
+          "operation_label": "n=3, 第1列への余因子展開の適用",
+          "explanation": "一般の余因子展開定理を3次正方行列の第1列に適用し、各余因子を2次小行列式で書き下すことで展開公式を得る。",
+          "used_node_ids": [
+            "math.linalg.det05_minor_cofactor_def",
+            "math.linalg.det06_cofactor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det[\\mathbf{a},\\mathbf{b},\\mathbf{c}] = \\sum_{k=1}^{3} A_{k1} C_{k1}(A)",
+          "to_latex": "\\det[\\mathbf{a},\\mathbf{b},\\mathbf{c}] = a_1 M_{11} - a_2 M_{21} + a_3 M_{31}",
+          "operation_label": "第1列に沿った余因子展開と符号の決定",
+          "explanation": "C_{k1} = (-1)^{k+1} M_{k1} の定義を用いて、第1列の成分 a_1, a_2, a_3 と小行列式の交代和に展開する。",
+          "used_node_ids": [
+            "math.linalg.det05_minor_cofactor_def",
+            "math.linalg.det06_cofactor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a_1 M_{11} - a_2 M_{21} + a_3 M_{31}",
+          "to_latex": "a_1(b_2 c_3 - b_3 c_2) - a_2(b_1 c_3 - b_3 c_1) + a_3(b_1 c_2 - b_2 c_1)",
+          "operation_label": "2次小行列式の展開",
+          "explanation": "各2次小行列式 M_{11}, M_{21}, M_{31} を2次の行列式として計算し代入することで、3次行列式の展開公式が得られる。",
+          "used_node_ids": [
+            "math.linalg.det05_minor_cofactor_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
     }
   ]
 }
