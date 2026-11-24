@@ -1174,6 +1174,89 @@
         "linear_algebra",
         "vector_algebra"
       ]
+    },
+    {
+      "id": "math.alg.real_additive_zero_pair_identity",
+      "short_code": "ALG_ZERO_PAIR",
+      "kind": "theorem_formula",
+      "title": "加法逆元の対による積の増分恒等式",
+      "summary": "2つの積の差において中間項の加法逆元対を挿入し分配法則でくくることで、各因数の差を含む和へ分解する代数的恒等式。",
+      "canonical_latex": "a_1 b_1 - a_0 b_0 = a_1 b_1 - a_0 b_1 + a_0 b_1 - a_0 b_0 = (a_1 - a_0)b_1 + a_0(b_1 - b_0)`",
+      "aliases_latex": [
+        "u(t+h)v(t+h) - u(t)v(t) = (u(t+h)-u(t))v(t+h) + u(t)(v(t+h)-v(t))"
+      ],
+      "keywords": [
+        "分配法則",
+        "加法逆元",
+        "積の増分",
+        "恒等式"
+      ],
+      "domain_tags": [
+        "algebra",
+        "calculus"
+      ]
+    },
+    {
+      "id": "math.alg.fraction_numerator_split",
+      "short_code": "ALG_FRAC_SPLIT",
+      "kind": "theorem_formula",
+      "title": "分数の分子の加法分解と積の結合則",
+      "summary": "非零の共通分母をもつ分数の分子の和を2つの分数に分割する法則、および分子の積において除算を一方の因数へ結合させる代数的性質。",
+      "canonical_latex": "\\frac{A + B}{h} = \\frac{A}{h} + \\frac{B}{h},\\quad \\frac{AB}{h} = \\left(\\frac{A}{h}\\right)B = A\\left(\\frac{B}{h}\\right)\\quad (h \\neq 0)`",
+      "aliases_latex": [
+        "(A+B)/h = A/h + B/h"
+      ],
+      "keywords": [
+        "分数",
+        "分配法則",
+        "結合法則",
+        "有理式"
+      ],
+      "domain_tags": [
+        "algebra",
+        "calculus"
+      ]
+    },
+    {
+      "id": "math.calc.limit_linearity_constant",
+      "short_code": "M_LIM_LIN",
+      "kind": "math_boundary",
+      "title": "極限の加法性と定数関数の極限",
+      "summary": "2つの関数の極限がともに有限値として存在するとき和の極限は極限の和に等しく、極限変数に依存しない定数の極限はその定数自身に一致する性質。",
+      "canonical_latex": "\\lim_{h \\to 0}\\big(F(h) + G(h)\\big) = \\lim_{h \\to 0}F(h) + \\lim_{h \\to 0}G(h),\\quad \\lim_{h \\to 0} c = c",
+      "aliases_latex": [
+        "\\lim_{h\\to 0}(F(h)+G(h))=\\lim_{h\\to 0}F(h)+\\lim_{h\\to 0}G(h)"
+      ],
+      "keywords": [
+        "極限",
+        "線形性",
+        "加法性",
+        "定数関数"
+      ],
+      "domain_tags": [
+        "calculus",
+        "analysis"
+      ]
+    },
+    {
+      "id": "math.calc.limit_shift_to_value",
+      "short_code": "M_LIM_SHIFT",
+      "kind": "theorem_formula",
+      "title": "増分の極限の消滅と関数値の極限",
+      "summary": "関数の増分の極限が零に収束するとき、変数を微小変化させた点での関数値の極限が存在して元の点の関数値に一致するという極限の性質。",
+      "canonical_latex": "\\lim_{h \\to 0}\\big(g(t+h) - g(t)\\big) = 0 \\implies \\lim_{h \\to 0} g(t+h) = g(t)`",
+      "aliases_latex": [
+        "\\lim_{h\\to 0} g(t+h) = g(t)"
+      ],
+      "keywords": [
+        "連続性",
+        "極限",
+        "増分"
+      ],
+      "domain_tags": [
+        "calculus",
+        "analysis"
+      ]
     }
   ],
   "derivations": [
@@ -1563,67 +1646,103 @@
         "math.calc.m26_zero_derivative_constant_lemma"
       ],
       "required_math_node_ids": [
-        "math.calc.m16_integral_linearity"
+        "math.calc.m16_integral_linearity",
+        "math.calc.m23_limit_algebra",
+        "math.calc.m36_derivative_linearity",
+        "math.calc.m52_continuous_function_integrability"
       ],
       "assumptions": [
-        "関数 f は閉区間 [a, b] 上で連続かつ微分可能であり、その導関数 f' は [a, b] 上で連続であるとする（f \\in C^1([a, b])）。"
+        "実数 a, b は a < b を満たす。",
+        "関数 f は閉区間 [a, b] 上で C^1 級であり（f \\in C^1([a, b])）、導関数 f' は [a, b] 上で連続であることからリーマン可積分である。",
+        "増分 h は h \\neq 0 かつ x, x+h \\in [a, b] を満たすものとし、h < 0 の場合の区間 [x, x+h] は [x+h, x] を意味する。",
+        "端点 x = a および x = b における微分係数 G'(a), G'(b) はそれぞれ右側極限（h \\to 0^+）および左側極限（h \\to 0^-）として定義される。"
       ],
       "steps": [
         {
-          "step_id": "s1",
+          "step_id": "s1_overview",
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "G(x) := \\int_{a}^{x} f'(t)\\,dt,\\quad f \\in C^1([a,b])",
-          "to_latex": "\\int_{a}^{b} f'(t)\\,dt = f(b) - f(a)",
-          "operation_label": "微積分学の基本定理の導出",
-          "explanation": "上端を変数とする定積分関数 G(x) を定義し、その導関数が G'(x) = f'(x) となること（第1基本定理）を示したのち、元の関数 f(x) との差が定数になることから定積分の値を f(b) - f(a) と決定する。",
-          "used_node_ids": [
-            "math.calc.m20_derivative_definition",
-            "math.calc.m24_integral_interval_additivity",
-            "math.calc.m25_integral_monotonicity_squeeze",
-            "math.calc.m26_zero_derivative_constant_lemma"
-          ],
-          "sympy_check_hint": "integrate(Derivative(f(t), t), (t, a, b)) - (f(b) - f(a)) == 0"
-        },
-        {
-          "step_id": "s1_1",
-          "order": 2,
-          "granularity_level": 2,
-          "parent_step_id": "s1",
           "from_latex": "G(x) := \\int_{a}^{x} f'(t)\\,dt",
-          "to_latex": "\\frac{G(x+h) - G(x)}{h} - f'(x) = \\frac{1}{h}\\int_{x}^{x+h} \\big(f'(t) - f'(x)\\big)\\,dt",
-          "operation_label": "区間加法性と定数積分による差分商の変形",
-          "explanation": "定積分の区間加法性を用いて G(x+h) - G(x) を区間 [x, x+h] 上の単一の積分にまとめ、さらに f'(x) = \\frac{1}{h}\\int_{x}^{x+h} f'(x)\\,dt と表して線形性により被積分関数へ吸収する。",
+          "to_latex": "\\int_{a}^{b} f'(t)\\,dt = f(b) - f(a)",
+          "operation_label": "微積分学の基本定理の証明",
+          "explanation": "上端変数定積分 G(x) を定義して差分商を評価することで G'(x) = f'(x)（第1基本定理）を示し、差関数 G(x) - f(x) が定数となる性質と境界値 G(a) = 0 から第2基本定理を導出する。",
           "used_node_ids": [
             "math.calc.m16_integral_linearity",
-            "math.calc.m24_integral_interval_additivity"
+            "math.calc.m20_derivative_definition",
+            "math.calc.m23_limit_algebra",
+            "math.calc.m24_integral_interval_additivity",
+            "math.calc.m25_integral_monotonicity_squeeze",
+            "math.calc.m26_zero_derivative_constant_lemma",
+            "math.calc.m36_derivative_linearity",
+            "math.calc.m52_continuous_function_integrability"
+          ],
+          "sympy_check_hint": "integrate(Derivative(f(t), t), (t, a, b)) == f(b) - f(a)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G(x) := \\int_{a}^{x} f'(t)\\,dt",
+          "to_latex": "\\frac{G(x+h) - G(x)}{h} = \\frac{1}{h}\\int_{x}^{x+h} f'(t)\\,dt",
+          "operation_label": "区間加法性を用いた差分商の単一積分表示",
+          "explanation": "G(x+h) - G(x) に定積分の区間加法性を適用して区間 [x, x+h] 上の積分にまとめ、非ゼロの h で割ることで差分商を定積分で表す。",
+          "used_node_ids": [
+            "math.calc.m24_integral_interval_additivity",
+            "math.calc.m52_continuous_function_integrability"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s1_1_1",
+          "step_id": "s3_1_1",
           "order": 3,
           "granularity_level": 3,
-          "parent_step_id": "s1_1",
+          "parent_step_id": "s2_1",
+          "from_latex": "G(x) := \\int_{a}^{x} f'(t)\\,dt",
+          "to_latex": "G(x+h) - G(x) = \\int_{a}^{x+h} f'(t)\\,dt - \\int_{a}^{x} f'(t)\\,dt",
+          "operation_label": "上端変数定積分 G(x) の定義の代入",
+          "explanation": "f' \\in C([a,b]) より f' は可積分であるため G(x) と G(x+h) が定まり、定義式を代入して差 G(x+h) - G(x) を書き下す。",
+          "used_node_ids": [
+            "math.calc.m52_continuous_function_integrability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
           "from_latex": "G(x+h) - G(x) = \\int_{a}^{x+h} f'(t)\\,dt - \\int_{a}^{x} f'(t)\\,dt",
           "to_latex": "G(x+h) - G(x) = \\int_{x}^{x+h} f'(t)\\,dt",
           "operation_label": "定積分の区間加法性の適用",
-          "explanation": "積分区間 [a, x+h] と [a, x] の差を、区間加法性により [x, x+h] 上の定積分に書き換える。",
+          "explanation": "区間 [a, x+h] と [a, x] の定積分の差を、定積分の区間加法性によって区間 [x, x+h] 上の1つの定積分にまとめる。",
           "used_node_ids": [
             "math.calc.m24_integral_interval_additivity"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s1_1_2",
-          "order": 4,
+          "step_id": "s3_1_3",
+          "order": 5,
           "granularity_level": 3,
-          "parent_step_id": "s1_1",
-          "from_latex": "\\frac{G(x+h) - G(x)}{h} - f'(x) = \\frac{1}{h}\\int_{x}^{x+h} f'(t)\\,dt - \\frac{1}{h}\\int_{x}^{x+h} f'(x)\\,dt",
+          "parent_step_id": "s2_1",
+          "from_latex": "G(x+h) - G(x) = \\int_{x}^{x+h} f'(t)\\,dt",
+          "to_latex": "\\frac{G(x+h) - G(x)}{h} = \\frac{1}{h}\\int_{x}^{x+h} f'(t)\\,dt",
+          "operation_label": "両辺の h (≠ 0) による割り算",
+          "explanation": "仮定 h \\neq 0 を用いて等式の両辺を h で割り、左辺に差分商を構成する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 6,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{G(x+h) - G(x)}{h} = \\frac{1}{h}\\int_{x}^{x+h} f'(t)\\,dt",
           "to_latex": "\\frac{G(x+h) - G(x)}{h} - f'(x) = \\frac{1}{h}\\int_{x}^{x+h} \\big(f'(t) - f'(x)\\big)\\,dt",
-          "operation_label": "定数積分公式と積分の線形性の適用",
-          "explanation": "積分変数 t に関して定数である f'(x) を区間 [x, x+h] 上の積分で表し、定積分の線形性によって1つの積分に統合する。",
+          "operation_label": "定数積分公式と線形性による誤差積分の構成",
+          "explanation": "両辺から f'(x) を引き、f'(x) を定数関数の積分で書き換えたうえで定積分の線形性により被積分関数を 1 つにまとめる。",
           "used_node_ids": [
             "math.calc.m16_integral_linearity",
             "math.calc.m24_integral_interval_additivity"
@@ -1631,58 +1750,190 @@
           "sympy_check_hint": null
         },
         {
-          "step_id": "s1_2",
-          "order": 5,
-          "granularity_level": 2,
-          "parent_step_id": "s1",
-          "from_latex": "\\frac{G(x+h) - G(x)}{h} - f'(x) = \\frac{1}{h}\\int_{x}^{x+h} \\big(f'(t) - f'(x)\\big)\\,dt",
-          "to_latex": "G'(x) = \\lim_{h \\to 0} \\frac{G(x+h) - G(x)}{h} = f'(x)",
-          "operation_label": "連続性と単調評価による微分係数の決定（第1基本定理）",
-          "explanation": "被積分関数の絶対値を区間上の上限で抑え、f' の連続性とはさみうちの原理によって h \\to 0 の極限で誤差項が 0 に収束することを示し、G'(x) = f'(x) を得る。",
-          "used_node_ids": [
-            "math.calc.m20_derivative_definition",
-            "math.calc.m25_integral_monotonicity_squeeze"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s1_2_1",
-          "order": 6,
-          "granularity_level": 3,
-          "parent_step_id": "s1_2",
-          "from_latex": "\\left|\\frac{G(x+h) - G(x)}{h} - f'(x)\\right| = \\frac{1}{|h|}\\left|\\int_{x}^{x+h} \\big(f'(t) - f'(x)\\big)\\,dt\\right|",
-          "to_latex": "\\left|\\frac{G(x+h) - G(x)}{h} - f'(x)\\right| \\le \\sup_{t \\in [x, x+h]} \\big|f'(t) - f'(x)\\big|",
-          "operation_label": "定積分の三角不等式と上限による評価",
-          "explanation": "定積分の単調性（絶対値不等式）を適用し、区間幅 |h| で割ることで差分商と f'(x) の差を区間上の最大変動量で上から評価する。",
-          "used_node_ids": [
-            "math.calc.m25_integral_monotonicity_squeeze"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s1_2_2",
+          "step_id": "s3_2_1",
           "order": 7,
           "granularity_level": 3,
-          "parent_step_id": "s1_2",
-          "from_latex": "0 \\le \\left|\\frac{G(x+h) - G(x)}{h} - f'(x)\\right| \\le \\sup_{t \\in [x, x+h]} \\big|f'(t) - f'(x)\\big|,\\quad \\lim_{h \\to 0}\\sup_{t \\in [x, x+h]} \\big|f'(t) - f'(x)\\big| = 0",
-          "to_latex": "G'(x) = \\lim_{h \\to 0} \\frac{G(x+h) - G(x)}{h} = f'(x)",
-          "operation_label": "はさみうちの原理と微分係数の定義の適用",
-          "explanation": "導関数 f' の連続性により h \\to 0 で右辺の上限は 0 に収束するため、はさみうちの原理と微分係数の定義から G'(x) = f'(x) が確定する。",
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{G(x+h) - G(x)}{h} = \\frac{1}{h}\\int_{x}^{x+h} f'(t)\\,dt",
+          "to_latex": "\\frac{G(x+h) - G(x)}{h} - f'(x) = \\frac{1}{h}\\int_{x}^{x+h} f'(t)\\,dt - f'(x)",
+          "operation_label": "両辺からの f'(x) の減算",
+          "explanation": "差分商と目標の導関数 f'(x) との差を評価するため、等式の両辺から f'(x) を引く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{G(x+h) - G(x)}{h} - f'(x) = \\frac{1}{h}\\int_{x}^{x+h} f'(t)\\,dt - f'(x)",
+          "to_latex": "\\frac{G(x+h) - G(x)}{h} - f'(x) = \\frac{1}{h}\\int_{x}^{x+h} f'(t)\\,dt - \\frac{1}{h}\\int_{x}^{x+h} f'(x)\\,dt",
+          "operation_label": "定数関数の積分公式の適用",
+          "explanation": "積分変数 t に関して定数である c = f'(x) に定数積分公式 \\int_{x}^{x+h} f'(x)\\,dt = h f'(x) を適用し、f'(x) = \\frac{1}{h}\\int_{x}^{x+h} f'(x)\\,dt として代入する。",
           "used_node_ids": [
-            "math.calc.m20_derivative_definition",
+            "math.calc.m24_integral_interval_additivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{G(x+h) - G(x)}{h} - f'(x) = \\frac{1}{h}\\int_{x}^{x+h} f'(t)\\,dt - \\frac{1}{h}\\int_{x}^{x+h} f'(x)\\,dt",
+          "to_latex": "\\frac{G(x+h) - G(x)}{h} - f'(x) = \\frac{1}{h}\\int_{x}^{x+h} \\big(f'(t) - f'(x)\\big)\\,dt",
+          "operation_label": "定積分の線形性の適用",
+          "explanation": "共通の係数 1/h をくくり、定積分の線形性を用いて 2 つの定積分の差を単一の定積分に統合する。",
+          "used_node_ids": [
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 10,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{G(x+h) - G(x)}{h} - f'(x) = \\frac{1}{h}\\int_{x}^{x+h} \\big(f'(t) - f'(x)\\big)\\,dt",
+          "to_latex": "\\lim_{h \\to 0} \\left(\\frac{G(x+h) - G(x)}{h} - f'(x)\\right) = 0",
+          "operation_label": "絶対値評価とはさみうちの原理による誤差極限の消滅",
+          "explanation": "両辺の絶対値をとって定積分の単調性で上界を評価し、|h| を約分したのち f' の連続性とはさみうちの原理により h \\to 0 の極限が 0 であることを示す。",
+          "used_node_ids": [
             "math.calc.m25_integral_monotonicity_squeeze"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s1_3",
-          "order": 8,
+          "step_id": "s3_3_1",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{G(x+h) - G(x)}{h} - f'(x) = \\frac{1}{h}\\int_{x}^{x+h} \\big(f'(t) - f'(x)\\big)\\,dt",
+          "to_latex": "\\left|\\frac{G(x+h) - G(x)}{h} - f'(x)\\right| = \\frac{1}{|h|}\\left|\\int_{x}^{x+h} \\big(f'(t) - f'(x)\\big)\\,dt\\right|",
+          "operation_label": "両辺の絶対値の適用",
+          "explanation": "等式の両辺の絶対値をとり、積の絶対値の性質 |ab| = |a||b| を用いて 1/|h| を積分の外に出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\left|\\frac{G(x+h) - G(x)}{h} - f'(x)\\right| = \\frac{1}{|h|}\\left|\\int_{x}^{x+h} \\big(f'(t) - f'(x)\\big)\\,dt\\right|",
+          "to_latex": "\\left|\\frac{G(x+h) - G(x)}{h} - f'(x)\\right| \\le \\frac{|h|}{|h|}\\sup_{t \\in [x, x+h]} \\big|f'(t) - f'(x)\\big|",
+          "operation_label": "定積分の単調性（三角不等式）の適用",
+          "explanation": "被積分関数 \\Delta(t) = f'(t) - f'(x) に対して定積分の単調性（絶対値不等式）を適用し、積分値の絶対値を区間幅 |h| と区間上の絶対値上限の積で上から抑える。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\left|\\frac{G(x+h) - G(x)}{h} - f'(x)\\right| \\le \\frac{|h|}{|h|}\\sup_{t \\in [x, x+h]} \\big|f'(t) - f'(x)\\big|",
+          "to_latex": "0 \\le \\left|\\frac{G(x+h) - G(x)}{h} - f'(x)\\right| \\le \\sup_{t \\in [x, x+h]} \\big|f'(t) - f'(x)\\big|",
+          "operation_label": "非ゼロ因子 |h| の約分と非負下界の明示",
+          "explanation": "h \\neq 0 より |h| > 0 であるため分母・分子の |h| を約分し、さらに絶対値の非負性から下界 0 を明示してはさみうちの不等式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "0 \\le \\left|\\frac{G(x+h) - G(x)}{h} - f'(x)\\right| \\le \\sup_{t \\in [x, x+h]} \\big|f'(t) - f'(x)\\big|",
+          "to_latex": "\\lim_{h \\to 0} \\left(\\frac{G(x+h) - G(x)}{h} - f'(x)\\right) = 0",
+          "operation_label": "f' の連続性とはさみうちの原理の適用",
+          "explanation": "f' が [a, b] 上で連続であることから \\lim_{h \\to 0} \\sup_{t \\in [x, x+h]} |f'(t) - f'(x)| = 0 が成り立つため、はさみうちの原理により絶対値の中身も h \\to 0 で 0 に収束する。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 15,
           "granularity_level": 2,
-          "parent_step_id": "s1",
-          "from_latex": "\\forall x \\in [a,b],\\quad G'(x) = f'(x)",
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{h \\to 0} \\left(\\frac{G(x+h) - G(x)}{h} - f'(x)\\right) = 0",
+          "to_latex": "\\Phi'(x) = 0\\quad \\big(\\Phi(x) := G(x) - f(x),\\; \\forall x \\in [a,b]\\big)",
+          "operation_label": "第1基本定理の導出と差関数 Φ(x) の導関数の評価",
+          "explanation": "極限の加法性と導関数の定義から G'(x) = f'(x)（第1基本定理）を確定させ、差関数 \\Phi(x) := G(x) - f(x) の導関数が区間上で恒等的に 0 であることを導く。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m23_limit_algebra",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\lim_{h \\to 0} \\left(\\frac{G(x+h) - G(x)}{h} - f'(x)\\right) = 0",
+          "to_latex": "\\lim_{h \\to 0} \\frac{G(x+h) - G(x)}{h} = f'(x)",
+          "operation_label": "極限の加法性による定数項 f'(x) の移項",
+          "explanation": "h に関して定数である f'(x) の極限 \\lim_{h \\to 0} f'(x) = f'(x) が存在するため、極限の線形性（和の極限法則）により差分商の極限が f'(x) に等しいことを得る。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\lim_{h \\to 0} \\frac{G(x+h) - G(x)}{h} = f'(x)",
+          "to_latex": "G'(x) = f'(x)\\quad (\\forall x \\in [a,b])",
+          "operation_label": "導関数の定義の適用（第1基本定理）",
+          "explanation": "差分商の h \\to 0 における極限は導関数 G'(x) の定義そのものであるため、任意の x \\in [a, b]（端点では片側微分）に対して G'(x) = f'(x) が確定する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "G'(x) = f'(x)\\quad (\\forall x \\in [a,b])",
+          "to_latex": "\\Phi'(x) = G'(x) - f'(x)\\quad \\big(\\Phi(x) := G(x) - f(x),\\; \\forall x \\in [a,b]\\big)",
+          "operation_label": "差関数 Φ(x) := G(x) - f(x) の導入と微分の線形性の適用",
+          "explanation": "差関数 \\Phi(x) := G(x) - f(x) を定義し、G と f がともに [a, b] 上で微分可能であることから微分の線形性を適用して \\Phi'(x) = G'(x) - f'(x) を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": "diff(G(x) - f(x), x) == diff(G(x), x) - diff(f(x), x)"
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 19,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\Phi'(x) = G'(x) - f'(x)\\quad \\big(\\Phi(x) := G(x) - f(x),\\; \\forall x \\in [a,b]\\big)",
+          "to_latex": "\\Phi'(x) = 0\\quad \\big(\\Phi(x) := G(x) - f(x),\\; \\forall x \\in [a,b]\\big)",
+          "operation_label": "第1基本定理 G'(x) = f'(x) の代入",
+          "explanation": "第1基本定理で得られた関係式 G'(x) = f'(x) を \\Phi'(x) = G'(x) - f'(x) に代入し、\\Phi'(x) = f'(x) - f'(x) = 0 を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "diff(f(x), x) - diff(f(x), x) == 0"
+        },
+        {
+          "step_id": "s2_5",
+          "order": 20,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Phi'(x) = 0\\quad \\big(\\Phi(x) := G(x) - f(x),\\; \\forall x \\in [a,b]\\big)",
           "to_latex": "\\int_{a}^{b} f'(t)\\,dt = f(b) - f(a)",
-          "operation_label": "原始関数の差の定数性と境界条件による定積分の評価（第2基本定理）",
-          "explanation": "\\Phi(x) := G(x) - f(x) の導関数が区間上で恒等的に 0 であることから G(x) - f(x) = C（定数）を得て、x=a と x=b を代入して定数 C を消去する。",
+          "operation_label": "原始関数の定数性と境界値代入による第2基本定理の導出",
+          "explanation": "\\Phi'(x) = 0 より G(x) - f(x) = C（定数）を得て、x = a で定数 C を決定し、x = b を代入して移項することで微積分学の基本定理を完結させる。",
           "used_node_ids": [
             "math.calc.m24_integral_interval_additivity",
             "math.calc.m26_zero_derivative_constant_lemma"
@@ -1690,35 +1941,60 @@
           "sympy_check_hint": null
         },
         {
-          "step_id": "s1_3_1",
-          "order": 9,
+          "step_id": "s3_5_1",
+          "order": 21,
           "granularity_level": 3,
-          "parent_step_id": "s1_3",
-          "from_latex": "\\Phi(x) := G(x) - f(x) \\implies \\Phi'(x) = G'(x) - f'(x) = 0",
-          "to_latex": "G(x) - f(x) = C\\quad (\\forall x \\in [a,b])",
-          "operation_label": "導関数が零の関数の定数性補題の適用",
-          "explanation": "区間 [a, b] 上で \\Phi'(x) = 0 が成り立つため、平均値の定理の系により G(x) - f(x) は定数 C となる。",
+          "parent_step_id": "s2_5",
+          "from_latex": "\\Phi'(x) = 0\\quad \\big(\\Phi(x) := G(x) - f(x),\\; \\forall x \\in [a,b]\\big)",
+          "to_latex": "G(x) - f(x) = C\\quad (\\forall x \\in [a,b],\\; C \\text{ は定数})",
+          "operation_label": "導関数が恒等的に零の関数の定数性補題の適用",
+          "explanation": "閉区間 [a, b] 上のすべての x で \\Phi'(x) = 0 が成り立つため、平均値の定理の系より \\Phi(x) = G(x) - f(x) は区間上で定数 C に等しい。",
           "used_node_ids": [
             "math.calc.m26_zero_derivative_constant_lemma"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s1_3_2",
-          "order": 10,
+          "step_id": "s3_5_2",
+          "order": 22,
           "granularity_level": 3,
-          "parent_step_id": "s1_3",
-          "from_latex": "G(a) = \\int_{a}^{a} f'(t)\\,dt = 0,\\quad C = G(a) - f(a) = -f(a)",
-          "to_latex": "\\int_{a}^{b} f'(t)\\,dt = G(b) = f(b) + C = f(b) - f(a)",
-          "operation_label": "下端 x=a と上端 x=b の代入による定数決定",
-          "explanation": "x = a を代入すると幅 0 の積分から G(a) = 0 となって C = -f(a) が決まり、次いで x = b を代入することで G(b) = f(b) - f(a) を得る。",
+          "parent_step_id": "s2_5",
+          "from_latex": "G(x) - f(x) = C\\quad (\\forall x \\in [a,b],\\; C \\text{ は定数})",
+          "to_latex": "G(x) - f(x) = -f(a)\\quad (\\forall x \\in [a,b])",
+          "operation_label": "下端 x = a の代入と幅零積分による定数 C の決定",
+          "explanation": "x = a を代入すると C = G(a) - f(a) となり、定積分の区間加法性において x = a, h = 0 としたときの幅零積分 G(a) = \\int_{a}^{a} f'(t)\\,dt = 0 から C = -f(a) が決まるため、これを元の関係式に代入する。",
           "used_node_ids": [
-            "math.calc.m24_integral_interval_additivity",
-            "math.calc.m26_zero_derivative_constant_lemma"
+            "math.calc.m24_integral_interval_additivity"
           ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_3",
+          "order": 23,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "G(x) - f(x) = -f(a)\\quad (\\forall x \\in [a,b])",
+          "to_latex": "\\int_{a}^{b} f'(t)\\,dt - f(b) = -f(a)",
+          "operation_label": "上端 x = b の代入と G(b) の定義展開",
+          "explanation": "等式 G(x) - f(x) = -f(a) に上端 x = b を代入し、G(b) の定義式 \\int_{a}^{b} f'(t)\\,dt を戻す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_4",
+          "order": 24,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\int_{a}^{b} f'(t)\\,dt - f(b) = -f(a)",
+          "to_latex": "\\int_{a}^{b} f'(t)\\,dt = f(b) - f(a)",
+          "operation_label": "項 -f(b) の右辺への移項",
+          "explanation": "両辺に f(b) を加えて左辺の -f(b) を右辺へ移項し、微積分学の基本定理の結論式を得る。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-24T01:55:57.622476+00:00"
     },
     {
       "id": "deriv.math.vec.m03_dot_cross_product.component_leibniz",
@@ -7243,6 +7519,275 @@
           "sympy_check_hint": null
         }
       ]
+    },
+    {
+      "id": "deriv_m15_product_rule_deductive",
+      "target_node_id": "math.calc.m15_product_rule",
+      "route_kind": "deductive",
+      "title": "導関数の定義と増分分解による積の微分法（ライプニッツの法則）の導出",
+      "premise_node_ids": [
+        "math.calc.m20_derivative_definition",
+        "math.calc.m22_differentiability_implies_continuity",
+        "math.calc.m23_limit_algebra",
+        "math.alg.real_additive_zero_pair_identity",
+        "math.alg.fraction_numerator_split",
+        "math.calc.limit_linearity_constant",
+        "math.calc.limit_shift_to_value"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "実関数 u および v は開区間上で時刻 t において微分可能であり、導関数 \\dot{u}(t) および \\dot{v}(t) が有限値として存在する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d}{dt}\\Big(u(t)v(t)\\Big)`",
+          "to_latex": "\\dot{u}(t)v(t) + u(t)\\dot{v}(t)`",
+          "operation_label": "導関数の定義に基づく積の微分法則の全体導出",
+          "explanation": "積関数 u(t)v(t) に対して導関数の定義を適用し、分子の増分を中間項の挿抜によって分解したのち、極限の加法性・乗法性および微分可能関数の連続性を用いて各関数の導関数と関数値の積の和を導く。",
+          "used_node_ids": [
+            "math.alg.fraction_numerator_split",
+            "math.alg.real_additive_zero_pair_identity",
+            "math.calc.limit_linearity_constant",
+            "math.calc.limit_shift_to_value",
+            "math.calc.m20_derivative_definition",
+            "math.calc.m22_differentiability_implies_continuity",
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": "diff(u(t)*v(t), t) == diff(u(t), t)*v(t) + u(t)*diff(v(t), t)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\Big(u(t)v(t)\\Big)`",
+          "to_latex": "\\lim_{h \\to 0} \\frac{u(t+h)v(t+h) - u(t)v(t)}{h}`",
+          "operation_label": "導関数の定義による積の差分商の極限表示",
+          "explanation": "積の微分を導関数の定義に従って差分商の極限として書き表し、各点での積関数の値に展開する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{d}{dt}\\Big(u(t)v(t)\\Big)`",
+          "to_latex": "\\lim_{h \\to 0} \\frac{(uv)(t+h) - (uv)(t)}{h}`",
+          "operation_label": "導関数の定義を積関数 uv に適用",
+          "explanation": "関数 uv に対して導関数の定義式を適用し、微小増分 h に関する差分商の極限へ書き換える。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\lim_{h \\to 0} \\frac{(uv)(t+h) - (uv)(t)}{h}`",
+          "to_latex": "\\lim_{h \\to 0} \\frac{u(t+h)v(t+h) - u(t)v(t)}{h}`",
+          "operation_label": "点ごとの積の定義 (uv)(s)=u(s)v(s) を代入",
+          "explanation": "各時刻 t+h および t における積関数 (uv) の値を関数 u と v の値の積として具体的に書き下す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 5,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{h \\to 0} \\frac{u(t+h)v(t+h) - u(t)v(t)}{h}`",
+          "to_latex": "\\lim_{h \\to 0} \\left(\\frac{u(t+h) - u(t)}{h}v(t+h) + u(t)\\frac{v(t+h) - v(t)}{h}\\right)`",
+          "operation_label": "分子の増分分解と差分商の分離",
+          "explanation": "分子に中間項の加法逆元対を挿入して分配法則でくくり、分数の分割と結合則により u と v それぞれの差分商を分離する。",
+          "used_node_ids": [
+            "math.alg.fraction_numerator_split",
+            "math.alg.real_additive_zero_pair_identity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\lim_{h \\to 0} \\frac{u(t+h)v(t+h) - u(t)v(t)}{h}`",
+          "to_latex": "\\lim_{h \\to 0} \\frac{u(t+h)v(t+h) - u(t)v(t+h) + u(t)v(t+h) - u(t)v(t)}{h}`",
+          "operation_label": "分子に加法逆元の対 -u(t)v(t+h)+u(t)v(t+h) を挿入",
+          "explanation": "分子の値を変えないように、互いに打ち消し合う 2 項 -u(t)v(t+h) と +u(t)v(t+h) を分子の中央に加える。",
+          "used_node_ids": [
+            "math.alg.real_additive_zero_pair_identity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 7,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\lim_{h \\to 0} \\frac{u(t+h)v(t+h) - u(t)v(t+h) + u(t)v(t+h) - u(t)v(t)}{h}`",
+          "to_latex": "\\lim_{h \\to 0} \\frac{\\big(u(t+h) - u(t)\\big)v(t+h) + u(t)\\big(v(t+h) - v(t)\\big)}{h}`",
+          "operation_label": "共通因数 v(t+h) と u(t) をそれぞれくくり出し",
+          "explanation": "前半の 2 項から共通因数 v(t+h) を、後半の 2 項から共通因数 u(t) を分配法則の逆向き適用によってくくり出す。",
+          "used_node_ids": [
+            "math.alg.real_additive_zero_pair_identity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\lim_{h \\to 0} \\frac{\\big(u(t+h) - u(t)\\big)v(t+h) + u(t)\\big(v(t+h) - v(t)\\big)}{h}`",
+          "to_latex": "\\lim_{h \\to 0} \\left(\\frac{\\big(u(t+h) - u(t)\\big)v(t+h)}{h} + \\frac{u(t)\\big(v(t+h) - v(t)\\big)}{h}\\right)`",
+          "operation_label": "分子の和に基づき分数を 2 項へ分割",
+          "explanation": "h が非零のもとで、分子の 2 つの加数の和を共通分母 h をもつ 2 つの分数の和へと分解する。",
+          "used_node_ids": [
+            "math.alg.fraction_numerator_split"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\lim_{h \\to 0} \\left(\\frac{\\big(u(t+h) - u(t)\\big)v(t+h)}{h} + \\frac{u(t)\\big(v(t+h) - v(t)\\big)}{h}\\right)`",
+          "to_latex": "\\lim_{h \\to 0} \\left(\\frac{u(t+h) - u(t)}{h}v(t+h) + u(t)\\frac{v(t+h) - v(t)}{h}\\right)`",
+          "operation_label": "分数の積の結合則により差分商と関数値因子を分離",
+          "explanation": "第 1 項では分母 h を u(t+h)-u(t) の側に、第 2 項では分母 h を v(t+h)-v(t) の側に結合させ、各関数の差分商を独立な因数として表す。",
+          "used_node_ids": [
+            "math.alg.fraction_numerator_split"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 10,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{h \\to 0} \\left(\\frac{u(t+h) - u(t)}{h}v(t+h) + u(t)\\frac{v(t+h) - v(t)}{h}\\right)`",
+          "to_latex": "\\left(\\lim_{h \\to 0} \\frac{u(t+h) - u(t)}{h}\\right)\\left(\\lim_{h \\to 0} v(t+h)\\right) + u(t)\\left(\\lim_{h \\to 0} \\frac{v(t+h) - v(t)}{h}\\right)`",
+          "operation_label": "極限の線形性と積の極限法則の適用",
+          "explanation": "極限の存在を確認したうえで、和の極限を極限の和に、積の極限を極限の積に分解し、h に依存しない定数因子 u(t) を極限の外へ評価する。",
+          "used_node_ids": [
+            "math.calc.limit_linearity_constant",
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\lim_{h \\to 0} \\left(\\frac{u(t+h) - u(t)}{h}v(t+h) + u(t)\\frac{v(t+h) - v(t)}{h}\\right)`",
+          "to_latex": "\\lim_{h \\to 0} \\left(\\frac{u(t+h) - u(t)}{h}v(t+h)\\right) + \\lim_{h \\to 0} \\left(u(t)\\frac{v(t+h) - v(t)}{h}\\right)`",
+          "operation_label": "極限の加法性により和の極限を分解",
+          "explanation": "各項の極限がそれぞれ存在するため、極限の加法性を適用して全体の極限を 2 つの項の極限の和に分ける。",
+          "used_node_ids": [
+            "math.calc.limit_linearity_constant"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\lim_{h \\to 0} \\left(\\frac{u(t+h) - u(t)}{h}v(t+h)\\right) + \\lim_{h \\to 0} \\left(u(t)\\frac{v(t+h) - v(t)}{h}\\right)`",
+          "to_latex": "\\left(\\lim_{h \\to 0} \\frac{u(t+h) - u(t)}{h}\\right)\\left(\\\\lim_{h \\to 0} v(t+h)\\right) + \\left(\\lim_{h \\to 0} u(t)\\right)\\left(\\lim_{h \\to 0} \\frac{v(t+h) - v(t)}{h}\\right)`",
+          "operation_label": "極限の乗法性により積の極限を各因数の極限の積へ分解",
+          "explanation": "各因数の極限がいずれも存在するため、極限の積の法則を適用してそれぞれの積の極限を極限同士の積に分解する。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\left(\\lim_{h \\to 0} \\frac{u(t+h) - u(t)}{h}\\right)\\left(\\lim_{h \\to 0} v(t+h)\\right) + \\left(\\lim_{h \\to 0} u(t)\\right)\\left(\\lim_{h \\to 0} \\frac{v(t+h) - v(t)}{h}\\right)`",
+          "to_latex": "\\left(\\lim_{h \\to 0} \\frac{u(t+h) - u(t)}{h}\\right)\\left(\\lim_{h \\to 0} v(t+h)\\right) + u(t)\\left(\\lim_{h \\to 0} \\frac{v(t+h) - v(t)}{h}\\right)`",
+          "operation_label": "極限変数 h に依存しない因子 u(t) の極限を評価",
+          "explanation": "u(t) は極限変数 h に関して定数であるため、定数関数の極限公式により \\lim_{h \\to 0} u(t) を u(t) に置き換える。",
+          "used_node_ids": [
+            "math.calc.limit_linearity_constant"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 14,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\lim_{h \\to 0} \\frac{u(t+h) - u(t)}{h}\\right)\\left(\\lim_{h \\to 0} v(t+h)\\right) + u(t)\\left(\\lim_{h \\to 0} \\frac{v(t+h) - v(t)}{h}\\right)`",
+          "to_latex": "\\dot{u}(t)v(t) + u(t)\\dot{v}(t)`",
+          "operation_label": "連続性による極限値評価と導関数定義への帰着",
+          "explanation": "v の微分可能性から連続性を用いて \\lim_{h \\to 0} v(t+h) = v(t) を確定させ、さらに u および v の差分商の極限を導関数の定義により \\dot{u}(t) と \\dot{v}(t) へ書き換える。",
+          "used_node_ids": [
+            "math.calc.limit_shift_to_value",
+            "math.calc.m20_derivative_definition",
+            "math.calc.m22_differentiability_implies_continuity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\left(\\lim_{h \\to 0} \\frac{u(t+h) - u(t)}{h}\\right)\\left(\\lim_{h \\to 0} v(t+h)\\right) + u(t)\\left(\\lim_{h \\to 0} \\frac{v(t+h) - v(t)}{h}\\right)`",
+          "to_latex": "\\left(\\lim_{h \\to 0} \\frac{u(t+h) - u(t)}{h}\\right)v(t) + u(t)\\left(\\lim_{h \\to 0} \\frac{v(t+h) - v(t)}{h}\\right)`",
+          "operation_label": "v の微分可能性と連続性により \\lim_{h\\to 0}v(t+h)=v(t) を適用",
+          "explanation": "v は時刻 t で微分可能であるため \\lim_{h\\to 0}(v(t+h)-v(t))=0 が成り立ち、増分の極限の消滅と関数値の極限の定理から \\lim_{h\\to 0}v(t+h) を v(t) に置き換える。",
+          "used_node_ids": [
+            "math.calc.limit_shift_to_value",
+            "math.calc.m22_differentiability_implies_continuity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\left(\\lim_{h \\to 0} \\frac{u(t+h) - u(t)}{h}\\right)v(t) + u(t)\\left(\\lim_{h \\to 0} \\frac{v(t+h) - v(t)}{h}\\right)`",
+          "to_latex": "\\dot{u}(t)v(t) + u(t)\\left(\\lim_{h \\to 0} \\frac{v(t+h) - v(t)}{h}\\right)`",
+          "operation_label": "u の差分商の極限に導関数の定義を適用",
+          "explanation": "第 1 項の差分商の極限を、導関数の定義に従って関数 u の時刻 t における時間導関数 \\dot{u}(t) に置き換える。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\dot{u}(t)v(t) + u(t)\\left(\\lim_{h \\to 0} \\frac{v(t+h) - v(t)}{h}\\right)`",
+          "to_latex": "\\dot{u}(t)v(t) + u(t)\\dot{v}(t)`",
+          "operation_label": "v の差分商の極限に導関数の定義を適用",
+          "explanation": "第 2 項の差分商の極限を、導関数の定義に従って関数 v の時刻 t における時間導関数 \\dot{v}(t) に置き換える。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ],
+      "rigor_version": 2
     }
   ]
 }
