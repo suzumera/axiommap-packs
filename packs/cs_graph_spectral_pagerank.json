@@ -1,0 +1,782 @@
+{
+  "pack_meta": {
+    "pack_id": "cs.graph.spectral_pagerank",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "computer_science",
+    "title": "スペクトルグラフ理論：グラフラプラシアン・チーガー不等式とPageRank",
+    "language": "ja",
+    "description": "隣接行列とグラフラプラシアン L=D-A、代数的連結度（フィードラー値）、スペクトルクラスタリング、ランダムウォークとPageRankの定常分布を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "cs.sgt.n01_adjacency_degree_laplacian",
+      "short_code": "SGT01",
+      "kind": "definition",
+      "title": "重み付き無向グラフの隣接行列・次数行列とグラフラプラシアンの定義",
+      "summary": "無向グラフの隣接行列 A と各頂点の次数を対角成分とする次数行列 D から、非正規化グラフラプラシアン L = D - A を差分作用素として定義する。",
+      "canonical_latex": "L := D - A,\\quad D_{ii} := d_i = \\sum_{j=1}^{N} A_{ij},\\quad A_{ij} = A_{ji} \\ge 0,\\quad (L\\mathbf{x})_i = \\sum_{j=1}^{N} A_{ij}(x_i - x_j)",
+      "aliases_latex": [
+        "L = D - W",
+        "(Lf)_i = \\sum_{j \\sim i} w_{ij}(f_i - f_j)"
+      ],
+      "keywords": [
+        "グラフラプラシアン",
+        "隣接行列",
+        "次数行列",
+        "差分作用素",
+        "スペクトルグラフ理論"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "graph_theory",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "cs.sgt.n02_laplacian_quadratic_form",
+      "short_code": "SGT02",
+      "kind": "theorem_formula",
+      "title": "グラフラプラシアンの2次形式と半正定値性・連結成分数の定理",
+      "summary": "グラフラプラシアンの2次形式が辺上の差の2乗和に等しく非負（半正定値）であること、および固有値 0 の重複度がグラフの連結成分数に一致することを示す定理。",
+      "canonical_latex": "\\mathbf{x}^\\top L \\mathbf{x} = \\frac{1}{2}\\sum_{i=1}^{N}\\sum_{j=1}^{N} A_{ij}(x_i - x_j)^2 \\ge 0,\\quad 0 = \\lambda_1 \\le \\lambda_2 \\le \\dots \\le \\lambda_N,\\quad \\dim\\ker(L) = \\#\\text{connected components}",
+      "aliases_latex": [
+        "\\mathbf{x}^\\top L \\mathbf{x} = \\sum_{\\{i,j\\}\\in E} w_{ij}(x_i - x_j)^2"
+      ],
+      "keywords": [
+        "2次形式",
+        "半正定値行列",
+        "ディリクレエネルギー",
+        "連結成分数",
+        "零固有値"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "graph_theory",
+        "linear_algebra"
+      ]
+    },
+    {
+      "id": "cs.sgt.n03_normalized_laplacian",
+      "short_code": "SGT03",
+      "kind": "definition",
+      "title": "対称正規化グラフラプラシアンとランダムウォーク正規化ラプラシアンの定義",
+      "summary": "頂点次数の不均一性を補正するため次数行列 D で正規化した対称正規化ラプラシアン L_sym とランダムウォーク正規化ラプラシアン L_rw を定義し、両者が相似で固有値を [0, 2] に持つことを示す。",
+      "canonical_latex": "L_{\\mathrm{sym}} := D^{-1/2} L D^{-1/2} = I - D^{-1/2} A D^{-1/2},\\quad L_{\\mathrm{rw}} := D^{-1} L = I - D^{-1} A,\\quad 0 = \\nu_1 \\le \\nu_2 \\le \\dots \\le \\nu_N \\le 2",
+      "aliases_latex": [
+        "\\mathcal{L} = I - D^{-1/2}AD^{-1/2}",
+        "L_{\\mathrm{rw}} = I - P"
+      ],
+      "keywords": [
+        "正規化グラフラプラシアン",
+        "対称正規化",
+        "ランダムウォークラプラシアン",
+        "固有値範囲"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "graph_theory",
+        "spectral_methods"
+      ]
+    },
+    {
+      "id": "cs.sgt.n04_fiedler_value_connectivity",
+      "short_code": "SGT04",
+      "kind": "theorem_formula",
+      "title": "代数的連結度（フィードラー値）のレイリー商変分表現",
+      "summary": "グラフラプラシアンの第2最小固有値（代数的連結度・フィードラー値）が、全1ベクトルに直交する空間上でのレイリー商の最小値として変分的に特徴付けられることを示す定理。",
+      "canonical_latex": "\\lambda_2(L) = \\min_{\\mathbf{x} \\neq \\mathbf{0},\\; \\mathbf{x} \\perp \\mathbf{1}} \\frac{\\mathbf{x}^\\top L \\mathbf{x}}{\\mathbf{x}^\\top \\mathbf{x}} = \\min_{\\mathbf{x} \\neq \\mathbf{0},\\; \\sum_i x_i = 0} \\frac{\\sum_{\\{i,j\\}\\in E} A_{ij}(x_i - x_j)^2}{\\sum_{i=1}^{N} x_i^2}",
+      "aliases_latex": [
+        "a(G) = \\lambda_2(L)"
+      ],
+      "keywords": [
+        "代数的連結度",
+        "フィードラー値",
+        "フィードラーベクトル",
+        "レイリー商",
+        "クーラン＝フィッシャーの定理"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "graph_theory",
+        "optimization"
+      ]
+    },
+    {
+      "id": "cs.sgt.n05_cheeger_inequality",
+      "short_code": "SGT05",
+      "kind": "theorem_formula",
+      "title": "グラフのコンダクタンスとチーガー不等式（Cheeger's Inequality）",
+      "summary": "グラフのボトルネックの指標であるコンダクタンス（チーガー定数）h(G) が、正規化ラプラシアンの第2最小固有値 ν_2 によって上下から評価されることを示す基本不等式。",
+      "canonical_latex": "h(G) := \\min_{\\emptyset \\subsetneq S \\subsetneq V} \\frac{|\\partial S|}{\\min(\\mathrm{vol}(S), \\mathrm{vol}(V\\setminus S))},\\qquad \\frac{h(G)^2}{2} \\le \\nu_2(L_{\\mathrm{sym}}) \\le 2 h(G)",
+      "aliases_latex": [
+        "\\frac{\\nu_2}{2} \\le h(G) \\le \\sqrt{2\\nu_2}"
+      ],
+      "keywords": [
+        "チーガー不等式",
+        "コンダクタンス",
+        "エクスパンダーグラフ",
+        "スペクトルギャップ",
+        "スイープカット"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "graph_theory",
+        "algorithms"
+      ]
+    },
+    {
+      "id": "cs.sgt.n06_spectral_clustering_cut",
+      "short_code": "SGT06",
+      "kind": "theorem_formula",
+      "title": "正規化カット（NCut）最小化の連続緩和とスペクトルクラスタリング",
+      "summary": "離散組合せ最適化問題である正規化カット（NCut）最小化を指示ベクトルで定式化し、整数制約を連続緩和することで正規化ラプラシアンの第2固有ベクトル問題に帰着する定理。",
+      "canonical_latex": "\\mathrm{NCut}(A, \\bar{A}) := \\mathrm{cut}(A,\\bar{A})\\left(\\frac{1}{\\mathrm{vol}(A)} + \\frac{1}{\\mathrm{vol}(\\bar{A})}\\right) = \\frac{\\mathbf{f}^\\top L \\mathbf{f}}{\\mathbf{f}^\\top D \\mathbf{f}},\\quad \\min_{\\mathbf{f}\\in\\mathbb{R}^N,\\; \\mathbf{f}^\\top D\\mathbf{1}=0} \\frac{\\mathbf{f}^\\top L \\mathbf{f}}{\\mathbf{f}^\\top D \\mathbf{f}} = \\nu_2(L_{\\mathrm{sym}})",
+      "aliases_latex": [
+        "\\mathrm{RatioCut}(A,\\bar{A}) = \\mathrm{cut}(A,\\bar{A})\\left(\\frac{1}{|A|} + \\frac{1}{|\\bar{A}|}\\right)"
+      ],
+      "keywords": [
+        "スペクトルクラスタリング",
+        "正規化カット",
+        "NCut",
+        "連続緩和",
+        "グラフ分割"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "machine_learning",
+        "graph_theory"
+      ]
+    },
+    {
+      "id": "cs.sgt.n07_graph_random_walk_stationary",
+      "short_code": "SGT07",
+      "kind": "theorem_formula",
+      "title": "無向グラフ上のランダムウォーク遷移行列と定常分布の定理",
+      "summary": "無向グラフ上の単純ランダムウォークの遷移確率行列を P_rw = D^{-1}A で定義し、各頂点の定常確率が次数に比例する π_i = d_i / (2|E|) で与えられることを導出する定理。",
+      "canonical_latex": "P_{\\mathrm{rw}} := D^{-1}A = I - L_{\\mathrm{rw}},\\quad M := P_{\\mathrm{rw}}^\\top = A D^{-1},\\quad \\pi_i = \\frac{d_i}{\\sum_{j=1}^{N} d_j} = \\frac{d_i}{2|E|} \\implies M\\boldsymbol{\\pi} = \\boldsymbol{\\pi}",
+      "aliases_latex": [
+        "\\boldsymbol{\\pi}^\\top P_{\\mathrm{rw}} = \\boldsymbol{\\pi}^\\top"
+      ],
+      "keywords": [
+        "ランダムウォーク",
+        "定常分布",
+        "マルコフ連鎖",
+        "詳細釣合条件",
+        "遷移確率行列"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "probability",
+        "graph_theory"
+      ]
+    },
+    {
+      "id": "cs.sgt.n08_personalized_pagerank_laplacian",
+      "short_code": "SGT08",
+      "kind": "theorem_formula",
+      "title": "PageRank定常分布の線形方程式表現とテレポート付きランダムウォーク",
+      "summary": "ダンピングファクタ d を伴う PageRank 定常分布が、線形方程式系 (I - dM)r = ((1-d)/N)1 の唯一解であり、ランダムウォークの再起動（ノイマン級数展開）と等価であることを示す定理。",
+      "canonical_latex": "\\mathbf{r} = d M \\mathbf{r} + \\frac{1-d}{N}\\mathbf{1} \\iff (I - d M)\\mathbf{r} = \\frac{1-d}{N}\\mathbf{1} \\iff \\mathbf{r} = \\frac{1-d}{N}\\sum_{t=0}^{\\infty} (d M)^t \\mathbf{1}",
+      "aliases_latex": [
+        "\\left(I - d A D^{-1}\\right)\\mathbf{r} = \\frac{1-d}{N}\\mathbf{1}"
+      ],
+      "keywords": [
+        "PageRank",
+        "テレポート",
+        "ノイマン級数",
+        "ランダムサーファーモデル",
+        "定常分布"
+      ],
+      "domain_tags": [
+        "computer_science",
+        "algorithms",
+        "graph_theory"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_sgt01_laplacian_def",
+      "target_node_id": "cs.sgt.n01_adjacency_degree_laplacian",
+      "route_kind": "reformulation",
+      "title": "隣接行列と次数表現からグラフラプラシアンおよび差分作用素の定義へ",
+      "premise_node_ids": [
+        "soc.net.n01_social_network_boundary",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [
+        "cs.sgt.n01_adjacency_degree_laplacian",
+        "math.alg.finite_sum_linearity"
+      ],
+      "assumptions": [
+        "頂点数 N の有限無向グラフであり、辺重み A_{ij} = A_{ji} >= 0 を持つ。",
+        "自己ループがないか、あっても L = D - A で相殺される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def_matrices",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "G=(V,E),\\; d_i = \\sum_{j=1}^{N} A_{ij}",
+          "to_latex": "D := \\mathrm{diag}(d_1,\\dots,d_N),\\quad L := D - A",
+          "operation_label": "次数行列とグラフラプラシアンの定義",
+          "explanation": "各頂点の重み付き次数 d_i を対角成分に並べた次数行列 D を定義し、L := D - A により非正規化グラフラプラシアンを導入する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "soc.net.n01_social_network_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_diff_operator",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "D := \\mathrm{diag}(d_1,\\dots,d_N),\\quad L := D - A",
+          "to_latex": "(L\\mathbf{x})_i = d_i x_i - \\sum_{j=1}^{N} A_{ij} x_j = \\sum_{j=1}^{N} A_{ij}(x_i - x_j)",
+          "operation_label": "成分ごとの差分作用素表現への書き換え",
+          "explanation": "d_i = \\sum_j A_{ij} を代入してまとめると、L は各頂点値 x_i と隣接頂点値 x_j の重み付き差の総和を計算する離散ラプラシアン作用素となる。",
+          "used_node_ids": [
+            "cs.sgt.n01_adjacency_degree_laplacian",
+            "math.alg.finite_sum_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_sgt02_quadratic_form",
+      "target_node_id": "cs.sgt.n02_laplacian_quadratic_form",
+      "route_kind": "deductive",
+      "title": "対称和の分解によるグラフラプラシアン2次形式と半正定値性の導出",
+      "premise_node_ids": [
+        "cs.sgt.n01_adjacency_degree_laplacian",
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "required_math_node_ids": [
+        "cs.sgt.n02_laplacian_quadratic_form",
+        "math.alg.finite_sum_linearity",
+        "math.alg.real_distributive_law"
+      ],
+      "assumptions": [
+        "隣接行列 A は実対称非負行列（A_{ij} = A_{ji} >= 0）である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{x}^\\top (D - A)\\mathbf{x}",
+          "to_latex": "\\frac{1}{2}\\sum_{i=1}^{N}\\sum_{j=1}^{N} A_{ij}(x_i - x_j)^2 \\ge 0",
+          "operation_label": "2次形式の平方和展開と半正定値性の導出",
+          "explanation": "L = D - A の2次形式を成分展開し、A の対称性を利用して対称化することで各辺上の2乗差の非負和へと変形する。",
+          "used_node_ids": [
+            "cs.sgt.n01_adjacency_degree_laplacian",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_expand",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{x}^\\top (D - A)\\mathbf{x}",
+          "to_latex": "\\sum_{i=1}^{N} d_i x_i^2 - \\sum_{i=1}^{N}\\sum_{j=1}^{N} A_{ij} x_i x_j",
+          "operation_label": "行列積の成分展開",
+          "explanation": "D が対角行列であることを用いて2次形式を行列の成分ごとの和に展開する。",
+          "used_node_ids": [
+            "cs.sgt.n01_adjacency_degree_laplacian",
+            "math.alg.real_distributive_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_symmetrize",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{i=1}^{N} d_i x_i^2 - \\sum_{i=1}^{N}\\sum_{j=1}^{N} A_{ij} x_i x_j",
+          "to_latex": "\\frac{1}{2}\\left(\\sum_{i,j} A_{ij} x_i^2 - 2\\sum_{i,j} A_{ij} x_i x_j + \\sum_{i,j} A_{ij} x_j^2\\right)",
+          "operation_label": "次数定義の代入と添字対称化",
+          "explanation": "d_i = \\sum_j A_{ij} を代入し、A_{ij} = A_{ji} より \\sum_i d_i x_i^2 = \\frac{1}{2}(\\sum_{i,j} A_{ij} x_i^2 + \\sum_{i,j} A_{ij} x_j^2) と書き換える。",
+          "used_node_ids": [
+            "cs.sgt.n01_adjacency_degree_laplacian",
+            "math.alg.finite_sum_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_factor",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2}\\left(\\sum_{i,j} A_{ij} x_i^2 - 2\\sum_{i,j} A_{ij} x_i x_j + \\sum_{i,j} A_{ij} x_j^2\\right)",
+          "to_latex": "\\frac{1}{2}\\sum_{i=1}^{N}\\sum_{j=1}^{N} A_{ij}(x_i - x_j)^2 \\ge 0",
+          "operation_label": "平方完成と非負性判定",
+          "explanation": "括弧内を (x_i - x_j)^2 に因数分解する。A_{ij} >= 0 より任意のベクトル x に対して非負となり、0 となるのは連結成分ごとに定数の場合に限られるため、零固有値の重複度は連結成分数に一致する。",
+          "used_node_ids": [
+            "cs.sgt.n02_laplacian_quadratic_form",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_sgt03_normalized_laplacian_def",
+      "target_node_id": "cs.sgt.n03_normalized_laplacian",
+      "route_kind": "reformulation",
+      "title": "次数行列による左右正規化と相似関係に基づく固有値境界の定義",
+      "premise_node_ids": [
+        "cs.sgt.n01_adjacency_degree_laplacian",
+        "cs.sgt.n02_laplacian_quadratic_form"
+      ],
+      "required_math_node_ids": [
+        "cs.sgt.n03_normalized_laplacian"
+      ],
+      "assumptions": [
+        "すべての頂点は孤立点ではなく d_i > 0 を満たす（D は可逆）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def_norm",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L = D - A,\\quad D_{ii} = d_i > 0",
+          "to_latex": "L_{\\mathrm{sym}} := D^{-1/2} L D^{-1/2} = I - D^{-1/2} A D^{-1/2},\\quad L_{\\mathrm{rw}} := D^{-1} L = I - D^{-1} A",
+          "operation_label": "対称・ランダムウォーク正規化ラプラシアンの定義",
+          "explanation": "L に両側または左側から D^{-1/2} や D^{-1} を掛けることで、頂点次数のスケールを揃えた2種類の正規化グラフラプラシアンを定義する。",
+          "used_node_ids": [
+            "cs.sgt.n01_adjacency_degree_laplacian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_similarity",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L_{\\mathrm{sym}} := D^{-1/2} L D^{-1/2} = I - D^{-1/2} A D^{-1/2},\\quad L_{\\mathrm{rw}} := D^{-1} L = I - D^{-1} A",
+          "to_latex": "L_{\\mathrm{sym}} = D^{1/2} L_{\\mathrm{rw}} D^{-1/2},\\quad 0 = \\nu_1 \\le \\nu_2 \\le \\dots \\le \\nu_N \\le 2",
+          "operation_label": "相似変換と固有値上界 2 の確認",
+          "explanation": "L_sym と L_rw は相似行列であるため同一の固有値を持つ。また (D+A) の2次形式が \\frac{1}{2}\\sum A_{ij}(x_i+x_j)^2 >= 0 であることから、2I - L_sym も半正定値となり固有値は [0, 2] に収まる。",
+          "used_node_ids": [
+            "cs.sgt.n02_laplacian_quadratic_form",
+            "cs.sgt.n03_normalized_laplacian"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_sgt04_fiedler_rayleigh",
+      "target_node_id": "cs.sgt.n04_fiedler_value_connectivity",
+      "route_kind": "deductive",
+      "title": "ラグランジュの未定乗数法による代数的連結度のレイリー商特徴付け",
+      "premise_node_ids": [
+        "cs.sgt.n02_laplacian_quadratic_form",
+        "math.calc.e06_constrained_extremum_problem",
+        "math.calc.e07_lagrange_multiplier_theorem"
+      ],
+      "required_math_node_ids": [
+        "cs.sgt.n04_fiedler_value_connectivity",
+        "math.alg.nonzero_scalar_division"
+      ],
+      "assumptions": [
+        "L は実対称半正定値行列であり、最小固有値 \\lambda_1 = 0 に対応する固有ベクトルは定数ベクトル \\mathbf{1} である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\min_{\\mathbf{x}^\\top \\mathbf{x}=1,\\; \\mathbf{x}^\\top \\mathbf{1}=0} \\mathbf{x}^\\top L \\mathbf{x}",
+          "to_latex": "\\lambda_2(L) = \\min_{\\mathbf{x} \\neq \\mathbf{0},\\; \\mathbf{x} \\perp \\mathbf{1}} \\frac{\\mathbf{x}^\\top L \\mathbf{x}}{\\mathbf{x}^\\top \\mathbf{x}}",
+          "operation_label": "直交制約付き最小化からの第2固有値特徴付け",
+          "explanation": "単位球面上で全1ベクトルに直交する制約付き最小化問題に未定乗数法を適用し、最小値が第2最小固有値 \\lambda_2 に等しいことを導く。",
+          "used_node_ids": [
+            "cs.sgt.n02_laplacian_quadratic_form",
+            "math.calc.e06_constrained_extremum_problem",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_lagrange",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\min_{\\mathbf{x}^\\top \\mathbf{x}=1,\\; \\mathbf{x}^\\top \\mathbf{1}=0} \\mathbf{x}^\\top L \\mathbf{x}",
+          "to_latex": "\\mathcal{L}(\\mathbf{x},\\lambda,\\mu) = \\mathbf{x}^\\top L \\mathbf{x} - \\lambda(\\mathbf{x}^\\top \\mathbf{x} - 1) - 2\\mu \\mathbf{1}^\\top \\mathbf{x}",
+          "operation_label": "ラグランジュ関数の構築",
+          "explanation": "正規化制約 \\mathbf{x}^\\top \\mathbf{x} = 1 と直交制約 \\mathbf{1}^\\top \\mathbf{x} = 0 に対して未定乗数 \\lambda, 2\\mu を導入する。",
+          "used_node_ids": [
+            "math.calc.e06_constrained_extremum_problem",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_kkt",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}(\\mathbf{x},\\lambda,\\mu) = \\mathbf{x}^\\top L \\mathbf{x} - \\lambda(\\mathbf{x}^\\top \\mathbf{x} - 1) - 2\\mu \\mathbf{1}^\\top \\mathbf{x}",
+          "to_latex": "L\\mathbf{x} = \\lambda \\mathbf{x} + \\mu\\mathbf{1},\\; \\mathbf{1}^\\top L\\mathbf{x} = 0 \\implies \\mu = 0,\\; L\\mathbf{x} = \\lambda\\mathbf{x}",
+          "operation_label": "1階停留条件と未定乗数 \\mu の消去",
+          "explanation": "\\nabla_\\mathbf{x} \\mathcal{L} = 0 より 2L\\mathbf{x} - 2\\lambda\\mathbf{x} - 2\\mu\\mathbf{1} = 0。左から \\mathbf{1}^\\top を掛けると L\\mathbf{1} = \\mathbf{0} と \\mathbf{1}^\\top \\mathbf{x} = 0 より \\mu N = 0 すなわち \\mu = 0 が従う。",
+          "used_node_ids": [
+            "cs.sgt.n02_laplacian_quadratic_form",
+            "math.calc.e07_lagrange_multiplier_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_rayleigh",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L\\mathbf{x} = \\lambda \\mathbf{x} + \\mu\\mathbf{1},\\; \\mathbf{1}^\\top L\\mathbf{x} = 0 \\implies \\mu = 0,\\; L\\mathbf{x} = \\lambda\\mathbf{x}",
+          "to_latex": "\\lambda_2(L) = \\min_{\\mathbf{x} \\neq \\mathbf{0},\\; \\mathbf{x} \\perp \\mathbf{1}} \\frac{\\mathbf{x}^\\top L \\mathbf{x}}{\\mathbf{x}^\\top \\mathbf{x}}",
+          "operation_label": "レイリー商による最小固有値の同定",
+          "explanation": "L\\mathbf{x} = \\lambda\\mathbf{x} に左から \\mathbf{x}^\\top を掛けると \\lambda = \\mathbf{x}^\\top L \\mathbf{x} となる。\\mathbf{1} に直交する固有ベクトルの中で最小の固有値は \\lambda_2(L) であり、スケール不変性からレイリー商の最小化に一致する。",
+          "used_node_ids": [
+            "cs.sgt.n04_fiedler_value_connectivity",
+            "math.alg.nonzero_scalar_division"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_sgt05_cheeger_ineq",
+      "target_node_id": "cs.sgt.n05_cheeger_inequality",
+      "route_kind": "deductive",
+      "title": "テストベクトルとスイープカットによるチーガー不等式の導出",
+      "premise_node_ids": [
+        "cs.sgt.n03_normalized_laplacian",
+        "cs.sgt.n04_fiedler_value_connectivity"
+      ],
+      "required_math_node_ids": [
+        "cs.sgt.n02_laplacian_quadratic_form",
+        "cs.sgt.n05_cheeger_inequality",
+        "ml.stat.n01_cauchy_schwarz_expectation"
+      ],
+      "assumptions": [
+        "グラフは無向連結（d_i > 0）であり、部分集合 S の体積は \\mathrm{vol}(S) = \\sum_{i\\in S} d_i とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nu_2(L_{\\mathrm{sym}}) = \\min_{\\mathbf{y}\\perp D^{1/2}\\mathbf{1}} \\frac{\\mathbf{y}^\\top L_{\\mathrm{sym}} \\mathbf{y}}{\\mathbf{y}^\\top \\mathbf{y}}",
+          "to_latex": "\\frac{h(G)^2}{2} \\le \\nu_2(L_{\\mathrm{sym}}) \\le 2 h(G)",
+          "operation_label": "テストベクトル上界とスイープカット下界の統合",
+          "explanation": "正規化ラプラシアンのレイリー商に対して、カット集合の指示関数から上界 \\nu_2 <= 2h(G) を得て、第2固有ベクトルの閾値分割（スイープカット）とコーシー＝シュワルツの不等式から下界 h(G)^2/2 <= \\nu_2 を導く。",
+          "used_node_ids": [
+            "cs.sgt.n03_normalized_laplacian",
+            "cs.sgt.n04_fiedler_value_connectivity",
+            "ml.stat.n01_cauchy_schwarz_expectation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_upper_bound",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nu_2(L_{\\mathrm{sym}}) = \\min_{\\mathbf{y}\\perp D^{1/2}\\mathbf{1}} \\frac{\\mathbf{y}^\\top L_{\\mathrm{sym}} \\mathbf{y}}{\\mathbf{y}^\\top \\mathbf{y}}",
+          "to_latex": "\\nu_2 \\le \\frac{\\mathbf{x}_S^\\top L \\mathbf{x}_S}{\\mathbf{x}_S^\\top D \\mathbf{x}_S} = \\frac{|\\partial S|\\,\\mathrm{vol}(V)}{\\mathrm{vol}(S)\\mathrm{vol}(V\\setminus S)} \\le 2 h(G)",
+          "operation_label": "カット指示テストベクトルによる上界評価",
+          "explanation": "\\mathbf{y} = D^{1/2}\\mathbf{x}_S とおき、\\mathbf{x}_S^\\top D\\mathbf{1} = 0 を満たす2値テストベクトルを代入すると、最小値 \\nu_2 は任意のカット S に対する 2h(G) 以下となる。",
+          "used_node_ids": [
+            "cs.sgt.n03_normalized_laplacian",
+            "cs.sgt.n04_fiedler_value_connectivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_lower_sweep",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nu_2 \\le \\frac{\\mathbf{x}_S^\\top L \\mathbf{x}_S}{\\mathbf{x}_S^\\top D \\mathbf{x}_S} = \\frac{|\\partial S|\\,\\mathrm{vol}(V)}{\\mathrm{vol}(S)\\mathrm{vol}(V\\setminus S)} \\le 2 h(G)",
+          "to_latex": "\\sum_{\\{i,j\\}\\in E} A_{ij}|z_i - z_j| \\ge h(G)\\sum_{i\\in V} d_i |z_i|,\\quad \\frac{\\sum_{\\{i,j\\}\\in E} A_{ij}(z_i - z_j)^2}{\\sum_i d_i z_i^2} \\ge \\frac{h(G)^2}{2}",
+          "operation_label": "スイープカットとコーシー＝シュワルツの不等式による下界評価",
+          "explanation": "第2固有ベクトルを中央値でシフトし正負に分けたベクトル \\mathbf{z} のレベル集合（スイープカット）に h(G) の定義を適用し、コーシー＝シュワルツの不等式で2次形式と結びつける。",
+          "used_node_ids": [
+            "cs.sgt.n02_laplacian_quadratic_form",
+            "ml.stat.n01_cauchy_schwarz_expectation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_combine",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{\\{i,j\\}\\in E} A_{ij}|z_i - z_j| \\ge h(G)\\sum_{i\\in V} d_i |z_i|,\\quad \\frac{\\sum_{\\{i,j\\}\\in E} A_{ij}(z_i - z_j)^2}{\\sum_i d_i z_i^2} \\ge \\frac{h(G)^2}{2}",
+          "to_latex": "\\frac{h(G)^2}{2} \\le \\nu_2(L_{\\mathrm{sym}}) \\le 2 h(G)",
+          "operation_label": "上下界の結合によるチーガー不等式の完成",
+          "explanation": "上界 \\nu_2 <= 2h(G) と下界 \\nu_2 >= h(G)^2 / 2 を合わせることでチーガー不等式が得られる。",
+          "used_node_ids": [
+            "cs.sgt.n05_cheeger_inequality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_sgt06_spectral_clustering",
+      "target_node_id": "cs.sgt.n06_spectral_clustering_cut",
+      "route_kind": "deductive",
+      "title": "正規化カット（NCut）の一般化レイリー商表現と連続緩和",
+      "premise_node_ids": [
+        "cs.sgt.n03_normalized_laplacian",
+        "cs.sgt.n04_fiedler_value_connectivity"
+      ],
+      "required_math_node_ids": [
+        "cs.sgt.n01_adjacency_degree_laplacian",
+        "cs.sgt.n02_laplacian_quadratic_form",
+        "cs.sgt.n06_spectral_clustering_cut",
+        "math.alg.nonzero_scalar_division"
+      ],
+      "assumptions": [
+        "グラフの頂点集合 V を空でない2つの部分集合 A と \\bar{A} = V \\setminus A に分割する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathrm{NCut}(A, \\bar{A}) := \\mathrm{cut}(A,\\bar{A})\\left(\\frac{1}{\\mathrm{vol}(A)} + \\frac{1}{\\mathrm{vol}(\\bar{A})}\\right)",
+          "to_latex": "\\min_{\\mathbf{y}\\perp D^{1/2}\\mathbf{1}} \\frac{\\mathbf{y}^\\top L_{\\mathrm{sym}} \\mathbf{y}}{\\mathbf{y}^\\top \\mathbf{y}} = \\nu_2(L_{\\mathrm{sym}})",
+          "operation_label": "NCut の2次形式表現と離散制約の連続緩和",
+          "explanation": "2分割の正規化カット NCut を指示ベクトル \\mathbf{f} の一般化レイリー商として表し、離散値制約を実数値ベクトルへ緩和することで L_sym の第2最小固有値問題を得る。",
+          "used_node_ids": [
+            "cs.sgt.n03_normalized_laplacian",
+            "cs.sgt.n04_fiedler_value_connectivity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_indicator",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathrm{NCut}(A, \\bar{A}) := \\mathrm{cut}(A,\\bar{A})\\left(\\frac{1}{\\mathrm{vol}(A)} + \\frac{1}{\\mathrm{vol}(\\bar{A})}\\right)",
+          "to_latex": "f_i = \\begin{cases} \\sqrt{\\frac{\\mathrm{vol}(\\bar{A})}{\\mathrm{vol}(A)}} & i \\in A \\\\ -\\sqrt{\\frac{\\mathrm{vol}(A)}{\\mathrm{vol}(\\bar{A})}} & i \\in \\bar{A} \\end{cases},\\quad \\mathbf{f}^\\top D \\mathbf{1} = 0,\\; \\mathbf{f}^\\top D \\mathbf{f} = \\mathrm{vol}(V)",
+          "operation_label": "D-直交指示ベクトルの構成",
+          "explanation": "分割 (A, \\bar{A}) に対応する2値指示ベクトル \\mathbf{f} を定義すると、重み付き平均ゼロ条件 \\mathbf{f}^\\top D\\mathbf{1} = 0 と正規化条件 \\mathbf{f}^\\top D\\mathbf{f} = \\mathrm{vol}(V) を自動的に満たす。",
+          "used_node_ids": [
+            "cs.sgt.n01_adjacency_degree_laplacian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_quad_form",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f_i = \\begin{cases} \\sqrt{\\frac{\\mathrm{vol}(\\bar{A})}{\\mathrm{vol}(A)}} & i \\in A \\\\ -\\sqrt{\\frac{\\mathrm{vol}(A)}{\\mathrm{vol}(\\bar{A})}} & i \\in \\bar{A} \\end{cases},\\quad \\mathbf{f}^\\top D \\mathbf{1} = 0,\\; \\mathbf{f}^\\top D \\mathbf{f} = \\mathrm{vol}(V)",
+          "to_latex": "\\frac{\\mathbf{f}^\\top L \\mathbf{f}}{\\mathbf{f}^\\top D \\mathbf{f}} = \\frac{\\mathrm{cut}(A,\\bar{A})\\,\\mathrm{vol}(V)^2 / (\\mathrm{vol}(A)\\mathrm{vol}(\\bar{A}))}{\\mathrm{vol}(V)} = \\mathrm{NCut}(A,\\bar{A})",
+          "operation_label": "ラプラシアン2次形式による NCut の厳密表現",
+          "explanation": "\\mathbf{f}^\\top L\\mathbf{f} をカット辺上の差の2乗和として計算し \\mathbf{f}^\\top D\\mathbf{f} で割ると、離散指標 \\mathbf{f} に対して一般化レイリー商が NCut に厳密に一致する。",
+          "used_node_ids": [
+            "cs.sgt.n02_laplacian_quadratic_form",
+            "math.alg.nonzero_scalar_division"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_relax",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\mathbf{f}^\\top L \\mathbf{f}}{\\mathbf{f}^\\top D \\mathbf{f}} = \\frac{\\mathrm{cut}(A,\\bar{A})\\,\\mathrm{vol}(V)^2 / (\\mathrm{vol}(A)\\mathrm{vol}(\\bar{A}))}{\\mathrm{vol}(V)} = \\mathrm{NCut}(A,\\bar{A})",
+          "to_latex": "\\min_{\\mathbf{y}\\perp D^{1/2}\\mathbf{1}} \\frac{\\mathbf{y}^\\top L_{\\mathrm{sym}} \\mathbf{y}}{\\mathbf{y}^\\top \\mathbf{y}} = \\nu_2(L_{\\mathrm{sym}})",
+          "operation_label": "連続空間への緩和と変数変換 \\mathbf{y} = D^{1/2}\\mathbf{f}",
+          "explanation": "\\mathbf{f} の2値制約を外して \\mathbb{R}^N 全体に緩和し \\mathbf{y} = D^{1/2}\\mathbf{f} と置換すると、\\mathbf{y}\\perp D^{1/2}\\mathbf{1} の下での L_sym のレイリー商最小化（第2固有ベクトル問題）に帰着する。",
+          "used_node_ids": [
+            "cs.sgt.n03_normalized_laplacian",
+            "cs.sgt.n04_fiedler_value_connectivity",
+            "cs.sgt.n06_spectral_clustering_cut"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_sgt07_random_walk_stationary",
+      "target_node_id": "cs.sgt.n07_graph_random_walk_stationary",
+      "route_kind": "deductive",
+      "title": "無向グラフの次数比例定常分布の直接検証",
+      "premise_node_ids": [
+        "cs.sgt.n01_adjacency_degree_laplacian",
+        "cs.sgt.n03_normalized_laplacian",
+        "cs.algo.n05_markov_chain_stationary"
+      ],
+      "required_math_node_ids": [
+        "cs.sgt.n07_graph_random_walk_stationary",
+        "math.alg.finite_sum_linearity",
+        "math.alg.nonzero_scalar_division"
+      ],
+      "assumptions": [
+        "グラフは無向かつ孤立点を含まない（d_i > 0）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "M = A D^{-1},\\quad \\pi_j = \\frac{d_j}{\\sum_{k=1}^{N} d_k}",
+          "to_latex": "M\\boldsymbol{\\pi} = \\boldsymbol{\\pi},\\quad \\sum_{i=1}^{N} \\pi_i = 1",
+          "operation_label": "次数比例分布がマルコフ連鎖の定常分布であることの証明",
+          "explanation": "列確率遷移行列 M = A D^{-1} に次数に比例する確率ベクトル \\boldsymbol{\\pi} を乗じると不変であることを成分計算により示す。",
+          "used_node_ids": [
+            "cs.algo.n05_markov_chain_stationary",
+            "cs.sgt.n03_normalized_laplacian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_comp",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M = A D^{-1},\\quad \\pi_j = \\frac{d_j}{\\sum_{k=1}^{N} d_k}",
+          "to_latex": "(M\\boldsymbol{\\pi})_i = \\sum_{j=1}^{N} \\frac{A_{ij}}{d_j} \\frac{d_j}{\\sum_{k=1}^{N} d_k}",
+          "operation_label": "行列・ベクトル積の成分展開",
+          "explanation": "M_{ij} = A_{ij} / d_j と \\pi_j を代入して第 i 成分の総和を書き下す。",
+          "used_node_ids": [
+            "cs.algo.n05_markov_chain_stationary",
+            "cs.sgt.n01_adjacency_degree_laplacian"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_cancel",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(M\\boldsymbol{\\pi})_i = \\sum_{j=1}^{N} \\frac{A_{ij}}{d_j} \\frac{d_j}{\\sum_{k=1}^{N} d_k}",
+          "to_latex": "\\frac{\\sum_{j=1}^{N} A_{ij}}{\\sum_{k=1}^{N} d_k} = \\frac{d_i}{\\sum_{k=1}^{N} d_k} = \\pi_i",
+          "operation_label": "次数 d_j の約分と隣接和の集約",
+          "explanation": "分子分母の d_j が相殺され、残る \\sum_j A_{ij} が定義より頂点 i の次数 d_i に一致するため \\pi_i が得られる。",
+          "used_node_ids": [
+            "cs.sgt.n01_adjacency_degree_laplacian",
+            "math.alg.finite_sum_linearity",
+            "math.alg.nonzero_scalar_division"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_norm",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\sum_{j=1}^{N} A_{ij}}{\\sum_{k=1}^{N} d_k} = \\frac{d_i}{\\sum_{k=1}^{N} d_k} = \\pi_i",
+          "to_latex": "M\\boldsymbol{\\pi} = \\boldsymbol{\\pi},\\quad \\sum_{i=1}^{N} \\pi_i = 1",
+          "operation_label": "確率正規化条件の確認",
+          "explanation": "全頂点にわたる \\pi_i の和は 1 かつ \\pi_i >= 0 であるため、定常分布の条件を完全に満たす（無重み単純グラフでは \\sum_k d_k = 2|E|）。",
+          "used_node_ids": [
+            "cs.algo.n05_markov_chain_stationary",
+            "cs.sgt.n07_graph_random_walk_stationary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_sgt08_pagerank_neumann",
+      "target_node_id": "cs.sgt.n08_personalized_pagerank_laplacian",
+      "route_kind": "deductive",
+      "title": "PageRank方程式の線形系変換とノイマン級数によるランダムウォーク解釈",
+      "premise_node_ids": [
+        "cs.algo.n07_google_matrix_damping",
+        "cs.algo.n08_pagerank_equation",
+        "cs.algo.n06_perron_frobenius_boundary",
+        "cs.sgt.n07_graph_random_walk_stationary"
+      ],
+      "required_math_node_ids": [
+        "cs.sgt.n08_personalized_pagerank_laplacian",
+        "math.alg.real_transposition"
+      ],
+      "assumptions": [
+        "ダンピングファクタ d は 0 < d < 1 を満たし、M は列確率行列である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{r} = G\\mathbf{r} = d M\\mathbf{r} + \\frac{1-d}{N}\\mathbf{1}",
+          "to_latex": "\\mathbf{r} = (I - dM)^{-1}\\frac{1-d}{N}\\mathbf{1} = \\frac{1-d}{N}\\sum_{t=0}^{\\infty} (d M)^t \\mathbf{1}",
+          "operation_label": "固有値問題から線形方程式とノイマン級数への変形",
+          "explanation": "PageRank 方程式を移項して非特異な線形方程式系 (I - dM)r = ((1-d)/N)1 に書き換え、スペクトル半径 d < 1 を用いてノイマン級数展開を導く。",
+          "used_node_ids": [
+            "cs.algo.n06_perron_frobenius_boundary",
+            "cs.algo.n07_google_matrix_damping",
+            "cs.algo.n08_pagerank_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_transpose",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r} = G\\mathbf{r} = d M\\mathbf{r} + \\frac{1-d}{N}\\mathbf{1}",
+          "to_latex": "(I - dM)\\mathbf{r} = \\frac{1-d}{N}\\mathbf{1}",
+          "operation_label": "dMr の移項と単位行列による括り出し",
+          "explanation": "右辺の dM\\mathbf{r} を左辺へ移項し、(I - dM)\\mathbf{r} の形に整理する。",
+          "used_node_ids": [
+            "cs.algo.n08_pagerank_equation",
+            "math.alg.real_transposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_invert",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(I - dM)\\mathbf{r} = \\frac{1-d}{N}\\mathbf{1}",
+          "to_latex": "\\rho(dM) = d < 1 \\implies (I - dM)\\text{ invertible},\\quad \\mathbf{r} = (I - dM)^{-1}\\frac{1-d}{N}\\mathbf{1}",
+          "operation_label": "スペクトル半径評価による可逆性の保証",
+          "explanation": "列確率行列 M の最大固有値絶対値は 1 であるため、0 < d < 1 より dM のスペクトル半径は d < 1 となり、(I - dM) は必ず可逆となる。",
+          "used_node_ids": [
+            "cs.algo.n06_perron_frobenius_boundary",
+            "cs.sgt.n07_graph_random_walk_stationary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_neumann",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho(dM) = d < 1 \\implies (I - dM)\\text{ invertible},\\quad \\mathbf{r} = (I - dM)^{-1}\\frac{1-d}{N}\\mathbf{1}",
+          "to_latex": "\\mathbf{r} = (I - dM)^{-1}\\frac{1-d}{N}\\mathbf{1} = \\frac{1-d}{N}\\sum_{t=0}^{\\infty} (d M)^t \\mathbf{1}",
+          "operation_label": "ノイマン級数展開による幾何学的解釈",
+          "explanation": "\\rho(dM) < 1 より (I - dM)^{-1} = \\sum_{t=0}^{\\infty} (dM)^t が絶対収束し、一様分布から開始して確率 1-d で再起動（テレポート）するランダムウォークの期待滞在分布に一致する。",
+          "used_node_ids": [
+            "cs.sgt.n08_personalized_pagerank_laplacian"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

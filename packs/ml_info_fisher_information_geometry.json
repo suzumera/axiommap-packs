@@ -1,0 +1,673 @@
+{
+  "pack_meta": {
+    "pack_id": "ml.info.fisher_information_geometry",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "machine_learning",
+    "title": "情報幾何学：統計多様体・フィッシャー情報計量と自然勾配法",
+    "language": "ja",
+    "description": "対数尤度のKLダイバージェンス2次展開からフィッシャー情報計量、指数型分布族の双対平坦空間（e/m接続）、自然勾配法を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "ml.igeom.n01_statistical_manifold_score",
+      "short_code": "IG01",
+      "kind": "definition",
+      "title": "統計多様体とスコア関数の定義",
+      "summary": "パラメータ空間で滑らかに特徴づけられた確率分布族を統計多様体とみなし、対数尤度のパラメータ勾配としてスコア関数を定義する。",
+      "canonical_latex": "\\mathcal{S} = \\{p(x;\\boldsymbol{\\theta}) \\mid \\boldsymbol{\\theta} \\in \\Theta \\subset \\mathbb{R}^d\\},\\quad \\mathbf{s}(x;\\boldsymbol{\\theta}) := \\nabla_{\\boldsymbol{\\theta}} \\ln p(x;\\boldsymbol{\\theta}),\\quad \\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\big[\\mathbf{s}(X;\\boldsymbol{\\theta})\\big] = \\mathbf{0}",
+      "aliases_latex": [
+        "\\mathbf{s}(\\boldsymbol{\\theta}) = \\partial_{\\boldsymbol{\\theta}} \\ln p(x;\\boldsymbol{\\theta})"
+      ],
+      "keywords": [
+        "統計多様体",
+        "スコア関数",
+        "対数尤度勾配",
+        "正則条件"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "information_geometry"
+      ]
+    },
+    {
+      "id": "ml.igeom.n02_fisher_information_matrix",
+      "short_code": "IG02",
+      "kind": "definition",
+      "title": "フィッシャー情報行列（フィッシャー情報計量）の定義",
+      "summary": "スコア関数の共分散行列としてフィッシャー情報行列を定義し、統計多様体上のリーマン計量テンソル（フィッシャー情報計量）を与える。",
+      "canonical_latex": "G(\\boldsymbol{\\theta}) := \\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\!\\big[\\mathbf{s}(X;\\boldsymbol{\\theta})\\mathbf{s}(X;\\boldsymbol{\\theta})^\\top\\big],\\qquad g_{ij}(\\boldsymbol{\\theta}) = \\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\!\\left[\\frac{\\partial \\ln p(X;\\boldsymbol{\\theta})}{\\partial \\theta_i}\\frac{\\partial \\ln p(X;\\boldsymbol{\\theta})}{\\partial \\theta_j}\\right]",
+      "aliases_latex": [
+        "I(\\boldsymbol{\\theta}) = \\mathbb{E}[\\nabla \\ln p(X;\\boldsymbol{\\theta}) \\nabla \\ln p(X;\\boldsymbol{\\theta})^\\top]"
+      ],
+      "keywords": [
+        "フィッシャー情報行列",
+        "フィッシャー情報計量",
+        "リーマン計量",
+        "スコア共分散"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "information_geometry"
+      ]
+    },
+    {
+      "id": "ml.igeom.n03_kl_quadratic_fisher_metric",
+      "short_code": "IG03",
+      "kind": "theorem_formula",
+      "title": "KLダイバージェンスの2次展開とフィッシャー情報計量",
+      "summary": "微小変位に対するKLダイバージェンスの2次テイラー展開がフィッシャー情報計量による2次形式に一致し、負の対数尤度ヘッシアン期待値と等価であることを示す。",
+      "canonical_latex": "D_{\\mathrm{KL}}\\big(p(\\cdot;\\boldsymbol{\\theta}) \\,\\|\\, p(\\cdot;\\boldsymbol{\\theta}+d\\boldsymbol{\\theta})\\big) = \\frac{1}{2} d\\boldsymbol{\\theta}^\\top G(\\boldsymbol{\\theta})\\, d\\boldsymbol{\\theta} + \\mathcal{O}\\big(\\|d\\boldsymbol{\\theta}\\|^3\\big),\\qquad G(\\boldsymbol{\\theta}) = -\\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\!\\left[\\nabla_{\\boldsymbol{\\theta}}^2 \\ln p(X;\\boldsymbol{\\theta})\\right]",
+      "aliases_latex": [
+        "ds^2 = 2 D_{\\mathrm{KL}}(p(\\boldsymbol{\\theta}) \\| p(\\boldsymbol{\\theta}+d\\boldsymbol{\\theta})) = \\sum_{i,j} g_{ij}(\\boldsymbol{\\theta}) d\\theta_i d\\theta_j"
+      ],
+      "keywords": [
+        "KLダイバージェンス",
+        "2次展開",
+        "フィッシャー情報計量",
+        "ヘッシアン期待値"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "information_geometry"
+      ]
+    },
+    {
+      "id": "ml.igeom.n04_cramer_rao_bound",
+      "short_code": "IG04",
+      "kind": "theorem_formula",
+      "title": "クラメール＝ラオの不等式（推定精度の限界）",
+      "summary": "任意の不偏推定量の共分散行列がフィッシャー情報行列の逆行列を下界とすることを示し、情報幾何学的な計量が統計的推定の究極精度を規定することを示す。",
+      "canonical_latex": "\\mathbb{E}[\\hat{\\boldsymbol{\\theta}}(X)] = \\boldsymbol{\\theta} \\implies \\operatorname{Cov}\\big(\\hat{\\boldsymbol{\\theta}}(X)\\big) \\succeq G(\\boldsymbol{\\theta})^{-1}",
+      "aliases_latex": [
+        "\\operatorname{Var}(\\hat{\\theta}) \\ge \\frac{1}{I(\\theta)}"
+      ],
+      "keywords": [
+        "クラメール＝ラオの不等式",
+        "不偏推定量",
+        "共分散行列",
+        "有効推定量"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "information_geometry"
+      ]
+    },
+    {
+      "id": "ml.igeom.n05_exponential_family_duality",
+      "short_code": "IG05",
+      "kind": "definition",
+      "title": "指数型分布族の自然座標（e座標）と期待値座標（m座標）",
+      "summary": "指数型分布族における自然パラメータ（e座標）と、キュムラント母関数の勾配で与えられる期待値パラメータ（m座標）を定義する。",
+      "canonical_latex": "p(x;\\boldsymbol{\\theta}) = \\exp\\!\\big(\\boldsymbol{\\theta}^\\top \\mathbf{T}(x) - \\psi(\\boldsymbol{\\theta}) + k(x)\\big),\\qquad \\boldsymbol{\\eta}(\\boldsymbol{\\theta}) := \\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\big[\\mathbf{T}(X)\\big] = \\nabla_{\\boldsymbol{\\theta}} \\psi(\\boldsymbol{\\theta})",
+      "aliases_latex": [
+        "p(x;\\boldsymbol{\\theta}) = h(x)\\exp(\\boldsymbol{\\theta}^\\top \\mathbf{T}(x) - A(\\boldsymbol{\\theta}))"
+      ],
+      "keywords": [
+        "指数型分布族",
+        "自然パラメータ",
+        "期待値パラメータ",
+        "キュムラント母関数"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "information_geometry"
+      ]
+    },
+    {
+      "id": "ml.igeom.n06_dual_flat_legendre_bregman",
+      "short_code": "IG06",
+      "kind": "theorem_formula",
+      "title": "指数型分布族のルジャンドル双対性とブレグマンダイバージェンス",
+      "summary": "キュムラント母関数とそのルジャンドル共役関数のヘッシアンが互いに逆行列の関係にあるフィッシャー計量を与え、KLダイバージェンスがブレグマンダイバージェンスとして表されることを示す。",
+      "canonical_latex": "\\varphi(\\boldsymbol{\\eta}) := \\boldsymbol{\\theta}^\\top \\boldsymbol{\\eta} - \\psi(\\boldsymbol{\\theta}),\\quad G(\\boldsymbol{\\theta}) = \\nabla_{\\boldsymbol{\\theta}}^2 \\psi(\\boldsymbol{\\theta}) = \\big(\\nabla_{\\boldsymbol{\\eta}}^2 \\varphi(\\boldsymbol{\\eta})\\big)^{-1},\\quad D_{\\mathrm{KL}}\\big(p(\\cdot;\\boldsymbol{\\theta}_1) \\,\\|\\, p(\\cdot;\\boldsymbol{\\theta}_2)\\big) = \\psi(\\boldsymbol{\\theta}_2) + \\varphi(\\boldsymbol{\\eta}_1) - \\boldsymbol{\\theta}_2^\\top \\boldsymbol{\\eta}_1",
+      "aliases_latex": [
+        "D_{\\mathrm{KL}}(p_1 \\| p_2) = D_{\\psi}(\\boldsymbol{\\theta}_2 \\| \\boldsymbol{\\theta}_1) = D_{\\varphi}(\\boldsymbol{\\eta}_1 \\| \\boldsymbol{\\eta}_2)"
+      ],
+      "keywords": [
+        "ルジャンドル変換",
+        "双対ポテンシャル",
+        "ブレグマンダイバージェンス",
+        "双対平坦空間"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "information_geometry"
+      ]
+    },
+    {
+      "id": "ml.igeom.n07_dual_connections_em_flatness",
+      "short_code": "IG07",
+      "kind": "theorem_formula",
+      "title": "双対アフィン接続（e接続・m接続）と一般化ピタゴラスの定理",
+      "summary": "指数型分布族がe座標系で平坦なe接続とm座標系で平坦なm接続という互いに双対なアフィン接続を持ち、e測地線とm測地線の直交性によりKLダイバージェンスのピタゴラスの定理が成立することを示す。",
+      "canonical_latex": "\\partial_k g_{ij} = \\Gamma_{ijk}^{(e)} + \\Gamma_{ikj}^{(m)},\\quad \\Gamma_{ijk}^{(e)}(\\boldsymbol{\\theta}) = 0,\\quad \\Gamma_{ijk}^{(m)}(\\boldsymbol{\\eta}) = 0,\\qquad (\\boldsymbol{\\eta}_P - \\boldsymbol{\\eta}_Q)^\\top (\\boldsymbol{\\theta}_Q - \\boldsymbol{\\theta}_R) = 0 \\implies D_{\\mathrm{KL}}(P \\| R) = D_{\\mathrm{KL}}(P \\| Q) + D_{\\mathrm{KL}}(Q \\| R)",
+      "aliases_latex": [
+        "\\nabla^{(e)},\\; \\nabla^{(m)},\\quad D_{\\mathrm{KL}}(P \\| R) = D_{\\mathrm{KL}}(P \\| Q) + D_{\\mathrm{KL}}(Q \\| R)"
+      ],
+      "keywords": [
+        "双対接続",
+        "e接続",
+        "m接続",
+        "一般化ピタゴラスの定理"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "information_geometry"
+      ]
+    },
+    {
+      "id": "ml.igeom.n08_natural_gradient_descent",
+      "short_code": "IG08",
+      "kind": "theorem_formula",
+      "title": "自然勾配法（Natural Gradient Descent）の導出",
+      "summary": "パラメータ空間のユークリッド距離ではなく統計多様体上のフィッシャー情報計量（KLダイバージェンス）を制約とした最急降下方向を解くことで、パラメータ再標数化に不変な自然勾配更新則を導出する。",
+      "canonical_latex": "\\tilde{\\nabla}_{\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta}) := G(\\boldsymbol{\\theta})^{-1} \\nabla_{\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta}),\\qquad \\boldsymbol{\\theta}_{t+1} = \\boldsymbol{\\theta}_t - \\eta\\, G(\\boldsymbol{\\theta}_t)^{-1} \\nabla_{\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta}_t)",
+      "aliases_latex": [
+        "\\boldsymbol{\\theta}_{t+1} = \\boldsymbol{\\theta}_t - \\eta\\, \\tilde{\\nabla} \\mathcal{L}(\\boldsymbol{\\theta}_t)"
+      ],
+      "keywords": [
+        "自然勾配法",
+        "パラメータ不変性",
+        "フィッシャー情報行列",
+        "最急降下方向"
+      ],
+      "domain_tags": [
+        "machine_learning",
+        "information_geometry"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "ml.igeom.d01_statistical_manifold_score",
+      "target_node_id": "ml.igeom.n01_statistical_manifold_score",
+      "route_kind": "deductive",
+      "title": "確率分布族からの統計多様体とスコア関数の定義",
+      "premise_node_ids": [
+        "eng.ml1.n01_mle_map_framework",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "確率密度関数の台（サポート）はパラメータに依存しない。",
+        "対数確率密度はパラメータに関して滑らかに微分可能であり、積分と微分の順序交換が可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p(x;\\boldsymbol{\\theta}) \\ge 0,\\quad \\int p(x;\\boldsymbol{\\theta})\\,dx = 1",
+          "to_latex": "\\mathcal{S} = \\{p(x;\\boldsymbol{\\theta}) \\mid \\boldsymbol{\\theta} \\in \\Theta \\subset \\mathbb{R}^d\\},\\quad \\mathbf{s}(x;\\boldsymbol{\\theta}) := \\nabla_{\\boldsymbol{\\theta}} \\ln p(x;\\boldsymbol{\\theta}),\\quad \\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\big[\\mathbf{s}(X;\\boldsymbol{\\theta})\\big] = \\mathbf{0}",
+          "operation_label": "統計多様体とスコア関数の定義および期待値零の確認",
+          "explanation": "パラメータ空間上の確率分布族を多様体とみなし、対数尤度の勾配としてスコア関数を定義する。正規化条件の両辺をパラメータで微分し積分と微分の順序を交換することで、スコア関数の期待値が恒等的に零となる。",
+          "used_node_ids": [
+            "eng.ml1.n01_mle_map_framework",
+            "math.calc.m08_partial_total_diff",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.igeom.d02_fisher_information_matrix",
+      "target_node_id": "ml.igeom.n02_fisher_information_matrix",
+      "route_kind": "deductive",
+      "title": "スコア関数の共分散としてのフィッシャー情報計量の定義",
+      "premise_node_ids": [
+        "ml.igeom.n01_statistical_manifold_score"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "assumptions": [
+        "スコア関数の各成分は二乗可積分であり、線形独立である（正定値性）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{s}(x;\\boldsymbol{\\theta}) = \\nabla_{\\boldsymbol{\\theta}} \\ln p(x;\\boldsymbol{\\theta}),\\quad \\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\big[\\mathbf{s}(X;\\boldsymbol{\\theta})\\big] = \\mathbf{0}",
+          "to_latex": "G(\\boldsymbol{\\theta}) := \\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\!\\big[\\mathbf{s}(X;\\boldsymbol{\\theta})\\mathbf{s}(X;\\boldsymbol{\\theta})^\\top\\big],\\qquad g_{ij}(\\boldsymbol{\\theta}) = \\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\!\\left[\\frac{\\partial \\ln p(X;\\boldsymbol{\\theta})}{\\partial \\theta_i}\\frac{\\partial \\ln p(X;\\boldsymbol{\\theta})}{\\partial \\theta_j}\\right]",
+          "operation_label": "スコア関数の共分散行列としての計量テンソル定義",
+          "explanation": "期待値が零であるスコア関数の外積の期待値としてフィッシャー情報行列を定義する。これは対称半正定値行列であり、正則モデルでは統計多様体上のリーマン計量を与える。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness",
+            "ml.igeom.n01_statistical_manifold_score"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.igeom.d03_kl_quadratic_fisher_metric",
+      "target_node_id": "ml.igeom.n03_kl_quadratic_fisher_metric",
+      "route_kind": "deductive",
+      "title": "KLダイバージェンスの2次テイラー展開によるフィッシャー情報計量の導出",
+      "premise_node_ids": [
+        "eng.info.n03_kl_divergence_gibbs",
+        "ml.igeom.n02_fisher_information_matrix"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m13_taylor_expansion",
+        "ml.igeom.n01_statistical_manifold_score"
+      ],
+      "assumptions": [
+        "対数確率密度はパラメータに関して2回連続微分可能であり、2階微分と積分の順序交換が可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "D_{\\mathrm{KL}}\\big(p(\\cdot;\\boldsymbol{\\theta}) \\,\\|\\, p(\\cdot;\\boldsymbol{\\theta}+d\\boldsymbol{\\theta})\\big) = \\int p(x;\\boldsymbol{\\theta}) \\ln \\frac{p(x;\\boldsymbol{\\theta})}{p(x;\\boldsymbol{\\theta}+d\\boldsymbol{\\theta})}\\,dx",
+          "to_latex": "D_{\\mathrm{KL}}\\big(p(\\cdot;\\boldsymbol{\\theta}) \\,\\|\\, p(\\cdot;\\boldsymbol{\\theta}+d\\boldsymbol{\\theta})\\big) = \\frac{1}{2} d\\boldsymbol{\\theta}^\\top G(\\boldsymbol{\\theta})\\, d\\boldsymbol{\\theta} + \\mathcal{O}\\big(\\|d\\boldsymbol{\\theta}\\|^3\\big)",
+          "operation_label": "KLダイバージェンスの2次展開とフィッシャー計量への帰着",
+          "explanation": "近接する2つの確率分布間のKLダイバージェンスを微小変位について2次までテイラー展開すると、1次項はスコア関数の期待値零により消え、2次項の負のヘッシアン期待値がフィッシャー情報行列に一致する。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "math.calc.m13_taylor_expansion",
+            "ml.igeom.n02_fisher_information_matrix"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D_{\\mathrm{KL}}\\big(p(\\cdot;\\boldsymbol{\\theta}) \\,\\|\\, p(\\cdot;\\boldsymbol{\\theta}+d\\boldsymbol{\\theta})\\big) = \\int p(x;\\boldsymbol{\\theta}) \\ln \\frac{p(x;\\boldsymbol{\\theta})}{p(x;\\boldsymbol{\\theta}+d\\boldsymbol{\\theta})}\\,dx",
+          "to_latex": "-\\int p(x;\\boldsymbol{\\theta})\\left(d\\boldsymbol{\\theta}^\\top \\nabla_{\\boldsymbol{\\theta}}\\ln p(x;\\boldsymbol{\\theta}) + \\frac{1}{2} d\\boldsymbol{\\theta}^\\top \\nabla_{\\boldsymbol{\\theta}}^2 \\ln p(x;\\boldsymbol{\\theta})\\, d\\boldsymbol{\\theta}\\right)dx + \\mathcal{O}(\\|d\\boldsymbol{\\theta}\\|^3)",
+          "operation_label": "対数確率密度の2次テイラー展開",
+          "explanation": "被積分関数内の対数比を微小変位に関して2次までテイラー展開する。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\int p(x;\\boldsymbol{\\theta})\\left(d\\boldsymbol{\\theta}^\\top \\nabla_{\\boldsymbol{\\theta}}\\ln p(x;\\boldsymbol{\\theta}) + \\frac{1}{2} d\\boldsymbol{\\theta}^\\top \\nabla_{\\boldsymbol{\\theta}}^2 \\ln p(x;\\boldsymbol{\\theta})\\, d\\boldsymbol{\\theta}\\right)dx + \\mathcal{O}(\\|d\\boldsymbol{\\theta}\\|^3)",
+          "to_latex": "-\\frac{1}{2} d\\boldsymbol{\\theta}^\\top \\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\!\\big[\\nabla_{\\boldsymbol{\\theta}}^2 \\ln p(X;\\boldsymbol{\\theta})\\big] d\\boldsymbol{\\theta} + \\mathcal{O}(\\|d\\boldsymbol{\\theta}\\|^3)",
+          "operation_label": "スコア関数の期待値零による1次項の消去",
+          "explanation": "1次項の積分はスコア関数の期待値であり零となるため、2次項のみが残る。",
+          "used_node_ids": [
+            "ml.igeom.n01_statistical_manifold_score"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{1}{2} d\\boldsymbol{\\theta}^\\top \\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\!\\big[\\nabla_{\\boldsymbol{\\theta}}^2 \\ln p(X;\\boldsymbol{\\theta})\\big] d\\boldsymbol{\\theta} + \\mathcal{O}(\\|d\\boldsymbol{\\theta}\\|^3)",
+          "to_latex": "\\frac{1}{2} d\\boldsymbol{\\theta}^\\top G(\\boldsymbol{\\theta})\\, d\\boldsymbol{\\theta} + \\mathcal{O}\\big(\\|d\\boldsymbol{\\theta}\\|^3\\big)",
+          "operation_label": "負のヘッシアン期待値とフィッシャー情報行列の一致",
+          "explanation": "正規化条件の2階微分から得られる恒等式より、負の対数尤度ヘッシアンの期待値がスコア共分散すなわちフィッシャー情報行列に等しいことを用いる。",
+          "used_node_ids": [
+            "ml.igeom.n02_fisher_information_matrix"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.igeom.d04_cramer_rao_bound",
+      "target_node_id": "ml.igeom.n04_cramer_rao_bound",
+      "route_kind": "deductive",
+      "title": "コーシー＝シュワルツの不等式によるクラメール＝ラオ下界の導出",
+      "premise_node_ids": [
+        "ml.igeom.n02_fisher_information_matrix",
+        "ml.stat.n01_cauchy_schwarz_expectation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e04_quadratic_form_definiteness",
+        "ml.igeom.n01_statistical_manifold_score"
+      ],
+      "assumptions": [
+        "推定量は不偏推定量であり、フィッシャー情報行列は正定値で逆行列を持つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\big[\\hat{\\boldsymbol{\\theta}}(X) - \\boldsymbol{\\theta}\\big] = \\mathbf{0}",
+          "to_latex": "\\operatorname{Cov}\\big(\\hat{\\boldsymbol{\\theta}}(X)\\big) \\succeq G(\\boldsymbol{\\theta})^{-1}",
+          "operation_label": "不偏条件とコーシー＝シュワルツ不等式からの分散下界導出",
+          "explanation": "不偏推定量の誤差とスコア関数の共分散が単位行列になることを示し、任意ベクトルの線形結合にコーシー＝シュワルツの不等式を適用して共分散行列の下界を導く。",
+          "used_node_ids": [
+            "ml.igeom.n02_fisher_information_matrix",
+            "ml.stat.n01_cauchy_schwarz_expectation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\big[\\hat{\\boldsymbol{\\theta}}(X) - \\boldsymbol{\\theta}\\big] = \\mathbf{0}",
+          "to_latex": "\\operatorname{Cov}\\big(\\hat{\\boldsymbol{\\theta}}(X), \\mathbf{s}(X;\\boldsymbol{\\theta})\\big) = I_d",
+          "operation_label": "不偏条件の両辺パラメータ微分",
+          "explanation": "不偏条件の積分表現をパラメータで微分し、積分と微分の交換を行うことで、推定量とスコア関数の相互共分散行列が単位行列に等しいことを得る。",
+          "used_node_ids": [
+            "ml.igeom.n01_statistical_manifold_score"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\operatorname{Cov}\\big(\\hat{\\boldsymbol{\\theta}}(X), \\mathbf{s}(X;\\boldsymbol{\\theta})\\big) = I_d",
+          "to_latex": "\\big(\\mathbf{a}^\\top \\mathbf{b}\\big)^2 \\le \\big(\\mathbf{a}^\\top \\operatorname{Cov}(\\hat{\\boldsymbol{\\theta}}) \\mathbf{a}\\big)\\big(\\mathbf{b}^\\top G(\\boldsymbol{\\theta}) \\mathbf{b}\\big)\\quad (\\forall \\mathbf{a},\\mathbf{b}\\in\\mathbb{R}^d)",
+          "operation_label": "確率変数の線形結合へのコーシー＝シュワルツ不等式の適用",
+          "explanation": "2つのスカラー確率変数の共分散に関するコーシー＝シュワルツの不等式を適用し、フィッシャー情報行列による2次形式で表す。",
+          "used_node_ids": [
+            "ml.igeom.n02_fisher_information_matrix",
+            "ml.stat.n01_cauchy_schwarz_expectation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\big(\\mathbf{a}^\\top \\mathbf{b}\\big)^2 \\le \\big(\\mathbf{a}^\\top \\operatorname{Cov}(\\hat{\\boldsymbol{\\theta}}) \\mathbf{a}\\big)\\big(\\mathbf{b}^\\top G(\\boldsymbol{\\theta}) \\mathbf{b}\\big)\\quad (\\forall \\mathbf{a},\\mathbf{b}\\in\\mathbb{R}^d)",
+          "to_latex": "\\operatorname{Cov}\\big(\\hat{\\boldsymbol{\\theta}}(X)\\big) \\succeq G(\\boldsymbol{\\theta})^{-1}",
+          "operation_label": "共役ベクトルの代入による行列順序不等式の確立",
+          "explanation": "任意ベクトルに対して最適な共役ベクトルを選ぶことで、レヴナー順序における行列不等式が得られる。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.igeom.d05_exponential_family_duality",
+      "target_node_id": "ml.igeom.n05_exponential_family_duality",
+      "route_kind": "deductive",
+      "title": "指数型分布族の正規化条件と期待値座標の定義",
+      "premise_node_ids": [
+        "ml.igeom.n01_statistical_manifold_score"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "十分統計量は線形独立であり、正規化定数（キュムラント母関数）は有限である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\int \\exp\\!\\big(\\boldsymbol{\\theta}^\\top \\mathbf{T}(x) - \\psi(\\boldsymbol{\\theta}) + k(x)\\big)\\,dx = 1",
+          "to_latex": "p(x;\\boldsymbol{\\theta}) = \\exp\\!\\big(\\boldsymbol{\\theta}^\\top \\mathbf{T}(x) - \\psi(\\boldsymbol{\\theta}) + k(x)\\big),\\qquad \\boldsymbol{\\eta}(\\boldsymbol{\\theta}) := \\mathbb{E}_{p(\\cdot;\\boldsymbol{\\theta})}\\big[\\mathbf{T}(X)\\big] = \\nabla_{\\boldsymbol{\\theta}} \\psi(\\boldsymbol{\\theta})",
+          "operation_label": "指数型分布族の正規化条件微分による期待値座標の定義",
+          "explanation": "指数型分布族の正規化条件からキュムラント母関数を定義し、自然パラメータで微分することで十分統計量の期待値としての期待値座標を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "ml.igeom.n01_statistical_manifold_score"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.igeom.d06_dual_flat_legendre_bregman",
+      "target_node_id": "ml.igeom.n06_dual_flat_legendre_bregman",
+      "route_kind": "deductive",
+      "title": "ルジャンドル変換による計量とブレグマンダイバージェンスの導出",
+      "premise_node_ids": [
+        "ml.igeom.n05_exponential_family_duality",
+        "ml.igeom.n03_kl_quadratic_fisher_metric",
+        "math.calc.m11_legendre_transform"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m18_strict_convexity_monotonicity"
+      ],
+      "assumptions": [
+        "指数型分布族は極小表現であり、キュムラント母関数は狭義凸関数である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p(x;\\boldsymbol{\\theta}) = \\exp\\!\\big(\\boldsymbol{\\theta}^\\top \\mathbf{T}(x) - \\psi(\\boldsymbol{\\theta}) + k(x)\\big),\\quad \\varphi(\\boldsymbol{\\eta}) = \\boldsymbol{\\theta}^\\top \\boldsymbol{\\eta} - \\psi(\\boldsymbol{\\theta})",
+          "to_latex": "G(\\boldsymbol{\\theta}) = \\nabla_{\\boldsymbol{\\theta}}^2 \\psi(\\boldsymbol{\\theta}) = \\big(\\nabla_{\\boldsymbol{\\eta}}^2 \\varphi(\\boldsymbol{\\eta})\\big)^{-1},\\quad D_{\\mathrm{KL}}(p_1 \\| p_2) = \\psi(\\boldsymbol{\\theta}_2) + \\varphi(\\boldsymbol{\\eta}_1) - \\boldsymbol{\\theta}_2^\\top \\boldsymbol{\\eta}_1",
+          "operation_label": "双対ポテンシャルによるフィッシャー計量と正準ダイバージェンスの導出",
+          "explanation": "指数型分布族の対数密度を2回微分して計量がポテンシャルのヘッシアンであることを示し、ルジャンドル共役関数を用いてKLダイバージェンスを双対座標で表す。",
+          "used_node_ids": [
+            "math.calc.m11_legendre_transform",
+            "ml.igeom.n03_kl_quadratic_fisher_metric",
+            "ml.igeom.n05_exponential_family_duality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p(x;\\boldsymbol{\\theta}) = \\exp\\!\\big(\\boldsymbol{\\theta}^\\top \\mathbf{T}(x) - \\psi(\\boldsymbol{\\theta}) + k(x)\\big),\\quad \\varphi(\\boldsymbol{\\eta}) = \\boldsymbol{\\theta}^\\top \\boldsymbol{\\eta} - \\psi(\\boldsymbol{\\theta})",
+          "to_latex": "G(\\boldsymbol{\\theta}) = -\\mathbb{E}\\big[\\nabla_{\\boldsymbol{\\theta}}^2 \\ln p(X;\\boldsymbol{\\theta})\\big] = \\nabla_{\\boldsymbol{\\theta}}^2 \\psi(\\boldsymbol{\\theta})",
+          "operation_label": "負のヘッシアン期待値による計量計算",
+          "explanation": "指数型分布族の対数確率密度を自然パラメータで2回微分すると、キュムラント母関数のヘッシアンの負号のみが残るため、フィッシャー計量がそのヘッシアンに一致する。",
+          "used_node_ids": [
+            "ml.igeom.n03_kl_quadratic_fisher_metric",
+            "ml.igeom.n05_exponential_family_duality"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G(\\boldsymbol{\\theta}) = -\\mathbb{E}\\big[\\nabla_{\\boldsymbol{\\theta}}^2 \\ln p(X;\\boldsymbol{\\theta})\\big] = \\nabla_{\\boldsymbol{\\theta}}^2 \\psi(\\boldsymbol{\\theta})",
+          "to_latex": "G(\\boldsymbol{\\theta}) = \\nabla_{\\boldsymbol{\\theta}}^2 \\psi(\\boldsymbol{\\theta}) = \\big(\\nabla_{\\boldsymbol{\\eta}}^2 \\varphi(\\boldsymbol{\\eta})\\big)^{-1},\\quad \\varphi(\\boldsymbol{\\eta}_1) = \\mathbb{E}_{p_1}[\\ln p_1(X) - k(X)]",
+          "operation_label": "ルジャンドル変換と逆ヘッシアン関係の適用",
+          "explanation": "ルジャンドル変換の性質より双対座標間のヤコビ行列が互いに逆行列となるため、双対ポテンシャルのヘッシアンも逆行列の関係になる。",
+          "used_node_ids": [
+            "math.calc.m11_legendre_transform",
+            "math.calc.m18_strict_convexity_monotonicity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G(\\boldsymbol{\\theta}) = \\nabla_{\\boldsymbol{\\theta}}^2 \\psi(\\boldsymbol{\\theta}) = \\big(\\nabla_{\\boldsymbol{\\eta}}^2 \\varphi(\\boldsymbol{\\eta})\\big)^{-1},\\quad \\varphi(\\boldsymbol{\\eta}_1) = \\mathbb{E}_{p_1}[\\ln p_1(X) - k(X)]",
+          "to_latex": "G(\\boldsymbol{\\theta}) = \\nabla_{\\boldsymbol{\\theta}}^2 \\psi(\\boldsymbol{\\theta}) = \\big(\\nabla_{\\boldsymbol{\\eta}}^2 \\varphi(\\boldsymbol{\\eta})\\big)^{-1},\\quad D_{\\mathrm{KL}}(p_1 \\| p_2) = \\psi(\\boldsymbol{\\theta}_2) + \\varphi(\\boldsymbol{\\eta}_1) - \\boldsymbol{\\theta}_2^\\top \\boldsymbol{\\eta}_1",
+          "operation_label": "KLダイバージェンスの正準ダイバージェンス表現の導出",
+          "explanation": "対数尤度比の期待値を展開し、第1の分布の期待値座標と第2の分布の自然座標、および両ポテンシャル関数で整理するとブレグマンダイバージェンスが得られる。",
+          "used_node_ids": [
+            "math.calc.m11_legendre_transform",
+            "ml.igeom.n05_exponential_family_duality"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.igeom.d07_dual_connections_em_flatness",
+      "target_node_id": "ml.igeom.n07_dual_connections_em_flatness",
+      "route_kind": "deductive",
+      "title": "双対接続の構造と一般化ピタゴラスの定理の導出",
+      "premise_node_ids": [
+        "ml.igeom.n06_dual_flat_legendre_bregman",
+        "eng.info.n03_kl_divergence_gibbs"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "対象とする統計多様体は指数型分布族によって構成される双対平坦空間である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "D_{\\mathrm{KL}}(P \\| Q) = \\psi(\\boldsymbol{\\theta}_Q) + \\varphi(\\boldsymbol{\\eta}_P) - \\boldsymbol{\\theta}_Q^\\top \\boldsymbol{\\eta}_P",
+          "to_latex": "\\partial_k g_{ij} = \\Gamma_{ijk}^{(e)} + \\Gamma_{ikj}^{(m)},\\quad (\\boldsymbol{\\eta}_P - \\boldsymbol{\\eta}_Q)^\\top (\\boldsymbol{\\theta}_Q - \\boldsymbol{\\theta}_R) = 0 \\implies D_{\\mathrm{KL}}(P \\| R) = D_{\\mathrm{KL}}(P \\| Q) + D_{\\mathrm{KL}}(Q \\| R)",
+          "operation_label": "双対接続の平坦性と一般化ピタゴラスの定理の導出",
+          "explanation": "正準ダイバージェンスの3点関係式から直交条件によるピタゴラスの定理を導き、計量テンソルの3階微分がe接続とm接続の双対関係を満たすことを示す。",
+          "used_node_ids": [
+            "eng.info.n03_kl_divergence_gibbs",
+            "ml.igeom.n06_dual_flat_legendre_bregman"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D_{\\mathrm{KL}}(P \\| Q) = \\psi(\\boldsymbol{\\theta}_Q) + \\varphi(\\boldsymbol{\\eta}_P) - \\boldsymbol{\\theta}_Q^\\top \\boldsymbol{\\eta}_P",
+          "to_latex": "D_{\\mathrm{KL}}(P \\| R) - D_{\\mathrm{KL}}(P \\| Q) - D_{\\mathrm{KL}}(Q \\| R) = (\\boldsymbol{\\eta}_P - \\boldsymbol{\\eta}_Q)^\\top (\\boldsymbol{\\theta}_Q - \\boldsymbol{\\theta}_R)",
+          "operation_label": "3点間の正準ダイバージェンス差分の展開",
+          "explanation": "3点P, Q, R間のKLダイバージェンスを正準ダイバージェンス表現で展開し、ルジャンドル恒等式を用いて整理する。",
+          "used_node_ids": [
+            "ml.igeom.n06_dual_flat_legendre_bregman"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D_{\\mathrm{KL}}(P \\| R) - D_{\\mathrm{KL}}(P \\| Q) - D_{\\mathrm{KL}}(Q \\| R) = (\\boldsymbol{\\eta}_P - \\boldsymbol{\\eta}_Q)^\\top (\\boldsymbol{\\theta}_Q - \\boldsymbol{\\theta}_R)",
+          "to_latex": "\\partial_k g_{ij} = \\partial_k \\partial_i \\partial_j \\psi(\\boldsymbol{\\theta}) = \\Gamma_{ijk}^{(e)} + \\Gamma_{ikj}^{(m)}\\;\\big(\\Gamma_{ijk}^{(e)}(\\boldsymbol{\\theta})=0,\\;\\Gamma_{ijk}^{(m)}(\\boldsymbol{\\eta})=0\\big)",
+          "operation_label": "計量の微分と双対アフィン接続の同定",
+          "explanation": "計量がポテンシャルの2階微分であることから、e座標で接続係数が零、m座標で双対接続係数が零となり、両者が計量に関して双対接続をなす。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "ml.igeom.n06_dual_flat_legendre_bregman"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\partial_k g_{ij} = \\partial_k \\partial_i \\partial_j \\psi(\\boldsymbol{\\theta}) = \\Gamma_{ijk}^{(e)} + \\Gamma_{ikj}^{(m)}\\;\\big(\\Gamma_{ijk}^{(e)}(\\boldsymbol{\\theta})=0,\\;\\Gamma_{ijk}^{(m)}(\\boldsymbol{\\eta})=0\\big)",
+          "to_latex": "\\partial_k g_{ij} = \\Gamma_{ijk}^{(e)} + \\Gamma_{ikj}^{(m)},\\quad (\\boldsymbol{\\eta}_P - \\boldsymbol{\\eta}_Q)^\\top (\\boldsymbol{\\theta}_Q - \\boldsymbol{\\theta}_R) = 0 \\implies D_{\\mathrm{KL}}(P \\| R) = D_{\\mathrm{KL}}(P \\| Q) + D_{\\mathrm{KL}}(Q \\| R)",
+          "operation_label": "m測地線とe測地線の直交条件によるピタゴラスの定理",
+          "explanation": "PとQを結ぶm測地線とQとRを結ぶe測地線が直交するとき内積項が零となり、一般化ピタゴラスの定理が成立する。",
+          "used_node_ids": [
+            "ml.igeom.n06_dual_flat_legendre_bregman"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "ml.igeom.d08_natural_gradient_descent",
+      "target_node_id": "ml.igeom.n08_natural_gradient_descent",
+      "route_kind": "deductive",
+      "title": "KLダイバージェンス制約付き最適化による自然勾配法の導出",
+      "premise_node_ids": [
+        "ml.igeom.n03_kl_quadratic_fisher_metric",
+        "eng.ml1.n07_gradient_descent_def"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff",
+        "ml.igeom.n02_fisher_information_matrix"
+      ],
+      "assumptions": [
+        "目的関数は微分可能であり、フィッシャー情報行列は正定値である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\min_{d\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta} + d\\boldsymbol{\\theta})\\quad \\text{s.t.}\\quad D_{\\mathrm{KL}}\\big(p(\\cdot;\\boldsymbol{\\theta}) \\,\\|\\, p(\\cdot;\\boldsymbol{\\theta}+d\\boldsymbol{\\theta})\\big) = \\frac{1}{2}\\varepsilon^2",
+          "to_latex": "\\tilde{\\nabla}_{\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta}) = G(\\boldsymbol{\\theta})^{-1} \\nabla_{\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta}),\\quad \\boldsymbol{\\theta}_{t+1} = \\boldsymbol{\\theta}_t - \\eta\\, G(\\boldsymbol{\\theta}_t)^{-1} \\nabla_{\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta}_t)",
+          "operation_label": "KL制約付き最小化問題からの自然勾配更新則の導出",
+          "explanation": "KLダイバージェンスによる2次計量制約の下で目的関数を最も減少させる微小変位を求めることで、フィッシャー情報行列の逆行列を掛けた自然勾配法が導かれる。",
+          "used_node_ids": [
+            "eng.ml1.n07_gradient_descent_def",
+            "ml.igeom.n03_kl_quadratic_fisher_metric"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\min_{d\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta} + d\\boldsymbol{\\theta})\\quad \\text{s.t.}\\quad D_{\\mathrm{KL}}\\big(p(\\cdot;\\boldsymbol{\\theta}) \\,\\|\\, p(\\cdot;\\boldsymbol{\\theta}+d\\boldsymbol{\\theta})\\big) = \\frac{1}{2}\\varepsilon^2",
+          "to_latex": "\\min_{d\\boldsymbol{\\theta}} \\left\\{ \\mathcal{L}(\\boldsymbol{\\theta}) + \\nabla_{\\boldsymbol{\\theta}}\\mathcal{L}(\\boldsymbol{\\theta})^\\top d\\boldsymbol{\\theta} + \\frac{1}{2\\eta}\\big(d\\boldsymbol{\\theta}^\\top G(\\boldsymbol{\\theta})\\,d\\boldsymbol{\\theta} - \\varepsilon^2\\big) \\right\\}",
+          "operation_label": "1次近似とKL2次展開によるラグランジュ関数の構築",
+          "explanation": "目的関数を1次テイラー展開し、制約条件のKLダイバージェンスをフィッシャー情報計量の2次形式で置き換えてラグランジュ未定乗数法を適用する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "ml.igeom.n03_kl_quadratic_fisher_metric"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\min_{d\\boldsymbol{\\theta}} \\left\\{ \\mathcal{L}(\\boldsymbol{\\theta}) + \\nabla_{\\boldsymbol{\\theta}}\\mathcal{L}(\\boldsymbol{\\theta})^\\top d\\boldsymbol{\\theta} + \\frac{1}{2\\eta}\\big(d\\boldsymbol{\\theta}^\\top G(\\boldsymbol{\\theta})\\,d\\boldsymbol{\\theta} - \\varepsilon^2\\big) \\right\\}",
+          "to_latex": "\\nabla_{\\boldsymbol{\\theta}}\\mathcal{L}(\\boldsymbol{\\theta}) + \\frac{1}{\\eta} G(\\boldsymbol{\\theta})\\,d\\boldsymbol{\\theta} = \\mathbf{0}",
+          "operation_label": "微小変位に関する停留条件の導出",
+          "explanation": "ラグランジュ関数を微小変位ベクトルで微分して零とおくことで、最急降下方向が満たすべき線形方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla_{\\boldsymbol{\\theta}}\\mathcal{L}(\\boldsymbol{\\theta}) + \\frac{1}{\\eta} G(\\boldsymbol{\\theta})\\,d\\boldsymbol{\\theta} = \\mathbf{0}",
+          "to_latex": "\\tilde{\\nabla}_{\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta}) = G(\\boldsymbol{\\theta})^{-1} \\nabla_{\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta}),\\quad \\boldsymbol{\\theta}_{t+1} = \\boldsymbol{\\theta}_t - \\eta\\, G(\\boldsymbol{\\theta}_t)^{-1} \\nabla_{\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta}_t)",
+          "operation_label": "自然勾配とパラメータ更新則の解法",
+          "explanation": "フィッシャー情報行列の逆行列を左から掛けることで自然勾配方向が求まり、離散ステップの更新則として自然勾配法が得られる。",
+          "used_node_ids": [
+            "eng.ml1.n07_gradient_descent_def",
+            "ml.igeom.n02_fisher_information_matrix"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,657 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.cond.band_theory_bloch",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "固体物性物理：ブロッホの定理・エネルギーバンド構造と有効質量",
+    "language": "ja",
+    "description": "周期ポテンシャルのシュレーディンガー方程式からブロッホの定理、クローニッヒ＝ペニーモデル、バンドギャップ、有効質量テンソルを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.band.n01_reciprocal_lattice_brillouin_zone",
+      "short_code": "BAND01",
+      "kind": "definition",
+      "title": "逆格子ベクトルと第一ブリルアンゾーン・ボーン＝フォン・カルマン境界条件",
+      "summary": "結晶の並進周期性に双対な逆格子ベクトル、有限結晶に課すボーン＝フォン・カルマン周期境界条件、および波数空間の最小基本領域である第一ブリルアンゾーンの定義。",
+      "canonical_latex": "\\mathbf{G}\\cdot\\mathbf{R} = 2\\pi m\\;(m\\in\\mathbb{Z}),\\quad \\psi_{n\\mathbf{k}}(\\mathbf{r}+N_i\\mathbf{a}_i)=\\psi_{n\\mathbf{k}}(\\mathbf{r}),\\quad \\mathrm{BZ}_1 := \\left\\{\\mathbf{k} \\;\\middle|\\; |\\mathbf{k}| \\le |\\mathbf{k}-\\mathbf{G}|\\;\\forall\\mathbf{G}\\neq\\mathbf{0}\\right\\}",
+      "aliases_latex": [
+        "e^{i\\mathbf{G}\\cdot\\mathbf{R}}=1",
+        "\\mathbf{k} = \\sum_{i=1}^3 \\frac{m_i}{N_i}\\mathbf{b}_i"
+      ],
+      "keywords": [
+        "逆格子ベクトル",
+        "第一ブリルアンゾーン",
+        "周期境界条件",
+        "ボーン＝フォン・カルマン",
+        "結晶運動量"
+      ],
+      "domain_tags": [
+        "physics",
+        "condensed_matter",
+        "band_theory",
+        "solid_state_physics"
+      ]
+    },
+    {
+      "id": "phys.band.n02_central_equation_plane_wave",
+      "short_code": "BAND02",
+      "kind": "theorem_formula",
+      "title": "ブロッホ関数の平面波展開と中心方程式（Central Equation）",
+      "summary": "周期ポテンシャルとブロッホ波動関数を逆格子ベクトルでフーリエ展開し、シュレーディンガー方程式を平面波係数に関する連立線形代数方程式へ帰着させた基本方程式。",
+      "canonical_latex": "\\left(\\frac{\\hbar^2 |\\mathbf{k}-\\mathbf{G}|^2}{2m} - E\\right) c_{\\mathbf{k}-\\mathbf{G}} + \\sum_{\\mathbf{G}'} U_{\\mathbf{G}'-\\mathbf{G}} c_{\\mathbf{k}-\\mathbf{G}'} = 0",
+      "aliases_latex": [
+        "\\left(\\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0 - E\\right)c_{\\mathbf{k}-\\mathbf{G}} + \\sum_{\\mathbf{G}'} U_{\\mathbf{G}'-\\mathbf{G}} c_{\\mathbf{k}-\\mathbf{G}'} = 0"
+      ],
+      "keywords": [
+        "中心方程式",
+        "平面波展開",
+        "逆格子空間",
+        "フーリエ展開",
+        "バンド計算"
+      ],
+      "domain_tags": [
+        "physics",
+        "condensed_matter",
+        "band_theory",
+        "quantum_mechanics"
+      ]
+    },
+    {
+      "id": "phys.band.n03_nearly_free_electron_band_gap",
+      "short_code": "BAND03",
+      "kind": "theorem_formula",
+      "title": "ほぼ自由な電子模型とブリルアンゾーン境界のバンドギャップ",
+      "summary": "弱い周期ポテンシャルのもとでブリルアンゾーン境界付近の2つの縮退平面波状態を結合させ、ブラッグ反射により大きさ2|U_G|のエネルギーギャップが開くことを示す公式。",
+      "canonical_latex": "E_{\\pm}(\\mathbf{k}) = \\frac{\\varepsilon_{\\mathbf{k}}^0 + \\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0}{2} \\pm \\sqrt{\\left(\\frac{\\varepsilon_{\\mathbf{k}}^0 - \\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0}{2}\\right)^2 + |U_{\\mathbf{G}}|^2},\\qquad E_g = 2|U_{\\mathbf{G}}|",
+      "aliases_latex": [
+        "\\det\\begin{pmatrix}\\varepsilon_{\\mathbf{k}}^0 - E & U_{\\mathbf{G}}^* \\\\ U_{\\mathbf{G}} & \\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0 - E\\end{pmatrix}=0"
+      ],
+      "keywords": [
+        "ほぼ自由な電子模型",
+        "バンドギャップ",
+        "禁制帯",
+        "ブラッグ反射",
+        "縮退摂動"
+      ],
+      "domain_tags": [
+        "physics",
+        "condensed_matter",
+        "band_theory",
+        "semiconductor_physics"
+      ]
+    },
+    {
+      "id": "phys.band.n04_tight_binding_dispersion",
+      "short_code": "BAND04",
+      "kind": "theorem_formula",
+      "title": "緊密結合（タイトバインディング）近似とバンド分散関係",
+      "summary": "各格子点に局在した原子軌道の線形結合からブロッホ状態を構成し、最近接格子点間のホッピング積分から余弦型のエネルギーバンド分散とバンド幅を導く公式。",
+      "canonical_latex": "E(k) = E_0 - \\alpha - 2\\gamma\\cos(ka),\\qquad W = 4\\gamma",
+      "aliases_latex": [
+        "E(\\mathbf{k}) = E_0 - \\alpha - \\sum_{\\boldsymbol{\\delta}} \\gamma(\\boldsymbol{\\delta}) e^{i\\mathbf{k}\\cdot\\boldsymbol{\\delta}}"
+      ],
+      "keywords": [
+        "緊密結合近似",
+        "タイトバインディング",
+        "ホッピング積分",
+        "バンド幅",
+        "ワニエ関数"
+      ],
+      "domain_tags": [
+        "physics",
+        "condensed_matter",
+        "band_theory",
+        "quantum_chemistry"
+      ]
+    },
+    {
+      "id": "phys.band.n05_band_effective_mass_hole",
+      "short_code": "BAND05",
+      "kind": "theorem_formula",
+      "title": "バンド端の有効質量近似と正孔（ホール）の運動方程式",
+      "summary": "価電子帯頂上近傍では電子の有効質量が負となるため、空席状態を正電荷+eと正の有効質量m_h^*=-m_e^*を持つ準粒子（正孔）として記述する半古典運動方程式。",
+      "canonical_latex": "E_v(\\mathbf{k}) \\approx E_v^{\\max} - \\frac{\\hbar^2 |\\mathbf{k}-\\mathbf{k}_0|^2}{2m_h^*},\\qquad m_h^* = -m_e^* > 0,\\qquad \\frac{d(\\hbar\\mathbf{k}_h)}{dt} = +e(\\mathbf{E} + \\mathbf{v}_h\\times\\mathbf{B})",
+      "aliases_latex": [
+        "m_h^* \\frac{d\\mathbf{v}_h}{dt} = +e(\\mathbf{E} + \\mathbf{v}_h\\times\\mathbf{B})"
+      ],
+      "keywords": [
+        "正孔",
+        "ホール",
+        "有効質量近似",
+        "価電子帯",
+        "半導体キャリア"
+      ],
+      "domain_tags": [
+        "physics",
+        "condensed_matter",
+        "band_theory",
+        "semiconductor_physics"
+      ]
+    },
+    {
+      "id": "phys.band.n06_density_of_states_band",
+      "short_code": "BAND06",
+      "kind": "theorem_formula",
+      "title": "エネルギーバンドの状態密度（DOS）とファン・ホーフェ特異点",
+      "summary": "波数空間の等エネルギー面上での面積分としてバンド電子の単位体積あたり状態密度を与え、群速度がゼロとなる臨界点でのファン・ホーフェ特異点の起源を示す公式。",
+      "canonical_latex": "D_n(E) = \\frac{1}{(2\\pi)^3}\\iint_{E_n(\\mathbf{k})=E} \\frac{dS_{\\mathbf{k}}}{|\\nabla_{\\mathbf{k}} E_n(\\mathbf{k})|} = \\frac{1}{(2\\pi)^3}\\iint_{E_n(\\mathbf{k})=E} \\frac{dS_{\\mathbf{k}}}{\\hbar|\\mathbf{v}_n(\\mathbf{k})|}",
+      "aliases_latex": [
+        "D_n(E) = \\frac{1}{(2\\pi)^3}\\int_{\\mathrm{BZ}_1} \\delta\\big(E - E_n(\\mathbf{k})\\big)\\,d^3k"
+      ],
+      "keywords": [
+        "状態密度",
+        "DOS",
+        "等エネルギー面",
+        "ファン・ホーフェ特異点",
+        "フェルミ面"
+      ],
+      "domain_tags": [
+        "physics",
+        "condensed_matter",
+        "band_theory",
+        "statistical_physics"
+      ]
+    },
+    {
+      "id": "phys.band.n07_bloch_oscillation",
+      "short_code": "BAND07",
+      "kind": "theorem_formula",
+      "title": "一様電場下のブロッホ振動（周期と実空間振幅）",
+      "summary": "散乱のない理想的な周期ポテンシャルに一様静電場を印加したとき、電子の結晶運動量がブリルアンゾーンを周期的に横断し実空間で局在振動を起こす現象の定式化。",
+      "canonical_latex": "k(t) = k(0) - \\frac{eE}{\\hbar}t,\\qquad T_B = \\frac{2\\pi\\hbar}{eEa},\\qquad x(t) = x(0) + \\frac{2\\gamma}{eE}\\cos\\left(k(0)a - \\omega_B t\\right)\\;\\left(\\omega_B := \\frac{eEa}{\\hbar}\\right)",
+      "aliases_latex": [
+        "x(t) - x(0) = \\frac{\\Delta E_{\\mathrm{band}}}{2eE}\\cos(\\omega_B t - \\phi_0)"
+      ],
+      "keywords": [
+        "ブロッホ振動",
+        "半古典運動",
+        "超格子",
+        "ワニエ＝シュタルク局在",
+        "群速度"
+      ],
+      "domain_tags": [
+        "physics",
+        "condensed_matter",
+        "band_theory",
+        "quantum_transport"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_band01",
+      "target_node_id": "phys.band.n01_reciprocal_lattice_brillouin_zone",
+      "route_kind": "reformulation",
+      "title": "周期並進対称性と有限結晶境界条件からの逆格子・第一ブリルアンゾーンの定義",
+      "premise_node_ids": [
+        "phys.solid.bp01_periodic_potential_translation",
+        "phys.solid.bp02_bloch_theorem"
+      ],
+      "required_math_node_ids": [
+        "phys.band.n01_reciprocal_lattice_brillouin_zone"
+      ],
+      "assumptions": [
+        "結晶は基本並進ベクトルa_1, a_2, a_3で張られるブラベ格子を持ち、各方向に十分大きい周期N_iを仮定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "V(\\mathbf{r}+\\mathbf{R})=V(\\mathbf{r}),\\quad \\psi_{n\\mathbf{k}}(\\mathbf{r}+\\mathbf{R})=e^{i\\mathbf{k}\\cdot\\mathbf{R}}\\psi_{n\\mathbf{k}}(\\mathbf{r})",
+          "to_latex": "\\mathbf{G}\\cdot\\mathbf{R} = 2\\pi m\\;(m\\in\\mathbb{Z}),\\quad \\psi_{n\\mathbf{k}}(\\mathbf{r}+N_i\\mathbf{a}_i)=\\psi_{n\\mathbf{k}}(\\mathbf{r})",
+          "operation_label": "逆格子ベクトルと周期境界条件の導入",
+          "explanation": "周期ポテンシャルをフーリエ級数で表現するためにe^{iG・R}=1を満たす逆格子ベクトルGを定義し、同時にマクロな結晶の並進周期N_i a_iに対するボーン＝フォン・カルマン周期境界条件を課して波数kを離散化する。",
+          "used_node_ids": [
+            "phys.solid.bp01_periodic_potential_translation",
+            "phys.solid.bp02_bloch_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_def",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{k}' = \\mathbf{k} + \\mathbf{G} \\implies e^{i\\mathbf{k}'\\cdot\\mathbf{R}} = e^{i\\mathbf{k}\\cdot\\mathbf{R}}",
+          "to_latex": "\\mathrm{BZ}_1 := \\left\\{\\mathbf{k} \\;\\middle|\\; |\\mathbf{k}| \\le |\\mathbf{k}-\\mathbf{G}|\\;\\forall\\mathbf{G}\\neq\\mathbf{0}\\right\\}",
+          "operation_label": "第一ブリルアンゾーンの定義",
+          "explanation": "逆格子ベクトルGだけの差を持つ波数は同一のブロッホ位相因子を与えるため冗長であり、原点に最も近い非重複の最小領域（ウィグナー＝ザイツ胞）を第一ブリルアンゾーンとして定義する。",
+          "used_node_ids": [
+            "phys.band.n01_reciprocal_lattice_brillouin_zone",
+            "phys.solid.bp02_bloch_theorem"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_band02",
+      "target_node_id": "phys.band.n02_central_equation_plane_wave",
+      "route_kind": "deductive",
+      "title": "TISEへのブロッホ関数と周期ポテンシャルのフーリエ展開代入による中心方程式の導出",
+      "premise_node_ids": [
+        "phys.qm.wm05_tise_stationary_states",
+        "phys.solid.bp02_bloch_theorem",
+        "phys.band.n01_reciprocal_lattice_brillouin_zone"
+      ],
+      "required_math_node_ids": [
+        "phys.band.n02_central_equation_plane_wave"
+      ],
+      "assumptions": [
+        "電子は有効1体ポテンシャルV(r)のもとで定常状態にあるとする。",
+        "V(r)およびu_{nk}(r)は逆格子ベクトルGに関するフーリエ級数に一様収束すると仮定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\left(-\\frac{\\hbar^2}{2m}\\nabla^2 + V(\\mathbf{r})\\right)\\psi_{\\mathbf{k}}(\\mathbf{r}) = E\\psi_{\\mathbf{k}}(\\mathbf{r})",
+          "to_latex": "\\left(\\frac{\\hbar^2 |\\mathbf{k}-\\mathbf{G}|^2}{2m} - E\\right) c_{\\mathbf{k}-\\mathbf{G}} + \\sum_{\\mathbf{G}'} U_{\\mathbf{G}'-\\mathbf{G}} c_{\\mathbf{k}-\\mathbf{G}'} = 0",
+          "operation_label": "平面波展開による中心方程式の導出",
+          "explanation": "ブロッホ波動関数と周期ポテンシャルをそれぞれ逆格子空間のフーリエ級数に展開して時間非依存シュレーディンガー方程式に代入し、平面波基底の線形独立性を用いて各フーリエ係数間の連立方程式（中心方程式）を得る。",
+          "used_node_ids": [
+            "phys.band.n01_reciprocal_lattice_brillouin_zone",
+            "phys.qm.wm05_tise_stationary_states",
+            "phys.solid.bp02_bloch_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-\\frac{\\hbar^2}{2m}\\nabla^2\\psi_{\\mathbf{k}}(\\mathbf{r}) + V(\\mathbf{r})\\psi_{\\mathbf{k}}(\\mathbf{r}) = E\\psi_{\\mathbf{k}}(\\mathbf{r})",
+          "to_latex": "\\sum_{\\mathbf{G}}\\left(\\frac{\\hbar^2|\\mathbf{k}-\\mathbf{G}|^2}{2m} - E\\right)c_{\\mathbf{k}-\\mathbf{G}}e^{i(\\mathbf{k}-\\mathbf{G})\\cdot\\mathbf{r}} + \\sum_{\\mathbf{G},\\mathbf{G}''} U_{\\mathbf{G}''} c_{\\mathbf{k}-\\mathbf{G}} e^{i(\\mathbf{k}-\\mathbf{G}+\\mathbf{G}'')\\cdot\\mathbf{r}} = 0",
+          "operation_label": "ブロッホ関数とポテンシャルのフーリエ展開代入",
+          "explanation": "周期部分u_k(r)を逆格子ベクトルで展開したpsi_k(r) = sum_G c_{k-G} e^{i(k-G)・r}と、V(r) = sum_{G''} U_{G''} e^{iG''・r}をTISEに代入し、運動エネルギー演算子を作用させる。",
+          "used_node_ids": [
+            "phys.qm.wm05_tise_stationary_states",
+            "phys.solid.bp02_bloch_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{\\mathbf{G}}\\left(\\frac{\\hbar^2|\\mathbf{k}-\\mathbf{G}|^2}{2m} - E\\right)c_{\\mathbf{k}-\\mathbf{G}}e^{i(\\mathbf{k}-\\mathbf{G})\\cdot\\mathbf{r}} + \\sum_{\\mathbf{G},\\mathbf{G}''} U_{\\mathbf{G}''} c_{\\mathbf{k}-\\mathbf{G}} e^{i(\\mathbf{k}-\\mathbf{G}+\\mathbf{G}'')\\cdot\\mathbf{r}} = 0",
+          "to_latex": "\\sum_{\\mathbf{G}}\\left[\\left(\\frac{\\hbar^2|\\mathbf{k}-\\mathbf{G}|^2}{2m} - E\\right)c_{\\mathbf{k}-\\mathbf{G}} + \\sum_{\\mathbf{G}'} U_{\\mathbf{G}'-\\mathbf{G}} c_{\\mathbf{k}-\\mathbf{G}'}\\right] e^{i(\\mathbf{k}-\\mathbf{G})\\cdot\\mathbf{r}} = 0",
+          "operation_label": "和の添字の組替えと平面波基底での整理",
+          "explanation": "ポテンシャル項においてG - G''を新たなGに、元のGをG'に置き換えることで、すべての項を共通の平面波因子e^{i(k-G)・r}で括り出す。",
+          "used_node_ids": [
+            "phys.band.n01_reciprocal_lattice_brillouin_zone"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{\\mathbf{G}}\\left[\\left(\\frac{\\hbar^2|\\mathbf{k}-\\mathbf{G}|^2}{2m} - E\\right)c_{\\mathbf{k}-\\mathbf{G}} + \\sum_{\\mathbf{G}'} U_{\\mathbf{G}'-\\mathbf{G}} c_{\\mathbf{k}-\\mathbf{G}'}\\right] e^{i(\\mathbf{k}-\\mathbf{G})\\cdot\\mathbf{r}} = 0",
+          "to_latex": "\\left(\\frac{\\hbar^2 |\\mathbf{k}-\\mathbf{G}|^2}{2m} - E\\right) c_{\\mathbf{k}-\\mathbf{G}} + \\sum_{\\mathbf{G}'} U_{\\mathbf{G}'-\\mathbf{G}} c_{\\mathbf{k}-\\mathbf{G}'} = 0",
+          "operation_label": "平面波の直交性による係数方程式の抽出",
+          "explanation": "異なるGに対する平面波e^{i(k-G)・r}が互いに直交し線形独立であるため、各Gごとの括弧内の係数が恒等的にゼロでなければならない。",
+          "used_node_ids": [
+            "phys.band.n02_central_equation_plane_wave"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_band03",
+      "target_node_id": "phys.band.n03_nearly_free_electron_band_gap",
+      "route_kind": "deductive",
+      "title": "ブリルアンゾーン境界における2状態縮退によるバンドギャップの導出",
+      "premise_node_ids": [
+        "phys.band.n02_central_equation_plane_wave",
+        "phys.qm.ps03_degenerate_perturbation_secular_eq"
+      ],
+      "required_math_node_ids": [
+        "phys.band.n03_nearly_free_electron_band_gap"
+      ],
+      "assumptions": [
+        "周期ポテンシャルのフーリエ成分|U_G|は自由電子の運動エネルギースケールに比べて十分小さい。",
+        "U_0 = 0（エネルギー基準のシフト）かつポテンシャルの実数性よりU_{-G} = U_G^*とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\left(\\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0 - E\\right)c_{\\mathbf{k}-\\mathbf{G}} + \\sum_{\\mathbf{G}'} U_{\\mathbf{G}'-\\mathbf{G}} c_{\\mathbf{k}-\\mathbf{G}'} = 0",
+          "to_latex": "E_{\\pm}(\\mathbf{k}) = \\frac{\\varepsilon_{\\mathbf{k}}^0 + \\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0}{2} \\pm \\sqrt{\\left(\\frac{\\varepsilon_{\\mathbf{k}}^0 - \\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0}{2}\\right)^2 + |U_{\\mathbf{G}}|^2},\\qquad E_g = 2|U_{\\mathbf{G}}|",
+          "operation_label": "2状態縮退永年方程式によるバンドギャップ導出",
+          "explanation": "ゾーン境界（ブラッグ面）付近でエネルギーが近接する2つの平面波成分のみを中心方程式から切り出し、2次永年方程式を解いて分裂幅2|U_G|を得る。",
+          "used_node_ids": [
+            "phys.band.n02_central_equation_plane_wave",
+            "phys.qm.ps03_degenerate_perturbation_secular_eq"
+          ],
+          "sympy_check_hint": "solve((e1 - E)*(e2 - E) - U*conjugate(U), E)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0 - E\\right)c_{\\mathbf{k}-\\mathbf{G}} + \\sum_{\\mathbf{G}'} U_{\\mathbf{G}'-\\mathbf{G}} c_{\\mathbf{k}-\\mathbf{G}'} = 0",
+          "to_latex": "\\begin{pmatrix}\\varepsilon_{\\mathbf{k}}^0 - E & U_{\\mathbf{G}}^* \\\\ U_{\\mathbf{G}} & \\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0 - E\\end{pmatrix}\\begin{pmatrix}c_{\\mathbf{k}} \\\\ c_{\\mathbf{k}-\\mathbf{G}}\\end{pmatrix} = \\begin{pmatrix}0 \\\\ 0\\end{pmatrix}",
+          "operation_label": "縮退する2状態部分空間への中心方程式の縮約",
+          "explanation": "|k| ≈ |k-G|となるブラッグ反射条件近傍ではc_kとc_{k-G}のみが支配的となるため、他の成分を無視して2×2の行列方程式に縮約する。",
+          "used_node_ids": [
+            "phys.band.n02_central_equation_plane_wave",
+            "phys.qm.ps03_degenerate_perturbation_secular_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\begin{pmatrix}\\varepsilon_{\\mathbf{k}}^0 - E & U_{\\mathbf{G}}^* \\\\ U_{\\mathbf{G}} & \\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0 - E\\end{pmatrix}\\begin{pmatrix}c_{\\mathbf{k}} \\\\ c_{\\mathbf{k}-\\mathbf{G}}\\end{pmatrix} = \\begin{pmatrix}0 \\\\ 0\\end{pmatrix}",
+          "to_latex": "(\\varepsilon_{\\mathbf{k}}^0 - E)(\\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0 - E) - |U_{\\mathbf{G}}|^2 = 0",
+          "operation_label": "非自明解存在条件としての永年方程式の立式",
+          "explanation": "係数ベクトルがゼロでない解を持つための必要十分条件として、2×2係数行列の行列式を0とおく。",
+          "used_node_ids": [
+            "phys.qm.ps03_degenerate_perturbation_secular_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\varepsilon_{\\mathbf{k}}^0 - E)(\\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0 - E) - |U_{\\mathbf{G}}|^2 = 0",
+          "to_latex": "E_{\\pm}(\\mathbf{k}) = \\frac{\\varepsilon_{\\mathbf{k}}^0 + \\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0}{2} \\pm \\sqrt{\\left(\\frac{\\varepsilon_{\\mathbf{k}}^0 - \\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0}{2}\\right)^2 + |U_{\\mathbf{G}}|^2},\\qquad E_g = 2|U_{\\mathbf{G}}|",
+          "operation_label": "2次方程式の解とゾーン境界でのギャップ評価",
+          "explanation": "Eについての2次方程式を解の公式で解き、厳密に縮退するゾーン境界\\varepsilon_{\\mathbf{k}}^0 = \\varepsilon_{\\mathbf{k}-\\mathbf{G}}^0での上下2枝の差をとってバンドギャップE_g = 2|U_G|を得る。",
+          "used_node_ids": [
+            "phys.band.n03_nearly_free_electron_band_gap"
+          ],
+          "sympy_check_hint": "simplify(E_plus - E_minus)"
+        }
+      ]
+    },
+    {
+      "id": "drv_band04",
+      "target_node_id": "phys.band.n04_tight_binding_dispersion",
+      "route_kind": "deductive",
+      "title": "原子軌道のブロッホ和を用いた緊密結合近似バンド分散の導出",
+      "premise_node_ids": [
+        "phys.solid.bp02_bloch_theorem",
+        "phys.qm.wm05_tise_stationary_states"
+      ],
+      "required_math_node_ids": [
+        "phys.band.n04_tight_binding_dispersion"
+      ],
+      "assumptions": [
+        "格子間隔aの1次元結晶において、各格子点naに局在した単一の孤立原子軌道phi(x-na)（固有エネルギーE_0）を考える。",
+        "異なる格子点の軌道間の重なり積分は無視し（正規直交基底近似）、ホッピングは最近接格子点のみを考慮する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\psi_k(x) = \\frac{1}{\\sqrt{N}}\\sum_{n} e^{ikna}\\phi(x - na),\\qquad \\hat{H}\\psi_k = E(k)\\psi_k",
+          "to_latex": "E(k) = E_0 - \\alpha - 2\\gamma\\cos(ka),\\qquad W = 4\\gamma",
+          "operation_label": "ブロッホ和のエネルギー期待値によるタイトバインディング分散導出",
+          "explanation": "局在軌道のブロッホ和を試験波動関数としてハミルトニアンの期待値を計算し、オンサイト項と最近接ホッピング項のみを保持して余弦型のバンド分散を得る。",
+          "used_node_ids": [
+            "phys.qm.wm05_tise_stationary_states",
+            "phys.solid.bp02_bloch_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\psi_k(x) = \\frac{1}{\\sqrt{N}}\\sum_{n} e^{ikna}\\phi(x - na),\\qquad E(k) = \\langle \\psi_k | \\hat{H} | \\psi_k \\rangle",
+          "to_latex": "E(k) = \\frac{1}{N}\\sum_{n,m} e^{ik(n-m)a} \\langle \\phi_m | \\hat{H}_0 + \\Delta V_n | \\phi_n \\rangle",
+          "operation_label": "ハミルトニアンの分解と期待値の展開",
+          "explanation": "全ハミルトニアンを格子点nの孤立原子ハミルトニアンH_0と残りの格子点からの補正ポテンシャル\\Delta V_nに分解し、ブロッホ和の期待値を2重和に展開する。",
+          "used_node_ids": [
+            "phys.qm.wm05_tise_stationary_states",
+            "phys.solid.bp02_bloch_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E(k) = \\frac{1}{N}\\sum_{n,m} e^{ik(n-m)a} \\langle \\phi_m | \\hat{H}_0 + \\Delta V_n | \\phi_n \\rangle",
+          "to_latex": "E(k) = E_0 - \\alpha - \\gamma\\left(e^{ika} + e^{-ika}\\right) = E_0 - \\alpha - 2\\gamma\\cos(ka),\\qquad W = 4\\gamma",
+          "operation_label": "並進対称性の適用と最近接ホッピングの加算",
+          "explanation": "並進対称性によりmに関する和でNを相殺し、オンサイト積分-\\alpha = \\langle \\phi_n | \\Delta V_n | \\phi_n \\rangleと最近接ホッピング積分-\\gamma = \\langle \\phi_{n\\pm 1} | \\Delta V_n | \\phi_n \\rangleのみを残してオイラーの公式で整理し、最大値と最小値の差からバンド幅W=4\\gammaを得る。",
+          "used_node_ids": [
+            "phys.band.n04_tight_binding_dispersion"
+          ],
+          "sympy_check_hint": "E_0 - alpha - gamma*(exp(I*k*a) + exp(-I*k*a))"
+        }
+      ]
+    },
+    {
+      "id": "drv_band05",
+      "target_node_id": "phys.band.n05_band_effective_mass_hole",
+      "route_kind": "deductive",
+      "title": "価電子帯頂上の負の有効質量からの正孔準粒子記述の導出",
+      "premise_node_ids": [
+        "phys.solid.bp05_crystal_momentum_group_velocity",
+        "phys.solid.bp06_effective_mass_tensor",
+        "phys.em.ms01_lorentz_force_magnetic_def"
+      ],
+      "required_math_node_ids": [
+        "phys.band.n05_band_effective_mass_hole"
+      ],
+      "assumptions": [
+        "価電子帯の最大値k_0付近においてエネルギー分散が等方的な放物線形で近似できる。",
+        "外部電磁場はバンド間遷移を起こさないほど緩やかに変化する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "E_v(\\mathbf{k}) \\approx E_v^{\\max} - \\frac{\\hbar^2|\\mathbf{k}-\\mathbf{k}_0|^2}{2|m_e^*|},\\qquad \\frac{d(\\hbar\\mathbf{k})}{dt} = -e(\\mathbf{E} + \\mathbf{v}_e\\times\\mathbf{B})",
+          "to_latex": "E_v(\\mathbf{k}) \\approx E_v^{\\max} - \\frac{\\hbar^2 |\\mathbf{k}-\\mathbf{k}_0|^2}{2m_h^*},\\qquad m_h^* = -m_e^* > 0,\\qquad \\frac{d(\\hbar\\mathbf{k}_h)}{dt} = +e(\\mathbf{E} + \\mathbf{v}_h\\times\\mathbf{B})",
+          "operation_label": "欠損電子の運動量・電荷反転による正孔の定式化",
+          "explanation": "上に凸な価電子帯頂上では電子の有効質量が負になることを示し、充満帯から1個の電子が欠損した状態の結晶運動量と電流の保存則から正孔の有効質量と運動方程式を導く。",
+          "used_node_ids": [
+            "phys.em.ms01_lorentz_force_magnetic_def",
+            "phys.solid.bp05_crystal_momentum_group_velocity",
+            "phys.solid.bp06_effective_mass_tensor"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E_v(\\mathbf{k}) \\approx E_v^{\\max} - \\frac{\\hbar^2|\\mathbf{k}-\\mathbf{k}_0|^2}{2|m_e^*|}",
+          "to_latex": "m_e^* = \\hbar^2\\left(\\frac{\\partial^2 E_v}{\\partial k^2}\\right)^{-1} < 0,\\qquad m_h^* := -m_e^* > 0",
+          "operation_label": "バンド頂上での有効質量の符号反転",
+          "explanation": "価電子帯の極大点では2階微分が負であるため電子の有効質量m_e^*が負となり、正の質量パラメータとして正孔の有効質量m_h^* = -m_e^*を定義する。",
+          "used_node_ids": [
+            "phys.solid.bp06_effective_mass_tensor"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m_e^* = \\hbar^2\\left(\\frac{\\partial^2 E_v}{\\partial k^2}\\right)^{-1} < 0,\\qquad m_h^* := -m_e^* > 0",
+          "to_latex": "\\mathbf{k}_h = -\\mathbf{k},\\qquad \\mathbf{v}_h = \\mathbf{v}_e(\\mathbf{k}),\\qquad \\frac{d(\\hbar\\mathbf{k}_h)}{dt} = +e(\\mathbf{E} + \\mathbf{v}_h\\times\\mathbf{B})",
+          "operation_label": "全運動量・電流からの正孔波数とローレンツ力導出",
+          "explanation": "充満帯の全波数和がゼロであることから波数kの電子欠損は全結晶運動量\\hbar k_h = -\\hbar kを与え、電流の符号反転（-(-e)v_e = +ev_h）および電子の半古典運動方程式と合わせて正電荷+eの運動方程式を得る。",
+          "used_node_ids": [
+            "phys.band.n05_band_effective_mass_hole",
+            "phys.em.ms01_lorentz_force_magnetic_def",
+            "phys.solid.bp05_crystal_momentum_group_velocity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_band06",
+      "target_node_id": "phys.band.n06_density_of_states_band",
+      "route_kind": "deductive",
+      "title": "波数空間の状態密度と等エネルギー面積分への変換によるDOS公式の導出",
+      "premise_node_ids": [
+        "phys.band.n01_reciprocal_lattice_brillouin_zone",
+        "phys.solid.bp05_crystal_momentum_group_velocity"
+      ],
+      "required_math_node_ids": [
+        "phys.band.n06_density_of_states_band"
+      ],
+      "assumptions": [
+        "結晶体積Vが十分大きく、第一ブリルアンゾーン内の離散波数和を積分で置き換えられる。",
+        "スピン縮退度は含めず、単一バンド・単一スピンあたりの状態密度を定義する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "D_n(E) = \\frac{1}{V}\\sum_{\\mathbf{k}\\in\\mathrm{BZ}_1} \\delta\\big(E - E_n(\\mathbf{k})\\big) \\to \\frac{1}{(2\\pi)^3}\\int_{\\mathrm{BZ}_1} \\delta\\big(E - E_n(\\mathbf{k})\\big)\\,d^3k",
+          "to_latex": "D_n(E) = \\frac{1}{(2\\pi)^3}\\iint_{E_n(\\mathbf{k})=E} \\frac{dS_{\\mathbf{k}}}{|\\nabla_{\\mathbf{k}} E_n(\\mathbf{k})|} = \\frac{1}{(2\\pi)^3}\\iint_{E_n(\\mathbf{k})=E} \\frac{dS_{\\mathbf{k}}}{\\hbar|\\mathbf{v}_n(\\mathbf{k})|}",
+          "operation_label": "等エネルギー座標への変換とデルタ関数積分",
+          "explanation": "波数空間の1状態あたり体積(2\\pi)^3/Vを用いて和を積分に直し、体積要素を等エネルギー面と勾配法線方向に分解してデルタ関数を積分する。",
+          "used_node_ids": [
+            "phys.band.n01_reciprocal_lattice_brillouin_zone",
+            "phys.solid.bp05_crystal_momentum_group_velocity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D_n(E) = \\frac{1}{(2\\pi)^3}\\int_{\\mathrm{BZ}_1} \\delta\\big(E - E_n(\\mathbf{k})\\big)\\,d^3k",
+          "to_latex": "D_n(E) = \\frac{1}{(2\\pi)^3}\\int dE' \\iint_{E_n(\\mathbf{k})=E'} \\delta(E - E') \\frac{dS_{\\mathbf{k}}}{|\\nabla_{\\mathbf{k}} E_n(\\mathbf{k})|}",
+          "operation_label": "等エネルギー面と法線方向への体積要素分解",
+          "explanation": "等エネルギー面E_n(k)=E'に垂直な方向の微小変位dk_\\perpがdE' = |\\nabla_k E_n| dk_\\perpを満たすことから、d^3k = dS_k dk_\\perp = dS_k dE' / |\\nabla_k E_n|と書き換える。",
+          "used_node_ids": [
+            "phys.band.n01_reciprocal_lattice_brillouin_zone"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D_n(E) = \\frac{1}{(2\\pi)^3}\\int dE' \\iint_{E_n(\\mathbf{k})=E'} \\delta(E - E') \\frac{dS_{\\mathbf{k}}}{|\\nabla_{\\mathbf{k}} E_n(\\mathbf{k})|}",
+          "to_latex": "D_n(E) = \\frac{1}{(2\\pi)^3}\\iint_{E_n(\\mathbf{k})=E} \\frac{dS_{\\mathbf{k}}}{|\\nabla_{\\mathbf{k}} E_n(\\mathbf{k})|} = \\frac{1}{(2\\pi)^3}\\iint_{E_n(\\mathbf{k})=E} \\frac{dS_{\\mathbf{k}}}{\\hbar|\\mathbf{v}_n(\\mathbf{k})|}",
+          "operation_label": "エネルギー積分の実行と群速度による表示",
+          "explanation": "E'に関するデルタ関数の積分を実行してE'=Eの等エネルギー面積分に帰着させ、群速度\\hbar v_n = \\nabla_k E_nを代入する。",
+          "used_node_ids": [
+            "phys.band.n06_density_of_states_band",
+            "phys.solid.bp05_crystal_momentum_group_velocity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_band07",
+      "target_node_id": "phys.band.n07_bloch_oscillation",
+      "route_kind": "deductive",
+      "title": "一様電場下の半古典運動方程式と余弦型バンド分散からのブロッホ振動の導出",
+      "premise_node_ids": [
+        "phys.solid.bp05_crystal_momentum_group_velocity",
+        "phys.band.n04_tight_binding_dispersion"
+      ],
+      "required_math_node_ids": [
+        "phys.band.n07_bloch_oscillation"
+      ],
+      "assumptions": [
+        "不純物やフォノンによる散乱がなく（無衝突極限）、バンド間トンネル（ツェナー破壊）も起きない。",
+        "1次元単一バンドの緊密結合分散E(k) = E_0 - \\alpha - 2\\gamma\\cos(ka)に従う電子に一様定常電場Eを印加する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d(\\hbar k)}{dt} = -eE,\\qquad v(k) = \\frac{1}{\\hbar}\\frac{dE(k)}{dk},\\qquad E(k) = E_0 - \\alpha - 2\\gamma\\cos(ka) ",
+          "to_latex": "k(t) = k(0) - \\frac{eE}{\\hbar}t,\\qquad T_B = \\frac{2\\pi\\hbar}{eEa},\\qquad x(t) = x(0) + \\frac{2\\gamma}{eE}\\cos\\left(k(0)a - \\omega_B t\\right)\\;\\left(\\omega_B := \\frac{eEa}{\\hbar}\\right)",
+          "operation_label": "半古典運動方程式の時間積分によるブロッホ振動解導出",
+          "explanation": "一様電場下で波数k(t)が時間に比例して単調に変化する式と、余弦型バンド分散の群速度を連立させて積分し、空間内の調和振動（ブロッホ振動）と周期T_Bを得る。",
+          "used_node_ids": [
+            "phys.band.n04_tight_binding_dispersion",
+            "phys.solid.bp05_crystal_momentum_group_velocity"
+          ],
+          "sympy_check_hint": "integrate((2*gamma*a/hbar)*sin((k0 - e*E*t/hbar)*a), t)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d(\\hbar k)}{dt} = -eE",
+          "to_latex": "k(t) = k(0) - \\frac{eE}{\\hbar}t,\\qquad T_B = \\frac{2\\pi/a}{eE/\\hbar} = \\frac{2\\pi\\hbar}{eEa}",
+          "operation_label": "結晶運動量の時間積分とブリルアンゾーン横断周期",
+          "explanation": "一定の電気力-eEのもとでk(t)を時間積分し、波数空間で第一ブリルアンゾーンの幅2\\pi/aを横断するのに要する時間としてブロッホ周期T_Bを定める。",
+          "used_node_ids": [
+            "phys.solid.bp05_crystal_momentum_group_velocity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "k(t) = k(0) - \\frac{eE}{\\hbar}t,\\qquad E(k) = E_0 - \\alpha - 2\\gamma\\cos(ka)",
+          "to_latex": "v(t) = \\frac{dx}{dt} = \\frac{2\\gamma a}{\\hbar}\\sin\\left(k(0)a - \\omega_B t\\right)\\quad\\left(\\omega_B := \\frac{eEa}{\\hbar}\\right)",
+          "operation_label": "群速度公式への分散関係と波数時間発展の代入",
+          "explanation": "群速度v(k) = (1/\\hbar) dE/dk = (2\\gamma a/\\hbar)\\sin(ka)にk(t)を代入し、角振動数\\omega_B = 2\\pi/T_B = eEa/\\hbarを導入する。",
+          "used_node_ids": [
+            "phys.band.n04_tight_binding_dispersion",
+            "phys.solid.bp05_crystal_momentum_group_velocity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v(t) = \\frac{dx}{dt} = \\frac{2\\gamma a}{\\hbar}\\sin\\left(k(0)a - \\omega_B t\\right)\\quad\\left(\\omega_B := \\frac{eEa}{\\hbar}\\right)",
+          "to_latex": "x(t) = x(0) + \\frac{2\\gamma}{eE}\\cos\\left(k(0)a - \\omega_B t\\right)\\;\\left(\\omega_B := \\frac{eEa}{\\hbar}\\right)",
+          "operation_label": "速度の時間積分による実空間軌道導出",
+          "explanation": "速度v(t)を時間tで積分すると、(2\\gamma a/\\hbar)/\\omega_B = 2\\gamma/(eE)を振幅とする実空間の余弦振動解が得られ、一様電場下でもDC電流が流れず局在振動することを示す。",
+          "used_node_ids": [
+            "phys.band.n07_bloch_oscillation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,642 @@
+{
+  "pack_meta": {
+    "pack_id": "phys.qc.quantum_circuits_algorithms",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "quantum_mechanics",
+    "title": "量子情報・量子計算：量子ビット・量子もつれ・量子フーリエ変換とグローバー探索",
+    "language": "ja",
+    "description": "ブロッホ球、ユニタリゲートとベル状態、量子テレポーテーション、量子フーリエ変換（QFT）、グローバーの振幅増幅アルゴリズムを導出する。"
+  },
+  "nodes": [
+    {
+      "id": "phys.qc.n01_qubit_measurement_postulates",
+      "short_code": "QC_N01",
+      "kind": "math_boundary",
+      "title": "量子ビット状態空間・ボルンの規則・ユニタリ時間発展の基礎境界",
+      "summary": "量子計算の土台となる2次元複素ヒルベルト空間上の量子ビット状態、射影測定による確率的読み出し（ボルンの規則）、および可逆なユニタリ変換による状態発展の公理的境界。",
+      "canonical_latex": "|\\psi\\rangle = \\alpha|0\\rangle + \\beta|1\\rangle \\in \\mathbb{C}^2,\\quad |\\alpha|^2 + |\\beta|^2 = 1,\\quad P(m) = |\\langle m|\\psi\\rangle|^2,\\quad |\\psi'\\rangle = U|\\psi\\rangle\\;(U^\\dagger U = I)",
+      "aliases_latex": [
+        "\\|\\psi\\rangle\\| = 1,\\quad U^\\dagger U = U U^\\dagger = I"
+      ],
+      "keywords": [
+        "量子ビット",
+        "ボルンの規則",
+        "ユニタリ変換",
+        "ヒルベルト空間",
+        "重ね合わせ"
+      ],
+      "domain_tags": [
+        "quantum_mechanics",
+        "quantum_information"
+      ]
+    },
+    {
+      "id": "phys.qc.n02_bloch_sphere_representation",
+      "short_code": "QC_N02",
+      "kind": "theorem_formula",
+      "title": "量子ビットのブロッホ球表示とSU(2)回転ゲート",
+      "summary": "任意の1量子ビット純粋状態を全体位相を除いて2つの実角度でパラメータ化し、3次元単位球面（ブロッホ球）上の点およびパウリ行列の指数写像による回転操作として表現する定理。",
+      "canonical_latex": "|\\psi\\rangle = \\cos\\frac{\\theta}{2}|0\\rangle + e^{i\\varphi}\\sin\\frac{\\theta}{2}|1\\rangle,\\quad \\mathbf{r} = (\\sin\\theta\\cos\\varphi,\\,\\sin\\theta\\sin\\varphi,\\,\\cos\\theta),\\quad R_{\\hat{\\mathbf{n}}}(\\alpha) = \\exp\\!\\left(-i\\frac{\\alpha}{2}\\hat{\\mathbf{n}}\\cdot\\boldsymbol{\\sigma}\\right)",
+      "aliases_latex": [
+        "\\langle \\psi|\\boldsymbol{\\sigma}|\\psi\\rangle = \\mathbf{r},\\quad \\|\\mathbf{r}\\| = 1"
+      ],
+      "keywords": [
+        "ブロッホ球",
+        "回転ゲート",
+        "パウリ行列",
+        "SU(2)",
+        "全体位相"
+      ],
+      "domain_tags": [
+        "quantum_mechanics",
+        "quantum_information"
+      ]
+    },
+    {
+      "id": "phys.qc.n03_elementary_quantum_gates_def",
+      "short_code": "QC_N03",
+      "kind": "definition",
+      "title": "基本量子ゲート（アダマール・位相・CNOTゲート）の定義",
+      "summary": "量子回路を構成する代表的なユニタリゲートであるアダマールゲート（重ね合わせ生成）、位相ゲート、および2量子ビット間の制御NOT（CNOT）ゲートの行列表現と作用の定義。",
+      "canonical_latex": "H = \\frac{1}{\\sqrt{2}}\\begin{pmatrix}1 & 1\\\\ 1 & -1\\end{pmatrix},\\quad Z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad R_k = \\begin{pmatrix}1 & 0\\\\ 0 & e^{2\\pi i / 2^k}\\end{pmatrix},\\quad \\mathrm{CNOT}|a,b\\rangle = |a,\\, a\\oplus b\\rangle",
+      "aliases_latex": [
+        "\\mathrm{CNOT} = |0\\rangle\\langle 0|\\otimes I + |1\\rangle\\langle 1|\\otimes X"
+      ],
+      "keywords": [
+        "アダマールゲート",
+        "CNOTゲート",
+        "位相ゲート",
+        "量子回路",
+        "ユニタリゲート"
+      ],
+      "domain_tags": [
+        "quantum_mechanics",
+        "quantum_information"
+      ]
+    },
+    {
+      "id": "phys.qc.n04_bell_states_entanglement",
+      "short_code": "QC_N04",
+      "kind": "theorem_formula",
+      "title": "ベル状態（最大もつれ状態）の生成回路と非分離性",
+      "summary": "アダマールゲートとCNOTゲートの組み合わせにより計算基底から4つの互いに直交する最大もつれ状態（ベル基底）が生成され、単一量子ビット状態のテンソル積に分解できないことを示す定理。",
+      "canonical_latex": "|\\Phi^+\\rangle = \\mathrm{CNOT}(H\\otimes I)|00\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle),\\quad |\\Phi_{xz}\\rangle = (Z^z X^x \\otimes I)|\\Phi^+\\rangle \\neq |\\phi\\rangle_A \\otimes |\\chi\\rangle_B",
+      "aliases_latex": [
+        "|\\Phi^\\pm\\rangle = \\frac{|00\\rangle \\pm |11\\rangle}{\\sqrt{2}},\\quad |\\Psi^\\pm\\rangle = \\frac{|01\\rangle \\pm |10\\rangle}{\\sqrt{2}}"
+      ],
+      "keywords": [
+        "ベル状態",
+        "量子もつれ",
+        "エンタングルメント",
+        "非分離性",
+        "ベル基底"
+      ],
+      "domain_tags": [
+        "quantum_mechanics",
+        "quantum_information"
+      ]
+    },
+    {
+      "id": "phys.qc.n05_quantum_teleportation",
+      "short_code": "QC_N05",
+      "kind": "theorem_formula",
+      "title": "量子テレポーテーション・プロトコル",
+      "summary": "事前に共有したベル状態と2ビットの古典通信および局所ユニタリ補正操作のみを用いて、未知の1量子ビット状態を物理的な量子移動なしに遠隔地へ忠実に転送する定理。",
+      "canonical_latex": "|\\psi\\rangle_A \\otimes |\\Phi^+\\rangle_{BC} = \\frac{1}{2}\\sum_{x,z\\in\\{0,1\\}} |\\Phi_{xz}\\rangle_{AB} \\otimes (X^x Z^z |\\psi\\rangle)_C",
+      "aliases_latex": [
+        "(Z^z X^x)_C \\big(X^x Z^z|\\psi\\rangle\\big)_C = (-1)^{xz}|\\psi\\rangle_C"
+      ],
+      "keywords": [
+        "量子テレポーテーション",
+        "ベル測定",
+        "古典通信",
+        "複製不可能定理"
+      ],
+      "domain_tags": [
+        "quantum_mechanics",
+        "quantum_information"
+      ]
+    },
+    {
+      "id": "phys.qc.n06_quantum_fourier_transform_def",
+      "short_code": "QC_N06",
+      "kind": "definition",
+      "title": "量子フーリエ変換（QFT）の定義",
+      "summary": "離散フーリエ変換をn量子ビットの計算基底上のユニタリ線形変換として定式化した量子アルゴリズムの基本サブルーチンの定義。",
+      "canonical_latex": "\\mathrm{QFT}|j\\rangle := \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} e^{2\\pi i j k / N}|k\\rangle \\qquad (N = 2^n,\\; j \\in \\{0,1,\\dots,N-1\\})",
+      "aliases_latex": [
+        "|x\\rangle \\mapsto \\frac{1}{\\sqrt{2^n}}\\sum_{y=0}^{2^n-1} \\omega_N^{xy}|y\\rangle,\\quad \\omega_N = e^{2\\pi i/N}"
+      ],
+      "keywords": [
+        "量子フーリエ変換",
+        "QFT",
+        "離散フーリエ変換",
+        "位相推定"
+      ],
+      "domain_tags": [
+        "quantum_mechanics",
+        "quantum_information"
+      ]
+    },
+    {
+      "id": "phys.qc.n07_qft_product_decomposition",
+      "short_code": "QC_N07",
+      "kind": "theorem_formula",
+      "title": "量子フーリエ変換のテンソル積分解と量子回路構成",
+      "summary": "QFTが各量子ビットの1量子ビット重ね合わせ状態のテンソル積に因数分解でき、アダマールゲートと制御回転ゲートの多項式個（O(n^2)）の組み合わせで効率的に実装できることを示す定理。",
+      "canonical_latex": "\\mathrm{QFT}|j_1 j_2 \\dots j_n\\rangle = \\frac{1}{2^{n/2}}\\bigotimes_{l=1}^{n}\\left(|0\\rangle + e^{2\\pi i\\,(0.j_l j_{l+1}\\dots j_n)}|1\\rangle\\right)",
+      "aliases_latex": [
+        "0.j_l\\dots j_n := \\sum_{m=1}^{n-l+1} j_{l+m-1} 2^{-m}"
+      ],
+      "keywords": [
+        "テンソル積分解",
+        "制御位相回転",
+        "多項式サイズ回路",
+        "二進小数"
+      ],
+      "domain_tags": [
+        "quantum_mechanics",
+        "quantum_information"
+      ]
+    },
+    {
+      "id": "phys.qc.n08_grover_amplitude_amplification",
+      "short_code": "QC_N08",
+      "kind": "theorem_formula",
+      "title": "グローバーの振幅増幅アルゴリズムと二次高速化",
+      "summary": "オラクル反転と平均値まわりの拡散反転からなるグローバー反復を2次元部分空間内の回転として解析し、N個の非構造化データから解をO(sqrt(N))回のクエリで高確率に探索できることを示す定理。",
+      "canonical_latex": "G = (2|\\psi_0\\rangle\\langle\\psi_0| - I)O_f,\\quad G^k|\\psi_0\\rangle = \\cos\\big((2k+1)\\theta\\big)|w_\\perp\\rangle + \\sin\\big((2k+1)\\theta\\big)|w\\rangle,\\quad \\sin\\theta = \\frac{1}{\\sqrt{N}},\\quad k_{\\mathrm{opt}} \\approx \\frac{\\pi}{4}\\sqrt{N}",
+      "aliases_latex": [
+        "P_{\\mathrm{success}}(k) = \\sin^2\\big((2k+1)\\theta\\big)"
+      ],
+      "keywords": [
+        "グローバー探索",
+        "振幅増幅",
+        "量子オラクル",
+        "拡散演算子",
+        "二次高速化"
+      ],
+      "domain_tags": [
+        "quantum_mechanics",
+        "quantum_information"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "der.qc.n02_bloch_sphere",
+      "target_node_id": "phys.qc.n02_bloch_sphere_representation",
+      "route_kind": "deductive",
+      "title": "量子ビット規格化条件とSU(2)表現からのブロッホ球表示の導出",
+      "premise_node_ids": [
+        "phys.qc.n01_qubit_measurement_postulates",
+        "math.alg.gr04_so3_su2_matrix_groups_def",
+        "math.alg.gr08_su2_pauli_generators",
+        "math.alg.gr09_su2_exp_spinor_rotation",
+        "math.alg.gr10_su2_so3_double_cover",
+        "math.calc.m37_trig_pythagorean_addition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "1量子ビットの純粋状態を考え、物理的に観測不可能な全体位相因子 e^{i\\gamma} を同一視する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|\\psi\\rangle = \\alpha|0\\rangle + \\beta|1\\rangle,\\quad |\\alpha|^2 + |\\beta|^2 = 1",
+          "to_latex": "|\\psi\\rangle = \\cos\\frac{\\theta}{2}|0\\rangle + e^{i\\varphi}\\sin\\frac{\\theta}{2}|1\\rangle,\\quad \\mathbf{r} = \\langle\\psi|\\boldsymbol{\\sigma}|\\psi\\rangle,\\quad R_{\\hat{\\mathbf{n}}}(\\alpha) = \\exp\\!\\left(-i\\frac{\\alpha}{2}\\hat{\\mathbf{n}}\\cdot\\boldsymbol{\\sigma}\\right)",
+          "operation_label": "極座標パラメータ化とSU(2)-SO(3)対応の適用",
+          "explanation": "規格化条件を満たす複素振幅を全体位相の自由度を用いて2つの実角度(\\theta,\\varphi)で表し、パウリ行列の期待値ベクトルおよびSU(2)の指数写像によってブロッホ球上の点と回転操作へ対応づける。",
+          "used_node_ids": [
+            "math.alg.gr09_su2_exp_spinor_rotation",
+            "math.alg.gr10_su2_so3_double_cover",
+            "phys.qc.n01_qubit_measurement_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_phase_param",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|\\psi\\rangle = \\alpha|0\\rangle + \\beta|1\\rangle,\\quad |\\alpha|^2 + |\\beta|^2 = 1",
+          "to_latex": "|\\psi\\rangle \\simeq |\\alpha||0\\rangle + e^{i\\varphi}|\\beta||1\\rangle = \\cos\\frac{\\theta}{2}|0\\rangle + e^{i\\varphi}\\sin\\frac{\\theta}{2}|1\\rangle",
+          "operation_label": "全体位相の除去と三角関数によるパラメータ化",
+          "explanation": "複素数を極形式 \\alpha = r_0 e^{i\\gamma}, \\beta = r_1 e^{i(\\gamma+\\varphi)} と書き、測定確率に影響しない全体位相 e^{i\\gamma} を括り出して除いた上で、r_0^2+r_1^2=1 をピタゴラス恒等式より \\cos(\\theta/2), \\sin(\\theta/2) (0\\le\\theta\\le\\pi) とおく。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "phys.qc.n01_qubit_measurement_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_bloch_vector",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|\\psi\\rangle \\simeq |\\alpha||0\\rangle + e^{i\\varphi}|\\beta||1\\rangle = \\cos\\frac{\\theta}{2}|0\\rangle + e^{i\\varphi}\\sin\\frac{\\theta}{2}|1\\rangle",
+          "to_latex": "\\mathbf{r} := \\langle\\psi|\\boldsymbol{\\sigma}|\\psi\\rangle = (\\sin\\theta\\cos\\varphi,\\,\\sin\\theta\\sin\\varphi,\\,\\cos\\theta),\\quad \\|\\mathbf{r}\\| = 1",
+          "operation_label": "パウリ行列の期待値計算によるブロッホベクトルの導出",
+          "explanation": "パウリ行列 \\sigma_x, \\sigma_y, \\sigma_z の期待値 \\langle\\psi|\\sigma_k|\\psi\\rangle を計算し、倍角公式を適用することで3次元単位球面上の直交座標表示 \\mathbf{r} を得る。",
+          "used_node_ids": [
+            "math.alg.gr08_su2_pauli_generators",
+            "math.calc.m37_trig_pythagorean_addition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_su2_rotation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{r} := \\langle\\psi|\\boldsymbol{\\sigma}|\\psi\\rangle = (\\sin\\theta\\cos\\varphi,\\,\\sin\\theta\\sin\\varphi,\\,\\cos\\theta),\\quad \\|\\mathbf{r}\\| = 1",
+          "to_latex": "|\\psi'\\rangle = R_{\\hat{\\mathbf{n}}}(\\alpha)|\\psi\\rangle,\\quad R_{\\hat{\\mathbf{n}}}(\\alpha) = \\exp\\!\\left(-i\\frac{\\alpha}{2}\\hat{\\mathbf{n}}\\cdot\\boldsymbol{\\sigma}\\right) \\implies \\mathbf{r}' = \\Phi(R_{\\hat{\\mathbf{n}}}(\\alpha))\\mathbf{r}",
+          "operation_label": "SU(2)ユニタリ演算のブロッホ球SO(3)回転への写像",
+          "explanation": "任意の1量子ビットユニタリゲート（全体位相を除く）はSU(2)元として指数写像で表現され、SU(2)からSO(3)への随伴準同型写像 \\Phi を通じてブロッホベクトル \\mathbf{r} の軸 \\hat{\\mathbf{n}} 周り角度 \\alpha の3次元回転に対応する。",
+          "used_node_ids": [
+            "math.alg.gr04_so3_su2_matrix_groups_def",
+            "math.alg.gr09_su2_exp_spinor_rotation",
+            "math.alg.gr10_su2_so3_double_cover"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.qc.n03_elementary_gates",
+      "target_node_id": "phys.qc.n03_elementary_quantum_gates_def",
+      "route_kind": "deductive",
+      "title": "ユニタリ演算子公理に基づく基本量子ゲートの定義",
+      "premise_node_ids": [
+        "phys.qc.n01_qubit_measurement_postulates",
+        "math.linalg.vs01_vector_space_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "計算基底 {|0>, |1>} および2量子ビット基底 {|00>, |01>, |10>, |11>} を標準正規直交基底として固定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "U^\\dagger U = I,\\quad \\{|0\\rangle, |1\\rangle\\} \\subset \\mathbb{C}^2",
+          "to_latex": "H = \\frac{1}{\\sqrt{2}}\\begin{pmatrix}1 & 1\\\\ 1 & -1\\end{pmatrix},\\quad Z = \\begin{pmatrix}1 & 0\\\\ 0 & -1\\end{pmatrix},\\quad R_k = \\begin{pmatrix}1 & 0\\\\ 0 & e^{2\\pi i / 2^k}\\end{pmatrix},\\quad \\mathrm{CNOT}|a,b\\rangle = |a,\\, a\\oplus b\\rangle",
+          "operation_label": "ユニタリ性を満たす基本ゲート行列の定義",
+          "explanation": "1量子ビット空間上のユニタリ行列として重ね合わせを作るアダマールゲート H と位相回転ゲート Z, R_k を定義し、2量子ビット空間上の可逆な制御反転演算として CNOT ゲートを定義する。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms",
+            "phys.qc.n01_qubit_measurement_postulates"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.qc.n04_bell_states",
+      "target_node_id": "phys.qc.n04_bell_states_entanglement",
+      "route_kind": "deductive",
+      "title": "HゲートとCNOTゲートによるベル状態の生成と非分離性の証明",
+      "premise_node_ids": [
+        "phys.qc.n01_qubit_measurement_postulates",
+        "phys.qc.n03_elementary_quantum_gates_def",
+        "math.logic.m51_proof_by_contradiction"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "2量子ビット系を初期状態 |00> に準備し、第1量子ビットに H、続いて第1を制御・第2を標的とする CNOT を作用させる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|00\\rangle = |0\\rangle \\otimes |0\\rangle",
+          "to_latex": "|\\Phi^+\\rangle = \\mathrm{CNOT}(H\\otimes I)|00\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle) \\neq |\\phi\\rangle_A \\otimes |\\chi\\rangle_B",
+          "operation_label": "量子回路の作用計算と直積分解不可能性の確認",
+          "explanation": "初期状態 |00> に H\\otimes I と CNOT を順次作用させてベル状態 |\\Phi^+> を生成し、係数の比較によりそれが単一量子ビット状態のテンソル積で表せない（量子もつれ状態である）ことを示す。",
+          "used_node_ids": [
+            "math.logic.m51_proof_by_contradiction",
+            "phys.qc.n01_qubit_measurement_postulates",
+            "phys.qc.n03_elementary_quantum_gates_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_hadamard_on_first",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|00\\rangle = |0\\rangle \\otimes |0\\rangle",
+          "to_latex": "(H \\otimes I)|00\\rangle = \\frac{1}{\\sqrt{2}}(|0\\rangle + |1\\rangle) \\otimes |0\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle + |10\\rangle)",
+          "operation_label": "第1量子ビットへのアダマールゲートの作用",
+          "explanation": "アダマールゲート H を第1量子ビットに作用させ、等確率の重ね合わせ状態を生成する。",
+          "used_node_ids": [
+            "phys.qc.n03_elementary_quantum_gates_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_cnot_action",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(H \\otimes I)|00\\rangle = \\frac{1}{\\sqrt{2}}(|0\\rangle + |1\\rangle) \\otimes |0\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle + |10\\rangle)",
+          "to_latex": "\\mathrm{CNOT}\\left(\\frac{1}{\\sqrt{2}}(|00\\rangle + |10\\rangle)\\right) = \\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle) = |\\Phi^+\\rangle",
+          "operation_label": "CNOTゲートによる制御反転の実行",
+          "explanation": "第1量子ビットが |1> の項のみ第2量子ビットを反転させることで、完全相関を持つベル状態 |\\Phi^+> を得る。第1量子ビットに X, Z を作用させることで他の3つのベル状態も得られる。",
+          "used_node_ids": [
+            "phys.qc.n03_elementary_quantum_gates_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_entanglement_nonsep",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathrm{CNOT}\\left(\\frac{1}{\\sqrt{2}}(|00\\rangle + |10\\rangle)\\right) = \\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle) = |\\Phi^+\\rangle",
+          "to_latex": "|\\Phi^+\\rangle = (a_0|0\\rangle + a_1|1\\rangle)\\otimes(b_0|0\\rangle + b_1|1\\rangle) \\implies a_0 b_1 = 0 \\land a_1 b_0 = 0 \\implies a_0 b_0 = 0 \\lor a_1 b_1 = 0\\;(\\bot)",
+          "operation_label": "背理法による直積状態への分解不可能性の証明",
+          "explanation": "直積状態と仮定すると |01> と |10> の係数 a_0 b_1 = a_1 b_0 = 0 が必要となるが、これは |00> と |11> の係数がともに 1/\\sqrt{2} \\neq 0 であることに矛盾するため、非分離（もつれ）状態である。",
+          "used_node_ids": [
+            "math.logic.m51_proof_by_contradiction"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.qc.n05_teleportation",
+      "target_node_id": "phys.qc.n05_quantum_teleportation",
+      "route_kind": "deductive",
+      "title": "3量子ビット系のベル基底展開による量子テレポーテーションの導出",
+      "premise_node_ids": [
+        "phys.qc.n01_qubit_measurement_postulates",
+        "phys.qc.n03_elementary_quantum_gates_def",
+        "phys.qc.n04_bell_states_entanglement"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "アリスが未知状態 |\\psi>_A = \\alpha|0>_A + \\beta|1>_A を保持し、アリスとボブが事前にもつれ状態 |\\Phi^+>_{BC} を共有している。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|\\psi\\rangle_A \\otimes |\\Phi^+\\rangle_{BC} = (\\alpha|0\\rangle_A + \\beta|1\\rangle_A) \\otimes \\frac{1}{\\sqrt{2}}(|00\\rangle_{BC} + |11\\rangle_{BC})",
+          "to_latex": "|\\psi\\rangle_A \\otimes |\\Phi^+\\rangle_{BC} = \\frac{1}{2}\\sum_{x,z\\in\\{0,1\\}} |\\Phi_{xz}\\rangle_{AB} \\otimes (X^x Z^z |\\psi\\rangle)_C",
+          "operation_label": "アリス側2量子ビットのベル基底への恒等展開",
+          "explanation": "3量子ビット合成系の状態を計算基底で展開したのち、アリス側の2量子ビット AB をベル基底 |\\Phi_{xz}>_{AB} で書き換えることで、測定結果 (x,z) に応じたボブ側の状態とパウリ補正操作が導かれる。",
+          "used_node_ids": [
+            "phys.qc.n01_qubit_measurement_postulates",
+            "phys.qc.n03_elementary_quantum_gates_def",
+            "phys.qc.n04_bell_states_entanglement"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_initial_product",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|\\psi\\rangle_A \\otimes |\\Phi^+\\rangle_{BC} = (\\alpha|0\\rangle_A + \\beta|1\\rangle_A) \\otimes \\frac{1}{\\sqrt{2}}(|00\\rangle_{BC} + |11\\rangle_{BC})",
+          "to_latex": "\\frac{1}{\\sqrt{2}}\\big(\\alpha|000\\rangle + \\alpha|011\\rangle + \\beta|100\\rangle + \\beta|111\\rangle\\big)_{ABC}",
+          "operation_label": "初期合成状態の計算基底への展開",
+          "explanation": "テンソル積の双線形性を用いて3量子ビットの初期状態を計算基底の線形結合として展開する。",
+          "used_node_ids": [
+            "phys.qc.n01_qubit_measurement_postulates",
+            "phys.qc.n04_bell_states_entanglement"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_bell_basis_expand",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{\\sqrt{2}}\\big(\\alpha|000\\rangle + \\alpha|011\\rangle + \\beta|100\\rangle + \\beta|111\\rangle\\big)_{ABC}",
+          "to_latex": "\\frac{1}{2}\\Big[|\\Phi^+\\rangle_{AB}(\\alpha|0\\rangle + \\beta|1\\rangle)_C + |\\Phi^-\\rangle_{AB}(\\alpha|0\\rangle - \\beta|1\\rangle)_C + |\\Psi^+\\rangle_{AB}(\\beta|0\\rangle + \\alpha|1\\rangle)_C + |\\Psi^-\\rangle_{AB}(\\alpha|1\\rangle - \\beta|0\\rangle)_C\\Big]",
+          "operation_label": "AB部分のベル基底による書き換え",
+          "explanation": "|00> = (|\\Phi^+> + |\\Phi^->)/\\sqrt{2} などの関係式を AB 部分に代入し、C の状態ごとに項を整理する。",
+          "used_node_ids": [
+            "phys.qc.n04_bell_states_entanglement"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_measure_and_correct",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2}\\Big[|\\Phi^+\\rangle_{AB}(\\alpha|0\\rangle + \\beta|1\\rangle)_C + |\\Phi^-\\rangle_{AB}(\\alpha|0\\rangle - \\beta|1\\rangle)_C + |\\Psi^+\\rangle_{AB}(\\beta|0\\rangle + \\alpha|1\\rangle)_C + |\\Psi^-\\rangle_{AB}(\\alpha|1\\rangle - \\beta|0\\rangle)_C\\Big]",
+          "to_latex": "\\frac{1}{2}\\sum_{x,z\\in\\{0,1\\}} |\\Phi_{xz}\\rangle_{AB} \\otimes (X^x Z^z |\\psi\\rangle)_C",
+          "operation_label": "ベル測定と古典ビットによるパウリ補正の同定",
+          "explanation": "各ベル基底 |\\Phi_{xz}>_{AB} に対応するボブ側の状態が、元の状態 |\\psi> にパウリ演算子 X^x Z^z を作用させたものに等しいことを示す。アリスがベル測定結果 (x,z) を古典通信で送り、ボブが逆演算 Z^z X^x を適用すると |\\psi>_C が復元される。",
+          "used_node_ids": [
+            "phys.qc.n01_qubit_measurement_postulates",
+            "phys.qc.n03_elementary_quantum_gates_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.qc.n06_qft_definition",
+      "target_node_id": "phys.qc.n06_quantum_fourier_transform_def",
+      "route_kind": "deductive",
+      "title": "n量子ビット状態空間上のユニタリ変換としてのQFTの定義",
+      "premise_node_ids": [
+        "phys.qc.n01_qubit_measurement_postulates",
+        "math.linalg.vs01_vector_space_axioms",
+        "math.alg.finite_sum_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "N = 2^n 次元ヒルベルト空間の計算基底 {|0>, ..., |N-1>} 上で線形作用素を定義する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\{|j\\rangle\\}_{j=0}^{2^n-1} \\subset (\\mathbb{C}^2)^{\\otimes n}",
+          "to_latex": "\\mathrm{QFT}|j\\rangle := \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1} e^{2\\pi i j k / N}|k\\rangle \\qquad (N = 2^n)",
+          "operation_label": "離散フーリエ核を用いた基底変換の定義",
+          "explanation": "計算基底 |j> を1のN乗根 e^{2\\pi i jk / N} を振幅とする重ね合わせ状態へ写す変換としてQFTを定義する。列ベクトル同士の直交性によりこの変換はユニタリ性を満たす。",
+          "used_node_ids": [
+            "math.alg.finite_sum_linearity",
+            "math.linalg.vs01_vector_space_axioms",
+            "phys.qc.n01_qubit_measurement_postulates"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.qc.n07_qft_product",
+      "target_node_id": "phys.qc.n07_qft_product_decomposition",
+      "route_kind": "deductive",
+      "title": "二進展開によるQFTのテンソル積分解と量子回路構成の導出",
+      "premise_node_ids": [
+        "phys.qc.n06_quantum_fourier_transform_def",
+        "phys.qc.n03_elementary_quantum_gates_def",
+        "math.alg.finite_sum_linearity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "整数 j, k \\in \\{0,\\dots,2^n-1\\} を n ビットの二進数 j = \\sum_{l=1}^n j_l 2^{n-l}, k = \\sum_{m=1}^n k_m 2^{n-m} で表す。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathrm{QFT}|j\\rangle = \\frac{1}{2^{n/2}}\\sum_{k=0}^{2^n-1} e^{2\\pi i j k / 2^n}|k\\rangle",
+          "to_latex": "\\mathrm{QFT}|j_1 j_2 \\dots j_n\\rangle = \\frac{1}{2^{n/2}}\\bigotimes_{l=1}^{n}\\left(|0\\rangle + e^{2\\pi i\\,(0.j_l j_{l+1}\\dots j_n)}|1\\rangle\\right)",
+          "operation_label": "二進展開による和からテンソル積への因数分解",
+          "explanation": "指数部の k/2^n を二進小数で展開し、指数法則によって各ビット k_m に関する和を独立に因数分解することで、Hゲートと制御位相回転ゲート R_k で構成可能な積表示を得る。",
+          "used_node_ids": [
+            "math.alg.finite_sum_linearity",
+            "phys.qc.n03_elementary_quantum_gates_def",
+            "phys.qc.n06_quantum_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_binary_expansion",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathrm{QFT}|j\\rangle = \\frac{1}{2^{n/2}}\\sum_{k=0}^{2^n-1} e^{2\\pi i j k / 2^n}|k\\rangle",
+          "to_latex": "\\frac{1}{2^{n/2}}\\sum_{k_1=0}^{1}\\cdots\\sum_{k_n=0}^{1} \\exp\\!\\left(2\\pi i j \\sum_{m=1}^{n} k_m 2^{-m}\\right)|k_1\\dots k_n\\rangle",
+          "operation_label": "kの二進表現の代入",
+          "explanation": "k/2^n = \\sum_{m=1}^n k_m 2^{-m} を代入し、単一の和を各ビット k_m \\in \\{0,1\\} についての多重和に書き換える。",
+          "used_node_ids": [
+            "math.alg.finite_sum_linearity",
+            "phys.qc.n06_quantum_fourier_transform_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_sum_to_product",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2^{n/2}}\\sum_{k_1=0}^{1}\\cdots\\sum_{k_n=0}^{1} \\exp\\!\\left(2\\pi i j \\sum_{m=1}^{n} k_m 2^{-m}\\right)|k_1\\dots k_n\\rangle",
+          "to_latex": "\\frac{1}{2^{n/2}}\\bigotimes_{m=1}^{n}\\left(\\sum_{k_m=0}^{1} e^{2\\pi i j k_m 2^{-m}}|k_m\\rangle\\right) = \\frac{1}{2^{n/2}}\\bigotimes_{m=1}^{n}\\left(|0\\rangle + e^{2\\pi i j 2^{-m}}|1\\rangle\\right)",
+          "operation_label": "指数関数の積への分解とテンソル積への括り出し",
+          "explanation": "和の指数関数を積に分解し、各量子ビットの和 \\sum_{k_m=0}^1 を独立に評価してテンソル積としてまとめる。",
+          "used_node_ids": [
+            "math.alg.finite_sum_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_fractional_phase_gate",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2^{n/2}}\\bigotimes_{m=1}^{n}\\left(\\sum_{k_m=0}^{1} e^{2\\pi i j k_m 2^{-m}}|k_m\\rangle\\right) = \\frac{1}{2^{n/2}}\\bigotimes_{m=1}^{n}\\left(|0\\rangle + e^{2\\pi i j 2^{-m}}|1\\rangle\\right)",
+          "to_latex": "\\frac{1}{2^{n/2}}\\bigotimes_{l=1}^{n}\\left(|0\\rangle + e^{2\\pi i\\,(0.j_l j_{l+1}\\dots j_n)}|1\\rangle\\right)",
+          "operation_label": "2\\pi i の整数倍位相の除去と二進小数表示（逆順並べ替え後）",
+          "explanation": "j 2^{-m} の整数部は e^{2\\pi i \\mathbb{Z}} = 1 により消えるため、小数部 0.j_{n-m+1}\\dots j_n のみが寄与する。出力ビット順を逆転（l = n-m+1）させると、各量子ビットに H ゲートと制御 R_k ゲートを合計 O(n^2) 個適用する回路で実現できる。",
+          "used_node_ids": [
+            "phys.qc.n03_elementary_quantum_gates_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.qc.n08_grover",
+      "target_node_id": "phys.qc.n08_grover_amplitude_amplification",
+      "route_kind": "deductive",
+      "title": "2次元不変部分空間の幾何学的回転によるグローバー振幅増幅の導出",
+      "premise_node_ids": [
+        "phys.qc.n01_qubit_measurement_postulates",
+        "phys.qc.n03_elementary_quantum_gates_def",
+        "math.calc.m37_trig_pythagorean_addition",
+        "math.logic.mathematical_induction"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "探索空間サイズ N = 2^n のうち正解状態はただ1つ |w> であり、一様重ね合わせ状態 |\\psi_0> = H^{\\otimes n}|0\\dots 0> から出発する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|\\psi_0\\rangle = \\frac{1}{\\sqrt{N}}\\sum_{x=0}^{N-1}|x\\rangle,\\quad O_f|x\\rangle = (-1)^{f(x)}|x\\rangle",
+          "to_latex": "G^k|\\psi_0\\rangle = \\cos\\big((2k+1)\\theta\\big)|w_\\perp\\rangle + \\sin\\big((2k+1)\\theta\\big)|w\\rangle,\\quad \\sin\\theta = \\frac{1}{\\sqrt{N}},\\quad k_{\\mathrm{opt}} \\approx \\frac{\\pi}{4}\\sqrt{N}",
+          "operation_label": "2次元不変部分空間における鏡映の合成と回転角の導出",
+          "explanation": "初期状態 |\\psi_0> を正解 |w> と直交成分 |w_\\perp> で展開し、オラクル反転 O_f と拡散反転 D = 2|\\psi_0><\\psi_0| - I の積 G = D O_f が張る2次元平面内の角度 2\\theta の回転であることを示して最適反復回数を得る。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.logic.mathematical_induction",
+            "phys.qc.n01_qubit_measurement_postulates",
+            "phys.qc.n03_elementary_quantum_gates_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1_subspace_decomp",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|\\psi_0\\rangle = \\frac{1}{\\sqrt{N}}\\sum_{x=0}^{N-1}|x\\rangle,\\quad O_f|x\\rangle = (-1)^{f(x)}|x\\rangle",
+          "to_latex": "|\\psi_0\\rangle = \\cos\\theta\\,|w_\\perp\\rangle + \\sin\\theta\\,|w\\rangle,\\quad \\sin\\theta = \\frac{1}{\\sqrt{N}},\\quad |w_\\perp\\rangle := \\frac{1}{\\sqrt{N-1}}\\sum_{x \\neq w}|x\\rangle",
+          "operation_label": "正規直交基底 {|w_\\perp>, |w>} による初期状態の展開",
+          "explanation": "正解状態 |w> とそれ以外の全状態の正規化一様重ね合わせ |w_\\perp> を定義すると、\\langle w_\\perp|w\\rangle = 0 であり、\\cos\\theta = \\sqrt{(N-1)/N}, \\sin\\theta = 1/\\sqrt{N} として |\\psi_0> が2次元部分空間内に表せる。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "phys.qc.n01_qubit_measurement_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2_oracle_reflection",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|\\psi_0\\rangle = \\cos\\theta\\,|w_\\perp\\rangle + \\sin\\theta\\,|w\\rangle,\\quad \\sin\\theta = \\frac{1}{\\sqrt{N}},\\quad |w_\\perp\\rangle := \\frac{1}{\\sqrt{N-1}}\\sum_{x \\neq w}|x\\rangle",
+          "to_latex": "O_f\\big(\\cos\\phi|w_\\perp\\rangle + \\sin\\phi|w\\rangle\\big) = \\cos\\phi|w_\\perp\\rangle - \\sin\\phi|w\\rangle",
+          "operation_label": "オラクル演算子による |w_\\perp> 軸まわりの鏡映",
+          "explanation": "O_f = I - 2|w><w| は |w> の符号のみを反転させるため、2次元平面内では |w_\\perp> 軸に関する鏡映（角度 \\phi \\mapsto -\\phi）として作用する。",
+          "used_node_ids": [
+            "phys.qc.n01_qubit_measurement_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3_diffusion_rotation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "O_f\\big(\\cos\\phi|w_\\perp\\rangle + \\sin\\phi|w\\rangle\\big) = \\cos\\phi|w_\\perp\\rangle - \\sin\\phi|w\\rangle",
+          "to_latex": "G^k|\\psi_0\\rangle = \\cos\\big((2k+1)\\theta\\big)|w_\\perp\\rangle + \\sin\\big((2k+1)\\theta\\big)|w\\rangle,\\quad (2k_{\\mathrm{opt}}+1)\\theta \\approx \\frac{\\pi}{2} \\implies k_{\\mathrm{opt}} \\approx \\frac{\\pi}{4}\\sqrt{N}",
+          "operation_label": "拡散鏡映の合成による2\\theta回転と最適反復数の決定",
+          "explanation": "拡散演算子 D = 2|\\psi_0><\\psi_0| - I は |\\psi_0> 軸に関する鏡映であり、2つの鏡映の合成 G = D O_f は角度 2\\theta の回転となる。数学的帰納法より k 回反復後の角度は (2k+1)\\theta となり、\\sin((2k+1)\\theta) \\approx 1 となる k_{\\mathrm{opt}} \\approx \\frac{\\pi}{4}\\sqrt{N} で O(\\sqrt{N}) の二次高速化が達成される。",
+          "used_node_ids": [
+            "math.calc.m37_trig_pythagorean_addition",
+            "math.logic.mathematical_induction",
+            "phys.qc.n03_elementary_quantum_gates_def"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
