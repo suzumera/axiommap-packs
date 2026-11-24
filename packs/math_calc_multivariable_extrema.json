@@ -295,10 +295,16 @@
         "math.calc.m20_derivative_definition",
         "math.vec.m33_gradient_definition"
       ],
-      "required_math_node_ids": [],
+      "required_math_node_ids": [
+        "math.linalg.vs01_vector_space_axioms"
+      ],
       "assumptions": [
-        "aは定義域Dの内点であり、fはaにおいて全偏微分が存在する",
-        "aはfの局所極値点（極小点または極大点）である"
+        "D \\subseteq \\mathbb{R}^n は実数値関数 f: D \\to \\mathbb{R} の定義域であり、\\mathbf{a} \\in \\operatorname{int}(D) は内点である（ある \\delta_0 > 0 に対し開球 B(\\mathbf{a}, \\delta_0) \\subset D）。",
+        "\\mathbf{a} は f の局所極値点（局所極小点または局所極大点）である。",
+        "f は点 \\mathbf{a} においてすべての座標方向 i = 1, \\dots, n について偏微分係数 \\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) を持つ。",
+        "\\mathbf{e}_1, \\dots, \\mathbf{e}_n は \\mathbb{R}^n の標準正規直交基底であり、すべての i について \\|\\mathbf{e}_i\\| = 1 を満たす。",
+        "勾配ベクトルは \\nabla f(\\mathbf{a}) := \\sum_{i=1}^{n} \\frac{\\partial f}{\\partial x_i}(\\mathbf{a})\\mathbf{e}_i = (\\frac{\\partial f}{\\partial x_1}(\\mathbf{a}), \\dots, \\frac{\\partial f}{\\partial x_n}(\\mathbf{a}))^\\top と定義される（元導出の参照ノード m33 が提供台帳外のため前提として明記）。",
+        "差分商 \\frac{g_i(t) - g_i(0)}{t} の計算においては非ゼロ除算条件 t \\neq 0（0 < |t| < \\delta）を課す。"
       ],
       "steps": [
         {
@@ -306,61 +312,262 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "\\exists \\delta>0:\\; \\forall \\mathbf{x}\\in B(\\mathbf{a},\\delta),\\; f(\\mathbf{x}) \\ge f(\\mathbf{a})\\text{ (or } \\le f(\\mathbf{a})\\text{)}",
-          "to_latex": "\\nabla f(\\mathbf{a}) = \\mathbf{0}",
-          "operation_label": "座標軸切片における片側極限の符号比較",
-          "explanation": "各座標軸に沿った1変数制限関数に極値の不等式を適用し、左右からの差分商の極限が一致することから全偏微分係数が零であることを導く。",
+          "from_latex": "\\mathbf{a} \\in \\operatorname{int}(D) \\land \\mathbf{a}\\text{ is a local extremum of } f",
+          "to_latex": "\\mathbf{a} \\in \\operatorname{int}(D)\\text{ is a local extremum of } f \\implies \\nabla f(\\mathbf{a}) = \\mathbf{0}\\;\\left(\\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0,\\; \\forall i=1,\\dots,n\\right)\\text{}",
+          "operation_label": "座標軸方向の片側極限評価による停留点条件の導出",
+          "explanation": "内点かつ局所極値点である点aの近傍上で各座標軸方向に制限した1変数関数を構成し、正負の増分に対する差分商の符号と偏微分の存在から全偏微分係数が零であることを示して勾配ベクトルが零ベクトルとなることを導く。",
           "used_node_ids": [
             "math.calc.m20_derivative_definition",
             "math.calc.m44_partial_derivative_def",
-            "math.vec.m33_gradient_definition"
+            "math.linalg.vs01_vector_space_axioms"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_1_coordinate_slice",
+          "step_id": "s2_1",
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "g_i(t) := f(\\mathbf{a} + t\\mathbf{e}_i)\\quad (|t| < \\delta)",
-          "to_latex": "\\forall t\\in(-\\delta,\\delta),\\; g_i(t) - g_i(0) \\ge 0\\quad (\\text{for local min; } \\le 0\\text{ for local max})",
-          "operation_label": "各座標方向への1変数関数の制限",
-          "explanation": "内点aのδ近傍上で第i基本ベクトルe_i方向にtを動かした1変数関数g_i(t)を定義すると、t=0はg_iの局所極値となる。",
+          "from_latex": "\\mathbf{a} \\in \\operatorname{int}(D) \\land \\mathbf{a}\\text{ is a local extremum of } f",
+          "to_latex": "\\forall t \\in (-\\delta, \\delta),\\; g_i(t) - g_i(0) \\ge 0 \\text{ (local min)},\\quad g_i(t) - g_i(0) \\le 0 \\text{ (local max)}",
+          "operation_label": "近傍の確保と座標軸方向1変数関数の増分不等式の導出",
+          "explanation": "内点条件と局所極値条件から共通半径の開球上で不等式を確保し、各座標基底方向への1変数制限関数を定義して移項により増分の符号条件を得る。",
           "used_node_ids": [
             "math.calc.m44_partial_derivative_def"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_2_sign_of_quotients",
+          "step_id": "s3_1_1",
           "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\mathbf{a} \\in \\operatorname{int}(D) \\land \\mathbf{a}\\text{ is a local extremum of } f",
+          "to_latex": "\\exists \\delta > 0:\\; B(\\mathbf{a}, \\delta) \\subset D \\land \\big(\\forall \\mathbf{x} \\in B(\\mathbf{a}, \\delta),\\; f(\\mathbf{x}) \\ge f(\\mathbf{a}) \\text{ or } \\forall \\mathbf{x} \\in B(\\mathbf{a}, \\delta),\\; f(\\mathbf{x}) \\le f(\\mathbf{a})\\big)\\text{}",
+          "operation_label": "内点および局所極値の定義を展開",
+          "explanation": "aが定義域Dの内点であるためB(a, delta_0) subset Dなるdelta_0 > 0が存在し、局所極値であるためB(a, delta_1)上で極小または極大の不等式が成り立つdelta_1 > 0が存在する。よって共通半径delta = min(delta_0, delta_1) > 0をとれば両条件が同時に成立する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\exists \\delta > 0:\\; B(\\mathbf{a}, \\delta) \\subset D \\land \\big(\\forall \\mathbf{x} \\in B(\\mathbf{a}, \\delta),\\; f(\\mathbf{x}) \\ge f(\\mathbf{a}) \\text{ or } \\forall \\mathbf{x} \\in B(\\mathbf{a}, \\delta),\\; f(\\mathbf{x}) \\le f(\\mathbf{a})\\big)\\text{}",
+          "to_latex": "\\big(\\forall i \\in \\{1,\\dots,n\\},\\; \\forall t \\in (-\\delta,\\delta),\\; \\mathbf{a}+t\\mathbf{e}_i \\in B(\\mathbf{a},\\delta) \\subset D\\big) \\land \\big(\\forall \\mathbf{x} \\in B(\\mathbf{a},\\delta),\\; f(\\mathbf{x}) \\ge f(\\mathbf{a}) \\text{ (local min)},\\; f(\\mathbf{x}) \\le f(\\mathbf{a}) \\text{ (local max)}\\big)\\text{}",
+          "operation_label": "座標軸方向の点の開球所属を確認",
+          "explanation": "標準基底ベクトルe_iのノルムは1であるため、|t| < deltaとなる任意の実数tに対し||(a + t e_i) - a|| = |t|||e_i|| = |t| < deltaが成り立ち、点a + t e_iが開球B(a, delta) subset Dに属することが保証される。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\big(\\forall i \\in \\{1,\\dots,n\\},\\; \\forall t \\in (-\\delta,\\delta),\\; \\mathbf{a}+t\\mathbf{e}_i \\in B(\\mathbf{a},\\delta) \\subset D\\big) \\land \\big(\\forall \\mathbf{x} \\in B(\\mathbf{a},\\delta),\\; f(\\mathbf{x}) \\ge f(\\mathbf{a}) \\text{ (local min)},\\; f(\\mathbf{x}) \\le f(\\mathbf{a}) \\text{ (local max)}\\big)\\text{}",
+          "to_latex": "g_i(t) := f(\\mathbf{a}+t\\mathbf{e}_i)\\;(|t|<\\delta),\\quad g_i(0) = f(\\mathbf{a}),\\quad \\forall t \\in (-\\delta,\\delta),\\; g_i(t) \\ge g_i(0) \\text{ (local min)},\\; g_i(t) \\le g_i(0) \\text{ (local max)}",
+          "operation_label": "1変数制限関数を定義し極値不等式へ代入",
+          "explanation": "区間(-delta, delta)上で1変数関数g_i(t) := f(a + t e_i)を定義するとg_i(0) = f(a)であり、x = a + t e_i in B(a, delta)を局所極小・局所極大の各不等式に代入してg_i(t)とg_i(0)の大小関係を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "g_i(t) := f(\\mathbf{a}+t\\mathbf{e}_i)\\;(|t|<\\delta),\\quad g_i(0) = f(\\mathbf{a}),\\quad \\forall t \\in (-\\delta,\\delta),\\; g_i(t) \\ge g_i(0) \\text{ (local min)},\\; g_i(t) \\le g_i(0) \\text{ (local max)}",
+          "to_latex": "\\forall t \\in (-\\delta, \\delta),\\; g_i(t) - g_i(0) \\ge 0 \\text{ (local min)},\\quad g_i(t) - g_i(0) \\le 0 \\text{ (local max)}",
+          "operation_label": "右辺の基準値を左辺へ移項",
+          "explanation": "極小・極大の両不等式の両辺からg_i(0)を引く（移項する）ことで、増分g_i(t) - g_i(0)の符号不等式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 7,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "g_i(t) - g_i(0) \\ge 0\\quad (|t|<\\delta)",
-          "to_latex": "\\frac{f(\\mathbf{a}+t\\mathbf{e}_i)-f(\\mathbf{a})}{t} \\ge 0\\;(t>0),\\quad \\frac{f(\\mathbf{a}+t\\mathbf{e}_i)-f(\\mathbf{a})}{t} \\le 0\\;(t<0)",
-          "operation_label": "差分商の符号評価",
-          "explanation": "極小点の場合（極大点も不等号が逆転するのみで同様）、t>0で差分商は非負、t<0で非正となる。",
+          "from_latex": "\\forall t \\in (-\\delta, \\delta),\\; g_i(t) - g_i(0) \\ge 0 \\text{ (local min)},\\quad g_i(t) - g_i(0) \\le 0 \\text{ (local max)}",
+          "to_latex": "\\Big(\\forall t \\in (0,\\delta),\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local min)},\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local max)}\\Big) \\land \\Big(\\forall t \\in (-\\delta,0),\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local min)},\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local max)}\\Big)\\text{}",
+          "operation_label": "正負の増分に対する差分商の符号評価",
+          "explanation": "t = 0を除いた正側区間(0, delta)と負側区間(-delta, 0)のそれぞれで増分不等式の両辺をtで割り、fの座標軸方向の差分商の符号を決定する。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition",
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\forall t \\in (-\\delta, \\delta),\\; g_i(t) - g_i(0) \\ge 0 \\text{ (local min)},\\quad g_i(t) - g_i(0) \\le 0 \\text{ (local max)}",
+          "to_latex": "\\forall t \\in (0,\\delta) \\cup (-\\delta,0),\\; g_i(t) - g_i(0) \\ge 0 \\text{ (local min)},\\quad g_i(t) - g_i(0) \\le 0 \\text{ (local max)}",
+          "operation_label": "零除算を避けるため t=0 を除外し正負区間へ分割",
+          "explanation": "差分商の分母が零になることを防ぐためt = 0を定義域から除外し、t in (0, delta) union (-delta, 0)に制限する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\forall t \\in (0,\\delta) \\cup (-\\delta,0),\\; g_i(t) - g_i(0) \\ge 0 \\text{ (local min)},\\quad g_i(t) - g_i(0) \\le 0 \\text{ (local max)}",
+          "to_latex": "\\Big(\\forall t \\in (0,\\delta),\\; \\frac{g_i(t) - g_i(0)}{t} \\ge 0 \\text{ (local min)},\\; \\frac{g_i(t) - g_i(0)}{t} \\le 0 \\text{ (local max)}\\Big) \\land \\Big(\\forall t \\in (-\\delta,0),\\; g_i(t) - g_i(0) \\ge 0 \\text{ (local min)},\\; g_i(t) - g_i(0) \\le 0 \\text{ (local max)}\\Big)\\text{}",
+          "operation_label": "正の増分 t>0 による両辺の割り算",
+          "explanation": "0 < t < deltaの範囲ではt > 0であるため、増分不等式の両辺を正数tで割っても不等号の向きは保たれる。",
           "used_node_ids": [
             "math.calc.m20_derivative_definition"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_3_gradient_zero",
-          "order": 4,
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\Big(\\forall t \\in (0,\\delta),\\; \\frac{g_i(t) - g_i(0)}{t} \\ge 0 \\text{ (local min)},\\; \\frac{g_i(t) - g_i(0)}{t} \\le 0 \\text{ (local max)}\\Big) \\land \\Big(\\forall t \\in (-\\delta,0),\\; g_i(t) - g_i(0) \\ge 0 \\text{ (local min)},\\; g_i(t) - g_i(0) \\le 0 \\text{ (local max)}\\Big)\\text{}",
+          "to_latex": "\\Big(\\forall t \\in (0,\\delta),\\; \\frac{g_i(t) - g_i(0)}{t} \\ge 0 \\text{ (local min)},\\; \\frac{g_i(t) - g_i(0)}{t} \\le 0 \\text{ (local max)}\\Big) \\land \\Big(\\forall t \\in (-\\delta,0),\\; \\frac{g_i(t) - g_i(0)}{t} \\le 0 \\text{ (local min)},\\; \\frac{g_i(t) - g_i(0)}{t} \\ge 0 \\text{ (local max)}\\Big)\\text{}",
+          "operation_label": "負の増分 t<0 による両辺の割り算と不等号反転",
+          "explanation": "-delta < t < 0の範囲ではt < 0であるため、増分不等式の両辺を負数tで割ると不等号の向きが反転し、極小で非正・極大で非負となる。",
+          "used_node_ids": [
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\Big(\\forall t \\in (0,\\delta),\\; \\frac{g_i(t) - g_i(0)}{t} \\ge 0 \\text{ (local min)},\\; \\frac{g_i(t) - g_i(0)}{t} \\le 0 \\text{ (local max)}\\Big) \\land \\Big(\\forall t \\in (-\\delta,0),\\; \\frac{g_i(t) - g_i(0)}{t} \\le 0 \\text{ (local min)},\\; \\frac{g_i(t) - g_i(0)}{t} \\ge 0 \\text{ (local max)}\\Big)\\text{}",
+          "to_latex": "\\Big(\\forall t \\in (0,\\delta),\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local min)},\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local max)}\\Big) \\land \\Big(\\forall t \\in (-\\delta,0),\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local min)},\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local max)}\\Big)\\text{}",
+          "operation_label": "1変数制限関数の定義式を差分商へ代入",
+          "explanation": "g_i(t) = f(a + t e_i)およびg_i(0) = f(a)を各差分商の分子へ代入し、多変数関数fの座標方向差分商の不等式へ書き換える。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 12,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "0 \\le \\lim_{t\\to 0^+}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i)-f(\\mathbf{a})}{t} = \\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = \\lim_{t\\to 0^-}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i)-f(\\mathbf{a})}{t} \\le 0",
-          "to_latex": "\\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0\\;(\\forall i) \\implies \\nabla f(\\mathbf{a}) = \\mathbf{0}",
-          "operation_label": "偏微分係数の零性と勾配の消滅",
-          "explanation": "偏微分の存在により左右の片側極限は一致するため偏微分係数は0となり、全成分が0ゆえ勾配ベクトルは零ベクトルとなる。",
+          "from_latex": "\\Big(\\forall t \\in (0,\\delta),\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local min)},\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local max)}\\Big) \\land \\Big(\\forall t \\in (-\\delta,0),\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local min)},\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local max)}\\Big)\\text{}",
+          "to_latex": "\\forall i \\in \\{1,\\dots,n\\},\\; \\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0",
+          "operation_label": "片側極限の順序保存と偏微分の存在による偏微分係数の零化",
+          "explanation": "偏微分の存在により存在する左右の片側極限に対して極限の順序保存性を適用し、両者が偏微分係数に一致することと実数の反対称律から全偏微分係数が0であることを導く。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\Big(\\forall t \\in (0,\\delta),\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local min)},\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local max)}\\Big) \\land \\Big(\\forall t \\in (-\\delta,0),\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local min)},\\; \\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local max)}\\Big)\\text{}",
+          "to_latex": "\\Big(\\lim_{t \\to 0^+}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local min)},\\; \\lim_{t \\to 0^+}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local max)}\\Big) \\land \\Big(\\lim_{t \\to 0^-}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local min)},\\; \\lim_{t \\to 0^-}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local max)}\\Big)\\text{}",
+          "operation_label": "左右片側極限をとり極限の順序保存性を適用",
+          "explanation": "点aにおける偏微分の存在よりt -> 0^+の右側極限およびt -> 0^-の左側極限がいずれも存在するため、不等号の極限における順序保存性により各片側極限値でも非負・非正の不等式が保たれる。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\Big(\\lim_{t \\to 0^+}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local min)},\\; \\lim_{t \\to 0^+}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local max)}\\Big) \\land \\Big(\\lim_{t \\to 0^-}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\le 0 \\text{ (local min)},\\; \\lim_{t \\to 0^-}\\frac{f(\\mathbf{a}+t\\mathbf{e}_i) - f(\\mathbf{a})}{t} \\ge 0 \\text{ (local max)}\\Big)\\text{}",
+          "to_latex": "0 \\le \\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) \\le 0 \\text{ (local min)},\\qquad 0 \\ge \\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) \\ge 0 \\text{ (local max)}",
+          "operation_label": "偏微分の定義により両片側極限を偏微分係数に等置",
+          "explanation": "両側極限としての偏微分係数 \\frac{\\partial f}{\\partial x_i}(a) が存在するため右側極限と左側極限はいずれも \\frac{\\partial f}{\\partial x_i}(a) に一致する。各片側極限を \\frac{\\partial f}{\\partial x_i}(a) に置き換えて挟み込む。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "0 \\le \\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) \\le 0 \\text{ (local min)},\\qquad 0 \\ge \\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) \\ge 0 \\text{ (local max)}",
+          "to_latex": "\\forall i \\in \\{1,\\dots,n\\},\\; \\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0",
+          "operation_label": "実数の順序の反対称律により偏微分係数を零と確定",
+          "explanation": "実数の順序関係の反対称律（c >= 0 かつ c <= 0 ならば c = 0）を極小点・極大点の双方および任意の座標番号i = 1, ..., nに適用し、すべての偏微分係数が0であることを確定する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 16,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\forall i \\in \\{1,\\dots,n\\},\\; \\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0",
+          "to_latex": "\\mathbf{a} \\in \\operatorname{int}(D)\\text{ is a local extremum of } f \\implies \\nabla f(\\mathbf{a}) = \\mathbf{0}\\;\\left(\\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0,\\; \\forall i=1,\\dots,n\\right)\\text{}",
+          "operation_label": "勾配ベクトルの零化と停留点条件の結論導出",
+          "explanation": "全偏微分係数が0であることを勾配ベクトルの定義式へ代入し、ベクトル空間の公理により零ベクトルへ簡約して停留点条件の命題を得る。",
           "used_node_ids": [
             "math.calc.m44_partial_derivative_def",
-            "math.vec.m33_gradient_definition"
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\forall i \\in \\{1,\\dots,n\\},\\; \\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0",
+          "to_latex": "\\nabla f(\\mathbf{a}) = \\sum_{i=1}^{n} \\frac{\\partial f}{\\partial x_i}(\\mathbf{a})\\mathbf{e}_i = \\sum_{i=1}^{n} 0\\cdot \\mathbf{e}_i",
+          "operation_label": "勾配ベクトルの定義を導入し全偏微分係数の零値を代入",
+          "explanation": "仮定に明記した勾配の定義 \\nabla f(a) = sum_{i=1}^n (\\partial f / \\partial x_i)(a) e_i に対し、すべての成分i = 1, ..., nについての値0を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\nabla f(\\mathbf{a}) = \\sum_{i=1}^{n} 0\\cdot \\mathbf{e}_i",
+          "to_latex": "\\nabla f(\\mathbf{a}) = \\mathbf{0}\\;\\left(\\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0,\\; \\forall i=1,\\dots,n\\right)\\text{}",
+          "operation_label": "スカラー零倍のベクトル和を零ベクトルへ簡約",
+          "explanation": "ベクトル空間の公理により各0 * e_i = 0であり零ベクトルの有限和は0に等しいため、\\nabla f(a) = 0および全偏微分係数の零性が得られる。",
+          "used_node_ids": [
+            "math.linalg.vs01_vector_space_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 19,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\nabla f(\\mathbf{a}) = \\mathbf{0}\\;\\left(\\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0,\\; \\forall i=1,\\dots,n\\right)\\text{}",
+          "to_latex": "\\mathbf{a} \\in \\operatorname{int}(D)\\text{ is a local extremum of } f \\implies \\nabla f(\\mathbf{a}) = \\mathbf{0}\\;\\left(\\frac{\\partial f}{\\partial x_i}(\\mathbf{a}) = 0,\\; \\forall i=1,\\dots,n\\right)\\text{}",
+          "operation_label": "前提仮定と結論を停留点条件の命題へ統合",
+          "explanation": "前提である「aはDの内点かつfの局所極値点」から結論「\\nabla f(a) = 0（全偏微分係数が0）」が導かれたことを含意命題としてまとめる。",
+          "used_node_ids": [
+            "math.calc.m44_partial_derivative_def"
           ],
           "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-24T04:40:48.613872+00:00"
     },
     {
       "id": "deriv_e05_hessian_extremum_test",
