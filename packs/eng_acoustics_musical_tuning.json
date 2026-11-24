@@ -1,0 +1,597 @@
+{
+  "pack_meta": {
+    "pack_id": "eng.acoustics.musical_tuning",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "acoustics",
+    "title": "音楽音響学：弦と気柱の固有振動モード・倍音列・純正律と12平均律（ピタゴラスコンマ）",
+    "language": "ja",
+    "description": "1次元波動方程式の固定端/開管・閉管境界条件から固有振動数と倍音列、周波数比の対数（セント値）から純正律・ピタゴラス音律・12平均律（2^(k/12)）の差異を導出する。"
+  },
+  "nodes": [
+    {
+      "id": "eng.mus.n01_string_wave_modes",
+      "short_code": "MUS01",
+      "kind": "theorem_formula",
+      "title": "1次元弦の波動方程式と固定端境界条件による固有振動モード",
+      "summary": "張力T・線密度μの一様な弦における1次元波動方程式を両端固定の境界条件のもとで変数分離して解くことで、基本周波数f1と整数倍の固有振動数fn=nf1（倍音列）が導かれる。",
+      "canonical_latex": "\\mu \\frac{\\partial^2 y}{\\partial t^2} = T \\frac{\\partial^2 y}{\\partial x^2},\\quad y(0,t)=y(L,t)=0 \\implies f_n = \\frac{n}{2L}\\sqrt{\\frac{T}{\\mu}} = n f_1\\quad (n \\in \\mathbb{Z}_{\\ge 1})",
+      "aliases_latex": [
+        "f_n = \\frac{n c_{\\mathrm{str}}}{2L},\\quad c_{\\mathrm{str}} = \\sqrt{\\frac{T}{\\mu}}"
+      ],
+      "keywords": [
+        "弦の固有振動",
+        "1次元波動方程式",
+        "固定端境界条件",
+        "倍音列",
+        "定在波"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "musical_acoustics",
+        "mechanics"
+      ]
+    },
+    {
+      "id": "eng.mus.n02_harmonic_series_timbre",
+      "short_code": "MUS02",
+      "kind": "definition",
+      "title": "倍音列（整数次・奇数次倍音）と協和音程の単純整数比",
+      "summary": "弦や開管の整数次倍音列と閉管の奇数次倍音列を定義し、低次の倍音同士が成す単純な周波数比（2:1のオクターブ、3:2の完全五度、4:3の完全四度、5:4の長三度）を協和音程の基礎として定式化する。",
+      "canonical_latex": "f_n = n f_1\\;(\\text{string/open}),\\quad f_m = (2m-1)f_1\\;(\\text{closed}),\\quad r_{\\mathrm{oct}}=\\frac{2}{1},\\; r_{\\mathrm{fifth}}=\\frac{3}{2},\\; r_{\\mathrm{fourth}}=\\frac{4}{3},\\; r_{\\mathrm{M3}}=\\frac{5}{4}",
+      "aliases_latex": [
+        "\\{f_n\\}_{n=1}^{\\infty} = \\{f_1, 2f_1, 3f_1, 4f_1, 5f_1, \\dots\\}"
+      ],
+      "keywords": [
+        "倍音列",
+        "整数次倍音",
+        "奇数次倍音",
+        "協和音程",
+        "単純整数比"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "musical_acoustics"
+      ]
+    },
+    {
+      "id": "eng.mus.n03_cent_logarithmic_pitch",
+      "short_code": "MUS03",
+      "kind": "definition",
+      "title": "音程の対数尺度（セント値）の定義",
+      "summary": "人間の音高知覚が周波数比の対数に従う性質（ヴェーバー＝フェヒナーの法則）に基づき、1オクターブ（周波数比2:1）を1200等分した無次元の対数音程尺度であるセント（cent）を定義する。",
+      "canonical_latex": "\\Delta c(f_1, f_2) := 1200 \\log_2\\!\\left(\\frac{f_2}{f_1}\\right)\\;[\\mathrm{cent}]",
+      "aliases_latex": [
+        "\\frac{f_2}{f_1} = 2^{\\Delta c / 1200}"
+      ],
+      "keywords": [
+        "セント",
+        "対数音程尺度",
+        "周波数比",
+        "オクターブ"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "musical_acoustics"
+      ]
+    },
+    {
+      "id": "eng.mus.n04_pythagorean_tuning",
+      "short_code": "MUS04",
+      "kind": "definition",
+      "title": "ピタゴラス音律（完全五度 3:2 の累積による音階構成）",
+      "summary": "協和音程である完全五度（周波数比3:2）を基準音から順次積み上げ、2のべき乗（オクターブ）で[1, 2)の区間へ折り返すことで全音階・半音階の周波数比を構成する音律。",
+      "canonical_latex": "r_k := \\frac{(3/2)^k}{2^{m_k}} \\in [1, 2)\\quad \\big(k \\in \\mathbb{Z},\\; m_k = \\lfloor k \\log_2(3/2) \\rfloor\\big),\\quad r_2 = \\frac{9}{8},\\; r_4 = \\frac{81}{64}",
+      "aliases_latex": [
+        "r_k = 3^k 2^{-(k + m_k)}"
+      ],
+      "keywords": [
+        "ピタゴラス音律",
+        "完全五度",
+        "五度圏",
+        "ピタゴラス長三度"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "musical_acoustics"
+      ]
+    },
+    {
+      "id": "eng.mus.n05_pythagorean_comma",
+      "short_code": "MUS05",
+      "kind": "theorem_formula",
+      "title": "ピタゴラスコンマ（完全五度12回と7オクターブの不一致）",
+      "summary": "完全五度（3:2）を12回積み上げた周波数比と7オクターブ（2^7）の周波数比は素因数3と2の独立性により一致せず、約23.46セントの微小な音程差（ピタゴラスコンマ）が生じる。",
+      "canonical_latex": "\\kappa_P := \\frac{(3/2)^{12}}{2^7} = \\frac{3^{12}}{2^{19}} = \\frac{531441}{524288} \\approx 1.013643,\\quad \\Delta c_P = 1200\\log_2(\\kappa_P) \\approx 23.46\\;\\mathrm{cent}",
+      "aliases_latex": [
+        "(3/2)^{12} \\neq 2^7,\\quad \\Delta c_P = 1200(12\\log_2 3 - 19)\\;\\mathrm{cent}"
+      ],
+      "keywords": [
+        "ピタゴラスコンマ",
+        "五度圏の破綻",
+        "セント偏差",
+        "ウルフの五度"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "musical_acoustics"
+      ]
+    },
+    {
+      "id": "eng.mus.n06_just_intonation_syntonic_comma",
+      "short_code": "MUS06",
+      "kind": "theorem_formula",
+      "title": "純正律の三和音比とシントニックコンマ",
+      "summary": "第5倍音に由来する純正長三度（5:4）と、完全五度を4回積み上げて得るピタゴラス長三度（81:64）との周波数比は81:80（約21.51セント）となり、シントニックコンマと呼ばれる差異を生じる。",
+      "canonical_latex": "\\kappa_S := \\frac{(3/2)^4 / 2^2}{5/4} = \\frac{81/64}{5/4} = \\frac{81}{80} = 1.0125,\\quad \\Delta c_S = 1200\\log_2\\!\\left(\\frac{81}{80}\\right) \\approx 21.51\\;\\mathrm{cent}",
+      "aliases_latex": [
+        "4:5:6\\;\\text{(major triad)},\\quad \\kappa_S = \\frac{81}{80}"
+      ],
+      "keywords": [
+        "純正律",
+        "シントニックコンマ",
+        "純正長三度",
+        "三和音"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "musical_acoustics"
+      ]
+    },
+    {
+      "id": "eng.mus.n07_twelve_tone_equal_temperament",
+      "short_code": "MUS07",
+      "kind": "definition",
+      "title": "12平均律（12-TET）の定義と半音比 2^(1/12)",
+      "summary": "ピタゴラスコンマによる閉包破綻を解消しあらゆる調での転調を可能にするため、1オクターブ（2:1）を対数的に12等分し、隣接する半音の周波数比を一律に2^(1/12)（100セント）と定める音律。",
+      "canonical_latex": "r_{\\mathrm{ET}} := 2^{1/12} \\approx 1.059463,\\quad f_k = f_0 \\cdot 2^{k/12}\\;(k \\in \\mathbb{Z}),\\quad \\Delta c(f_k, f_{k+1}) = 100\\;\\mathrm{cent}",
+      "aliases_latex": [
+        "f_k = f_0 \\left(2^{1/12}\\right)^k"
+      ],
+      "keywords": [
+        "12平均律",
+        "平均律",
+        "半音比",
+        "転調"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "musical_acoustics"
+      ]
+    },
+    {
+      "id": "eng.mus.n08_temperament_deviation_cents",
+      "short_code": "MUS08",
+      "kind": "theorem_formula",
+      "title": "12平均律と純正音程（完全五度・長三度）のセント偏差",
+      "summary": "12平均律の完全五度（7半音）は純正完全五度よりピタゴラスコンマの1/12（約-1.96セント）狭く、長三度（4半音）は純正長三度より約+13.69セント広いことがセント値の差から定量的に示される。",
+      "canonical_latex": "\\delta c_{\\mathrm{fifth}} = 700 - 1200\\log_2\\!\\left(\\frac{3}{2}\\right) = -\\frac{\\Delta c_P}{12} \\approx -1.96\\;\\mathrm{cent},\\quad \\delta c_{\\mathrm{M3}} = 400 - 1200\\log_2\\!\\left(\\frac{5}{4}\\right) \\approx +13.69\\;\\mathrm{cent}",
+      "aliases_latex": [
+        "2^{7/12} / (3/2) = \\kappa_P^{-1/12}"
+      ],
+      "keywords": [
+        "平均律の偏差",
+        "セント誤差",
+        "完全五度",
+        "長三度",
+        "うなり"
+      ],
+      "domain_tags": [
+        "acoustics",
+        "musical_acoustics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.mus.n01_string_wave_modes",
+      "target_node_id": "eng.mus.n01_string_wave_modes",
+      "route_kind": "deductive",
+      "title": "1次元弦の波動方程式と固定端境界条件からの固有振動数導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "math.ode.m06_linear_ode_2nd",
+        "eng.acst.n02_linearized_acoustic_wave_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "弦の張力Tおよび線密度μは空間・時間によらず一様である",
+        "横振動の振幅は弦長Lに対して十分に小さく、線形波動方程式が成り立つ",
+        "両端x=0, Lは完全に固定されている（y(0,t)=y(L,t)=0）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mu \\frac{\\partial^2 y}{\\partial t^2} = T \\frac{\\partial^2 y}{\\partial x^2},\\quad y(0,t)=y(L,t)=0",
+          "to_latex": "f_n = \\frac{n}{2L}\\sqrt{\\frac{T}{\\mu}} = n f_1\\quad (n \\in \\mathbb{Z}_{\\ge 1})",
+          "operation_label": "変数分離と固定端境界条件による固有振動数の導出",
+          "explanation": "弦の1次元波動方程式を時間と空間に変数分離し、両端固定条件から許される波数kn=nπ/Lと固有振動数fn=nf1を求める。",
+          "used_node_ids": [
+            "eng.acst.n02_linearized_acoustic_wave_eq",
+            "math.ode.m06_linear_ode_2nd",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu \\frac{\\partial^2 y}{\\partial t^2} = T \\frac{\\partial^2 y}{\\partial x^2},\\quad y(0,t)=y(L,t)=0",
+          "to_latex": "\\frac{\\partial^2 y}{\\partial t^2} = c_{\\mathrm{str}}^2 \\frac{\\partial^2 y}{\\partial x^2},\\quad c_{\\mathrm{str}} := \\sqrt{\\frac{T}{\\mu}},\\quad y(x,t)=X(x)T_{\\mathrm{time}}(t)",
+          "operation_label": "波速の定義と変数分離形の仮定",
+          "explanation": "弦を伝わる横波の速さc_str=√(T/μ)を導入し、定在波解として空間成分X(x)と時間成分T_time(t)の積を仮定する。",
+          "used_node_ids": [
+            "eng.acst.n02_linearized_acoustic_wave_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial^2 y}{\\partial t^2} = c_{\\mathrm{str}}^2 \\frac{\\partial^2 y}{\\partial x^2},\\quad c_{\\mathrm{str}} := \\sqrt{\\frac{T}{\\mu}},\\quad y(x,t)=X(x)T_{\\mathrm{time}}(t)",
+          "to_latex": "X''(x) + k^2 X(x) = 0,\\quad X(0)=X(L)=0 \\implies k_n = \\frac{n\\pi}{L}\\quad (n \\in \\mathbb{Z}_{\\ge 1})",
+          "operation_label": "空間常微分方程式への境界条件適用",
+          "explanation": "X(x)=Acos(kx)+Bsin(kx)にX(0)=0を課すとA=0となり、非自明解(B≠0)に対してX(L)=Bsin(kL)=0より波数kn=nπ/Lが離散化される。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "X''(x) + k^2 X(x) = 0,\\quad X(0)=X(L)=0 \\implies k_n = \\frac{n\\pi}{L}\\quad (n \\in \\mathbb{Z}_{\\ge 1})",
+          "to_latex": "f_n = \\frac{\\omega_n}{2\\pi} = \\frac{c_{\\mathrm{str}} k_n}{2\\pi} = \\frac{n}{2L}\\sqrt{\\frac{T}{\\mu}} = n f_1\\quad (n \\in \\mathbb{Z}_{\\ge 1})",
+          "operation_label": "角振動数と波数の関係からの固有振動数算出",
+          "explanation": "時間側の振動数ωn=c_str*knを周波数fn=ωn/(2π)へ換算することで、基本周波数f1=c_str/(2L)の整数倍となる固有振動モードを得る。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.mus.n02_harmonic_series_timbre",
+      "target_node_id": "eng.mus.n02_harmonic_series_timbre",
+      "route_kind": "reformulation",
+      "title": "弦・開管・閉管の固有振動モードからの倍音列と協和音程の定式化",
+      "premise_node_ids": [
+        "eng.mus.n01_string_wave_modes",
+        "eng.acst.n07_open_closed_pipe_resonance"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "楽器の共鳴体（弦および気柱）は理想的な1次元境界条件に従い、非調和性（インハーモニシティ）は無視できる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "f_n^{\\mathrm{str}} = n f_1,\\quad f_n^{\\mathrm{open}} = \\frac{n c}{2L},\\quad f_m^{\\mathrm{closed}} = \\frac{(2m-1)c}{4L}",
+          "to_latex": "f_n = n f_1\\;(\\text{string/open}),\\quad f_m = (2m-1)f_1\\;(\\text{closed}),\\quad r_{\\mathrm{oct}}=\\frac{2}{1},\\; r_{\\mathrm{fifth}}=\\frac{3}{2},\\; r_{\\mathrm{fourth}}=\\frac{4}{3},\\; r_{\\mathrm{M3}}=\\frac{5}{4}",
+          "operation_label": "倍音列の統合表現と低次倍音比の定義",
+          "explanation": "弦と開管は全整数次倍音(n=1,2,3,...)、閉管は奇数次倍音(2m-1=1,3,5,...)を含むことを整理し、第1〜第5倍音間の比(2:1, 3:2, 4:3, 5:4)を協和音程の基本比として定義する。",
+          "used_node_ids": [
+            "eng.acst.n07_open_closed_pipe_resonance",
+            "eng.mus.n01_string_wave_modes"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.mus.n03_cent_logarithmic_pitch",
+      "target_node_id": "eng.mus.n03_cent_logarithmic_pitch",
+      "route_kind": "reformulation",
+      "title": "オクターブ基準による対数音程尺度（セント）の定義",
+      "premise_node_ids": [
+        "eng.mus.n02_harmonic_series_timbre"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "周波数比の積が音程の和に対応するように2を底とする対数尺度を採用する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r_{\\mathrm{oct}} = \\frac{f_2}{f_1} = 2 \\mapsto 1200\\;[\\mathrm{cent}]",
+          "to_latex": "\\Delta c(f_1, f_2) := 1200 \\log_2\\!\\left(\\frac{f_2}{f_1}\\right)\\;[\\mathrm{cent}]",
+          "operation_label": "オクターブ1200等分による対数尺度の定義",
+          "explanation": "周波数比2のオクターブを1200セントと定める規約のもとで、任意の2音(f1, f2)の音程差Δcを2を底とする対数の1200倍として定義する。",
+          "used_node_ids": [
+            "eng.mus.n02_harmonic_series_timbre"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.mus.n04_pythagorean_tuning",
+      "target_node_id": "eng.mus.n04_pythagorean_tuning",
+      "route_kind": "reformulation",
+      "title": "完全五度 3:2 の累積とオクターブ折り返しによるピタゴラス音律の定義",
+      "premise_node_ids": [
+        "eng.mus.n02_harmonic_series_timbre",
+        "eng.mus.n03_cent_logarithmic_pitch"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "オクターブ等価性により、周波数比を2の整数乗で乗除した音は同一音名クラスとみなす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r_{\\mathrm{fifth}} = \\frac{3}{2},\\quad r_{\\mathrm{oct}} = 2",
+          "to_latex": "r_k := \\frac{(3/2)^k}{2^{m_k}} \\in [1, 2)\\quad \\big(k \\in \\mathbb{Z},\\; m_k = \\lfloor k \\log_2(3/2) \\rfloor\\big),\\quad r_2 = \\frac{9}{8},\\; r_4 = \\frac{81}{64}",
+          "operation_label": "完全五度の累乗のオクターブ正規化",
+          "explanation": "完全五度(3/2)をk回乗じた比(3/2)^kを適切な2^m_kで割り[1, 2)の範囲に収めることで、k=2で長二度9/8、k=4でピタゴラス長三度81/64などの音階比を生成する。",
+          "used_node_ids": [
+            "eng.mus.n02_harmonic_series_timbre",
+            "eng.mus.n03_cent_logarithmic_pitch"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.mus.n05_pythagorean_comma",
+      "target_node_id": "eng.mus.n05_pythagorean_comma",
+      "route_kind": "deductive",
+      "title": "完全五度12回と7オクターブの比較によるピタゴラスコンマの導出",
+      "premise_node_ids": [
+        "eng.mus.n04_pythagorean_tuning",
+        "eng.mus.n03_cent_logarithmic_pitch"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "完全五度の周波数比を厳密に3/2、オクターブを厳密に2とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r_{\\mathrm{fifth}}^{12} = \\left(\\frac{3}{2}\\right)^{12},\\quad r_{\\mathrm{oct}}^{7} = 2^{7}",
+          "to_latex": "\\kappa_P := \\frac{(3/2)^{12}}{2^7} = \\frac{3^{12}}{2^{19}} = \\frac{531441}{524288} \\approx 1.013643,\\quad \\Delta c_P = 1200\\log_2(\\kappa_P) \\approx 23.46\\;\\mathrm{cent}",
+          "operation_label": "完全五度12回の累積比と7オクターブの比・セント差の導出",
+          "explanation": "(3/2)^12と2^7の比を既約分数531441/524288として求め、1と一致しないことおよびセント換算で約23.46セントの差が生じることを示す。",
+          "used_node_ids": [
+            "eng.mus.n03_cent_logarithmic_pitch",
+            "eng.mus.n04_pythagorean_tuning"
+          ],
+          "sympy_check_hint": "Rational(3, 2)**12 / 2**7 == Rational(531441, 524288)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_{\\mathrm{fifth}}^{12} = \\left(\\frac{3}{2}\\right)^{12},\\quad r_{\\mathrm{oct}}^{7} = 2^{7}",
+          "to_latex": "\\kappa_P := \\frac{(3/2)^{12}}{2^7} = \\frac{3^{12}}{2^{19}} = \\frac{531441}{524288}",
+          "operation_label": "べき乗の整理と整数比の計算",
+          "explanation": "完全五度12回分の比(3/2)^12を7オクターブ分2^7で割り、3^12/2^19 = 531441/524288を得る。",
+          "used_node_ids": [
+            "eng.mus.n04_pythagorean_tuning"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\kappa_P := \\frac{(3/2)^{12}}{2^7} = \\frac{3^{12}}{2^{19}} = \\frac{531441}{524288}",
+          "to_latex": "\\kappa_P = \\frac{531441}{524288} \\approx 1.013643 > 1",
+          "operation_label": "素因数一意性に基づく非一致性の評価",
+          "explanation": "分子は3のべき乗(奇数)、分母は2のべき乗(偶数)であるため約分できず、比は厳密に1より大きい約1.013643となる。",
+          "used_node_ids": [
+            "eng.mus.n04_pythagorean_tuning"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\kappa_P = \\frac{531441}{524288} \\approx 1.013643 > 1",
+          "to_latex": "\\Delta c_P = 1200\\log_2\\!\\left(\\frac{3^{12}}{2^{19}}\\right) = 1200(12\\log_2 3 - 19) \\approx 23.46\\;\\mathrm{cent}",
+          "operation_label": "セント定義への代入による対数音程差の算出",
+          "explanation": "セント値の定義式にκ_Pを代入し、1200*log2(531441/524288) ≈ 23.46セントを得る。",
+          "used_node_ids": [
+            "eng.mus.n03_cent_logarithmic_pitch"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.mus.n06_just_intonation_syntonic_comma",
+      "target_node_id": "eng.mus.n06_just_intonation_syntonic_comma",
+      "route_kind": "deductive",
+      "title": "ピタゴラス長三度と純正長三度の比較によるシントニックコンマの導出",
+      "premise_node_ids": [
+        "eng.mus.n02_harmonic_series_timbre",
+        "eng.mus.n03_cent_logarithmic_pitch",
+        "eng.mus.n04_pythagorean_tuning"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "純正長三度は第5倍音と第4倍音の比5:4であり、ピタゴラス長三度は完全五度4回の積を2オクターブ下げた比81:64である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r_{\\mathrm{M3,Pyth}} = \\frac{(3/2)^4}{2^2} = \\frac{81}{64},\\quad r_{\\mathrm{M3,Just}} = \\frac{5}{4}",
+          "to_latex": "\\kappa_S := \\frac{(3/2)^4 / 2^2}{5/4} = \\frac{81/64}{5/4} = \\frac{81}{80} = 1.0125,\\quad \\Delta c_S = 1200\\log_2\\!\\left(\\frac{81}{80}\\right) \\approx 21.51\\;\\mathrm{cent}",
+          "operation_label": "両長三度の周波数比およびセント差（シントニックコンマ）の導出",
+          "explanation": "ピタゴラス長三度81/64を純正長三度5/4で割ることでシントニックコンマ81/80を得て、セント値で約21.51セントを算出する。",
+          "used_node_ids": [
+            "eng.mus.n02_harmonic_series_timbre",
+            "eng.mus.n03_cent_logarithmic_pitch",
+            "eng.mus.n04_pythagorean_tuning"
+          ],
+          "sympy_check_hint": "Rational(81, 64) / Rational(5, 4) == Rational(81, 80)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_{\\mathrm{M3,Pyth}} = \\frac{(3/2)^4}{2^2} = \\frac{81}{64},\\quad r_{\\mathrm{M3,Just}} = \\frac{5}{4}",
+          "to_latex": "\\kappa_S := \\frac{r_{\\mathrm{M3,Pyth}}}{r_{\\mathrm{M3,Just}}} = \\frac{81/64}{5/4} = \\frac{81}{80} = 1.0125",
+          "operation_label": "2種類の長三度の比の計算",
+          "explanation": "(81/64)÷(5/4) = (81/64)×(4/5) = 81/80 = 1.0125となり、ピタゴラス長三度が純正長三度より1.25%高いことを示す。",
+          "used_node_ids": [
+            "eng.mus.n02_harmonic_series_timbre",
+            "eng.mus.n04_pythagorean_tuning"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\kappa_S := \\frac{r_{\\mathrm{M3,Pyth}}}{r_{\\mathrm{M3,Just}}} = \\frac{81/64}{5/4} = \\frac{81}{80} = 1.0125",
+          "to_latex": "\\Delta c_S = 1200\\log_2\\!\\left(\\frac{81}{80}\\right) \\approx 21.51\\;\\mathrm{cent}",
+          "operation_label": "セント値への換算",
+          "explanation": "セント尺度へ変換すると1200*log2(81/80) ≈ 21.51セントとなり、純正律とピタゴラス音律の互換不可能性が定量化される。",
+          "used_node_ids": [
+            "eng.mus.n03_cent_logarithmic_pitch"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.mus.n07_twelve_tone_equal_temperament",
+      "target_node_id": "eng.mus.n07_twelve_tone_equal_temperament",
+      "route_kind": "reformulation",
+      "title": "オクターブの12等分による12平均律の定義",
+      "premise_node_ids": [
+        "eng.mus.n03_cent_logarithmic_pitch",
+        "eng.mus.n05_pythagorean_comma"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ピタゴラスコンマを12個の五度に均等に配分し、全調で同一の音程構造を保つためオクターブを等比数列で12分割する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r_{\\mathrm{oct}} = 2,\\quad N_{\\mathrm{div}} = 12",
+          "to_latex": "r_{\\mathrm{ET}} := 2^{1/12} \\approx 1.059463,\\quad f_k = f_0 \\cdot 2^{k/12}\\;(k \\in \\mathbb{Z}),\\quad \\Delta c(f_k, f_{k+1}) = 100\\;\\mathrm{cent}",
+          "operation_label": "等比12分割による半音比の定義",
+          "explanation": "r_ET^12 = 2を満たす正の実数r_ET = 2^(1/12)を半音比と定め、k半音上の周波数をf_k = f_0 * 2^(k/12)、隣接半音間隔を100セントと定義する。",
+          "used_node_ids": [
+            "eng.mus.n03_cent_logarithmic_pitch",
+            "eng.mus.n05_pythagorean_comma"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.mus.n08_temperament_deviation_cents",
+      "target_node_id": "eng.mus.n08_temperament_deviation_cents",
+      "route_kind": "deductive",
+      "title": "12平均律の完全五度・長三度と純正音程とのセント偏差の導出",
+      "premise_node_ids": [
+        "eng.mus.n05_pythagorean_comma",
+        "eng.mus.n06_just_intonation_syntonic_comma",
+        "eng.mus.n07_twelve_tone_equal_temperament"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "12平均律の完全五度は7半音（700セント）、長三度は4半音（400セント）に対応する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r_{\\mathrm{ET},7} = 2^{7/12},\\quad r_{\\mathrm{ET},4} = 2^{4/12},\\quad r_{\\mathrm{fifth}} = \\frac{3}{2},\\quad r_{\\mathrm{M3}} = \\frac{5}{4}",
+          "to_latex": "\\delta c_{\\mathrm{fifth}} = 700 - 1200\\log_2\\!\\left(\\frac{3}{2}\\right) = -\\frac{\\Delta c_P}{12} \\approx -1.96\\;\\mathrm{cent},\\quad \\delta c_{\\mathrm{M3}} = 400 - 1200\\log_2\\!\\left(\\frac{5}{4}\\right) \\approx +13.69\\;\\mathrm{cent}",
+          "operation_label": "12平均律と純正音程のセント差およびピタゴラスコンマとの関連導出",
+          "explanation": "12平均律の7半音(2^(7/12))と純正五度(3/2)の差がピタゴラスコンマの-1/12(-1.96セント)に厳密に一致し、4半音(2^(4/12))と純正長三度(5/4)の差が+13.69セントとなることを導く。",
+          "used_node_ids": [
+            "eng.mus.n05_pythagorean_comma",
+            "eng.mus.n06_just_intonation_syntonic_comma",
+            "eng.mus.n07_twelve_tone_equal_temperament"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_{\\mathrm{ET},7} = 2^{7/12},\\quad r_{\\mathrm{ET},4} = 2^{4/12},\\quad r_{\\mathrm{fifth}} = \\frac{3}{2},\\quad r_{\\mathrm{M3}} = \\frac{5}{4}",
+          "to_latex": "\\delta c_{\\mathrm{fifth}} = 1200\\log_2\\!\\left(\\frac{2^{7/12}}{3/2}\\right) = 700 - 1200\\log_2\\!\\left(\\frac{3}{2}\\right)",
+          "operation_label": "完全五度におけるセント差の定式化",
+          "explanation": "12平均律の7半音の周波数比2^(7/12)と純正完全五度3/2の比にセント定義を適用し、700 - 1200*log2(3/2)を得る。",
+          "used_node_ids": [
+            "eng.mus.n07_twelve_tone_equal_temperament"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta c_{\\mathrm{fifth}} = 1200\\log_2\\!\\left(\\frac{2^{7/12}}{3/2}\\right) = 700 - 1200\\log_2\\!\\left(\\frac{3}{2}\\right)",
+          "to_latex": "\\delta c_{\\mathrm{fifth}} = -\\frac{1}{12}\\cdot 1200\\log_2\\!\\left(\\frac{(3/2)^{12}}{2^7}\\right) = -\\frac{\\Delta c_P}{12} \\approx -1.96\\;\\mathrm{cent}",
+          "operation_label": "ピタゴラスコンマ均等配分への書き換え",
+          "explanation": "対数の性質より700 - 1200*log2(3/2) = -(1/12)*1200*log2((3/2)^12 / 2^7) = -Δc_P/12 ≈ -1.96セントとなり、12平均律がピタゴラスコンマを12等分して五度を狭めていることが示される。",
+          "used_node_ids": [
+            "eng.mus.n05_pythagorean_comma"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta c_{\\mathrm{fifth}} = -\\frac{1}{12}\\cdot 1200\\log_2\\!\\left(\\frac{(3/2)^{12}}{2^7}\\right) = -\\frac{\\Delta c_P}{12} \\approx -1.96\\;\\mathrm{cent}",
+          "to_latex": "\\delta c_{\\mathrm{M3}} = 1200\\log_2\\!\\left(\\frac{2^{4/12}}{5/4}\\right) = 400 - 1200\\log_2\\!\\left(\\frac{5}{4}\\right) \\approx +13.69\\;\\mathrm{cent}",
+          "operation_label": "長三度における純正律とのセント偏差算出",
+          "explanation": "同様に4半音の比2^(4/12)と純正長三度5/4を比較すると、400 - 1200*log2(5/4) ≈ +13.69セントとなり、12平均律の長三度は純正長三度より約13.7セント広いことが示される。",
+          "used_node_ids": [
+            "eng.mus.n06_just_intonation_syntonic_comma",
+            "eng.mus.n07_twelve_tone_equal_temperament"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
