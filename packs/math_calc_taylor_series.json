@@ -88,7 +88,9 @@
       "domain_tags": [
         "mathematics",
         "calculus"
-      ]
+      ],
+      "intuition_oneliner": "複雑な関数を点 a のまわりで「n次多項式」で近似したとき、残る誤差を a と x の間のどこかの点 c の (n+1) 階微分でぴったり表せるという定理です。",
+      "diagram_svg": "<svg viewBox=\"0 0 600 260\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"60\" y1=\"220\" x2=\"540\" y2=\"220\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M 100 180 Q 260 150 450 50\" fill=\"none\" stroke=\"#3b82f6\" stroke-width=\"3\"/><path d=\"M 100 180 Q 260 165 450 115\" fill=\"none\" stroke=\"#10b981\" stroke-width=\"2.5\" stroke-dasharray=\"6 4\"/><line x1=\"140\" y1=\"220\" x2=\"140\" y2=\"172\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-dasharray=\"3 3\"/><line x1=\"300\" y1=\"220\" x2=\"300\" y2=\"125\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-dasharray=\"3 3\"/><line x1=\"450\" y1=\"220\" x2=\"450\" y2=\"50\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-dasharray=\"3 3\"/><line x1=\"450\" y1=\"115\" x2=\"450\" y2=\"50\" stroke=\"#f97316\" stroke-width=\"4\"/><text x=\"135\" y=\"240\" fill=\"currentColor\" font-size=\"14\">a</text><text x=\"295\" y=\"240\" fill=\"currentColor\" font-size=\"14\">c</text><text x=\"445\" y=\"240\" fill=\"currentColor\" font-size=\"14\">x</text><text x=\"460\" y=\"85\" fill=\"#f97316\" font-size=\"14\" font-weight=\"bold\">剰余項 (誤差)</text><text x=\"350\" y=\"50\" fill=\"#3b82f6\" font-size=\"14\">元の関数 f(x)</text><text x=\"350\" y=\"135\" fill=\"#10b981\" font-size=\"14\">n次近似</text></svg>"
     },
     {
       "id": "math.calc.t05_maclaurin_series_def",
@@ -765,12 +767,15 @@
         "math.calc.t03_taylor_polynomial_def"
       ],
       "required_math_node_ids": [
+        "math.calc.m13_continuous_compact_boundedness",
         "math.calc.m23_limit_algebra",
         "math.calc.m25_integral_monotonicity_squeeze"
       ],
       "assumptions": [
-        "f \\in C^{n+1}(I)",
-        "a \\in I\\text{ (interior point)}"
+        "I は実数直線上の区間であり、a は I の内点（a ∈ int(I)）である。",
+        "n は非負整数（n ∈ Z_{>=0}）であり、関数 f は区間 I 上で C^{n+1} 級（f ∈ C^{n+1}(I)）である。",
+        "テイラーの定理（ラグランジュ剰余項）は x > a の区間 [a, x] および x < a の区間 [x, a] の双方に対して適用され、中間点 c は a と x の間に厳密に位置する。",
+        "実数関数の漸近記号は x → a に対して、ある定数 C > 0 と delta > 0 により 0 < |x - a| <= delta で |g(x)| <= C|x - a|^m が成り立つとき g(x) = O((x - a)^m)、lim_{x→a} g(x)/(x - a)^m = 0 が成り立つとき g(x) = o((x - a)^m) と定義される。"
       ],
       "steps": [
         {
@@ -778,11 +783,12 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "f \\in C^{n+1}(I),\\quad R_n(x; a) = \\frac{f^{(n+1)}(c)}{(n+1)!}(x-a)^{n+1} ",
-          "to_latex": "f(x) = \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k + \\mathcal{O}\\big((x - a)^{n+1}\\big) = \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k + o\\big((x - a)^n\\big) ",
-          "operation_label": "剰余項の上界評価と漸近極限",
-          "explanation": "f^{(n+1)}の近傍における有界性を用いてラグランジュ剰余項のオーダーを評価し、O((x-a)^{n+1})およびo((x-a)^n)の表示を導出する。",
+          "from_latex": "f \\in C^{n+1}(I),\\quad a \\in \\operatorname{int}(I),\\quad R_n(x; a) = f(x) - \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k = \\frac{f^{(n+1)}(c)}{(n+1)!}(x - a)^{n+1} ",
+          "to_latex": "f(x) = \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k + \\mathcal{O}\\big((x - a)^{n+1}\\big) = \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k + o\\big((x - a)^n\\big)\\quad (x \\to a) ",
+          "operation_label": "剰余項の局所有界性評価から漸近近似表示への導出",
+          "explanation": "内点aの閉近傍上における第(n+1)次導関数の有界性からラグランジュ剰余項の絶対値上界を導き、O((x-a)^{n+1})およびはさみうちの原理によるo((x-a)^n)の評価を得てn次テイラー展開へ統合する。",
           "used_node_ids": [
+            "math.calc.m13_continuous_compact_boundedness",
             "math.calc.m23_limit_algebra",
             "math.calc.m25_integral_monotonicity_squeeze",
             "math.calc.t03_taylor_polynomial_def",
@@ -795,10 +801,66 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "[a-\\delta, a+\\delta] \\subset I,\\quad f^{(n+1)} \\in C([a-\\delta, a+\\delta])",
-          "to_latex": "M := \\sup_{|t-a| \\le \\delta} |f^{(n+1)}(t)| < \\infty,\\quad |R_n(x; a)| \\le \\frac{M}{(n+1)!} |x - a|^{n+1} ",
-          "operation_label": "局所コンパクト近傍での有界性評価",
-          "explanation": "閉近傍上の連続関数f^{(n+1)}の最大値Mを取り、ラグランジュ剰余項の絶対値を|x-a|^{n+1}の定数倍で上から抑える。",
+          "from_latex": "f \\in C^{n+1}(I),\\quad a \\in \\operatorname{int}(I) ",
+          "to_latex": "\\exists \\delta > 0,\\; \\exists M > 0:\\; [a-\\delta, a+\\delta] \\subset I \\land \\forall t \\in [a-\\delta, a+\\delta],\\; |f^{(n+1)}(t)| \\le M ",
+          "operation_label": "局所閉近傍の選択と高階導関数の有界性の確立",
+          "explanation": "内点aの周囲に閉近傍[a-δ, a+δ]⊂Iを取り、連続関数f^{(n+1)}に対する閉区間上の有界性定理を適用して一様な上界定数Mを得る。",
+          "used_node_ids": [
+            "math.calc.m13_continuous_compact_boundedness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "f \\in C^{n+1}(I),\\quad a \\in \\operatorname{int}(I) ",
+          "to_latex": "\\exists \\delta > 0:\\; [a-\\delta, a+\\delta] \\subset I,\\quad f^{(n+1)} \\in C([a-\\delta, a+\\delta]) ",
+          "operation_label": "内点の性質による閉近傍の選択と連続性の抽出",
+          "explanation": "aが区間Iの内点であることから[a-δ, a+δ]⊂Iを満たすδ>0が存在し、f∈C^{n+1}(I)よりf^{(n+1)}はその閉近傍上で連続である。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\exists \\delta > 0:\\; [a-\\delta, a+\\delta] \\subset I,\\quad f^{(n+1)} \\in C([a-\\delta, a+\\delta]) ",
+          "to_latex": "\\exists M > 0:\\; \\forall t \\in [a-\\delta, a+\\delta],\\; |f^{(n+1)}(t)| \\le M ",
+          "operation_label": "閉区間上の連続関数の有界性の適用",
+          "explanation": "閉区間[a-δ, a+δ]上の連続関数f^{(n+1)}に対して有界性定理（最大値定理の系）を適用し、区間内の任意の点tで|f^{(n+1)}(t)|<=Mを満たす定数M>0を得る。",
+          "used_node_ids": [
+            "math.calc.m13_continuous_compact_boundedness"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 5,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f \\in C^{n+1}(I),\\quad |x - a| \\le \\delta,\\quad \\forall t \\in [a-\\delta, a+\\delta],\\; |f^{(n+1)}(t)| \\le M ",
+          "to_latex": "|R_n(x; a)| \\le \\frac{M}{(n+1)!}|x - a|^{n+1}\\quad (|x - a| \\le \\delta),\\qquad R_n(x; a) = \\mathcal{O}\\big((x - a)^{n+1}\\big)\\quad (x \\to a) ",
+          "operation_label": "ラグランジュ剰余項の上界評価と大文字オー記号の導出",
+          "explanation": "テイラーの定理から剰余項のラグランジュ表示を得て絶対値を評価し、上界定数Mを用いて|x-a|^{n+1}の定数倍による上界とO((x-a)^{n+1})評価を導く。",
+          "used_node_ids": [
+            "math.calc.m13_continuous_compact_boundedness",
+            "math.calc.t03_taylor_polynomial_def",
+            "math.calc.t04_taylor_lagrange_remainder"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "f \\in C^{n+1}(I),\\quad 0 < |x - a| \\le \\delta ",
+          "to_latex": "\\exists c \\in (\\min(a, x), \\max(a, x)):\\; R_n(x; a) = \\frac{f^{(n+1)}(c)}{(n+1)!}(x - a)^{n+1}\\quad (0 < |x - a| \\le \\delta) ",
+          "operation_label": "テイラーの定理と剰余項の定義を代入・導入",
+          "explanation": "f∈C^{n+1}(I)はaとxを結ぶ閉区間上でC^n級かつ開区間上でn+1回微分可能であるため、テイラーの定理と剰余項の定義R_n(x;a)=f(x)-P_n(x;a)より、aとxの厳密に間に位置するcに対してラグランジュ剰余項の表示を得る。",
           "used_node_ids": [
             "math.calc.t03_taylor_polynomial_def",
             "math.calc.t04_taylor_lagrange_remainder"
@@ -806,21 +868,168 @@
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_2",
-          "order": 3,
+          "step_id": "s3_2_2",
+          "order": 7,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\exists c \\in (\\min(a, x), \\max(a, x)):\\; R_n(x; a) = \\frac{f^{(n+1)}(c)}{(n+1)!}(x - a)^{n+1}\\quad (0 < |x - a| \\le \\delta) ",
+          "to_latex": "|R_n(x; a)| = \\frac{|f^{(n+1)}(c)|}{(n+1)!}|x - a|^{n+1}\\quad (0 < |x - a| \\le \\delta,\\; |c - a| < \\delta) ",
+          "operation_label": "両辺の絶対値評価と中間点の位置評価",
+          "explanation": "等式の両辺の絶対値を取り、積と商の絶対値の性質を適用する。またcはaとxの間にあるため|c-a|<|x-a|<=δが成り立つ。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "|R_n(x; a)| = \\frac{|f^{(n+1)}(c)|}{(n+1)!}|x - a|^{n+1}\\quad (0 < |x - a| \\le \\delta,\\; |c - a| < \\delta) ",
+          "to_latex": "|R_n(x; a)| \\le \\frac{M}{(n+1)!}|x - a|^{n+1}\\quad (|x - a| \\le \\delta) ",
+          "operation_label": "上界定数Mの代入・導入とx=aの場合の確認",
+          "explanation": "c∈[a-δ, a+δ]より|f^{(n+1)}(c)|<=Mを代入して0<|x-a|<=δにおける上界を得る。さらにx=aではR_n(a;a)=f(a)-P_n(a;a)=0であり右辺も0となるため、|x-a|<=δの全域で不等式が成立する。",
+          "used_node_ids": [
+            "math.calc.m13_continuous_compact_boundedness",
+            "math.calc.t03_taylor_polynomial_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "|R_n(x; a)| \\le \\frac{M}{(n+1)!}|x - a|^{n+1}\\quad (|x - a| \\le \\delta) ",
+          "to_latex": "R_n(x; a) = \\mathcal{O}\\big((x - a)^{n+1}\\big)\\quad (x \\to a) ",
+          "operation_label": "ランダウ記号Oの定義の適用",
+          "explanation": "定数C=M/(n+1)!>0とδ>0に対して|x-a|<=δのもとで|R_n(x;a)|<=C|x-a|^{n+1}が成り立つため、x→aにおけるランダウの大文字オー記号の定義よりR_n(x;a)=O((x-a)^{n+1})となる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 10,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "0 \\le \\left|\\frac{R_n(x; a)}{(x-a)^n}\\right| \\le \\frac{M}{(n+1)!} |x - a|",
-          "to_latex": "R_n(x; a) = \\mathcal{O}\\big((x - a)^{n+1}\\big),\\quad \\lim_{x \\to a} \\frac{R_n(x; a)}{(x-a)^n} = 0 \\iff R_n(x; a) = o\\big((x - a)^n\\big) ",
-          "operation_label": "漸近オーダーの確定",
-          "explanation": "上界評価より直ちにO((x-a)^{n+1})が従い、|x-a|^nで割ってはさみうちの原理と極限演算を適用することでペアノの剰余項o((x-a)^n)を得る。",
+          "from_latex": "|R_n(x; a)| \\le \\frac{M}{(n+1)!}|x - a|^{n+1}\\quad (0 < |x - a| \\le \\delta) ",
+          "to_latex": "\\lim_{x \\to a} \\frac{R_n(x; a)}{(x - a)^n} = 0,\\qquad R_n(x; a) = o\\big((x - a)^n\\big)\\quad (x \\to a) ",
+          "operation_label": "小文字オー記号（ペアノ剰余項）の導出",
+          "explanation": "|x-a|^nで両辺を割り、はさみうちの原理と極限演算を用いて(x-a)^nとの比が0に収束することを示し、o((x-a)^n)の表示を得る。",
           "used_node_ids": [
             "math.calc.m23_limit_algebra",
             "math.calc.m25_integral_monotonicity_squeeze"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "0 \\le |R_n(x; a)| \\le \\frac{M}{(n+1)!}|x - a|^{n+1}\\quad (0 < |x - a| \\le \\delta) ",
+          "to_latex": "0 \\le \\left|\\frac{R_n(x; a)}{(x - a)^n}\\right| \\le \\frac{M}{(n+1)!}|x - a|\\quad (0 < |x - a| \\le \\delta) ",
+          "operation_label": "非ゼロ因子による両辺の除算",
+          "explanation": "0<|x-a|<=δにおいて|x-a|^n>0であるため、不等式の各辺を|x-a|^nで割り、べき乗の約分|x-a|^{n+1}/|x-a|^n=|x-a|を行う。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "0 \\le \\left|\\frac{R_n(x; a)}{(x - a)^n}\\right| \\le \\frac{M}{(n+1)!}|x - a|\\quad (0 < |x - a| \\le \\delta) ",
+          "to_latex": "0 \\le \\left|\\frac{R_n(x; a)}{(x - a)^n}\\right| \\le \\frac{M}{(n+1)!}|x - a|,\\quad \\lim_{x \\to a}\\left(\\frac{M}{(n+1)!}|x - a|\\right) = 0 ",
+          "operation_label": "上界関数の極限値の計算",
+          "explanation": "極限の定数倍法則よりlim_{x→a}(M/(n+1)!)|x-a|=(M/(n+1)!)lim_{x→a}|x-a|であり、lim_{x→a}|x-a|=0の積から上界の極限が0になることを評価する。",
+          "used_node_ids": [
+            "math.calc.m23_limit_algebra"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "0 \\le \\left|\\frac{R_n(x; a)}{(x - a)^n}\\right| \\le \\frac{M}{(n+1)!}|x - a|,\\quad \\lim_{x \\to a}\\left(\\frac{M}{(n+1)!}|x - a|\\right) = 0 ",
+          "to_latex": "\\lim_{x \\to a} \\frac{R_n(x; a)}{(x - a)^n} = 0 ",
+          "operation_label": "はさみうちの原理の適用",
+          "explanation": "非負の絶対値|R_n(x;a)/(x-a)^n|が0に収束する上界で上から抑えられているため、はさみうちの原理により比の極限が0となる。",
+          "used_node_ids": [
+            "math.calc.m25_integral_monotonicity_squeeze"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\lim_{x \\to a} \\frac{R_n(x; a)}{(x - a)^n} = 0 ",
+          "to_latex": "R_n(x; a) = o\\big((x - a)^n\\big)\\quad (x \\to a) ",
+          "operation_label": "ランダウ記号oの定義の適用",
+          "explanation": "x→aのときR_n(x;a)/(x-a)^nの極限が0であるという条件は、ランダウの小文字オー記号の定義によりR_n(x;a)=o((x-a)^n)と同値である。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 15,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_n(x; a) = f(x) - P_n(x; a),\\quad R_n(x; a) = \\mathcal{O}\\big((x - a)^{n+1}\\big) = o\\big((x - a)^n\\big) ",
+          "to_latex": "f(x) = \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k + \\mathcal{O}\\big((x - a)^{n+1}\\big) = \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k + o\\big((x - a)^n\\big)\\quad (x \\to a) ",
+          "operation_label": "テイラー多項式と漸近剰余項の統合",
+          "explanation": "剰余項の定義式をf(x)について解き、n次テイラー多項式の明示式と導出したOおよびoの剰余項表示を代入して最終的な漸近展開式を得る。",
+          "used_node_ids": [
+            "math.calc.t03_taylor_polynomial_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "R_n(x; a) = f(x) - P_n(x; a) ",
+          "to_latex": "f(x) = P_n(x; a) + R_n(x; a) ",
+          "operation_label": "剰余項の定義式の移項",
+          "explanation": "n次テイラー剰余項の定義R_n(x;a):=f(x)-P_n(x;a)の両辺にP_n(x;a)を加える移項操作により、f(x)をテイラー多項式と剰余項の和で表す。",
+          "used_node_ids": [
+            "math.calc.t03_taylor_polynomial_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "f(x) = P_n(x; a) + R_n(x; a) ",
+          "to_latex": "f(x) = \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k + R_n(x; a) ",
+          "operation_label": "n次テイラー多項式の定義式を代入・導入",
+          "explanation": "P_n(x;a)にn次テイラー多項式の定義Σ_{k=0}^n (f^{(k)}(a)/k!)(x-a)^kを代入する。",
+          "used_node_ids": [
+            "math.calc.t03_taylor_polynomial_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "f(x) = \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k + R_n(x; a) ",
+          "to_latex": "f(x) = \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k + \\mathcal{O}\\big((x - a)^{n+1}\\big) = \\sum_{k=0}^{n} \\frac{f^{(k)}(a)}{k!}(x - a)^k + o\\big((x - a)^n\\big)\\quad (x \\to a) ",
+          "operation_label": "導出した漸近剰余項評価を代入・導入",
+          "explanation": "R_n(x;a)に対して導出した2種類の漸近評価O((x-a)^{n+1})およびo((x-a)^n)を代入し、目標の漸近展開等式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-24T07:00:32.892281+00:00"
     },
     {
       "id": "drv.link_t03",
