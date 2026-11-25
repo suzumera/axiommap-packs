@@ -1,0 +1,740 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_flight_dynamics_stability",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "航空機飛行力学と安定性：6自由度運動方程式・ブレゲー航続距離・縦静安定余裕と短周期/フゴイド/ダッチロールモード",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『航空機飛行力学と安定性：6自由度運動方程式・ブレゲー航続距離・縦静安定余裕と短周期/フゴイド/ダッチロールモード』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.flt.n01_rigid_body_6dof_eom",
+      "short_code": "FLT01",
+      "kind": "theorem_formula",
+      "title": "剛体航空機の機体固定座標系6自由度（6-DOF）運動方程式",
+      "summary": "機体固定座標系における並進3自由度と回転3自由度のニュートン＝オイラー運動方程式。コリオリの輸送定理により慣性空間の時間微分を機体角速度との外積項として表現する。",
+      "canonical_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{aero}} + \\mathbf{F}_T + m\\mathbf{g}_b,\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{aero}} + \\mathbf{M}_T",
+      "aliases_latex": [
+        "m(\\dot{u} + qw - rv) = X - mg\\sin\\theta,\\quad I_y\\dot{q} + (I_x - I_z)pr + I_{xz}(p^2 - r^2) = M"
+      ],
+      "keywords": [
+        "6自由度運動方程式",
+        "機体固定座標系",
+        "オイラー方程式",
+        "飛行力学"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "flight_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.flt.n02_drag_polar_lift_to_drag_max",
+      "short_code": "FLT02",
+      "kind": "theorem_formula",
+      "title": "抗力ポーラと最大揚抗比条件",
+      "summary": "有害抗力係数と誘導抗力係数からなる放物線型抗力ポーラにおいて、揚抗比が最大となる最適揚力係数と最大揚抗比の解析式を与える。",
+      "canonical_latex": "C_D = C_{D0} + K C_L^2,\\quad \\left(\\frac{L}{D}\\right)_{\\max} = \\frac{1}{2\\sqrt{K C_{D0}}}\\quad \\left(C_L^* = \\sqrt{\\frac{C_{D0}}{K}}\\right)",
+      "aliases_latex": [
+        "C_D = C_{D0} + \\frac{C_L^2}{\\pi e \\mathrm{AR}},\\quad (C_L/C_D)_{\\max} = \\frac{1}{2}\\sqrt{\\frac{\\pi e \\mathrm{AR}}{C_{D0}}}"
+      ],
+      "keywords": [
+        "抗力ポーラ",
+        "最大揚抗比",
+        "誘導抗力",
+        "最適巡航"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "flight_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.flt.n03_breguet_range_endurance",
+      "short_code": "FLT03",
+      "kind": "theorem_formula",
+      "title": "ブレゲーの航続距離方程式（ジェット機・プロペラ機）",
+      "summary": "定常水平巡航における燃料消費に伴う機体重量減少を積分し、速度・揚抗比・燃料消費率・重量比から航続距離を算出する基本公式。",
+      "canonical_latex": "R_{\\mathrm{jet}} = \\frac{V}{g_0\\,\\mathrm{TSFC}}\\frac{L}{D}\\ln\\left(\\frac{W_i}{W_f}\\right),\\quad R_{\\mathrm{prop}} = \\frac{\\eta_p}{g_0\\,\\mathrm{SFC}}\\frac{L}{D}\\ln\\left(\\frac{W_i}{W_f}\\right)",
+      "aliases_latex": [
+        "R = \\frac{V}{c_T}\\frac{C_L}{C_D}\\ln\\frac{W_0}{W_1}"
+      ],
+      "keywords": [
+        "ブレゲーの航続距離",
+        "TSFC",
+        "揚抗比",
+        "巡航性能"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "flight_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.flt.n04_longitudinal_static_stability_trim",
+      "short_code": "FLT04",
+      "kind": "theorem_formula",
+      "title": "縦静安定条件と中立点・静安定余裕",
+      "summary": "迎角増加に対して頭下げの復元モーメントが生じる縦静安定条件と、空力中心・尾翼容積比から決まる中立点および静安定余裕を定式化する。",
+      "canonical_latex": "C_m = C_{m0} + C_{m\\alpha}\\alpha + C_{m\\delta_e}\\delta_e,\\quad C_{m\\alpha} = C_{L\\alpha}(h_{\\mathrm{cg}} - h_n) < 0,\\quad \\mathrm{SM} := h_n - h_{\\mathrm{cg}} = -\\frac{C_{m\\alpha}}{C_{L\\alpha}} > 0",
+      "aliases_latex": [
+        "\\frac{\\partial C_m}{\\partial C_L} = h_{\\mathrm{cg}} - h_n = -\\mathrm{SM} < 0"
+      ],
+      "keywords": [
+        "縦静安定",
+        "静安定余裕",
+        "中立点",
+        "トリム"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "flight_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.flt.n05_linearized_longitudinal_state_space",
+      "short_code": "FLT05",
+      "kind": "definition",
+      "title": "微小擾乱線形化による縦の運動方程式（状態空間表現）",
+      "summary": "定常水平釣り合い飛行まわりの微小擾乱仮定により6自由度運動方程式から分離・線形化された縦の4状態線形時不変状態空間モデル。",
+      "canonical_latex": "\\Delta\\dot{\\mathbf{x}}_{\\mathrm{lon}} = A_{\\mathrm{lon}}\\Delta\\mathbf{x}_{\\mathrm{lon}} + B_{\\mathrm{lon}}\\Delta\\delta_e,\\quad \\Delta\\mathbf{x}_{\\mathrm{lon}} := \\begin{bmatrix} \\Delta u \\\\ \\Delta w \\\\ \\Delta q \\\\ \\Delta\\theta \\end{bmatrix}",
+      "aliases_latex": [
+        "\\dot{\\mathbf{x}} = A\\mathbf{x} + B\\mathbf{u},\\quad \\mathbf{x} = [\\Delta u,\\,\\Delta\\alpha,\\,\\Delta q,\\,\\Delta\\theta]^\\top"
+      ],
+      "keywords": [
+        "微小擾乱線形化",
+        "縦の運動方程式",
+        "状態空間モデル",
+        "空力微係数"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "flight_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.flt.n06_short_period_mode",
+      "short_code": "FLT06",
+      "kind": "theorem_formula",
+      "title": "縦の短周期モードの固有振動数と減衰比近似",
+      "summary": "飛行速度一定の2自由度近似（迎角とピッチ角速度）から導かれる縦の高周波・高減衰振動モードの固有振動数および減衰比の近似式。",
+      "canonical_latex": "\\ddot{\\alpha} + 2\\zeta_{\\mathrm{sp}}\\omega_{n,\\mathrm{sp}}\\dot{\\alpha} + \\omega_{n,\\mathrm{sp}}^2\\alpha = 0,\\quad \\omega_{n,\\mathrm{sp}} \\approx \\sqrt{\\frac{Z_\\alpha M_q}{U_0} - M_\\alpha},\\quad 2\\zeta_{\\mathrm{sp}}\\omega_{n,\\mathrm{sp}} \\approx -\\left(M_q + M_{\\dot{\\alpha}} + \\frac{Z_\\alpha}{U_0}\\right)",
+      "aliases_latex": [
+        "\\omega_{n,\\mathrm{sp}}^2 \\approx -M_\\alpha + \\frac{Z_\\alpha M_q}{U_0}"
+      ],
+      "keywords": [
+        "短周期モード",
+        "固有振動数",
+        "ピッチダンピング",
+        "縦動安定"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "flight_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.flt.n07_phugoid_mode_lanchester",
+      "short_code": "FLT07",
+      "kind": "theorem_formula",
+      "title": "フゴイドモードの固有振動数と減衰比（ランチェスター近似）",
+      "summary": "迎角一定で位置エネルギーと運動エネルギーを緩やかに交換する縦の長周期振動モードの固有振動数と、揚抗比に反比例する減衰比の近似式。",
+      "canonical_latex": "\\omega_{n,\\mathrm{ph}} \\approx \\frac{\\sqrt{2}\\,g_0}{U_0},\\quad \\zeta_{\\mathrm{ph}} \\approx \\frac{1}{\\sqrt{2}(L/D)}",
+      "aliases_latex": [
+        "T_{\\mathrm{ph}} = \\frac{2\\pi}{\\omega_{n,\\mathrm{ph}}} \\approx \\frac{\\sqrt{2}\\pi U_0}{g_0}"
+      ],
+      "keywords": [
+        "フゴイドモード",
+        "長周期モード",
+        "ランチェスター近似",
+        "縦動安定"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "flight_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.flt.n08_lateral_directional_static_stability",
+      "short_code": "FLT08",
+      "kind": "definition",
+      "title": "横・方向静安定微係数（上反角効果と風見安定）",
+      "summary": "横滑り角に対するローリングモーメント微係数（上反角効果）とヨーイングモーメント微係数（風見安定）の定義と静安定符号条件。",
+      "canonical_latex": "C_{l\\beta} := \\frac{\\partial C_l}{\\partial \\beta} < 0\\;\\text{(dihedral effect)},\\quad C_{n\\beta} := \\frac{\\partial C_n}{\\partial \\beta} > 0\\;\\text{(weathercock stability)}",
+      "aliases_latex": [
+        "L_\\beta < 0,\\quad N_\\beta > 0"
+      ],
+      "keywords": [
+        "上反角効果",
+        "風見安定",
+        "横滑り角",
+        "横方向静安定"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "flight_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.flt.n09_dutch_roll_mode",
+      "short_code": "FLT09",
+      "kind": "theorem_formula",
+      "title": "ダッチロールモードの固有振動数・減衰比およびスパイラル安定条件",
+      "summary": "横滑りとヨーの連成によるダッチロール振動モードの特性近似式、および上反角効果と風見安定のバランスで決まるスパイラル安定条件。",
+      "canonical_latex": "\\omega_{n,\\mathrm{dr}} \\approx \\sqrt{N_\\beta + \\frac{Y_\\beta N_r - N_\\beta Y_r}{U_0}},\\quad 2\\zeta_{\\mathrm{dr}}\\omega_{n,\\mathrm{dr}} \\approx -\\left(N_r + \\frac{Y_\\beta}{U_0}\\right),\\quad L_\\beta N_r - N_\\beta L_r > 0",
+      "aliases_latex": [
+        "\\omega_{n,\\mathrm{dr}} \\approx \\sqrt{N_\\beta},\\quad \\zeta_{\\mathrm{dr}} \\approx -\\frac{N_r + Y_\\beta / U_0}{2\\sqrt{N_\\beta}}"
+      ],
+      "keywords": [
+        "ダッチロールモード",
+        "スパイラル安定",
+        "横方向動安定",
+        "ヨーダンパ"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "flight_dynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_flt01_6dof_eom",
+      "target_node_id": "aerosp.flt.n01_rigid_body_6dof_eom",
+      "route_kind": "deductive",
+      "title": "慣性系の運動量・角運動量保存則から機体固定座標系6自由度運動方程式の導出",
+      "premise_node_ids": [
+        "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+        "aerosp.launch.n01_variable_mass_rocket_eom"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "航空機は剛体かつ質量変化が無視できる定常質量系とみなす",
+        "機体固定座標系の原点は機体重心に一致させる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\left.\\frac{d(m\\mathbf{V})}{dt}\\right|_I = \\mathbf{F}_{\\mathrm{ext}},\\quad \\left.\\frac{d\\mathbf{H}}{dt}\\right|_I = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{aero}} + \\mathbf{F}_T + m\\mathbf{g}_b,\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{aero}} + \\mathbf{M}_T",
+          "operation_label": "回転座標系の輸送定理と空力・推力・重力の代入",
+          "explanation": "慣性系での並進・回転運動方程式に機体固定座標系の角速度による輸送定理を適用し、外力を空力・推力・重力に分解する。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+            "aerosp.launch.n01_variable_mass_rocket_eom",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left.\\frac{d(m\\mathbf{V})}{dt}\\right|_I = \\mathbf{F}_{\\mathrm{ext}},\\quad \\left.\\frac{d\\mathbf{H}}{dt}\\right|_I = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m\\left(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b\\right) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{H}_b = \\mathbf{M}_{\\mathrm{ext}}",
+          "operation_label": "機体固定座標系への輸送定理の適用",
+          "explanation": "角速度ベクトルで回転する機体固定座標系での時間微分を、機体座標成分の微分と角速度との外積項の和に展開する。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\left(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b\\right) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{H}_b = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{aero}} + \\mathbf{F}_T + m\\mathbf{g}_b,\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{aero}} + \\mathbf{M}_T",
+          "operation_label": "慣性テンソル表示と外力・モーメント成分の代入",
+          "explanation": "剛体の角運動量に慣性テンソルとの積を代入し、重心が原点であるため重力モーメントを零として空力と推力の合力を右辺に置く。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_flt02_drag_polar",
+      "target_node_id": "aerosp.flt.n02_drag_polar_lift_to_drag_max",
+      "route_kind": "deductive",
+      "title": "放物線型抗力ポーラからの最大揚抗比条件の導出",
+      "premise_node_ids": [
+        "eng.aero.n10_induced_drag_elliptic_lift"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "亜音速領域で有害抗力係数および誘導抗力係数が揚力係数に対して一定とみなせる",
+        "零揚力時のキャンバ等による非対称シフトは無視する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "C_D = C_{D0} + \\frac{C_L^2}{\\pi e \\mathrm{AR}},\\quad K := \\frac{1}{\\pi e \\mathrm{AR}}",
+          "to_latex": "C_D = C_{D0} + K C_L^2,\\quad \\left(\\frac{L}{D}\\right)_{\\max} = \\frac{1}{2\\sqrt{K C_{D0}}}\\quad \\left(C_L^* = \\sqrt{\\frac{C_{D0}}{K}}\\right)",
+          "operation_label": "揚抗比の微分による極値条件の算出",
+          "explanation": "誘導抗力公式を含む抗力ポーラから揚抗比を揚力係数の関数として表し、微分が零となる極大点と最大値を求める。",
+          "used_node_ids": [
+            "eng.aero.n10_induced_drag_elliptic_lift",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": "diff(CL / (CD0 + K*CL**2), CL)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_D = C_{D0} + \\frac{C_L^2}{\\pi e \\mathrm{AR}},\\quad K := \\frac{1}{\\pi e \\mathrm{AR}}",
+          "to_latex": "\\frac{L}{D} = \\frac{C_L}{C_D} = \\frac{C_L}{C_{D0} + K C_L^2}",
+          "operation_label": "揚抗比の無次元空力係数表示",
+          "explanation": "動圧と基準面積が共通であるため、揚力と抗力の比を揚力係数と抗力係数の比で書き換える。",
+          "used_node_ids": [
+            "eng.aero.n10_induced_drag_elliptic_lift"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{L}{D} = \\frac{C_L}{C_D} = \\frac{C_L}{C_{D0} + K C_L^2}",
+          "to_latex": "\\frac{d}{dC_L}\\left(\\frac{C_L}{C_{D0} + K C_L^2}\\right) = \\frac{C_{D0} - K C_L^2}{(C_{D0} + K C_L^2)^2} = 0 \\implies C_L^* = \\sqrt{\\frac{C_{D0}}{K}}",
+          "operation_label": "商の微分法による最適揚力係数の導出",
+          "explanation": "揚抗比を揚力係数で微分して零とおくことで、有害抗力と誘導抗力が等しくなる最適揚力係数が求まる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": "solve(diff(CL/(CD0 + K*CL**2), CL), CL)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dC_L}\\left(\\frac{C_L}{C_{D0} + K C_L^2}\\right) = \\frac{C_{D0} - K C_L^2}{(C_{D0} + K C_L^2)^2} = 0 \\implies C_L^* = \\sqrt{\\frac{C_{D0}}{K}}",
+          "to_latex": "C_D = C_{D0} + K C_L^2,\\quad \\left(\\frac{L}{D}\\right)_{\\max} = \\frac{1}{2\\sqrt{K C_{D0}}}\\quad \\left(C_L^* = \\sqrt{\\frac{C_{D0}}{K}}\\right)",
+          "operation_label": "最適揚力係数の代入による最大揚抗比の確定",
+          "explanation": "求めた最適揚力係数を元の揚抗比の式に代入し、最大揚抗比を得る。",
+          "used_node_ids": [
+            "eng.aero.n10_induced_drag_elliptic_lift"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_flt03_breguet_range",
+      "target_node_id": "aerosp.flt.n03_breguet_range_endurance",
+      "route_kind": "deductive",
+      "title": "定常水平巡航の重量減少微分方程式からブレゲー航続距離公式の導出",
+      "premise_node_ids": [
+        "aerosp.jet.n01_airbreathing_thrust_equation",
+        "aerosp.flt.n02_drag_polar_lift_to_drag_max"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "巡航中は定常水平飛行（揚力＝重量、推力＝抗力）が成り立つ",
+        "巡航中の速度、揚抗比、および燃料消費率は一定とみなす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dW}{dt} = -g_0\\,\\mathrm{TSFC}\\,T,\\quad T = D = \\frac{W}{L/D},\\quad \\frac{dx}{dt} = V",
+          "to_latex": "R_{\\mathrm{jet}} = \\frac{V}{g_0\\,\\mathrm{TSFC}}\\frac{L}{D}\\ln\\left(\\frac{W_i}{W_f}\\right),\\quad R_{\\mathrm{prop}} = \\frac{\\eta_p}{g_0\\,\\mathrm{SFC}}\\frac{L}{D}\\ln\\left(\\frac{W_i}{W_f}\\right)",
+          "operation_label": "重量変化に対する飛行距離の変数変換積分",
+          "explanation": "推力と燃料消費率の関係および巡航釣合い条件を時間微分から重量微分へ変換し、初期重量から最終重量まで積分する。",
+          "used_node_ids": [
+            "aerosp.flt.n02_drag_polar_lift_to_drag_max",
+            "aerosp.jet.n01_airbreathing_thrust_equation",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": "integrate(-V / (g0 * TSFC * W) * LD, (W, Wi, Wf))"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dW}{dt} = -g_0\\,\\mathrm{TSFC}\\,T,\\quad T = D = \\frac{W}{L/D},\\quad \\frac{dx}{dt} = V",
+          "to_latex": "\\frac{dx}{dW} = \\frac{V}{dW/dt} = -\\frac{V}{g_0\\,\\mathrm{TSFC}\\,W}\\frac{L}{D}",
+          "operation_label": "連鎖律による飛行距離の重量微分表現",
+          "explanation": "水平速度と重量減少率の比をとり、推力を重量と揚抗比の比で置き換えて距離の重量に関する微分方程式を得る。",
+          "used_node_ids": [
+            "aerosp.jet.n01_airbreathing_thrust_equation",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dx}{dW} = \\frac{V}{dW/dt} = -\\frac{V}{g_0\\,\\mathrm{TSFC}\\,W}\\frac{L}{D}",
+          "to_latex": "R_{\\mathrm{jet}} = \\int_{W_i}^{W_f} -\\frac{V}{g_0\\,\\mathrm{TSFC}}\\frac{L}{D}\\frac{dW}{W} = \\frac{V}{g_0\\,\\mathrm{TSFC}}\\frac{L}{D}\\ln\\left(\\frac{W_i}{W_f}\\right)",
+          "operation_label": "一定巡航パラメータ下での対数積分",
+          "explanation": "速度・揚抗比・燃料消費率を一定として初期重量から最終重量まで積分し、ジェット機のブレゲー航続距離式を得る。",
+          "used_node_ids": [
+            "aerosp.flt.n02_drag_polar_lift_to_drag_max"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "R_{\\mathrm{jet}} = \\int_{W_i}^{W_f} -\\frac{V}{g_0\\,\\mathrm{TSFC}}\\frac{L}{D}\\frac{dW}{W} = \\frac{V}{g_0\\,\\mathrm{TSFC}}\\frac{L}{D}\\ln\\left(\\frac{W_i}{W_f}\\right)",
+          "to_latex": "R_{\\mathrm{jet}} = \\frac{V}{g_0\\,\\mathrm{TSFC}}\\frac{L}{D}\\ln\\left(\\frac{W_i}{W_f}\\right),\\quad R_{\\mathrm{prop}} = \\frac{\\eta_p}{g_0\\,\\mathrm{SFC}}\\frac{L}{D}\\ln\\left(\\frac{W_i}{W_f}\\right)",
+          "operation_label": "プロペラ機用軸出力ベース燃料消費率への換算",
+          "explanation": "プロペラ機では推力と速度の積がプロペラ効率と軸出力の積に等しいため、推力燃料消費率を軸出力燃料消費率と効率で置き換える。",
+          "used_node_ids": [
+            "aerosp.jet.n01_airbreathing_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_flt04_longitudinal_static_stability",
+      "target_node_id": "aerosp.flt.n04_longitudinal_static_stability_trim",
+      "route_kind": "deductive",
+      "title": "主翼・水平尾翼のピッチングモーメント合成から中立点と静安定余裕の導出",
+      "premise_node_ids": [
+        "eng.aero.n07_thin_airfoil_glauert_solution",
+        "aerosp.gnc_tvc.n02_static_margin_aero_instability",
+        "eng.beam.n01_continuum_statics_hooke"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "迎角と昇降舵舵角に対して揚力係数・モーメント係数は線形である",
+        "水平尾翼位置での吹き下ろし角は主翼迎角に比例する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "C_m = C_{m,\\mathrm{ac}} + C_L(h_{\\mathrm{cg}} - h_{\\mathrm{ac}}) - V_H C_{L,t}",
+          "to_latex": "C_m = C_{m0} + C_{m\\alpha}\\alpha + C_{m\\delta_e}\\delta_e,\\quad C_{m\\alpha} = C_{L\\alpha}(h_{\\mathrm{cg}} - h_n) < 0,\\quad \\mathrm{SM} := h_n - h_{\\mathrm{cg}} = -\\frac{C_{m\\alpha}}{C_{L\\alpha}} > 0",
+          "operation_label": "迎角微分による中立点と静安定余裕の定義",
+          "explanation": "重心まわりのモーメント係数式を迎角で微分し、モーメント傾斜が零となる重心位置を中立点として静安定余裕を導く。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n02_static_margin_aero_instability",
+            "eng.aero.n07_thin_airfoil_glauert_solution",
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_m = C_{m,\\mathrm{ac}} + C_L(h_{\\mathrm{cg}} - h_{\\mathrm{ac}}) - V_H C_{L,t}",
+          "to_latex": "C_{m\\alpha} = \\frac{\\partial C_m}{\\partial \\alpha} = C_{L\\alpha}(h_{\\mathrm{cg}} - h_{\\mathrm{ac}}) - V_H C_{L\\alpha,t}\\left(1 - \\frac{d\\epsilon}{d\\alpha}\\right)",
+          "operation_label": "吹き下ろしを考慮したモーメント係数の迎角微分",
+          "explanation": "主翼の揚力傾斜と水平尾翼の吹き下ろし効果を含めてピッチングモーメント係数を迎角で偏微分する。",
+          "used_node_ids": [
+            "eng.aero.n07_thin_airfoil_glauert_solution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_{m\\alpha} = \\frac{\\partial C_m}{\\partial \\alpha} = C_{L\\alpha}(h_{\\mathrm{cg}} - h_{\\mathrm{ac}}) - V_H C_{L\\alpha,t}\\left(1 - \\frac{d\\epsilon}{d\\alpha}\\right)",
+          "to_latex": "C_{m\\alpha} = C_{L\\alpha}(h_{\\mathrm{cg}} - h_n),\\quad h_n := h_{\\mathrm{ac}} + V_H\\frac{C_{L\\alpha,t}}{C_{L\\alpha}}\\left(1 - \\frac{d\\epsilon}{d\\alpha}\\right)",
+          "operation_label": "全機中立点位置の導入による整理",
+          "explanation": "水平尾翼の寄与を空力中心位置に加えた全機空力中心（中立点）を定義し、モーメント傾斜を重心との距離で表現する。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n02_static_margin_aero_instability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_{m\\alpha} = C_{L\\alpha}(h_{\\mathrm{cg}} - h_n),\\quad h_n := h_{\\mathrm{ac}} + V_H\\frac{C_{L\\alpha,t}}{C_{L\\alpha}}\\left(1 - \\frac{d\\epsilon}{d\\alpha}\\right)",
+          "to_latex": "C_m = C_{m0} + C_{m\\alpha}\\alpha + C_{m\\delta_e}\\delta_e,\\quad C_{m\\alpha} = C_{L\\alpha}(h_{\\mathrm{cg}} - h_n) < 0,\\quad \\mathrm{SM} := h_n - h_{\\mathrm{cg}} = -\\frac{C_{m\\alpha}}{C_{L\\alpha}} > 0",
+          "operation_label": "静安定符号条件と静安定余裕の確定",
+          "explanation": "迎角増加時に頭下げ復元モーメントが生じる条件として重心が中立点より前方に位置する静安定余裕の正値条件を得る。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_flt05_longitudinal_ss_def",
+      "target_node_id": "aerosp.flt.n05_linearized_longitudinal_state_space",
+      "route_kind": "reformulation",
+      "title": "縦の運動方程式の微小擾乱線形化による状態空間形式の定義",
+      "premise_node_ids": [
+        "aerosp.flt.n01_rigid_body_6dof_eom",
+        "aerosp.flt.n04_longitudinal_static_stability_trim"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "機体は左右対称面を有し、定常水平飛行の釣合い状態からの微小擾乱を考える",
+        "横・方向運動変数およびそれらの連成項は零とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m(\\dot{U} + qW) = X - mg\\sin\\theta,\\quad m(\\dot{W} - qU) = Z + mg\\cos\\theta,\\quad I_y\\dot{q} = M,\\quad \\dot{\\theta} = q",
+          "to_latex": "\\Delta\\dot{\\mathbf{x}}_{\\mathrm{lon}} = A_{\\mathrm{lon}}\\Delta\\mathbf{x}_{\\mathrm{lon}} + B_{\\mathrm{lon}}\\Delta\\delta_e,\\quad \\Delta\\mathbf{x}_{\\mathrm{lon}} := \\begin{bmatrix} \\Delta u \\\\ \\Delta w \\\\ \\Delta q \\\\ \\Delta\\theta \\end{bmatrix}",
+          "operation_label": "平衡点まわりの1次テイラー展開と状態ベクトル定義",
+          "explanation": "6自由度運動方程式の縦成分を定常釣り合い点まわりで線形化し、速度擾乱・ピッチ角速度・ピッチ角を状態変数とする状態空間モデルとして約束する。",
+          "used_node_ids": [
+            "aerosp.flt.n01_rigid_body_6dof_eom",
+            "aerosp.flt.n04_longitudinal_static_stability_trim"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_flt06_short_period",
+      "target_node_id": "aerosp.flt.n06_short_period_mode",
+      "route_kind": "deductive",
+      "title": "速度一定2自由度近似による短周期モード固有振動数・減衰比の導出",
+      "premise_node_ids": [
+        "aerosp.flt.n05_linearized_longitudinal_state_space",
+        "aerosp.psd_srs.n03_sdof_damped_frf"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "短周期の時間スケールでは前方速度擾乱は無視できるほど小さい",
+        "重力成分の擾乱は空力・モーメント項に比べ十分小さい"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\begin{bmatrix} \\dot{\\alpha} \\\\ \\dot{q} \\end{bmatrix} \\approx \\begin{bmatrix} Z_\\alpha / U_0 & 1 \\\\ M_\\alpha + M_{\\dot{\\alpha}} Z_\\alpha / U_0 & M_q + M_{\\dot{\\alpha}} \\end{bmatrix} \\begin{bmatrix} \\alpha \\\\ q \\end{bmatrix}",
+          "to_latex": "\\ddot{\\alpha} + 2\\zeta_{\\mathrm{sp}}\\omega_{n,\\mathrm{sp}}\\dot{\\alpha} + \\omega_{n,\\mathrm{sp}}^2\\alpha = 0,\\quad \\omega_{n,\\mathrm{sp}} \\approx \\sqrt{\\frac{Z_\\alpha M_q}{U_0} - M_\\alpha},\\quad 2\\zeta_{\\mathrm{sp}}\\omega_{n,\\mathrm{sp}} \\approx -\\left(M_q + M_{\\dot{\\alpha}} + \\frac{Z_\\alpha}{U_0}\\right)",
+          "operation_label": "2次特性多項式と標準減衰振動系との係数比較",
+          "explanation": "迎角とピッチ角速度の2状態縮約系の特性方程式を求め、1自由度粘性減衰振動系の標準形と係数を比較して固有振動数と減衰比を得る。",
+          "used_node_ids": [
+            "aerosp.flt.n05_linearized_longitudinal_state_space",
+            "aerosp.psd_srs.n03_sdof_damped_frf"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\begin{bmatrix} \\dot{\\alpha} \\\\ \\dot{q} \\end{bmatrix} \\approx \\begin{bmatrix} Z_\\alpha / U_0 & 1 \\\\ M_\\alpha + M_{\\dot{\\alpha}} Z_\\alpha / U_0 & M_q + M_{\\dot{\\alpha}} \\end{bmatrix} \\begin{bmatrix} \\alpha \\\\ q \\end{bmatrix}",
+          "to_latex": "\\det\\left(sI - A_{\\mathrm{sp}}\\right) = s^2 - \\left(M_q + M_{\\dot{\\alpha}} + \\frac{Z_\\alpha}{U_0}\\right)s + \\left(\\frac{Z_\\alpha M_q}{U_0} - M_\\alpha\\right) = 0",
+          "operation_label": "2×2システム行列の特性方程式の展開",
+          "explanation": "トレースと行列式を計算して短周期近似系の2次特性多項式を書き下す。",
+          "used_node_ids": [
+            "aerosp.flt.n05_linearized_longitudinal_state_space"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\det\\left(sI - A_{\\mathrm{sp}}\\right) = s^2 - \\left(M_q + M_{\\dot{\\alpha}} + \\frac{Z_\\alpha}{U_0}\\right)s + \\left(\\frac{Z_\\alpha M_q}{U_0} - M_\\alpha\\right) = 0",
+          "to_latex": "\\ddot{\\alpha} + 2\\zeta_{\\mathrm{sp}}\\omega_{n,\\mathrm{sp}}\\dot{\\alpha} + \\omega_{n,\\mathrm{sp}}^2\\alpha = 0,\\quad \\omega_{n,\\mathrm{sp}} \\approx \\sqrt{\\frac{Z_\\alpha M_q}{U_0} - M_\\alpha},\\quad 2\\zeta_{\\mathrm{sp}}\\omega_{n,\\mathrm{sp}} \\approx -\\left(M_q + M_{\\dot{\\alpha}} + \\frac{Z_\\alpha}{U_0}\\right)",
+          "operation_label": "標準2次振動系パラメータの同定",
+          "explanation": "1自由度減衰振動系の特性多項式との係数比較により短周期固有振動数と減衰比の近似式を確定する。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n03_sdof_damped_frf"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_flt07_phugoid_mode",
+      "target_node_id": "aerosp.flt.n07_phugoid_mode_lanchester",
+      "route_kind": "deductive",
+      "title": "迎角一定近似によるフゴイドモードのランチェスター近似式の導出",
+      "premise_node_ids": [
+        "aerosp.flt.n05_linearized_longitudinal_state_space",
+        "aerosp.flt.n02_drag_polar_lift_to_drag_max"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "フゴイドの時間スケールではピッチングモーメントが速やかに釣り合い迎角は一定に保たれる",
+        "推力は速度に依存せず一定であり、マッハ数効果は無視する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\begin{bmatrix} \\Delta\\dot{u} \\\\ \\Delta\\dot{\\theta} \\end{bmatrix} \\approx \\begin{bmatrix} X_u & -g_0 \\\\ -Z_u / U_0 & 0 \\end{bmatrix} \\begin{bmatrix} \\Delta u \\\\ \\Delta\\theta \\end{bmatrix}",
+          "to_latex": "\\omega_{n,\\mathrm{ph}} \\approx \\frac{\\sqrt{2}\\,g_0}{U_0},\\quad \\zeta_{\\mathrm{ph}} \\approx \\frac{1}{\\sqrt{2}(L/D)}",
+          "operation_label": "速度・ピッチ角2自由度系の固有値解析と空力微係数代入",
+          "explanation": "迎角一定近似で得られる速度とピッチ角の2次系に定常水平飛行の空力微係数を代入し、フゴイド固有振動数と減衰比を導く。",
+          "used_node_ids": [
+            "aerosp.flt.n02_drag_polar_lift_to_drag_max",
+            "aerosp.flt.n05_linearized_longitudinal_state_space"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\begin{bmatrix} \\Delta\\dot{u} \\\\ \\Delta\\dot{\\theta} \\end{bmatrix} \\approx \\begin{bmatrix} X_u & -g_0 \\\\ -Z_u / U_0 & 0 \\end{bmatrix} \\begin{bmatrix} \\Delta u \\\\ \\Delta\\theta \\end{bmatrix}",
+          "to_latex": "s^2 - X_u s - \\frac{g_0 Z_u}{U_0} = 0,\\quad X_u \\approx -\\frac{2 g_0}{U_0 (L/D)},\\quad Z_u \\approx -\\frac{2 g_0}{U_0}",
+          "operation_label": "特性方程式と速度微係数の定常揚抗関係による評価",
+          "explanation": "縮約2×2行列の特性方程式を立て、抗力と揚力が速度の2乗に比例することから速度微係数を揚抗比と定常速度で表す。",
+          "used_node_ids": [
+            "aerosp.flt.n02_drag_polar_lift_to_drag_max"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s^2 - X_u s - \\frac{g_0 Z_u}{U_0} = 0,\\quad X_u \\approx -\\frac{2 g_0}{U_0 (L/D)},\\quad Z_u \\approx -\\frac{2 g_0}{U_0}",
+          "to_latex": "\\omega_{n,\\mathrm{ph}} \\approx \\frac{\\sqrt{2}\\,g_0}{U_0},\\quad \\zeta_{\\mathrm{ph}} \\approx \\frac{1}{\\sqrt{2}(L/D)}",
+          "operation_label": "ランチェスター近似の固有振動数・減衰比の算出",
+          "explanation": "速度微係数の表式を特性方程式の係数に代入し、平方根をとることで固有振動数と減衰比の簡潔な近似式を得る。",
+          "used_node_ids": [
+            "aerosp.flt.n05_linearized_longitudinal_state_space"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_flt08_lateral_static_def",
+      "target_node_id": "aerosp.flt.n08_lateral_directional_static_stability",
+      "route_kind": "reformulation",
+      "title": "横・方向空力モーメント係数から静安定微係数の定義",
+      "premise_node_ids": [
+        "aerosp.flt.n01_rigid_body_6dof_eom",
+        "eng.beam.n01_continuum_statics_hooke"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "横滑り角は微小であり、空力モーメント係数は横滑り角に対して滑らかに微分可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L_{\\mathrm{aero}} = \\bar{q} S b C_l(\\beta, p, r, \\delta_a, \\delta_r),\\quad N_{\\mathrm{aero}} = \\bar{q} S b C_n(\\beta, p, r, \\delta_a, \\delta_r)",
+          "to_latex": "C_{l\\beta} := \\frac{\\partial C_l}{\\partial \\beta} < 0\\;\\text{(dihedral effect)},\\quad C_{n\\beta} := \\frac{\\partial C_n}{\\partial \\beta} > 0\\;\\text{(weathercock stability)}",
+          "operation_label": "横滑り角に対する偏微分の定義と復元符号条件の約束",
+          "explanation": "ローリングおよびヨーイングモーメント係数を横滑り角で偏微分した静安定微係数を定義し、正の横滑りに対して復元モーメントが働く符号条件を与える。",
+          "used_node_ids": [
+            "aerosp.flt.n01_rigid_body_6dof_eom",
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_flt09_dutch_roll",
+      "target_node_id": "aerosp.flt.n09_dutch_roll_mode",
+      "route_kind": "deductive",
+      "title": "横滑り・ヨー2自由度近似によるダッチロールモードとスパイラル安定条件の導出",
+      "premise_node_ids": [
+        "aerosp.flt.n08_lateral_directional_static_stability",
+        "aerosp.psd_srs.n03_sdof_damped_frf"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ダッチロール近似ではロール角速度の寄与を副次的として横滑りとヨー角速度の連成を抽出する",
+        "スパイラル条件は横・方向4次特性方程式の定数項の正値性から評価する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\begin{bmatrix} \\dot{\\beta} \\\\ \\dot{r} \\end{bmatrix} \\approx \\begin{bmatrix} Y_\\beta / U_0 & -(1 - Y_r / U_0) \\\\ N_\\beta & N_r \\end{bmatrix} \\begin{bmatrix} \\beta \\\\ r \\end{bmatrix}",
+          "to_latex": "\\omega_{n,\\mathrm{dr}} \\approx \\sqrt{N_\\beta + \\frac{Y_\\beta N_r - N_\\beta Y_r}{U_0}},\\quad 2\\zeta_{\\mathrm{dr}}\\omega_{n,\\mathrm{dr}} \\approx -\\left(N_r + \\frac{Y_\\beta}{U_0}\\right),\\quad L_\\beta N_r - N_\\beta L_r > 0",
+          "operation_label": "横滑り・ヨー連成系の特性解析とスパイラル定数項評価",
+          "explanation": "横滑りとヨー角速度の2自由度縮約系からダッチロール固有振動数・減衰比を導出し、横・方向静安定微係数によるスパイラル安定条件と併せて確定する。",
+          "used_node_ids": [
+            "aerosp.flt.n08_lateral_directional_static_stability",
+            "aerosp.psd_srs.n03_sdof_damped_frf"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\begin{bmatrix} \\dot{\\beta} \\\\ \\dot{r} \\end{bmatrix} \\approx \\begin{bmatrix} Y_\\beta / U_0 & -(1 - Y_r / U_0) \\\\ N_\\beta & N_r \\end{bmatrix} \\begin{bmatrix} \\beta \\\\ r \\end{bmatrix}",
+          "to_latex": "s^2 - \\left(N_r + \\frac{Y_\\beta}{U_0}\\right)s + \\left(N_\\beta + \\frac{Y_\\beta N_r - N_\\beta Y_r}{U_0}\\right) = 0",
+          "operation_label": "横滑り・ヨー2×2行列の特性方程式の計算",
+          "explanation": "縮約状態行列のトレースと行列式からダッチロール振動モードの2次特性方程式を導く。",
+          "used_node_ids": [
+            "aerosp.flt.n08_lateral_directional_static_stability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s^2 - \\left(N_r + \\frac{Y_\\beta}{U_0}\\right)s + \\left(N_\\beta + \\frac{Y_\\beta N_r - N_\\beta Y_r}{U_0}\\right) = 0",
+          "to_latex": "\\omega_{n,\\mathrm{dr}} \\approx \\sqrt{N_\\beta + \\frac{Y_\\beta N_r - N_\\beta Y_r}{U_0}},\\quad 2\\zeta_{\\mathrm{dr}}\\omega_{n,\\mathrm{dr}} \\approx -\\left(N_r + \\frac{Y_\\beta}{U_0}\\right),\\quad L_\\beta N_r - N_\\beta L_r > 0",
+          "operation_label": "固有振動数・減衰比の同定とスパイラル条件の併記",
+          "explanation": "特性方程式を標準2次振動系と比較して固有振動数と減衰比を求め、さらに低周波極の安定条件であるスパイラル判別式を得る。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n03_sdof_damped_frf"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

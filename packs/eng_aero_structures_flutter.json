@@ -1,0 +1,728 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_structures_flutter",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "航空宇宙構造力学と空力弾性：薄肉閉断面せん断流（ブレト＝バソ）・円筒殻座屈と内圧安定化・フラッター境界",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『航空宇宙構造力学と空力弾性：薄肉閉断面せん断流（ブレト＝バソ）・円筒殻座屈と内圧安定化・フラッター境界』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.struct.n01_shear_flow_bredt_batho",
+      "short_code": "STR01",
+      "kind": "theorem_formula",
+      "title": "薄肉閉断面のせん断流とブレト＝バソのねじり公式",
+      "summary": "薄肉閉断面管がねじりモーメントを受けるとき、壁厚方向に平均化したせん断流は周方向に一定となり、閉断面が囲む中立面面積の2倍に比例してねじりモーメントを分担する。",
+      "canonical_latex": "q := \\tau t = \\text{const.},\\quad T = 2 A_m q,\\quad \\tau = \\frac{T}{2 A_m t}",
+      "aliases_latex": [
+        "\\tau = \\frac{T}{2 A_m t}",
+        "q = \\frac{T}{2 A_m}"
+      ],
+      "keywords": [
+        "せん断流",
+        "ブレト＝バソの公式",
+        "薄肉閉断面",
+        "ねじり"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "structural_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.struct.n02_bredt_torsional_stiffness_twist",
+      "short_code": "STR02",
+      "kind": "theorem_formula",
+      "title": "薄肉閉断面のねじり剛性と単位長さあたりねじれ角",
+      "summary": "ひずみエネルギー保存（カスティリアノの定理）とブレト＝バソのせん断流公式から、薄肉閉断面の等価ねじり定数および単位長さあたりねじれ角が導かれる。",
+      "canonical_latex": "\\theta' = \\frac{d\\theta}{dz} = \\frac{T}{G J_{\\mathrm{eq}}},\\quad J_{\\mathrm{eq}} = \\frac{4 A_m^2}{\\oint \\frac{ds}{t(s)}}",
+      "aliases_latex": [
+        "\\frac{d\\theta}{dz} = \\frac{T}{4 G A_m^2}\\oint \\frac{ds}{t(s)}"
+      ],
+      "keywords": [
+        "ねじり剛性",
+        "ねじれ角",
+        "ブレト第2公式",
+        "等価ねじり定数"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "structural_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.struct.n03_semi_monocoque_bending_shear_flow",
+      "short_code": "STR03",
+      "kind": "theorem_formula",
+      "title": "セミモノコック構造の曲げ応力とウェブせん断流分布",
+      "summary": "外板と縦通材（ストリンガ）からなる薄肉断面において、軸方向力の釣合いからせん断流の周方向勾配が曲げせん断力に結び付けられる。",
+      "canonical_latex": "\\sigma_z = \\frac{M_x y}{I_x},\\quad \\frac{\\partial q}{\\partial s} + t\\frac{\\partial \\sigma_z}{\\partial z} = 0 \\implies q(s) = q_0 - \\frac{V_y}{I_x}\\int_0^s y t\\,ds",
+      "aliases_latex": [
+        "q(s) = q_0 - \\frac{V_y}{I_x}\\sum_k y_k B_k"
+      ],
+      "keywords": [
+        "セミモノコック",
+        "せん断流",
+        "ストリンガ",
+        "曲げせん断"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "structural_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.struct.n04_cylindrical_shell_buckling",
+      "short_code": "STR04",
+      "kind": "theorem_formula",
+      "title": "薄肉円筒殻の軸圧縮古典座屈応力",
+      "summary": "線形殻理論に基づく軸対称・非軸対称座屈モードの最小臨界応力であり、ロケット機体胴体や推進薬タンクの座屈設計基準となる。",
+      "canonical_latex": "\\sigma_{\\mathrm{cr}} = \\frac{E}{\\sqrt{3(1-\\nu^2)}}\\frac{t}{R} \\approx 0.605 E \\frac{t}{R},\\quad N_{\\mathrm{cr}} = \\sigma_{\\mathrm{cr}} t",
+      "aliases_latex": [
+        "\\sigma_{\\mathrm{cl}} = \\frac{E t}{R\\sqrt{3(1-\\nu^2)}}"
+      ],
+      "keywords": [
+        "円筒殻座屈",
+        "軸圧縮座屈",
+        "古典座屈応力",
+        "ティモシェンコ"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "structural_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.struct.n05_buckling_knockdown_factor",
+      "short_code": "STR05",
+      "kind": "empirical_hypothesis",
+      "title": "初期不整による円筒殻座屈ノックダウン係数（NASA SP-8007）",
+      "summary": "薄肉円筒殻は微小な幾何学的初期不整に対して極めて敏感であり、実測座屈応力は古典理論値より大幅に低下するため、径厚比に応じた経験的ノックダウン係数を乗じる。",
+      "canonical_latex": "\\sigma_{\\mathrm{cr,exp}} = \\gamma_{\\mathrm{kd}} \\sigma_{\\mathrm{cr}},\\quad \\gamma_{\\mathrm{kd}} = 1 - 0.901\\left(1 - e^{-\\phi}\\right),\\quad \\phi = \\frac{1}{16}\\sqrt{\\frac{R}{t}}",
+      "aliases_latex": [
+        "\\gamma_{\\mathrm{kd}} = 1 - 0.901(1 - \\exp(-\\frac{1}{16}\\sqrt{R/t}))"
+      ],
+      "keywords": [
+        "ノックダウン係数",
+        "初期不整",
+        "NASA SP-8007",
+        "殻座屈"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "structural_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.struct.n06_pressurized_cylinder_stabilization",
+      "short_code": "STR06",
+      "kind": "theorem_formula",
+      "title": "内圧による円筒殻の軸方向座屈安定化則",
+      "summary": "加圧されたロケット推進薬タンクでは、内圧による軸方向引張プリストレスが圧縮荷重を直接相殺するだけでなく、周方向張力が初期不整の成長を抑えて座屈応力を増加させる。",
+      "canonical_latex": "P_{\\mathrm{allow}} = \\pi R^2 p_i + 2\\pi R t \\left(\\gamma_{\\mathrm{kd}} \\sigma_{\\mathrm{cr}} + \\Delta\\sigma_p(\\bar{p})\\right),\\quad \\bar{p} := \\frac{p_i}{E}\\left(\\frac{R}{t}\\right)^2",
+      "aliases_latex": [
+        "N_{\\mathrm{allow}} = \\frac{p_i R}{2} + t\\left(\\gamma_{\\mathrm{kd}}\\sigma_{\\mathrm{cr}} + \\Delta\\sigma_p\\right)"
+      ],
+      "keywords": [
+        "内圧安定化",
+        "加圧円筒殻",
+        "推進薬タンク",
+        "座屈許容荷重"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "structural_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.struct.n07_static_aeroelastic_divergence",
+      "short_code": "STR07",
+      "kind": "theorem_formula",
+      "title": "2次元翼の静的空力弾性ダイバージェンス動圧",
+      "summary": "空力中心が弾性軸より前方に位置する翼では、ねじれ角増加に伴う空力ピッチアップモーメントが構造ねじり復元力を上回る臨界動圧で静的発散が生じる。",
+      "canonical_latex": "K_\\theta \\theta = q S c e C_{L\\alpha}(\\alpha_0 + \\theta) \\implies q_{\\mathrm{div}} = \\frac{K_\\theta}{S c e C_{L\\alpha}}",
+      "aliases_latex": [
+        "q_D = \\frac{K_\\theta}{S c e C_{L\\alpha}}"
+      ],
+      "keywords": [
+        "ダイバージェンス",
+        "静的空力弾性",
+        "弾性軸",
+        "臨界動圧"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "aeroelasticity"
+      ]
+    },
+    {
+      "id": "aerosp.struct.n08_bend_twist_flutter_eom",
+      "short_code": "STR08",
+      "kind": "definition",
+      "title": "曲げ・ねじり2自由度連成フラッター運動方程式",
+      "summary": "弾性軸と重心（質量軸）のオフセットによる慣性連成と、非定常空気力による空力連成を含む典型的断面翼の2自由度空力弾性運動方程式。",
+      "canonical_latex": "\\begin{bmatrix} m & S_\\alpha \\\\ S_\\alpha & I_\\alpha \\end{bmatrix}\\begin{bmatrix} \\ddot{h} \\\\ \\ddot{\\alpha} \\end{bmatrix} + \\begin{bmatrix} K_h & 0 \\\\ 0 & K_\\alpha \\end{bmatrix}\\begin{bmatrix} h \\\\ \\alpha \\end{bmatrix} = \\begin{bmatrix} -L(t) \\\\ M_{ea}(t) \\end{bmatrix}",
+      "aliases_latex": [
+        "\\mathbf{M}\\ddot{\\mathbf{q}} + \\mathbf{K}\\mathbf{q} = \\mathbf{Q}_{\\mathrm{aero}}(t)"
+      ],
+      "keywords": [
+        "フラッター",
+        "空力弾性",
+        "曲げねじり連成",
+        "典型的断面"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "aeroelasticity"
+      ]
+    },
+    {
+      "id": "aerosp.struct.n09_flutter_eigenvalue_boundary",
+      "short_code": "STR09",
+      "kind": "theorem_formula",
+      "title": "複素固有値解析によるフラッター臨界速度・不安定境界",
+      "summary": "動圧および飛行速度の増加に伴い、連成振動系の複素固有値の実部（空力減衰の符号反転）が零を横切って正へ転じる条件からフラッター境界速度が定まる。",
+      "canonical_latex": "\\det\\!\\left(\\lambda^2 \\mathbf{M} + \\lambda \\mathbf{C}_{\\mathrm{aero}}(U) + \\mathbf{K} + q\\mathbf{K}_{\\mathrm{aero}}\\right) = 0,\\quad \\operatorname{Re}(\\lambda(U_F)) = 0,\\; \\left.\\frac{d\\operatorname{Re}(\\lambda)}{dU}\\right|_{U_F} > 0",
+      "aliases_latex": [
+        "g(U_F) = 0,\\quad \\omega_F = \\operatorname{Im}(\\lambda(U_F))"
+      ],
+      "keywords": [
+        "フラッター境界",
+        "複素固有値",
+        "動的空力弾性",
+        "臨界速度"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "aeroelasticity"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.struct.n01_bredt_batho",
+      "target_node_id": "aerosp.struct.n01_shear_flow_bredt_batho",
+      "route_kind": "deductive",
+      "title": "微小要素のせん断応力釣合いと周回モーメント積分からのブレト＝バソ公式導出",
+      "premise_node_ids": [
+        "eng.beam.n01_continuum_statics_hooke",
+        "eng.yield.n01_stress_beam_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "肉厚は断面代表寸法に比べて十分小さく、板厚方向にせん断応力は一様とみなせる",
+        "断面形状は剛体であり、断面の反り（ワーピング）は拘束されない",
+        "軸方向垂直応力の軸方向勾配はない（純粋ねじり）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum \\mathbf{F} = \\mathbf{0},\\quad \\tau_{sz} = \\tau_{zs}",
+          "to_latex": "q := \\tau t = \\text{const.},\\quad T = 2 A_m q,\\quad \\tau = \\frac{T}{2 A_m t}",
+          "operation_label": "微小要素の軸方向釣合いと周回モーメント積分",
+          "explanation": "純粋ねじり下の薄肉閉断面要素の軸方向力釣合いからせん断流の周方向一定性を示し、閉曲線に沿ったせん断力のモーメント積分からブレト＝バソの公式を得る。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "eng.yield.n01_stress_beam_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_shear_flow_const",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial (\\tau t)}{\\partial s} + t\\frac{\\partial \\sigma_z}{\\partial z} = 0,\\quad \\frac{\\partial \\sigma_z}{\\partial z} = 0",
+          "to_latex": "q := \\tau t = \\text{const.}",
+          "operation_label": "軸方向力釣合いによるせん断流の一様性",
+          "explanation": "軸方向応力勾配が零であるため、せん断流 q = τt の周方向微分が零となり、閉断面全周にわたって一定値となる。",
+          "used_node_ids": [
+            "eng.yield.n01_stress_beam_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_torque_integral",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q := \\tau t = \\text{const.}",
+          "to_latex": "T = \\oint r_{\\perp} q\\,ds = q \\oint r_{\\perp}\\,ds = 2 A_m q",
+          "operation_label": "閉断面中心周りのモーメント積分",
+          "explanation": "微小弧長 ds が張る三角形面積 dA_m = (1/2) r_⊥ ds を全周積分すると中立面閉面積 A_m となるため、T = 2 A_m q が得られる。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_shear_stress",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T = \\oint r_{\\perp} q\\,ds = q \\oint r_{\\perp}\\,ds = 2 A_m q",
+          "to_latex": "\\tau = \\frac{T}{2 A_m t}",
+          "operation_label": "せん断応力への換算",
+          "explanation": "q = τt を代入して τ について解くことで、薄肉閉断面のせん断応力公式が得られる。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.struct.n02_bredt_twist",
+      "target_node_id": "aerosp.struct.n02_bredt_torsional_stiffness_twist",
+      "route_kind": "deductive",
+      "title": "せん断ひずみエネルギー釣合いからのブレト第2公式導出",
+      "premise_node_ids": [
+        "aerosp.struct.n01_shear_flow_bredt_batho",
+        "eng.beam.n01_continuum_statics_hooke",
+        "eng.frac.n01_elastic_strain_energy_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "線形等方弾性体でありせん断フックの法則 τ = Gγ が成り立つ",
+        "外力仕事と内部ひずみエネルギーが等しい"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T = 2 A_m q,\\quad U_0 = \\frac{1}{2}\\tau \\gamma = \\frac{\\tau^2}{2G}",
+          "to_latex": "\\theta' = \\frac{d\\theta}{dz} = \\frac{T}{G J_{\\mathrm{eq}}},\\quad J_{\\mathrm{eq}} = \\frac{4 A_m^2}{\\oint \\frac{ds}{t(s)}}",
+          "operation_label": "単位長さひずみエネルギーと外力仕事の等置",
+          "explanation": "単位長さあたりのせん断ひずみエネルギーを全周積分し、外力仕事 (1/2)Tθ' と等置することで等価ねじり定数とねじれ角を得る。",
+          "used_node_ids": [
+            "aerosp.struct.n01_shear_flow_bredt_batho",
+            "eng.beam.n01_continuum_statics_hooke",
+            "eng.frac.n01_elastic_strain_energy_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_strain_energy",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U' = \\oint \\frac{\\tau^2}{2G} t\\,ds = \\oint \\frac{q^2}{2G t(s)}\\,ds",
+          "to_latex": "\\frac{1}{2} T \\theta' = \\frac{T^2}{8 G A_m^2} \\oint \\frac{ds}{t(s)}",
+          "operation_label": "ブレト＝バソの式代入と仕事等置",
+          "explanation": "q = T/(2A_m) を代入して外力仕事 (1/2)Tθ' と等置する。",
+          "used_node_ids": [
+            "aerosp.struct.n01_shear_flow_bredt_batho",
+            "eng.frac.n01_elastic_strain_energy_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_solve_twist",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2} T \\theta' = \\frac{T^2}{8 G A_m^2} \\oint \\frac{ds}{t(s)}",
+          "to_latex": "\\theta' = \\frac{d\\theta}{dz} = \\frac{T}{G J_{\\mathrm{eq}}},\\quad J_{\\mathrm{eq}} = \\frac{4 A_m^2}{\\oint \\frac{ds}{t(s)}}",
+          "operation_label": "ねじれ角と等価ねじり定数の整理",
+          "explanation": "両辺を T/2 で割り、標準的なねじり剛性 GJ_eq の形に整理する。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.struct.n03_semi_monocoque",
+      "target_node_id": "aerosp.struct.n03_semi_monocoque_bending_shear_flow",
+      "route_kind": "deductive",
+      "title": "梁曲げ理論と微小外板要素の軸方向釣合いからのせん断流積分",
+      "premise_node_ids": [
+        "eng.yield.n01_stress_beam_boundary",
+        "aerosp.struct.n01_shear_flow_bredt_batho"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "断面平面保持の仮定（オイラー＝ベルヌーイ梁）が成り立つ",
+        "外板およびストリンガの軸方向応力は曲げモーメントのみによる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma_z = \\frac{M_x y}{I_x},\\quad \\frac{dM_x}{dz} = V_y",
+          "to_latex": "\\frac{\\partial q}{\\partial s} + t\\frac{\\partial \\sigma_z}{\\partial z} = 0 \\implies q(s) = q_0 - \\frac{V_y}{I_x}\\int_0^s y t\\,ds",
+          "operation_label": "軸方向力釣合い式の周方向積分",
+          "explanation": "曲げモーメントの軸方向微分がせん断力 V_y に等しいことを用い、薄肉要素の軸方向釣合い式を周方向座標 s に沿って積分する。",
+          "used_node_ids": [
+            "aerosp.struct.n01_shear_flow_bredt_batho",
+            "eng.yield.n01_stress_beam_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_axial_diff",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial q}{\\partial s} + t\\frac{\\partial}{\\partial z}\\left(\\frac{M_x y}{I_x}\\right) = 0",
+          "to_latex": "\\frac{\\partial q}{\\partial s} = -\\frac{V_y}{I_x} y t",
+          "operation_label": "曲げ応力の軸方向微分とせん断力置換",
+          "explanation": "dM_x/dz = V_y を代入してせん断流の周方向勾配を求める。",
+          "used_node_ids": [
+            "eng.yield.n01_stress_beam_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_integrate_s",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial q}{\\partial s} = -\\frac{V_y}{I_x} y t",
+          "to_latex": "q(s) = q_0 - \\frac{V_y}{I_x}\\int_0^s y t\\,ds",
+          "operation_label": "起点からの周方向不定積分",
+          "explanation": "基準点 s=0 における初期せん断流 q_0 を積分定数として s まで積分する。",
+          "used_node_ids": [
+            "aerosp.struct.n01_shear_flow_bredt_batho"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.struct.n04_cylinder_buckling",
+      "target_node_id": "aerosp.struct.n04_cylindrical_shell_buckling",
+      "route_kind": "deductive",
+      "title": "ドンネル＝マスツァーリ円筒殻座屈方程式の最小固有値導出",
+      "premise_node_ids": [
+        "eng.beam.n01_continuum_statics_hooke",
+        "eng.yield.n01_stress_beam_boundary"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "assumptions": [
+        "完全真円・一様肉厚の線形等方弾性薄肉円筒殻（t/R ≪ 1）",
+        "境界条件の影響を無視できる十分長い円筒（単純支持近似）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "D \\nabla^4 w + \\frac{E t}{R^2}\\nabla^{-4}\\frac{\\partial^4 w}{\\partial x^4} + N_x \\frac{\\partial^2 w}{\\partial x^2} = 0",
+          "to_latex": "\\sigma_{\\mathrm{cr}} = \\frac{E}{\\sqrt{3(1-\\nu^2)}}\\frac{t}{R} \\approx 0.605 E \\frac{t}{R},\\quad N_{\\mathrm{cr}} = \\sigma_{\\mathrm{cr}} t",
+          "operation_label": "波数最小化による古典座屈臨界応力の決定",
+          "explanation": "曲げ剛性と膜伸縮剛性の連成釣合い式に二重正弦波座屈モードを代入し、波数パラメータに関して最小化することで古典座屈応力を得る。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke",
+            "eng.yield.n01_stress_beam_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_mode_ansatz",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "D \\nabla^4 w + \\frac{E t}{R^2}\\nabla^{-4}\\frac{\\partial^4 w}{\\partial x^4} + N_x \\frac{\\partial^2 w}{\\partial x^2} = 0",
+          "to_latex": "N_x = D\\frac{(k_x^2 + k_y^2)^2}{k_x^2} + \\frac{E t}{R^2}\\frac{k_x^2}{(k_x^2 + k_y^2)^2}",
+          "operation_label": "二重正弦波モードの代入と軸圧縮力表示",
+          "explanation": "w = W sin(k_x x)sin(k_y y) を代入し、軸方向単位幅あたり圧縮力 N_x を波数比の関数として表す。",
+          "used_node_ids": [
+            "eng.yield.n01_stress_beam_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_am_gm_min",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "N_x = D\\frac{(k_x^2 + k_y^2)^2}{k_x^2} + \\frac{E t}{R^2}\\frac{k_x^2}{(k_x^2 + k_y^2)^2}",
+          "to_latex": "N_{\\mathrm{cr}} = 2\\sqrt{\\frac{D E t}{R^2}},\\quad D = \\frac{E t^3}{12(1-\\nu^2)}",
+          "operation_label": "相加相乗平均による最小座屈荷重の導出",
+          "explanation": "変数 η = (k_x^2 + k_y^2)^2 / k_x^2 に関して最小値 2√(DEt/R^2) をとることを用いる。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_classical_stress",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "N_{\\mathrm{cr}} = 2\\sqrt{\\frac{D E t}{R^2}},\\quad D = \\frac{E t^3}{12(1-\\nu^2)}",
+          "to_latex": "\\sigma_{\\mathrm{cr}} = \\frac{E}{\\sqrt{3(1-\\nu^2)}}\\frac{t}{R} \\approx 0.605 E \\frac{t}{R},\\quad N_{\\mathrm{cr}} = \\sigma_{\\mathrm{cr}} t",
+          "operation_label": "板曲げ剛性代入と応力換算",
+          "explanation": "D を代入して板厚 t で除し、ポアソン比 ν=0.3 の代表値 0.605 を得る。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.struct.n05_knockdown",
+      "target_node_id": "aerosp.struct.n05_buckling_knockdown_factor",
+      "route_kind": "inductive",
+      "title": "古典座屈応力と実験データベースに基づくNASA SP-8007ノックダウン則",
+      "premise_node_ids": [
+        "aerosp.struct.n04_cylindrical_shell_buckling"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "等方性無補強円筒殻の標準的な製造初期不整範囲を想定",
+        "多数の円筒殻圧縮実験の下限包絡線（90%信頼下限）に適合"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma_{\\mathrm{cr}} = \\frac{E}{\\sqrt{3(1-\\nu^2)}}\\frac{t}{R}",
+          "to_latex": "\\sigma_{\\mathrm{cr,exp}} = \\gamma_{\\mathrm{kd}} \\sigma_{\\mathrm{cr}},\\quad \\gamma_{\\mathrm{kd}} = 1 - 0.901\\left(1 - e^{-\\phi}\\right),\\quad \\phi = \\frac{1}{16}\\sqrt{\\frac{R}{t}}",
+          "operation_label": "古典座屈応力への経験的ノックダウン係数導入",
+          "explanation": "円筒殻の非線形後座屈不安定性によりR/tが大きいほど初期不整感度が急増するため、実験下限データから経験式 γ_kd を定めて古典座屈応力を低減する。",
+          "used_node_ids": [
+            "aerosp.struct.n04_cylindrical_shell_buckling"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.struct.n06_pressurized_cylinder",
+      "target_node_id": "aerosp.struct.n06_pressurized_cylinder_stabilization",
+      "route_kind": "deductive",
+      "title": "内圧による軸方向プリストレス相殺と殻安定化項の結合",
+      "premise_node_ids": [
+        "aerosp.struct.n04_cylindrical_shell_buckling",
+        "aerosp.struct.n05_buckling_knockdown_factor"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "円筒殻端面が鏡板等で閉鎖されており内圧 p_i が軸方向引張力を生じる",
+        "内圧によるフープ応力が降伏応力を超えない"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_{\\mathrm{cr,0}} = 2\\pi R t \\gamma_{\\mathrm{kd}} \\sigma_{\\mathrm{cr}},\\quad P_{\\mathrm{pres}} = \\pi R^2 p_i",
+          "to_latex": "P_{\\mathrm{allow}} = \\pi R^2 p_i + 2\\pi R t \\left(\\gamma_{\\mathrm{kd}} \\sigma_{\\mathrm{cr}} + \\Delta\\sigma_p(\\bar{p})\\right),\\quad \\bar{p} := \\frac{p_i}{E}\\left(\\frac{R}{t}\\right)^2",
+          "operation_label": "圧力推力相殺項と安定化増分の加算",
+          "explanation": "内圧による軸方向引張力 πR^2 p_i が外圧圧縮力を直接相殺することに加え、周方向引張応力が非線形座屈の溝を浅くする安定化増分 Δσ_p を加えて許容圧縮荷重を得る。",
+          "used_node_ids": [
+            "aerosp.struct.n04_cylindrical_shell_buckling",
+            "aerosp.struct.n05_buckling_knockdown_factor"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_net_membrane_load",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\mathrm{net}} = P_{\\mathrm{allow}} - \\pi R^2 p_i",
+          "to_latex": "\\sigma_{\\mathrm{net}} = \\frac{P_{\\mathrm{allow}} - \\pi R^2 p_i}{2\\pi R t}",
+          "operation_label": "正味膜圧縮応力の定義",
+          "explanation": "外荷重 P_allow から内圧による軸引張力 πR^2 p_i を差し引き、殻断面 2πRt あたりの正味圧縮応力を表す。",
+          "used_node_ids": [
+            "aerosp.struct.n04_cylindrical_shell_buckling"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_stabilization_limit",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sigma_{\\mathrm{net}} = \\frac{P_{\\mathrm{allow}} - \\pi R^2 p_i}{2\\pi R t}",
+          "to_latex": "P_{\\mathrm{allow}} = \\pi R^2 p_i + 2\\pi R t \\left(\\gamma_{\\mathrm{kd}} \\sigma_{\\mathrm{cr}} + \\Delta\\sigma_p(\\bar{p})\\right),\\quad \\bar{p} := \\frac{p_i}{E}\\left(\\frac{R}{t}\\right)^2",
+          "operation_label": "内圧安定化応力増分の結合",
+          "explanation": "正味圧縮応力の限界を無加圧座屈応力 γ_kd σ_cr と無次元内圧パラメータ p̄ の関数 Δσ_p(p̄) の和で与えて許容荷重を得る。",
+          "used_node_ids": [
+            "aerosp.struct.n05_buckling_knockdown_factor"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.struct.n07_divergence",
+      "target_node_id": "aerosp.struct.n07_static_aeroelastic_divergence",
+      "route_kind": "deductive",
+      "title": "ねじりばねモデルと薄翼揚力傾斜からのダイバージェンス動圧導出",
+      "premise_node_ids": [
+        "eng.beam.n01_continuum_statics_hooke",
+        "eng.aero.n07_thin_airfoil_glauert_solution"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "定常2次元非圧縮空気力（揚力傾斜 C_Lα は一定、空力中心は1/4弦長点）",
+        "弾性軸は空力中心より距離 e だけ後方に位置し、構造は線形ねじりばね K_θ でモデル化"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum M_{ea} = 0,\\quad C_L = C_{L\\alpha}(\\alpha_0 + \\theta)",
+          "to_latex": "K_\\theta \\theta = q S c e C_{L\\alpha}(\\alpha_0 + \\theta) \\implies q_{\\mathrm{div}} = \\frac{K_\\theta}{S c e C_{L\\alpha}}",
+          "operation_label": "弾性復元モーメントと空力モーメントの釣合い",
+          "explanation": "弾性軸周りの空力モーメントと構造ねじり復元モーメントを釣合わせ、ねじれ角 θ の分母が零となる特異条件からダイバージェンス動圧を得る。",
+          "used_node_ids": [
+            "eng.aero.n07_thin_airfoil_glauert_solution",
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_moment_balance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "K_\\theta \\theta = q S c e C_{L\\alpha}(\\alpha_0 + \\theta)",
+          "to_latex": "\\theta = \\frac{q S c e C_{L\\alpha} \\alpha_0}{K_\\theta - q S c e C_{L\\alpha}}",
+          "operation_label": "ねじれ角 θ についての整理",
+          "explanation": "θ を含む項を左辺に集め、初期迎角 α_0 に対する静的弾性ねじれ角の応答式を得る。",
+          "used_node_ids": [
+            "eng.aero.n07_thin_airfoil_glauert_solution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_singularity",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\theta = \\frac{q S c e C_{L\\alpha} \\alpha_0}{K_\\theta - q S c e C_{L\\alpha}}",
+          "to_latex": "K_\\theta \\theta = q S c e C_{L\\alpha}(\\alpha_0 + \\theta) \\implies q_{\\mathrm{div}} = \\frac{K_\\theta}{S c e C_{L\\alpha}}",
+          "operation_label": "分母零（剛性喪失）条件の抽出",
+          "explanation": "ねじれ角が無限大へ発散する条件 K_θ - q S c e C_Lα = 0 より臨界動圧 q_div が定まる。",
+          "used_node_ids": [
+            "eng.beam.n01_continuum_statics_hooke"
+          ],
+          "sympy_check_hint": "solve(K_theta - q*S*c*e*C_La, q)"
+        }
+      ]
+    },
+    {
+      "id": "deriv.struct.n08_flutter_eom",
+      "target_node_id": "aerosp.struct.n08_bend_twist_flutter_eom",
+      "route_kind": "deductive",
+      "title": "典型的断面翼の2自由度構造運動と非定常空気力の結合",
+      "premise_node_ids": [
+        "eng.yield.n01_stress_beam_boundary",
+        "aerosp.psd_srs.n03_sdof_damped_frf",
+        "eng.aero.n07_thin_airfoil_glauert_solution"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "曲げ変位 h（下向き正）とねじり角 α（頭上げ正）の微小変位線形モデル",
+        "剛体典型的断面モデルであり、静的アンバランス S_α は弾性軸から重心へのオフセットに比例する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T_{\\mathrm{kin}} = \\frac{1}{2}m\\dot{h}^2 + S_\\alpha\\dot{h}\\dot{\\alpha} + \\frac{1}{2}I_\\alpha\\dot{\\alpha}^2,\\quad V_{\\mathrm{pot}} = \\frac{1}{2}K_h h^2 + \\frac{1}{2}K_\\alpha \\alpha^2",
+          "to_latex": "\\begin{bmatrix} m & S_\\alpha \\\\ S_\\alpha & I_\\alpha \\end{bmatrix}\\begin{bmatrix} \\ddot{h} \\\\ \\ddot{\\alpha} \\end{bmatrix} + \\begin{bmatrix} K_h & 0 \\\\ 0 & K_\\alpha \\end{bmatrix}\\begin{bmatrix} h \\\\ \\alpha \\end{bmatrix} = \\begin{bmatrix} -L(t) \\\\ M_{ea}(t) \\end{bmatrix}",
+          "operation_label": "ラグランジュ方程式による2自由度連成運動方程式の定式化",
+          "explanation": "弾性軸変位とねじり角に対する運動エネルギーと弾性ポテンシャルから質量行列の非対角項（静的アンバランス S_α）を導き、右辺に非定常揚力・モーメントを結合する。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n03_sdof_damped_frf",
+            "eng.aero.n07_thin_airfoil_glauert_solution",
+            "eng.yield.n01_stress_beam_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv.struct.n09_flutter_boundary",
+      "target_node_id": "aerosp.struct.n09_flutter_eigenvalue_boundary",
+      "route_kind": "deductive",
+      "title": "空力弾性運動方程式の複素固有値問題化とフラッター境界判定",
+      "premise_node_ids": [
+        "aerosp.struct.n08_bend_twist_flutter_eom",
+        "aerosp.struct.n07_static_aeroelastic_divergence"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "assumptions": [
+        "状態ベクトルを q(t) = q_0 exp(λt) の指数関数解と仮定する",
+        "非定常空気力（準定常またはテオドルセン関数近似）を空力減衰行列 C_aero と空力剛性行列 qK_aero に展開する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{M}\\ddot{\\mathbf{q}} + \\mathbf{K}\\mathbf{q} = -\\mathbf{C}_{\\mathrm{aero}}(U)\\dot{\\mathbf{q}} - q\\mathbf{K}_{\\mathrm{aero}}\\mathbf{q}",
+          "to_latex": "\\det\\!\\left(\\lambda^2 \\mathbf{M} + \\lambda \\mathbf{C}_{\\mathrm{aero}}(U) + \\mathbf{K} + q\\mathbf{K}_{\\mathrm{aero}}\\right) = 0,\\quad \\operatorname{Re}(\\lambda(U_F)) = 0,\\; \\left.\\frac{d\\operatorname{Re}(\\lambda)}{dU}\\right|_{U_F} > 0",
+          "operation_label": "指数関数解の代入による複素固有値特性方程式の導出",
+          "explanation": "一般化空気力を変位・速度線形項として左辺へ移項し、q = q_0 exp(λt) を代入して非自明解条件と安定限界条件（実部零交差）を得る。",
+          "used_node_ids": [
+            "aerosp.struct.n07_static_aeroelastic_divergence",
+            "aerosp.struct.n08_bend_twist_flutter_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_characteristic_eq",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{M}\\ddot{\\mathbf{q}} + \\mathbf{C}_{\\mathrm{aero}}(U)\\dot{\\mathbf{q}} + \\left(\\mathbf{K} + q\\mathbf{K}_{\\mathrm{aero}}\\right)\\mathbf{q} = \\mathbf{0}",
+          "to_latex": "\\left(\\lambda^2 \\mathbf{M} + \\lambda \\mathbf{C}_{\\mathrm{aero}}(U) + \\mathbf{K} + q\\mathbf{K}_{\\mathrm{aero}}\\right)\\mathbf{q}_0 = \\mathbf{0}",
+          "operation_label": "指数関数解 q = q_0 exp(λt) の代入",
+          "explanation": "時間微分を複素固有値 λ の乗算に置き換えて代数方程式へ変換する。",
+          "used_node_ids": [
+            "aerosp.struct.n08_bend_twist_flutter_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_stability_crossing",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\lambda^2 \\mathbf{M} + \\lambda \\mathbf{C}_{\\mathrm{aero}}(U) + \\mathbf{K} + q\\mathbf{K}_{\\mathrm{aero}}\\right)\\mathbf{q}_0 = \\mathbf{0}",
+          "to_latex": "\\det\\!\\left(\\lambda^2 \\mathbf{M} + \\lambda \\mathbf{C}_{\\mathrm{aero}}(U) + \\mathbf{K} + q\\mathbf{K}_{\\mathrm{aero}}\\right) = 0,\\quad \\operatorname{Re}(\\lambda(U_F)) = 0,\\; \\left.\\frac{d\\operatorname{Re}(\\lambda)}{dU}\\right|_{U_F} > 0",
+          "operation_label": "非自明解条件とホップ分岐型の動的発散境界判定",
+          "explanation": "行列式零の特性方程式から固有値軌跡を求め、振動モード（Im(λ) ≠ 0）の実部が負から正へ横切る最小速度をフラッター速度 U_F とする。",
+          "used_node_ids": [
+            "aerosp.struct.n07_static_aeroelastic_divergence",
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
