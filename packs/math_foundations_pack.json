@@ -5932,27 +5932,6 @@
       ]
     },
     {
-      "id": "math.alg.mathematical_induction_principle",
-      "short_code": "MATH_IND",
-      "kind": "axiom",
-      "title": "数学的帰納法の原理",
-      "summary": "自然数に関する命題が基底 n=1 で成り立ち、任意の自然数 n での成立から n+1 での成立が導かれるならば、すべての自然数 n に対してその命題が成り立つことを保証する推論原理。",
-      "canonical_latex": "\\big(P(1) \\land \\forall n \\in \\mathbb{N},\\; (P(n) \\implies P(n+1))\\big) \\implies \\forall n \\in \\mathbb{N},\\; P(n)",
-      "aliases_latex": [
-        "P(1) \\land (P(n) \\to P(n+1)) \\to \\forall n \\ge 1,\\; P(n)"
-      ],
-      "keywords": [
-        "数学的帰納法",
-        "基底段階",
-        "帰納的段階",
-        "自然数"
-      ],
-      "domain_tags": [
-        "algebra",
-        "logic"
-      ]
-    },
-    {
       "id": "math.prob.discrete_expectation_def",
       "short_code": "DISC_EXP_DEF",
       "kind": "definition",
@@ -15229,7 +15208,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{r}(t_0 + \\tau) = \\mathbf{r}(t_0 + \\tau)\\quad (\\text{evaluated via }\\mathbf{r}(t_0+\\tau))",
           "to_latex": "\\mathbf{r}(t_0 + \\tau) = \\mathbf{r}(t_0) + \\dot{\\mathbf{r}}(t_0)\\tau + \\frac{1}{2}\\ddot{\\mathbf{r}}(t_0)\\tau^2 + \\frac{1}{6}\\dddot{\\mathbf{r}}(t_0)\\tau^3 + \\mathcal{O}(\\tau^4) + 0\\text{ omitted}\\quad\\text{No, clean target:}",
-          "operation_label": "Wait fix",
+          "operation_label": "前提の適用と式変形",
           "explanation": "ベクトルの各成分に1変数のテイラー展開を適用し、時刻に関するべき級数展開を得る。",
           "used_node_ids": []
         }
@@ -42962,7 +42941,7 @@
       "title": "凹関数の定義と数学的帰納法による離散イェンセンの不等式および対数型不等式の厳密導出",
       "premise_node_ids": [
         "math.calc.concave_function_def",
-        "math.alg.mathematical_induction_principle",
+        "math.logic.mathematical_induction",
         "math.prob.discrete_expectation_def",
         "math.calc.natural_log_integral_def",
         "math.calc.tangent_dominance_to_concave"
@@ -42995,9 +42974,9 @@
           "operation_label": "数学的帰納法による有限和イェンセン不等式と対数凹性適用の全体構成",
           "explanation": "凹関数の2点定義から数学的帰納法を用いて任意の有限項に対するイェンセンの不等式を示し、離散期待値記法へ書き換える。さらに自然対数関数が2階導関数の負値性により凹関数であることを証明して対数型不等式を導く。",
           "used_node_ids": [
-            "math.alg.mathematical_induction_principle",
             "math.calc.concave_function_def",
             "math.calc.tangent_dominance_to_concave",
+            "math.logic.mathematical_induction",
             "math.prob.discrete_expectation_def"
           ],
           "sympy_check_hint": null
@@ -43120,10 +43099,10 @@
           "explanation": "再正規化された凸結合に2点間の凹性を適用し、n 項に対する帰納法の仮定を用いた上で元の重みに戻すことで、すべての自然数 n に対する有限和イェンセンの不等式を証明する。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity",
-            "math.alg.mathematical_induction_principle",
             "math.alg.nonzero_factor_fraction_cancel",
             "math.alg.real_inequality_order_props",
-            "math.calc.concave_function_def"
+            "math.calc.concave_function_def",
+            "math.logic.mathematical_induction"
           ],
           "sympy_check_hint": null
         },
@@ -43151,8 +43130,8 @@
           "operation_label": "n 項に対する帰納法の仮定と非負スカラー倍の適用",
           "explanation": "\\tilde{q}_k >= 0 かつ \\sum_{k=1}^n \\tilde{q}_k = 1 に n 項の帰納法仮定 f(\\sum \\tilde{q}_k y_k) >= \\sum \\tilde{q}_k f(y_k) を適用し、1 - q_{n+1} > 0 を乗じて両辺に q_{n+1} f(y_{n+1}) を加えることで不等号の向きを保存する。",
           "used_node_ids": [
-            "math.alg.mathematical_induction_principle",
-            "math.alg.real_inequality_order_props"
+            "math.alg.real_inequality_order_props",
+            "math.logic.mathematical_induction"
           ],
           "sympy_check_hint": null
         },
@@ -43182,7 +43161,7 @@
           "explanation": "右辺の n 項和と第 n+1 項を単一の総和 \\sum_{k=1}^{n+1} q_k f(y_k) にまとめる。なお退化場合 q_{n+1} = 1 のときは q_1 = ... = q_n = 0 となって両辺が f(y_{n+1}) で一致するため、すべての重みに対して n+1 の成立が示され、数学的帰納法の原理により全自然数 n で成立する。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity",
-            "math.alg.mathematical_induction_principle"
+            "math.logic.mathematical_induction"
           ],
           "sympy_check_hint": null
         },
@@ -43238,14 +43217,14 @@
           "operation_label": "自然対数関数の狭義凹性の証明と対数型イェンセン不等式の導出",
           "explanation": "自然対数関数の1階および2階導関数を求めてその凹性を証明し、前段で導出した有限和イェンセンの不等式に f = \\ln を適用する。",
           "used_node_ids": [
-            "math.alg.mathematical_induction_principle",
             "math.alg.real_strict_ineq_pos_product",
             "math.calc.concave_function_def",
             "math.calc.fundamental_theorem_calculus_1",
             "math.calc.log_exp_power_rules",
             "math.calc.natural_log_integral_def",
             "math.calc.strict_concavity_2nd_deriv",
-            "math.calc.tangent_dominance_to_concave"
+            "math.calc.tangent_dominance_to_concave",
+            "math.logic.mathematical_induction"
           ],
           "sympy_check_hint": null
         },
@@ -43305,8 +43284,8 @@
           "operation_label": "有限和イェンセン不等式に f = \\ln を代入・導入",
           "explanation": "前段で証明した一般の凹関数に対する有限和イェンセンの不等式（ステップ s2_3 の結果）に凹関数 f(y) = \\ln y（I = (0, \\infty)）を代入し、対数型のイェンセンの不等式を導出する。",
           "used_node_ids": [
-            "math.alg.mathematical_induction_principle",
-            "math.calc.concave_function_def"
+            "math.calc.concave_function_def",
+            "math.logic.mathematical_induction"
           ],
           "sympy_check_hint": null
         }
@@ -50043,7 +50022,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathcal{I}_t",
           "to_latex": "\\mathcal{I}_t \\in \\Omega_{\\mathcal{I}} := \\{\\mathrm{Inc},\\,\\mathrm{Ext}\\}",
-          "operation_label": "set_definition",
+          "operation_label": "定義の適用",
           "explanation": "時点tにおける制度状態が2値の有限集合の元として定義される。",
           "used_node_ids": [
             "math.alg.gr01_group_axioms"
@@ -50057,7 +50036,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathcal{I}_t",
           "to_latex": "\\mathcal{I}_t \\in \\{\\mathrm{Inc},\\,\\mathrm{Ext}\\}",
-          "operation_label": "domain_restriction",
+          "operation_label": "定義域・条件の整理",
           "explanation": "包摂的制度と収奪的制度の2つの状態に限定する。",
           "used_node_ids": [
             "math.alg.gr01_group_axioms"
@@ -50086,7 +50065,7 @@
           "parent_step_id": null,
           "from_latex": "\\Omega_{\\mathrm{total}} = \\Omega_{\\mathrm{int}} \\sqcup \\Omega_{\\mathrm{ext}} \\sqcup \\Omega_{\\mathrm{ger}}",
           "to_latex": "L_{\\mathrm{total}} = L_{\\mathrm{int}} + L_{\\mathrm{ext}} + L_{\\mathrm{ger}}",
-          "operation_label": "measure_additivity",
+          "operation_label": "加法性の適用",
           "explanation": "領域の非交和分割から資源測度の有限加法性により総負荷が各成分の和に分解される。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -50100,7 +50079,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "L(\\Omega_1 \\sqcup \\Omega_2)",
           "to_latex": "L(\\Omega_1) + L(\\Omega_2)",
-          "operation_label": "additivity_split",
+          "operation_label": "加法性の適用",
           "explanation": "測度の加法性に基づいて総和を分離する。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -50130,7 +50109,7 @@
           "parent_step_id": null,
           "from_latex": "X = Y \\land X \\le Z",
           "to_latex": "X = Y \\le Z",
-          "operation_label": "chain_inequality",
+          "operation_label": "不等式の評価",
           "explanation": "等式と不等式を同時に満たす実数X, Y, Zについて連結した評価式を得る。",
           "used_node_ids": [
             "math.alg.real_inequality_order_props"
@@ -50144,7 +50123,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "X = Y,\\, X \\le Z",
           "to_latex": "Y \\le Z",
-          "operation_label": "substitution",
+          "operation_label": "代入・置き換え",
           "explanation": "XをYに置き換えて不等式を再構成する。",
           "used_node_ids": [
             "math.alg.real_inequality_order_props"
@@ -50173,7 +50152,7 @@
           "parent_step_id": null,
           "from_latex": "L_{\\mathrm{total}}",
           "to_latex": "L_{\\mathrm{total}} \\le C_{\\mathrm{WM}}",
-          "operation_label": "upper_bound_hypothesis",
+          "operation_label": "仮定・境界条件の設定",
           "explanation": "総認知負荷が定数C_WMを超過しないという制約を仮説として導入する。",
           "used_node_ids": [
             "math.alg.disjoint_resource_measure_additivity"
@@ -50187,7 +50166,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "L_{\\mathrm{total}} \\in \\mathbb{R}",
           "to_latex": "L_{\\mathrm{total}} \\le C_{\\mathrm{WM}} \\quad (C_{\\mathrm{WM}} > 0)",
-          "operation_label": "constraint_axiom",
+          "operation_label": "公理・基本前提の適用",
           "explanation": "正の定数上界による容量制約の不等式を設定する。",
           "used_node_ids": [
             "math.alg.disjoint_resource_measure_additivity"
@@ -50217,7 +50196,7 @@
           "parent_step_id": null,
           "from_latex": "\\sum_{r=0}^{p-1} \\gamma^r",
           "to_latex": "\\frac{1 - \\gamma^p}{1 - \\gamma} \\le \\frac{1}{1 - \\gamma},\\qquad \\lim_{k\\to\\infty} \\gamma^k = 0",
-          "operation_label": "geometric_sum_and_limit",
+          "operation_label": "極限操作の適用",
           "explanation": "等比級数の和の公式と漸近極限を用いて、有限等比和の上界評価と極限消滅を導出する。",
           "used_node_ids": [
             "math.alg.geometric_series_sum_and_diff",
@@ -50231,7 +50210,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\sum_{r=0}^{p-1} \\gamma^r",
           "to_latex": "\\frac{1 - \\gamma^p}{1 - \\gamma}",
-          "operation_label": "finite_geometric_sum",
+          "operation_label": "前提の適用と式変形",
           "explanation": "有限項の等比級数の和の公式を適用する。",
           "used_node_ids": [
             "math.alg.geometric_series_sum_and_diff"
@@ -50244,7 +50223,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{1 - \\gamma^p}{1 - \\gamma}",
           "to_latex": "\\frac{1}{1 - \\gamma}",
-          "operation_label": "upper_bound_evaluation",
+          "operation_label": "上界・下界の評価",
           "explanation": "0 \\le \\gamma < 1 と γ^p \\ge 0 から上界を評価する。",
           "used_node_ids": [
             "math.alg.geometric_series_sum_and_diff"
@@ -50257,7 +50236,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\gamma^k",
           "to_latex": "0",
-          "operation_label": "limit_annihilation",
+          "operation_label": "極限操作の適用",
           "explanation": "指数減衰の極限性質を用いてべき乗の極限が零になることを示す。",
           "used_node_ids": [
             "math.calc.exp_decay_limit_infinity"
@@ -50285,7 +50264,7 @@
           "parent_step_id": null,
           "from_latex": "C_{ijkl}",
           "to_latex": "\\lambda \\delta_{ij}\\delta_{kl} + \\mu(\\delta_{ik}\\delta_{jl} + \\delta_{il}\\delta_{jk})",
-          "operation_label": "isotropic_fourth_order_rep",
+          "operation_label": "前提の適用と式変形",
           "explanation": "2階テンソルの等方性条件を拡張し、4階テンソルがクロネッカーデルタの積の線形結合で表されることを示す。",
           "used_node_ids": [
             "math.alg.isotropic_second_order_tensor_identity"
@@ -50298,7 +50277,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "C_{ijkl} R_{im} R_{jn} R_{kp} R_{lq}",
           "to_latex": "C_{mnpq}",
-          "operation_label": "rotation_invariance",
+          "operation_label": "前提の適用と式変形",
           "explanation": "すべての SO(3) 回転に対して不変であるという条件を課す。",
           "used_node_ids": [
             "math.alg.isotropic_second_order_tensor_identity"
@@ -50311,7 +50290,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "C_{mnpq}",
           "to_latex": "\\lambda \\delta_{mn}\\delta_{pq} + \\mu(\\delta_{mp}\\delta_{nq} + \\delta_{mq}\\delta_{np})",
-          "operation_label": "delta_basis_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "等方性テンソルの基底である3つの組み合わせに分解し、独立定数を導出する。",
           "used_node_ids": [
             "math.alg.isotropic_second_order_tensor_identity"
@@ -50339,7 +50318,7 @@
           "parent_step_id": null,
           "from_latex": "R\\mathbf{K}R^\\top = \\mathbf{K}",
           "to_latex": "\\mathbf{K} = \\alpha I_3",
-          "operation_label": "isotropic_second_order_identity",
+          "operation_label": "恒等式の適用",
           "explanation": "SO(3) の任意の回転に対する不変性から、行列が単位行列のスカラー倍に限定されることを示す。",
           "used_node_ids": [
             "math.alg.gr04_so3_su2_matrix_groups_def"
@@ -50352,7 +50331,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "R \\in \\mathrm{SO}(3)",
           "to_latex": "R\\mathbf{K} = \\mathbf{K}R",
-          "operation_label": "commute_with_rotation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "回転群の元と可換である条件に書き換える。",
           "used_node_ids": [
             "math.alg.gr04_so3_su2_matrix_groups_def"
@@ -50365,7 +50344,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "R\\mathbf{K} = \\mathbf{K}R",
           "to_latex": "\\mathbf{K} = \\alpha I_3",
-          "operation_label": "scalar_multiple_reduction",
+          "operation_label": "前提の適用と式変形",
           "explanation": "すべての軸まわりの回転に対して可換な行列がスカラー行列のみであることをシューアの補題または直接計算により導く。",
           "used_node_ids": [
             "math.alg.gr04_so3_su2_matrix_groups_def"
@@ -50393,7 +50372,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathcal{I}_t \\in \\Omega_{\\mathcal{I}}",
           "to_latex": "T_c(\\mathcal{I}_t) \\ge 0",
-          "operation_label": "transaction_cost_nonnegativity",
+          "operation_label": "前提の適用と式変形",
           "explanation": "離散制度状態の定義に基づき、対応する取引費用が非負実数集合に属することを導出する。",
           "used_node_ids": [
             "math.alg.discrete_institution_state_def"
@@ -50406,7 +50385,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathcal{I}_t \\in \\{\\mathrm{Inc},\\,\\mathrm{Ext}\\}",
           "to_latex": "T_c(\\mathcal{I}_t)",
-          "operation_label": "institution_domain_mapping",
+          "operation_label": "定義域・条件の整理",
           "explanation": "制度状態集合の要素を写像の定義域として設定する。",
           "used_node_ids": [
             "math.alg.discrete_institution_state_def"
@@ -50419,7 +50398,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbb{R}_{\\ge 0}",
           "to_latex": "T_c(\\mathcal{I}_t) \\ge 0",
-          "operation_label": "codomain_inequality",
+          "operation_label": "不等式の評価",
           "explanation": "終域である非負実数の定義から、写像値が常に0以上であることを確定する。",
           "used_node_ids": [
             "math.alg.discrete_institution_state_def"
@@ -50448,7 +50427,7 @@
           "parent_step_id": null,
           "from_latex": "\\sum_{n}\\sum_{m} e^{-(\\alpha_n + \\beta_m)}",
           "to_latex": "\\left(\\sum_{n} e^{-\\alpha_n}\\right)\\left(\\sum_{m} e^{-\\beta_m}\\right)",
-          "operation_label": "exponential_expansion_and_factoring",
+          "operation_label": "前提の適用と式変形",
           "explanation": "指数法則により和を積に分解し、有限和の分配則を用いて因数分解する。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity",
@@ -50463,7 +50442,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "e^{-(\\alpha_n + \\beta_m)}",
           "to_latex": "e^{-\\alpha_n} e^{-\\beta_m}",
-          "operation_label": "exponent_addition_law",
+          "operation_label": "前提の適用と式変形",
           "explanation": "指数部の和を底の共通した積に変換する。",
           "used_node_ids": [
             "math.alg.real_power_exponent_laws"
@@ -50477,7 +50456,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\sum_{n}\\sum_{m} e^{-\\alpha_n} e^{-\\beta_m}",
           "to_latex": "\\left(\\sum_{n} e^{-\\alpha_n}\\right)\\left(\\sum_{m} e^{-\\beta_m}\\right)",
-          "operation_label": "summation_factorization",
+          "operation_label": "前提の適用と式変形",
           "explanation": "独立な変数に関する和の積に外側のシグマを分配する。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -50507,7 +50486,7 @@
           "parent_step_id": null,
           "from_latex": "\\forall t \\in \\mathbb{R},\\; A t^2 + B t + C \\ge 0",
           "to_latex": "A \\ge 0 \\land B^2 - 4AC \\le 0",
-          "operation_label": "discriminant_condition_derivation",
+          "operation_label": "微分操作の適用",
           "explanation": "常に非負となる2次式の係数条件を平方完成と非負性から導出する。",
           "used_node_ids": [
             "math.alg.real_inequality_order_props",
@@ -50522,7 +50501,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "A t^2 + B t + C",
           "to_latex": "A\\left(t + \\frac{B}{2A}\\right)^2 + C - \\frac{B^2}{4A}",
-          "operation_label": "completing_the_square",
+          "operation_label": "前提の適用と式変形",
           "explanation": "2次式を平方完成の形に変形する。",
           "used_node_ids": [
             "math.alg.real_square_nonneg_expansion"
@@ -50536,7 +50515,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "C - \\frac{B^2}{4A} \\ge 0",
           "to_latex": "B^2 - 4AC \\le 0",
-          "operation_label": "inequality_rearrangement",
+          "operation_label": "不等式の評価",
           "explanation": "平方が非負であることと順序関係から判別式の符号を決定する。",
           "used_node_ids": [
             "math.alg.real_inequality_order_props"
@@ -50566,7 +50545,7 @@
           "parent_step_id": null,
           "from_latex": "\\ln(AB) = \\ln A + \\ln B",
           "to_latex": "u^{\\beta+\\gamma} = u^\\beta u^\\gamma",
-          "operation_label": "log_to_exp_conversion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "対数の和公式を指数関数の定義を通じてべき乗の指数法則に書き換える。",
           "used_node_ids": [
             "math.calc.exp_as_inverse_log_def",
@@ -50581,7 +50560,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\ln(u^{\\beta+\\gamma}) = (\\beta+\\gamma)\\ln u",
           "to_latex": "\\beta\\ln u + \\gamma\\ln u",
-          "operation_label": "logarithm_power_and_distributive",
+          "operation_label": "前提の適用と式変形",
           "explanation": "対数の性質と分配法則を適用する。",
           "used_node_ids": [
             "math.calc.log_exp_power_rules"
@@ -50595,7 +50574,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "e^{\\beta\\ln u + \\gamma\\ln u}",
           "to_latex": "u^\\beta u^\\gamma",
-          "operation_label": "exponential_bijection",
+          "operation_label": "前提の適用と式変形",
           "explanation": "指数関数の乗法性を用いて元のべき乗の形に戻す。",
           "used_node_ids": [
             "math.calc.exp_as_inverse_log_def"
@@ -50625,7 +50604,7 @@
           "parent_step_id": null,
           "from_latex": "(a - tb)",
           "to_latex": "(a - tb)^2 = a^2 - 2tab + t^2 b^2 \\ge 0",
-          "operation_label": "algebraic_expansion_and_nonnegativity",
+          "operation_label": "前提の適用と式変形",
           "explanation": "分配法則を用いて差の平場を展開し、実数の平方が非負である公理から不等式を得る。",
           "used_node_ids": [
             "math.alg.real_distributive_law",
@@ -50640,7 +50619,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "(a - tb)(a - tb)",
           "to_latex": "a(a - tb) - tb(a - tb)",
-          "operation_label": "distributive_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "分配法則により積を展開する。",
           "used_node_ids": [
             "math.alg.real_distributive_law"
@@ -50654,7 +50633,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "a^2 - 2tab + t^2 b^2",
           "to_latex": "(a - tb)^2 \\ge 0",
-          "operation_label": "square_nonnegativity_axiom",
+          "operation_label": "公理・基本前提の適用",
           "explanation": "三分律と順序公理により任意の実数の平方が0以上であることを適用する。",
           "used_node_ids": [
             "math.alg.real_trichotomy_axiom"
@@ -50684,7 +50663,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{M}",
           "to_latex": "\\mathbf{M} = \\mathbf{M}_{xy} + M_z\\hat{\\mathbf{z}}",
-          "operation_label": "orthogonal_decomposition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "3次元ベクトルを単位ベクトルの方向成分と垂直成分に直交分解する。",
           "used_node_ids": [
             "math.alg.real_distributive_law"
@@ -50698,7 +50677,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "M_z := \\mathbf{M}\\cdot\\hat{\\mathbf{z}}",
           "to_latex": "\\mathbf{M}_{xy} := \\mathbf{M} - M_z\\hat{\\mathbf{z}}",
-          "operation_label": "scalar_projection_subtraction",
+          "operation_label": "前提の適用と式変形",
           "explanation": "軸方向成分を引くことで横成分を定義する。",
           "used_node_ids": [
             "math.alg.real_additive_inverse_axiom"
@@ -50728,7 +50707,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{a}\\times\\mathbf{b}",
           "to_latex": "\\mathbf{a}\\times\\mathbf{b} = -(\\mathbf{b}\\times\\mathbf{a})",
-          "operation_label": "antisymmetry_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "レヴィチヴィタ記号の交代性を用いて外積の交代性を示す。",
           "used_node_ids": [
             "math.alg.real_commutative_law"
@@ -50742,7 +50721,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "(\\alpha\\mathbf{a})\\times\\mathbf{b}",
           "to_latex": "(\\alpha\\mathbf{a}+\\beta\\mathbf{c})\\times\\mathbf{b} = \\alpha(\\mathbf{a}\\times\\mathbf{b})+\\beta(\\mathbf{c}\\times\\mathbf{b})",
-          "operation_label": "bilinearity_check",
+          "operation_label": "線形性の適用",
           "explanation": "成分ごとの分配法則から双線形性を導く。",
           "used_node_ids": [
             "math.alg.real_distributive_law"
@@ -50772,7 +50751,7 @@
           "parent_step_id": null,
           "from_latex": "E = \\frac{1}{2}m_r\\|\\mathbf{v}\\|^2",
           "to_latex": "\\rho(\\mathbf{v}) = C_v\\exp\\!\\left(-\\frac{m_r\\|\\mathbf{v}\\|^2}{2k_B T}\\right)",
-          "operation_label": "exponential_energy_distribution",
+          "operation_label": "前提の適用と式変形",
           "explanation": "運動エネルギーに比例するボルツマン因子として確率密度を定義する。",
           "used_node_ids": [
             "math.calc.exp_as_inverse_log_def"
@@ -50786,7 +50765,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\rho(\\mathbf{v})",
           "to_latex": "f_{\\mathrm{MB}}(E)\\,dE \\propto \\|\\mathbf{v}\\|\\,\\rho(\\mathbf{v})\\,d^3\\mathbf{v}",
-          "operation_label": "flux_weighting",
+          "operation_label": "前提の適用と式変形",
           "explanation": "速さの体積要素積分から流束重み付きエネルギー測度を得る。",
           "used_node_ids": [
             "math.calc.general_power_exp_log_def"
@@ -50816,7 +50795,7 @@
           "parent_step_id": null,
           "from_latex": "\\iiint_{V}",
           "to_latex": "\\frac{d}{dt}\\iiint_{V} \\rho \\frac{\\partial u_i}{\\partial t}\\,dV = \\oiint_{\\partial V} \\sigma_{ij} n_j\\,dS",
-          "operation_label": "momentum_balance_integral",
+          "operation_label": "積分操作の適用",
           "explanation": "ガウスの発散定理を用いて体積力・表面力の釣合いを積分形に変形する。",
           "used_node_ids": [
             "math.calc.gauss_divergence_theorem"
@@ -50830,7 +50809,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "t_i",
           "to_latex": "t_i = \\sigma_{ij} n_j",
-          "operation_label": "cauchy_stress_theorem",
+          "operation_label": "前提の適用と式変形",
           "explanation": "コーシーの切断原理によりトラクションベクトルと応力テンソルを結びつける。",
           "used_node_ids": [
             "math.calc.leibniz_integral_fixed_domain"
@@ -50862,7 +50841,7 @@
           "parent_step_id": null,
           "from_latex": "Y(X, L) := A X^{\\alpha} L^{1-\\alpha}",
           "to_latex": "y = \\frac{Y}{L} = A X^{\\alpha} L^{-\\alpha}",
-          "operation_label": "definition_expansion",
+          "operation_label": "定義の適用",
           "explanation": "一般のべき乗定義と1次同次性の背景からコブ＝ダグラス型総生産関数を導入する。",
           "used_node_ids": [
             "math.calc.general_power_exp_log_def",
@@ -50876,7 +50855,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "Y(X, L) := A X^{\\alpha} L^{1-\\alpha}",
           "to_latex": "y := \\frac{Y}{L}",
-          "operation_label": "per_capita_scaling",
+          "operation_label": "前提の適用と式変形",
           "explanation": "総生産量を労働人口で除して1人あたり生産量を構成する。",
           "used_node_ids": [
             "math.calc.cobb_douglas_land_labor_def"
@@ -50906,7 +50885,7 @@
           "parent_step_id": null,
           "from_latex": "f: I \\to \\mathbb{R}",
           "to_latex": "f(\\theta x + (1 - \\theta)y) \\ge \\theta f(x) + (1 - \\theta)f(y)",
-          "operation_label": "convex_combination_inequality",
+          "operation_label": "不等式の評価",
           "explanation": "関数の線形結合と区間上の凸性から凹関数の定義を導く。",
           "used_node_ids": [
             "math.calc.function_linear_combination_def"
@@ -50919,7 +50898,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\theta x + (1 - \\theta)y",
           "to_latex": "f(\\theta x + (1 - \\theta)y) \\ge \\theta f(x) + (1 - \\theta)f(y)",
-          "operation_label": "concavity_condition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "任意の凸結合において関数値が上方にある条件を課す。",
           "used_node_ids": [
             "math.calc.concave_function_def"
@@ -50949,7 +50928,7 @@
           "parent_step_id": null,
           "from_latex": "\\frac{d^2\\psi}{dz^2} = \\kappa",
           "to_latex": "\\psi'(z) = \\kappa(z - W_d)",
-          "operation_label": "first_integration",
+          "operation_label": "積分操作の適用",
           "explanation": "微積分学の基本定理を用いて2階導関数を1階積分し境界条件を代入する。",
           "used_node_ids": [
             "math.calc.fundamental_theorem_calculus_2"
@@ -50962,7 +50941,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\psi'(z) = \\kappa(z - W_d)",
           "to_latex": "\\psi(z) = \\frac{\\kappa}{2}(z - W_d)^2",
-          "operation_label": "second_integration",
+          "operation_label": "積分操作の適用",
           "explanation": "得られた1階導関数を再度積分して2次多項式の解を得る。",
           "used_node_ids": [
             "math.calc.const_second_deriv_bvp"
@@ -50993,7 +50972,7 @@
           "parent_step_id": null,
           "from_latex": "\\int_{0}^{1}\\sqrt{\\frac{1-u}{u}}\\,du",
           "to_latex": "2\\int_{0}^{\\pi/2}\\cos^2\\theta\\,d\\theta",
-          "operation_label": "substitution_rule",
+          "operation_label": "代入・置き換え",
           "explanation": "置換積分法を用いて逆平方根型広義積分を三角関数の積分に変換する。",
           "used_node_ids": [
             "math.calc.m43_definite_integral_substitution"
@@ -51006,7 +50985,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "2\\int_{0}^{\\pi/2}\\cos^2\\theta\\,d\\theta",
           "to_latex": "\\frac{\\pi}{2}",
-          "operation_label": "evaluate_cos_sq",
+          "operation_label": "前提の適用と式変形",
           "explanation": "余弦2乗関数の定積分公式を適用して最終的な値を算出する。",
           "used_node_ids": [
             "math.calc.definite_integral_cos_squared"
@@ -51035,7 +51014,7 @@
           "parent_step_id": null,
           "from_latex": "f(x) = e^x",
           "to_latex": "\\lim_{x \\to 0} \\frac{e^{x} - 1}{x} = 1",
-          "operation_label": "definition_limit_substitution",
+          "operation_label": "定義の適用",
           "explanation": "自然指数関数の微分可能性と定義から原点での差分商の極限を評価する。",
           "used_node_ids": [
             "math.calc.differentiable_at_point_def",
@@ -51049,7 +51028,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "f'(0) = \\lim_{x \\to 0} \\frac{e^{0+x} - e^0}{x}",
           "to_latex": "f'(0) = \\lim_{x \\to 0} \\frac{e^x - 1}{x}",
-          "operation_label": "derivative_at_zero",
+          "operation_label": "微分操作の適用",
           "explanation": "原点における微分の定義に指数関数の性質を適用する。",
           "used_node_ids": [
             "math.calc.differentiable_at_point_def"
@@ -51062,7 +51041,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\lim_{x \\to 0} \\frac{e^x - 1}{x} = 1",
           "to_latex": "\\lim_{x \\to 0} \\frac{1 - e^{-x}}{x} = 1",
-          "operation_label": "algebraic_variable_flip",
+          "operation_label": "前提の適用と式変形",
           "explanation": "変数変換または分子の符号反転によりもう一方の極限形を導出する。",
           "used_node_ids": [
             "math.calc.exp_as_inverse_log_def"
@@ -51090,7 +51069,7 @@
           "parent_step_id": null,
           "from_latex": "J_i",
           "to_latex": "I_i := z_i F J_i,\\quad P_i := \\frac{\beta_i D_i}{d}",
-          "operation_label": "flux_to_current_definition",
+          "operation_label": "定義の適用",
           "explanation": "モル流束からファラデー定数と価数を用いて電流密度を定義する。",
           "used_node_ids": [
             "math.calc.dilute_binary_collision_measure"
@@ -51103,7 +51082,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "J_i",
           "to_latex": "z_i F J_i",
-          "operation_label": "charge_scaling",
+          "operation_label": "前提の適用と式変形",
           "explanation": "モル流束に電荷素量とファラデー定数を乗じて電流密度に換算する。",
           "used_node_ids": [
             "math.calc.dilute_binary_collision_measure"
@@ -51116,7 +51095,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "D_i, d, \\beta_i",
           "to_latex": "P_i := \\frac{\beta_i D_i}{d}",
-          "operation_label": "permeability_scaling",
+          "operation_label": "前提の適用と式変形",
           "explanation": "拡散係数、膜厚、分配係数から膜透過係数を構成する。",
           "used_node_ids": [
             "math.calc.dilute_binary_collision_measure"
@@ -51145,7 +51124,7 @@
           "parent_step_id": null,
           "from_latex": "f(x) = \\frac{1}{e^x + 1}",
           "to_latex": "1 - f(x) = \\frac{1}{e^{-x} + 1},\\quad f(x) \\approx e^{-x}",
-          "operation_label": "algebraic_inversion_and_approximation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "フェルミ分布の定義式から補空間の対称式を導き、高エネルギー極限での近似評価を行う。",
           "used_node_ids": [
             "math.alg.real_transposition",
@@ -51159,7 +51138,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "1 - \\frac{1}{e^x + 1}",
           "to_latex": "\\frac{e^x}{e^x + 1} = \\frac{1}{e^{-x} + 1}",
-          "operation_label": "complement_fraction",
+          "operation_label": "前提の適用と式変形",
           "explanation": "1からf(x)を引いた式を通分し、分子分母をe^{-x}倍して反転対称形を得る。",
           "used_node_ids": [
             "math.calc.exp_as_inverse_log_def"
@@ -51172,7 +51151,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{1}{e^x + 1}",
           "to_latex": "e^{-x}\\big(1 + \\mathcal{O}(e^{-x})\\big)",
-          "operation_label": "asymptotic_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "x >> 1のとき分母の1を無視して指数関数項で近似する。",
           "used_node_ids": [
             "math.alg.real_transposition"
@@ -51186,7 +51165,6 @@
       "route_kind": "deductive",
       "title": "1次記憶保持率の微小時間増分仮説の導出",
       "premise_node_ids": [
-        "math.calc.first_order_linear_relaxation_law",
         "math.calc.landau_little_o_def"
       ],
       "required_math_node_ids": [],
@@ -51201,10 +51179,9 @@
           "parent_step_id": null,
           "from_latex": "\\frac{dR}{dt} = -\\frac{R}{S}",
           "to_latex": "R(t+h) - R(t) = -\\frac{1}{S} R(t)\\,h + \\varphi(h)",
-          "operation_label": "linear_increment_model",
+          "operation_label": "線形性の適用",
           "explanation": "1階線形緩和の微分方程式から微小時間hにおける差分方程式とランダウの小文字項を構成する。",
           "used_node_ids": [
-            "math.calc.first_order_linear_relaxation_law",
             "math.calc.landau_little_o_def"
           ]
         },
@@ -51215,11 +51192,9 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\dot{R}(t) \\approx \\frac{R(t+h) - R(t)}{h}",
           "to_latex": "R(t+h) - R(t) \\approx \\dot{R}(t)h",
-          "operation_label": "euler_approximation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "時間微分を前進差分で近似する。",
-          "used_node_ids": [
-            "math.calc.first_order_linear_relaxation_law"
-          ]
+          "used_node_ids": []
         },
         {
           "step_id": "s2_sub2",
@@ -51228,7 +51203,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "-\\frac{1}{S}R(t)h",
           "to_latex": "-\\frac{1}{S}R(t)h + \\varphi(h),\\; \\varphi(h)=o(h)",
-          "operation_label": "little_o_addition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "高次の残差項o(h)を付加して正確な微小時間増分関係式とする。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -51257,7 +51232,7 @@
           "parent_step_id": null,
           "from_latex": "u(t)",
           "to_latex": "\\left(\\frac{du}{dt}\\right)_{\\text{relax}} := -\\frac{u - u_{\\mathrm{eq}}}{\\tau}",
-          "operation_label": "definition",
+          "operation_label": "定義の適用",
           "explanation": "時定数 tau > 0 をもつ平衡値への1階線形緩和の増分則を定義する。",
           "used_node_ids": [
             "math.calc.leibniz_derivative_notation_def"
@@ -51271,7 +51246,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\left(\\frac{du}{dt}\\right)_{\\text{relax}} := -\\frac{u - u_{\\mathrm{eq}}}{\\tau}",
           "to_latex": "\\left(\\frac{d\\mathbf{v}}{dt}\\right)_{\\text{relax}} := -\\frac{\\mathbf{v} - \\mathbf{v}_{\\mathrm{eq}}}{\\tau}",
-          "operation_label": "extension",
+          "operation_label": "前提の適用と式変形",
           "explanation": "スカラー版の緩和則をベクトル成分にも同様に拡張して定義する。",
           "used_node_ids": [
             "math.calc.first_order_linear_decay_increment"
@@ -51298,7 +51273,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{q}''",
           "to_latex": "\\dot{Q}_\\Sigma := \\iint_{\\Sigma} (\\mathbf{q}'' \\cdot \\mathbf{n})\\,dS",
-          "operation_label": "surface_integral",
+          "operation_label": "積分操作の適用",
           "explanation": "熱流束ベクトルと単位法線ベクトルの内積を曲面上で面積分し通過流量を定義する。",
           "used_node_ids": [
             "math.calc.mi01_multiple_integral_def"
@@ -51312,7 +51287,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\iint_{\\Sigma} (\\mathbf{q}'' \\cdot \\mathbf{n})\\,dS",
           "to_latex": "A_\\Sigma := \\iint_{\\Sigma} 1\\,dS",
-          "operation_label": "total_area",
+          "operation_label": "前提の適用と式変形",
           "explanation": "被積分関数を1とした場合の面積分として曲面自体の面積を定義する。",
           "used_node_ids": [
             "math.calc.mi01_multiple_integral_def"
@@ -51343,7 +51318,7 @@
           "parent_step_id": null,
           "from_latex": "s",
           "to_latex": "\\Gamma(s) := \\int_{0}^{\\infty} u^{s-1}e^{-u}\\,du",
-          "operation_label": "definition",
+          "operation_label": "定義の適用",
           "explanation": "広義積分を用いたガンマ関数の積分表示を導入する。",
           "used_node_ids": [
             "math.calc.gamma_half_three_halves"
@@ -51357,7 +51332,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\Gamma(s)",
           "to_latex": "\\Gamma\\left(\\frac{1}{2}\\right) = \\sqrt{\\pi},\\quad \\Gamma\\left(\\frac{3}{2}\\right) = \\frac{\\sqrt{\\pi}}{2}",
-          "operation_label": "evaluation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "変数変換によりガウス積分に帰着させ、s=1/2およびs=3/2における値を求める。",
           "used_node_ids": [
             "math.calc.improper_integral_affine_subst"
@@ -51387,7 +51362,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{q}'' = \\mathbf{K}\\nabla T",
           "to_latex": "\\mathbf{q}''\\cdot\\nabla T \\le 0",
-          "operation_label": "linear_response_and_entropy_inequality",
+          "operation_label": "不等式の評価",
           "explanation": "等方性テンソル表現に基づく熱伝導の線形関係とエントロピー増大則からの符号制約の構築。",
           "used_node_ids": [
             "math.alg.isotropic_second_order_tensor_identity"
@@ -51401,7 +51376,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "R\\mathbf{K}R^\\top = \\mathbf{K}",
           "to_latex": "\\mathbf{q}'' = \\mathbf{K}\\nabla T",
-          "operation_label": "isotropic_tensor_reduction",
+          "operation_label": "前提の適用と式変形",
           "explanation": "SO(3)回転不変性から熱伝導率テンソルがスカラー倍表現に帰着することを示す。",
           "used_node_ids": [
             "math.alg.isotropic_second_order_tensor_identity"
@@ -51415,7 +51390,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbf{q}'' = \\mathbf{K}\\nabla T",
           "to_latex": "\\mathbf{q}''\\cdot\\nabla T \\le 0",
-          "operation_label": "second_law_constraint",
+          "operation_label": "前提の適用と式変形",
           "explanation": "熱力学第2法則の要求により熱流束と温度勾配の内積が非正となることを適用する。",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def"
@@ -51444,7 +51419,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{W}(\\mathbf{x}) := -\\frac{1}{4\\pi}\\iiint_{\\mathbb{R}^3}\\frac{\\mathbf{u}(\\mathbf{y})}{\\|\\mathbf{x}-\\mathbf{y}\\|}\\,dV_y",
           "to_latex": "\\nabla^2\\mathbf{W} = \\mathbf{u},\\quad \\phi := \\nabla\\cdot\\mathbf{W},\\quad \\boldsymbol{\\psi} := -\\nabla\\times\\mathbf{W}",
-          "operation_label": "newtonian_potential_laplacian",
+          "operation_label": "前提の適用と式変形",
           "explanation": "ニュートンポテンシャルにラプラシアンを作用させて元のベクトル場を復元し、ポテンシャルを定義する。",
           "used_node_ids": [
             "math.calc.gauss_divergence_theorem"
@@ -51458,7 +51433,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbf{W}(\\mathbf{x}) := -\\frac{1}{4\\pi}\\iiint_{\\mathbb{R}^3}\\frac{\\mathbf{u}(\\mathbf{y})}{\\|\\mathbf{x}-\\mathbf{y}\\|}\\,dV_y",
           "to_latex": "\\nabla^2\\mathbf{W}(\\mathbf{x}) = \\mathbf{u}(\\mathbf{x})",
-          "operation_label": "poisson_equation_identity",
+          "operation_label": "恒等式の適用",
           "explanation": "ポアソン方程式の性質を用いてニュートンポテンシャルの2階微分がソース項に一致することを示す。",
           "used_node_ids": [
             "math.calc.gauss_divergence_theorem"
@@ -51472,7 +51447,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\nabla^2\\mathbf{W} = \\mathbf{u}",
           "to_latex": "\\phi := \\nabla\\cdot\\mathbf{W},\\quad \\boldsymbol{\\psi} := -\\nabla\\times\\mathbf{W}",
-          "operation_label": "potential_definitions",
+          "operation_label": "定義の適用",
           "explanation": "得られたベクトルポテンシャルとスカラーポテンシャルの微分形式を定義する。",
           "used_node_ids": [
             "math.calc.gauss_divergence_theorem"
@@ -51502,7 +51477,7 @@
           "parent_step_id": null,
           "from_latex": "\\int_{a}^{\\infty} g(E)\\,dE",
           "to_latex": "c\\int_{0}^{\\infty} g(a + cu)\\,du",
-          "operation_label": "affine_substitution_limit",
+          "operation_label": "代入・置き換え",
           "explanation": "有限区間での置換積分公式を極限操作により半無限区間に拡張する。",
           "used_node_ids": [
             "math.calc.m43_definite_integral_substitution"
@@ -51516,7 +51491,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "E = a + cu,\\quad dE = c\\,du",
           "to_latex": "\\int_{a}^{T} g(E)\\,dE = \\int_{0}^{(T-a)/c} g(a + cu)c\\,du",
-          "operation_label": "finite_substitution",
+          "operation_label": "代入・置き換え",
           "explanation": "変数変換 E = a + cu を有限上端 T に対して適用する。",
           "used_node_ids": [
             "math.calc.m43_definite_integral_substitution"
@@ -51530,7 +51505,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\lim_{T \\to \\infty} \\int_{a}^{T} g(E)\\,dE",
           "to_latex": "c\\int_{0}^{\\infty} g(a + cu)\\,du",
-          "operation_label": "upper_limit_infinity",
+          "operation_label": "極限操作の適用",
           "explanation": "上端 T を無限大に飛ばす極限をとることで広義積分の公式を得る。",
           "used_node_ids": [
             "math.calc.laplace_transform_def"
@@ -51560,7 +51535,7 @@
           "parent_step_id": null,
           "from_latex": "\\int_{0}^{\\infty} h(u)\\,du",
           "to_latex": "c\\int_{0}^{\\infty} h(u)\\,du",
-          "operation_label": "improper_integral_linearity",
+          "operation_label": "線形性の適用",
           "explanation": "有限区間における定積分の線形性を極限操作を通じて半無限広義積分へ移行する。",
           "used_node_ids": [
             "math.calc.m16_integral_linearity"
@@ -51574,7 +51549,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\int_{0}^{T} c\\,h(u)\\,du = c\\int_{0}^{T} h(u)\\,du",
           "to_latex": "\\lim_{T \\to \\infty} \\int_{0}^{T} c\\,h(u)\\,du = \\lim_{T \\to \\infty} c\\int_{0}^{T} h(u)\\,du",
-          "operation_label": "finite_integral_linearity_and_limit",
+          "operation_label": "線形性の適用",
           "explanation": "有限上端 T までの積分に対して線形性を適用し、両辺の極限をとる準備をする。",
           "used_node_ids": [
             "math.calc.m16_integral_linearity"
@@ -51588,7 +51563,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\lim_{T \\to \\infty} c\\int_{0}^{T} h(u)\\,du",
           "to_latex": "c\\int_{0}^{\\infty} c\\,h(u)\\,du = c\\int_{0}^{\\infty} h(u)\\,du",
-          "operation_label": "limit_scalar_multiplication",
+          "operation_label": "極限操作の適用",
           "explanation": "極限の線形性と定数倍法則により定数を積分の外側に外す。",
           "used_node_ids": [
             "math.calc.laplace_transform_def"
@@ -51781,7 +51756,7 @@
           "parent_step_id": null,
           "from_latex": "\\varphi(h) = o(h)\\;(h \\to 0)",
           "to_latex": "\\lim_{h \\to 0} \\frac{\\varphi(h)}{h} = 0",
-          "operation_label": "equivalence_definition",
+          "operation_label": "定義の適用",
           "explanation": "ランダウの小文字 o(h) の定義を、イプシロン・デルタによる極限の零収束式として等価変形する。",
           "used_node_ids": [
             "math.calc.epsilon_delta_limit_def"
@@ -51795,7 +51770,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\varphi(h) = o(h)",
           "to_latex": "\\forall \\varepsilon > 0, \\exists \\delta > 0 \\text{ s.t. } 0 < |h| < \\delta \\implies |\\frac{\\varphi(h)}{h}| < \\varepsilon",
-          "operation_label": "epsilon_delta_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "極限の定義を商の絶対値評価に適用する。",
           "used_node_ids": [
             "math.calc.epsilon_delta_limit_def"
@@ -51809,7 +51784,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "|\\frac{\\varphi(h)}{h} - 0| < \\varepsilon",
           "to_latex": "\\lim_{h \\to 0} \\frac{\\varphi(h)}{h} = 0",
-          "operation_label": "limit_notation",
+          "operation_label": "極限操作の適用",
           "explanation": "収束先が 0 である極限記号へと簡約する。",
           "used_node_ids": [
             "math.calc.epsilon_delta_limit_def"
@@ -51840,7 +51815,7 @@
           "parent_step_id": null,
           "from_latex": "\\frac{d^2\\psi}{dz^2} = 0",
           "to_latex": "\\frac{d^2\\phi}{dx^2} = 0,\\quad \\phi(0) = V_m,\\quad \\phi(d) = 0",
-          "operation_label": "boundary_value_setup",
+          "operation_label": "集合の定義と整理",
           "explanation": "空間電荷のない1次元領域におけるラプラス方程式の適用と境界条件の設定を行う。",
           "used_node_ids": [
             "math.calc.linear_potential_1d_bvp"
@@ -51854,7 +51829,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{d^2\\psi}{dz^2} = 0",
           "to_latex": "\\frac{d^2\\phi}{dx^2} = 0",
-          "operation_label": "coordinate_substitution",
+          "operation_label": "代入・置き換え",
           "explanation": "座標変数を z から細胞膜厚さ方向の x に置き換える。",
           "used_node_ids": [
             "math.calc.linear_potential_1d_bvp"
@@ -51868,7 +51843,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\psi(0) = 0,\\; \\psi(t) = V",
           "to_latex": "\\phi(0) = V_m,\\quad \\phi(d) = 0",
-          "operation_label": "boundary_assignment",
+          "operation_label": "上界・下界の評価",
           "explanation": "境界条件を膜外側の基準電位と膜内側の電位 V_m に合わせる。",
           "used_node_ids": [
             "math.calc.linear_potential_1d_bvp"
@@ -51897,7 +51872,7 @@
           "parent_step_id": null,
           "from_latex": "\\frac{d}{dt}F(t)",
           "to_latex": "A(t) := -\\frac{dN(t)}{dt}",
-          "operation_label": "negative_derivative_def",
+          "operation_label": "定義の確認",
           "explanation": "時間微分の負符号をとり、崩壊物質の減少率を放射能として定義する。",
           "used_node_ids": [
             "math.calc.derivative_leibniz_lagrange_equiv"
@@ -51911,7 +51886,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{d}{dt}N(t)",
           "to_latex": "\\frac{dN(t)}{dt}",
-          "operation_label": "leibniz_notation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "期待残存数の時間微分をライプニッツ記法で表す。",
           "used_node_ids": [
             "math.calc.derivative_leibniz_lagrange_equiv"
@@ -51925,7 +51900,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dN(t)}{dt}",
           "to_latex": "A(t) := -\\frac{dN(t)}{dt}",
-          "operation_label": "sign_inversion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "正の量を表現するために負符号を付加して活動度とする。",
           "used_node_ids": [
             "math.calc.derivative_leibniz_lagrange_equiv"
@@ -51955,7 +51930,7 @@
           "parent_step_id": null,
           "from_latex": "\\tilde{\\mu}_i(x)",
           "to_latex": "J_i(x) = -u_i c_i(x)\\frac{d\\tilde{\\mu}_i}{dx},\\quad D_i = u_i RT",
-          "operation_label": "linear_response_derivation",
+          "operation_label": "線形性の適用",
           "explanation": "電気化学ポテンシャルの空間勾配に比例する流束則と拡散係数の関係式を構成する。",
           "used_node_ids": [
             "math.calc.electrochemical_potential_def"
@@ -51969,7 +51944,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\tilde{\\mu}_i(x) = \\mu_i^0 + RT\\ln c_i(x) + z_i F\\phi(x)",
           "to_latex": "\\frac{d\\tilde{\\mu}_i}{dx} = \\frac{RT}{c_i(x)}\\frac{dc_i}{dx} + z_i F\\frac{d\\phi}{dx}",
-          "operation_label": "spatial_gradient",
+          "operation_label": "前提の適用と式変形",
           "explanation": "電気化学ポテンシャルの定義式を位置 x で微分する。",
           "used_node_ids": [
             "math.calc.electrochemical_potential_def"
@@ -51983,7 +51958,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{d\\tilde{\\mu}_i}{dx}",
           "to_latex": "J_i(x) = -u_i c_i(x)\\frac{d\\tilde{\\mu}_i}{dx},\\quad D_i = u_i RT",
-          "operation_label": "flux_proportionality",
+          "operation_label": "前提の適用と式変形",
           "explanation": "易動度と拡散係数を結ぶ関係式を代入して流束表現を完成させる。",
           "used_node_ids": [
             "math.calc.electrochemical_potential_def"
@@ -52016,7 +51991,7 @@
           "parent_step_id": null,
           "from_latex": "\\Delta V_{\\mathrm{cyl}}(\\mathbf{\\Omega}) = ( \\dots )",
           "to_latex": "\\Delta V_{\\mathrm{cyl}}(\\mathbf{\\Omega}) := (\\mathbf{\\Omega} v\\,\\Delta t)\\cdot(\\mathbf{e}_n\\,\\Delta S) = (\\mathbf{\\Omega}\\cdot\\mathbf{e}_n)\\,v\\,\\Delta t\\,\\Delta S",
-          "operation_label": "flux_volume_definition",
+          "operation_label": "定義の適用",
           "explanation": "速度ベクトルによる微小移動量と面積要素ベクトルの内積をとることで斜円柱掃引体積を定義する。",
           "used_node_ids": [
             "math.calc.dilute_binary_collision_measure",
@@ -52031,7 +52006,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\Delta V_{\\mathrm{cyl}}(\\mathbf{\\Omega}) = (\\mathbf{\\Omega} v\\,\\Delta t)\\cdot(\\mathbf{e}_n\\,\\Delta S)",
           "to_latex": "\\Delta V_{\\mathrm{cyl}}(\\mathbf{\\Omega}) = (\\mathbf{\\Omega} v\\,\\Delta t)\\cdot(\\mathbf{e}_n\\,\\Delta S)",
-          "operation_label": "vector_product_setup",
+          "operation_label": "集合の定義と整理",
           "explanation": "衝突確率の基礎となる微小体積を速度と断面積の積として表現する。",
           "used_node_ids": [
             "math.calc.dilute_binary_collision_measure"
@@ -52045,7 +52020,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "(\\mathbf{\\Omega} v\\,\\Delta t)\\cdot(\\mathbf{e}_n\\,\\Delta S)",
           "to_latex": "(\\mathbf{\\Omega}\\cdot\\mathbf{e}_n)\\,v\\,\\Delta t\\,\\Delta S",
-          "operation_label": "dot_product_rearrangement",
+          "operation_label": "前提の適用と式変形",
           "explanation": "スカラー係数を取り出して内積部分をまとめることで斜円柱の符号付き体積の最終形を得る。",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def"
@@ -52077,7 +52052,7 @@
           "parent_step_id": null,
           "from_latex": "n, p = \\int \\text{DOS} \\cdot f(E) dE",
           "to_latex": "n = \\int_{E_c}^{\\infty} C_c\\sqrt{E - E_c}\\,\\frac{1}{e^{(E - E_F)/(k_B T)} + 1}\\,dE,\\quad p = \\int_{-\\infty}^{E_v} C_v\\sqrt{E_v - E}\\left(1 - \\frac{1}{e^{(E - E_F)/(k_B T)} + 1}\\right)dE",
-          "operation_label": "carrier_density_integral_formulation",
+          "operation_label": "積分操作の適用",
           "explanation": "状態密度とフェルミ＝ディラック関数の積をエネルギー全域で積分して電子・正孔キャリア濃度を定義する。",
           "used_node_ids": [
             "math.calc.fermi_dirac_distribution_algebra"
@@ -52091,7 +52066,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "n = \\int_{E_c}^{\\infty} C_c\\sqrt{E - E_c} f(E) dE",
           "to_latex": "n = \\int_{E_c}^{\\infty} C_c\\sqrt{E - E_c}\\frac{1}{e^{(E - E_F)/(k_B T)} + 1}dE",
-          "operation_label": "electron_density_substitution",
+          "operation_label": "代入・置き換え",
           "explanation": "伝導帯側の状態密度にフェルミ関数を掛けた積分として電子濃度を記述する。",
           "used_node_ids": [
             "math.calc.fermi_dirac_distribution_algebra"
@@ -52105,7 +52080,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "p = \\int_{-\\infty}^{E_v} C_v\\sqrt{E_v - E} (1 - f(E)) dE",
           "to_latex": "p = \\int_{-\\infty}^{E_v} C_v\\sqrt{E_v - E}\\left(1 - \\frac{1}{e^{(E - E_F)/(k_B T)} + 1}\\right)dE,\\quad N_{c,v} := \\frac{\\sqrt{\\pi}}{2} C_{c,v}(k_B T)^{3/2}",
-          "operation_label": "hole_density_and_effective_density",
+          "operation_label": "前提の適用と式変形",
           "explanation": "価電子帯側の空孔確率と有効状態密度の定数表現を導出する。",
           "used_node_ids": [
             "math.calc.gamma_half_three_halves"
@@ -52137,7 +52112,7 @@
           "parent_step_id": null,
           "from_latex": "\\int_{0}^{1} \\tau d\\tau \\text{ and } \\frac{\\partial Q}{\\partial \\varepsilon}",
           "to_latex": "\\int_{0}^{1} \\tau\\,d\\tau = \\frac{1}{2},\\quad Q(\\boldsymbol{\\varepsilon}) = \\frac{1}{2}C_{ijkl}\\varepsilon_{ij}\\varepsilon_{kl} \\implies \\frac{\\partial Q}{\\partial \\varepsilon_{ij}} = C_{ijkl}\\varepsilon_{kl}",
-          "operation_label": "quadratic_form_differentiation",
+          "operation_label": "微分による変形",
           "explanation": "2次斉次形式の比例載荷積分公式とひずみテンソルに関する偏導関数の線形関係を明らかにする。",
           "used_node_ids": [
             "math.alg.isotropic_fourth_order_tensor_rep",
@@ -52152,7 +52127,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\int_{0}^{1} \\tau\\,d\\tau",
           "to_latex": "\\int_{0}^{1} \\tau\\,d\\tau = \\frac{1}{2}",
-          "operation_label": "tau_integral_evaluation",
+          "operation_label": "積分操作の適用",
           "explanation": "比例載荷パラメータtauに関する単純な定積分を評価して1/2を得る。",
           "used_node_ids": [
             "math.calc.e01_hessian_matrix_def"
@@ -52166,7 +52141,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{\\partial}{\\partial \\varepsilon_{ij}}\\left(\\frac{1}{2}C_{ijkl}\\varepsilon_{ij}\\varepsilon_{kl}\\right)",
           "to_latex": "Q(\\boldsymbol{\\varepsilon}) = \\frac{1}{2}C_{ijkl}\\varepsilon_{ij}\\varepsilon_{kl} \\implies \\frac{\\partial Q}{\\partial \\varepsilon_{ij}} = C_{ijkl}\\varepsilon_{kl}",
-          "operation_label": "tensor_partial_derivative",
+          "operation_label": "微分操作の適用",
           "explanation": "対称テンソルの添字対称性を利用して2次形式を偏微分し、応力テンソル相当の線形式を導く。",
           "used_node_ids": [
             "math.alg.isotropic_fourth_order_tensor_rep"
@@ -52198,7 +52173,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{r}(\\ell) \\text{ and } \\tilde{\\mu}(\\ell)",
           "to_latex": "\\mathbf{r}(\\ell) = \\big(x(\\ell), y(\\ell)\\big),\\quad \\left\\|\\frac{d\\mathbf{r}}{d\\ell}\\right\\| = 1,\\quad \\tilde{\\mu}(\\ell) := \\mu\\big(x(\\ell), y(\\ell)\\big)",
-          "operation_label": "arclength_parameterization_definition",
+          "operation_label": "定義の適用",
           "explanation": "位置ベクトルを弧長パラメータで正規化し、空間上の減弱係数を合成関数として1変数関数に落とし込む。",
           "used_node_ids": [
             "math.calc.composite_function_def",
@@ -52213,7 +52188,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbf{r}(\\ell) = (x(\\ell), y(\\ell))",
           "to_latex": "\\mathbf{r}(\\ell) = \\big(x(\\ell), y(\\ell)\\big),\\quad \\left\\|\\frac{d\\mathbf{r}}{d\\ell}\\right\\| = 1",
-          "operation_label": "curve_norm_condition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "2次元座標上の軌跡の接線ベクトルノルムが常に1であることを定義する。",
           "used_node_ids": [
             "math.calc.m13_vector_component_derivative"
@@ -52227,7 +52202,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mu(x(l), y(l))",
           "to_latex": "\\tilde{\\mu}(\\ell) := \\mu\\big(x(\\ell), y(\\ell)\\big),\\quad (x,y) = \\big(x(\\ell), y(\\ell)\\big)",
-          "operation_label": "attenuation_composition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "空間分布関数を光線上の弧長パラメータの合成関数として再定義する。",
           "used_node_ids": [
             "math.calc.composite_function_def"
@@ -52257,7 +52232,7 @@
           "parent_step_id": null,
           "from_latex": "I'(\\ell)",
           "to_latex": "dI := \\frac{dI}{d\\ell}\\,d\\ell = I'(\\ell)\\,d\\ell",
-          "operation_label": "definition_by_derivative_and_basis",
+          "operation_label": "定義の適用",
           "explanation": "導関数の表現と座標微小変位を組み合わせ、1変数微分可能関数の1次微分形式を定義する。",
           "used_node_ids": [
             "math.calc.derivative_leibniz_lagrange_equiv",
@@ -52272,7 +52247,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "I'(\\ell)",
           "to_latex": "\\frac{dI}{d\\ell}",
-          "operation_label": "leibniz_notation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "微分係数をライプニッツ記法で表す。",
           "used_node_ids": [
             "math.calc.derivative_leibniz_lagrange_equiv"
@@ -52286,7 +52261,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{dI}{d\\ell}",
           "to_latex": "dI := \\frac{dI}{d\\ell}\\,d\\ell = I'(\\ell)\\,d\\ell",
-          "operation_label": "differential_form_construction",
+          "operation_label": "微分による変形",
           "explanation": "独立変数の座標微小変位dℓを乗じて1次微分形式を構成する。",
           "used_node_ids": [
             "math.calc.m46_coordinate_differential_basis"
@@ -52316,7 +52291,7 @@
           "parent_step_id": null,
           "from_latex": "\\frac{\\partial T}{\\partial x_i}(\\mathbf{x})",
           "to_latex": "\\nabla T(\\mathbf{x}) := \\sum_{i=1}^{3} \\frac{\\partial T}{\\partial x_i}(\\mathbf{x})\\,\\mathbf{e}_i = \\left(\\frac{\\partial T}{\\partial x}, \\frac{\\partial T}{\\partial y}, \\frac{\\partial T}{\\partial z}\\right)^\\top",
-          "operation_label": "vector_assembly_from_partials",
+          "operation_label": "前提の適用と式変形",
           "explanation": "各座標軸方向の偏導関数を成分として、3次元直交基底を用いて勾配ベクトルを定義する。",
           "used_node_ids": [
             "math.calc.m13_vector_component_derivative",
@@ -52331,7 +52306,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{\\partial T}{\\partial x_i}(\\mathbf{x})",
           "to_latex": "\\frac{\\partial T}{\\partial x}, \\frac{\\partial T}{\\partial y}, \\frac{\\partial T}{\\partial z}",
-          "operation_label": "partial_derivatives",
+          "operation_label": "微分操作の適用",
           "explanation": "スカラー場の各空間変数に関する偏導関数を準備する。",
           "used_node_ids": [
             "math.calc.m44_partial_derivative_def"
@@ -52345,7 +52320,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{\\partial T}{\\partial x_i}",
           "to_latex": "\\sum_{i=1}^{3} \\frac{\\partial T}{\\partial x_i}(\\mathbf{x})\\,\\mathbf{e}_i",
-          "operation_label": "basis_summation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "基底ベクトルと組み合わせることでベクトル場として表現する。",
           "used_node_ids": [
             "math.calc.m13_vector_component_derivative"
@@ -52375,7 +52350,7 @@
           "parent_step_id": null,
           "from_latex": "\\int_{4\\pi} f(\\mathbf{\\Omega})\\,d\\Omega",
           "to_latex": "\\int_{4\\pi} c\\,f(\\mathbf{\\Omega})\\,d\\Omega = c\\int_{4\\pi} f(\\mathbf{\\Omega})\\,d\\Omega",
-          "operation_label": "integral_linearity_property",
+          "operation_label": "線形性の適用",
           "explanation": "積分の定数倍線形性を立体角積分に適用し、定数を外へ括り出す法則を導く。",
           "used_node_ids": [
             "math.calc.m16_integral_linearity"
@@ -52389,7 +52364,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\int \\alpha f(t)\\,dt",
           "to_latex": "\\alpha \\int f(t)\\,dt",
-          "operation_label": "scalar_extraction",
+          "operation_label": "前提の適用と式変形",
           "explanation": "通常の定積分の線形性則を利用する。",
           "used_node_ids": [
             "math.calc.m16_integral_linearity"
@@ -52403,7 +52378,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\int_{4\\pi} c\\,f(\\mathbf{\\Omega})\\,d\\Omega",
           "to_latex": "c\\int_{4\\pi} f(\\mathbf{\\Omega})\\,d\\Omega",
-          "operation_label": "apply_to_solid_angle",
+          "operation_label": "前提の適用と式変形",
           "explanation": "単位球面上の立体角積分領域へ拡張適用する。",
           "used_node_ids": [
             "math.calc.m16_integral_linearity"
@@ -52433,7 +52408,7 @@
           "parent_step_id": null,
           "from_latex": "d\\Omega",
           "to_latex": "\\int_{4\\pi} f(\\mathbf{\\Omega})\\,d\\Omega := \\int_{0}^{2\\pi}\\int_{0}^{\\pi} f(\\mathbf{\\Omega}(\\theta,\\varphi))\\sin\\theta\\,d\\theta\\,d\\varphi",
-          "operation_label": "spherical_coordinate_variable_transform",
+          "operation_label": "前提の適用と式変形",
           "explanation": "変数変換公式とフビニの定理を用いて、立体角積分を極角と方位角の累次積分として定義する。",
           "used_node_ids": [
             "math.calc.mi02_fubini_theorem",
@@ -52448,7 +52423,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\int_{\\mathbf{\\Phi}(\\Omega)} f(\\mathbf{x})\\,d\\mathbf{x}",
           "to_latex": "\\int_{\\Omega} f(\\mathbf{\\Phi}(\\mathbf{u}))\\,|\\det J|\\,d\\mathbf{u}",
-          "operation_label": "jacobian_transform",
+          "operation_label": "前提の適用と式変形",
           "explanation": "ヤコビアン因子を伴う変数変換公式を適用する。",
           "used_node_ids": [
             "math.calc.mi04_change_of_variables_multiple_integral"
@@ -52462,7 +52437,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\iint f(x,y)\\,dx\\,dy",
           "to_latex": "\\int \\left(\\int f\\,dy\\right)dx",
-          "operation_label": "iterated_integration",
+          "operation_label": "積分操作の適用",
           "explanation": "フビニの定理により累次積分形式に書き下す。",
           "used_node_ids": [
             "math.calc.mi02_fubini_theorem"
@@ -52491,7 +52466,7 @@
           "parent_step_id": null,
           "from_latex": "k(h) := g(t+h) - g(t)",
           "to_latex": "\\Delta v(z,t) := v(z+\\Delta z, t) - v(z,t)",
-          "operation_label": "spatial_increment_specialization",
+          "operation_label": "前提の適用と式変形",
           "explanation": "1変数関数の増分定義を空間変数 z と時刻 t に依存する多変数関数の特定方向への増分へと特殊化する",
           "used_node_ids": [
             "math.calc.function_increment_def"
@@ -52505,7 +52480,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "k(h) := g(t+h) - g(t)",
           "to_latex": "v(z+\\Delta z, t) - v(z,t)",
-          "operation_label": "voltage_spatial_difference",
+          "operation_label": "微分による変形",
           "explanation": "時刻 t を固定して電圧の空間方向の前進差分を書き下す",
           "used_node_ids": [
             "math.calc.function_increment_def"
@@ -52519,7 +52494,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "k(h) := g(t+h) - g(t)",
           "to_latex": "\\Delta i(z,t) := i(z+\\Delta z, t) - i(z,t)",
-          "operation_label": "current_spatial_difference",
+          "operation_label": "微分による変形",
           "explanation": "同様に電流についても空間幅 Δz に対する増分を定義する",
           "used_node_ids": [
             "math.calc.function_increment_def"
@@ -52549,7 +52524,7 @@
           "parent_step_id": null,
           "from_latex": "\\iiint_{V} (\\nabla \\cdot \\mathbf{F})\\,dV = \\oiint_{\\partial V} \\mathbf{F} \\cdot \\mathbf{n}\\,dS",
           "to_latex": "\\oint_{\\partial \\Sigma} \\mathbf{F}\\cdot d\\mathbf{l} = \\iint_{\\Sigma} (\\nabla\\times\\mathbf{F})\\cdot\\mathbf{n}\\,dS",
-          "operation_label": "stokes_theorem_generalization",
+          "operation_label": "前提の適用と式変形",
           "explanation": "領域の次元と微分作用素を拡張し、発散定理および領域加法性からストークスの定理を導く",
           "used_node_ids": [
             "math.calc.gauss_divergence_theorem",
@@ -52564,7 +52539,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\partial V = \\bigcup_{k=1}^{m} S_k",
           "to_latex": "\\oint_{\\partial \\Sigma} \\mathbf{F}\\cdot d\\mathbf{l}",
-          "operation_label": "boundary_line_integral",
+          "operation_label": "積分操作の適用",
           "explanation": "曲面上の境界閉曲線に沿った線積分を定義する",
           "used_node_ids": [
             "math.calc.line_surface_domain_additivity"
@@ -52578,7 +52553,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\iiint_{V} (\\nabla \\cdot \\mathbf{F})\\,dV",
           "to_latex": "\\iint_{\\Sigma} (\\nabla\\times\\mathbf{F})\\cdot\\mathbf{n}\\,dS",
-          "operation_label": "curl_surface_integral",
+          "operation_label": "積分操作の適用",
           "explanation": "回転作用素の面積分へと変換する",
           "used_node_ids": [
             "math.calc.gauss_divergence_theorem"
@@ -52608,7 +52583,7 @@
           "parent_step_id": null,
           "from_latex": "f(\\theta x + (1 - \\theta)y) \\ge \\theta f(x) + (1 - \\theta)f(y)",
           "to_latex": "u(\\theta x + (1 - \\theta)y) \\ge \\theta u(x) + (1 - \\theta)u(y)",
-          "operation_label": "weighted_sum_inequality_chain",
+          "operation_label": "不等式の評価",
           "explanation": "任意の点における接線優越性不等式に対して重み θ および 1-θ を掛け、不等式の保存則を用いて凹関数の定義式を導出する",
           "used_node_ids": [
             "math.alg.real_inequality_order_props",
@@ -52623,7 +52598,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "u(x) \\le u(\\mu) + u'(\\mu)(x - \\mu)",
           "to_latex": "\\theta u(x) \\le \\theta u(\\mu) + \\theta u'(\\mu)(x - \\mu)",
-          "operation_label": "scale_inequality_theta",
+          "operation_label": "不等式の評価",
           "explanation": "凸結合の点 μ に対する接線不等式に正の重み θ を乗じる",
           "used_node_ids": [
             "math.alg.real_inequality_order_props"
@@ -52637,7 +52612,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "u(y) \\le u(\\mu) + u'(\\mu)(y - \\mu)",
           "to_latex": "(1-\\theta) u(y) \\le (1-\\theta) u(\\mu) + (1-\\theta) u'(\\mu)(y - \\mu)",
-          "operation_label": "scale_inequality_one_minus_theta",
+          "operation_label": "不等式の評価",
           "explanation": "もう一方の点 y に対する接線不等式に 1-θ を乗じる",
           "used_node_ids": [
             "math.alg.real_inequality_order_props"
@@ -52651,7 +52626,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "x_1 \\le y_1 \\land x_2 \\le y_2 \\implies x_1 + x_2 \\le y_1 + y_2",
           "to_latex": "u(\\theta x + (1 - \\theta)y) \\ge \\theta u(x) + (1 - \\theta)u(y)",
-          "operation_label": "add_inequalities",
+          "operation_label": "不等式の評価",
           "explanation": "両式を辺々加算して凹性の条件を満たすことを示す",
           "used_node_ids": [
             "math.alg.real_inequality_order_props",
@@ -52682,7 +52657,7 @@
           "parent_step_id": null,
           "from_latex": "f(\\mathbf{a}+\\mathbf{h}) = f(\\mathbf{a}) + \\nabla f(\\mathbf{a})\\cdot\\mathbf{h} + \\frac{1}{2}\\mathbf{h}^\\top H_f(\\mathbf{a})\\mathbf{h} + o(\\|\\mathbf{h}\\|^2)",
           "to_latex": "u(p + h) = u(p) + u'(p)h + \\frac{1}{2}u''(p)h^2 + o(h^2)",
-          "operation_label": "multivariate_to_univariate_taylor",
+          "operation_label": "前提の適用と式変形",
           "explanation": "多変数関数の2次テイラー展開公式を1次元空間に適用し、高次微小誤差項をランダウの小文字 o 記法で表現する",
           "used_node_ids": [
             "math.calc.e02_multivariable_taylor_2nd",
@@ -52697,7 +52672,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "f(\\mathbf{a}) + \\nabla f(\\mathbf{a})\\cdot\\mathbf{h} + \\frac{1}{2}\\mathbf{h}^\\top H_f(\\mathbf{a})\\mathbf{h}",
           "to_latex": "u(p) + u'(p)h + \\frac{1}{2}u''(p)h^2",
-          "operation_label": "univariate_quadratic_terms",
+          "operation_label": "前提の適用と式変形",
           "explanation": "次元を1に固定して値、1階微分項、2階微分項を展開する",
           "used_node_ids": [
             "math.calc.e02_multivariable_taylor_2nd"
@@ -52711,7 +52686,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "r(h) = o(h)\\;(h \\to 0)",
           "to_latex": "o(h^2)\\quad (h \\to 0,\\; p, p+h \\in [0,1])",
-          "operation_label": "peano_remainder_term",
+          "operation_label": "前提の適用と式変形",
           "explanation": "剰余項が h^2 に関して高次無限小であることを小文字 o 記法で定義する",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -52742,7 +52717,7 @@
           "parent_step_id": null,
           "from_latex": "\\forall \\mathbf{e} \\in S^2,\\; \\mathbf{u}\\cdot\\mathbf{e} = \\mathbf{v}\\cdot\\mathbf{e}",
           "to_latex": "\\mathbf{u} = \\mathbf{v}",
-          "operation_label": "vector_identification_deduction",
+          "operation_label": "前提の適用と式変形",
           "explanation": "すべての単位方向ベクトルとの内積が等しいとき、差分ベクトルのノルムが零となる性質を用いてベクトルの一致を導く。",
           "used_node_ids": []
         },
@@ -52753,7 +52728,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "(\\mathbf{u} - \\mathbf{v}) \\cdot \\mathbf{e} = 0",
           "to_latex": "\\mathbf{u} - \\mathbf{v} = \\mathbf{0}",
-          "operation_label": "difference_zero_evaluation",
+          "operation_label": "微分による変形",
           "explanation": "差分ベクトル w = u - v が任意の単位方向ベクトルと直交することから、w自身が零ベクトルであることを示す。",
           "used_node_ids": []
         }
@@ -52780,7 +52755,7 @@
           "parent_step_id": null,
           "from_latex": "(\\nabla\\times\\mathbf{A})_i = \\varepsilon_{ijk}\\frac{\\partial A_k}{\\partial x_j}",
           "to_latex": "\\nabla\\cdot(\\nabla\\times\\mathbf{A}) = 0",
-          "operation_label": "curl_div_identity",
+          "operation_label": "恒等式の適用",
           "explanation": "外積の成分表示とレヴィ＝チヴィタ記号の縮約恒等式を用いて、ベクトル場の回転の発散が恒等的に零になることを示す。",
           "used_node_ids": []
         },
@@ -52791,7 +52766,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\varepsilon_{ijk}\\varepsilon_{klm} = \\delta_{il}\\delta_{jm} - \\delta_{im}\\delta_{jl}",
           "to_latex": "\\nabla\\cdot(\\nabla\\times\\mathbf{A}) = \\varepsilon_{ijk}\\frac{\\partial^2 A_k}{\\partial x_i \\partial x_j} = 0",
-          "operation_label": "epsilon_delta_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "イプシロン・デルタ恒等式を適用し、偏微分の対称性と反対称性の組合せにより結果が消滅することを確認する。",
           "used_node_ids": []
         }
@@ -52818,7 +52793,7 @@
           "parent_step_id": null,
           "from_latex": "\\frac{(1+s)p}{1+sp} - p",
           "to_latex": "sp(1-p) + \\mathcal{O}(s^2)",
-          "operation_label": "rational_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "適応度重み付き頻度変化の有理式を通分・変形し、微小パラメータsに関する1次近似とランダウの小文字項を導く。",
           "used_node_ids": []
         },
@@ -52829,7 +52804,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{(1+s)p - p(1+sp)}{1+sp} = \\frac{sp - sp^2}{1+sp}",
           "to_latex": "\\frac{sp(1-p)}{1+sp} = sp(1-p) + \\mathcal{O}(s^2)",
-          "operation_label": "numerator_simplification",
+          "operation_label": "前提の適用と式変形",
           "explanation": "分子を整理した後、分母のテイラー展開または高次項の切り捨てを行って主要項を得る。",
           "used_node_ids": []
         }
@@ -52856,7 +52831,7 @@
           "parent_step_id": null,
           "from_latex": "P_{\\mathrm{tunnel}}(E)",
           "to_latex": "\\exp\\left(-2\\int_{r_0}^{r_c}\\sqrt{\\frac{2m_r}{\\hbar^2}\\big(V(r)-E\\big)}\\,dr\\right)",
-          "operation_label": "wkb_connection_integral",
+          "operation_label": "積分操作の適用",
           "explanation": "シュレーディンガー方程式のWKB近似解における位相積分から、障壁透過確率の指数部分を導出する。",
           "used_node_ids": []
         },
@@ -52867,7 +52842,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\psi(r) \\propto \\exp\\left(-\\int \\kappa(r) dr\\right)",
           "to_latex": "P \\propto |\\psi(r_c)|^2 / |\\psi(r_0)|^2 \\approx \\exp(-2 \\int \\kappa dr)",
-          "operation_label": "amplitude_squared_transmission",
+          "operation_label": "前提の適用と式変形",
           "explanation": "波動関数の振幅の減衰率を積分し、その2乗から透過確率の表式を完成させる。",
           "used_node_ids": []
         }
@@ -52893,7 +52868,7 @@
           "parent_step_id": null,
           "from_latex": "S(h)",
           "to_latex": "S(h) = 1 - \\lambda h + r(h)",
-          "operation_label": "definition_expansion",
+          "operation_label": "定義の適用",
           "explanation": "微小時間hにおける生存確率を崩壊定数\\lambdaを用いて1次展開し、高次無限小誤差項を加えた表現として定義する。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -52906,7 +52881,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "r(h)",
           "to_latex": "r(h) = o(h)\\;(h \\to 0)",
-          "operation_label": "little_o_condition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "誤差項r(h)がhに対してランダウの小文字o記号の条件を満たすことを明示する。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -52935,7 +52910,7 @@
           "parent_step_id": null,
           "from_latex": "\\int_{0}^{\\pi/2}\\cos^2\\theta\\,d\\theta",
           "to_latex": "\\int_{0}^{\\pi/2}\\frac{1+\\cos(2\\theta)}{2}\\,d\\theta",
-          "operation_label": "trig_identity_substitution",
+          "operation_label": "代入・置き換え",
           "explanation": "三角関数の倍角公式を利用して余弦2乗項を1次と倍角の和に変形する。",
           "used_node_ids": [
             "math.calc.m37_trig_pythagorean_addition"
@@ -52948,7 +52923,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\int_{0}^{\\pi/2}\\frac{1+\\cos(2\\theta)}{2}\\,d\\theta",
           "to_latex": "\\frac{\\pi}{4}",
-          "operation_label": "integration_evaluation",
+          "operation_label": "積分操作の適用",
           "explanation": "定積分の線形性と基本公式を用いて積分を実行し、値を算出する。",
           "used_node_ids": [
             "math.calc.m16_integral_linearity"
@@ -52976,7 +52951,7 @@
           "parent_step_id": null,
           "from_latex": "\\Delta N_{\\mathrm{coll},x}",
           "to_latex": "\\Delta N_{\\mathrm{coll},x} := (N\\,\\Delta V)\\,n(\\mathbf{r},t)\\,(\\sigma_x v\\,\\Delta t)",
-          "operation_label": "sweep_volume_definition",
+          "operation_label": "定義の適用",
           "explanation": "標的数密度と掃引体積の積から微小時間内の衝突数を定義する。",
           "used_node_ids": [
             "math.calc.composite_function_def"
@@ -52989,7 +52964,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "R_x",
           "to_latex": "R_x := \\frac{\\Delta N_{\\mathrm{coll},x}}{\\Delta V\\,\\Delta t}",
-          "operation_label": "reaction_rate_density",
+          "operation_label": "前提の適用と式変形",
           "explanation": "単位体積・単位時間当たりの衝突数として反応率密度を導出する。",
           "used_node_ids": [
             "math.calc.composite_function_def"
@@ -53017,7 +52992,7 @@
           "parent_step_id": null,
           "from_latex": "\\tilde{\\mu}_i(x)",
           "to_latex": "\\tilde{\\mu}_i(x) := \\mu_i^0 + RT\\ln c_i(x) + z_i F\\phi(x)",
-          "operation_label": "potential_summation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "標準化学ポテンシャルに濃度依存の対数項と静電ポテンシャル項を加算して電気化学ポテンシャルを定義する。",
           "used_node_ids": [
             "math.calc.general_power_exp_log_def"
@@ -53030,7 +53005,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "RT\\ln c_i(x)",
           "to_latex": "\\tilde{\\mu}_i(x)\\text{ with }c_i(x) > 0",
-          "operation_label": "domain_condition",
+          "operation_label": "定義域・条件の整理",
           "explanation": "濃度が正値域にあることの対数項の定義域制約を確認する。",
           "used_node_ids": [
             "math.calc.general_power_exp_log_def"
@@ -53060,7 +53035,7 @@
           "parent_step_id": null,
           "from_latex": "\\boldsymbol{\\mu}_k = \\gamma \\mathbf{L}_k",
           "to_latex": "\\mathbf{M} := \\frac{1}{V}\\sum_{k=1}^{N}\\boldsymbol{\\mu}_k",
-          "operation_label": "definition_and_scaling",
+          "operation_label": "定義の適用",
           "explanation": "微視的磁気モーメントの定義から巨視的磁化ベクトルの体積平均への拡張。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity",
@@ -53075,7 +53050,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{d\\mathbf{L}_k}{dt} = \\boldsymbol{\\mu}_k \\times \\mathbf{B}",
           "to_latex": "\\mathbf{B}_0 = B_0\\hat{\\mathbf{z}}",
-          "operation_label": "cross_product_torque",
+          "operation_label": "前提の適用と式変形",
           "explanation": "外場磁気トルクによる角運動量の時間変化を外積演算として記述する。",
           "used_node_ids": [
             "math.alg.vec3_cross_product_properties"
@@ -53106,7 +53081,7 @@
           "parent_step_id": null,
           "from_latex": "I(\\ell) > 0",
           "to_latex": "I(\\ell + \\Delta\\ell) - I(\\ell) = -\\mu I(\\ell)\\Delta\\ell + r(\\Delta\\ell)",
-          "operation_label": "linear_approximation",
+          "operation_label": "線形性の適用",
           "explanation": "微小距離通過に伴う強度変化量を1次近似と高次無限小項で表現する。",
           "used_node_ids": [
             "math.calc.function_increment_def",
@@ -53121,7 +53096,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "r(\\Delta\\ell) = o(\\Delta\\ell)",
           "to_latex": "\\lim_{\\Delta\\ell \\to 0} \\frac{r(\\Delta\\ell)}{\\Delta\\ell} = 0",
-          "operation_label": "limit_definition",
+          "operation_label": "定義の適用",
           "explanation": "剰余項が距離に対して高次ゼロとなる極限条件の適用。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -53151,7 +53126,7 @@
           "parent_step_id": null,
           "from_latex": "R, L, G, C",
           "to_latex": "R_{\\mathrm{elem}} := R\\Delta z",
-          "operation_label": "linear_scaling",
+          "operation_label": "線形性の適用",
           "explanation": "単位長さあたりの分布定数に微小長さΔzを乗じて区間定数を定義する。",
           "used_node_ids": [
             "math.alg.real_distributive_law"
@@ -53165,7 +53140,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "R_{\\mathrm{elem}}, L_{\\mathrm{elem}}, G_{\\mathrm{elem}}, C_{\\mathrm{elem}}",
           "to_latex": "\\Delta z > 0",
-          "operation_label": "parameter_distribution",
+          "operation_label": "前提の適用と式変形",
           "explanation": "全4素子について同様に微小長さを乗じた集中等価定数へ換算する。",
           "used_node_ids": [
             "math.alg.real_multiplication_associativity"
@@ -53195,7 +53170,7 @@
           "parent_step_id": null,
           "from_latex": "R_{\\mathrm{elem}}, L_{\\mathrm{elem}}",
           "to_latex": "v_R = R_{\\mathrm{elem}}\\,i,\\quad v_L = L_{\\mathrm{elem}}\\frac{\\partial i}{\\partial t}",
-          "operation_label": "constitutive_relation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "微小区間の直列要素における電圧降下の構成則を定義する。",
           "used_node_ids": [
             "math.circuit.distributed_rlgc_section_scaling"
@@ -53209,7 +53184,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "G_{\\mathrm{elem}}, C_{\\mathrm{elem}}",
           "to_latex": "i_G = G_{\\mathrm{elem}}\\,v,\\quad i_C = C_{\\mathrm{elem}}\\frac{\\partial v}{\\partial t}",
-          "operation_label": "parallel_constitutive",
+          "operation_label": "前提の適用と式変形",
           "explanation": "並列要素における分流電流の構成則を対応づける。",
           "used_node_ids": [
             "math.calc.leibniz_derivative_notation_def"
@@ -53239,7 +53214,7 @@
           "parent_step_id": null,
           "from_latex": "U_0(\\boldsymbol{\\varepsilon})",
           "to_latex": "\\sigma_{ij}(\\boldsymbol{\\varepsilon}) := \\frac{\\partial U_0(\\boldsymbol{\\varepsilon})}{\\partial \\varepsilon_{ij}},\\quad dU_0 = \\sigma_{ij}\\,d\\varepsilon_{ij},\\quad U_0(\\mathbf{0}) = 0",
-          "operation_label": "hyperelastic_potential_definition",
+          "operation_label": "定義の適用",
           "explanation": "微小ひずみテンソル成分に対するひずみエネルギー密度関数の偏導関数として応力テンソルを定義する。",
           "used_node_ids": [
             "math.calc.infinitesimal_strain_tensor_def"
@@ -53253,7 +53228,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "U_0(\\boldsymbol{\\varepsilon})",
           "to_latex": "\\sigma_{ij}(\\boldsymbol{\\varepsilon}) := \\frac{\\partial U_0(\\boldsymbol{\\varepsilon})}{\\partial \\varepsilon_{ij}}",
-          "operation_label": "stress_tensor_derivative",
+          "operation_label": "微分操作の適用",
           "explanation": "超弾性体のひずみエネルギー密度のひずみ成分に関する偏微分として応力成分を導入する。",
           "used_node_ids": [
             "math.calc.infinitesimal_strain_tensor_def"
@@ -53267,7 +53242,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\sigma_{ij}(\\boldsymbol{\\varepsilon})",
           "to_latex": "dU_0 = \\sigma_{ij}\\,d\\varepsilon_{ij},\\quad U_0(\\mathbf{0}) = 0",
-          "operation_label": "differential_work_increment",
+          "operation_label": "微分による変形",
           "explanation": "全微分形式と無応力状態におけるポテンシャルの基準化を定義する。",
           "used_node_ids": [
             "math.calc.infinitesimal_strain_tensor_def"
@@ -53297,7 +53272,7 @@
           "parent_step_id": null,
           "from_latex": "\\sigma_{ij},\\ \\varepsilon_{kl}",
           "to_latex": "\\sigma_{ij} = C_{ijkl}\\varepsilon_{kl},\\quad C_{ijkl} = C_{klij} = C_{jikl} = C_{ijlk} = C_{jilk} - 0",
-          "operation_label": "linear_hooke_law_definition",
+          "operation_label": "定義の適用",
           "explanation": "4階の弾性剛性テンソルを用いて応力と微小ひずみを線形結びつけ、その主対称性と副対称性を定義する。",
           "used_node_ids": [
             "math.alg.isotropic_fourth_order_tensor_rep",
@@ -53312,7 +53287,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\sigma_{ij}",
           "to_latex": "\\sigma_{ij} = C_{ijkl}\\varepsilon_{kl}",
-          "operation_label": "tensor_linear_constitutive",
+          "operation_label": "線形性の適用",
           "explanation": "一般化されたフックの法則として4階テンソルによる線形構成則を記述する。",
           "used_node_ids": [
             "math.calc.infinitesimal_strain_tensor_def"
@@ -53326,7 +53301,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "C_{ijkl}",
           "to_latex": "C_{ijkl} = C_{klij} = C_{jikl} = C_{ijlk} = C_{jilk} - 0",
-          "operation_label": "symmetry_properties",
+          "operation_label": "前提の適用と式変形",
           "explanation": "弾性テンソルが持つ物理的・数学的対称性（マイナー対称性とメジャー対称性）を定義する。",
           "used_node_ids": [
             "math.alg.isotropic_fourth_order_tensor_rep"
@@ -53356,7 +53331,7 @@
           "parent_step_id": null,
           "from_latex": "U_0,\\ \\gamma_s",
           "to_latex": "U := \\iiint_{\\Omega} U_0\\,dV,\\quad \\Pi_{\\text{elas}} := U - W,\\quad \\Gamma_s := \\iint_{\\Sigma_+ \\cup \\Sigma_-} \\gamma_s\\,dS,\\quad \\Pi := \\Pi_{\\text{elas}} + \\Gamma_s,\\quad A(\\Sigma_+) = A(\\Sigma_-) = A_{\\text{crack}}",
-          "operation_label": "total_potential_energy_definition",
+          "operation_label": "定義の適用",
           "explanation": "ひずみエネルギーの体積積分、弾性全ポテンシャル、表面エネルギーの面積分を組み合わせて定義する。",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def"
@@ -53370,7 +53345,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "U_0",
           "to_latex": "U := \\iiint_{\\Omega} U_0\\,dV,\\quad \\Pi_{\\text{elas}} := U - W",
-          "operation_label": "strain_and_external_potential",
+          "operation_label": "前提の適用と式変形",
           "explanation": "ひずみエネルギー密度を領域全体で積分して全ひずみエネルギーを定義し、外力ポテンシャルを引く。",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def"
@@ -53384,7 +53359,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\gamma_s",
           "to_latex": "\\Gamma_s := \\iint_{\\Sigma_+ \\cup \\Sigma_-} \\gamma_s\\,dS,\\quad \\Pi := \\Pi_{\\text{elas}} + \\Gamma_s,\\quad A(\\Sigma_+) = A(\\Sigma_-) = A_{\\text{crack}}",
-          "operation_label": "surface_energy_and_total",
+          "operation_label": "前提の適用と式変形",
           "explanation": "き裂上下表面における自由表面エネルギーの面積分と、系全体の全ポテンシャルエネルギーを定義する。",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def"
@@ -53414,7 +53389,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{E},\\ \\mathbf{J}",
           "to_latex": "v_k := \\int_{\\gamma_k}\\mathbf{E}\\cdot d\\mathbf{l},\\quad i_k := \\iint_{S_k}\\mathbf{J}\\cdot\\mathbf{n}\\,dS,\\quad \\mathbf{J} = \\sigma\\mathbf{E},\\; R := \\frac{\\ell}{\\sigma A},\\quad v_L := \\frac{d\\Phi_B}{dt},\\; i_C := \\frac{dq}{dt}",
-          "operation_label": "lumped_element_constitutive_relations",
+          "operation_label": "前提の適用と式変形",
           "explanation": "電場の線積分としての電圧、電流密度の面積分としての電流、および抵抗・インダクタ・キャパシタの定義を統合する。",
           "used_node_ids": [
             "math.alg.fraction_numerator_split",
@@ -53429,7 +53404,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbf{E},\\ \\mathbf{J}",
           "to_latex": "v_k := \\int_{\\gamma_k}\\mathbf{E}\\cdot d\\mathbf{l},\\quad i_k := \\iint_{S_k}\\mathbf{J}\\cdot\\mathbf{n}\\,dS",
-          "operation_label": "voltage_current_path_surface",
+          "operation_label": "前提の適用と式変形",
           "explanation": "電場の線積分による枝電圧と電流密度の面積分による枝電流を定義する。",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def"
@@ -53443,7 +53418,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbf{J} = \\sigma\\mathbf{E}",
           "to_latex": "R := \\frac{\\ell}{\\sigma A},\\quad v_L := \\frac{d\\Phi_B}{dt},\\; \\Phi_B = L i,\\quad i_C := \\frac{dq}{dt},\\; q = C v",
-          "operation_label": "passive_components_definition",
+          "operation_label": "定義の適用",
           "explanation": "オームの法則に基づく抵抗、およびインダクタとキャパシタの構成関係を定義する。",
           "used_node_ids": [
             "math.alg.fraction_numerator_split"
@@ -53473,7 +53448,7 @@
           "parent_step_id": null,
           "from_latex": "\\iiint_{V} (\\nabla\\cdot\\mathbf{J})\\,dV + \\frac{\\partial}{\\partial t}\\iiint_{V} \\rho\\,dV = 0",
           "to_latex": "\\iiint_{V} (\\nabla\\cdot\\mathbf{J})\\,dV + \\frac{d}{dt}\\iiint_{V} \\rho\\,dV = 0,\\quad \\nabla\\times\\mathbf{E} = -\\frac{\\partial\\mathbf{B}}{\\partial t}",
-          "operation_label": "Gauss divergence and Leibniz integral application",
+          "operation_label": "積分操作の適用",
           "explanation": "ガウスの発散定理と積分変数の微分交換則を適用して準静的近似の連続の式を導く。",
           "used_node_ids": [
             "math.calc.gauss_divergence_theorem"
@@ -53487,7 +53462,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\iiint_{V} (\\nabla\\cdot\\mathbf{J})\\,dV = \\oiint_{\\partial V} \\mathbf{J}\\cdot\\mathbf{n}\\,dS",
           "to_latex": "\\iiint_{V} (\\nabla\\cdot\\mathbf{J})\\,dV + \\frac{d}{dt}\\iiint_{V} \\rho\\,dV = 0",
-          "operation_label": "Volume integral transformation",
+          "operation_label": "積分操作の適用",
           "explanation": "体積積分をガウスの発散定理により面積分に変換し、電荷保存則を体積全体で統合する。",
           "used_node_ids": [
             "math.calc.gauss_divergence_theorem"
@@ -53501,7 +53476,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{d}{dt}\\iiint_{V} \\rho\\,dV = \\iiint_{V} \\frac{\\partial \\rho}{\\partial t}\\,dV",
           "to_latex": "\\nabla\\times\\mathbf{E} = -\\frac{\\partial\\mathbf{B}}{\\partial t}",
-          "operation_label": "Leibniz integral rule and Faraday law",
+          "operation_label": "積分操作の適用",
           "explanation": "パラメータ微分と体積積分の交換則を用いて時間微分を内部に作用させ、ファラデーの電磁誘導則と結合する。",
           "used_node_ids": [],
           "sympy_check_hint": null
@@ -53530,7 +53505,7 @@
           "parent_step_id": null,
           "from_latex": "d(T(x),T(y))\\le\\kappa\\,d(x,y)",
           "to_latex": "\\exists!\\,x^*\\in X\\text{ s.t. } T(x^*)=x^*,\\; \\lim_{t\\to\\infty} d(T^t(x_0), x^*) = 0",
-          "operation_label": "Contraction mapping iteration and limit evaluation",
+          "operation_label": "極限操作の適用",
           "explanation": "縮小写像の条件から等比数列の上界評価を用い、コーシー列の完備性から不動点の存在と一意性を導出する。",
           "used_node_ids": [
             "math.alg.geometric_finite_sum_limit"
@@ -53544,7 +53519,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "d(T^n(x_0), T^{n+m}(x_0)) \\le \\sum_{i=0}^{m-1} \\kappa^{n+i} d(x_0, T(x_0))",
           "to_latex": "d(T^n(x_0), T^{n+m}(x_0)) \\le \\frac{\\kappa^n}{1-\\kappa} d(x_0, T(x_0))",
-          "operation_label": "Geometric series bound evaluation",
+          "operation_label": "上界・下界の評価",
           "explanation": "縮小性の繰り返し適用により、点列間の距離を有限等比和の上界で評価する。",
           "used_node_ids": [
             "math.alg.geometric_finite_sum_limit"
@@ -53558,7 +53533,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\lim_{n\\to\\infty} \\frac{\\kappa^n}{1-\\kappa} = 0",
           "to_latex": "\\lim_{t\\to\\infty} d(T^t(x_0), x^*) = 0",
-          "operation_label": "Limit convergence to fixed point",
+          "operation_label": "極限操作の適用",
           "explanation": "極限操作により点列がコーシー列となり、空間の完備性から唯一の極限点（不動点）に収束することを示す。",
           "used_node_ids": [
             "math.calc.epsilon_delta_limit_def"
@@ -53587,7 +53562,7 @@
           "parent_step_id": null,
           "from_latex": "\\left|\\sum_{k=1}^{n} a_k\\right| \\le \\sum_{k=1}^{n} |a_k|",
           "to_latex": "\\left|\\sum_{j=1}^{N} z_j\\right| \\le \\sum_{j=1}^{N} |z_j|,\\qquad |w\\,z| = |w||z|",
-          "operation_label": "Extension to complex domain via real absolute value properties",
+          "operation_label": "定義域・条件の整理",
           "explanation": "実数の絶対値に関する三角不等式と乗法性を、複素数の実部・虚部および極形式の性質に適用して拡張する。",
           "used_node_ids": [
             "math.alg.real_abs_triangle_inequality"
@@ -53601,7 +53576,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\left|\\sum (x_j + i y_j)\\right| \\le \\left|\\sum x_j\\right| + \\left|\\sum y_j\\right|",
           "to_latex": "\\left|\\sum_{j=1}^{N} z_j\\right| \\le \\sum_{j=1}^{N} |z_j|",
-          "operation_label": "Triangle inequality componentwise application",
+          "operation_label": "不等式の評価",
           "explanation": "複素数の和の実部と虚部にそれぞれ実数版の三角不等式を適用し、総合的な絶対値評価を得る。",
           "used_node_ids": [
             "math.alg.real_abs_triangle_inequality"
@@ -53615,7 +53590,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "|(a+ib)(c+id)|^2 = (ac-bd)^2 + (ad+bc)^2 = (a^2+b^2)(c^2+d^2)",
           "to_latex": "|w\\,z| = |w||z|",
-          "operation_label": "Multiplicative property expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "複素数の積のノルム展開において、実数の乗法性および平方和の恒等式を用いて積の絶対値公式を導く。",
           "used_node_ids": [
             "math.alg.real_abs_triangle_inequality"
@@ -53644,7 +53619,7 @@
           "parent_step_id": null,
           "from_latex": "G\\mathbf{v}=\\lambda\\mathbf{v},\\quad \\mathbf{w}^\\top G=\\lambda\\mathbf{w}^\\top",
           "to_latex": "1\\le\\dim\\ker(G-\\lambda I)\\le\\operatorname{alg.\\,mult}(\\lambda),\\quad \\operatorname{alg.\\,mult}(\\lambda)=1 \\iff \\dim\\ker(G-\\lambda I)=1 \\land \\ker(G-\\lambda I)^2=\\ker(G-\\lambda I)",
-          "operation_label": "Eigenvalue characterization and multiplicity conditions",
+          "operation_label": "前提の適用と式変形",
           "explanation": "線形変換の固有値方程式、左右固有ベクトルの定義から、幾何的重複度と代数的重複度の不等式および単純固有値の必要十分条件を定義する。",
           "used_node_ids": [
             "math.alg.gr02_group_representation_def"
@@ -53658,7 +53633,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "G\\mathbf{v}=\\lambda\\mathbf{v}, \\quad \\mathbf{w}^\\top G=\\lambda\\mathbf{w}^\\top",
           "to_latex": "1\\le\\dim\\ker(G-\\lambda I)\\le\\operatorname{alg.\\,mult}(\\lambda)",
-          "operation_label": "Left and right eigenvalue definitions",
+          "operation_label": "定義の適用",
           "explanation": "右固有ベクトルと左固有ベクトルの基礎方程式を置き、特性多項式の根の構造から重複度の上下界を示す。",
           "used_node_ids": [
             "math.alg.gr02_group_representation_def"
@@ -53672,7 +53647,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\det(G-\\lambda I) = 0",
           "to_latex": "\\operatorname{alg.\\,mult}(\\lambda)=1 \\iff \\dim\\ker(G-\\lambda I)=1 \\land \\ker(G-\\lambda I)^2=\\ker(G-\\lambda I)",
-          "operation_label": "Algebraic simplicity characterization",
+          "operation_label": "前提の適用と式変形",
           "explanation": "特性多項式の根の重なりと一般化固有空間の次元一致性から代数的重複度1の条件を特徴付ける。",
           "used_node_ids": [
             "math.alg.gr02_group_representation_def"
@@ -53702,7 +53677,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{a}\\cdot(\\mathbf{x}-\\mathbf{y})",
           "to_latex": "\\mathbf{a}\\cdot\\mathbf{x}-\\mathbf{a}\\cdot\\mathbf{y},\\; |\\mathbf{a}\\cdot\\mathbf{w}|\\le\\|\\mathbf{a}\\|\\|\\mathbf{w}\\|",
-          "operation_label": "inner_product_expansion_and_cs",
+          "operation_label": "前提の適用と式変形",
           "explanation": "内積の分配性とコーシー＝シュワルツの不等式を適用する。",
           "used_node_ids": [
             "math.alg.real_abs_triangle_inequality"
@@ -53716,7 +53691,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbf{a}\\cdot(\\mathbf{x}-\\mathbf{y})",
           "to_latex": "\\mathbf{a}\\cdot\\mathbf{x}-\\mathbf{a}\\cdot\\mathbf{y}",
-          "operation_label": "bilinearity",
+          "operation_label": "線形性の適用",
           "explanation": "内積の双線形性により各項に展開する。",
           "used_node_ids": [
             "math.alg.real_abs_triangle_inequality"
@@ -53730,7 +53705,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "|\\mathbf{a}\\cdot\\mathbf{w}|",
           "to_latex": "\\|\\mathbf{a}\\|\\|\\mathbf{w}\\|",
-          "operation_label": "cauchy_schwarz",
+          "operation_label": "前提の適用と式変形",
           "explanation": "コーシー＝シュワルツの不等式によりノルムで上から評価する。",
           "used_node_ids": [
             "math.calc.m23_limit_algebra"
@@ -53760,7 +53735,7 @@
           "parent_step_id": null,
           "from_latex": "v_i \\in \\mathbb{C}",
           "to_latex": "\\|\\mathbf{v}\\|_1 := \\sum_{i=1}^{N} |v_i|",
-          "operation_label": "l1_norm_sum_def",
+          "operation_label": "定義の確認",
           "explanation": "絶対値の定義を用いて成分ごとの絶対値の和としてL1ノルムを構成する。",
           "used_node_ids": [
             "math.alg.abs_value_def"
@@ -53774,7 +53749,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "|v_i|",
           "to_latex": "\\sum_{i=1}^{N} |v_i|",
-          "operation_label": "summation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "有限和の線形性および非負成分の和を取る。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -53803,7 +53778,7 @@
           "parent_step_id": null,
           "from_latex": "\\Delta_{N-1} \\subseteq \\mathbb{R}^N",
           "to_latex": "(\\Delta_{N-1}, d_1)\\text{ complete}",
-          "operation_label": "completeness_closed_subset",
+          "operation_label": "集合の定義と整理",
           "explanation": "完備空間の閉部分集合は完備であるという位相的性質を用いる。",
           "used_node_ids": [
             "math.linalg.l1_norm_and_simplex_def"
@@ -53817,7 +53792,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbb{R}^N",
           "to_latex": "\\Delta_{N-1}\\text{ closed}",
-          "operation_label": "closed_set_property",
+          "operation_label": "集合の定義と整理",
           "explanation": "単体の条件が不等式と等式で閉集合をなすことを確認する。",
           "used_node_ids": [
             "math.linalg.l1_norm_and_simplex_def"
@@ -53846,7 +53821,7 @@
           "parent_step_id": null,
           "from_latex": "\\sigma_{xx}(x,z)",
           "to_latex": "M(x) := \\iint_{A} \\sigma_{xx}(x,z)\\,z\\,dA,\\; I := \\iint_{A} z^2\\,dA",
-          "operation_label": "area_integral_moment",
+          "operation_label": "積分操作の適用",
           "explanation": "重積分の定義に基づき、応力と距離の積の面積分として曲げモーメントを定義する。",
           "used_node_ids": [
             "math.calc.mi01_multiple_integral_def"
@@ -53860,7 +53835,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\sigma_{xx}(x,z)\\,z",
           "to_latex": "\\iint_{A} \\sigma_{xx}(x,z)\\,z\\,dA",
-          "operation_label": "moment_integration",
+          "operation_label": "積分操作の適用",
           "explanation": "断面A上の面積素dAについて積分を実行する。",
           "used_node_ids": [
             "math.calc.mi01_multiple_integral_def"
@@ -53890,7 +53865,7 @@
           "parent_step_id": null,
           "from_latex": "\\sigma_s,\\ u",
           "to_latex": "\\sigma' := (1 - n)(\\sigma_s - u)",
-          "operation_label": "Effective Stress Formulation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "固相応力から間隙水圧を差し引き、体積分率を乗じて有効応力を定義する。",
           "used_node_ids": [
             "math.calc.infinitesimal_strain_tensor_def"
@@ -53904,7 +53879,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\sigma_s - u",
           "to_latex": "(1 - n)(\\sigma_s - u)",
-          "operation_label": "Volume fraction scaling",
+          "operation_label": "前提の適用と式変形",
           "explanation": "固相の割合(1-n)を考慮して実効的な応力成分をスケーリングする。",
           "used_node_ids": [
             "math.calc.infinitesimal_strain_tensor_def"
@@ -53934,7 +53909,7 @@
           "parent_step_id": null,
           "from_latex": "w(x)",
           "to_latex": "u(x,z) = -z\\frac{dw}{dx},\\quad \\varepsilon_{xx} = \\frac{\\partial u}{\\partial x}",
-          "operation_label": "Kinematic Assumption & Strain",
+          "operation_label": "前提の適用と式変形",
           "explanation": "平面保持仮定から変位uを導き、偏微分により軸ひずみを得る。",
           "used_node_ids": [
             "math.calc.m44_partial_derivative_def"
@@ -53948,7 +53923,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "u(x,z) = -z\\frac{dw}{dx}",
           "to_latex": "\\varepsilon_{xx}(x,z) = \\frac{\\partial u}{\\partial x}",
-          "operation_label": "Partial Differentiation",
+          "operation_label": "微分による変形",
           "explanation": "変位のxに関する偏微分をとることでひずみを定義する。",
           "used_node_ids": [
             "math.calc.m44_partial_derivative_def"
@@ -53978,7 +53953,7 @@
           "parent_step_id": null,
           "from_latex": "\\varepsilon_{xx}",
           "to_latex": "\\sigma_{xx}(x,z) = E\\,\\varepsilon_{xx}(x,z)",
-          "operation_label": "Linear Constitutive Law",
+          "operation_label": "線形性の適用",
           "explanation": "軸方向ひずみにヤング率を乗じて垂直応力を定義する。",
           "used_node_ids": [
             "math.mech.euler_bernoulli_kinematics_def"
@@ -53992,7 +53967,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\varepsilon_{xx}",
           "to_latex": "E\\,\\varepsilon_{xx}",
-          "operation_label": "Proportionality",
+          "operation_label": "前提の適用と式変形",
           "explanation": "比例定数Eによる線形関係を適用する。",
           "used_node_ids": [
             "math.mech.euler_bernoulli_kinematics_def"
@@ -54022,7 +53997,7 @@
           "parent_step_id": null,
           "from_latex": "\\tau_{xy},\\ \\tau_{yx}",
           "to_latex": "\\sum M_O = (\\tau_{xy} - \\tau_{yx})\\Delta x\\,\\Delta y + R(\\Delta x, \\Delta y)",
-          "operation_label": "Moment Balance Formulation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "微小要素まわりの力のモーメントの釣り合い式と高次剰余項を定義する。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -54036,7 +54011,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "R(\\Delta x, \\Delta y)",
           "to_latex": "\\lim_{\\Delta x, \\Delta y \\to 0} \\frac{R(\\Delta x, \\Delta y)}{\\Delta x\\,\\Delta y} = 0",
-          "operation_label": "Little-o Remainder Limit",
+          "operation_label": "極限操作の適用",
           "explanation": "面積要素に対して剰余項が十分に小さく消滅することを定義する。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -54304,7 +54279,7 @@
           "parent_step_id": null,
           "from_latex": "c \\mid a \\land c \\mid b",
           "to_latex": "c \\mid (ua + vb)",
-          "operation_label": "divisibility_linear_combination",
+          "operation_label": "線形性の適用",
           "explanation": "仮定より c は a と b を割り切るため、定数倍の和も割り切れることを示す。",
           "used_node_ids": [
             "math.alg.real_commutative_law",
@@ -54319,7 +54294,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "a = c k_1, \\quad b = c k_2",
           "to_latex": "ua + vb = c(uk_1 + vk_2)",
-          "operation_label": "algebraic_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "整除の定義を用いて a と b を c の倍数として表現し、分配法則を適用する。",
           "used_node_ids": [
             "math.alg.real_distributive_law"
@@ -54350,7 +54325,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{z}_0 \\notin K",
           "to_latex": "\\exists! \\mathbf{p} \\in K \\text{ s.t. } (\\mathbf{z}_0 - \\mathbf{p}) \\cdot (\\mathbf{z} - \\mathbf{p}) \\le 0",
-          "operation_label": "projection_variational_inequality",
+          "operation_label": "不等式の評価",
           "explanation": "閉凸集合への最短距離点の一意性と、それから導かれる変分不等式条件を導く。",
           "used_node_ids": [
             "math.calc.m20_derivative_definition"
@@ -54364,7 +54339,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "f(\\mathbf{z}) = \\|\\mathbf{z}_0 - \\mathbf{z}\\|^2",
           "to_latex": "\\nabla f(\\mathbf{p}) \\cdot (\\mathbf{z} - \\mathbf{p}) \\ge 0",
-          "operation_label": "convex_optimization_condition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "距離の二乗ノルムを目的関数とし、凸集合上の最小化問題の1階必要条件を適用する。",
           "used_node_ids": [
             "math.calc.e01_hessian_matrix_def"
@@ -54394,7 +54369,7 @@
           "parent_step_id": null,
           "from_latex": "C \\subset \\mathbb{R}^n \\text{ convex}",
           "to_latex": "\\overline{C} \\text{ convex} \\land \\theta\\mathbf{w} + (1-\\theta)\\mathbf{u} \\in \\operatorname{int}(C)",
-          "operation_label": "convex_closure_properties",
+          "operation_label": "前提の適用と式変形",
           "explanation": "凸集合の定義と位相的な連続極限操作を用いて、閉包の凸性と内点到達性を示す。",
           "used_node_ids": [
             "math.calc.continuity_at_point_def"
@@ -54408,7 +54383,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\forall \\mathbf{x}, \\mathbf{y} \\in C, \\; \\theta\\mathbf{x} + (1-\\theta)\\mathbf{y} \\in C",
           "to_latex": "\\lim_{n\\to\\infty} (\\theta \\mathbf{x}_n + (1-\\theta)\\mathbf{y}_n) \\in \\overline{C}",
-          "operation_label": "limit_convexity_preservation",
+          "operation_label": "極限操作の適用",
           "explanation": "収束列の極限に対して線形結合と連続性を保存させる。",
           "used_node_ids": [
             "math.calc.m22_differentiability_implies_continuity"
@@ -54438,7 +54413,7 @@
           "parent_step_id": null,
           "from_latex": "C_1, C_2 \\text{ convex}",
           "to_latex": "C_1 - C_2 \\text{ is convex} \\land (C_1 \\cap C_2 = \\emptyset \\iff \\mathbf{0} \\notin C_1 - C_2)",
-          "operation_label": "minkowski_difference_convexity",
+          "operation_label": "微分による変形",
           "explanation": "2つの凸集合の差集合が凸性を維持し、原点が含まれないことと交差しないことが同値であることを導く。",
           "used_node_ids": [
             "math.calc.function_linear_combination_def"
@@ -54452,7 +54427,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbf{z}_1 = \\mathbf{x}_1 - \\mathbf{y}_1, \\quad \\mathbf{z}_2 = \\mathbf{x}_2 - \\mathbf{y}_2",
           "to_latex": "\\theta \\mathbf{z}_1 + (1-\\theta)\\mathbf{z}_2 = (\\theta \\mathbf{x}_1 + (1-\\theta)\\mathbf{x}_2) - (\\theta \\mathbf{y}_1 + (1-\\theta)\\mathbf{y}_2)",
-          "operation_label": "linear_combination_split",
+          "operation_label": "線形性の適用",
           "explanation": "ミンコフスキー差の元に対して線形結合を施し、各成分が元の凸集合に属することを確認する。",
           "used_node_ids": [
             "math.alg.real_distributive_law"
@@ -54481,7 +54456,7 @@
           "parent_step_id": null,
           "from_latex": "\\dot{Q}_\\Sigma := \\iint_{\\Sigma} (\\mathbf{q}'' \\cdot \\mathbf{n})\\,dS",
           "to_latex": "I_{\\Sigma} := \\iint_{\\Sigma} (\\mathbf{J} \\cdot \\mathbf{n})\\,dS",
-          "operation_label": "flux_analogy_definition",
+          "operation_label": "定義の適用",
           "explanation": "流束ベクトルの面積分による通過流量の定義を電流密度ベクトルへ適用し通過電流を定義する",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def"
@@ -54495,7 +54470,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\dot{Q}_\\Sigma := \\iint_{\\Sigma} (\\mathbf{q}'' \\cdot \\mathbf{n})\\,dS",
           "to_latex": "I_{\\Sigma} := \\iint_{\\Sigma} (\\mathbf{J} \\cdot \\mathbf{n})\\,dS",
-          "operation_label": "substitution",
+          "operation_label": "代入・置き換え",
           "explanation": "一般の流束ベクトル q'' を電流密度 J に置き換えて定義を構築する",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def"
@@ -54524,7 +54499,7 @@
           "parent_step_id": null,
           "from_latex": "\\iiint_{V} (\\nabla \\cdot \\mathbf{F})\\,dV = \\oiint_{\\partial V} \\mathbf{F} \\cdot \\mathbf{n}\\,dS",
           "to_latex": "\\oiint_{\\partial V} (\\mathbf{D}\\cdot\\mathbf{n})\\,dS = \\iiint_{V} \\rho(\\mathbf{x})\\,dV",
-          "operation_label": "gauss_law_integral_form",
+          "operation_label": "積分操作の適用",
           "explanation": "ガウスの発散定理を電束密度に適用し、電荷の体積積分と等置する積分形の法則を導出する",
           "used_node_ids": [
             "math.calc.gauss_divergence_theorem"
@@ -54538,7 +54513,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\iiint_{V} (\\nabla \\cdot \\mathbf{F})\\,dV = \\oiint_{\\partial V} \\mathbf{F} \\cdot \\mathbf{n}\\,dS",
           "to_latex": "\\oiint_{\\partial V} (\\mathbf{D}\\cdot\\mathbf{n})\\,dS = \\iiint_{V} \\nabla\\cdot\\mathbf{D}\\,dV",
-          "operation_label": "divergence_theorem_apply",
+          "operation_label": "前提の適用と式変形",
           "explanation": "発散定理を用いて電束密度の面積分を体積積分に変換する",
           "used_node_ids": [
             "math.calc.gauss_divergence_theorem"
@@ -54552,7 +54527,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\nabla\\cdot\\mathbf{D} = \\rho",
           "to_latex": "\\oiint_{\\partial V} (\\mathbf{D}\\cdot\\mathbf{n})\\,dS = \\iiint_{V} \\rho(\\mathbf{x})\\,dV",
-          "operation_label": "charge_integration",
+          "operation_label": "積分操作の適用",
           "explanation": "微分形のガウスの法則と組み合わせることで積分形の関係式を得る",
           "used_node_ids": [
             "math.calc.gauss_divergence_theorem"
@@ -54582,7 +54557,7 @@
           "parent_step_id": null,
           "from_latex": "\\Sigma_x = [0,W]\\times[0,z_i],\\quad \\mathbf{n} = -\\mathbf{e}_x",
           "to_latex": "V(x,y,z) = V(x),\\quad n(x,y,z) = n(x,z)",
-          "operation_label": "geometry_setting",
+          "operation_label": "集合の定義と整理",
           "explanation": "長方形チャネルの断面領域と法線ベクトルを設定し、幅方向の一様性と1次元ポテンシャル依存性を導く。",
           "used_node_ids": [
             "math.alg.vec3_axial_transverse_decomposition",
@@ -54597,7 +54572,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\Sigma_x = [0,W]\\times[0,z_i]",
           "to_latex": "J_n(x,z) := \\mathbf{J}_n(x,z)\\cdot\\mathbf{n}",
-          "operation_label": "cross_section_def",
+          "operation_label": "定義の確認",
           "explanation": "長方形領域の境界における法線方向フラックスを定義する。",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def"
@@ -54611,7 +54586,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "V(x,y,z) = V(x)",
           "to_latex": "n(x,y,z) = n(x,z)",
-          "operation_label": "uniformity_reduction",
+          "operation_label": "前提の適用と式変形",
           "explanation": "空間変数の依存性を縮約し、緩変チャネル近似の方程式系を構築する。",
           "used_node_ids": [
             "math.alg.vec3_axial_transverse_decomposition"
@@ -54641,7 +54616,7 @@
           "parent_step_id": null,
           "from_latex": "\\rho_n(x,z) := -q n(x,z)",
           "to_latex": "Q_i(x) := \\int_{0}^{z_i} \\rho_n(x,z)\\,dz",
-          "operation_label": "charge_density_integration",
+          "operation_label": "積分操作の適用",
           "explanation": "電子の体積電荷密度を定義し、それを深さ方向に積分して面電荷密度を得る。",
           "used_node_ids": [
             "math.calc.m02a_indefinite_integral_func_def",
@@ -54656,7 +54631,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\rho_n(x,z) := -q n(x,z)",
           "to_latex": "\\rho_n(x,z) \\le 0",
-          "operation_label": "volume_charge_def",
+          "operation_label": "定義の確認",
           "explanation": "電子密度に素電荷の負値を掛け体積電荷密度とする。",
           "used_node_ids": [
             "math.calc.mi01_multiple_integral_def"
@@ -54670,7 +54645,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "Q_i(x) := \\int_{0}^{z_i} \\rho_n(x,z)\\,dz",
           "to_latex": "Q_i(x) = -q \\int_{0}^{z_i} n(x,z)\\,dz",
-          "operation_label": "depth_integration",
+          "operation_label": "積分操作の適用",
           "explanation": "表面から反転層厚さまで積分して面電荷密度を定義する。",
           "used_node_ids": [
             "math.calc.m02a_indefinite_integral_func_def"
@@ -54700,7 +54675,7 @@
           "parent_step_id": null,
           "from_latex": "Q_G := \\frac{1}{A}\\iint_{\\Sigma_G} (\\mathbf{D}_{\\mathrm{ox}}\\cdot(-\\mathbf{e}_z))\\,dS",
           "to_latex": "C_{\\mathrm{ox}} := \\frac{Q_G}{V_{\\mathrm{ox}}}",
-          "operation_label": "areal_capacitance_def",
+          "operation_label": "定義の確認",
           "explanation": "電束密度の面積分と体積積分から各単位面積当たり電荷を定義し、酸化膜容量を導出する。",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def",
@@ -54715,7 +54690,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "Q_G := \\frac{1}{A}\\iint_{\\Sigma_G} (\\mathbf{D}_{\\mathrm{ox}}\\cdot(-\\mathbf{e}_z))\\,dS",
           "to_latex": "Q_{\\mathrm{dep}} := \\frac{1}{A}\\iiint_{A\\times[0,W_d]} (-q N_A)\\,dV",
-          "operation_label": "charge_surface_volume",
+          "operation_label": "前提の適用と式変形",
           "explanation": "ゲート電極上の電束および空乏層内の不純物電荷を面積平均する。",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def",
@@ -54730,7 +54705,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "Q_G",
           "to_latex": "C_{\\mathrm{ox}} := \\frac{Q_G}{V_{\\mathrm{ox}}}",
-          "operation_label": "capacitance_formula",
+          "operation_label": "前提の適用と式変形",
           "explanation": "単位面積当たり電荷と電圧から酸化膜静電容量を定義する。",
           "used_node_ids": [
             "math.calc.flux_surface_integral_def"
@@ -54760,7 +54735,7 @@
           "parent_step_id": null,
           "from_latex": "\\psi(\\mathbf{x}) = \\psi(z) \\implies \\nabla\\psi = \\frac{d\\psi}{dz}\\mathbf{e}_z",
           "to_latex": "\\iiint_{A\\times[z_1,z_2]} f(z)\\,dV = A\\int_{z_1}^{z_2} f(z)\\,dz",
-          "operation_label": "planar_reduction",
+          "operation_label": "前提の適用と式変形",
           "explanation": "平面対称性に基づき偏微分を常微分に還元し、フビニの定理を用いて体積積分を1次元定積分に簡約する。",
           "used_node_ids": [
             "math.calc.m44_partial_derivative_def",
@@ -54775,7 +54750,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\psi(\\mathbf{x}) = \\psi(z)",
           "to_latex": "\\nabla\\cdot(\\varepsilon\\nabla\\psi) = \\frac{d}{dz}\\left(\\varepsilon\\frac{d\\psi}{dz}\\right)",
-          "operation_label": "gradient_divergence_1d",
+          "operation_label": "前提の適用と式変形",
           "explanation": "z方向のみ依存する場に対する勾配と発散の形を導出する。",
           "used_node_ids": [
             "math.calc.m44_partial_derivative_def"
@@ -54789,7 +54764,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\iiint_{A\\times[z_1,z_2]} f(z)\\,dV",
           "to_latex": "A\\int_{z_1}^{z_2} f(z)\\,dz",
-          "operation_label": "fubini_reduction",
+          "operation_label": "前提の適用と式変形",
           "explanation": "柱状領域における重積分をフビニの定理により断面積と1次元積分に分解する。",
           "used_node_ids": [
             "math.calc.mi02_fubini_theorem"
@@ -54818,7 +54793,7 @@
           "parent_step_id": null,
           "from_latex": "G^{\\ddagger}(\\eta),\\ G_{\\mathrm{Red}}(\\eta)",
           "to_latex": "\\Delta G_a^{\\ddagger}(\\eta) := G^{\\ddagger}(\\eta) - G_{\\mathrm{Red}}(\\eta)",
-          "operation_label": "difference_definition",
+          "operation_label": "定義の適用",
           "explanation": "関数の増分の定義を応用し、遷移状態と還元状態のギブズエネルギー差としてアノード活性化障壁を定義する。",
           "used_node_ids": [
             "math.calc.function_increment_def"
@@ -54832,7 +54807,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "G^{\\ddagger}(\\eta),\\ G_{\\mathrm{Red}}(\\eta)",
           "to_latex": "\\Delta G_a^{\\ddagger}(\\eta) = G^{\\ddagger}(\\eta) - G_{\\mathrm{Red}}(\\eta)",
-          "operation_label": "anode_barrier",
+          "operation_label": "前提の適用と式変形",
           "explanation": "アノード側の活性化自由エネルギー障壁の差分式を構築する。",
           "used_node_ids": [
             "math.calc.function_increment_def"
@@ -54846,7 +54821,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "G^{\\ddagger}(\\eta),\\ G_{\\mathrm{Ox}}(\\eta)",
           "to_latex": "\\Delta G_c^{\\ddagger}(\\eta) = G^{\\ddagger}(\\eta) - G_{\\mathrm{Ox}}(\\eta)",
-          "operation_label": "cathode_barrier",
+          "operation_label": "前提の適用と式変形",
           "explanation": "カソード側の活性化自由エネルギー障壁の差分式を構築する。",
           "used_node_ids": [
             "math.calc.function_increment_def"
@@ -54860,7 +54835,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "X(\\eta),\\ X(0)",
           "to_latex": "\\delta X(\\eta) := X(\\eta) - X(0)",
-          "operation_label": "state_variation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "過電圧ゼロを基準とした任意の状態量変分を定義する。",
           "used_node_ids": [],
           "sympy_check_hint": null
@@ -54888,7 +54863,7 @@
           "parent_step_id": null,
           "from_latex": "E,\\ Q_{\\mathrm{elec}}",
           "to_latex": "\\delta w_{\\mathrm{non\\text{-}exp,max}} := -E\\,dQ_{\\mathrm{elec}}",
-          "operation_label": "work_definition",
+          "operation_label": "定義の適用",
           "explanation": "電極電位と電気量の微小変化から可逆非膨張電気仕事を定義する。",
           "used_node_ids": [
             "math.calc.derivative_leibniz_lagrange_equiv"
@@ -54902,7 +54877,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "E,\\ E_{\\mathrm{eq}}",
           "to_latex": "\\eta := E - E_{\\mathrm{eq}}",
-          "operation_label": "overpotential_def",
+          "operation_label": "定義の確認",
           "explanation": "実際の電位と平衡電位の差として過電圧を定義する。",
           "used_node_ids": [
             "math.alg.real_transposition"
@@ -54916,7 +54891,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\delta G_{\\mathrm{Red}},\\ \\delta G_{\\mathrm{Ox}}",
           "to_latex": "\\delta G_{\\mathrm{Red}}(\\eta) - \\delta G_{\\mathrm{Ox}}(\\eta) = n F \\eta",
-          "operation_label": "gibbs_difference",
+          "operation_label": "微分による変形",
           "explanation": "過電圧に伴う還元・酸化状態間の反応ギブズエネルギー変化の関係式を導く。",
           "used_node_ids": [
             "math.calc.derivative_leibniz_lagrange_equiv"
@@ -54946,7 +54921,7 @@
           "parent_step_id": null,
           "from_latex": "N_A,\\ e",
           "to_latex": "F := N_A e",
-          "operation_label": "faraday_constant_def",
+          "operation_label": "定義の確認",
           "explanation": "アボガドロ定数と電気素量の積としてファラデー定数を定義する。",
           "used_node_ids": [
             "math.alg.real_multiplication_associativity"
@@ -54960,7 +54935,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "n,\\ F,\\ \\xi",
           "to_latex": "Q_{\\mathrm{elec}}(\\xi) := n F \\xi",
-          "operation_label": "charge_stoichiometry",
+          "operation_label": "前提の適用と式変形",
           "explanation": "反応進行度に基づく総移動電荷量を定義する。",
           "used_node_ids": [
             "math.alg.real_multiplication_associativity"
@@ -54974,7 +54949,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "Q_{\\mathrm{elec}}(t)",
           "to_latex": "I := \\frac{dQ_{\\mathrm{elec}}}{dt}",
-          "operation_label": "current_definition",
+          "operation_label": "定義の適用",
           "explanation": "電荷量の時間微分として定常電流を定義する。",
           "used_node_ids": [
             "math.calc.derivative_leibniz_lagrange_equiv"
@@ -55004,7 +54979,7 @@
           "parent_step_id": null,
           "from_latex": "\\delta G_{\\mathrm{Red}},\\ \\delta G_{\\mathrm{Ox}},\\ \\alpha",
           "to_latex": "\\delta G^{\\ddagger}(\\eta) = \\alpha\\,\\delta G_{\\mathrm{Red}}(\\eta) + (1-\\alpha)\\,\\delta G_{\\mathrm{Ox}}(\\eta)",
-          "operation_label": "linear_partition_hypothesis",
+          "operation_label": "仮定・境界条件の設定",
           "explanation": "分配係数αを用いた還元状態と酸化状態の自由エネルギー変分の線形結合を仮定する。",
           "used_node_ids": [
             "math.alg.real_distributive_law"
@@ -55018,7 +54993,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\alpha \\in (0, 1)",
           "to_latex": "0 < \\alpha < 1",
-          "operation_label": "symmetry_factor_bounds",
+          "operation_label": "上界・下界の評価",
           "explanation": "対称因子αの取り得る範囲を定義域として明示する。",
           "used_node_ids": [
             "math.calc.homogeneous_function_degree_one_def"
@@ -55032,7 +55007,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\delta G^{\\ddagger}(\\eta)",
           "to_latex": "\\delta G^{\\ddagger}(\\eta) = \\alpha\\,\\delta G_{\\mathrm{Red}}(\\eta) + (1-\\alpha)\\,\\delta G_{\\mathrm{Ox}}(\\eta)",
-          "operation_label": "convex_combination",
+          "operation_label": "前提の適用と式変形",
           "explanation": "分配則を適用して過電圧下の遷移状態エネルギー変分を構築する。",
           "used_node_ids": [
             "math.alg.real_distributive_law"
@@ -55062,7 +55037,7 @@
           "parent_step_id": null,
           "from_latex": "P(U_j = 1 \\mid \\theta) = P_j(\\theta)",
           "to_latex": "P(U_j = u_j \\mid \\theta) = P_j(\\theta)^{u_j}\\big(1 - P_j(\\theta)\\big)^{1 - u_j}",
-          "operation_label": "probability_pmf_construction",
+          "operation_label": "確率法則の適用",
           "explanation": "2値確率変数の全確率の和が1である条件と指数によるケース分け表現を統合し、確率質量関数を構築する。",
           "used_node_ids": [
             "math.calc.general_power_exp_log_def"
@@ -55076,7 +55051,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "U_j \\in \\{0, 1\\}",
           "to_latex": "u_j \\in \\{0, 1\\}",
-          "operation_label": "domain_restriction",
+          "operation_label": "定義域・条件の整理",
           "explanation": "変数が0または1を取る条件を確認する。",
           "used_node_ids": [
             "math.alg.real_trichotomy_axiom"
@@ -55090,7 +55065,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "P(U_j = 0 \\mid \\theta) = 1 - P_j(\\theta)",
           "to_latex": "P(U_j = u_j \\mid \\theta) = P_j(\\theta)^{u_j}\\big(1 - P_j(\\theta)\\big)^{1 - u_j}",
-          "operation_label": "exponential_pmf_unification",
+          "operation_label": "前提の適用と式変形",
           "explanation": "u_j=0とu_j=1の場合の確率をべき乗を用いて1つの式にまとめる。",
           "used_node_ids": [
             "math.calc.general_power_exp_log_def"
@@ -55120,7 +55095,7 @@
           "parent_step_id": null,
           "from_latex": "k = \\sum_{j=1}^n U_j",
           "to_latex": "\\mathbb{E}[k] = nq,\\quad \\mathrm{Var}(k) = nq(1-q)",
-          "operation_label": "sum_of_random_variables",
+          "operation_label": "前提の適用と式変形",
           "explanation": "独立なベルヌーイ試行の和として二項分布を捉え、線形性から期待値と分散を導く。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -55134,7 +55109,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbb{E}[U_j] = q",
           "to_latex": "\\mathbb{E}[k] = \\sum_{j=1}^n \\mathbb{E}[U_j] = nq",
-          "operation_label": "expectation_linearity",
+          "operation_label": "線形性の適用",
           "explanation": "期待値の線形性を用いて二項分布の期待値を計算する。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -55148,7 +55123,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathrm{Var}(U_j) = q(1-q)",
           "to_latex": "\\mathrm{Var}(k) = \\sum_{j=1}^n \\mathrm{Var}(U_j) = nq(1-q)",
-          "operation_label": "variance_independence",
+          "operation_label": "前提の適用と式変形",
           "explanation": "独立性の仮定を用いて分散の加法性を適用する。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -55179,7 +55154,7 @@
           "parent_step_id": null,
           "from_latex": "W_0 = 0",
           "to_latex": "\\Delta W_k \\sim \\mathcal{N}(0, \\Delta t_k),\\quad t \\mapsto W_t \\text{ continuous}",
-          "operation_label": "process_definition",
+          "operation_label": "定義の適用",
           "explanation": "初期条件と正規増分性、連続性からウィーナー過程の要件を定義する。",
           "used_node_ids": [
             "math.alg.real_trichotomy_axiom"
@@ -55193,7 +55168,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "t_k - t_{k-1} > 0",
           "to_latex": "\\Delta t_k := t_k - t_{k-1}",
-          "operation_label": "time_increment",
+          "operation_label": "前提の適用と式変形",
           "explanation": "時間区間の分割と正値性を確認する。",
           "used_node_ids": [
             "math.alg.real_trichotomy_axiom"
@@ -55207,7 +55182,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\Delta W_k = W_{t_k} - W_{t_{k-1}}",
           "to_latex": "\\Delta W_k \\sim \\mathcal{N}(0, \\Delta t_k)",
-          "operation_label": "normal_increment_property",
+          "operation_label": "前提の適用と式変形",
           "explanation": "各増分が正規分布に従う確率的性質を記述する。",
           "used_node_ids": [
             "math.calc.m20_derivative_definition"
@@ -55237,7 +55212,7 @@
           "parent_step_id": null,
           "from_latex": "P_n(t + \\Delta t)",
           "to_latex": "P_n(t + \\Delta t) = \\sum_{k=0}^{\\infty} P_k(t)\\,p_{k,n}(\\Delta t)",
-          "operation_label": "total_probability_law",
+          "operation_label": "確率法則の適用",
           "explanation": "全確率の公式とマルコフ性を用いて、時刻t+Δtの状態確率を全中間状態についての和として展開する。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -55251,7 +55226,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "P(X(t+\\Delta t)=n)",
           "to_latex": "\\sum_k P(X(t+\\Delta t)=n \\mid X(t)=k) P(X(t)=k)",
-          "operation_label": "conditional_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "条件付き確率の定義に従い、中間状態kに関する周辺化を行う。",
           "used_node_ids": [
             "math.prob.bernoulli_pmf_def"
@@ -55265,7 +55240,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "P_k(t) \\text{ and } p_{k,n}(\\Delta t)",
           "to_latex": "\\sum_{k=0}^{\\infty} P_k(t)\\,p_{k,n}(\\Delta t)",
-          "operation_label": "notation_substitution",
+          "operation_label": "代入・置き換え",
           "explanation": "確率項を移行確率と状態確率の積に置き換えて総和を取る。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -55295,7 +55270,7 @@
           "parent_step_id": null,
           "from_latex": "\\varphi_{\\mu}(t) = \\varphi_{\\nu}(t)",
           "to_latex": "\\mu = \\nu",
-          "operation_label": "uniqueness_inversion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "特性関数の定義と逆変換公式を用いて測度の一意性を導く。",
           "used_node_ids": [
             "math.prob.characteristic_function_def"
@@ -55308,7 +55283,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\varphi_{\\mu}(t) = \\int_{\\mathbb{R}} e^{itx} d\\mu(x)",
           "to_latex": "\\varphi_{\\mu}(t) = \\varphi_{\\nu}(t) \\implies \\int_{\\mathbb{R}} e^{itx} d\\mu(x) = \\int_{\\mathbb{R}} e^{itx} d\\nu(x)",
-          "operation_label": "substitution",
+          "operation_label": "代入・置き換え",
           "explanation": "特性関数の定義式を等号に代入する。",
           "used_node_ids": [
             "math.prob.characteristic_function_def"
@@ -55321,7 +55296,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\int_{\\mathbb{R}} e^{itx} d\\mu(x) = \\int_{\\mathbb{R}} e^{itx} d\\nu(x)",
           "to_latex": "\\mu = \\nu",
-          "operation_label": "inversion_theorem",
+          "operation_label": "前提の適用と式変形",
           "explanation": "フーリエ逆変換の一意性により測度が一致する。",
           "used_node_ids": [
             "math.calc.laplace_transform_def"
@@ -55350,7 +55325,7 @@
           "parent_step_id": null,
           "from_latex": "\\varphi_X(t) := \\mathbb{E}[e^{itX}]",
           "to_latex": "|\\varphi_X(t)| \\le 1,\\quad \\varphi_X \\in C_u(\\mathbb{R})",
-          "operation_label": "definition_and_continuity",
+          "operation_label": "定義の適用",
           "explanation": "特性関数の期待値表現から絶対値の評価および一様連続性を導く。",
           "used_node_ids": [
             "math.alg.real_abs_triangle_inequality"
@@ -55363,7 +55338,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "|\\mathbb{E}[e^{itX}]|",
           "to_latex": "\\le \\mathbb{E}[|e^{itX}|] = 1",
-          "operation_label": "triangle_inequality_expectation",
+          "operation_label": "不等式の評価",
           "explanation": "期待値の三角不等式を用いて絶対値が1以下であることを示す。",
           "used_node_ids": [
             "math.alg.real_abs_triangle_inequality"
@@ -55376,7 +55351,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "|\\varphi_X(t+h) - \\varphi_X(t)|",
           "to_latex": "\\le \\mathbb{E}[|e^{ith} - 1|]",
-          "operation_label": "uniform_continuity",
+          "operation_label": "前提の適用と式変形",
           "explanation": "指数の連続性から一様連続性を得る。",
           "used_node_ids": [
             "math.calc.epsilon_delta_limit_def"
@@ -55404,7 +55379,7 @@
           "parent_step_id": null,
           "from_latex": "P(\\mathbf{U} = \\mathbf{u} \\mid \\theta)",
           "to_latex": "\\prod_{j=1}^{J} P(U_j = u_j \\mid \\theta)",
-          "operation_label": "conditional_independence",
+          "operation_label": "前提の適用と式変形",
           "explanation": "条件付き確率の乗法定理と独立性から同時確率が総乗に分解されることを示す。",
           "used_node_ids": [
             "math.alg.product_of_independent_sums"
@@ -55417,7 +55392,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "P(U_1, \\dots, U_J \\mid \\theta)",
           "to_latex": "\\prod_{j=1}^{J} P(U_j \\mid \\theta)",
-          "operation_label": "product_decomposition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "独立な確率変数の確率乗法公式を適用する。",
           "used_node_ids": [
             "math.alg.product_of_independent_sums"
@@ -55446,7 +55421,7 @@
           "parent_step_id": null,
           "from_latex": "\\operatorname{Cov}(Y, Z) := \\mathbb{E}[(Y - \\mathbb{E}[Y])(Z - \\mathbb{E}[Z])]",
           "to_latex": "\\mathbb{E}[YZ] - \\mathbb{E}[Y]\\mathbb{E}[Z]",
-          "operation_label": "expectation_linearity",
+          "operation_label": "線形性の適用",
           "explanation": "期待値の線形性と分配法則を用いて共分散の定義を展開する。",
           "used_node_ids": [
             "math.alg.real_distributive_law"
@@ -55459,7 +55434,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "(Y - \\mathbb{E}[Y])(Z - \\mathbb{E}[Z])",
           "to_latex": "YZ - Y\\mathbb{E}[Z] - Z\\mathbb{E}[Y] + \\mathbb{E}[Y]\\mathbb{E}[Z]",
-          "operation_label": "algebraic_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "代数の分配法則により中心化変数の積を展開する。",
           "used_node_ids": [
             "math.alg.real_distributive_law"
@@ -55472,7 +55447,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbb{E}[YZ - Y\\mathbb{E}[Z] - Z\\mathbb{E}[Y] + \\mathbb{E}[Y]\\mathbb{E}[Z]]",
           "to_latex": "\\mathbb{E}[YZ] - \\mathbb{E}[Y]\\mathbb{E}[Z]",
-          "operation_label": "expectation_linearity",
+          "operation_label": "線形性の適用",
           "explanation": "期待値の線形性を適用して簡約化する。",
           "used_node_ids": [
             "math.calc.m36_derivative_linearity"
@@ -55501,7 +55476,7 @@
           "parent_step_id": null,
           "from_latex": "p_{n,n+1}(\\Delta t) = \\lambda_n \\Delta t + o(\\Delta t)",
           "to_latex": "\\lim_{\\Delta t \\to 0}\\frac{o(\\Delta t)}{\\Delta t} = 0",
-          "operation_label": "Little-O Definition Integration",
+          "operation_label": "定義の適用",
           "explanation": "ランダウの小文字 o 記号の定義を用いて、微小時間 Delta t における高次剰余項の性質を状態遷移確率の式に適用する。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -55515,7 +55490,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "r(h) = o(h) \\iff \\lim_{h \\to 0} \\frac{r(h)}{h} = 0",
           "to_latex": "p_{n,n+1}(\\Delta t) = \\lambda_n \\Delta t + o(\\Delta t)",
-          "operation_label": "Substitution and Limit Evaluation",
+          "operation_label": "代入・置き換え",
           "explanation": "ランダウの小文字の定義の変数 h を \\Delta t に置き換え、出生死滅過程の遷移確率の線形近似を構成する。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -55545,7 +55520,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbb{E}[(\\delta p)^2 \\mid p] = \\mathrm{Var}(\\delta p \\mid p) + \\big(\\mathbb{E}[\\delta p \\mid p]\\big)^2",
           "to_latex": "M_{\\delta p}^2 = o(V_{\\delta p})",
-          "operation_label": "Moment Decomposition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "確率変数の2乗期待値を分散と平均の2乗に分解し、極限状態における高次項の漸近挙動を評価する。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -55559,7 +55534,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbb{E}[(\\delta p)^2 \\mid p] - \\big(\\mathbb{E}[\\delta p \\mid p]\\big)^2 = \\mathrm{Var}(\\delta p \\mid p)",
           "to_latex": "\\mathbb{E}\\big[o((\\delta p)^2) \\mid p\\big] = o(V_{\\delta p})",
-          "operation_label": "Asymptotic Order Comparison",
+          "operation_label": "前提の適用と式変形",
           "explanation": "集団サイズ極限 N \\to \to \to \to \to \\infty における分散 V_{\\delta p} と平均の2乗のオーダーを比較する。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -55589,7 +55564,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbb{E}[Y] := \\sum_{k=1}^{n} q_k y_k",
           "to_latex": "\\mathbb{E}[f(Y)] := \\sum_{k=1}^{n} q_k f(y_k)",
-          "operation_label": "Weighted Sum Definition",
+          "operation_label": "定義の適用",
           "explanation": "確率質量 q_k と値 y_k の積の有限和として離散期待値を定義し、変換関数 f(Y) についても同様に拡張する。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -55603,7 +55578,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\sum_{k=1}^{n} q_k = 1",
           "to_latex": "\\sum_{k=1}^{n} q_k f(y_k)",
-          "operation_label": "Function Composition in Sum",
+          "operation_label": "前提の適用と式変形",
           "explanation": "確率質量が全確率の公理を満たしているもとで、確率変数に任意の関数を適用した値の加重和を構成する。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -55633,7 +55608,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbb{E}[aU + bV + cW] = a\\mathbb{E}[U] + b\\mathbb{E}[V] + c\\mathbb{E}[W]",
           "to_latex": "U \\ge 0\\text{ a.s.} \\implies \\mathbb{E}[U] \\ge 0",
-          "operation_label": "Linearity and Positivity Extension",
+          "operation_label": "線形性の適用",
           "explanation": "シグマ加法・有限和の線形性公理を適用して期待値の線形性を示し、非負確率変数の荷重和から非負性を導く。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -55647,7 +55622,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\sum_{k=1}^{n} c\\,a_k = c \\sum_{k=1}^{n} a_k",
           "to_latex": "a\\mathbb{E}[U] + b\\mathbb{E}[V] + c\\mathbb{E}[W]",
-          "operation_label": "Algebraic Linearity Application",
+          "operation_label": "線形性の適用",
           "explanation": "有限和の定数倍と加法の分解則を期待値の定義に適用し、複数変数の線形結合の期待値を分配する。",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -55677,7 +55652,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbb{E}[aY + bZ]",
           "to_latex": "a\\mathbb{E}[Y] + b\\mathbb{E}[Z]",
-          "operation_label": "expectation_linearity",
+          "operation_label": "線形性の適用",
           "explanation": "有限和の線形性および積分の線形性公理を確率空間上のルベーグ積分としての期待値に適用する",
           "used_node_ids": [
             "math.alg.finite_sum_linearity",
@@ -55692,7 +55667,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbb{E}[aY + bZ]",
           "to_latex": "\\int (aY + bZ) dP",
-          "operation_label": "integral_definition",
+          "operation_label": "定義の適用",
           "explanation": "期待値を確率測度に関する積分として表現する",
           "used_node_ids": [
             "math.calc.m16_integral_linearity"
@@ -55706,7 +55681,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\int (aY + bZ) dP",
           "to_latex": "a\\int Y dP + b\\int Z dP",
-          "operation_label": "linearity_application",
+          "operation_label": "線形性の適用",
           "explanation": "積分の線形性により定数のスケーリングと和を分離する",
           "used_node_ids": [
             "math.alg.finite_sum_linearity"
@@ -55720,7 +55695,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "a\\int Y dP + b\\int Z dP",
           "to_latex": "a\\mathbb{E}[Y] + b\\mathbb{E}[Z]",
-          "operation_label": "expectation_reconstruction",
+          "operation_label": "期待値の計算",
           "explanation": "分離された積分を再び期待値の記法に書き戻す",
           "used_node_ids": [],
           "sympy_check_hint": null
@@ -55748,7 +55723,7 @@
           "parent_step_id": null,
           "from_latex": "P(T \\le \\Delta t) = 1 - e^{-\\gamma \\Delta t}",
           "to_latex": "\\gamma \\Delta t + o(\\Delta t)",
-          "operation_label": "exponential_taylor_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "指数関数の原点における1次展開公式を適用し微小時間での線形近似を得る",
           "used_node_ids": [
             "math.calc.exp_minus_one_limit_at_zero",
@@ -55763,7 +55738,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "1 - e^{-\\gamma \\Delta t}",
           "to_latex": "- (e^{-\\gamma \\Delta t} - 1)",
-          "operation_label": "algebraic_rearrangement",
+          "operation_label": "前提の適用と式変形",
           "explanation": "指数項の形を指数関数の原点公式に一致させるため符号を整理する",
           "used_node_ids": [],
           "sympy_check_hint": null
@@ -55775,7 +55750,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "- (e^{-\\gamma \\Delta t} - 1)",
           "to_latex": "\\gamma \\Delta t + o(\\Delta t)",
-          "operation_label": "limit_expansion",
+          "operation_label": "極限操作の適用",
           "explanation": "指数関数の極限公式およびランダウの小文字オーの定義を用いて高次微小項を表現する",
           "used_node_ids": [
             "math.calc.exp_minus_one_limit_at_zero",
@@ -55806,7 +55781,7 @@
           "parent_step_id": null,
           "from_latex": "\\Big(\\forall \\varepsilon > 0,\\; \\exists M > 0,\\; \\sup_{n} \\mu_n([-M, M]^c) \\le \\varepsilon\\Big)",
           "to_latex": "\\exists \\{_{n_k}\\},\\; \\mu_{n_k} \\xrightarrow{w} \\mu",
-          "operation_label": "tightness_to_weak_convergence",
+          "operation_label": "前提の適用と式変形",
           "explanation": "一様有界性と緊密性条件から部分列の弱収束性を導出する",
           "used_node_ids": [
             "math.calc.limit_local_boundedness",
@@ -55821,7 +55796,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\sup_{n} \\mu_n([-M, M]^c) \\le \\varepsilon",
           "to_latex": "\\text{Uniform Boundedness on Compact Sets}",
-          "operation_label": "compactness_application",
+          "operation_label": "前提の適用と式変形",
           "explanation": "測度の一様有界性から連続関数のコンパクト台における有界性を適用する",
           "used_node_ids": [
             "math.calc.m13_continuous_compact_boundedness"
@@ -55835,7 +55810,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\text{Uniform Boundedness}",
           "to_latex": "\\exists \\{_{n_k}\\},\\; \\mu_{n_k} \\xrightarrow{w} \\mu",
-          "operation_label": "helly_selection",
+          "operation_label": "前提の適用と式変形",
           "explanation": "ヘリーの選択定理を用いて弱収束する部分列の存在を保証する",
           "used_node_ids": [
             "math.calc.limit_local_boundedness"
@@ -55865,7 +55840,7 @@
           "parent_step_id": null,
           "from_latex": "N_0,\\; S(t)",
           "to_latex": "N(t) := N_0 S(t)",
-          "operation_label": "expectation_multiplication",
+          "operation_label": "期待値の計算",
           "explanation": "初期個数と個々の原子核の生存確率の積として期待残存数を定義する",
           "used_node_ids": [
             "math.calc.exponential_growth_ode_solution",
@@ -55880,7 +55855,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "S(t)",
           "to_latex": "e^{-nt} \\text{ or decay survival}",
-          "operation_label": "survival_probability",
+          "operation_label": "確率法則の適用",
           "explanation": "1次減衰則または指数型生存確率の解を導入する",
           "used_node_ids": [
             "math.calc.exponential_growth_ode_solution"
@@ -55894,7 +55869,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "N_0 \\times S(t)",
           "to_latex": "N(t) := N_0 S(t)",
-          "operation_label": "linearity_scaling",
+          "operation_label": "線形性の適用",
           "explanation": "線形性により初期総数と確率を掛け合わせて期待残存数の定義式とする",
           "used_node_ids": [
             "math.calc.first_order_linear_decay_increment"
@@ -55925,7 +55900,7 @@
           "parent_step_id": null,
           "from_latex": "X \\in L^2(\\Omega, \\mathcal{F}, P)",
           "to_latex": "T := \\mathbb{E}[X \\mid \\mathcal{T}],\\quad E := X - T",
-          "operation_label": "projection_definition",
+          "operation_label": "定義の適用",
           "explanation": "確率変数XのL2空間における射影として条件付き期待値Tを定義し、その残差として誤差Eを構成する。",
           "used_node_ids": [
             "math.calc.function_linear_combination_def"
@@ -55939,7 +55914,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "X \\in L^2(\\Omega, \\mathcal{F}, P)",
           "to_latex": "T := \\mathbb{E}[X \\mid \\mathcal{T}]",
-          "operation_label": "conditional_expectation",
+          "operation_label": "期待値の計算",
           "explanation": "部分σ加法族に関する条件付き期待値として真値Tを導入する。",
           "used_node_ids": [
             "math.calc.function_linear_combination_def"
@@ -55953,7 +55928,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "T,\\ X",
           "to_latex": "E := X - T",
-          "operation_label": "residual_definition",
+          "operation_label": "定義の適用",
           "explanation": "観測値と真値の差として誤差変数Eを定義する。",
           "used_node_ids": [
             "math.calc.flow_stock_accumulation_identity"
@@ -55983,7 +55958,7 @@
           "parent_step_id": null,
           "from_latex": "\\sum_{k=1}^{n} \\Delta X_k \\Delta Y_k",
           "to_latex": "[X, Y]_t := \\lim_{\\|\\Delta\\|\\to 0}^{L^2}\\sum_{k=1}^{n} \\Delta X_k \\Delta Y_k",
-          "operation_label": "l2_limit_definition",
+          "operation_label": "定義の適用",
           "explanation": "分割幅の極限における確率変数の積和のL2収束として交差2次変分を定義する。",
           "used_node_ids": [
             "math.calc.mesh_limit_epsilon_delta_def"
@@ -55997,7 +55972,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\Delta X_k, \\Delta Y_k",
           "to_latex": "\\sum_{k=1}^{n} \\Delta X_k \\Delta Y_k",
-          "operation_label": "increment_sum",
+          "operation_label": "前提の適用と式変形",
           "explanation": "確率過程の増分の積の和を構成する。",
           "used_node_ids": [
             "math.calc.mi01_multiple_integral_def"
@@ -56011,7 +55986,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\sum_{k=1}^{n}\\Delta X_k\\Delta Y_k",
           "to_latex": "\\lim_{\\|\\Delta\\|\\to 0}\\mathbb{E}\\left[\\left(\\sum_{k=1}^{n}\\Delta X_k\\Delta Y_k - \\int_0^t c_s\\,ds\\right)^2\\right]=0",
-          "operation_label": "l2_convergence",
+          "operation_label": "前提の適用と式変形",
           "explanation": "2乗平均誤差の意味で積分の形に収束させる。",
           "used_node_ids": [
             "math.calc.mesh_limit_epsilon_delta_def"
@@ -56042,7 +56017,7 @@
           "parent_step_id": null,
           "from_latex": "p",
           "to_latex": "u(p) = \\mathbb{E}[u(p + \\delta p) \\mid p],\\quad u(0) = 0,\\quad u(1) = 1",
-          "operation_label": "markov_expectation",
+          "operation_label": "期待値の計算",
           "explanation": "マルコフ性の定義から1ステップ先の条件付き期待値に関する方程式と境界条件を導く。",
           "used_node_ids": [
             "math.calc.composite_function_def"
@@ -56056,7 +56031,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "p",
           "to_latex": "u(p) = \\mathbb{E}[u(p + \\delta p) \\mid p]",
-          "operation_label": "step_transition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "1ステップ増分後の状態に対する期待値を取る。",
           "used_node_ids": [
             "math.calc.composite_function_def"
@@ -56070,7 +56045,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "p \\in \\{0, 1\\}",
           "to_latex": "u(0) = 0,\\quad u(1) = 1",
-          "operation_label": "boundary_conditions",
+          "operation_label": "上界・下界の評価",
           "explanation": "吸収壁における確率の境界条件を定義する。",
           "used_node_ids": [
             "math.calc.continuous_composition_closure"
@@ -56101,7 +56076,7 @@
           "parent_step_id": null,
           "from_latex": "t, h \\ge 0",
           "to_latex": "S(t + h) = S(t)S(h),\\quad S(0) = 1,\\quad S(t) \\in [0, 1]",
-          "operation_label": "multiplicative_axiom",
+          "operation_label": "公理・基本前提の適用",
           "explanation": "指数法則の形に対応する無記憶性に基づく生存確率の乗法分解則を定義する。",
           "used_node_ids": [
             "math.alg.real_power_exponent_laws"
@@ -56115,7 +56090,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "t + h",
           "to_latex": "S(t + h) = S(t)S(h)",
-          "operation_label": "multiplicative_property",
+          "operation_label": "前提の適用と式変形",
           "explanation": "時間の加法性が確率の乗法性に写る関係式を置く。",
           "used_node_ids": [
             "math.alg.real_power_exponent_laws"
@@ -56129,7 +56104,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "S(0)",
           "to_latex": "S(0) = 1,\\quad S(t) \\in [0, 1]",
-          "operation_label": "normalization",
+          "operation_label": "前提の適用と式変形",
           "explanation": "初期確率の正規化と値域の制約を付与する。",
           "used_node_ids": [
             "math.calc.exp_as_inverse_log_def"
@@ -56160,7 +56135,7 @@
           "parent_step_id": null,
           "from_latex": "X \\sim \\mathcal{N}(0, v)",
           "to_latex": "\\mathbb{E}[X]=0,\\; \\mathbb{E}[X^2]=v,\\; \\mathbb{E}[X^4]=3v^2,\\; \\operatorname{Var}(X^2)=2v^2",
-          "operation_label": "moment_evaluation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "ガウス積分の変数変換公式およびガンマ関数の性質を用いて正規分布の高次モーメントを計算する。",
           "used_node_ids": [
             "math.calc.gamma_half_three_halves",
@@ -56175,7 +56150,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbb{E}[X^2] = \\int_{-\\infty}^{\\infty} x^2 \\frac{1}{\\sqrt{2\\pi v}} e^{-\\frac{x^2}{2v}} dx",
           "to_latex": "\\mathbb{E}[X^2] = v",
-          "operation_label": "gaussian_integral",
+          "operation_label": "積分操作の適用",
           "explanation": "2次モーメントの積分をガウス積分公式により解く。",
           "used_node_ids": [
             "math.calc.gamma_half_three_halves"
@@ -56189,7 +56164,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbb{E}\\left[\\left(\\sum_{k=1}^n Y_k\\right)^2\\right] = \\sum_{k=1}^n \\mathbb{E}[Y_k^2] + \\sum_{j \\neq k} \\mathbb{E}[Y_j]\\mathbb{E}[Y_k]",
           "to_latex": "\\mathbb{E}\\left[\\left(\\sum_{k=1}^n Y_k\\right)^2\\right] = \\sum_{k=1}^n \\mathbb{E}[Y_k^2]",
-          "operation_label": "independence_expansion",
+          "operation_label": "前提の適用と式変形",
           "explanation": "独立性と期待値の線形性を用いて交差項が消滅することを示す。",
           "used_node_ids": [
             "math.calc.mi04_change_of_variables_multiple_integral"
@@ -56219,7 +56194,7 @@
           "parent_step_id": null,
           "from_latex": "P_n(t) = P_n \\text{ (const.)}",
           "to_latex": "\\frac{d P_n(t)}{dt} = \\frac{d P_n}{dt} = 0",
-          "operation_label": "constant_derivative",
+          "operation_label": "微分操作の適用",
           "explanation": "定数関数の導関数が恒等的に零になる性質を定常状態確率に適用する。",
           "used_node_ids": [
             "math.calc.leibniz_derivative_notation_def",
@@ -56234,7 +56209,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "P_n(t) \\equiv C",
           "to_latex": "\\frac{d}{dt} P_n(t) = 0",
-          "operation_label": "derivative_of_constant",
+          "operation_label": "微分操作の適用",
           "explanation": "確率分布が時間変化しないという定常性から微分を計算する。",
           "used_node_ids": [
             "math.calc.m26_zero_derivative_constant_lemma"
@@ -56265,7 +56240,7 @@
           "parent_step_id": null,
           "from_latex": "\\int_{-u}^{u} \\big(1 - \\operatorname{Re}\\varphi_{\\mu}(t)\\big)\\,dt",
           "to_latex": "\\mu\\left(\\left\\{|x| \\ge \\frac{2}{u}\\right\\}\\right) \\le \\frac{1}{u}\\int_{-u}^{u} \\big(1 - \\operatorname{Re}\\varphi_{\\mu}(t)\\big)\\,dt",
-          "operation_label": "fubini_tail_bound",
+          "operation_label": "上界・下界の評価",
           "explanation": "フビニの定理と三角不等式を用いて、特性関数の積分平均からテール確率の上界を評価する。",
           "used_node_ids": [
             "math.alg.real_abs_triangle_inequality",
@@ -56280,7 +56255,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\int_{-u}^{u} \\int_{\\mathbb{R}} (1 - e^{itx}) \\mu(dx) dt",
           "to_latex": "\\int_{\\mathbb{R}} \\int_{-u}^{u} (1 - e^{itx}) dt \\mu(dx)",
-          "operation_label": "fubini_swap",
+          "operation_label": "前提の適用と式変形",
           "explanation": "積分の順序をフビニの定理で交換する。",
           "used_node_ids": [
             "math.calc.mi02_fubini_theorem"
@@ -56294,7 +56269,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\left|\\int \\dots\\right| \\le \\int |\\dots|",
           "to_latex": "\\mu(\\dots) \\le \\text{bound}",
-          "operation_label": "triangle_inequality_bound",
+          "operation_label": "不等式の評価",
           "explanation": "絶対値の三角不等式を適用して確率評価を完了する。",
           "used_node_ids": [
             "math.alg.real_abs_triangle_inequality"
@@ -56324,7 +56299,7 @@
           "parent_step_id": null,
           "from_latex": "X, Y \\text{ (random variables)}",
           "to_latex": "\\operatorname{Var}(X) := \\mathbb{E}\\big[(X - \\mathbb{E}[X])^2\\big],\\qquad \\operatorname{Cov}(X,Y) := \\mathbb{E}\\big[(X - \\mathbb{E}[X])(Y - \\mathbb{E}[Y])\\big]",
-          "operation_label": "expectation_definition",
+          "operation_label": "定義の適用",
           "explanation": "確率変数の偏差に対する重み付き積分（期待値）として分散と共分散を定義する。",
           "used_node_ids": [
             "math.alg.real_multiplication_associativity",
@@ -56339,7 +56314,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbb{E}[Z] = \\int z f(z) dz",
           "to_latex": "\\operatorname{Var}(X) = \\mathbb{E}[(X - \\mu)^2]",
-          "operation_label": "variance_formula",
+          "operation_label": "前提の適用と式変形",
           "explanation": "平均からの2乗偏差の積分として分散を表現する。",
           "used_node_ids": [
             "math.calc.mi01_multiple_integral_def"
@@ -56353,7 +56328,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbb{E}[(X - \\mu_x)(Y - \\mu_y)]",
           "to_latex": "\\operatorname{Cov}(X,Y) = \\mathbb{E}[(X - \\mu_x)(Y - \\mu_y)]",
-          "operation_label": "covariance_formula",
+          "operation_label": "前提の適用と式変形",
           "explanation": "2変数の同時分布における偏差の積の期待値として共分散を定義する。",
           "used_node_ids": [
             "math.alg.real_multiplication_associativity"
@@ -56383,7 +56358,7 @@
           "parent_step_id": null,
           "from_latex": "\\mu_{X_n} \\xrightarrow{w} \\mu_X",
           "to_latex": "\\lim_{n \\to \\infty} \\int_{\\mathbb{R}} f(x)\\,d\\mu_{X_n}(x) = \\int_{\\mathbb{R}} f(x)\\,d\\mu_X(x)",
-          "operation_label": "weak_convergence_definition",
+          "operation_label": "定義の適用",
           "explanation": "任意の有界連続関数に対する積分値の一致として弱収束を定義する。",
           "used_node_ids": [
             "math.calc.m52_continuous_function_integrability",
@@ -56398,7 +56373,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mu_{X_n} \\xrightarrow{w} \\mu_X",
           "to_latex": "X_n \\xrightarrow{d} X",
-          "operation_label": "distribution_convergence_equivalence",
+          "operation_label": "前提の適用と式変形",
           "explanation": "測度の弱収束と確率変数の分布収束の同値性を示す。",
           "used_node_ids": [
             "math.calc.m54_integral_equality_preservation"
@@ -56412,7 +56387,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "X_n \\xrightarrow{d} X",
           "to_latex": "\\forall f \\in C_b(\\mathbb{R}),\\; \\lim_{n \\to \\infty} \\int_{\\mathbb{R}} f(x)\\,d\\mu_{X_n}(x) = \\int_{\\mathbb{R}} f(x)\\,d\\mu_X(x)",
-          "operation_label": "portmanteau_equivalence",
+          "operation_label": "前提の適用と式変形",
           "explanation": "ポートマントー定理の主要な条件に帰着させる。",
           "used_node_ids": [
             "math.calc.m52_continuous_function_integrability"
@@ -56441,7 +56416,7 @@
           "parent_step_id": null,
           "from_latex": "A = B \\sqcup C",
           "to_latex": "A = B \\cup C \\land B \\cap C = \\emptyset",
-          "operation_label": "disjoint_union_definition",
+          "operation_label": "定義の適用",
           "explanation": "直和分割を和集合と素な共通部分の連言として定義する。",
           "used_node_ids": [
             "math.alg.real_trichotomy_axiom"
@@ -56455,7 +56430,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "A = B \\sqcup C",
           "to_latex": "A = B \\cup C",
-          "operation_label": "union_part",
+          "operation_label": "前提の適用と式変形",
           "explanation": "全体を網羅する和集合の性質を確認する。",
           "used_node_ids": [],
           "sympy_check_hint": null
@@ -56467,7 +56442,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "A = B \\cup C",
           "to_latex": "B \\cap C = \\emptyset",
-          "operation_label": "empty_intersection_part",
+          "operation_label": "前提の適用と式変形",
           "explanation": "共通部分が空であることを確認する。",
           "used_node_ids": [
             "math.alg.real_trichotomy_axiom"
@@ -56496,7 +56471,7 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{1}_{E}(x)",
           "to_latex": "\\mathbf{1}_{E}(x) := \\begin{cases} 1 & (x \\in E) \\\\ 0 & (x \\notin E) \\end{cases}",
-          "operation_label": "indicator_function_definition",
+          "operation_label": "定義の適用",
           "explanation": "帰属関係に応じた場合分けによる指示関数の定義を与える。",
           "used_node_ids": [
             "math.alg.real_trichotomy_axiom"
@@ -56510,7 +56485,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbf{1}_{E}(x)",
           "to_latex": "\\mathbf{1}_{E}: X \\to \\{0, 1\\}",
-          "operation_label": "codomain_specification",
+          "operation_label": "定義域・条件の整理",
           "explanation": "値域が 0 と 1 のみに制限されていることを明記する。",
           "used_node_ids": [],
           "sympy_check_hint": null
@@ -56522,7 +56497,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "x \\in E \\iff 1",
           "to_latex": "x \\notin E \\iff 0",
-          "operation_label": "binary_mapping_cases",
+          "operation_label": "前提の適用と式変形",
           "explanation": "三分律に基づいて各ケースの値を割り当てる。",
           "used_node_ids": [
             "math.alg.real_trichotomy_axiom"
@@ -56551,7 +56526,7 @@
           "parent_step_id": null,
           "from_latex": "S \\neq \\emptyset",
           "to_latex": "\\exists x \\in S",
-          "operation_label": "nonempty_extraction",
+          "operation_label": "前提の適用と式変形",
           "explanation": "非空集合から少なくとも1つの元が取れることを示す。",
           "used_node_ids": [
             "math.alg.real_trichotomy_axiom"
@@ -56565,7 +56540,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "S \\neq \\emptyset",
           "to_latex": "\\exists x \\in S",
-          "operation_label": "element_existence",
+          "operation_label": "前提の適用と式変形",
           "explanation": "非空性の定義から元が存在する。",
           "used_node_ids": [],
           "sympy_check_hint": null
@@ -56577,7 +56552,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "(x_1 \\in S_1 \\land x_2 \\in S_2)",
           "to_latex": "(x_1 \\in S_1,\\; x_2 \\in S_2)",
-          "operation_label": "multiple_membership_equivalence",
+          "operation_label": "前提の適用と式変形",
           "explanation": "複数の帰属条件の並列表記への書き換えを行う。",
           "used_node_ids": [
             "math.alg.real_trichotomy_axiom"
@@ -56606,7 +56581,7 @@
           "parent_step_id": null,
           "from_latex": "(x_1, \\dots, x_k) \\in S_1 \\times \\dots \\times S_k",
           "to_latex": "\\bigwedge_{i=1}^{k} x_i \\in S_i",
-          "operation_label": "equivalence_definition",
+          "operation_label": "定義の適用",
           "explanation": "有限直積集合の定義より、組の各成分が対応する集合の元であることを連言として表現する。",
           "used_node_ids": []
         },
@@ -56617,7 +56592,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "(x_1, \\dots, x_k) \\in S_1 \\times \\dots \\times S_k",
           "to_latex": "\\forall i \\in \\{1, \\dots, k\\},\\; x_i \\in S_i",
-          "operation_label": "component_projection",
+          "operation_label": "前提の適用と式変形",
           "explanation": "直積の元は各次元の射影がそれぞれの集合に属することを意味する。",
           "used_node_ids": []
         },
@@ -56628,7 +56603,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\forall i \\in \\{1, \\dots, k\\},\\; x_i \\in S_i",
           "to_latex": "\\bigwedge_{i=1}^{k} x_i \\in S_i",
-          "operation_label": "logical_conjunction",
+          "operation_label": "前提の適用と式変形",
           "explanation": "全称条件を有限個の連言として同値変形する。",
           "used_node_ids": []
         }
@@ -56655,7 +56630,7 @@
           "parent_step_id": null,
           "from_latex": "K^\\ddagger_{\\mathrm{stat}}",
           "to_latex": "\\frac{Q_\\ddagger^{\\mathrm{tot}}}{Q_A^{\\mathrm{tot}} Q_B^{\\mathrm{tot}}},\\quad E_0 := E_{0,\\ddagger} - (E_{0,A} + E_{0,B})",
-          "operation_label": "statistical_definition",
+          "operation_label": "定義の適用",
           "explanation": "化学平衡の統計力学的定義に基づき、全分配関数の比として平衡定数を導入する。",
           "used_node_ids": []
         },
@@ -56666,7 +56641,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "Q^{\\mathrm{tot}}",
           "to_latex": "e^{-E_0/(k_B T)} Q",
-          "operation_label": "partition_function_ratio",
+          "operation_label": "前提の適用と式変形",
           "explanation": "各化学種の全正準分配関数の比をとる。",
           "used_node_ids": []
         },
@@ -56677,7 +56652,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{Q_\\ddagger^{\\mathrm{tot}}}{Q_A^{\\mathrm{tot}} Q_B^{\\mathrm{tot}}}",
           "to_latex": "K^\\ddagger_{\\mathrm{stat}}",
-          "operation_label": "equilibrium_constant_formulation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "零点エネルギー差と内部分配関数の比をまとめて平衡定数を構成する。",
           "used_node_ids": []
         }
@@ -56704,7 +56679,7 @@
           "parent_step_id": null,
           "from_latex": "Q^{\\mathrm{tot}} := \\sum_{j} e^{-E_j/(k_B T)}",
           "to_latex": "e^{-E_0/(k_B T)} \\sum_{j} e^{-\\varepsilon_j/(k_B T)} = e^{-E_0/(k_B T)} Q",
-          "operation_label": "energy_shift_factorization",
+          "operation_label": "前提の適用と式変形",
           "explanation": "全エネルギー E_j を基底エネルギー E_0 と内部励起エネルギー \\varepsilon_j の和に分解し、指数法則により基底エネルギー因子を外に括り出す。",
           "used_node_ids": []
         },
@@ -56715,7 +56690,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "E_j",
           "to_latex": "E_0 + \\varepsilon_j",
-          "operation_label": "level_decomposition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "エネルギー準位を基準値と相対値に分ける。",
           "used_node_ids": []
         },
@@ -56726,7 +56701,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "e^{-(E_0 + \\varepsilon_j)/(k_B T)}",
           "to_latex": "e^{-E_0/(k_B T)} e^{-\\varepsilon_j/(k_B T)}",
-          "operation_label": "exponential_law_split",
+          "operation_label": "項の分解と整理",
           "explanation": "指数関数の和の法則を用いて積に書き換える。",
           "used_node_ids": []
         },
@@ -56737,7 +56712,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\sum_{j} e^{-E_0/(k_B T)} e^{-\\varepsilon_j/(k_B T)}",
           "to_latex": "e^{-E_0/(k_B T)} \\sum_{j} e^{-\\varepsilon_j/(k_B T)}",
-          "operation_label": "sum_linearity",
+          "operation_label": "線形性の適用",
           "explanation": "定数因数をシグマ記号の外側に括り出し、新しい分配関数 Q を定義する。",
           "used_node_ids": []
         }
@@ -56764,7 +56739,7 @@
           "parent_step_id": null,
           "from_latex": "S_t := S_0 \\exp\\!\\left(\\left(\\mu - \\frac{1}{2}\\sigma^2\\right)t + \\sigma W_t\\right)",
           "to_latex": "S_0 e^{X_t},\\quad X_t := \\left(\\mu - \\frac{1}{2}\\sigma^2\\right)t + \\sigma W_t",
-          "operation_label": "exponential_process_definition",
+          "operation_label": "定義の適用",
           "explanation": "ドリフトと拡散項を持つ線形ブラウン運動の指数関数として幾何ブラウン運動を定義する。",
           "used_node_ids": []
         },
@@ -56775,7 +56750,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "X_t",
           "to_latex": "\\left(\\mu - \\frac{1}{2}\\sigma^2\\right)t + \\sigma W_t",
-          "operation_label": "exponent_formulation",
+          "operation_label": "前提の適用と式変形",
           "explanation": "指数部分の確率変数を線形結合として定義する。",
           "used_node_ids": []
         },
@@ -56786,7 +56761,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "S_0 \\exp(X_t)",
           "to_latex": "S_0 e^{X_t}",
-          "operation_label": "exponential_mapping",
+          "operation_label": "前提の適用と式変形",
           "explanation": "初期値と自然指数関数を組み合わせて幾何ブラウン運動の表現を得る。",
           "used_node_ids": []
         }
@@ -56814,7 +56789,7 @@
           "parent_step_id": null,
           "from_latex": "g \\in C^3(\\mathbb{R}),\\; dX_t = a_t\\,dt + b_t\\,dW_t",
           "to_latex": "dg(X_t) = g'(X_t)\\,dX_t + \\frac{1}{2}g''(X_t)\\,(dX_t)^2,\\quad (dX_t)^m = 0\\;(m \\ge 3)",
-          "operation_label": "Taylor_Expansion_Higher_Order_Vanishing",
+          "operation_label": "前提の適用と式変形",
           "explanation": "C3級関数のテイラー展開において、2次までの寄与を残し3次以上の増分べき項が0に消滅することを示す。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -56828,7 +56803,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "g(X_{t+dt}) - g(X_t) = g'(X_t)\\Delta X_t + \\frac{1}{2}g''(X_t)(\\Delta X_t)^2 + \\mathcal{O}(\\Delta t^{3/2})",
           "to_latex": "(dX_t)^m = 0\\;(m \\ge 3)",
-          "operation_label": "Big_O_Limit",
+          "operation_label": "極限操作の適用",
           "explanation": "確率微分の増分評価から3次以上の項が極限で消失する定義を確認する。",
           "used_node_ids": [
             "math.calc.landau_little_o_def"
@@ -56857,7 +56832,7 @@
           "parent_step_id": null,
           "from_latex": "\\lim_{k\\to\\infty} x_k = x^*",
           "to_latex": "\\text{complete} \\iff \\big(\\{x_k\\}\\text{ Cauchy} \\implies \\exists x^* \\in X,\\; \\lim_{k\\to\\infty} x_k = x^*\\big)",
-          "operation_label": "Cauchy_Completeness_Def",
+          "operation_label": "定義の確認",
           "explanation": "距離空間における点列の収束、コーシー列、および完備性の定義を総括する。",
           "used_node_ids": [
             "math.calc.epsilon_delta_limit_def"
@@ -56871,7 +56846,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "\\forall \\varepsilon > 0,\\; \\exists N \\in \\mathbb{N}",
           "to_latex": "d(x_m, x_k) < \\varepsilon",
-          "operation_label": "Epsilon_N_Condition",
+          "operation_label": "前提の適用と式変形",
           "explanation": "イプシロン・エヌ論法を用いてコーシー列の条件を記述する。",
           "used_node_ids": [
             "math.calc.epsilon_delta_limit_def"
@@ -56900,7 +56875,7 @@
           "parent_step_id": null,
           "from_latex": "\\lim_{k\\to\\infty} x_k = x^*",
           "to_latex": "d(T x_k, T x^*) \\le \\gamma d(x_k, x^*) \\to 0 \\implies \\lim_{k\\to\\infty} T x_k = T x^*",
-          "operation_label": "Contraction_Continuity",
+          "operation_label": "前提の適用と式変形",
           "explanation": "縮小写像の不等式から収束列に対する像の連続性を示す。",
           "used_node_ids": [
             "math.calc.epsilon_delta_limit_def"
@@ -56914,7 +56889,7 @@
           "parent_step_id": "s1_overview",
           "from_latex": "d(T x_k, T x^*) \\le \\gamma d(x_k, x^*)",
           "to_latex": "d(T x_k, T x^*) \\to 0",
-          "operation_label": "Squeeze_Inequality",
+          "operation_label": "不等式の評価",
           "explanation": "縮小則を適用して距離が0に収束することを示す。",
           "used_node_ids": [
             "math.calc.epsilon_delta_limit_def"
@@ -56943,7 +56918,7 @@
           "parent_step_id": null,
           "from_latex": "\\lim_{k\\to\\infty} x_k = x \\land \\lim_{k\\to\\infty} x_k = y",
           "to_latex": "x = y,\\quad \\lim_{k\\to\\infty} x_{k+1} = \\lim_{k\\to\\infty} x_k,\\quad \\lim_{m\\to\\infty} d(x_k, x_m) = d(x_k, x^*)",
-          "operation_label": "Metric_Limit_Properties",
+          "operation_label": "極限操作の適用",
           "explanation": "距離空間における極限の一意性、添字シフト不変性、および距離関数の連続性を導出する。",
           "used_node_ids": [
             "math.calc.epsilon_delta_limit_def"
@@ -56957,12 +56932,240 @@
           "parent_step_id": "s1_overview",
           "from_latex": "d(x, y) \\le d(x, x_k) + d(x_k, y)",
           "to_latex": "x = y",
-          "operation_label": "Triangle_Inequality_Uniqueness",
+          "operation_label": "不等式の評価",
           "explanation": "三角不等式を用いて極限の一意性を証明する。",
           "used_node_ids": [
             "math.calc.epsilon_delta_limit_def"
           ],
           "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.link_elec_drift_law",
+      "target_node_id": "math.pde.electron_drift_constitutive_law",
+      "route_kind": "equivalence",
+      "title": "電子ドリフト電流密度の構成則と静電ポテンシャル勾配関係の導出",
+      "premise_node_ids": [
+        "math.calc.differential_point_notation_def",
+        "math.calc.membrane_laplace_bvp_def"
+      ],
+      "required_math_node_ids": [
+        "math.pde.electron_drift_constitutive_law"
+      ],
+      "assumptions": [
+        "q > 0",
+        "͒_n > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{J}_n(\\mathbf{r}) = q\\mu_n n(\\mathbf{r})\\mathbf{E}(\\mathbf{r})",
+          "to_latex": "\\mathbf{E}(\\mathbf{r}) = -\\nabla V(\\mathbf{r})",
+          "operation_label": "constitutive_relation",
+          "explanation": "開台電場と静電ポテンシャルの関係からドリフト電流密度を構成する。",
+          "used_node_ids": [
+            "math.calc.differential_point_notation_def"
+          ]
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{E}(\\mathbf{r}) = -\\nabla V(\\mathbf{r})",
+          "to_latex": "\\mathbf{E}(\\mathbf{r}) = -\\nabla V(\\mathbf{r})",
+          "operation_label": "definition",
+          "explanation": "静電电界をポテンテシャルの負の勾配として定義する。",
+          "used_node_ids": [
+            "math.calc.membrane_laplace_bvp_def"
+          ]
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{E}(\\mathbf{r}) = -\\nabla V(\\mathbf{r})",
+          "to_latex": "\\mathbf{J}_n(\\mathbf{r}) = q\\mu_n n(\\mathbf{r})\\mathbf{E}(\\mathbf{r})",
+          "operation_label": "substitution",
+          "explanation": "電場表獾を存在するヅリフト電流密度に代入する。",
+          "used_node_ids": [
+            "math.calc.differential_point_notation_def"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drv.link_elec_pot_d_def",
+      "target_node_id": "math.pde.electrostatic_potential_displacement_def",
+      "route_kind": "equivalence",
+      "title": "静電ポテンシャル・電場・電束密度の定義",
+      "premise_node_ids": [
+        "math.calc.differential_point_notation_def",
+        "math.calc.membrane_laplace_bvp_def"
+      ],
+      "required_math_node_ids": [
+        "math.pde.electrostatic_potential_displacement_def"
+      ],
+      "assumptions": [
+        "\\varepsilon(\\mathbf{x}) > 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{E}(\\mathbf{x}) := -\\nabla\\psi(\\mathbf{x})",
+          "to_latex": "\\mathbf{D}(\\mathbf{x}) := \\varepsilon(\\mathbf{x})\\mathbf{E}(\\mathbf{x})",
+          "operation_label": "definition",
+          "explanation": "静電場のポテンシャルから電場まび電束密度を定義する。",
+          "used_node_ids": [
+            "math.calc.differential_point_notation_def"
+          ]
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{E}(\\mathbf{x}) = -\\nabla\\psi(\\mathbf{x})",
+          "to_latex": "\\mathbf{E}(\\mathbf{x}) := -\\nabla\\psi(\\mathbf{x})",
+          "operation_label": "grad_def",
+          "explanation": "静電ポテンシャルの負の勾配として電場を定義する。",
+          "used_node_ids": [
+            "math.calc.membrane_laplace_bvp_def"
+          ]
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{E}(\\mathbf{x})",
+          "to_latex": "\\mathbf{D}(\\mathbf{x}) := \\varepsilon(\\mathbf{x})\\mathbf{E}(\\mathbf{x})",
+          "operation_label": "constitutive",
+          "explanation": "誘電率を介して電束密度を線形墜線する。",
+          "used_node_ids": [
+            "math.calc.differential_point_notation_def"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drv.link_metric_ax",
+      "target_node_id": "math.topo.metric_space_axioms",
+      "route_kind": "equivalence",
+      "title": "距離穵間の公理と三角不等式の設定",
+      "premise_node_ids": [
+        "math.alg.real_abs_triangle_inequality",
+        "math.alg.real_trichotomy_axiom"
+      ],
+      "required_math_node_ids": [
+        "math.topo.metric_space_axioms"
+      ],
+      "assumptions": [
+        "d(x,y) \\ge 0"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "d(x,y) \\ge 0",
+          "to_latex": "d(x,z) \\le d(x,y) + d(y,z)",
+          "operation_label": "metric_axioms",
+          "explanation": "対称性わせび三角不等式の公理を統合する。",
+          "used_node_ids": [
+            "math.alg.real_abs_triangle_inequality"
+          ]
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d(x,y) \\ge 0",
+          "to_latex": "d(x,y) = d(y,x)",
+          "operation_label": "nonneg_and_symmetry",
+          "explanation": "非負性と対称性を確認する。",
+          "used_node_ids": [
+            "math.alg.real_trichotomy_axiom"
+          ]
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d(x,z) \\le d(x,y) + d(y,z)",
+          "to_latex": "d(x_m,x_k) \\le \\sum_{j=k}^{m-1} d(x_{j+1},x_j)",
+          "operation_label": "finite_chain",
+          "explanation": "帰納法により有限連環に拡張する。",
+          "used_node_ids": [
+            "math.alg.real_abs_triangle_inequality"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drv.link_topo_sph_bw",
+      "target_node_id": "math.topo.unit_sphere_compactness_bw",
+      "route_kind": "deductive",
+      "title": "単位球面の点列コンパクト性",
+      "premise_node_ids": [
+        "math.calc.m13_continuous_compact_boundedness"
+      ],
+      "required_math_node_ids": [
+        "math.topo.unit_sphere_compactness_bw"
+      ],
+      "assumptions": [
+        "\\|\\mathbf{a}\\| = 1"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S^{n-1} := \\{a \\in \\mathbb{R}^n \\mid \\|a\\| = 1\\}",
+          "to_latex": "\\lim_{m \\to \\infty} \\mathbf{a}_{k_m} = \\mathbf{a}",
+          "operation_label": "bolzano_weierstrass",
+          "explanation": "有界閉領域におけるボルツァーノ・ワイエルシ〵ト用法による收束部分列の存在を導く。",
+          "used_node_ids": [
+            "math.calc.m13_continuous_compact_boundedness"
+          ]
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S^{n-1} \\subset \\mathbb{R}^n",
+          "to_latex": "\\|\\mathbf{a}_k\\| = 1",
+          "operation_label": "boundedness",
+          "explanation": "単位球面が有界閉領であることを確認する。",
+          "used_node_ids": [
+            "math.calc.m13_continuous_compact_boundedness"
+          ]
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{a}_k",
+          "to_latex": "\\lim_{m \\to \\infty} \\mathbf{a}_{k_m} = \\mathbf{a} \\land \\mathbf{a} \\neq \\mathbf{0}",
+          "operation_label": "convergence",
+          "explanation": "単位球面内に收束する部分列が存在することを攰す。",
+          "used_node_ids": [
+            "math.calc.m13_continuous_compact_boundedness"
+          ]
         }
       ]
     }
