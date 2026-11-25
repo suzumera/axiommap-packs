@@ -7716,6 +7716,90 @@
         "statistics",
         "psychometrics"
       ]
+    },
+    {
+      "id": "math.prob.memoryless_survival_prob_def",
+      "short_code": "MEMLESS_SURV_DEF",
+      "kind": "definition",
+      "title": "無記憶生存確率関数の定義",
+      "summary": "経過時間 t に依存せず将来の時間 h に対する生存確率が乗法的に分解される無記憶性条件と初期正規化条件を定める定義。",
+      "canonical_latex": "S(t + h) = S(t)S(h)\\quad (t, h \\ge 0),\\quad S(0) = 1,\\quad S(t) \\in [0, 1]",
+      "aliases_latex": [
+        "\\mathbb{P}(T > t + h \\mid T > t) = \\mathbb{P}(T > h)"
+      ],
+      "keywords": [
+        "無記憶性",
+        "生存確率",
+        "指数分布",
+        "条件付き確率"
+      ],
+      "domain_tags": [
+        "probability",
+        "calculus"
+      ]
+    },
+    {
+      "id": "math.calc.decay_rate_at_zero_hypothesis",
+      "short_code": "DECAY_RATE_ZERO",
+      "kind": "empirical_hypothesis",
+      "title": "崩壊確率定数による微小時間生存率の1次展開仮説",
+      "summary": "微小時間 h における生存確率の減少が正の崩壊定数 λ に比例し、高次無限小誤差 r(h)=o(h) を除いて線形近似できるという物理・確率仮説。",
+      "canonical_latex": "S(h) = 1 - \\lambda h + r(h),\\quad r(h) = o(h)\\;(h \\to 0),\\quad \\lambda > 0",
+      "aliases_latex": [
+        "S'(0) = -\\lambda"
+      ],
+      "keywords": [
+        "崩壊定数",
+        "微小時間展開",
+        "1次近似",
+        "ランダウ記号"
+      ],
+      "domain_tags": [
+        "calculus",
+        "nuclear_physics"
+      ]
+    },
+    {
+      "id": "math.prob.independent_nuclei_mean_count_def",
+      "short_code": "IND_MEAN_COUNT",
+      "kind": "definition",
+      "title": "独立原子核集団の期待残存数の定義",
+      "summary": "初期個数 N_0 の独立同一崩壊する原子核集団において、時刻 t における期待残存数 N(t) を初期値と生存確率の積として定める定義。",
+      "canonical_latex": "N(t) := N_0 S(t)\\quad (N_0 > 0,\\; t \\ge 0)",
+      "aliases_latex": [
+        "\\mathbb{E}[N_t] = N_0 S(t)"
+      ],
+      "keywords": [
+        "期待残存数",
+        "独立崩壊",
+        "原子核数",
+        "初期個数"
+      ],
+      "domain_tags": [
+        "probability",
+        "nuclear_physics"
+      ]
+    },
+    {
+      "id": "math.calc.negative_rate_activity_def",
+      "short_code": "NEG_RATE_ACT",
+      "kind": "definition",
+      "title": "減少率としての放射能の定義",
+      "summary": "時刻 t における期待残存数 N(t) の時間減少率（時間微分の負符号）として放射能 A(t) を定める定義。",
+      "canonical_latex": "A(t) := -\\frac{dN(t)}{dt}",
+      "aliases_latex": [
+        "A(t) = -N'(t)"
+      ],
+      "keywords": [
+        "放射能",
+        "崩壊率",
+        "減少率",
+        "時間微分"
+      ],
+      "domain_tags": [
+        "calculus",
+        "nuclear_physics"
+      ]
     }
   ],
   "derivations": [
@@ -49573,6 +49657,368 @@
             "math.prob.bernoulli_pmf_def"
           ],
           "sympy_check_hint": null
+        }
+      ],
+      "rigor_version": 2
+    },
+    {
+      "id": "drv.eng.nuc1.n01_decay_constant_boundary",
+      "target_node_id": "eng.nuc1.n01_decay_constant_boundary",
+      "route_kind": "deductive",
+      "title": "無記憶性と微小時間崩壊則からの放射性崩壊微分方程式および放射能の導出",
+      "premise_node_ids": [
+        "math.prob.memoryless_survival_prob_def",
+        "math.calc.decay_rate_at_zero_hypothesis",
+        "math.prob.independent_nuclei_mean_count_def",
+        "math.calc.negative_rate_activity_def"
+      ],
+      "required_math_node_ids": [
+        "math.alg.fraction_numerator_split",
+        "math.alg.nonzero_factor_fraction_cancel",
+        "math.alg.nonzero_scalar_division",
+        "math.alg.real_additive_identity",
+        "math.alg.real_additive_inverse_axiom",
+        "math.alg.real_commutative_law",
+        "math.alg.real_distributive_law",
+        "math.alg.real_multiplication_associativity",
+        "math.calc.leibniz_derivative_notation_def",
+        "math.calc.limit_linearity_constant",
+        "math.calc.limit_scalar_multiple",
+        "math.calc.little_o_quotient_limit_def",
+        "math.calc.m20_derivative_definition",
+        "math.calc.m36_derivative_linearity"
+      ],
+      "assumptions": [
+        "各原子核は時刻に依存しない定数 λ > 0 の崩壊確率定数を持ち、互いに独立に崩壊する。",
+        "時刻 t >= 0 における原子核数の期待値 N(t) は連続量として時間微分可能である。",
+        "微小時間 h -> 0 における生存確率の線形近似誤差 r(h) は r(h) = o(h) を満たす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S(t+h) = S(t)S(h),\\quad S(h) = 1 - \\lambda h + r(h),\\quad N(t) := N_0 S(t),\\quad A(t) := -\\frac{dN(t)}{dt}",
+          "to_latex": "\\frac{dN(t)}{dt} = -\\lambda N(t),\\quad N(0) = N_0,\\quad A(t) := -\\frac{dN(t)}{dt} = \\lambda N(t)",
+          "operation_label": "無記憶性と微小時間展開から崩壊微分方程式と放射能を導出",
+          "explanation": "無記憶生存確率の乗法性と微小時間における線形近似仮説から生存確率の1階常微分方程式を導き、期待残存数 N(t) と放射能 A(t) の関係式を得る。",
+          "used_node_ids": [
+            "math.calc.decay_rate_at_zero_hypothesis",
+            "math.calc.little_o_quotient_limit_def",
+            "math.calc.m20_derivative_definition",
+            "math.calc.negative_rate_activity_def",
+            "math.prob.independent_nuclei_mean_count_def",
+            "math.prob.memoryless_survival_prob_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S(t+h) - S(t)",
+          "to_latex": "-\\lambda S(t)h + S(t)r(h)",
+          "operation_label": "無記憶性と1次近似による生存確率増分の展開",
+          "explanation": "無記憶性の関係式と微小時間生存率の線形近似を生存確率の増分 S(t+h)-S(t) に代入して展開し、定数項を相殺する。",
+          "used_node_ids": [
+            "math.alg.real_additive_identity",
+            "math.alg.real_additive_inverse_axiom",
+            "math.alg.real_commutative_law",
+            "math.alg.real_distributive_law",
+            "math.calc.decay_rate_at_zero_hypothesis",
+            "math.prob.memoryless_survival_prob_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "S(t+h) - S(t)",
+          "to_latex": "S(t)S(h) - S(t)",
+          "operation_label": "無記憶生存確率の定義を代入",
+          "explanation": "増分 S(t+h) - S(t) の第1項に無記憶性の定義式 S(t+h) = S(t)S(h) を代入する。",
+          "used_node_ids": [
+            "math.prob.memoryless_survival_prob_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "S(t)S(h) - S(t)",
+          "to_latex": "S(t)\\big(1 - \\lambda h + r(h)\\big) - S(t)",
+          "operation_label": "微小時間生存率の線形近似仮説を代入",
+          "explanation": "S(h) に微小時間生存率の1次展開仮説 S(h) = 1 - λh + r(h) を代入する。",
+          "used_node_ids": [
+            "math.calc.decay_rate_at_zero_hypothesis"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "S(t)\\big(1 - \\lambda h + r(h)\\big) - S(t)",
+          "to_latex": "S(t) - \\lambda S(t)h + S(t)r(h) - S(t)",
+          "operation_label": "実数の分配法則による括弧の展開",
+          "explanation": "実数の分配法則を適用して S(t) を括弧内の各項に掛け合わせる。",
+          "used_node_ids": [
+            "math.alg.real_distributive_law"
+          ],
+          "sympy_check_hint": "S*(1 - lam*h + r) - S == S - lam*S*h + S*r - S"
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "S(t) - \\lambda S(t)h + S(t)r(h) - S(t)",
+          "to_latex": "-\\lambda S(t)h + S(t)r(h)",
+          "operation_label": "加法の交換法則と加法逆元による相殺",
+          "explanation": "加法の交換法則で S(t) と -S(t) を隣接させ、加法逆元の公理 S(t) + (-S(t)) = 0 と加法単位元の公理により相殺する。",
+          "used_node_ids": [
+            "math.alg.real_additive_identity",
+            "math.alg.real_additive_inverse_axiom",
+            "math.alg.real_commutative_law"
+          ],
+          "sympy_check_hint": "S - lam*S*h + S*r - S == -lam*S*h + S*r"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 7,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S(t+h) - S(t) = -\\lambda S(t)h + S(t)r(h)",
+          "to_latex": "\\frac{S(t+h) - S(t)}{h} = -\\lambda S(t) + S(t)\\frac{r(h)}{h}",
+          "operation_label": "差分商の構成と分子の加法分解・約分",
+          "explanation": "増分の等式の両辺を非零の微小時間 h で割り、右辺を2項に分解して第1項の共通因数 h を約分する。",
+          "used_node_ids": [
+            "math.alg.fraction_numerator_split",
+            "math.alg.nonzero_factor_fraction_cancel",
+            "math.alg.nonzero_scalar_division"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "S(t+h) - S(t) = -\\lambda S(t)h + S(t)r(h)",
+          "to_latex": "\\frac{S(t+h) - S(t)}{h} = \\frac{-\\lambda S(t)h + S(t)r(h)}{h}",
+          "operation_label": "非零実数 h による両辺の除算",
+          "explanation": "h ≠ 0 に対して等式の両辺を h で割る。",
+          "used_node_ids": [
+            "math.alg.nonzero_scalar_division"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{S(t+h) - S(t)}{h} = \\frac{-\\lambda S(t)h + S(t)r(h)}{h}",
+          "to_latex": "\\frac{S(t+h) - S(t)}{h} = \\frac{-\\lambda S(t)h}{h} + \\frac{S(t)r(h)}{h}",
+          "operation_label": "分数の分子の加法分解",
+          "explanation": "右辺の分数の分子にある和を2つの分数の和に分解する。",
+          "used_node_ids": [
+            "math.alg.fraction_numerator_split"
+          ],
+          "sympy_check_hint": "(-lam*S*h + S*r)/h == (-lam*S*h)/h + (S*r)/h"
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{S(t+h) - S(t)}{h} = \\frac{-\\lambda S(t)h}{h} + \\frac{S(t)r(h)}{h}",
+          "to_latex": "\\frac{S(t+h) - S(t)}{h} = -\\lambda S(t) + S(t)\\frac{r(h)}{h}",
+          "operation_label": "非零共通因数 h の約分と積の分離",
+          "explanation": "第1項で非零共通因数 h を約分し、第2項で分数の積の結合則により S(t) を分数の外へ分離する。",
+          "used_node_ids": [
+            "math.alg.fraction_numerator_split",
+            "math.alg.nonzero_factor_fraction_cancel"
+          ],
+          "sympy_check_hint": "(-lam*S*h)/h + (S*r)/h == -lam*S + S*(r/h)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 11,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{S(t+h) - S(t)}{h} = -\\lambda S(t) + S(t)\\frac{r(h)}{h}",
+          "to_latex": "S'(t) = -\\lambda S(t)",
+          "operation_label": "極限 h->0 の適用による生存確率微分方程式の導出",
+          "explanation": "差分商の等式で h -> 0 の極限をとり、導関数の定義と高次無限小 r(h)=o(h) の極限消滅から S'(t) = -λS(t) を得る。",
+          "used_node_ids": [
+            "math.alg.real_additive_identity",
+            "math.calc.limit_linearity_constant",
+            "math.calc.limit_scalar_multiple",
+            "math.calc.little_o_quotient_limit_def",
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{S(t+h) - S(t)}{h} = -\\lambda S(t) + S(t)\\frac{r(h)}{h}",
+          "to_latex": "S'(t) = -\\lambda S(t) + S(t)\\lim_{h \\to 0}\\frac{r(h)}{h}",
+          "operation_label": "両辺の極限 h->0 と導関数の定義・極限法則の適用",
+          "explanation": "両辺で h -> 0 の極限をとり、左辺に導関数の定義、右辺に極限の加法性・定数極限・定数倍法則を適用する。",
+          "used_node_ids": [
+            "math.calc.limit_linearity_constant",
+            "math.calc.limit_scalar_multiple",
+            "math.calc.m20_derivative_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "S'(t) = -\\lambda S(t) + S(t)\\lim_{h \\to 0}\\frac{r(h)}{h}",
+          "to_latex": "S'(t) = -\\lambda S(t)",
+          "operation_label": "小文字 o(h) の極限消滅を代入",
+          "explanation": "r(h) = o(h) の定義より lim_{h->0} r(h)/h = 0 を代入し、加法単位元の公理により第2項を消去する。",
+          "used_node_ids": [
+            "math.alg.real_additive_identity",
+            "math.calc.little_o_quotient_limit_def"
+          ],
+          "sympy_check_hint": "-lam*S + S*0 == -lam*S"
+        },
+        {
+          "step_id": "s2_4",
+          "order": 14,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "N(t) := N_0 S(t),\\quad S'(t) = -\\lambda S(t),\\quad S(0) = 1",
+          "to_latex": "\\frac{dN(t)}{dt} = -\\lambda N(t),\\quad N(0) = N_0",
+          "operation_label": "期待残存数 N(t) の微分方程式と初期条件の導出",
+          "explanation": "N(t) = N_0 S(t) を時間で微分して S'(t) = -λS(t) を代入し、さらに t=0 を代入して初期条件 N(0) = N_0 を得る。",
+          "used_node_ids": [
+            "math.alg.real_commutative_law",
+            "math.alg.real_multiplication_associativity",
+            "math.calc.leibniz_derivative_notation_def",
+            "math.calc.m36_derivative_linearity",
+            "math.prob.independent_nuclei_mean_count_def",
+            "math.prob.memoryless_survival_prob_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{dN(t)}{dt} = \\frac{d}{dt}\\big(N_0 S(t)\\big)",
+          "to_latex": "\\frac{dN(t)}{dt} = N_0 \\frac{dS(t)}{dt}",
+          "operation_label": "期待残存数の定義を導入し微分の定数倍法則を適用",
+          "explanation": "N(t) = N_0 S(t) の時間微分に微分作用素の線形性（定数倍則）を適用して定数 N_0 を微分の外に出す。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity",
+            "math.prob.independent_nuclei_mean_count_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{dN(t)}{dt} = N_0 \\frac{dS(t)}{dt}",
+          "to_latex": "\\frac{dN(t)}{dt} = N_0 \\big(-\\lambda S(t)\\big)",
+          "operation_label": "生存確率の微分方程式 S'(t) = -λS(t) を代入",
+          "explanation": "ライプニッツ記法とプライム記法の等価性 dS(t)/dt = S'(t) を用いて、既出の S'(t) = -λS(t) を代入する。",
+          "used_node_ids": [
+            "math.calc.leibniz_derivative_notation_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{dN(t)}{dt} = N_0 \\big(-\\lambda S(t)\\big)",
+          "to_latex": "\\frac{dN(t)}{dt} = -\\lambda N(t)",
+          "operation_label": "乗法の交換・結合法則と N(t) = N_0 S(t) の代入",
+          "explanation": "実数の乗法の交換法則および結合法則により N_0(-λS(t)) = -λ(N_0 S(t)) と並び替え、N_0 S(t) = N(t) を代入する。",
+          "used_node_ids": [
+            "math.alg.real_commutative_law",
+            "math.alg.real_multiplication_associativity",
+            "math.prob.independent_nuclei_mean_count_def"
+          ],
+          "sympy_check_hint": "N0*(-lam*S) == -lam*(N0*S)"
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "N(0) = N_0 S(0)",
+          "to_latex": "N(0) = N_0",
+          "operation_label": "初期値 N(0) を導入し S(0) = 1 を代入",
+          "explanation": "N(t) = N_0 S(t) に t = 0 を代入した式へ生存確率の初期条件 S(0) = 1 を代入する。",
+          "used_node_ids": [
+            "math.prob.independent_nuclei_mean_count_def",
+            "math.prob.memoryless_survival_prob_def"
+          ],
+          "sympy_check_hint": "N0*1 == N0"
+        },
+        {
+          "step_id": "s2_5",
+          "order": 19,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A(t) := -\\frac{dN(t)}{dt},\\quad \\frac{dN(t)}{dt} = -\\lambda N(t)",
+          "to_latex": "A(t) := -\\frac{dN(t)}{dt} = \\lambda N(t)",
+          "operation_label": "放射能 A(t) と λN(t) の等価性の導出",
+          "explanation": "放射能の定義式に N(t) の微分方程式を代入し、二重負号を簡約して A(t) = λN(t) を得る。",
+          "used_node_ids": [
+            "math.alg.real_additive_inverse_axiom",
+            "math.calc.negative_rate_activity_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_1",
+          "order": 20,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "A(t) = -\\frac{dN(t)}{dt}",
+          "to_latex": "A(t) = -\\big(-\\lambda N(t)\\big)",
+          "operation_label": "放射能の定義を導入し微分方程式を代入",
+          "explanation": "放射能の定義 A(t) := -dN(t)/dt に、先に導出した dN(t)/dt = -λN(t) を代入する。",
+          "used_node_ids": [
+            "math.calc.negative_rate_activity_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_2",
+          "order": 21,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "A(t) = -\\big(-\\lambda N(t)\\big)",
+          "to_latex": "A(t) = \\lambda N(t)",
+          "operation_label": "加法逆元の性質による二重負号の簡約",
+          "explanation": "任意の実数 x に対する加法逆元の一意性 -(-x) = x を用いて二重の負号を解消し、A(t) = λN(t) を得る。",
+          "used_node_ids": [
+            "math.alg.real_additive_inverse_axiom"
+          ],
+          "sympy_check_hint": "-(-lam*N) == lam*N"
         }
       ],
       "rigor_version": 2
