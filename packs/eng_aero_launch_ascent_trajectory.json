@@ -1,0 +1,641 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_launch_ascent_trajectory",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "ロケット打ち上げ軌道力学・上昇軌跡：重力ターン・重力/抗力/操舵のΔv損失・Max-Q動圧と打ち上げ方位角・地球自転加算",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『ロケット打ち上げ軌道力学・上昇軌跡：重力ターン・重力/抗力/操舵のΔv損失・Max-Q動圧と打ち上げ方位角・地球自転加算』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.launch.n01_variable_mass_rocket_eom",
+      "short_code": "LCH01",
+      "kind": "theorem_formula",
+      "title": "2次元鉛直面における可変質量ロケットの運動方程式",
+      "summary": "重力場および大気中を上昇する可変質量ロケットに対し、軌道接線方向および主法線方向の速度座標系において導出される並進運動方程式。",
+      "canonical_latex": "m\\dot{v} = T\\cos\\alpha - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = T\\sin\\alpha + L - mg\\cos\\gamma",
+      "aliases_latex": [
+        "\\dot{v} = \\frac{T\\cos\\alpha - D}{m} - g\\sin\\gamma,\\quad \\dot{\\gamma} = \\frac{T\\sin\\alpha + L}{mv} - \\frac{g}{v}\\cos\\gamma"
+      ],
+      "keywords": [
+        "ロケット運動方程式",
+        "可変質量系",
+        "飛行経路角",
+        "迎え角",
+        "接線方向加速度"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "orbital_mechanics",
+        "flight_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.launch.n02_gravity_turn_kinematics",
+      "short_code": "LCH02",
+      "kind": "theorem_formula",
+      "title": "重力ターン軌道の運動学方程式（零迎え角飛行）",
+      "summary": "迎え角および空力揚力を零（α=0, L=0）に維持し、法線方向の重力成分のみによって飛行経路角を自然に傾斜させる重力ターン（ゼロ揚力軌道）の支配方程式。",
+      "canonical_latex": "\\dot{v} = \\frac{T - D}{m} - g\\sin\\gamma,\\quad \\dot{\\gamma} = -\\frac{g}{v}\\cos\\gamma",
+      "aliases_latex": [
+        "\\frac{d\\gamma}{dt} = -\\frac{g}{v}\\cos\\gamma"
+      ],
+      "keywords": [
+        "重力ターン",
+        "重力ターン軌道",
+        "零迎え角飛行",
+        "ゼロ揚力飛行",
+        "ピッチプログラム"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "flight_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.launch.n03_ideal_tsiolkovsky_delta_v",
+      "short_code": "LCH03",
+      "kind": "theorem_formula",
+      "title": "ツィオルコフスキーの理想ロケット方程式",
+      "summary": "外力のない真空中において、一定の有効排気速度で推進薬を消費するロケットが質量比に応じて獲得する理想的な速度増分公式。",
+      "canonical_latex": "\\Delta v_{\\mathrm{ideal}} = c_{\\mathrm{eff}}\\ln\\frac{m_0}{m_f} = I_{\\mathrm{sp}} g_0 \\ln\\frac{m_0}{m_f}",
+      "aliases_latex": [
+        "\\Delta v = v_e \\ln\\left(\\frac{m_0}{m_f}\\right)"
+      ],
+      "keywords": [
+        "ツィオルコフスキーの式",
+        "理想速度増分",
+        "質量比",
+        "比推力",
+        "有効排気速度"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.launch.n04_delta_v_loss_budget",
+      "short_code": "LCH04",
+      "kind": "theorem_formula",
+      "title": "ロケット上昇時のΔv損失バジェット（重力・抗力・操舵損失）",
+      "summary": "実軌道において燃焼終了時に得られる速度と理想速度増分の差を、重力損失・大気抗力損失・操舵損失（推力余弦損失）の各時間積分に分解する方程式。",
+      "canonical_latex": "\\Delta v_{\\mathrm{loss}} = \\Delta v_{\\mathrm{ideal}} - (v_f - v_0) = \\int_{0}^{t_b} g\\sin\\gamma\\,dt + \\int_{0}^{t_b} \\frac{D}{m}\\,dt + \\int_{0}^{t_b} \\frac{T}{m}(1 - \\cos\\alpha)\\,dt",
+      "aliases_latex": [
+        "\\Delta v_{\\mathrm{loss}} = \\Delta v_g + \\Delta v_d + \\Delta v_s"
+      ],
+      "keywords": [
+        "速度損失",
+        "重力損失",
+        "大気抗力損失",
+        "操舵損失",
+        "Δvバジェット"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "mission_design"
+      ]
+    },
+    {
+      "id": "aerosp.launch.n05_dynamic_pressure_max_q",
+      "short_code": "LCH05",
+      "kind": "theorem_formula",
+      "title": "最大動圧点（Max-Q）の動圧定義と極値条件",
+      "summary": "上昇中の機体が受ける空気力学的動圧 q の定義、および大気指数の減少とロケット加速が釣り合って動圧が最大となる停留条件。",
+      "canonical_latex": "q = \\frac{1}{2}\\rho v^2,\\quad \\left.\\frac{dq}{dt}\\right|_{\\mathrm{Max\\text{-}Q}} = 0 \\iff 2\\frac{\\dot{v}}{v} = \\frac{\\dot{h}}{H}",
+      "aliases_latex": [
+        "q_{\\max} = \\max_t \\frac{1}{2}\\rho(h(t)) v(t)^2"
+      ],
+      "keywords": [
+        "動圧",
+        "最大動圧",
+        "Max-Q",
+        "大気密度スケールハイト",
+        "構造荷重"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "aerodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.launch.n06_launch_azimuth_earth_rotation",
+      "short_code": "LCH06",
+      "kind": "theorem_formula",
+      "title": "地球自転効果を考慮したロケット打ち上げ方位角の合成則",
+      "summary": "射場緯度における地球自転線速度を目標慣性速度にベクトル合成することにより、射場基準で指向すべき打ち上げ方位角を求める幾何学的関係式。",
+      "canonical_latex": "\\tan A_z = \\frac{v_{\\mathrm{inertial}}\\sin A_{z,\\mathrm{inertial}} - \\omega_E R_E\\cos\\phi_0}{v_{\\mathrm{inertial}}\\cos A_{z,\\mathrm{inertial}}}",
+      "aliases_latex": [
+        "\\mathbf{v}_{\\mathrm{rel}} = \\mathbf{v}_{\\mathrm{inertial}} - \\mathbf{v}_{\\mathrm{rot}}"
+      ],
+      "keywords": [
+        "打ち上げ方位角",
+        "地球自転加算",
+        "射場緯度",
+        "慣性速度",
+        "相対速度"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.launch.n07_orbital_injection_inclination",
+      "short_code": "LCH07",
+      "kind": "theorem_formula",
+      "title": "打ち上げ射場緯度と投入軌道傾斜角の幾何学的下限定理",
+      "summary": "球面三角法に基づき、軌道面変更マニューバを行わずに直接投入できる軌道傾斜角 i の下限値が射場緯度の絶対値以上となる幾何学的制約定理。",
+      "canonical_latex": "\\cos i = \\cos\\phi_0 \\sin A_{z,\\mathrm{inertial}} \\implies i \\ge |\\phi_0|",
+      "aliases_latex": [
+        "i_{\\min} = |\\phi_0|"
+      ],
+      "keywords": [
+        "軌道傾斜角",
+        "射場緯度限界",
+        "直接投入軌道",
+        "球面三角法"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "orbital_mechanics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "aerosp.launch.d01_variable_mass_rocket_eom",
+      "target_node_id": "aerosp.launch.n01_variable_mass_rocket_eom",
+      "route_kind": "deductive",
+      "title": "速度座標系（接線・主法線）におけるロケット質点運動方程式の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "eng.rock.n01_rocket_thrust_equation"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "地球自転によるコリオリ力および遠心力は微小として無視する平面近似",
+        "機体は質点として扱い、ピッチ面内の2次元運動のみを考慮する",
+        "推力ベクトルは機軸に平行に作用し、機軸と速度ベクトルのなす角を迎え角αとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\mathbf{a} = \\mathbf{T} + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m\\dot{v} = T\\cos\\alpha - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = T\\sin\\alpha + L - mg\\cos\\gamma",
+          "operation_label": "運動方程式の速度座標系成分分解",
+          "explanation": "ニュートンの第2法則に基づき、機体に作用する外力（推力、空気力、重力）を速度ベクトルの接線方向と法線方向に投影して各成分の運動方程式を得る。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_accel_frenet",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\mathbf{a} = \\mathbf{T} + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = \\mathbf{T} + \\mathbf{A} + m\\mathbf{g}",
+          "operation_label": "軌道接線・法線加速度ベクトルの展開",
+          "explanation": "速度ベクトル v = v t_hat を時間微分すると、接線加速度 v_dot t_hat と曲率による向心加速度 v gamma_dot n_hat に分解される。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_forces_projection",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = \\mathbf{T} + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = (T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}",
+          "operation_label": "推力・抗力・揚力・重力の直交成分投影",
+          "explanation": "推力 T は速度ベクトルに対し角度 α をなし、空気力は抗力 -D t_hat と揚力 L n_hat に分解され、局所鉛直下向きの重力 mg は局所水平角 γ に応じて -mg sinγ t_hat および -mg cosγ n_hat に投影される。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_component_separation",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = (T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}",
+          "to_latex": "m\\dot{v} = T\\cos\\alpha - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = T\\sin\\alpha + L - mg\\cos\\gamma",
+          "operation_label": "各基底ごとのスカラー微分方程式の分離",
+          "explanation": "直交基底 t_hat と n_hat の成分をそれぞれ等置することにより、速度の大きさおよび飛行経路角に関する連立常微分方程式が確定する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.launch.d02_gravity_turn_kinematics",
+      "target_node_id": "aerosp.launch.n02_gravity_turn_kinematics",
+      "route_kind": "deductive",
+      "title": "零迎え角・零揚力条件からの重力ターン運動方程式の導出",
+      "premise_node_ids": [
+        "aerosp.launch.n01_variable_mass_rocket_eom"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "迎え角 α を恒等的にゼロ（α = 0）に保持する",
+        "対称翼型または軸対称機体により揚力 L がゼロ（L = 0）である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\dot{v} = T\\cos\\alpha - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = T\\sin\\alpha + L - mg\\cos\\gamma",
+          "to_latex": "\\dot{v} = \\frac{T - D}{m} - g\\sin\\gamma,\\quad \\dot{\\gamma} = -\\frac{g}{v}\\cos\\gamma",
+          "operation_label": "零迎え角・零揚力条件の代入と除算",
+          "explanation": "α=0 および L=0 を代入し、各方程式を質量 m および運動量 mv で除算して重力ターンの微分方程式を導く。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_substitute_zero_aoa",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\dot{v} = T\\cos\\alpha - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = T\\sin\\alpha + L - mg\\cos\\gamma",
+          "to_latex": "m\\dot{v} = T\\cos 0 - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = T\\sin 0 + 0 - mg\\cos\\gamma",
+          "operation_label": "幾何学的角度条件の設定",
+          "explanation": "迎え角 α=0 および揚力 L=0 を適用する。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_evaluate_trig",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\dot{v} = T\\cos 0 - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = T\\sin 0 + 0 - mg\\cos\\gamma",
+          "to_latex": "m\\dot{v} = T - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = -mg\\cos\\gamma",
+          "operation_label": "三角関数の評価",
+          "explanation": "cos(0) = 1 および sin(0) = 0 を代入して整理する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_divide_mass",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\dot{v} = T - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = -mg\\cos\\gamma",
+          "to_latex": "\\dot{v} = \\frac{T - D}{m} - g\\sin\\gamma,\\quad \\dot{\\gamma} = -\\frac{g}{v}\\cos\\gamma",
+          "operation_label": "質量および速度による除算",
+          "explanation": "第1式を m で、第2式を mv で割ることで、加速度と飛行経路角変化率の標準形を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.launch.d03_ideal_tsiolkovsky_delta_v",
+      "target_node_id": "aerosp.launch.n03_ideal_tsiolkovsky_delta_v",
+      "route_kind": "deductive",
+      "title": "無重力・真空中の運動量保存則からのツィオルコフスキー方程式の導出",
+      "premise_node_ids": [
+        "eng.rock.n02_effective_exhaust_velocity_isp",
+        "aerosp.launch.n01_variable_mass_rocket_eom"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "外力（重力 g、空気抗力 D）は存在しない",
+        "有効排気速度 c_eff は全燃焼期間において一定である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\frac{dv}{dt} = -c_{\\mathrm{eff}}\\frac{dm}{dt}",
+          "to_latex": "\\Delta v_{\\mathrm{ideal}} = c_{\\mathrm{eff}}\\ln\\frac{m_0}{m_f} = I_{\\mathrm{sp}}g_0\\ln\\frac{m_0}{m_f}",
+          "operation_label": "変数分離と積分による理想増速量の導出",
+          "explanation": "推力 T = -c_eff dm/dt を運動方程式に代入し、質量比について積分して理想速度増分を求める。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom",
+            "eng.rock.n02_effective_exhaust_velocity_isp"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_differential_separation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\frac{dv}{dt} = -c_{\\mathrm{eff}}\\frac{dm}{dt}",
+          "to_latex": "dv = -c_{\\mathrm{eff}}\\frac{dm}{m}",
+          "operation_label": "変数分離の実行",
+          "explanation": "両辺に dt を乗じ、両辺を質量 m で除算して微分形式 dv を孤立させる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_integrate_bounds",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dv = -c_{\\mathrm{eff}}\\frac{dm}{m}",
+          "to_latex": "\\int_{v_0}^{v_f} dv = -c_{\\mathrm{eff}}\\int_{m_0}^{m_f} \\frac{dm}{m}",
+          "operation_label": "初期状態から燃焼終了状態までの定積分設定",
+          "explanation": "速度について v_0 から v_f まで、質量について初期質量 m_0 から最終質量 m_f まで積分する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_evaluate_logarithm",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{v_0}^{v_f} dv = -c_{\\mathrm{eff}}\\int_{m_0}^{m_f} \\frac{dm}{m}",
+          "to_latex": "\\Delta v_{\\mathrm{ideal}} = c_{\\mathrm{eff}}\\ln\\frac{m_0}{m_f} = I_{\\mathrm{sp}}g_0\\ln\\frac{m_0}{m_f}",
+          "operation_label": "対数積分の評価と比推力への換算",
+          "explanation": "左辺は Δv_ideal = v_f - v_0 となり、右辺は -c_eff ln(m_f/m_0) = c_eff ln(m_0/m_f) となる。c_eff = I_sp g_0 を用いて表現する。",
+          "used_node_ids": [
+            "eng.rock.n02_effective_exhaust_velocity_isp"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.launch.d04_delta_v_loss_budget",
+      "target_node_id": "aerosp.launch.n04_delta_v_loss_budget",
+      "route_kind": "deductive",
+      "title": "運動方程式の時間積分による上昇Δv損失バジェットの導出",
+      "premise_node_ids": [
+        "aerosp.launch.n01_variable_mass_rocket_eom",
+        "aerosp.launch.n03_ideal_tsiolkovsky_delta_v"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "燃焼時間 t_b にわたって各物理量が連続に推移する",
+        "理想速度増分は推力の質量比積分の最大値として定義される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{v} = \\frac{T\\cos\\alpha}{m} - \\frac{D}{m} - g\\sin\\gamma",
+          "to_latex": "\\Delta v_{\\mathrm{loss}} = \\Delta v_{\\mathrm{ideal}} - (v_f - v_0) = \\int_{0}^{t_b} g\\sin\\gamma\\,dt + \\int_{0}^{t_b} \\frac{D}{m}\\,dt + \\int_{0}^{t_b} \\frac{T}{m}(1 - \\cos\\alpha)\\,dt",
+          "operation_label": "運動方程式の時間積分と理想Δvとの差分計算",
+          "explanation": "接線加速度方程式を時間積分し、理想速度増分 Δv_ideal = ∫(T/m)dt との差をとることで損失成分を同定する。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom",
+            "aerosp.launch.n03_ideal_tsiolkovsky_delta_v"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_rearrange_acceleration",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{v} = \\frac{T\\cos\\alpha}{m} - \\frac{D}{m} - g\\sin\\gamma",
+          "to_latex": "\\dot{v} = \\frac{T}{m} - g\\sin\\gamma - \\frac{D}{m} - \\frac{T}{m}(1 - \\cos\\alpha)",
+          "operation_label": "推力項の理想加速と余弦損失への分離",
+          "explanation": "T cosα / m を T/m - (T/m)(1 - cosα) と分解して、理想推力項を明示する。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_integrate_time",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{v} = \\frac{T}{m} - g\\sin\\gamma - \\frac{D}{m} - \\frac{T}{m}(1 - \\cos\\alpha)",
+          "to_latex": "\\int_{0}^{t_b}\\dot{v}\\,dt = \\int_{0}^{t_b}\\frac{T}{m}\\,dt - \\int_{0}^{t_b}g\\sin\\gamma\\,dt - \\int_{0}^{t_b}\\frac{D}{m}\\,dt - \\int_{0}^{t_b}\\frac{T}{m}(1 - \\cos\\alpha)\\,dt",
+          "operation_label": "燃焼時間全域での定積分",
+          "explanation": "時刻 0 から燃焼終了時刻 t_b まで両辺を積分する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_identify_losses",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{0}^{t_b}\\dot{v}\\,dt = \\int_{0}^{t_b}\\frac{T}{m}\\,dt - \\int_{0}^{t_b}g\\sin\\gamma\\,dt - \\int_{0}^{t_b}\\frac{D}{m}\\,dt - \\int_{0}^{t_b}\\frac{T}{m}(1 - \\cos\\alpha)\\,dt",
+          "to_latex": "\\Delta v_{\\mathrm{loss}} = \\Delta v_{\\mathrm{ideal}} - (v_f - v_0) = \\int_{0}^{t_b} g\\sin\\gamma\\,dt + \\int_{0}^{t_b} \\frac{D}{m}\\,dt + \\int_{0}^{t_b} \\frac{T}{m}(1 - \\cos\\alpha)\\,dt",
+          "operation_label": "損失バジェットの項別整理",
+          "explanation": "左辺の v_f - v_0 および第一項の Δv_ideal を移行して、重力損失、抗力損失、操舵損失の和として定義する。",
+          "used_node_ids": [
+            "aerosp.launch.n03_ideal_tsiolkovsky_delta_v"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.launch.d05_dynamic_pressure_max_q",
+      "target_node_id": "aerosp.launch.n05_dynamic_pressure_max_q",
+      "route_kind": "deductive",
+      "title": "指数関数的大気モデルにおける最大動圧点（Max-Q）極値条件の導出",
+      "premise_node_ids": [],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "大気密度は高度 h に対して指数関数的 ρ(h) = ρ_0 exp(-h/H) に減衰する（H はスケールハイト）",
+        "上昇中は垂直速度成分 dh/dt = v sinγ > 0 で高度が増加する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "q(t) = \\frac{1}{2}\\rho(h(t)) v(t)^2",
+          "to_latex": "\\left.\\frac{dq}{dt}\\right|_{\\mathrm{Max\\text{-}Q}} = 0 \\iff 2\\frac{\\dot{v}}{v} = \\frac{\\dot{h}}{H}",
+          "operation_label": "動圧の時間微分と極値条件の導出",
+          "explanation": "動圧の積の微分および連鎖律を適用し、時間微係数をゼロとおくことで最大動圧条件を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_differentiate_product",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q(t) = \\frac{1}{2}\\rho(h(t)) v(t)^2",
+          "to_latex": "\\frac{dq}{dt} = \\frac{1}{2}\\frac{d\\rho}{dt}v^2 + \\rho v\\dot{v} = \\frac{1}{2}\\frac{d\\rho}{dh}\\dot{h}v^2 + \\rho v\\dot{v}",
+          "operation_label": "積の微分法と連鎖律の適用",
+          "explanation": "密度 ρ(h(t)) と速度 2乗項 v(t)^2 に対して積の微分法を適用し、dρ/dt に連鎖律を適用する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_substitute_scale_height",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dq}{dt} = \\frac{1}{2}\\frac{d\\rho}{dh}\\dot{h}v^2 + \\rho v\\dot{v}",
+          "to_latex": "\\frac{dq}{dt} = \\rho v\\left(\\dot{v} - \\frac{\\dot{h}}{2H}v\\right)",
+          "operation_label": "指数大気密度勾配の代入",
+          "explanation": "dρ/dh = -ρ/H を代入し、共通因数 ρv でくくる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_set_zero_extremum",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dq}{dt} = \\rho v\\left(\\dot{v} - \\frac{\\dot{h}}{2H}v\\right)",
+          "to_latex": "\\left.\\frac{dq}{dt}\\right|_{\\mathrm{Max\\text{-}Q}} = 0 \\iff 2\\frac{\\dot{v}}{v} = \\frac{\\dot{h}}{H}",
+          "operation_label": "極値停留条件の整理",
+          "explanation": "ρ > 0 かつ v > 0 のもとで dq/dt = 0 とおくと括弧内がゼロとなり、相対加速度と高度変化率の関係式が得られる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.launch.d06_launch_azimuth_earth_rotation",
+      "target_node_id": "aerosp.launch.n06_launch_azimuth_earth_rotation",
+      "route_kind": "deductive",
+      "title": "地球自転速度ベクトル合成による打ち上げ方位角関係式の導出",
+      "premise_node_ids": [],
+      "required_math_node_ids": [
+        "math.geom.m12_generalized_coordinates"
+      ],
+      "assumptions": [
+        "地球は半径 R_E の真球であり、一定の角速度 ω_E で東向きに自転している",
+        "方位角は真北から時計回りに東向きを正（北=0°, 東=90°）として定義する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{v}_{\\mathrm{rel}} = \\mathbf{v}_{\\mathrm{inertial}} - \\mathbf{v}_{\\mathrm{rot}}",
+          "to_latex": "\\tan A_z = \\frac{v_{\\mathrm{inertial}}\\sin A_{z,\\mathrm{inertial}} - \\omega_E R_E\\cos\\phi_0}{v_{\\mathrm{inertial}}\\cos A_{z,\\mathrm{inertial}}}",
+          "operation_label": "相対速度ベクトルの東西・南北成分分解と比の算出",
+          "explanation": "地上相対速度ベクトルを慣性速度ベクトルと自転速度ベクトルの差として表し、その東西・南北成分の比から方位角の正接を求める。",
+          "used_node_ids": [
+            "math.geom.m12_generalized_coordinates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_component_projection",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{v}_{\\mathrm{rel}} = \\mathbf{v}_{\\mathrm{inertial}} - \\mathbf{v}_{\\mathrm{rot}}",
+          "to_latex": "v_{\\mathrm{rel},E} = v_{\\mathrm{inertial}}\\sin A_{z,\\mathrm{inertial}} - \\omega_E R_E\\cos\\phi_0,\\quad v_{\\mathrm{rel},N} = v_{\\mathrm{inertial}}\\cos A_{z,\\mathrm{inertial}}",
+          "operation_label": "東向き成分および北向き成分の投影",
+          "explanation": "地球自転速度は東向きに v_rot = ω_E R_E cosφ_0 であり北向き成分はゼロであるため、東向きおよび北向きの相対速度成分が求まる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_azimuth_tangent",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_{\\mathrm{rel},E} = v_{\\mathrm{inertial}}\\sin A_{z,\\mathrm{inertial}} - \\omega_E R_E\\cos\\phi_0,\\quad v_{\\mathrm{rel},N} = v_{\\mathrm{inertial}}\\cos A_{z,\\mathrm{inertial}}",
+          "to_latex": "\\tan A_z = \\frac{v_{\\mathrm{rel},E}}{v_{\\mathrm{rel},N}} = \\frac{v_{\\mathrm{inertial}}\\sin A_{z,\\mathrm{inertial}} - \\omega_E R_E\\cos\\phi_0}{v_{\\mathrm{inertial}}\\cos A_{z,\\mathrm{inertial}}}",
+          "operation_label": "方位角の定義式の適用",
+          "explanation": "地上基準打ち上げ方位角 A_z の正接は東向き速度と北向き速度の比 tan A_z = v_rel,E / v_rel,N で与えられる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.launch.d07_orbital_injection_inclination",
+      "target_node_id": "aerosp.launch.n07_orbital_injection_inclination",
+      "route_kind": "deductive",
+      "title": "球面直角三角形の余弦定理による軌道傾斜角下限の導出",
+      "premise_node_ids": [
+        "aerosp.launch.n06_launch_azimuth_earth_rotation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "打ち上げ軌道面は地球中心を通る大円を形成する（2体問題の平面軌道）",
+        "推進薬消費を伴う面変更マニューバを行わない直接投入である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\cos i = \\cos\\phi_0 \\sin A_{z,\\mathrm{inertial}}",
+          "to_latex": "i \\ge |\\phi_0|",
+          "operation_label": "正弦関数の有界性を用いた傾斜角下限不等式の導出",
+          "explanation": "球面三角法の余弦定理から得られる関係式において、|sin A_z,inertial| ≤ 1 であることから直ちに傾斜角の幾何学的下限が導かれる。",
+          "used_node_ids": [
+            "aerosp.launch.n06_launch_azimuth_earth_rotation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sine_boundedness",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\cos i = \\cos\\phi_0 \\sin A_{z,\\mathrm{inertial}}",
+          "to_latex": "|\\cos i| = |\\cos\\phi_0| |\\sin A_{z,\\mathrm{inertial}}| \\le \\cos\\phi_0",
+          "operation_label": "絶対値の不等式評価",
+          "explanation": "射場緯度 φ_0 ∈ [-π/2, π/2] では cosφ_0 ≥ 0 であり、また任意の方位角に対して |sin A_z,inertial| ≤ 1 である。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_conclude_lower_bound",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|\\cos i| = |\\cos\\phi_0| |\\sin A_{z,\\mathrm{inertial}}| \\le \\cos\\phi_0",
+          "to_latex": "i \\ge |\\phi_0|",
+          "operation_label": "逆余弦関数の単調減少性による不等式の反転",
+          "explanation": "順行軌道（0 ≤ i ≤ π/2）において cos i ≤ cos|φ_0| は i ≥ |φ_0| を意味し、逆行軌道（π/2 < i ≤ π）でも同様に i ≥ |φ_0| が成立する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

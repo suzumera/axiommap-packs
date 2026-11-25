@@ -1,0 +1,656 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_rocket_engine_cycles",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "ロケットエンジンサイクルと燃焼・冷却：GG/二段燃焼/エキスパンダー動力収支・バートツ熱伝達再生冷却と固体ヴィエイユ燃焼則",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『ロケットエンジンサイクルと燃焼・冷却：GG/二段燃焼/エキスパンダー動力収支・バートツ熱伝達再生冷却と固体ヴィエイユ燃焼則』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.rc.n01_turbopump_power_balance",
+      "short_code": "TP01",
+      "kind": "theorem_formula",
+      "title": "ターボポンプの動力釣合い方程式",
+      "summary": "ロケットエンジンのターボポンプ系において、酸化剤・燃料ポンプの所要水力動力の総和と、駆動タービンがガス膨張から取り出す軸動力出力が機械効率を介して釣り合う条件を規定する方程式。",
+      "canonical_latex": "\\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} = \\eta_m\\dot{m}_t\\eta_t c_{p,t}T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t-1}{\\gamma_t}}\\right]",
+      "aliases_latex": [
+        "P_{\\mathrm{pump}} = P_{\\mathrm{turb}}",
+        "\\dot{W}_p = \\eta_m\\dot{W}_t"
+      ],
+      "keywords": [
+        "ターボポンプ",
+        "動力釣合い",
+        "ポンプ効率",
+        "タービン膨張比",
+        "ロケットサイクル"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "thermodynamics",
+        "fluid_machinery"
+      ]
+    },
+    {
+      "id": "aerosp.rc.n02_gas_generator_cycle_balance",
+      "short_code": "GG01",
+      "kind": "theorem_formula",
+      "title": "ガスジェネレータ（GG）サイクルの比推力バランス式",
+      "summary": "推進剤の一部を副燃焼室（ガスジェネレータ）で燃焼させてタービンを駆動し機外へ排出する開サイクルにおいて、タービン排気分の比推力低下がシステム全体の比推力に及ぼす影響を表す加重平均関係式。",
+      "canonical_latex": "I_{\\mathrm{sp},\\mathrm{sys}} = (1 - \\delta_{gg})I_{\\mathrm{sp},\\mathrm{main}} + \\delta_{gg}I_{\\mathrm{sp},t},\\quad \\delta_{gg} := \\frac{\\dot{m}_{gg}}{\\dot{m}_{\\mathrm{main}} + \\dot{m}_{gg}}",
+      "aliases_latex": [
+        "I_{\\mathrm{sp},\\mathrm{sys}} = \\frac{F_{\\mathrm{main}} + F_t}{\\dot{m}_{\\mathrm{total}}g_0}"
+      ],
+      "keywords": [
+        "ガスジェネレータ",
+        "オープンサイクル",
+        "分岐比",
+        "システム比推力",
+        "タービン排気"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.rc.n03_staged_combustion_cycle_balance",
+      "short_code": "SC01",
+      "kind": "theorem_formula",
+      "title": "二段燃焼サイクルの圧力カスケード釣合い式",
+      "summary": "全推進剤またはその大半をプリバーナーで予備燃焼させてタービンを駆動した後に主燃焼室へ全量噴射する閉サイクルにおいて、プリバーナー圧力が主燃焼室圧力・噴射弁差圧・タービン差圧の総和を超えるべき圧力段差条件。",
+      "canonical_latex": "p_{pb} = p_c + \\Delta p_{\\mathrm{inj}} + \\Delta p_t,\\quad \\Delta p_{p} = p_{pb} + \\Delta p_{\\mathrm{feed}} - p_{\\mathrm{tank}}",
+      "aliases_latex": [
+        "p_{pb} \\ge p_c + \\Delta p_t + \\Delta p_{\\mathrm{inj}}"
+      ],
+      "keywords": [
+        "二段燃焼サイクル",
+        "クローズドサイクル",
+        "プリバーナー",
+        "高圧ターボポンプ",
+        "圧力カスケード"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.rc.n04_expander_cycle_heat_balance",
+      "short_code": "EX01",
+      "kind": "theorem_formula",
+      "title": "エキスパンダーサイクルの吸熱・動力熱力学収支式",
+      "summary": "燃料の燃焼室壁面冷却による吸熱エンタルピー上昇のみを熱源としてタービンを駆動するエキスパンダーサイクルにおいて、再生熱交換量とポンプ所要動力の平衡から定まる最大燃焼室圧力の制約関係式。",
+      "canonical_latex": "\\dot{Q}_{reg} = \\dot{m}_f c_{p,f}(T_{t,in} - T_{c,in}) = \\frac{1}{\\eta_m\\eta_t\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma-1}{\\gamma}}\\right]}\\sum_i \\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}}",
+      "aliases_latex": [
+        "\\dot{Q}_{reg} \\ge \\frac{P_{\\mathrm{pump}}}{\\eta_m\\eta_t \\eta_{\\mathrm{cycle}}}"
+      ],
+      "keywords": [
+        "エキスパンダーサイクル",
+        "再生冷却吸熱",
+        "熱ピンチ",
+        "最大燃焼室圧力限界",
+        "低温推進薬"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "heat_transfer"
+      ]
+    },
+    {
+      "id": "aerosp.rc.n05_bartz_heat_transfer_equation",
+      "short_code": "BT01",
+      "kind": "empirical_hypothesis",
+      "title": "バートツ（Bartz）のノズルガス側熱伝達相関式",
+      "summary": "ロケット燃焼室からノズルスロート部を経て拡大部に至る超音速ノズル壁面への境界層乱流熱伝達率を、スロート直径・淀み点圧力・特性排気速度・局所断面積比の関数として近似予測する半経験的公式。",
+      "canonical_latex": "h_g = \\left[\\frac{0.026}{D_t^{0.2}}\\left(\\frac{\\mu^{0.2} c_p}{\\mathrm{Pr}^{0.6}}\\right)_0\\left(\\frac{p_c}{c^*}\\right)^{0.8}\\left(\\frac{D_t}{r_c}\\right)^{0.1}\\right]\\left(\\frac{A_t}{A}\\right)^{0.9}\\sigma",
+      "aliases_latex": [
+        "h_g \\propto p_c^{0.8} D_t^{-0.2}\\left(\\frac{A_t}{A}\\right)^{0.9}"
+      ],
+      "keywords": [
+        "バートツの式",
+        "熱伝達率",
+        "スロート熱流束",
+        "ノズル熱設計",
+        "乱流境界層相関"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "heat_transfer",
+        "fluid_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.rc.n06_regenerative_cooling_conduction_balance",
+      "short_code": "RC01",
+      "kind": "theorem_formula",
+      "title": "再生冷却燃焼室壁の熱貫流・熱抵抗釣合い式",
+      "summary": "高温燃焼ガスから金属燃焼室壁を経由して冷却溝を流れる液体推進薬へと定常伝熱する際の熱流束を、ガス側熱伝達抵抗・壁熱伝導抵抗・冷却材側熱伝達抵抗の直列和として表す熱貫流関係式。",
+      "canonical_latex": "q_w = \\frac{T_{aw} - T_{co}}{\\frac{1}{h_g} + \\frac{t_w}{k_w} + \\frac{1}{h_{co}}}",
+      "aliases_latex": [
+        "q_w = U(T_{aw} - T_{co})",
+        "\\frac{T_{aw} - T_{co}}{q_w} = R_g + R_w + R_{co}"
+      ],
+      "keywords": [
+        "再生冷却",
+        "熱流束",
+        "熱抵抗",
+        "断熱壁温度",
+        "熱貫流率"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "heat_transfer"
+      ]
+    },
+    {
+      "id": "aerosp.rc.n07_vieille_solid_burning_rate",
+      "short_code": "VI01",
+      "kind": "empirical_hypothesis",
+      "title": "固体推進薬のヴィエイユ燃焼速度則（サント＝ロベールの法則）",
+      "summary": "固体ロケット推進薬の端面後退速度（燃焼速度）が燃焼室圧力のべき乗に比例するという経験則。圧力指数 n が燃焼の自己調圧安定性の鍵となる。",
+      "canonical_latex": "r = a p_c^n",
+      "aliases_latex": [
+        "r = b p^n",
+        "r = a P^n"
+      ],
+      "keywords": [
+        "ヴィエイユ則",
+        "サント＝ロベールの式",
+        "燃焼速度",
+        "圧力指数",
+        "固体ロケット"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "combustion"
+      ]
+    },
+    {
+      "id": "aerosp.rc.n08_solid_motor_equilibrium_pressure",
+      "short_code": "SM01",
+      "kind": "theorem_formula",
+      "title": "固体ロケットモータの平衡燃焼室圧力決定式",
+      "summary": "固体推進薬の燃焼による質量生成速度とスロートチョーク流による質量排出速度が一致する定常状態から導かれる、燃焼面積比（クランプ比 Kn）と燃焼室圧力の平衡関係式。",
+      "canonical_latex": "p_c = \\left(a \\rho_p c^* \\frac{A_b}{A_t}\\right)^{\\frac{1}{1 - n}} = \\left(a \\rho_p c^* K_n\\right)^{\\frac{1}{1 - n}}",
+      "aliases_latex": [
+        "p_c = (a\\rho_p c^* K_n)^{1/(1-n)}"
+      ],
+      "keywords": [
+        "固体ロケット",
+        "平衡燃焼室圧力",
+        "クランプ比",
+        "質量収支",
+        "チョーク流"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "aerosp.rc.d01_turbopump_power_balance",
+      "target_node_id": "aerosp.rc.n01_turbopump_power_balance",
+      "route_kind": "deductive",
+      "title": "ポンプ水力所要動力と断熱タービン軸出力の平衡導出",
+      "premise_node_ids": [
+        "phys.thermo.th03_first_law_internal_energy",
+        "eng.rock.n05_choked_mass_flow_rate"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "ポンプ内の流体は非圧縮性等圧上昇過程に従う",
+        "タービン内の駆動ガス膨張は理想気体の断熱過程に従い等エントロピー効率でモデル化される",
+        "軸受け・ギア等の機械的伝達効率を eta_m とする"
+      ],
+      "steps": [
+        {
+          "step_id": "tp_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_p = \\eta_m P_t",
+          "to_latex": "\\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} = \\eta_m\\dot{m}_t\\eta_t c_{p,t}T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t-1}{\\gamma_t}}\\right]",
+          "operation_label": "動力平衡条件の展開",
+          "explanation": "ポンプ流体の非圧縮性仕事率の総和とタービンガスの断熱膨張仕事率の機械結合釣合いを連立させる。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy"
+          ]
+        },
+        {
+          "step_id": "tp_s2_pump",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "tp_s1_overview",
+          "from_latex": "P_p = \\sum_{i} \\dot{W}_{p,i}",
+          "to_latex": "P_p = \\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}}",
+          "operation_label": "ポンプ水力動力の定式化",
+          "explanation": "各推進剤成分（酸化剤・燃料）の単位質量あたり静圧上昇分 Delta p / rho をポンプ効率で除し質量流量を乗じて全所要動力を得る。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy"
+          ]
+        },
+        {
+          "step_id": "tp_s3_turb",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "tp_s1_overview",
+          "from_latex": "P_p = \\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}}",
+          "to_latex": "P_t = \\dot{m}_t \\eta_t c_{p,t} T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t-1}{\\gamma_t}}\\right]",
+          "operation_label": "タービン断熱膨張出力の定式化",
+          "explanation": "等エントロピー膨張における温度比落差にタービン効率 eta_t、定圧比熱 c_{p,t}、流入淀み点温度 T_{0t}、ガス質量流量を乗じる。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy"
+          ]
+        },
+        {
+          "step_id": "tp_s4_equate",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "tp_s1_overview",
+          "from_latex": "P_p = \\eta_m P_t",
+          "to_latex": "\\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} = \\eta_m\\dot{m}_t\\eta_t c_{p,t}T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t-1}{\\gamma_t}}\\right]",
+          "operation_label": "軸動力結合方程式の同定",
+          "explanation": "機械伝達効率 eta_m を介してポンプ所要動力とタービン出力を等置し、目的の平衡方程式を完結させる。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aerosp.rc.d02_gas_generator_cycle_balance",
+      "target_node_id": "aerosp.rc.n02_gas_generator_cycle_balance",
+      "route_kind": "deductive",
+      "title": "ガスジェネレータ開サイクルの推力加重平均比推力の導出",
+      "premise_node_ids": [
+        "aerosp.rc.n01_turbopump_power_balance",
+        "eng.rock.n02_effective_exhaust_velocity_isp"
+      ],
+      "required_math_node_ids": [
+        "math.alg.real_distributive_law"
+      ],
+      "assumptions": [
+        "主燃焼室とタービン排気ノズルはそれぞれ独立した有効排気速度で推力を発生する",
+        "推進剤全流量は主燃焼室流量とガスジェネレータ流量の和に等しい"
+      ],
+      "steps": [
+        {
+          "step_id": "gg_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_{\\mathrm{sp},\\mathrm{sys}} = \\frac{F_{\\mathrm{total}}}{\\dot{m}_{\\mathrm{total}}g_0}",
+          "to_latex": "I_{\\mathrm{sp},\\mathrm{sys}} = (1 - \\delta_{gg})I_{\\mathrm{sp},\\mathrm{main}} + \\delta_{gg}I_{\\mathrm{sp},t}",
+          "operation_label": "全推力と質量分岐比による比推力の線形結合展開",
+          "explanation": "全推力を主燃焼室推力とタービン排気推力に分解し、分岐比 delta_{gg} を導入して整理する。",
+          "used_node_ids": [
+            "eng.rock.n02_effective_exhaust_velocity_isp"
+          ]
+        },
+        {
+          "step_id": "gg_s2_decomp",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "gg_s1_overview",
+          "from_latex": "F_{\\mathrm{total}} = F_{\\mathrm{main}} + F_t",
+          "to_latex": "F_{\\mathrm{total}} = \\dot{m}_{\\mathrm{main}} g_0 I_{\\mathrm{sp},\\mathrm{main}} + \\dot{m}_{gg} g_0 I_{\\mathrm{sp},t}",
+          "operation_label": "各流路の推力表現の代入",
+          "explanation": "比推力の定義 F = dot{m} g_0 I_{sp} を主燃焼室およびタービン排気流路にそれぞれ適用する。",
+          "used_node_ids": [
+            "eng.rock.n02_effective_exhaust_velocity_isp"
+          ]
+        },
+        {
+          "step_id": "gg_s3_divide",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "gg_s1_overview",
+          "from_latex": "F_{\\mathrm{total}} = \\dot{m}_{\\mathrm{main}} g_0 I_{\\mathrm{sp},\\mathrm{main}} + \\dot{m}_{gg} g_0 I_{\\mathrm{sp},t}",
+          "to_latex": "\\frac{F_{\\mathrm{total}}}{\\dot{m}_{\\mathrm{total}} g_0} = \\frac{\\dot{m}_{\\mathrm{main}}}{\\dot{m}_{\\mathrm{total}}} I_{\\mathrm{sp},\\mathrm{main}} + \\frac{\\dot{m}_{gg}}{\\dot{m}_{\\mathrm{total}}} I_{\\mathrm{sp},t}",
+          "operation_label": "全流量と重力加速度による除算",
+          "explanation": "両辺を dot{m}_{total} g_0 で割り、流量比率の重み付き和の形へと変形する。",
+          "used_node_ids": [
+            "eng.rock.n02_effective_exhaust_velocity_isp"
+          ]
+        },
+        {
+          "step_id": "gg_s4_subst",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "gg_s1_overview",
+          "from_latex": "\\frac{F_{\\mathrm{total}}}{\\dot{m}_{\\mathrm{total}} g_0} = \\frac{\\dot{m}_{\\mathrm{total}}-\\dot{m}_{gg}}{\\dot{m}_{\\mathrm{total}}} I_{\\mathrm{sp},\\mathrm{main}} + \\frac{\\dot{m}_{gg}}{\\dot{m}_{\\mathrm{total}}} I_{\\mathrm{sp},t}",
+          "to_latex": "I_{\\mathrm{sp},\\mathrm{sys}} = (1 - \\delta_{gg})I_{\\mathrm{sp},\\mathrm{main}} + \\delta_{gg}I_{\\mathrm{sp},t}",
+          "operation_label": "ガスジェネレータ分岐比の定義適用",
+          "explanation": "delta_{gg} = dot{m}_{gg} / dot{m}_{total} を代入してシステム比推力方程式を導出する。",
+          "used_node_ids": [
+            "math.alg.real_distributive_law"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aerosp.rc.d03_staged_combustion_cycle_balance",
+      "target_node_id": "aerosp.rc.n03_staged_combustion_cycle_balance",
+      "route_kind": "deductive",
+      "title": "二段燃焼サイクルの圧力段差カスケード条件の導出",
+      "premise_node_ids": [
+        "aerosp.rc.n01_turbopump_power_balance",
+        "eng.rock.n01_rocket_thrust_equation"
+      ],
+      "required_math_node_ids": [
+        "math.alg.real_addition_associativity"
+      ],
+      "assumptions": [
+        "プリバーナー燃焼ガス全量がタービンを経て主燃焼室噴射器へと直列に供給される",
+        "流路各部の摩擦・配管圧損は定常差圧として加算される"
+      ],
+      "steps": [
+        {
+          "step_id": "sc_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_{pb} - p_c = \\Delta p_{\\mathrm{loss}}",
+          "to_latex": "p_{pb} = p_c + \\Delta p_{\\mathrm{inj}} + \\Delta p_t,\\quad \\Delta p_{p} = p_{pb} + \\Delta p_{\\mathrm{feed}} - p_{\\mathrm{tank}}",
+          "operation_label": "閉流路圧力カスケードの統合展開",
+          "explanation": "下流の主燃焼室圧力から上流のプリバーナー、さらにポンプ吐出圧力までの直列圧力損失を積算する。",
+          "used_node_ids": [
+            "aerosp.rc.n01_turbopump_power_balance"
+          ]
+        },
+        {
+          "step_id": "sc_s2_pb_chamber",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "sc_s1_overview",
+          "from_latex": "p_{pb} - \\Delta p_t - \\Delta p_{\\mathrm{inj}} = p_c",
+          "to_latex": "p_{pb} = p_c + \\Delta p_{\\mathrm{inj}} + \\Delta p_t",
+          "operation_label": "主燃焼室側直列差圧の移項",
+          "explanation": "プリバーナーガスがタービン膨張および主燃焼室噴射弁を通過して主室圧力 p_c に至る経路の圧力バランスを整理する。",
+          "used_node_ids": [
+            "math.alg.real_addition_associativity"
+          ]
+        },
+        {
+          "step_id": "sc_s3_pump_head",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "sc_s1_overview",
+          "from_latex": "p_{pb} = p_c + \\Delta p_{\\mathrm{inj}} + \\Delta p_t",
+          "to_latex": "\\Delta p_p = (p_{pb} + \\Delta p_{\\mathrm{feed}}) - p_{\\mathrm{tank}}",
+          "operation_label": "ポンプ要求揚程の定式化",
+          "explanation": "推進剤タンク圧からプリバーナー噴射圧および配管圧損に打ち勝つために必要なポンプ差圧 Delta p_p を導出する。",
+          "used_node_ids": [
+            "aerosp.rc.n01_turbopump_power_balance"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aerosp.rc.d04_expander_cycle_heat_balance",
+      "target_node_id": "aerosp.rc.n04_expander_cycle_heat_balance",
+      "route_kind": "deductive",
+      "title": "エキスパンダーサイクルの吸熱・ターボポンプ動力平衡の導出",
+      "premise_node_ids": [
+        "aerosp.rc.n01_turbopump_power_balance",
+        "phys.thermo.th03_first_law_internal_energy"
+      ],
+      "required_math_node_ids": [
+        "math.alg.real_distributive_law"
+      ],
+      "assumptions": [
+        "推進薬が燃焼室壁面冷却溝を通過する際に得る熱量のみがタービンの駆動熱源となる",
+        "タービンを駆動した燃料ガスは全量主燃焼室に噴射される"
+      ],
+      "steps": [
+        {
+          "step_id": "ex_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{Q}_{reg} = \\dot{W}_t / \\eta_{\\mathrm{thermal}}",
+          "to_latex": "\\dot{Q}_{reg} = \\dot{m}_f c_{p,f}(T_{t,in} - T_{c,in}) = \\frac{1}{\\eta_m\\eta_t\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma-1}{\\gamma}}\\right]}\\sum_i \\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}}",
+          "operation_label": "冷却吸熱量とポンプ所要動力の熱力学的結合",
+          "explanation": "壁面吸熱量によるエンタルピー増加がタービンガス動力の上限を規定し、それがポンプ動力と釣り合う条件を連立する。",
+          "used_node_ids": [
+            "aerosp.rc.n01_turbopump_power_balance"
+          ]
+        },
+        {
+          "step_id": "ex_s2_heat_pickup",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "ex_s1_overview",
+          "from_latex": "\\dot{Q}_{reg} = \\dot{m}_f (h_{t,in} - h_{c,in})",
+          "to_latex": "\\dot{Q}_{reg} = \\dot{m}_f c_{p,f}(T_{t,in} - T_{c,in})",
+          "operation_label": "冷却溝での吸熱エンタルピー評価",
+          "explanation": "定圧比熱 c_{p,f} を用いて燃料流体の流入・流出温度差から総吸熱流束積分値を表現する。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy"
+          ]
+        },
+        {
+          "step_id": "ex_s3_power_equality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "ex_s1_overview",
+          "from_latex": "\\dot{m}_f c_{p,f}(T_{t,in} - T_{c,in}) = \\frac{P_t}{\\eta_t\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma-1}{\\gamma}}\\right]}",
+          "to_latex": "\\dot{m}_f c_{p,f}(T_{t,in} - T_{c,in}) = \\frac{1}{\\eta_m\\eta_t\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma-1}{\\gamma}}\\right]}\\sum_i \\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}}",
+          "operation_label": "ポンプ動力平衡の代入",
+          "explanation": "タービン軸出力 P_t をポンプ所要動力 P_p / eta_m に置換し、エキスパンダーサイクルの熱収支限界式を完成させる。",
+          "used_node_ids": [
+            "aerosp.rc.n01_turbopump_power_balance"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aerosp.rc.d05_bartz_heat_transfer_equation",
+      "target_node_id": "aerosp.rc.n05_bartz_heat_transfer_equation",
+      "route_kind": "inductive",
+      "title": "コルバーン乱流熱伝達相関とチョーク質量流束からのバートツ式の構成",
+      "premise_node_ids": [
+        "eng.rock.n05_choked_mass_flow_rate",
+        "eng.rock.n06_characteristic_velocity_c_star",
+        "eng.comp.n06_area_mach_number_relation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "管内乱流熱伝達相関 Nu = 0.026 Re^0.8 Pr^0.4 が超音速加速ノズル境界流に拡張適用可能である",
+        "質量流束 rho u はノズルのチョーク流量特性 p_c / c* と局所断面積比 A_t / A で支配される"
+      ],
+      "steps": [
+        {
+          "step_id": "bt_s1_step",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "h_g = 0.026 \\frac{k}{D} \\left(\\frac{\\rho u D}{\\mu}\\right)^{0.8} \\mathrm{Pr}^{0.4}",
+          "to_latex": "h_g = \\left[\\frac{0.026}{D_t^{0.2}}\\left(\\frac{\\mu^{0.2} c_p}{\\mathrm{Pr}^{0.6}}\\right)_0\\left(\\frac{p_c}{c^*}\\right)^{0.8}\\left(\\frac{D_t}{r_c}\\right)^{0.1}\\right]\\left(\\frac{A_t}{A}\\right)^{0.9}\\sigma",
+          "operation_label": "チョーク質量流束と境界層補正の導入",
+          "explanation": "rho u = (dot{m}/A_t)(A_t/A) = (p_c/c*)(A_t/A) をレイノルズ数に代入し、ノズル曲率補正 (D_t/r_c)^0.1 および境界物性修正係数 sigma を適用してバートツの半経験式を導く。",
+          "used_node_ids": [
+            "eng.rock.n05_choked_mass_flow_rate",
+            "eng.rock.n06_characteristic_velocity_c_star"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aerosp.rc.d06_regenerative_cooling_conduction_balance",
+      "target_node_id": "aerosp.rc.n06_regenerative_cooling_conduction_balance",
+      "route_kind": "deductive",
+      "title": "直列熱抵抗モデルによる再生冷却熱流束公式の導出",
+      "premise_node_ids": [
+        "eng.heat.n01_fourier_conduction_law",
+        "aerosp.rc.n05_bartz_heat_transfer_equation"
+      ],
+      "required_math_node_ids": [
+        "math.alg.real_distributive_law"
+      ],
+      "assumptions": [
+        "燃焼室壁を通る熱流は厚さ方向に1次元定常である",
+        "ガス側熱伝達は断熱壁温度 T_aw に対するニュートンの冷却則に従う",
+        "金属壁は一定の熱伝導率 k_w を有する"
+      ],
+      "steps": [
+        {
+          "step_id": "rc_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T_{aw} - T_{co} = \\Delta T_g + \\Delta T_w + \\Delta T_{co}",
+          "to_latex": "q_w = \\frac{T_{aw} - T_{co}}{\\frac{1}{h_g} + \\frac{t_w}{k_w} + \\frac{1}{h_{co}}}",
+          "operation_label": "直列熱抵抗の全温度差への集約",
+          "explanation": "ガス境界層、金属壁、冷却材境界層の各温度降下を共通の定常熱流束 q_w で表し合成熱貫流式を導く。",
+          "used_node_ids": [
+            "eng.heat.n01_fourier_conduction_law"
+          ]
+        },
+        {
+          "step_id": "rc_s2_layers",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "rc_s1_overview",
+          "from_latex": "q_w = h_g(T_{aw} - T_{wg}) = \\frac{k_w}{t_w}(T_{wg} - T_{wc}) = h_{co}(T_{wc} - T_{co})",
+          "to_latex": "T_{aw} - T_{wg} = \\frac{q_w}{h_g},\\quad T_{wg} - T_{wc} = \\frac{q_w t_w}{k_w},\\quad T_{wc} - T_{co} = \\frac{q_w}{h_{co}}",
+          "operation_label": "各層の温度差表現の整理",
+          "explanation": "フーリエ則およびニュートンの冷却則より各界面間の温度落差を単位熱流束あたりの熱抵抗として表現する。",
+          "used_node_ids": [
+            "eng.heat.n01_fourier_conduction_law"
+          ]
+        },
+        {
+          "step_id": "rc_s3_sum",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "rc_s1_overview",
+          "from_latex": "(T_{aw} - T_{wg}) + (T_{wg} - T_{wc}) + (T_{wc} - T_{co}) = q_w\\left(\\frac{1}{h_g} + \\frac{t_w}{k_w} + \\frac{1}{h_{co}}\\right)",
+          "to_latex": "q_w = \\frac{T_{aw} - T_{co}}{\\frac{1}{h_g} + \\frac{t_w}{k_w} + \\frac{1}{h_{co}}}",
+          "operation_label": "温度差の加算と熱流束の陽的表現",
+          "explanation": "中間壁面温度を消去し、総駆動温度差 T_{aw} - T_{co} を全熱抵抗の和で除して熱流束公式を得る。",
+          "used_node_ids": [
+            "math.alg.real_distributive_law"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aerosp.rc.d07_vieille_solid_burning_rate",
+      "target_node_id": "aerosp.rc.n07_vieille_solid_burning_rate",
+      "route_kind": "inductive",
+      "title": "気相火炎熱帰還モデルからのヴィエイユ燃焼則の定式化",
+      "premise_node_ids": [
+        "eng.kin.n01_kinetics_diffusion_boundary",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "固体推進薬表面への熱帰還は圧力に依存する気相反応帯の厚さと火炎温度に支配される",
+        "広範な工学的作動圧力範囲において燃焼速度は圧力のべき乗関数で経験的に再現される"
+      ],
+      "steps": [
+        {
+          "step_id": "vi_s1_step",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r \\propto [\\text{熱流束}] \\propto p_c^n",
+          "to_latex": "r = a p_c^n",
+          "operation_label": "経験的べき乗則の同定",
+          "explanation": "気相火炎帯の圧力依存熱伝導モデルおよび燃焼試験データに基づき、比例定数 a と圧力指数 n を持つヴィエイユ則を確立する。",
+          "used_node_ids": [
+            "eng.kin.n01_kinetics_diffusion_boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aerosp.rc.d08_solid_motor_equilibrium_pressure",
+      "target_node_id": "aerosp.rc.n08_solid_motor_equilibrium_pressure",
+      "route_kind": "deductive",
+      "title": "質量保存とノズルチョーク排出平衡からの燃焼室圧力式の導出",
+      "premise_node_ids": [
+        "aerosp.rc.n07_vieille_solid_burning_rate",
+        "eng.rock.n05_choked_mass_flow_rate",
+        "eng.rock.n06_characteristic_velocity_c_star"
+      ],
+      "required_math_node_ids": [
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "燃焼室内の圧力変動は緩やかであり定常質量平衡状態にある",
+        "ノズルスロート部は常に音速チョーク状態にある",
+        "固体推進薬の燃焼面積 A_b および密度 rho_p は一定とする"
+      ],
+      "steps": [
+        {
+          "step_id": "sm_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{m}_{\\mathrm{gen}} = \\dot{m}_{\\mathrm{dis}}",
+          "to_latex": "p_c = \\left(a \\rho_p c^* \\frac{A_b}{A_t}\\right)^{\\frac{1}{1 - n}} = \\left(a \\rho_p c^* K_n\\right)^{\\frac{1}{1 - n}}",
+          "operation_label": "燃焼ガス質量流動平衡の解析",
+          "explanation": "推進薬燃焼によるガス生成量とノズル排出量を等置し、ヴィエイユ則を代入して p_c について解く。",
+          "used_node_ids": [
+            "aerosp.rc.n07_vieille_solid_burning_rate",
+            "eng.rock.n05_choked_mass_flow_rate"
+          ]
+        },
+        {
+          "step_id": "sm_s2_mass_balance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "sm_s1_overview",
+          "from_latex": "\\dot{m}_{\\mathrm{gen}} = \\rho_p A_b r,\\quad \\dot{m}_{\\mathrm{dis}} = \\frac{p_c A_t}{c^*}",
+          "to_latex": "\\rho_p A_b r = \\frac{p_c A_t}{c^*}",
+          "operation_label": "質量生成速度とチョーク排出速度の等置",
+          "explanation": "燃焼面積後退量から求まる質量生成率と、特性排気速度 c* に基づくノズル排出流束を質量保存則により結ぶ。",
+          "used_node_ids": [
+            "eng.rock.n06_characteristic_velocity_c_star"
+          ]
+        },
+        {
+          "step_id": "sm_s3_subst_vieille",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "sm_s1_overview",
+          "from_latex": "\\rho_p A_b r = \\frac{p_c A_t}{c^*}",
+          "to_latex": "\\rho_p A_b (a p_c^n) = \\frac{p_c A_t}{c^*}",
+          "operation_label": "ヴィエイユの燃焼速度則の代入",
+          "explanation": "燃焼速度 r にサント＝ロベールの式 r = a p_c^n を代入し、圧力の代数方程式を構築する。",
+          "used_node_ids": [
+            "aerosp.rc.n07_vieille_solid_burning_rate"
+          ]
+        },
+        {
+          "step_id": "sm_s4_solve_pc",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "sm_s1_overview",
+          "from_latex": "\\rho_p A_b a p_c^n = \\frac{p_c A_t}{c^*} \\iff p_c^{1 - n} = a \\rho_p c^* \\frac{A_b}{A_t}",
+          "to_latex": "p_c = \\left(a \\rho_p c^* \\frac{A_b}{A_t}\\right)^{\\frac{1}{1 - n}} = \\left(a \\rho_p c^* K_n\\right)^{\\frac{1}{1 - n}}",
+          "operation_label": "平衡燃焼室圧力の陽的解出",
+          "explanation": "両辺の p_c べきを 1 - n でまとめ、クランプ比 K_n = A_b / A_t を導入して目的の平衡圧力式を導く。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives"
+          ]
+        }
+      ]
+    }
+  ]
+}

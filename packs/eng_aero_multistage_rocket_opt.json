@@ -1,0 +1,592 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_multistage_rocket_opt",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "多段ロケット最適化理論：構造比・ペイロード比・ラグランジュ乗数法による最適段配分・並列ブースタとSSTO限界",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『多段ロケット最適化理論：構造比・ペイロード比・ラグランジュ乗数法による最適段配分・並列ブースタとSSTO限界』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.rocket.tsiolkovsky_rocket_equation",
+      "short_code": "RKT01",
+      "kind": "theorem_formula",
+      "title": "ツィオルコフスキーのロケット方程式",
+      "summary": "重力や大気抵抗等の外力が無視できる理想的な直進加速において、燃料噴射による質量減少と獲得速度増分を結ぶ基礎方程式。【適用限界】外力（重力損失・大気抵抗損失）が存在する実軌道上昇では付加損失項の積分補正が必要となる。",
+      "canonical_latex": "\\Delta v = c_{\\mathrm{eff}} \\ln\\left(\\frac{m_0}{m_f}\\right) = I_{\\mathrm{sp}} g_0 \\ln\\left(\\frac{m_0}{m_f}\\right)",
+      "aliases_latex": [
+        "v - v_0 = c \\ln\\frac{m_0}{m}",
+        "\\frac{m_0}{m_f} = \\exp\\left(\\frac{\\Delta v}{c_{\\mathrm{eff}}}\\right)"
+      ],
+      "keywords": [
+        "ロケット方程式",
+        "ツィオルコフスキー",
+        "質量比",
+        "有効排気速度",
+        "比推力"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "orbital_mechanics",
+        "propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.rocket.stage_mass_parameters",
+      "short_code": "RKT02",
+      "kind": "definition",
+      "title": "ロケット各段の質量パラメータと構造比・ペイロード比の定義",
+      "summary": "多段ロケットの各段における推進剤質量、構造質量、段ペイロード質量を無次元化した段質量比 R_i、構造比（構造係数）\\epsilon_i、段ペイロード比 \\lambda_i の幾何学的・工学的定義。",
+      "canonical_latex": "R_i := \\frac{m_{0,i}}{m_{f,i}} = \\frac{1 + \\lambda_i}{\\epsilon_i + \\lambda_i},\\quad \\epsilon_i := \\frac{m_{s,i}}{m_{s,i} + m_{p,i}},\\quad \\lambda_i := \\frac{m_{0,i+1}}{m_{0,i} - m_{0,i+1}}",
+      "aliases_latex": [
+        "R_i = \\frac{m_{p,i} + m_{s,i} + m_{\\mathrm{pl},i}}{m_{s,i} + m_{\\mathrm{pl},i}}"
+      ],
+      "keywords": [
+        "構造比",
+        "段ペイロード比",
+        "段質量比",
+        "質量配分"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_staging"
+      ]
+    },
+    {
+      "id": "aerosp.rocket.ssto_feasibility_limit",
+      "short_code": "RKT03",
+      "kind": "theorem_formula",
+      "title": "単段式宇宙往還機（SSTO）の構造成立限界条件",
+      "summary": "単段ロケットによって地球低軌道到達速度（約9.2 km/s）を達成するために要求される構造比の上限不等式。【適用限界】比推力や構造材料強度の技術的ブレークスルーがない限り、ペイロード比がゼロまたは負となり成立不可能となる。",
+      "canonical_latex": "\\epsilon_{\\mathrm{SSTO}} < \\exp\\!\\left(-\\frac{\\Delta v_{\\mathrm{req}}}{I_{\\mathrm{sp}} g_0}\\right) - \\lambda_{\\mathrm{pl}}",
+      "aliases_latex": [
+        "\\frac{m_s}{m_0} \\le \\exp\\left(-\\frac{\\Delta v}{c_{\\mathrm{eff}}}\\right) - \\frac{m_{\\mathrm{pl}}}{m_0}"
+      ],
+      "keywords": [
+        "SSTO",
+        "単段式宇宙往還機",
+        "構造限界",
+        "ペイロード比限界"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion_limits"
+      ]
+    },
+    {
+      "id": "aerosp.rocket.multistage_velocity_summation",
+      "short_code": "RKT04",
+      "kind": "theorem_formula",
+      "title": "直列N段ロケットの総速度増分公式",
+      "summary": "直列に段を投棄していく多段ロケットにおいて、各段の燃焼と死重投棄によって累積される総合速度増分の関係式。【適用限界】各段の燃焼が完全に直列的（燃焼終了・投棄後に次段点火）であると仮定しており、同時燃焼を行う並列段には修正を要する。",
+      "canonical_latex": "\\Delta v_{\\mathrm{tot}} = \\sum_{i=1}^N c_i \\ln R_i = \\sum_{i=1}^N c_i \\ln\\!\\left(\\frac{1 + \\lambda_i}{\\epsilon_i + \\lambda_i}\\right)",
+      "aliases_latex": [
+        "\\Delta v = \\sum_{i=1}^N I_{\\mathrm{sp},i} g_0 \\ln\\left(\\frac{1 + \\lambda_i}{\\epsilon_i + \\lambda_i}\\right)"
+      ],
+      "keywords": [
+        "多段ロケット",
+        "直列ステージング",
+        "総速度増分",
+        "質量比積算"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_staging"
+      ]
+    },
+    {
+      "id": "aerosp.rocket.lagrange_equal_exhaust_opt",
+      "short_code": "RKT05",
+      "kind": "theorem_formula",
+      "title": "等比推力・等構造比多段ロケットのラグランジュ最適等配分則",
+      "summary": "全段で比推力および構造比が一定である理想多段ロケットにおいて、全初期質量を最小化（または全ペイロード比を最大化）する条件は各段の速度増分および段質量比が均等配分されることであるとする定理。【適用限界】全段で同一推進系・同一構造効率を仮定しているため、大気圏内の第1段と真空専用の上段で比推力が大きく異なる実機ではそのまま適用できない。",
+      "canonical_latex": "\\Delta v_i^* = \\frac{\\Delta v_{\\mathrm{tot}}}{N},\\quad R_i^* = R_{\\mathrm{tot}}^{1/N},\\quad \\lambda_i^* = \\lambda^*",
+      "aliases_latex": [
+        "R_1 = R_2 = \\dots = R_N = \\exp\\left(\\frac{\\Delta v_{\\mathrm{tot}}}{N c}\\right)"
+      ],
+      "keywords": [
+        "等速度配分",
+        "ラグランジュ乗数法",
+        "多段最適化",
+        "質量最小化"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "optimization"
+      ]
+    },
+    {
+      "id": "aerosp.rocket.general_stage_optimization_condition",
+      "short_code": "RKT06",
+      "kind": "theorem_formula",
+      "title": "一般多段ロケットの最適段質量配分方程式（不均一推進系）",
+      "summary": "段ごとに異なる比推力 c_i と異なる構造比 \\epsilon_i を持つ一般の直列多段ロケットにおいて、全発射質量最小化を与えるラグランジュ未定乗数に基づく極値条件式。【適用限界】連続変数としての極値計算であり、モータやタンクの離散的・型番的なハードウェア制約は別途整数計画問題等での考慮を要する。",
+      "canonical_latex": "\\frac{c_i(1 - \\epsilon_i)}{(\\lambda_i + \\epsilon_i)(1 + \\lambda_i)} = \\Lambda = \\text{const.}\\quad (i = 1, 2, \\dots, N)",
+      "aliases_latex": [
+        "\\frac{\\partial \\ln R_i}{\\partial \\lambda_i}\\cdot c_i = \\Lambda \\frac{\\partial \\ln(m_0/m_{\\mathrm{pl}})}{\\partial \\lambda_i}"
+      ],
+      "keywords": [
+        "最適段配分",
+        "ラグランジュ未定乗数法",
+        "不均一多段ロケット",
+        "推進系最適化"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "optimization"
+      ]
+    },
+    {
+      "id": "aerosp.rocket.parallel_burn_staging",
+      "short_code": "RKT07",
+      "kind": "theorem_formula",
+      "title": "並列段（ブースタ同時燃焼・ストラップオン）の速度増分公式",
+      "summary": "コア段と固体または液体ブースタが同時に推進剤を消費し、ブースタ燃焼終了時点でブースタ死重を分離投棄した後にコア段が燃焼を継続する並列ステージングの等価速度増分モデル。【適用限界】ブースタとコアの推力偏向や分離過渡時の推力尾引き損失は微小として無視する。",
+      "canonical_latex": "\\Delta v = c_{\\mathrm{eff,p}} \\ln\\!\\left(\\frac{m_0}{m_0 - \\dot{m}_{\\mathrm{tot}} t_b}\\right) + c_c \\ln\\!\\left(\\frac{m_{0,c}}{m_{f,c}}\\right)",
+      "aliases_latex": [
+        "\\Delta v = \\Delta v_{\\mathrm{boost}} + \\Delta v_{\\mathrm{sustainer}}"
+      ],
+      "keywords": [
+        "並列ステージング",
+        "ストラップオンブースタ",
+        "固体ロケットブースタ",
+        "コアサステナ"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_staging"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "derivation.aerosp.rocket.tsiolkovsky_rocket_equation",
+      "target_node_id": "aerosp.rocket.tsiolkovsky_rocket_equation",
+      "route_kind": "deductive",
+      "title": "可変質量系の運動量保存則からのロケット方程式の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "eng.rock.n02_effective_exhaust_velocity_isp"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "重力、大気抗力などの外力はゼロとする1次元運動",
+        "排気速度 c_eff は燃焼期間を通じて一定",
+        "噴射ガスは機体後方へ瞬時に定常排気される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m(t) \\frac{dv}{dt} = -c_{\\mathrm{eff}} \\frac{dm}{dt}",
+          "to_latex": "\\Delta v = c_{\\mathrm{eff}} \\ln\\left(\\frac{m_0}{m_f}\\right)",
+          "operation_label": "運動方程式の積分概要",
+          "explanation": "可変質量の運動量保存則から導かれる運動方程式を変数分離し、初期質量から最終質量まで積分して速度増分を得る。",
+          "used_node_ids": [
+            "eng.rock.n02_effective_exhaust_velocity_isp",
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": "integrate(-c/m, (m, m0, mf))"
+        },
+        {
+          "step_id": "s2_momentum_conservation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P(t) = m v,\\quad P(t+\\Delta t) = (m + \\Delta m)(v + \\Delta v) + (-\\Delta m)(v - c_{\\mathrm{eff}})",
+          "to_latex": "m \\, dv + c_{\\mathrm{eff}} \\, dm = 0",
+          "operation_label": "微小時間における系全体の運動量保存の展開",
+          "explanation": "閉じた系（機体＋微小放出ガス）の運動量保存を考え、2次の微小項を無視して時間極限をとると反力と加速の微分釣合いが得られる。",
+          "used_node_ids": [
+            "eng.rock.n02_effective_exhaust_velocity_isp",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_separation_of_variables",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m \\, dv + c_{\\mathrm{eff}} \\, dm = 0",
+          "to_latex": "dv = -c_{\\mathrm{eff}} \\frac{dm}{m}",
+          "operation_label": "変数分離の実行",
+          "explanation": "両辺を機体質量 m で除算し、速度変化 dv と質量変化比 dm/m の微分関係式を整理する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_definite_integration",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dv = -c_{\\mathrm{eff}} \\frac{dm}{m}",
+          "to_latex": "\\Delta v = v_f - v_0 = c_{\\mathrm{eff}} \\ln\\left(\\frac{m_0}{m_f}\\right)",
+          "operation_label": "微積分学の基本定理による定積分",
+          "explanation": "質量 m を m_0 から m_f まで、速度 v を v_0 から v_f まで積分し、対数関数の性質 \\ln(m_f/m_0) = -\\ln(m_0/m_f) を適用する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": "integrate(-c/m, (m, m0, mf))"
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.rocket.stage_mass_parameters",
+      "target_node_id": "aerosp.rocket.stage_mass_parameters",
+      "route_kind": "deductive",
+      "title": "段質量比と構造比・段ペイロード比の関係式の代数整理",
+      "premise_node_ids": [
+        "aerosp.rocket.tsiolkovsky_rocket_equation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "各段の全質量は推進剤質量、構造体死重、次段以降の全質量の3成分に過不足なく分割される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_mass_breakdown",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m_{0,i} = m_{p,i} + m_{s,i} + m_{0,i+1},\\quad m_{f,i} = m_{s,i} + m_{0,i+1}",
+          "to_latex": "R_i := \\frac{m_{0,i}}{m_{f,i}} = \\frac{1 + \\lambda_i}{\\epsilon_i + \\lambda_i}",
+          "operation_label": "段質量の代数分割と比率の定義適用",
+          "explanation": "段質量比 R_i を展開し、各項を (m_{s,i} + m_{p,i}) で規格化して構造比 \\epsilon_i と段ペイロード比 \\lambda_i の有理式に変換する。",
+          "used_node_ids": [
+            "aerosp.rocket.tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": "together(((1-eps)+eps+lam)/(eps+lam))"
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.rocket.ssto_feasibility_limit",
+      "target_node_id": "aerosp.rocket.ssto_feasibility_limit",
+      "route_kind": "deductive",
+      "title": "単段式（SSTO）のペイロード非負条件からの構造係数上限の導出",
+      "premise_node_ids": [
+        "aerosp.rocket.tsiolkovsky_rocket_equation",
+        "aerosp.rocket.stage_mass_parameters"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "単段式宇宙機において全質量は m_0 = m_p + m_s + m_pl とする",
+        "有効なペイロード質量比 lambda_pl = m_pl / m_0 は非負である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{m_f}{m_0} = \\exp\\!\\left(-\\frac{\\Delta v_{\\mathrm{req}}}{I_{\\mathrm{sp}} g_0}\\right)",
+          "to_latex": "\\epsilon_{\\mathrm{SSTO}} < \\exp\\!\\left(-\\frac{\\Delta v_{\\mathrm{req}}}{I_{\\mathrm{sp}} g_0}\\right) - \\lambda_{\\mathrm{pl}}",
+          "operation_label": "最終質量比の分解と構造限界の導出",
+          "explanation": "最終質量比を構造比とペイロード比に分解し、ペイロードが正であるための構造比の上限不等式を導く。",
+          "used_node_ids": [
+            "aerosp.rocket.stage_mass_parameters",
+            "aerosp.rocket.tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_mass_fraction_relation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{m_f}{m_0} = \\frac{m_s + m_{\\mathrm{pl}}}{m_0} = \\frac{m_s}{m_0} + \\lambda_{\\mathrm{pl}}",
+          "to_latex": "\\frac{m_s}{m_0} = \\exp\\!\\left(-\\frac{\\Delta v_{\\mathrm{req}}}{c_{\\mathrm{eff}}}\\right) - \\lambda_{\\mathrm{pl}}",
+          "operation_label": "質量分率のツィオルコフスキー等式への結合",
+          "explanation": "ロケット方程式の反転式 m_f/m_0 = \\exp(-\\Delta v/c) に最終質量内訳を代入する。",
+          "used_node_ids": [
+            "aerosp.rocket.tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_structural_ratio_bound",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{m_s}{m_0} = \\exp\\!\\left(-\\frac{\\Delta v_{\\mathrm{req}}}{c_{\\mathrm{eff}}}\\right) - \\lambda_{\\mathrm{pl}}",
+          "to_latex": "\\epsilon_{\\mathrm{SSTO}} < \\exp\\!\\left(-\\frac{\\Delta v_{\\mathrm{req}}}{I_{\\mathrm{sp}} g_0}\\right) - \\lambda_{\\mathrm{pl}}",
+          "operation_label": "構造比不等式の確定",
+          "explanation": "\\epsilon = m_s/(m_s+m_p) < m_s/m_0 であり、\\lambda_pl > 0 の成立要件から構造比の物理的上界が決定される。",
+          "used_node_ids": [
+            "aerosp.rocket.stage_mass_parameters"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.rocket.multistage_velocity_summation",
+      "target_node_id": "aerosp.rocket.multistage_velocity_summation",
+      "route_kind": "deductive",
+      "title": "直列多段ロケットの速度増分の段別積算",
+      "premise_node_ids": [
+        "aerosp.rocket.tsiolkovsky_rocket_equation",
+        "aerosp.rocket.stage_mass_parameters"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "段間での推進剤・質量の漏洩がなく、先行段の燃焼終了・投棄直後に次段が作動する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta v_{\\mathrm{tot}} = \\sum_{i=1}^N \\Delta v_i",
+          "to_latex": "\\Delta v_{\\mathrm{tot}} = \\sum_{i=1}^N c_i \\ln\\!\\left(\\frac{1 + \\lambda_i}{\\epsilon_i + \\lambda_i}\\right)",
+          "operation_label": "各段増分の代入と総和表示",
+          "explanation": "各段のツィオルコフスキー速度増分を段質量比パラメータで表し、その単純代数和をとる。",
+          "used_node_ids": [
+            "aerosp.rocket.stage_mass_parameters",
+            "aerosp.rocket.tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_stage_delta_v",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta v_i = c_i \\ln R_i",
+          "to_latex": "\\Delta v_i = c_i \\ln\\!\\left(\\frac{1 + \\lambda_i}{\\epsilon_i + \\lambda_i}\\right)",
+          "operation_label": "段質量比の代入",
+          "explanation": "段質量比 R_i を構造比 \\epsilon_i と段ペイロード比 \\lambda_i の関数として置き換える。",
+          "used_node_ids": [
+            "aerosp.rocket.stage_mass_parameters"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_summation_step",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta v_i = c_i \\ln\\!\\left(\\frac{1 + \\lambda_i}{\\epsilon_i + \\lambda_i}\\right)",
+          "to_latex": "\\Delta v_{\\mathrm{tot}} = \\sum_{i=1}^N c_i \\ln\\!\\left(\\frac{1 + \\lambda_i}{\\epsilon_i + \\lambda_i}\\right)",
+          "operation_label": "全段にわたる総和の計算",
+          "explanation": "i=1 から N までの速度増分を積算して全体の獲得速度とする。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.rocket.lagrange_equal_exhaust_opt",
+      "target_node_id": "aerosp.rocket.lagrange_equal_exhaust_opt",
+      "route_kind": "deductive",
+      "title": "等比推力多段ロケットにおけるラグランジュ未定乗数法による等配分の証明",
+      "premise_node_ids": [
+        "aerosp.rocket.multistage_velocity_summation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "すべての段 i において排気速度 c_i = c および構造比 \\epsilon_i = \\epsilon が同一",
+        "所定の総速度増分 \\Delta v_tot を達成しながら全ペイロード比 \\lambda_tot を最大化する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathcal{L}(\\{R_i\\}, \\mu) = \\prod_{i=1}^N \\lambda_i - \\mu\\left(\\sum_{i=1}^N c \\ln R_i - \\Delta v_{\\mathrm{tot}}\\right)",
+          "to_latex": "R_1^* = R_2^* = \\dots = R_N^* = R_{\\mathrm{tot}}^{1/N},\\quad \\Delta v_i^* = \\frac{\\Delta v_{\\mathrm{tot}}}{N}",
+          "operation_label": "ラグランジュ関数の定式化と対称性による最適解導出",
+          "explanation": "対数変換した目的関数の偏微分がゼロとなる極値条件を解き、完全な対称性から各段の段質量比と速度増分が均等になることを示す。",
+          "used_node_ids": [
+            "aerosp.rocket.multistage_velocity_summation",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_lagrangian_formulation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln\\lambda_{\\mathrm{tot}} = \\sum_{i=1}^N \\ln\\left(\\frac{1 - \\epsilon R_i}{R_i - 1}\\right)",
+          "to_latex": "\\Phi = \\sum_{i=1}^N \\ln\\left(\\frac{1 - \\epsilon R_i}{R_i - 1}\\right) - \\mu \\left(c \\sum_{i=1}^N \\ln R_i - \\Delta v_{\\mathrm{tot}}\\right)",
+          "operation_label": "対数目的関数と制約条件によるラグランジュ関数の設定",
+          "explanation": "全ペイロード比の対数を最大化するため、等式制約（総速度増分）を未定乗数 \\mu で結合した評価関数 \\Phi を構築する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_stationarity_condition",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\Phi}{\\partial R_i} = 0",
+          "to_latex": "-\\frac{1-\\epsilon}{(1-\\epsilon R_i)(R_i-1)} - \\frac{\\mu c}{R_i} = 0 \\implies f(R_i) = -\\mu c = \\text{const.}",
+          "operation_label": "停留条件による段質量比の独立性導出",
+          "explanation": "各段の変数 R_i に関する偏導関数をゼロとおくと、関数 f(R_i) は段の添字 i に依存しない定数となる。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_equal_partition",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(R_1) = f(R_2) = \\dots = f(R_N) = \\text{const.}",
+          "to_latex": "R_i^* = \\exp\\!\\left(\\frac{\\Delta v_{\\mathrm{tot}}}{N c}\\right) \\implies \\Delta v_i^* = \\frac{\\Delta v_{\\mathrm{tot}}}{N}",
+          "operation_label": "単調性と制約充足による等配分解の確定",
+          "explanation": "f(R) の物理的領域における単調性からすべての段質量比は同一値をとらねばならず、総速度を N 等分したものが最適解となる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.rocket.general_stage_optimization_condition",
+      "target_node_id": "aerosp.rocket.general_stage_optimization_condition",
+      "route_kind": "deductive",
+      "title": "不均一多段ロケットの一般最適段配分則の導出",
+      "premise_node_ids": [
+        "aerosp.rocket.multistage_velocity_summation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "各段の排気速度 c_i および構造比 \\epsilon_i は既知の定数とする",
+        "段ペイロード比 \\lambda_i は連続実数変数として最適化可能である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\nabla \\left[ \\sum_{i=1}^N \\ln\\left(1 + \\frac{1}{\\lambda_i}\\right) \\right] + \\Lambda \\nabla \\left[ \\sum_{i=1}^N c_i \\ln\\!\\left(\\frac{1+\\lambda_i}{\\epsilon_i+\\lambda_i}\\right) \\right] = 0",
+          "to_latex": "\\frac{c_i(1 - \\epsilon_i)}{(\\lambda_i + \\epsilon_i)(1 + \\lambda_i)} = \\Lambda = \\text{const.}\\quad (i = 1, 2, \\dots, N)",
+          "operation_label": "一般多段ロケットのラグランジュ乗数停留条件",
+          "explanation": "全機初期質量対最終ペイロード質量の比を最小化する問題をラグランジュ乗数法で定式化し、各段の \\lambda_i に対する停留条件を導く。",
+          "used_node_ids": [
+            "aerosp.rocket.multistage_velocity_summation",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_objective_derivative",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{J} = \\ln\\left(\\frac{m_{0,1}}{m_{\\mathrm{pl}}}\\right) = \\sum_{i=1}^N \\ln\\left(1 + \\frac{1}{\\lambda_i}\\right)",
+          "to_latex": "\\frac{\\partial \\mathcal{J}}{\\partial \\lambda_i} = -\\frac{1}{\\lambda_i(1 + \\lambda_i)}",
+          "operation_label": "目的関数の偏微分",
+          "explanation": "全質量比の対数を段ペイロード比 \\lambda_i で偏微分する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": "diff(log(1 + 1/lam), lam)"
+        },
+        {
+          "step_id": "s3_constraint_derivative",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta v_i = c_i [\\ln(1 + \\lambda_i) - \\ln(\\epsilon_i + \\lambda_i)]",
+          "to_latex": "\\frac{\\partial \\Delta v_{\\mathrm{tot}}}{\\partial \\lambda_i} = c_i \\left( \\frac{1}{1 + \\lambda_i} - \\frac{1}{\\epsilon_i + \\lambda_i} \\right) = -\\frac{c_i(1 - \\epsilon_i)}{(1 + \\lambda_i)(\\epsilon_i + \\lambda_i)}",
+          "operation_label": "速度制約関数の偏微分",
+          "explanation": "第 i 段の速度増分を \\lambda_i で偏微分して通分整理する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": "together(diff(c*(log(1+lam)-log(eps+lam)), lam))"
+        },
+        {
+          "step_id": "s4_lagrange_multiplier_equate",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\mathcal{J}}{\\partial \\lambda_i} - \\tilde{\\Lambda} \\frac{\\partial \\Delta v_{\\mathrm{tot}}}{\\partial \\lambda_i} = 0",
+          "to_latex": "\\frac{c_i(1 - \\epsilon_i)}{(\\lambda_i + \\epsilon_i)(1 + \\lambda_i)} = \\Lambda = \\text{const.}\\quad (i = 1, \\dots, N)",
+          "operation_label": "未定乗数との比率の整理",
+          "explanation": "偏導関数の比をとることで、各段が満たすべき不変量 \\Lambda の関係式を確立する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.rocket.parallel_burn_staging",
+      "target_node_id": "aerosp.rocket.parallel_burn_staging",
+      "route_kind": "deductive",
+      "title": "並列ブースタの同時燃焼と分離による多相積算",
+      "premise_node_ids": [
+        "aerosp.rocket.tsiolkovsky_rocket_equation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ブースタとコア段の並列燃焼中の等価排気速度は推力の線形和を質量流量の和で除したものとして一定に近似できる",
+        "ブースタ分離時の空虚重量投棄は瞬時に行われる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta v_{\\mathrm{tot}} = \\Delta v_1 + \\Delta v_2",
+          "to_latex": "\\Delta v = c_{\\mathrm{eff,p}} \\ln\\!\\left(\\frac{m_0}{m_0 - \\dot{m}_{\\mathrm{tot}} t_b}\\right) + c_c \\ln\\!\\left(\\frac{m_{0,c}}{m_{f,c}}\\right)",
+          "operation_label": "並列燃焼フェーズとコア単独燃焼フェーズの合成",
+          "explanation": "ブースタ燃焼終了までの並列燃焼相と、死重投棄後のコアサステナ単独燃焼相の2区間に分割して速度増分を積算する。",
+          "used_node_ids": [
+            "aerosp.rocket.tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_phase1_burn",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_{\\mathrm{eff,p}} := \\frac{T_c + T_b}{\\dot{m}_c + \\dot{m}_b}",
+          "to_latex": "\\Delta v_1 = c_{\\mathrm{eff,p}} \\ln\\!\\left(\\frac{m_0}{m_0 - (\\dot{m}_c + \\dot{m}_b)t_b}\\right)",
+          "operation_label": "等価排気速度による第1相の速度増分計算",
+          "explanation": "複数エンジンの同時燃焼における推力加重平均排気速度を用いてツィオルコフスキーの式を適用する。",
+          "used_node_ids": [
+            "aerosp.rocket.tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_phase2_burn",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m_{0,c} = m_0 - (\\dot{m}_c + \\dot{m}_b)t_b - m_{s,b}",
+          "to_latex": "\\Delta v = \\Delta v_1 + c_c \\ln\\!\\left(\\frac{m_{0,c}}{m_{f,c}}\\right)",
+          "operation_label": "死重分離と第2相の積算",
+          "explanation": "ブースタ構造死重 m_{s,b} の投棄による質量不連続を反映し、残余コア段の燃焼による速度増分を加算する。",
+          "used_node_ids": [
+            "aerosp.rocket.tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
