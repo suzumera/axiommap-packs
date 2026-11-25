@@ -1,0 +1,676 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_spacecraft_systems",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "宇宙機システム工学：宇宙機熱平衡方程式・アルベド/放射率制御・深宇宙通信リンクバジェットと電力設計",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『宇宙機システム工学：宇宙機熱平衡方程式・アルベド/放射率制御・深宇宙通信リンクバジェットと電力設計』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.sc_sys.n01_spacecraft_external_heat_loads",
+      "short_code": "SCS01",
+      "kind": "definition",
+      "title": "宇宙機の外部熱入力（太陽・アルベド・惑星赤外放射）の定義",
+      "summary": "軌道上の宇宙機が受ける3種類の主要な外部熱環境入力（太陽直射光、惑星反射アルベド、惑星赤外放射）の定義式。太陽定数の軌道半径逆二乗則と各表面の太陽光吸収率・赤外放射率・形態係数により定式化される。",
+      "canonical_latex": "Q_{\\mathrm{ext}} = \\alpha_s A_s S(r)\\cos\\theta_s + \\alpha_s A_a a_{\\mathrm{alb}} S(r) F_{p\\to s} + \\varepsilon_{\\mathrm{IR}} A_{\\mathrm{IR}} q_{\\mathrm{IR}} F_{p\\to s},\\quad S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2",
+      "aliases_latex": [
+        "Q_{\\mathrm{ext}} = Q_{\\mathrm{sun}} + Q_{\\mathrm{alb}} + Q_{\\mathrm{IR}}"
+      ],
+      "keywords": [
+        "宇宙機熱制御",
+        "太陽放射",
+        "アルベド",
+        "惑星赤外放射",
+        "形態係数"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "spacecraft_systems"
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.n02_thermal_balance_equilibrium_temp",
+      "short_code": "SCS02",
+      "kind": "theorem_formula",
+      "title": "宇宙機の定常熱平衡方程式と放射平衡温度（α/ε比制御）",
+      "summary": "外部熱入力と内部機器発熱の和が宇宙機表面からの熱放射と釣り合う定常熱平衡方程式から、放射平衡温度が太陽吸収率と赤外放射率の比 α_s/ε の1/4乗に比例することを導く基本則。",
+      "canonical_latex": "Q_{\\mathrm{ext}} + Q_{\\mathrm{int}} = \\varepsilon \\sigma_{\\mathrm{SB}} A_{\\mathrm{rad}} T_{\\mathrm{eq}}^4 \\implies T_{\\mathrm{eq}} = \\left(\\frac{\\alpha_s A_s S(r)\\cos\\theta_s + Q_{\\mathrm{alb}} + Q_{\\mathrm{IR}} + Q_{\\mathrm{int}}}{\\varepsilon \\sigma_{\\mathrm{SB}} A_{\\mathrm{rad}}}\\right)^{1/4} \\propto \\left(\\frac{\\alpha_s}{\\varepsilon}\\right)^{1/4}",
+      "aliases_latex": [
+        "T_{\\mathrm{eq}} = \\left(\\frac{Q_{\\mathrm{ext}} + Q_{\\mathrm{int}}}{\\varepsilon \\sigma_{\\mathrm{SB}} A_{\\mathrm{rad}}}\\right)^{1/4}"
+      ],
+      "keywords": [
+        "熱平衡方程式",
+        "放射平衡温度",
+        "ステファン・ボルツマン則",
+        "吸収率放射率比",
+        "熱設計"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "spacecraft_systems"
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.n03_mli_radiative_shielding",
+      "short_code": "SCS03",
+      "kind": "theorem_formula",
+      "title": "多層断熱材（MLI）の放射遮蔽と実効放射率公式",
+      "summary": "真空中で隣接するN枚の低放射率反射膜間に生じる多段階の放射熱伝達を直列抵抗として解き、MLI全体の実効放射率が層数に反比例して低減することを導く断熱設計公式。",
+      "canonical_latex": "q_{\\mathrm{MLI}} = \\varepsilon_{\\mathrm{eff}} \\sigma_{\\mathrm{SB}} \\left(T_1^4 - T_2^4\\right),\\qquad \\varepsilon_{\\mathrm{eff}} = \\frac{1}{(N_{\\mathrm{layer}} + 1)\\left(\\frac{2}{\\varepsilon_m} - 1\\right)}",
+      "aliases_latex": [
+        "\\varepsilon_{\\mathrm{eff}} = \\frac{\\varepsilon_m}{(N_{\\mathrm{layer}} + 1)(2 - \\varepsilon_m)}"
+      ],
+      "keywords": [
+        "多層断熱材",
+        "MLI",
+        "実効放射率",
+        "放射遮蔽",
+        "宇宙機熱制御"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "spacecraft_systems"
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.n04_solar_array_eol_power_sizing",
+      "short_code": "SCS04",
+      "kind": "theorem_formula",
+      "title": "太陽電池パドルの発生電力と寿命末期（EOL）サイジング式",
+      "summary": "太陽距離による照度変化、太陽入射角の余弦損失、セル温度による変換効率低下、および宇宙放射線による経年劣化を考慮した太陽電池パドルの寿命末期（EOL）発生電力モデル。",
+      "canonical_latex": "P_{\\mathrm{EOL}} = \\eta_{\\mathrm{cell}} I_d L_T(T_{\\mathrm{cell}}) L_R^{\\mathrm{yrs}} A_{\\mathrm{sa}} S(r)\\cos\\theta_s,\\quad L_T(T_{\\mathrm{cell}}) = 1 + \\beta_P (T_{\\mathrm{cell}} - T_{\\mathrm{ref}})",
+      "aliases_latex": [
+        "P_{\\mathrm{EOL}} = P_{\\mathrm{BOL}} L_R^{\\mathrm{yrs}}"
+      ],
+      "keywords": [
+        "太陽電池パドル",
+        "寿命末期電力",
+        "EOL",
+        "温度係数",
+        "放射線劣化"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "spacecraft_systems"
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.n05_eclipse_battery_energy_balance",
+      "short_code": "SCS05",
+      "kind": "theorem_formula",
+      "title": "食（エクリプス）期間のエネルギー収支とバッテリー容量設計式",
+      "summary": "軌道上の日陰（食）期間中の消費電力を賄うために必要な二次電池容量を放電深度（DoD）と放電効率から決定し、日照期間中に再充電するための太陽電池要求電力を導く電力収支式。",
+      "canonical_latex": "C_{\\mathrm{bat}} = \\frac{P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}}{\\mathrm{DoD}\\,\\eta_{\\mathrm{dis}}},\\qquad P_{\\mathrm{sa,req}} = \\frac{1}{T_{\\mathrm{sun}}}\\left(\\frac{P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}}{\\eta_{\\mathrm{chg}}\\eta_{\\mathrm{dis}}} + P_{\\mathrm{sun}} T_{\\mathrm{sun}}\\right)",
+      "aliases_latex": [
+        "P_{\\mathrm{sa,req}} = P_{\\mathrm{sun}} + \\frac{P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}}{\\eta_{\\mathrm{chg}}\\eta_{\\mathrm{dis}} T_{\\mathrm{sun}}}"
+      ],
+      "keywords": [
+        "電力設計",
+        "エクリプス",
+        "放電深度",
+        "DoD",
+        "エネルギー収支"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "spacecraft_systems"
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.n06_friis_free_space_path_loss",
+      "short_code": "SCS06",
+      "kind": "theorem_formula",
+      "title": "フリス（Friis）の伝達公式と自由空間伝搬損失（FSPL）",
+      "summary": "球面波拡散による電力束密度の距離逆二乗減衰と受信アンテナ実効開口面積の波長依存性から、送信電力と受信電力の関係および自由空間伝搬損失を導く無線通信の基礎公式。",
+      "canonical_latex": "P_r = P_t G_t G_r \\left(\\frac{\\lambda}{4\\pi R}\\right)^2,\\qquad L_{\\mathrm{FS}} := \\left(\\frac{4\\pi R}{\\lambda}\\right)^2 = \\left(\\frac{4\\pi R f}{c}\\right)^2",
+      "aliases_latex": [
+        "P_r = \\frac{P_t G_t G_r}{L_{\\mathrm{FS}}}"
+      ],
+      "keywords": [
+        "フリスの伝達公式",
+        "自由空間伝搬損失",
+        "FSPL",
+        "深宇宙通信",
+        "実効開口面積"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "spacecraft_systems"
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.n07_parabolic_antenna_gain_pointing",
+      "short_code": "SCS07",
+      "kind": "definition",
+      "title": "パラボラアンテナの利得・半値角（HPBW）とポインティング損失",
+      "summary": "円形開口面を持つパラボラアンテナの開口効率を含むピーク利得、ビーム半値幅（HPBW）、および姿勢指向誤差角による利得低下（ポインティング損失）の定義式。",
+      "canonical_latex": "G = \\eta_A \\left(\\frac{\\pi D}{\\lambda}\\right)^2,\\quad \\theta_{3\\mathrm{dB}} \\approx 70^\\circ \\frac{\\lambda}{D},\\quad L_{\\mathrm{pt,dB}} \\approx -12\\left(\\frac{e_{\\mathrm{pt}}}{\\theta_{3\\mathrm{dB}}}\\right)^2",
+      "aliases_latex": [
+        "G_{\\mathrm{dBi}} = 10\\log_{10}\\!\\left[\\eta_A\\left(\\frac{\\pi D}{\\lambda}\\right)^2\\right]"
+      ],
+      "keywords": [
+        "パラボラアンテナ",
+        "アンテナ利得",
+        "半値角",
+        "ポインティング損失",
+        "開口効率"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "spacecraft_systems"
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.n08_deep_space_link_budget_eb_n0",
+      "short_code": "SCS08",
+      "kind": "theorem_formula",
+      "title": "深宇宙通信リンクバジェット（受信 Eb/N0 とシャノン限界・リンクマージン）",
+      "summary": "フリスの伝達公式による受信電力とジョンソン＝ナイキスト熱雑音電力密度を組み合わせ、データレート当たりの1ビットエネルギー対雑音電力密度比 Eb/N0、リンクマージン、およびシャノン通信路容量限界を定式化する回線設計方程式。",
+      "canonical_latex": "\\frac{E_b}{N_0} = \\frac{P_t G_t G_r L_{\\mathrm{sys}}}{k_B T_{\\mathrm{sys}} R_b L_{\\mathrm{FS}} L_{\\mathrm{pt}}},\\qquad R_b \\le C_{\\mathrm{Sh}} = B_{\\mathrm{ch}}\\log_2\\!\\left(1 + \\frac{C}{N_0 B_{\\mathrm{ch}}}\\right),\\quad M_{\\mathrm{link,dB}} = \\left(\\frac{E_b}{N_0}\\right)_{\\mathrm{dB}} - \\left(\\frac{E_b}{N_0}\\right)_{\\mathrm{req,dB}}",
+      "aliases_latex": [
+        "\\frac{E_b}{N_0} = \\frac{C}{N_0 R_b}"
+      ],
+      "keywords": [
+        "リンクバジェット",
+        "Eb/N0",
+        "システム雑音温度",
+        "シャノン限界",
+        "深宇宙通信"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "spacecraft_systems"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "aerosp.sc_sys.d01_external_heat_loads",
+      "target_node_id": "aerosp.sc_sys.n01_spacecraft_external_heat_loads",
+      "route_kind": "reformulation",
+      "title": "太陽放射・アルベド・惑星赤外放射による宇宙機外部熱入力の定式化",
+      "premise_node_ids": [
+        "aerosp.env.n09_solar_radiation_pressure_force"
+      ],
+      "required_math_node_ids": [
+        "aerosp.sc_sys.n01_spacecraft_external_heat_loads"
+      ],
+      "assumptions": [
+        "宇宙空間は真空であり、外部との熱交換は電磁波の放射のみによって行われる。",
+        "宇宙機表面の光学特性は太陽波長域の吸収率 α_s と赤外波長域の放射率 ε_IR の2バンドモデルで近似できる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2",
+          "to_latex": "Q_{\\mathrm{ext}} = \\alpha_s A_s S(r)\\cos\\theta_s + \\alpha_s A_a a_{\\mathrm{alb}} S(r) F_{p\\to s} + \\varepsilon_{\\mathrm{IR}} A_{\\mathrm{IR}} q_{\\mathrm{IR}} F_{p\\to s}",
+          "operation_label": "外部熱入力の3成分加算定義",
+          "explanation": "軌道半径の逆二乗則に従う太陽放射フラックス S(r) を用いて、太陽直射熱・惑星反射アルベド熱・惑星赤外放射熱の3成分を形態係数 F_{p→s} と表面光学特性により合算し、宇宙機への総外部熱入力を定義する。",
+          "used_node_ids": [
+            "aerosp.env.n09_solar_radiation_pressure_force",
+            "aerosp.sc_sys.n01_spacecraft_external_heat_loads"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.d02_thermal_balance_eq",
+      "target_node_id": "aerosp.sc_sys.n02_thermal_balance_equilibrium_temp",
+      "route_kind": "deductive",
+      "title": "定常熱平衡方程式からの放射平衡温度と α/ε 比スケーリングの導出",
+      "premise_node_ids": [
+        "aerosp.sc_sys.n01_spacecraft_external_heat_loads",
+        "aerosp.hypab.n07_ablation_surface_energy_balance"
+      ],
+      "required_math_node_ids": [
+        "aerosp.sc_sys.n02_thermal_balance_equilibrium_temp"
+      ],
+      "assumptions": [
+        "宇宙機全体を単一温度の等温節点（1ノード熱モデル）として扱う。",
+        "宇宙背景放射温度（約2.7K）の4乗は宇宙機表面温度の4乗に比べて無視できる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Q_{\\mathrm{ext}} + Q_{\\mathrm{int}} = Q_{\\mathrm{rad}}",
+          "to_latex": "T_{\\mathrm{eq}} = \\left(\\frac{\\alpha_s A_s S(r)\\cos\\theta_s + Q_{\\mathrm{alb}} + Q_{\\mathrm{IR}} + Q_{\\mathrm{int}}}{\\varepsilon \\sigma_{\\mathrm{SB}} A_{\\mathrm{rad}}}\\right)^{1/4}",
+          "operation_label": "定常熱平衡と放射平衡温度の導出",
+          "explanation": "外部熱入力と内部発熱の和がステファン＝ボルツマンの放射冷却量と釣り合う条件から、宇宙機の定常放射平衡温度を導出する。",
+          "used_node_ids": [
+            "aerosp.hypab.n07_ablation_surface_energy_balance",
+            "aerosp.sc_sys.n01_spacecraft_external_heat_loads",
+            "aerosp.sc_sys.n02_thermal_balance_equilibrium_temp"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q_{\\mathrm{ext}} + Q_{\\mathrm{int}} = Q_{\\mathrm{rad}}",
+          "to_latex": "\\alpha_s A_s S(r)\\cos\\theta_s + Q_{\\mathrm{alb}} + Q_{\\mathrm{IR}} + Q_{\\mathrm{int}} = \\varepsilon \\sigma_{\\mathrm{SB}} A_{\\mathrm{rad}} T_{\\mathrm{eq}}^4",
+          "operation_label": "外部熱入力と放射法則の代入",
+          "explanation": "外部熱入力 Q_ext の定義と灰色体放射則 Q_rad = ε σ_SB A_rad T_eq^4 をエネルギー保存式に代入する。",
+          "used_node_ids": [
+            "aerosp.hypab.n07_ablation_surface_energy_balance",
+            "aerosp.sc_sys.n01_spacecraft_external_heat_loads"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\alpha_s A_s S(r)\\cos\\theta_s + Q_{\\mathrm{alb}} + Q_{\\mathrm{IR}} + Q_{\\mathrm{int}} = \\varepsilon \\sigma_{\\mathrm{SB}} A_{\\mathrm{rad}} T_{\\mathrm{eq}}^4",
+          "to_latex": "T_{\\mathrm{eq}}^4 = \\frac{\\alpha_s A_s S(r)\\cos\\theta_s + Q_{\\mathrm{alb}} + Q_{\\mathrm{IR}} + Q_{\\mathrm{int}}}{\\varepsilon \\sigma_{\\mathrm{SB}} A_{\\mathrm{rad}}}",
+          "operation_label": "温度の4乗項の分離",
+          "explanation": "両辺を ε σ_SB A_rad で割り、平衡温度の4乗について整理する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "solve(Q_in - eps*sigma*A_rad*T_eq**4, T_eq**4)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\mathrm{eq}}^4 = \\frac{\\alpha_s A_s S(r)\\cos\\theta_s + Q_{\\mathrm{alb}} + Q_{\\mathrm{IR}} + Q_{\\mathrm{int}}}{\\varepsilon \\sigma_{\\mathrm{SB}} A_{\\mathrm{rad}}}",
+          "to_latex": "T_{\\mathrm{eq}} = \\left(\\frac{\\alpha_s A_s S(r)\\cos\\theta_s + Q_{\\mathrm{alb}} + Q_{\\mathrm{IR}} + Q_{\\mathrm{int}}}{\\varepsilon \\sigma_{\\mathrm{SB}} A_{\\mathrm{rad}}}\\right)^{1/4}",
+          "operation_label": "4乗根による平衡温度の算出",
+          "explanation": "両辺の1/4乗をとることで定常放射平衡温度を得て、太陽支配環境では T_eq が (α_s/ε)^(1/4) で制御できることを示す。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n02_thermal_balance_equilibrium_temp"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.d03_mli_shielding",
+      "target_node_id": "aerosp.sc_sys.n03_mli_radiative_shielding",
+      "route_kind": "deductive",
+      "title": "N層放射遮蔽板の直列熱抵抗和によるMLI実効放射率の導出",
+      "premise_node_ids": [
+        "aerosp.sc_sys.n02_thermal_balance_equilibrium_temp"
+      ],
+      "required_math_node_ids": [
+        "aerosp.sc_sys.n03_mli_radiative_shielding"
+      ],
+      "assumptions": [
+        "各層は等しい面積を持つ平行平板であり、両面の放射率はすべて等しく ε_m である。",
+        "スペーサを介した固体熱伝導および残留ガスによる対流は理想放射極限として無視する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "q_{k} = \\frac{\\sigma_{\\mathrm{SB}}(T_{k-1}^4 - T_k^4)}{\\frac{2}{\\varepsilon_m} - 1}",
+          "to_latex": "q_{\\mathrm{MLI}} = \\varepsilon_{\\mathrm{eff}}\\sigma_{\\mathrm{SB}}(T_1^4 - T_2^4),\\quad \\varepsilon_{\\mathrm{eff}} = \\frac{1}{(N_{\\mathrm{layer}} + 1)\\left(\\frac{2}{\\varepsilon_m} - 1\\right)}",
+          "operation_label": "N層MLIの直列放射抵抗合成",
+          "explanation": "隣接する層間の正味放射熱流束が定常状態で等しいことを用い、N層の反射膜による (N+1) 個の空間の放射熱抵抗を足し合わせて実効放射率を導出する。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n02_thermal_balance_equilibrium_temp",
+            "aerosp.sc_sys.n03_mli_radiative_shielding"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q_{k} = \\frac{\\sigma_{\\mathrm{SB}}(T_{k-1}^4 - T_k^4)}{\\frac{2}{\\varepsilon_m} - 1}",
+          "to_latex": "\\sum_{k=1}^{N_{\\mathrm{layer}}+1} q_{\\mathrm{MLI}}\\left(\\frac{2}{\\varepsilon_m} - 1\\right) = \\sigma_{\\mathrm{SB}}\\sum_{k=1}^{N_{\\mathrm{layer}}+1}(T_{k-1}^4 - T_k^4)",
+          "operation_label": "全層空間にわたる熱流束式の総和",
+          "explanation": "定常状態では全空間で q_k = q_MLI が等しいため、分母を払って k=1 から N_layer+1 まで辺々足し合わせる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k=1}^{N_{\\mathrm{layer}}+1} q_{\\mathrm{MLI}}\\left(\\frac{2}{\\varepsilon_m} - 1\\right) = \\sigma_{\\mathrm{SB}}\\sum_{k=1}^{N_{\\mathrm{layer}}+1}(T_{k-1}^4 - T_k^4)",
+          "to_latex": "(N_{\\mathrm{layer}} + 1)\\left(\\frac{2}{\\varepsilon_m} - 1\\right)q_{\\mathrm{MLI}} = \\sigma_{\\mathrm{SB}}(T_1^4 - T_2^4)",
+          "operation_label": "中間層温度の望遠鏡和による消去",
+          "explanation": "右辺の総和は中間層温度 T_k^4 が相殺され、最外層温度 T_1^4 と最内層温度 T_2^4 の差のみが残る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(N_{\\mathrm{layer}} + 1)\\left(\\frac{2}{\\varepsilon_m} - 1\\right)q_{\\mathrm{MLI}} = \\sigma_{\\mathrm{SB}}(T_1^4 - T_2^4)",
+          "to_latex": "q_{\\mathrm{MLI}} = \\varepsilon_{\\mathrm{eff}}\\sigma_{\\mathrm{SB}}(T_1^4 - T_2^4),\\quad \\varepsilon_{\\mathrm{eff}} = \\frac{1}{(N_{\\mathrm{layer}} + 1)\\left(\\frac{2}{\\varepsilon_m} - 1\\right)}",
+          "operation_label": "実効放射率 ε_eff の定義と整理",
+          "explanation": "q_MLI について解き、比例係数を実効放射率 ε_eff として整理する。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n03_mli_radiative_shielding"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.d04_solar_array_eol",
+      "target_node_id": "aerosp.sc_sys.n04_solar_array_eol_power_sizing",
+      "route_kind": "deductive",
+      "title": "理想太陽電池出力からのBOL・EOL発生電力サイジング式の導出",
+      "premise_node_ids": [
+        "aerosp.env.n09_solar_radiation_pressure_force",
+        "aerosp.sc_sys.n02_thermal_balance_equilibrium_temp"
+      ],
+      "required_math_node_ids": [
+        "aerosp.sc_sys.n04_solar_array_eol_power_sizing"
+      ],
+      "assumptions": [
+        "セル温度 T_cell はパドル表面の熱平衡方程式により決定される。",
+        "放射線による年間劣化率 (1 - L_R) は運用年数に対して指数関数モデルで近似する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_0 = \\eta_{\\mathrm{cell}} A_{\\mathrm{sa}} S(r)\\cos\\theta_s",
+          "to_latex": "P_{\\mathrm{EOL}} = \\eta_{\\mathrm{cell}} I_d L_T(T_{\\mathrm{cell}}) L_R^{\\mathrm{yrs}} A_{\\mathrm{sa}} S(r)\\cos\\theta_s",
+          "operation_label": "温度係数と放射線劣化係数によるEOL電力化",
+          "explanation": "入射太陽エネルギーにセル変換効率を乗じた理想出力に対し、固有劣化係数 I_d、温度補正係数 L_T、および年間放射線劣化係数 L_R^yrs を乗じて寿命末期発生電力を求める。",
+          "used_node_ids": [
+            "aerosp.env.n09_solar_radiation_pressure_force",
+            "aerosp.sc_sys.n02_thermal_balance_equilibrium_temp",
+            "aerosp.sc_sys.n04_solar_array_eol_power_sizing"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_0 = \\eta_{\\mathrm{cell}} A_{\\mathrm{sa}} S(r)\\cos\\theta_s",
+          "to_latex": "P_{\\mathrm{BOL}} = \\eta_{\\mathrm{cell}} I_d L_T(T_{\\mathrm{cell}}) A_{\\mathrm{sa}} S(r)\\cos\\theta_s,\\quad L_T(T_{\\mathrm{cell}}) = 1 + \\beta_P(T_{\\mathrm{cell}} - T_{\\mathrm{ref}})",
+          "operation_label": "固有劣化とセル温度係数の導入（BOL電力）",
+          "explanation": "組立損失やカバーガラス透過損失を表す固有劣化係数 I_d と、熱平衡で決まるセル温度 T_cell による線形温度補正 L_T を乗じて寿命初期（BOL）電力を得る。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n02_thermal_balance_equilibrium_temp"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\mathrm{BOL}} = \\eta_{\\mathrm{cell}} I_d L_T(T_{\\mathrm{cell}}) A_{\\mathrm{sa}} S(r)\\cos\\theta_s,\\quad L_T(T_{\\mathrm{cell}}) = 1 + \\beta_P(T_{\\mathrm{cell}} - T_{\\mathrm{ref}})",
+          "to_latex": "P_{\\mathrm{EOL}} = P_{\\mathrm{BOL}} L_R^{\\mathrm{yrs}} = \\eta_{\\mathrm{cell}} I_d L_T(T_{\\mathrm{cell}}) L_R^{\\mathrm{yrs}} A_{\\mathrm{sa}} S(r)\\cos\\theta_s",
+          "operation_label": "放射線経年劣化係数の乗算（EOL電力）",
+          "explanation": "1年あたりの残存率 L_R を運用年数 yrs 乗した経年劣化係数を乗じ、ミッション末期（EOL）に保証すべき発生電力式を導く。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n04_solar_array_eol_power_sizing"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.d05_eclipse_energy_balance",
+      "target_node_id": "aerosp.sc_sys.n05_eclipse_battery_energy_balance",
+      "route_kind": "deductive",
+      "title": "軌道1周回の電力収支からのバッテリー容量と太陽電池要求電力の導出",
+      "premise_node_ids": [
+        "aerosp.sc_sys.n04_solar_array_eol_power_sizing"
+      ],
+      "required_math_node_ids": [
+        "aerosp.sc_sys.n05_eclipse_battery_energy_balance"
+      ],
+      "assumptions": [
+        "軌道1周期は日照時間 T_sun と食時間 T_ecl に二分される。",
+        "バッテリーの充放電経路効率はそれぞれ一定の η_chg、η_dis とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "E_{\\mathrm{ecl}} = P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}",
+          "to_latex": "C_{\\mathrm{bat}} = \\frac{P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}}{\\mathrm{DoD}\\,\\eta_{\\mathrm{dis}}},\\quad P_{\\mathrm{sa,req}} = \\frac{1}{T_{\\mathrm{sun}}}\\left(\\frac{P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}}{\\eta_{\\mathrm{chg}}\\eta_{\\mathrm{dis}}} + P_{\\mathrm{sun}} T_{\\mathrm{sun}}\\right)",
+          "operation_label": "食期間エネルギーからの容量と充電電力の決定",
+          "explanation": "食期間の負荷電力量 E_ecl を放電深度 DoD と放電効率で割って必要バッテリー容量を求め、さらに充電効率を含めた日照中の充電エネルギー収支から太陽電池要求電力を導く。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n04_solar_array_eol_power_sizing",
+            "aerosp.sc_sys.n05_eclipse_battery_energy_balance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "E_{\\mathrm{ecl}} = P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}",
+          "to_latex": "C_{\\mathrm{bat}} = \\frac{E_{\\mathrm{ecl}}}{\\mathrm{DoD}\\,\\eta_{\\mathrm{dis}}} = \\frac{P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}}{\\mathrm{DoD}\\,\\eta_{\\mathrm{dis}}}",
+          "operation_label": "放電深度と放電効率によるバッテリー容量算出",
+          "explanation": "寿命確保のため全容量の DoD 割合のみを使用可能とし、放電経路効率 η_dis を考慮して必要バッテリー容量 C_bat を求める。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_{\\mathrm{bat}} = \\frac{E_{\\mathrm{ecl}}}{\\mathrm{DoD}\\,\\eta_{\\mathrm{dis}}} = \\frac{P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}}{\\mathrm{DoD}\\,\\eta_{\\mathrm{dis}}}",
+          "to_latex": "P_{\\mathrm{sa,req}} T_{\\mathrm{sun}} = P_{\\mathrm{sun}} T_{\\mathrm{sun}} + \\frac{P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}}{\\eta_{\\mathrm{chg}}\\eta_{\\mathrm{dis}}}",
+          "operation_label": "日照期間の充放電エネルギー保存式の立式",
+          "explanation": "日照時間 T_sun に太陽電池が発電する総電力量が、日照中の直接負荷消費と食期間消費分の再充電電力量（充電効率 η_chg を考慮）の和に等しいと置く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\mathrm{sa,req}} T_{\\mathrm{sun}} = P_{\\mathrm{sun}} T_{\\mathrm{sun}} + \\frac{P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}}{\\eta_{\\mathrm{chg}}\\eta_{\\mathrm{dis}}}",
+          "to_latex": "P_{\\mathrm{sa,req}} = \\frac{1}{T_{\\mathrm{sun}}}\\left(\\frac{P_{\\mathrm{ecl}} T_{\\mathrm{ecl}}}{\\eta_{\\mathrm{chg}}\\eta_{\\mathrm{dis}}} + P_{\\mathrm{sun}} T_{\\mathrm{sun}}\\right)",
+          "operation_label": "太陽電池要求電力 P_sa,req の導出",
+          "explanation": "両辺を日照時間 T_sun で割り、太陽電池パドルのEOL出力が満たすべき最小電力要求式を得る。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n05_eclipse_battery_energy_balance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.d06_friis_transmission",
+      "target_node_id": "aerosp.sc_sys.n06_friis_free_space_path_loss",
+      "route_kind": "deductive",
+      "title": "球面波拡散と実効開口面積によるフリスの伝達公式の導出",
+      "premise_node_ids": [
+        "aerosp.env.n09_solar_radiation_pressure_force"
+      ],
+      "required_math_node_ids": [
+        "aerosp.sc_sys.n06_friis_free_space_path_loss"
+      ],
+      "assumptions": [
+        "送受信アンテナは互いに遠方界（フラウンホーファー領域）に位置する。",
+        "伝搬媒質は一様な自由空間であり、偏波整合およびインピーダンス整合は完全とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S_{\\mathrm{rx}} = \\frac{P_t G_t}{4\\pi R^2}",
+          "to_latex": "P_r = P_t G_t G_r \\left(\\frac{\\lambda}{4\\pi R}\\right)^2 = \\frac{P_t G_t G_r}{L_{\\mathrm{FS}}}",
+          "operation_label": "実効開口面積の乗算によるフリスの公式導出",
+          "explanation": "距離 R における等方放射・指向性利得 G_t による電力束密度に、受信アンテナの実効開口面積 A_eff,r = G_r λ^2 / (4π) を乗じてフリスの伝達公式と自由空間伝搬損失を導出する。",
+          "used_node_ids": [
+            "aerosp.env.n09_solar_radiation_pressure_force",
+            "aerosp.sc_sys.n06_friis_free_space_path_loss"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_{\\mathrm{rx}} = \\frac{P_t G_t}{4\\pi R^2}",
+          "to_latex": "P_r = S_{\\mathrm{rx}} A_{\\mathrm{eff},r} = \\frac{P_t G_t}{4\\pi R^2}\\left(\\frac{\\lambda^2}{4\\pi}G_r\\right)",
+          "operation_label": "アンテナ実効開口面積の代入",
+          "explanation": "アンテナ理論の普遍関係式 A_eff,r = (λ^2 / 4π) G_r を受信電力の定義 P_r = S_rx A_eff,r に代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_r = S_{\\mathrm{rx}} A_{\\mathrm{eff},r} = \\frac{P_t G_t}{4\\pi R^2}\\left(\\frac{\\lambda^2}{4\\pi}G_r\\right)",
+          "to_latex": "P_r = P_t G_t G_r \\left(\\frac{\\lambda}{4\\pi R}\\right)^2,\\quad L_{\\mathrm{FS}} := \\left(\\frac{4\\pi R}{\\lambda}\\right)^2",
+          "operation_label": "自由空間伝搬損失 L_FS の定義と整理",
+          "explanation": "幾何学的因子を (λ / 4πR)^2 にまとめ、その逆数を自由空間伝搬損失 L_FS として定義する。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n06_friis_free_space_path_loss"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.d07_parabolic_antenna_gain",
+      "target_node_id": "aerosp.sc_sys.n07_parabolic_antenna_gain_pointing",
+      "route_kind": "reformulation",
+      "title": "実効開口面積と円形開口径からのパラボラアンテナ利得・半値角の定式化",
+      "premise_node_ids": [
+        "aerosp.sc_sys.n06_friis_free_space_path_loss"
+      ],
+      "required_math_node_ids": [
+        "aerosp.sc_sys.n07_parabolic_antenna_gain_pointing"
+      ],
+      "assumptions": [
+        "アンテナは直径 D の円形パラボラ開口を持ち、開口効率 η_A で照射される。",
+        "ポインティング誤差角 e_pt は半値角 θ_3dB に比べて十分小さい。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A_{\\mathrm{eff}} = \\eta_A \\frac{\\pi D^2}{4} = \\frac{\\lambda^2}{4\\pi}G",
+          "to_latex": "G = \\eta_A \\left(\\frac{\\pi D}{\\lambda}\\right)^2,\\quad \\theta_{3\\mathrm{dB}} \\approx 70^\\circ \\frac{\\lambda}{D},\\quad L_{\\mathrm{pt,dB}} \\approx -12\\left(\\frac{e_{\\mathrm{pt}}}{\\theta_{3\\mathrm{dB}}}\\right)^2",
+          "operation_label": "円形開口アンテナ利得と指向損失の定義",
+          "explanation": "実効開口面積 A_eff = η_A πD^2/4 をアンテナ利得と波長の関係式に代入してパラボラアンテナの利得式を得て、併せて回折限界に基づく半値角およびポインティング損失近似を定義する。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n06_friis_free_space_path_loss",
+            "aerosp.sc_sys.n07_parabolic_antenna_gain_pointing"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.sc_sys.d08_link_budget_eb_n0",
+      "target_node_id": "aerosp.sc_sys.n08_deep_space_link_budget_eb_n0",
+      "route_kind": "deductive",
+      "title": "フリスの公式と熱雑音密度からの深宇宙リンクバジェット Eb/N0 式の導出",
+      "premise_node_ids": [
+        "aerosp.sc_sys.n06_friis_free_space_path_loss",
+        "aerosp.sc_sys.n07_parabolic_antenna_gain_pointing",
+        "astro.radio.n01_planck_blackbody_boundary"
+      ],
+      "required_math_node_ids": [
+        "aerosp.sc_sys.n08_deep_space_link_budget_eb_n0"
+      ],
+      "assumptions": [
+        "通信路の雑音はシステム雑音温度 T_sys による加法性白色ガウス雑音（AWGN）でモデル化される。",
+        "送信電力 P_t と受信搬送波電力 C の間には回線損失 L_sys とポインティング損失 L_pt が作用する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "C = \\frac{P_t G_t G_r L_{\\mathrm{sys}}}{L_{\\mathrm{FS}} L_{\\mathrm{pt}}},\\quad N_0 = k_B T_{\\mathrm{sys}}",
+          "to_latex": "\\frac{E_b}{N_0} = \\frac{P_t G_t G_r L_{\\mathrm{sys}}}{k_B T_{\\mathrm{sys}} R_b L_{\\mathrm{FS}} L_{\\mathrm{pt}}},\\quad R_b \\le B_{\\mathrm{ch}}\\log_2\\!\\left(1 + \\frac{C}{N_0 B_{\\mathrm{ch}}}\\right)",
+          "operation_label": "搬送波対雑音密度比 C/N0 とデータレート R_b による Eb/N0 導出",
+          "explanation": "フリスの公式にシステム損失とポインティング損失を含めた受信搬送波電力 C と、ジョンソン＝ナイキスト熱雑音に基づく雑音電力スペクトル密度 N_0 から C/N_0 を構成し、情報ビットレート R_b で除して Eb/N_0 とシャノン限界を導く。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n06_friis_free_space_path_loss",
+            "aerosp.sc_sys.n07_parabolic_antenna_gain_pointing",
+            "aerosp.sc_sys.n08_deep_space_link_budget_eb_n0",
+            "astro.radio.n01_planck_blackbody_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C = \\frac{P_t G_t G_r L_{\\mathrm{sys}}}{L_{\\mathrm{FS}} L_{\\mathrm{pt}}},\\quad N_0 = k_B T_{\\mathrm{sys}}",
+          "to_latex": "\\frac{C}{N_0} = \\frac{P_t G_t G_r L_{\\mathrm{sys}}}{k_B T_{\\mathrm{sys}} L_{\\mathrm{FS}} L_{\\mathrm{pt}}}",
+          "operation_label": "搬送波電力対雑音電力密度比 C/N0 の構成",
+          "explanation": "受信搬送波電力 C をシステム雑音温度 T_sys に対応する熱雑音スペクトル密度 N_0 = k_B T_sys で割り、C/N_0 を求める。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n06_friis_free_space_path_loss",
+            "aerosp.sc_sys.n07_parabolic_antenna_gain_pointing",
+            "astro.radio.n01_planck_blackbody_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{C}{N_0} = \\frac{P_t G_t G_r L_{\\mathrm{sys}}}{k_B T_{\\mathrm{sys}} L_{\\mathrm{FS}} L_{\\mathrm{pt}}}",
+          "to_latex": "\\frac{E_b}{N_0} = \\frac{C}{N_0 R_b} = \\frac{P_t G_t G_r L_{\\mathrm{sys}}}{k_B T_{\\mathrm{sys}} R_b L_{\\mathrm{FS}} L_{\\mathrm{pt}}}",
+          "operation_label": "1ビットあたりエネルギー E_b = C / R_b の導入",
+          "explanation": "1ビットあたりの受信エネルギーが搬送波電力をデータレート R_b で割った E_b = C / R_b で与えられることを用い、Eb/N0 を導出する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{E_b}{N_0} = \\frac{C}{N_0 R_b} = \\frac{P_t G_t G_r L_{\\mathrm{sys}}}{k_B T_{\\mathrm{sys}} R_b L_{\\mathrm{FS}} L_{\\mathrm{pt}}}",
+          "to_latex": "M_{\\mathrm{link,dB}} = \\left(\\frac{E_b}{N_0}\\right)_{\\mathrm{dB}} - \\left(\\frac{E_b}{N_0}\\right)_{\\mathrm{req,dB}},\\quad R_b \\le B_{\\mathrm{ch}}\\log_2\\!\\left(1 + \\frac{C}{N_0 B_{\\mathrm{ch}}}\\right)",
+          "operation_label": "リンクマージンとシャノン容量限界の定式化",
+          "explanation": "変調・誤り訂正方式で定まる所要 Eb/N0 との差をデシベル表示でリンクマージンとし、帯域幅 B_ch におけるシャノン限界による最大伝送レート制約を併記する。",
+          "used_node_ids": [
+            "aerosp.sc_sys.n08_deep_space_link_budget_eb_n0"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
