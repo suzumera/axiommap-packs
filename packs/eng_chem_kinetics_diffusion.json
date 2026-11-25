@@ -116,28 +116,6 @@
       ]
     },
     {
-      "id": "eng.kin.n06_michaelis_menten_kinetics",
-      "short_code": "KIN06",
-      "kind": "theorem_formula",
-      "title": "ミカエリス＝メンテン式（酵素反応速度式）",
-      "summary": "酵素・基質複合体に対する擬定常状態近似（QSSA）から導かれる飽和型反応速度式。",
-      "canonical_latex": "v = \\frac{V_{\\max} [S]}{K_M + [S]},\\qquad K_M := \\frac{k_{-1} + k_2}{k_1},\\qquad V_{\\max} := k_2 [E]_0",
-      "aliases_latex": [
-        "v = \\frac{k_2 [E]_0 [S]}{K_M + [S]}"
-      ],
-      "keywords": [
-        "ミカエリス・メンテン式",
-        "酵素反応",
-        "擬定常状態近似",
-        "ミカエリス定数"
-      ],
-      "domain_tags": [
-        "chemical_engineering",
-        "biochemical_engineering",
-        "kinetics"
-      ]
-    },
-    {
       "id": "eng.kin.n07_fick_first_law",
       "short_code": "KIN07",
       "kind": "theorem_formula",
@@ -476,79 +454,6 @@
           "explanation": "温度 T_1 から T_2 まで定積分する（あるいは両辺の差を取る）ことで A を消去した2点関係式を得る。",
           "used_node_ids": [
             "math.calc.m02_fundamental_theorem_calc"
-          ],
-          "sympy_check_hint": null
-        }
-      ]
-    },
-    {
-      "id": "der.kin.n06_michaelis_menten",
-      "target_node_id": "eng.kin.n06_michaelis_menten_kinetics",
-      "route_kind": "deductive",
-      "title": "擬定常状態近似によるミカエリス＝メンテン式の導出",
-      "premise_node_ids": [
-        "eng.kin.n02_reaction_rate_order_def"
-      ],
-      "required_math_node_ids": [],
-      "assumptions": [
-        "素反応機構 E + S <-> ES (k_1, k_{-1}) および ES -> E + P (k_2)",
-        "酵素の総濃度保存 [E]_0 = [E] + [ES]",
-        "中間体 ES に対する擬定常状態近似 d[ES]/dt ≈ 0"
-      ],
-      "steps": [
-        {
-          "step_id": "s1_overview",
-          "order": 1,
-          "granularity_level": 1,
-          "parent_step_id": null,
-          "from_latex": "\\frac{d[ES]}{dt} = k_1[E][S] - (k_{-1} + k_2)[ES] \\approx 0,\\quad [E]_0 = [E] + [ES],\\quad v = k_2[ES]",
-          "to_latex": "v = \\frac{V_{\\max} [S]}{K_M + [S]},\\qquad K_M := \\frac{k_{-1} + k_2}{k_1},\\qquad V_{\\max} := k_2 [E]_0",
-          "operation_label": "擬定常状態近似と酵素保存則の連立解法",
-          "explanation": "ES 濃度の定常条件と総酵素濃度の保存則を連立して [ES] を求め、生成速度 v = k_2[ES] に代入する。",
-          "used_node_ids": [
-            "eng.kin.n02_reaction_rate_order_def"
-          ],
-          "sympy_check_hint": "solve([k1*(E0-ES)*S - (km1+k2)*ES], ES)"
-        },
-        {
-          "step_id": "s2_1",
-          "order": 1,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "\\frac{d[ES]}{dt} = k_1[E][S] - (k_{-1} + k_2)[ES] \\approx 0,\\quad [E]_0 = [E] + [ES],\\quad v = k_2[ES]",
-          "to_latex": "k_1([E]_0 - [ES])[S] = (k_{-1} + k_2)[ES]",
-          "operation_label": "遊離酵素濃度 [E] の消去",
-          "explanation": "保存則 [E] = [E]_0 - [ES] を擬定常状態条件に代入する。",
-          "used_node_ids": [
-            "eng.kin.n02_reaction_rate_order_def"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_2",
-          "order": 2,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "k_1([E]_0 - [ES])[S] = (k_{-1} + k_2)[ES]",
-          "to_latex": "[ES] = \\frac{[E]_0 [S]}{K_M + [S]},\\qquad K_M := \\frac{k_{-1} + k_2}{k_1}",
-          "operation_label": "複合体濃度 [ES] の代数解と K_M の定義",
-          "explanation": "[ES] について整理し、ミカエリス定数 K_M = (k_{-1} + k_2)/k_1 を定義する。",
-          "used_node_ids": [
-            "eng.kin.n02_reaction_rate_order_def"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_3",
-          "order": 3,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "[ES] = \\frac{[E]_0 [S]}{K_M + [S]},\\qquad K_M := \\frac{k_{-1} + k_2}{k_1}",
-          "to_latex": "v = \\frac{V_{\\max} [S]}{K_M + [S]},\\qquad K_M := \\frac{k_{-1} + k_2}{k_1},\\qquad V_{\\max} := k_2 [E]_0",
-          "operation_label": "生成速度 v = k_2 [ES] への代入",
-          "explanation": "v = k_2[ES] に [ES] を代入し、最大反応速度 V_max = k_2[E]_0 を定義してミカエリス＝メンテン式を得る。",
-          "used_node_ids": [
-            "eng.kin.n02_reaction_rate_order_def"
           ],
           "sympy_check_hint": null
         }
