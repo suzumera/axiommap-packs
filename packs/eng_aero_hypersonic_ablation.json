@@ -1,0 +1,607 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_hypersonic_ablation",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "極超音速気体力学とアブレーション熱防御：振動励起・解離のダムケラー数・化学非平衡境界層とステファン問題によるアブレーション後退",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『極超音速気体力学とアブレーション熱防御：振動励起・解離のダムケラー数・化学非平衡境界層とステファン問題によるアブレーション後退』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.hypab.n01_landau_teller_vibrational_relaxation",
+      "short_code": "HYP01",
+      "kind": "definition",
+      "title": "振動励起とランダウ＝テラー緩和方程式",
+      "summary": "極超音速衝撃波背後の高温気体において、並進・回転温度に比べて遅れて平衡に達する分子の振動エネルギーの緩和過程を表す速度方程式と緩和時間モデル。",
+      "canonical_latex": "\\frac{de_v}{dt} = \\frac{e_v^*(T) - e_v}{\\tau_v},\\qquad e_v^*(T) = \\frac{R_u \\theta_v / M_w}{\\exp(\\theta_v / T) - 1},\\qquad p\\tau_v = A \\exp\\!\\left(B T^{-1/3}\\right)",
+      "aliases_latex": [
+        "\\dot{e}_v = \\frac{e_{v,\\mathrm{eq}} - e_v}{\\tau_v}"
+      ],
+      "keywords": [
+        "Landau-Teller",
+        "振動緩和",
+        "極超音速気体力学",
+        "非平衡熱力学",
+        "Millikan-White"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "hypersonics",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.hypab.n02_damkohler_number_flow_regimes",
+      "short_code": "HYP02",
+      "kind": "definition",
+      "title": "化学非平衡のダムケラー数と流動領域判定則",
+      "summary": "流動の代表時間と化学反応の代表時間の比として定義されるダムケラー数（Da）に基づき、極超音速流れを凍結流、化学非平衡流、局所平衡流に分類する指標。",
+      "canonical_latex": "Da := \\frac{\\tau_{\\mathrm{flow}}}{\\tau_{\\mathrm{chem}}} = \\frac{L / u_\\infty}{\\tau_{\\mathrm{chem}}},\\qquad \\begin{cases} Da \\ll 1: & \\text{凍結流（Frozen flow）} \\\\ Da \\sim 1: & \\text{化学非平衡流（Non-equilibrium flow）} \\\\ Da \\gg 1: & \\text{局所平衡流（Equilibrium flow）} \\end{cases}",
+      "aliases_latex": [
+        "Da_k = \\frac{\\tau_{\\mathrm{char}}}{\\tau_{r,k}}"
+      ],
+      "keywords": [
+        "Damkohler number",
+        "ダムケラー数",
+        "化学非平衡",
+        "凍結流",
+        "平衡流"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "chemical_kinetics",
+        "fluid_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.hypab.n03_lighthill_ideal_dissociating_gas",
+      "short_code": "HYP03",
+      "kind": "theorem_formula",
+      "title": "ライトヒルの理想解離気体モデル",
+      "summary": "高温衝撃波背後における二原子分子の熱解離を近似し、質量作用の法則から導かれる解離度と比エンタルピーの陽的熱力学関係式。",
+      "canonical_latex": "\\frac{\\alpha_d^2}{1 - \\alpha_d^2} = \\frac{\\rho_d}{\\rho}\\exp\\!\\left(-\\frac{\\theta_d}{T}\\right),\\qquad h = \\left(\\frac{4 + \\alpha_d}{1 + \\alpha_d}\\right)R_m T + \\alpha_d D",
+      "aliases_latex": [
+        "\\frac{\\alpha_d^2}{1 - \\alpha_d^2} = \\frac{\\rho_d}{\\rho}e^{-\\theta_d/T}"
+      ],
+      "keywords": [
+        "Lighthill gas",
+        "理想解離気体",
+        "解離度",
+        "衝撃波後温度",
+        "実在気体効果"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "gas_dynamics",
+        "physical_chemistry"
+      ]
+    },
+    {
+      "id": "aerosp.hypab.n04_lewis_number_catalytic_wall",
+      "short_code": "HYP04",
+      "kind": "definition",
+      "title": "ルイス数と壁面触媒性境界条件",
+      "summary": "質量拡散速度と熱拡散速度の比を表すルイス数、および解離原子が物体壁面で再結合する反応速度を律する触媒性境界条件（完全触媒壁・非触媒壁）。",
+      "canonical_latex": "Le := \\frac{\\rho D_{12} c_p}{k} = \\frac{Sc}{Pr},\\qquad J_i\\big|_w = -\\rho D_{12}\\left.\\frac{\\partial c_i}{\\partial y}\\right|_w = k_{w,i} \\rho_w c_{i,w}",
+      "aliases_latex": [
+        "Le = \\frac{D_{12}}{\\alpha_{\\mathrm{th}}}",
+        "J_w = k_w \\rho_w c_w"
+      ],
+      "keywords": [
+        "Lewis number",
+        "ルイス数",
+        "触媒壁",
+        "完全触媒壁",
+        "非触媒壁",
+        "再結合熱"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "boundary_layer",
+        "heat_transfer"
+      ]
+    },
+    {
+      "id": "aerosp.hypab.n05_fay_riddell_stagnation_heat_flux",
+      "short_code": "HYP05",
+      "kind": "theorem_formula",
+      "title": "フェイ＝リデルの非平衡よどみ点熱流束方程式",
+      "summary": "実在気体効果および境界層内の化学反応・壁面触媒性を考慮し、ルイス数と解離エンタルピー比を用いて表した極超音速よどみ点対流熱流束の理論式。",
+      "canonical_latex": "q_w = 0.763 Pr^{-0.6} (\\rho_e \\mu_e)^{0.4} (\\rho_w \\mu_w)^{0.1} \\sqrt{\\left(\\frac{du_e}{dx}\\right)_s} (h_{0e} - h_w)\\left[1 + (Le^a - 1)\\frac{h_D}{h_{0e}}\\right]",
+      "aliases_latex": [
+        "q_{FR} = 0.763 Pr^{-0.6} (\\rho_e \\mu_e)^{0.4} (\\rho_w \\mu_w)^{0.1} \\sqrt{\\beta}(h_{0e} - h_w) \\Phi_{\\mathrm{chem}}"
+      ],
+      "keywords": [
+        "Fay-Riddell",
+        "よどみ点熱流束",
+        "境界層理論",
+        "ルイス数効果",
+        "触媒再結合"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "heat_transfer",
+        "hypersonics"
+      ]
+    },
+    {
+      "id": "aerosp.hypab.n06_blowing_reduction_heat_transfer",
+      "short_code": "HYP06",
+      "kind": "theorem_formula",
+      "title": "アブレーション吹出しによる対流熱流束低減則",
+      "summary": "アブレーションによって壁面から熱分解ガス・気化ガスが境界層内へ噴出（ブローイング）されることで、壁面近傍の温度勾配が緩和され対流熱伝達が低減する効果。",
+      "canonical_latex": "\\frac{q_{\\mathrm{conv}}}{q_0} = \\frac{\\psi}{e^\\psi - 1} \\approx 1 - \\beta \\frac{\\dot{m}_v (h_{0e} - h_w)}{q_0},\\qquad \\psi := \\frac{\\dot{m}_v c_p}{C_{h0}}",
+      "aliases_latex": [
+        "\\frac{q_w}{q_0} = \\frac{\\ln(1 + B_m)}{B_m}",
+        "q_{\\mathrm{conv}} = q_0 - \\eta_{\\mathrm{blow}} \\dot{m}_v (h_{0e} - h_w)"
+      ],
+      "keywords": [
+        "Blowing parameter",
+        "ブローイング効果",
+        "質量噴出",
+        "熱流束低減",
+        "アブレーション"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "aerothermodynamics",
+        "thermal_protection"
+      ]
+    },
+    {
+      "id": "aerosp.hypab.n07_ablation_surface_energy_balance",
+      "short_code": "HYP07",
+      "kind": "definition",
+      "title": "アブレーション表面エネルギー収支方程式",
+      "summary": "空力加熱環境下に曝されたアブレーション材料表面における対流・輻射受熱、表面熱放射、内部熱伝導、および相変化・熱分解吸熱の保存釣合い関係。",
+      "canonical_latex": "q_{\\mathrm{conv}} + q_{\\mathrm{rad,in}} = \\epsilon \\sigma_{\\mathrm{SB}} T_w^4 + q_{\\mathrm{cond}} + \\dot{m}_c \\Delta h_{\\mathrm{sub}} + \\dot{m}_g h_g",
+      "aliases_latex": [
+        "q_{\\mathrm{aero}} = \\epsilon \\sigma T_w^4 - k \\left.\\frac{\\partial T}{\\partial y}\\right|_w + \\sum_i \\dot{m}_i \\Delta h_i"
+      ],
+      "keywords": [
+        "Surface energy balance",
+        "熱収支",
+        "熱放射",
+        "昇華熱",
+        "アブレーション熱防御"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "thermal_protection",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.hypab.n08_stefan_char_recession_rate",
+      "short_code": "HYP08",
+      "kind": "theorem_formula",
+      "title": "ステファン問題に基づく炭化アブレーション表面後退速度",
+      "summary": "移動境界問題（ステファン問題）として定式化された炭化アブレーションにおいて、有効アブレーション熱と正味入熱から決定される熱防御材の表面後退速度。",
+      "canonical_latex": "\\rho_{\\mathrm{mat}} Q^* \\dot{s}(t) = q_{\\mathrm{net}}(t) \\implies \\dot{s}(t) = \\frac{q_{\\mathrm{conv}} + q_{\\mathrm{rad,in}} - \\epsilon \\sigma_{\\mathrm{SB}} T_w^4 - q_{\\mathrm{cond}}}{\\rho_{\\mathrm{mat}} Q^*}",
+      "aliases_latex": [
+        "\\dot{s} = \\frac{q_{\\mathrm{eff}}}{\\rho_m Q^*}",
+        "\\rho \\Delta H_{\\mathrm{eff}} \\frac{ds}{dt} = -k_1 \\nabla T_1 + k_2 \\nabla T_2"
+      ],
+      "keywords": [
+        "Stefan problem",
+        "ステファン問題",
+        "表面後退速度",
+        "有効アブレーション熱",
+        "炭化層"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "heat_transfer",
+        "materials"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "aerosp.hypab.der01_landau_teller_relaxation",
+      "target_node_id": "aerosp.hypab.n01_landau_teller_vibrational_relaxation",
+      "route_kind": "reformulation",
+      "title": "調和振動子準位間遷移によるランダウ＝テラー式の定義導入",
+      "premise_node_ids": [
+        "chem.kin.n01_statmech_tst_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "分子は切断されない1次元調和振動子としてモデル化される",
+        "並進・振動エネルギー交換（V-T遷移）は隣接振動量子数間（Δv = ±1）のみ生じる",
+        "並進・回転自由度は衝突によって瞬時に熱平衡に達する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_lt_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "e_v(t) = \\sum_{v=0}^{\\infty} v \\hbar\\omega N_v(t)",
+          "to_latex": "\\frac{de_v}{dt} = \\frac{e_v^*(T) - e_v}{\\tau_v}",
+          "operation_label": "マスター方程式の総和変形",
+          "explanation": "振動準位占有数に対するマスター方程式を離散調和振動子について足し上げ、局所並進温度Tにおける平衡振動エネルギーへの1次遅れ緩和系として定式化する。",
+          "used_node_ids": [
+            "chem.kin.n01_statmech_tst_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.hypab.der02_damkohler_flow_regimes",
+      "target_node_id": "aerosp.hypab.n02_damkohler_number_flow_regimes",
+      "route_kind": "reformulation",
+      "title": "化学反応時定数と流動対流時間の無次元比による領域分類",
+      "premise_node_ids": [
+        "aerosp.hypab.n01_landau_teller_vibrational_relaxation",
+        "aerosp.cea.n06_frozen_vs_equilibrium_nozzle_flow"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "衝撃波層または境界層内の代表流動時間を L/u_inf とする",
+        "化学反応の特性時間を正味の正逆素反応速度の逆数 tau_chem とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_da_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\tau_{\\mathrm{flow}} = \\frac{L}{u_\\infty},\\quad \\tau_{\\mathrm{chem}} = \\left(\\sum_j \\left|\\frac{d c_j}{dt}\\right|_{\\mathrm{react}}\\right)^{-1}",
+          "to_latex": "Da := \\frac{\\tau_{\\mathrm{flow}}}{\\tau_{\\mathrm{chem}}} = \\frac{L / u_\\infty}{\\tau_{\\mathrm{chem}}}",
+          "operation_label": "無次元比の定義",
+          "explanation": "流体の対流時間スケールと化学反応時間スケールの比率を無次元ダムケラー数Daとして定義し、極限挙動（凍結流・平衡流）と中間状態を分類する。",
+          "used_node_ids": [
+            "aerosp.cea.n06_frozen_vs_equilibrium_nozzle_flow",
+            "aerosp.hypab.n01_landau_teller_vibrational_relaxation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.hypab.der03_lighthill_dissociating_gas",
+      "target_node_id": "aerosp.hypab.n03_lighthill_ideal_dissociating_gas",
+      "route_kind": "deductive",
+      "title": "質量作用の法則と熱力学第1法則からのライトヒル解離気体モデルの導出",
+      "premise_node_ids": [
+        "aerosp.cea.n03_chemical_potential_equilibrium_constant",
+        "aerosp.cea.n08_dissociation_endothermic_limit"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "二原子分子 A_2 と単原子解離生成物 2A の対称解離反応 A_2 <=> 2A のみを考慮する",
+        "分子の振動自由度は励起限界（半古典極限）に達しており、定積比熱寄与は R である",
+        "特性解離密度 rho_d は温度に弱くしか依存せずほぼ一定とみなせる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{p_A^2}{p_{A2}} = K_p(T)",
+          "to_latex": "\\frac{\\alpha_d^2}{1 - \\alpha_d^2} = \\frac{\\rho_d}{\\rho}\\exp\\!\\left(-\\frac{\\theta_d}{T}\\right),\\qquad h = \\left(\\frac{4 + \\alpha_d}{1 + \\alpha_d}\\right)R_m T + \\alpha_d D",
+          "operation_label": "解離平衡の統計力学的整理",
+          "explanation": "平衡定数式に分圧と解離度・全密度の関係を代入し、理想解離気体の状態式および吸熱エンタルピーの表式を導出する。",
+          "used_node_ids": [
+            "aerosp.cea.n03_chemical_potential_equilibrium_constant",
+            "aerosp.cea.n08_dissociation_endothermic_limit"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub1_law_of_mass_action",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{p_A^2}{p_{A2}} = K_p(T)",
+          "to_latex": "\\frac{\\alpha_d^2}{1 - \\alpha_d^2} = \\frac{M_w K_p(T)}{4 \\rho R_u T}",
+          "operation_label": "分圧の解離度表示代入",
+          "explanation": "解離度 alpha_d を用いて p_A = 2 alpha_d / (1 + alpha_d) p, p_A2 = (1 - alpha_d) / (1 + alpha_d) p, および状態方程式 p = (1 + alpha_d) rho (R_u / M_w) T を代入して変形する。",
+          "used_node_ids": [
+            "aerosp.cea.n03_chemical_potential_equilibrium_constant"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub2_substitute_kp_partition",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\alpha_d^2}{1 - \\alpha_d^2} = \\frac{M_w K_p(T)}{4 \\rho R_u T}",
+          "to_latex": "\\frac{\\alpha_d^2}{1 - \\alpha_d^2} = \\frac{\\rho_d}{\\rho}\\exp\\!\\left(-\\frac{\\theta_d}{T}\\right)",
+          "operation_label": "特性解離密度パラメータの導入",
+          "explanation": "分配関数比から求まる K_p(T) の指数因子 exp(-theta_d/T) を分離し、残る温度依存性が緩やかな係数群を基準密度定数 rho_d として定義する。",
+          "used_node_ids": [
+            "aerosp.cea.n08_dissociation_endothermic_limit"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub3_enthalpy_form",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\alpha_d^2}{1 - \\alpha_d^2} = \\frac{\\rho_d}{\\rho}\\exp\\!\\left(-\\frac{\\theta_d}{T}\\right)",
+          "to_latex": "h = \\left(\\frac{4 + \\alpha_d}{1 + \\alpha_d}\\right)R_m T + \\alpha_d D",
+          "operation_label": "内部エネルギーと解離潜熱の総和",
+          "explanation": "並進・回転・完全励起振動の熱容量に流動仕事 (1+alpha_d)R_m T を加え、解離した原子の生成解離エネルギー alpha_d D を足し合わせて比エンタルピーを得る。",
+          "used_node_ids": [
+            "aerosp.cea.n08_dissociation_endothermic_limit"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.hypab.der04_lewis_catalytic_wall",
+      "target_node_id": "aerosp.hypab.n04_lewis_number_catalytic_wall",
+      "route_kind": "reformulation",
+      "title": "二元拡散Fick則と表面再結合反応速度論の接続",
+      "premise_node_ids": [
+        "chem.elec.n01_electrochem_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "境界層内の物質拡散はFickの二元拡散法則に従う",
+        "壁面再結合反応は1次反応速度論に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_boundary_cond_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J_i = -\\rho D_{12}\\nabla c_i,\\quad \\dot{w}_{i,w} = k_{w,i} \\rho_w c_{i,w}",
+          "to_latex": "Le := \\frac{\\rho D_{12} c_p}{k} = \\frac{Sc}{Pr},\\qquad J_i\\big|_w = -\\rho D_{12}\\left.\\frac{\\partial c_i}{\\partial y}\\right|_w = k_{w,i} \\rho_w c_{i,w}",
+          "operation_label": "無次元数および境界条件の定義",
+          "explanation": "熱拡散と物質拡散の比率としてルイス数を定義し、壁面での原子拡散流束と触媒再結合反応速度の釣合い境界条件を提示する。",
+          "used_node_ids": [
+            "chem.elec.n01_electrochem_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.hypab.der05_fay_riddell_relation",
+      "target_node_id": "aerosp.hypab.n05_fay_riddell_stagnation_heat_flux",
+      "route_kind": "deductive",
+      "title": "化学非平衡よどみ点境界層類似解からのフェイ＝リデル式の導出",
+      "premise_node_ids": [
+        "aerosp.reentry.n05_sutton_graves_stagnation_heat_flux",
+        "aerosp.hypab.n04_lewis_number_catalytic_wall"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "よどみ点近傍の流れ場は軸対称よどみ点流（速度勾配 (du_e/dx)_s）に従う",
+        "プラントル数 Pr およびルイス数 Le は境界層内で局所的に代表一定値をとる",
+        "解離原子の再結合熱は壁面熱流束に直接寄与する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "q_w = \\left(k\\frac{\\partial T}{\\partial y} + \\rho D_{12} \\sum_i h_i \\frac{\\partial c_i}{\\partial y}\\right)_w",
+          "to_latex": "q_w = 0.763 Pr^{-0.6} (\\rho_e \\mu_e)^{0.4} (\\rho_w \\mu_w)^{0.1} \\sqrt{\\left(\\frac{du_e}{dx}\\right)_s} (h_{0e} - h_w)\\left[1 + (Le^a - 1)\\frac{h_D}{h_{0e}}\\right]",
+          "operation_label": "相似変換と境界層自己相似解の積分",
+          "explanation": "エネルギー方程式と化学種保存方程式にファイン・マンラー相似変換を適用し、自己相似解の数値積分結果を無次元相関式として整理する。",
+          "used_node_ids": [
+            "aerosp.hypab.n04_lewis_number_catalytic_wall",
+            "aerosp.reentry.n05_sutton_graves_stagnation_heat_flux"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub1_energy_flux_split",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q_w = \\left(k\\frac{\\partial T}{\\partial y} + \\rho D_{12} \\sum_i h_i \\frac{\\partial c_i}{\\partial y}\\right)_w",
+          "to_latex": "q_w = \\frac{\\mu_w}{Pr_w}\\left(\\frac{\\partial h}{\\partial y} + (Le - 1)\\sum_i h_i \\frac{\\partial c_i}{\\partial y}\\right)_w",
+          "operation_label": "ルイス数の導入と熱流束変形",
+          "explanation": "壁面での全熱流束を伝導項と化学種拡散項に分け、Le = rho D12 c_p / k を用いて比エンタルピー勾配と化学種勾配の形に変形する。",
+          "used_node_ids": [
+            "aerosp.hypab.n04_lewis_number_catalytic_wall"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub2_similarity_scaling",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q_w = \\frac{\\mu_w}{Pr_w}\\left(\\frac{\\partial h}{\\partial y} + (Le - 1)\\sum_i h_i \\frac{\\partial c_i}{\\partial y}\\right)_w",
+          "to_latex": "q_{w0} = 0.763 Pr^{-0.6} (\\rho_e \\mu_e)^{0.4} (\\rho_w \\mu_w)^{0.1} \\sqrt{\\left(\\frac{du_e}{dx}\\right)_s} (h_{0e} - h_w)",
+          "operation_label": "凍結極限における境界層類似解適用",
+          "explanation": "Le = 1 あるいは非解離気体において、壁面エンタルピー勾配を境界層相似方程式の数値解に基づいて評価する。",
+          "used_node_ids": [
+            "aerosp.reentry.n05_sutton_graves_stagnation_heat_flux"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub3_chemical_correction",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q_{w0} = 0.763 Pr^{-0.6} (\\rho_e \\mu_e)^{0.4} (\\rho_w \\mu_w)^{0.1} \\sqrt{\\left(\\frac{du_e}{dx}\\right)_s} (h_{0e} - h_w)",
+          "to_latex": "q_w = 0.763 Pr^{-0.6} (\\rho_e \\mu_e)^{0.4} (\\rho_w \\mu_w)^{0.1} \\sqrt{\\left(\\frac{du_e}{dx}\\right)_s} (h_{0e} - h_w)\\left[1 + (Le^a - 1)\\frac{h_D}{h_{0e}}\\right]",
+          "operation_label": "解離エンタルピー比率とルイス数指数の合成",
+          "explanation": "境界層外縁の解離エンタルピー h_D の寄与を Le^a（平衡境界層で a=0.52、完全触媒凍結流で a=0.63）の補正項として乗じ、完全なフェイ＝リデル相関式を完成させる。",
+          "used_node_ids": [
+            "aerosp.hypab.n04_lewis_number_catalytic_wall"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.hypab.der06_blowing_reduction_law",
+      "target_node_id": "aerosp.hypab.n06_blowing_reduction_heat_transfer",
+      "route_kind": "deductive",
+      "title": "クエット流境界層モデルからのブローイング熱流束低減式の導出",
+      "premise_node_ids": [
+        "aerosp.hypab.n05_fay_riddell_stagnation_heat_flux"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "壁面からの質量噴出が薄い境界層の直交速度プロファイルを一次元クエット流的に変化させる",
+        "熱伝達率（スタントン数）の低減は噴出質量流束の指数関数減衰特性で近似できる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho v \\frac{dh}{dy} = \\frac{d}{dy}\\left(k \\frac{dT}{dy}\\right)",
+          "to_latex": "\\frac{q_{\\mathrm{conv}}}{q_0} = \\frac{\\psi}{e^\\psi - 1} \\approx 1 - \\beta \\frac{\\dot{m}_v (h_{0e} - h_w)}{q_0},\\qquad \\psi := \\frac{\\dot{m}_v c_p}{C_{h0}}",
+          "operation_label": "1次元移流拡散方程式の積分",
+          "explanation": "壁面垂直方向の質量噴出流束 rho v = m_dot_v の存在下で定常熱伝導移流方程式を積分し、クエット流膜モデルによるブローイング低減公式を導く。",
+          "used_node_ids": [
+            "aerosp.hypab.n05_fay_riddell_stagnation_heat_flux"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub1_couette_ode_solve",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho v \\frac{dh}{dy} = \\frac{d}{dy}\\left(k \\frac{dT}{dy}\\right)",
+          "to_latex": "q(y) = -k\\frac{dT}{dy} = C_1 e^{\\frac{\\dot{m}_v c_p}{k} y}",
+          "operation_label": "常微分方程式の一般解導出",
+          "explanation": "定常移流と熱伝導の釣合い dq/dy + (m_dot_v c_p / k) q = 0 を積分して局所熱流束の指数プロファイルを得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub2_boundary_integration",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q(y) = -k\\frac{dT}{dy} = C_1 e^{\\frac{\\dot{m}_v c_p}{k} y}",
+          "to_latex": "\\frac{q_{\\mathrm{conv}}}{q_0} = \\frac{\\psi}{e^\\psi - 1}",
+          "operation_label": "境界層境界条件の適用",
+          "explanation": "壁面 y=0 から境界層外縁 y=delta までの温度差を境界条件として定数 C_1 を消去し、無次元ブローイングパラメータ psi の陽な関数比を導出する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub3_taylor_expansion",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{q_{\\mathrm{conv}}}{q_0} = \\frac{\\psi}{e^\\psi - 1}",
+          "to_latex": "\\frac{q_{\\mathrm{conv}}}{q_0} \\approx 1 - \\beta \\frac{\\dot{m}_v (h_{0e} - h_w)}{q_0},\\qquad \\psi := \\frac{\\dot{m}_v c_p}{C_{h0}}",
+          "operation_label": "小噴出量に対する線形テイラー展開",
+          "explanation": "psi が小さい場合の級数展開 psi/(e^psi - 1) = 1 - psi/2 + ... を適用し、ブローイング係数 beta（層流で約0.68、乱流で約0.2）による線形低減近似式を得る。",
+          "used_node_ids": [
+            "aerosp.hypab.n05_fay_riddell_stagnation_heat_flux"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.hypab.der07_surface_energy_balance",
+      "target_node_id": "aerosp.hypab.n07_ablation_surface_energy_balance",
+      "route_kind": "reformulation",
+      "title": "アブレーション表面コントロールボリュームの熱エネルギー保存則",
+      "premise_node_ids": [
+        "aerosp.hypab.n06_blowing_reduction_heat_transfer",
+        "aerosp.rc.n06_regenerative_cooling_conduction_balance"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "アブレーション移動表面を無限小厚さのコントロールサーフェスとして設定する",
+        "表面での気化・昇華熱および高温ガスの熱輸送が保存される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_energy_conservation_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum \\dot{Q}_{\\mathrm{in}} = \\sum \\dot{Q}_{\\mathrm{out}}",
+          "to_latex": "q_{\\mathrm{conv}} + q_{\\mathrm{rad,in}} = \\epsilon \\sigma_{\\mathrm{SB}} T_w^4 + q_{\\mathrm{cond}} + \\dot{m}_c \\Delta h_{\\mathrm{sub}} + \\dot{m}_g h_g",
+          "operation_label": "表面熱流束釣合いの定式化",
+          "explanation": "対流受熱および衝撃波層からの輻射受熱の和が、壁面自体の熱放射、母材内部への伝導熱、炭素昇華熱、および熱分解ガス流出エンタルピーと等しくなるエネルギー保存関係を規定する。",
+          "used_node_ids": [
+            "aerosp.hypab.n06_blowing_reduction_heat_transfer",
+            "aerosp.rc.n06_regenerative_cooling_conduction_balance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.hypab.der08_stefan_recession_rate",
+      "target_node_id": "aerosp.hypab.n08_stefan_char_recession_rate",
+      "route_kind": "deductive",
+      "title": "移動境界ステファン条件からの材料表面後退速度の導出",
+      "premise_node_ids": [
+        "aerosp.hypab.n07_ablation_surface_energy_balance",
+        "earth.seis.n01_cauchy_lame_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "炭化層とバージン層の境界、または炭化層外表面 s(t) が相変化温度に固定された移動境界（ステファン問題）を形成する",
+        "有効アブレーション熱 Q* は材料単位質量を消費するために吸収される総熱量を表す",
+        "一次元準定常熱分解モデルが成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho_{\\mathrm{mat}} Q^* \\frac{ds}{dt} = -k_1 \\left.\\frac{\\partial T}{\\partial z}\\right|_{s^-(t)} + k_2 \\left.\\frac{\\partial T}{\\partial z}\\right|_{s^+(t)}",
+          "to_latex": "\\rho_{\\mathrm{mat}} Q^* \\dot{s}(t) = q_{\\mathrm{net}}(t) \\implies \\dot{s}(t) = \\frac{q_{\\mathrm{conv}} + q_{\\mathrm{rad,in}} - \\epsilon \\sigma_{\\mathrm{SB}} T_w^4 - q_{\\mathrm{cond}}}{\\rho_{\\mathrm{mat}} Q^*}",
+          "operation_label": "古典ステファン境界条件の熱流束代入",
+          "explanation": "界面における潜熱吸熱と不連続な熱流束跳び条件（Rankine-Hugoniot型の界面エネルギー収支）に表面エネルギー収支を代入し、表面後退速度の明示式を導く。",
+          "used_node_ids": [
+            "aerosp.hypab.n07_ablation_surface_energy_balance",
+            "earth.seis.n01_cauchy_lame_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub1_interface_energy_jump",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho_{\\mathrm{mat}} Q^* \\frac{ds}{dt} = -k_1 \\left.\\frac{\\partial T}{\\partial z}\\right|_{s^-(t)} + k_2 \\left.\\frac{\\partial T}{\\partial z}\\right|_{s^+(t)}",
+          "to_latex": "\\rho_{\\mathrm{mat}} Q^* \\dot{s}(t) = q_{\\mathrm{in,net}} - q_{\\mathrm{out,net}} =: q_{\\mathrm{net}}(t)",
+          "operation_label": "界面熱流束ジャンプの正味熱流束表記",
+          "explanation": "移動界面 z = s(t) を横切る熱伝導流束の差が、相変化・炭化反応を進行させる単位時間・単位面積あたりの潜熱消費量と釣合うことを表す。",
+          "used_node_ids": [
+            "earth.seis.n01_cauchy_lame_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_sub2_substitute_surface_balance",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho_{\\mathrm{mat}} Q^* \\dot{s}(t) = q_{\\mathrm{in,net}} - q_{\\mathrm{out,net}} =: q_{\\mathrm{net}}(t)",
+          "to_latex": "\\dot{s}(t) = \\frac{q_{\\mathrm{conv}} + q_{\\mathrm{rad,in}} - \\epsilon \\sigma_{\\mathrm{SB}} T_w^4 - q_{\\mathrm{cond}}}{\\rho_{\\mathrm{mat}} Q^*}",
+          "operation_label": "表面エネルギー収支式の直接代入",
+          "explanation": "表面エネルギー収支方程式から熱伝導および放射再放出分を差し引いた正味のアブレーション吸収熱流束を材料有効アブレーション熱密度 rho_mat Q* で除し、最終的な後退速度算定式を得る。",
+          "used_node_ids": [
+            "aerosp.hypab.n07_ablation_surface_energy_balance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,663 @@
+{
+  "pack_meta": {
+    "pack_id": "astro_orbit_constellation_wsb",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "orbital_mechanics",
+    "title": "衛星コンステレーションと低エネルギー軌道遷移：ウォーカー・デルタ配置・太陽同期/回帰軌道条件・ハロー軌道と安定/不安定多様体（WSB）",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『衛星コンステレーションと低エネルギー軌道遷移：ウォーカー・デルタ配置・太陽同期/回帰軌道条件・ハロー軌道と安定/不安定多様体（WSB）』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "orbita.wsb.n01_walker_delta_constellation",
+      "short_code": "WSB01",
+      "kind": "definition",
+      "title": "ウォーカー・デルタ衛星配置幾何と位相パラメータ",
+      "summary": "全球均一カバレッジを達成する円軌道コンステレーション規格であるウォーカー・デルタ記号 i: T/P/F と、各軌道面における衛星の昇交点赤経および平均近点角の幾何学的位相関係を定義する。",
+      "canonical_latex": "i: T/P/F,\\quad \\Omega_p = \\Omega_0 + \\frac{2\\pi}{P}(p-1),\\quad M_{p,s} = M_0 + \\frac{2\\pi}{S}(s-1) + \\frac{2\\pi F}{T}(p-1)",
+      "aliases_latex": [
+        "i: T/P/F",
+        "\\Delta\\Omega = \\frac{2\\pi}{P}",
+        "\\Delta\\phi = \\frac{2\\pi F}{T}"
+      ],
+      "keywords": [
+        "ウォーカー・デルタ",
+        "衛星コンステレーション",
+        "軌道面幾何",
+        "位相差パラメータ",
+        "全球カバレッジ"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "constellation_design"
+      ]
+    },
+    {
+      "id": "orbita.wsb.n02_ground_track_repeat_condition",
+      "short_code": "WSB02",
+      "kind": "theorem_formula",
+      "title": "J2摂動下における地球回帰軌道の共鳴周期条件",
+      "summary": "地球自転角速度とJ2摂動による軌道面歳差率・近地点引数変化率を考慮し、D結節日の間に衛星が同一地上軌跡をR周回して再現するための平均運動と軌道長半径の厳密な整数比共鳴整合条件を導出する。",
+      "canonical_latex": "\\frac{R}{D} = \\frac{n + \\dot{\\omega}_{J_2}}{\\omega_E - \\dot{\\Omega}_{J_2}}",
+      "aliases_latex": [
+        "\\frac{R}{D} = \\frac{n_{\\mathrm{nodal}}}{\\omega_{\\mathrm{rot}}}",
+        "R(\\omega_E - \\dot{\\Omega}) = D(n + \\dot{\\omega})"
+      ],
+      "keywords": [
+        "回帰軌道",
+        "地上軌跡",
+        "結節日周期",
+        "J2摂動",
+        "軌道共鳴"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "perturbation_theory"
+      ]
+    },
+    {
+      "id": "orbita.wsb.n03_sso_repeat_ground_track",
+      "short_code": "WSB03",
+      "kind": "theorem_formula",
+      "title": "太陽同期回帰軌道（SSO-RGT）の半長径・傾斜角連立条件",
+      "summary": "昇交点赤経歳差率を地球の公転平均角速度と等置する太陽同期軌道（SSO）条件と回帰軌道周期条件をJ2摂動下で連立させ、与えられた回帰比 R/D に対して軌道半長径 a と傾斜角 i を一意に決定する連立関係式を導く。",
+      "canonical_latex": "\\dot{\\Omega}_{J_2}(a, i, e) = \\dot{\\Omega}_\\odot,\\quad \\sqrt{\\frac{\\mu}{a^3}} + \\dot{\\omega}_{J_2}(a, i, e) = \\frac{R}{D}(\\omega_E - \\dot{\\Omega}_\\odot)",
+      "aliases_latex": [
+        "\\cos i_{\\mathrm{SSO}} = -\\frac{2\\dot{\\Omega}_\\odot a^{7/2}(1-e^2)^2}{3\\sqrt{\\mu} J_2 R_\\oplus^2}",
+        "n + \\dot{\\omega} = \\frac{R}{D}(\\omega_E - \\dot{\\Omega}_\\odot)"
+      ],
+      "keywords": [
+        "太陽同期回帰軌道",
+        "SSO",
+        "地上回帰性",
+        "地球観測軌道設計",
+        "J2永年摂動"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "mission_design"
+      ]
+    },
+    {
+      "id": "orbita.wsb.n04_cr3bp_collinear_linearized_eom",
+      "short_code": "WSB04",
+      "kind": "theorem_formula",
+      "title": "共線ラグランジュ点近傍の3次元線形化運動方程式",
+      "summary": "円制限3体問題（CR3BP）の共線平衡点（L1/L2）の近傍において有効ポテンシャルを2次まで展開し、面内（x-y）のコリオリ結合調和・双曲運動と面外（z）の非結合調和振動を分離・定式化する。",
+      "canonical_latex": "\\ddot{\\xi} - 2\\dot{\\eta} - (2c_2 + 1)\\xi = 0,\\quad \\ddot{\\eta} + 2\\dot{\\xi} + (c_2 - 1)\\eta = 0,\\quad \\ddot{\\zeta} + c_2 \\zeta = 0,\\quad c_2 := \\frac{1-\\mu}{|x_L+\\mu|^3} + \\frac{\\mu}{|x_L-1+\\mu|^3}",
+      "aliases_latex": [
+        "\\ddot{\\xi} - 2\\dot{\\eta} = \\Omega_{xx}^L \\xi",
+        "\\ddot{\\eta} + 2\\dot{\\xi} = \\Omega_{yy}^L \\eta",
+        "\\ddot{\\zeta} = \\Omega_{zz}^L \\zeta"
+      ],
+      "keywords": [
+        "共線ラグランジュ点",
+        "線形化運動方程式",
+        "CR3BP",
+        "コリオリ結合",
+        "有効ポテンシャル2次展開"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "three_body_problem"
+      ]
+    },
+    {
+      "id": "orbita.wsb.n05_halo_orbit_analytical_approximation",
+      "short_code": "WSB05",
+      "kind": "theorem_formula",
+      "title": "共線ラグランジュ点周りのハロー軌道3次元周期解",
+      "summary": "共線平衡点近傍における面内振動周波数と面外振動周波数の非線形周波数整合条件（リンドステッド・ポアンカレ分岐）により創発する、3次元対称閉周期軌道（ハロー軌道）の1次解析解を導出する。",
+      "canonical_latex": "\\xi(t) = -A_x \\cos(\\omega_p t + \\phi),\\quad \\eta(t) = k A_x \\sin(\\omega_p t + \\phi),\\quad \\zeta(t) = A_z \\sin(\\omega_p t + \\phi + m\\frac{\\pi}{2}),\\quad A_x = \\gamma_k A_z",
+      "aliases_latex": [
+        "Halo orbit Richardson solution",
+        "\\zeta(t) = (-1)^{m/2} A_z \\cos(\\omega_p t + \\phi)"
+      ],
+      "keywords": [
+        "ハロー軌道",
+        "リチャードソン展開",
+        "リンドステッド・ポアンカレ法",
+        "3次元周期軌道",
+        "ラグランジュ点近傍"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "dynamical_systems"
+      ]
+    },
+    {
+      "id": "orbita.wsb.n06_monodromy_floquet_stability",
+      "short_code": "WSB06",
+      "kind": "theorem_formula",
+      "title": "ハロー軌道のモノドロミー行列とフロケ乗数・安定性指数",
+      "summary": "周期軌道の1周期状態遷移行列（STM）であるモノドロミー行列のシンプレクティック固有値対構造を導出し、ハロー軌道の双曲的不安定性とフロケ安定性指数を定式化する。",
+      "canonical_latex": "M := \\Phi(T_p, 0),\\quad \\det(M - \\lambda I_6) = 0,\\quad \\lambda_1 > 1,\\; \\lambda_2 = \\frac{1}{\\lambda_1},\\; \\lambda_3 = \\lambda_4 = 1,\\; \\lambda_5 = \\bar{\\lambda}_6\\;(|\\lambda_5|=1),\\quad \\nu = \\frac{1}{2}\\left(\\lambda_1 + \\frac{1}{\\lambda_1}\\right)",
+      "aliases_latex": [
+        "M = \\Phi(T_p, 0)",
+        "\\nu_M = \\frac{1}{2}(\\lambda_1 + \\lambda_1^{-1})"
+      ],
+      "keywords": [
+        "モノドロミー行列",
+        "フロケ乗数",
+        "シンプレクティック行列",
+        "ハロー軌道安定性",
+        "不変多様体"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "dynamical_systems"
+      ]
+    },
+    {
+      "id": "orbita.wsb.n07_invariant_manifolds_low_energy_transfer",
+      "short_code": "WSB07",
+      "kind": "theorem_formula",
+      "title": "ハロー軌道の不変多様体幾何と弱安定境界（WSB）低エネルギー遷移",
+      "summary": "モノドロミー行列の不安定・安定固有ベクトルから生成される局所不変多様体をCR3BP下で大域的に時間順・逆伝播させてチューブ幾何を構築し、極小のΔvで月・惑星間遷移を実現するWSB軌道設計原理を導く。",
+      "canonical_latex": "\\mathbf{X}_0^{u,s}(\\tau) = \\mathbf{X}_{\\mathrm{halo}}(\\tau) \\pm \\epsilon \\frac{\\mathbf{v}_{u,s}(\\tau)}{\\|\\mathbf{v}_{u,s}(\\tau)\\|},\\quad W^u = \\bigcup_{\\tau \\in [0, T_p]} \\bigcup_{t \\ge 0} \\Phi(t, 0)\\mathbf{X}_0^u(\\tau),\\quad W^s = \\bigcup_{\\tau \\in [0, T_p]} \\bigcup_{t \\le 0} \\Phi(t, 0)\\mathbf{X}_0^s(\\tau)",
+      "aliases_latex": [
+        "Invariant manifold tube",
+        "WSB low-energy trajectory",
+        "W^u \\cap W^s \\neq \\emptyset"
+      ],
+      "keywords": [
+        "不変多様体",
+        "チューブ力学",
+        "弱安定境界",
+        "WSB",
+        "低エネルギー軌道遷移"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "dynamical_systems"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_wsb01_walker_delta",
+      "target_node_id": "orbita.wsb.n01_walker_delta_constellation",
+      "route_kind": "deductive",
+      "title": "ウォーカー・デルタ配置規則からの各衛星軌道要素導出",
+      "premise_node_ids": [
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+        "astro.orbit.ka08_pqw_to_eci_rotation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "全衛星が同一の軌道傾斜角と高度を持つ円軌道であること",
+        "P個の軌道面が全周360度に等間隔配置されること",
+        "各面内S基の衛星が等位相間隔で配置されること"
+      ],
+      "steps": [
+        {
+          "step_id": "wsb01_s1",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T = P \\cdot S,\\quad p \\in \\{1, \\dots, P\\},\\quad s \\in \\{1, \\dots, S\\}",
+          "to_latex": "i: T/P/F,\\quad \\Omega_p = \\Omega_0 + \\frac{2\\pi}{P}(p-1),\\quad M_{p,s} = M_0 + \\frac{2\\pi}{S}(s-1) + \\frac{2\\pi F}{T}(p-1)",
+          "operation_label": "幾何学的均等配置および相対位相パラメータの代数的一意配分",
+          "explanation": "総衛星数Tを軌道面数Pで割った面あたり衛星数Sに基づき、軌道面の昇交点間隔を2π/Pとし、隣接面間の相対位相差を2πF/Tとして各衛星の初期位相を定義する。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.orbit.ka08_pqw_to_eci_rotation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_wsb02_ground_track_repeat",
+      "target_node_id": "orbita.wsb.n02_ground_track_repeat_condition",
+      "route_kind": "deductive",
+      "title": "地球自転とJ2摂動下での回帰軌道共鳴条件の厳密導出",
+      "premise_node_ids": [
+        "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+        "astro.orbit.pj06_j2_secular_rates"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "地球自転角速度は一定とする",
+        "地球重力ポテンシャルはJ2摂動の1次永年項のみを考慮する"
+      ],
+      "steps": [
+        {
+          "step_id": "wsb02_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T_{\\mathrm{nodal}} = \\frac{2\\pi}{n + \\dot{\\omega}_{J_2}},\\quad \\Delta\\lambda_{\\mathrm{nodal}} = (\\omega_E - \\dot{\\Omega}_{J_2}) T_{\\mathrm{nodal}}",
+          "to_latex": "\\frac{R}{D} = \\frac{n + \\dot{\\omega}_{J_2}}{\\omega_E - \\dot{\\Omega}_{J_2}}",
+          "operation_label": "回帰軌道共鳴方程式の導出概要",
+          "explanation": "結節周期における地球自転と昇交点赤経歳差に伴う経度進行量から、D日間でR周回して同一地点に戻る整数比条件を導く。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def",
+            "astro.orbit.pj06_j2_secular_rates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb02_s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "wsb02_s1_overview",
+          "from_latex": "T_{\\mathrm{nodal}} = \\frac{2\\pi}{n + \\dot{\\omega}_{J_2}},\\quad \\Delta\\lambda_{\\mathrm{nodal}} = (\\omega_E - \\dot{\\Omega}_{J_2}) T_{\\mathrm{nodal}}",
+          "to_latex": "\\Delta\\lambda_{\\mathrm{nodal}} = \\frac{2\\pi(\\omega_E - \\dot{\\Omega}_{J_2})}{n + \\dot{\\omega}_{J_2}}",
+          "operation_label": "結節周期あたりの相対経度移動量の代入計算",
+          "explanation": "近地点引数の永年歳差率を取り入れた結節周波数に対する結節周期を展開し、地球自転および交点赤経歳差による1周回あたりの経度変化を求める。",
+          "used_node_ids": [
+            "astro.orbit.ka05_mean_motion_mean_anomaly_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb02_s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "wsb02_s1_overview",
+          "from_latex": "\\Delta\\lambda_{\\mathrm{nodal}} = \\frac{2\\pi(\\omega_E - \\dot{\\Omega}_{J_2})}{n + \\dot{\\omega}_{J_2}}",
+          "to_latex": "R \\cdot \\Delta\\lambda_{\\mathrm{nodal}} = 2\\pi D \\implies R \\frac{2\\pi(\\omega_E - \\dot{\\Omega}_{J_2})}{n + \\dot{\\omega}_{J_2}} = 2\\pi D",
+          "operation_label": "D日間の総経度変位と2πDラジアンの等置",
+          "explanation": "衛星がR周回したときの相対経度変化の積算値が、地球自転基準でD回（2πDラジアン）と正確に一致する閉鎖条件を課す。",
+          "used_node_ids": [
+            "astro.orbit.pj06_j2_secular_rates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb02_s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "wsb02_s1_overview",
+          "from_latex": "R \\cdot \\Delta\\lambda_{\\mathrm{nodal}} = 2\\pi D \\implies R \\frac{2\\pi(\\omega_E - \\dot{\\Omega}_{J_2})}{n + \\dot{\\omega}_{J_2}} = 2\\pi D",
+          "to_latex": "\\frac{R}{D} = \\frac{n + \\dot{\\omega}_{J_2}}{\\omega_E - \\dot{\\Omega}_{J_2}}",
+          "operation_label": "両辺を整理して周波数比形式に再構成",
+          "explanation": "両辺の2πを消去し、周波数比として変形することで、目標とする回帰軌道の共鳴周期方程式を得る。",
+          "used_node_ids": [
+            "astro.orbit.pj06_j2_secular_rates"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_wsb03_sso_repeat",
+      "target_node_id": "orbita.wsb.n03_sso_repeat_ground_track",
+      "route_kind": "deductive",
+      "title": "SSO条件と回帰軌道条件の連立による軌道諸元の拘束",
+      "premise_node_ids": [
+        "astro.orbit.pj06_j2_secular_rates",
+        "astro.orbit.pj07_sun_synchronous_orbit_condition",
+        "orbita.wsb.n02_ground_track_repeat_condition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "昇交点赤経の歳差率が太陽の平均公転角速度と完全に一致する",
+        "軌道離心率は微小または固定値とする"
+      ],
+      "steps": [
+        {
+          "step_id": "wsb03_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\Omega}_{J_2} = -\\frac{3}{2}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}\\cos i = \\dot{\\Omega}_\\odot,\\quad \\frac{R}{D} = \\frac{n + \\dot{\\omega}_{J_2}}{\\omega_E - \\dot{\\Omega}_{J_2}}",
+          "to_latex": "\\dot{\\Omega}_{J_2}(a, i, e) = \\dot{\\Omega}_\\odot,\\quad \\sqrt{\\frac{\\mu}{a^3}} + \\dot{\\omega}_{J_2}(a, i, e) = \\frac{R}{D}(\\omega_E - \\dot{\\Omega}_\\odot)",
+          "operation_label": "SSO拘束条件の回帰条件式への連立代入",
+          "explanation": "太陽同期軌道条件により昇交点赤経歳差率が一定値に固定されるため、回帰条件の分母が既知定数となり、半長径aと傾斜角iの非線形連立代数方程式へと帰着される。",
+          "used_node_ids": [
+            "astro.orbit.pj06_j2_secular_rates",
+            "astro.orbit.pj07_sun_synchronous_orbit_condition",
+            "orbita.wsb.n02_ground_track_repeat_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb03_s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "wsb03_s1_overview",
+          "from_latex": "\\dot{\\Omega}_{J_2} = -\\frac{3}{2}\\frac{n J_2 R_\\oplus^2}{a^2(1-e^2)^2}\\cos i = \\dot{\\Omega}_\\odot,\\quad \\frac{R}{D} = \\frac{n + \\dot{\\omega}_{J_2}}{\\omega_E - \\dot{\\Omega}_{J_2}}",
+          "to_latex": "\\cos i = -\\frac{2\\dot{\\Omega}_\\odot a^{7/2}(1-e^2)^2}{3\\sqrt{\\mu} J_2 R_\\oplus^2},\\quad \\frac{R}{D} = \\frac{n + \\dot{\\omega}_{J_2}(a, i, e)}{\\omega_E - \\dot{\\Omega}_\\odot}",
+          "operation_label": "SSO傾斜角の陽的表示と回帰分母の置換",
+          "explanation": "SSO条件から軌道傾斜角の余弦を半長径aの関数として解き、回帰軌道式の分母の歳差率を公転角速度で置き換える。",
+          "used_node_ids": [
+            "astro.orbit.pj07_sun_synchronous_orbit_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb03_s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "wsb03_s1_overview",
+          "from_latex": "\\cos i = -\\frac{2\\dot{\\Omega}_\\odot a^{7/2}(1-e^2)^2}{3\\sqrt{\\mu} J_2 R_\\oplus^2},\\quad \\frac{R}{D} = \\frac{n + \\dot{\\omega}_{J_2}(a, i, e)}{\\omega_E - \\dot{\\Omega}_\\odot}",
+          "to_latex": "n + \\dot{\\omega}_{J_2}(a, i, e) = \\frac{R}{D}(\\omega_E - \\dot{\\Omega}_\\odot)",
+          "operation_label": "回帰方程式の分母の払込",
+          "explanation": "分母を右辺に乗じることで、有効平均運動に対する明示的な拘束関係式を得る。",
+          "used_node_ids": [
+            "orbita.wsb.n02_ground_track_repeat_condition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb03_s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "wsb03_s1_overview",
+          "from_latex": "n + \\dot{\\omega}_{J_2}(a, i, e) = \\frac{R}{D}(\\omega_E - \\dot{\\Omega}_\\odot)",
+          "to_latex": "\\dot{\\Omega}_{J_2}(a, i, e) = \\dot{\\Omega}_\\odot,\\quad \\sqrt{\\frac{\\mu}{a^3}} + \\dot{\\omega}_{J_2}(a, i, e) = \\frac{R}{D}(\\omega_E - \\dot{\\Omega}_\\odot)",
+          "operation_label": "ケプラー平均運動の代入による最終連立系の確定",
+          "explanation": "平均運動nをケプラーの法則 sqrt(mu/a^3) で置き換え、SSO条件と整合する太陽同期回帰軌道の最終連立方程式を導く。",
+          "used_node_ids": [
+            "astro.orbit.pj06_j2_secular_rates"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_wsb04_cr3bp_collinear_linearized",
+      "target_node_id": "orbita.wsb.n04_cr3bp_collinear_linearized_eom",
+      "route_kind": "deductive",
+      "title": "共線点まわりのCR3BP有効ポテンシャル展開と線形化運動方程式",
+      "premise_node_ids": [
+        "astro.orbit.cr02_synodic_rotating_frame_eom",
+        "astro.orbit.cr03_effective_potential_def",
+        "astro.orbit.cr07_collinear_points_l1_l2_l3",
+        "math.calc.m13_taylor_expansion"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "共線平衡点からの変位は微小であり、高次非線形項は無視できること",
+        "CR3BPのシノディック無次元座標系を使用すること"
+      ],
+      "steps": [
+        {
+          "step_id": "wsb04_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{x} - 2\\dot{y} = \\Omega_x,\\quad \\ddot{y} + 2\\dot{x} = \\Omega_y,\\quad \\ddot{z} = \\Omega_z",
+          "to_latex": "\\ddot{\\xi} - 2\\dot{\\eta} - (2c_2 + 1)\\xi = 0,\\quad \\ddot{\\eta} + 2\\dot{\\xi} + (c_2 - 1)\\eta = 0,\\quad \\ddot{\\zeta} + c_2 \\zeta = 0,\\quad c_2 := \\frac{1-\\mu}{|x_L+\\mu|^3} + \\frac{\\mu}{|x_L-1+\\mu|^3}",
+          "operation_label": "共線平衡点回りの勾配テイラー展開と運動方程式の線形化",
+          "explanation": "シノディック系運動方程式の有効ポテンシャル勾配を共線点 (x_L, 0, 0) 周りで1次テイラー展開し、2階偏導関数を行列評価して線形ODE系を構築する。",
+          "used_node_ids": [
+            "astro.orbit.cr02_synodic_rotating_frame_eom",
+            "astro.orbit.cr03_effective_potential_def",
+            "astro.orbit.cr07_collinear_points_l1_l2_l3",
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb04_s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "wsb04_s1_overview",
+          "from_latex": "\\ddot{x} - 2\\dot{y} = \\Omega_x,\\quad \\ddot{y} + 2\\dot{x} = \\Omega_y,\\quad \\ddot{z} = \\Omega_z",
+          "to_latex": "\\nabla\\Omega(x_L + \\xi, \\eta, \\zeta) \\approx \\begin{pmatrix} \\Omega_{xx}^L \\xi \\\\ \\Omega_{yy}^L \\eta \\\\ \\Omega_{zz}^L \\zeta \\end{pmatrix},\\quad \\Omega_{xy}^L = \\Omega_{xz}^L = \\Omega_{yz}^L = 0",
+          "operation_label": "平衡点条件の適用とヘッセ行列の対角性確認",
+          "explanation": "共線点ではy=z=0に対称性があるため、勾配の1次項が消失し、交差偏導関数はすべてゼロとなる。",
+          "used_node_ids": [
+            "astro.orbit.cr07_collinear_points_l1_l2_l3",
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb04_s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "wsb04_s1_overview",
+          "from_latex": "\\nabla\\Omega(x_L + \\xi, \\eta, \\zeta) \\approx \\begin{pmatrix} \\Omega_{xx}^L \\xi \\\\ \\Omega_{yy}^L \\eta \\\\ \\Omega_{zz}^L \\zeta \\end{pmatrix},\\quad \\Omega_{xy}^L = \\Omega_{xz}^L = \\Omega_{yz}^L = 0",
+          "to_latex": "\\Omega_{xx}^L = 2c_2 + 1,\\quad \\Omega_{yy}^L = -(c_2 - 1),\\quad \\Omega_{zz}^L = -c_2,\\quad c_2 = \\frac{1-\\mu}{|x_L+\\mu|^3} + \\frac{\\mu}{|x_L-1+\\mu|^3}",
+          "operation_label": "有効ポテンシャル2階微分の評価",
+          "explanation": "ポテンシャル各成分を微分し、共線点における無次元幾何係数 c_2 を用いてヘッセ対角成分を簡潔に表現する。",
+          "used_node_ids": [
+            "astro.orbit.cr03_effective_potential_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb04_s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "wsb04_s1_overview",
+          "from_latex": "\\Omega_{xx}^L = 2c_2 + 1,\\quad \\Omega_{yy}^L = -(c_2 - 1),\\quad \\Omega_{zz}^L = -c_2,\\quad c_2 = \\frac{1-\\mu}{|x_L+\\mu|^3} + \\frac{\\mu}{|x_L-1+\\mu|^3}",
+          "to_latex": "\\ddot{\\xi} - 2\\dot{\\eta} - (2c_2 + 1)\\xi = 0,\\quad \\ddot{\\eta} + 2\\dot{\\xi} + (c_2 - 1)\\eta = 0,\\quad \\ddot{\\zeta} + c_2 \\zeta = 0,\\quad c_2 := \\frac{1-\\mu}{|x_L+\\mu|^3} + \\frac{\\mu}{|x_L-1+\\mu|^3}",
+          "operation_label": "線形化運動方程式への代入と標準形整理",
+          "explanation": "ヘッセ成分をシノディック加速度方程式の右辺に代入し、左辺に移項して標準的な3自由度線形微分方程式系を確定する。",
+          "used_node_ids": [
+            "astro.orbit.cr02_synodic_rotating_frame_eom"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_wsb05_halo_orbit_analytical",
+      "target_node_id": "orbita.wsb.n05_halo_orbit_analytical_approximation",
+      "route_kind": "deductive",
+      "title": "リンドステッド・ポアンカレ分岐によるハロー軌道周期解の導出",
+      "premise_node_ids": [
+        "orbita.wsb.n04_cr3bp_collinear_linearized_eom",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "面内運動と面外運動の周波数が非線形項により1:1同期（ハロー軌道分岐）していること",
+        "解は3次までの摂動展開における1次調和振動成分であること"
+      ],
+      "steps": [
+        {
+          "step_id": "wsb05_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{\\xi} - 2\\dot{\\eta} - (2c_2 + 1)\\xi = 0,\\quad \\ddot{\\eta} + 2\\dot{\\xi} + (c_2 - 1)\\eta = 0,\\quad \\ddot{\\zeta} + c_2 \\zeta = 0",
+          "to_latex": "\\xi(t) = -A_x \\cos(\\omega_p t + \\phi),\\quad \\eta(t) = k A_x \\sin(\\omega_p t + \\phi),\\quad \\zeta(t) = A_z \\sin(\\omega_p t + \\phi + m\\frac{\\pi}{2}),\\quad A_x = \\gamma_k A_z",
+          "operation_label": "面内調和モードと面外単振動の周波数同期解",
+          "explanation": "面内の特性根から得られる純虚数対による面内周期振動と、面外の単振動モードの周波数を非線形振幅依存性を通じて一致させることで3次元ハロー軌道解を導く。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd",
+            "orbita.wsb.n04_cr3bp_collinear_linearized_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb05_s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "wsb05_s1_overview",
+          "from_latex": "\\ddot{\\xi} - 2\\dot{\\eta} - (2c_2 + 1)\\xi = 0,\\quad \\ddot{\\eta} + 2\\dot{\\xi} + (c_2 - 1)\\eta = 0,\\quad \\ddot{\\zeta} + c_2 \\zeta = 0",
+          "to_latex": "\\lambda^4 + (2 - c_2)\\lambda^2 + (1 - c_2)(1 + 2c_2) = 0 \\implies \\omega_{xy}^2 > 0,\\quad \\omega_z^2 = c_2",
+          "operation_label": "特性方程式の固有値解析",
+          "explanation": "面内4次特性方程式は実根対（双曲的）と純虚数対（調和的）を持ち、面外方向は周波数 sqrt(c_2) の調和単振動となる。",
+          "used_node_ids": [
+            "orbita.wsb.n04_cr3bp_collinear_linearized_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb05_s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "wsb05_s1_overview",
+          "from_latex": "\\lambda^4 + (2 - c_2)\\lambda^2 + (1 - c_2)(1 + 2c_2) = 0 \\implies \\omega_{xy}^2 > 0,\\quad \\omega_z^2 = c_2",
+          "to_latex": "\\xi_1(t) = -A_x \\cos(\\omega_p t + \\phi),\\quad \\eta_1(t) = k A_x \\sin(\\omega_p t + \\phi),\\quad \\zeta_1(t) = A_z \\sin(\\nu_z t + \\psi),\\quad k = \\frac{\\omega_p^2 + 2c_2 + 1}{2\\omega_p}",
+          "operation_label": "結合調和振動モードの振幅比決定",
+          "explanation": "コリオリ結合を満たす面内調和解の振幅比kを運動方程式から決定し、面外振動の解を併記する。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb05_s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "wsb05_s1_overview",
+          "from_latex": "\\xi_1(t) = -A_x \\cos(\\omega_p t + \\phi),\\quad \\eta_1(t) = k A_x \\sin(\\omega_p t + \\phi),\\quad \\zeta_1(t) = A_z \\sin(\\nu_z t + \\psi),\\quad k = \\frac{\\omega_p^2 + 2c_2 + 1}{2\\omega_p}",
+          "to_latex": "\\xi(t) = -A_x \\cos(\\omega_p t + \\phi),\\quad \\eta(t) = k A_x \\sin(\\omega_p t + \\phi),\\quad \\zeta(t) = A_z \\sin(\\omega_p t + \\phi + m\\frac{\\pi}{2}),\\quad A_x = \\gamma_k A_z",
+          "operation_label": "周波数整合条件と振幅拘束の適用",
+          "explanation": "ハロー軌道分岐において面内と面外の周波数が厳密に一致する条件を課し、リチャードソンの振幅拘束関係式を代入して3次元閉周期解を完成させる。",
+          "used_node_ids": [
+            "orbita.wsb.n04_cr3bp_collinear_linearized_eom"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_wsb06_monodromy_stability",
+      "target_node_id": "orbita.wsb.n06_monodromy_floquet_stability",
+      "route_kind": "deductive",
+      "title": "モノドロミー行列のシンプレクティック構造とフロケ乗数の導出",
+      "premise_node_ids": [
+        "orbita.od_stm_p.n02_stm_variational_equation",
+        "orbita.wsb.n05_halo_orbit_analytical_approximation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ハロー軌道は周期T_pの閉軌道である",
+        "CR3BPは自律ハミルトン系でありシンプレクティック性を保持する"
+      ],
+      "steps": [
+        {
+          "step_id": "wsb06_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\Phi}(t, 0) = A(t)\\Phi(t, 0),\\quad \\Phi(0, 0) = I_6,\\quad A(t + T_p) = A(t)",
+          "to_latex": "M := \\Phi(T_p, 0),\\quad \\det(M - \\lambda I_6) = 0,\\quad \\lambda_1 > 1,\\; \\lambda_2 = \\frac{1}{\\lambda_1},\\; \\lambda_3 = \\lambda_4 = 1,\\; \\lambda_5 = \\bar{\\lambda}_6\\;(|\\lambda_5|=1),\\quad \\nu = \\frac{1}{2}\\left(\\lambda_1 + \\frac{1}{\\lambda_1}\\right)",
+          "operation_label": "モノドロミー行列のシンプレクティック固有値スペクトル解析",
+          "explanation": "周期軌道沿いの変分方程式の1周期積分としてモノドロミー行列を定義し、ハミルトン系の対称性から固有値が逆数対をなすことを導く。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n02_stm_variational_equation",
+            "orbita.wsb.n05_halo_orbit_analytical_approximation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb06_s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "wsb06_s1_overview",
+          "from_latex": "\\dot{\\Phi}(t, 0) = A(t)\\Phi(t, 0),\\quad \\Phi(0, 0) = I_6,\\quad A(t + T_p) = A(t)",
+          "to_latex": "M = \\Phi(T_p, 0),\\quad M^\\top J M = J,\\quad J = \\begin{pmatrix} 0 & I_3 \\\\ -I_3 & 0 \\end{pmatrix}",
+          "operation_label": "STMの1周期評価とシンプレクティック恒等式",
+          "explanation": "変分系が自律正準ハミルトン系であることから、1周期遷移行列Mはシンプレクティック行列の条件を満たす。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n02_stm_variational_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb06_s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "wsb06_s1_overview",
+          "from_latex": "M = \\Phi(T_p, 0),\\quad M^\\top J M = J,\\quad J = \\begin{pmatrix} 0 & I_3 \\\\ -I_3 & 0 \\end{pmatrix}",
+          "to_latex": "\\det(M - \\lambda I_6) = 0 \\implies \\lambda \\in \\sigma(M) \\iff \\frac{1}{\\lambda} \\in \\sigma(M),\\quad \\lambda_{3,4} = 1",
+          "operation_label": "シンプレクティック固有値の対構造の確定",
+          "explanation": "Mの固有方程式の自己相反性により、固有値は必ず (λ, 1/λ) の対となり、周期軌道自体の接ベクトルとエネルギー勾配に対応して2つの自明な1が存在する。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n02_stm_variational_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb06_s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "wsb06_s1_overview",
+          "from_latex": "\\det(M - \\lambda I_6) = 0 \\implies \\lambda \\in \\sigma(M) \\iff \\frac{1}{\\lambda} \\in \\sigma(M),\\quad \\lambda_{3,4} = 1",
+          "to_latex": "M := \\Phi(T_p, 0),\\quad \\det(M - \\lambda I_6) = 0,\\quad \\lambda_1 > 1,\\; \\lambda_2 = \\frac{1}{\\lambda_1},\\; \\lambda_3 = \\lambda_4 = 1,\\; \\lambda_5 = \\bar{\\lambda}_6\\;(|\\lambda_5|=1),\\quad \\nu = \\frac{1}{2}\\left(\\lambda_1 + \\frac{1}{\\lambda_1}\\right)",
+          "operation_label": "双曲型乗数の抽出とフロケ安定性指数の定義",
+          "explanation": "残る固有値のうち実数対 (|λ1| > 1, |λ2| < 1) がハロー軌道の不安定方向と安定方向を形成し、その相加平均として安定性指数νを定義する。",
+          "used_node_ids": [
+            "orbita.wsb.n05_halo_orbit_analytical_approximation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "d_wsb07_manifolds_wsb",
+      "target_node_id": "orbita.wsb.n07_invariant_manifolds_low_energy_transfer",
+      "route_kind": "deductive",
+      "title": "固有ベクトル摂動と非線形伝播による不変多様体チューブの構成",
+      "premise_node_ids": [
+        "orbita.wsb.n06_monodromy_floquet_stability",
+        "orbita.od_stm_p.n02_stm_variational_equation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "多様体の初期変位εは十分小さく線形化領域内にあること",
+        "大域的伝播は厳密なCR3BP非線形運動方程式に従うこと"
+      ],
+      "steps": [
+        {
+          "step_id": "wsb07_s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "M \\mathbf{v}_u(0) = \\lambda_1 \\mathbf{v}_u(0),\\quad M \\mathbf{v}_s(0) = \\lambda_2 \\mathbf{v}_s(0)\\quad (\\lambda_1 > 1,\\; \\lambda_2 < 1)",
+          "to_latex": "\\mathbf{X}_0^{u,s}(\\tau) = \\mathbf{X}_{\\mathrm{halo}}(\\tau) \\pm \\epsilon \\frac{\\mathbf{v}_{u,s}(\\tau)}{\\|\\mathbf{v}_{u,s}(\\tau)\\|},\\quad W^u = \\bigcup_{\\tau \\in [0, T_p]} \\bigcup_{t \\ge 0} \\Phi(t, 0)\\mathbf{X}_0^u(\\tau),\\quad W^s = \\bigcup_{\\tau \\in [0, T_p]} \\bigcup_{t \\le 0} \\Phi(t, 0)\\mathbf{X}_0^s(\\tau)",
+          "operation_label": "局所固有ベクトル摂動の大域的非線形時間発展",
+          "explanation": "周期軌道上の各点においてモノドロミー行列の不安定・安定固有ベクトル方向に微小変位を与え、非線形微分方程式を順時間および逆時間に積分して2次元不変多様体（チューブ）を構成する。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n02_stm_variational_equation",
+            "orbita.wsb.n06_monodromy_floquet_stability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb07_s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "wsb07_s1_overview",
+          "from_latex": "M \\mathbf{v}_u(0) = \\lambda_1 \\mathbf{v}_u(0),\\quad M \\mathbf{v}_s(0) = \\lambda_2 \\mathbf{v}_s(0)\\quad (\\lambda_1 > 1,\\; \\lambda_2 < 1)",
+          "to_latex": "\\mathbf{v}_{u,s}(\\tau) = \\Phi(\\tau, 0)\\mathbf{v}_{u,s}(0),\\quad \\tau \\in [0, T_p]",
+          "operation_label": "軌道上の任意位相における固有ベクトルの伝播",
+          "explanation": "初期時刻におけるモノドロミー固有ベクトルを状態遷移行列Phi(tau, 0)により周期軌道の各位相tauへ連続的にマッピングする。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n02_stm_variational_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb07_s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "wsb07_s1_overview",
+          "from_latex": "\\mathbf{v}_{u,s}(\\tau) = \\Phi(\\tau, 0)\\mathbf{v}_{u,s}(0),\\quad \\tau \\in [0, T_p]",
+          "to_latex": "\\mathbf{X}_0^{u,s}(\\tau) = \\mathbf{X}_{\\mathrm{halo}}(\\tau) \\pm \\epsilon \\frac{\\mathbf{v}_{u,s}(\\tau)}{\\|\\mathbf{v}_{u,s}(\\tau)\\|},\\quad 0 < \\epsilon \\ll 1",
+          "operation_label": "正規化固有ベクトルによる微小変位初期条件の生成",
+          "explanation": "局所線形多様体に沿って符号正負の微小距離epsilonだけオフセットさせた初期状態ベクトル群を生成する。",
+          "used_node_ids": [
+            "orbita.wsb.n06_monodromy_floquet_stability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "wsb07_s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "wsb07_s1_overview",
+          "from_latex": "\\mathbf{X}_0^{u,s}(\\tau) = \\mathbf{X}_{\\mathrm{halo}}(\\tau) \\pm \\epsilon \\frac{\\mathbf{v}_{u,s}(\\tau)}{\\|\\mathbf{v}_{u,s}(\\tau)\\|},\\quad 0 < \\epsilon \\ll 1",
+          "to_latex": "\\mathbf{X}_0^{u,s}(\\tau) = \\mathbf{X}_{\\mathrm{halo}}(\\tau) \\pm \\epsilon \\frac{\\mathbf{v}_{u,s}(\\tau)}{\\|\\mathbf{v}_{u,s}(\\tau)\\|},\\quad W^u = \\bigcup_{\\tau \\in [0, T_p]} \\bigcup_{t \\ge 0} \\Phi(t, 0)\\mathbf{X}_0^u(\\tau),\\quad W^s = \\bigcup_{\\tau \\in [0, T_p]} \\bigcup_{t \\le 0} \\Phi(t, 0)\\mathbf{X}_0^s(\\tau)",
+          "operation_label": "全位相と非線形フローの合併によるチューブ幾何構成",
+          "explanation": "全周期tauおよび時間tにわたってフローを積分・合成することで、低エネルギー軌道遷移の通路となる不変多様体チューブを確立する。",
+          "used_node_ids": [
+            "orbita.wsb.n06_monodromy_floquet_stability"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
