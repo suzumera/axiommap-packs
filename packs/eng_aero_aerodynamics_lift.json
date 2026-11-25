@@ -661,7 +661,10 @@
       ],
       "required_math_node_ids": [],
       "assumptions": [
-        "遠方 |z| → ∞ で一様流と循環 Γ の点渦に漸近する"
+        "流れは外力のない2次元定常・非圧縮・非粘性のポテンシャル流である",
+        "遠方 |z| → ∞ で一様流（速さ U_∞、迎え角 α）と循環 Γ の点渦に漸近し、物体形状に依存する高次多重極項 Σ_{k=1}^∞ b_k / z^k が加わる",
+        "閉曲線 C は物体断面を正の向き（反時計回り）に1周する単一閉曲線であり、十分大きな円 C_R（|z| = R）の外側領域で dw/dz が正則かつローラン級数が一様収束する",
+        "流体密度 ρ、一様流速 U_∞、迎え角 α、循環 Γ、および流体力成分 F_x, F_y, L', D' はすべて実数である"
       ],
       "steps": [
         {
@@ -669,15 +672,13 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "F_x - i F_y = \\frac{i\\rho}{2}\\oint_C \\left(\\frac{dw}{dz}\\right)^2 dz,\\quad \\frac{dw}{dz} = U_\\infty e^{-i\\alpha} + \\frac{i\\Gamma}{2\\pi z} + \\sum_{k=2}^{\\infty}\\frac{c_k}{z^k} + 0",
+          "from_latex": "F_x - i F_y = \\frac{i\\rho}{2}\\oint_C \\left(\\frac{dw}{dz}\\right)^2 dz,\\quad w(z) = U_\\infty e^{-i\\alpha} z + \\frac{i\\Gamma}{2\\pi}\\ln z + \\sum_{k=1}^{\\infty}\\frac{b_k}{z^k}",
           "to_latex": "F_x - i F_y = -i\\rho U_\\infty e^{-i\\alpha}\\Gamma \\implies L' = \\rho U_\\infty \\Gamma,\\quad D' = 0",
-          "operation_label": "複素速度のローラン展開の2乗と 1/z 留数項の抽出",
-          "explanation": "(dw/dz)^2 を遠方でローラン展開し、閉曲線積分（コーシーの積分公式／留数）で 1/z の係数のみが残ることから揚力と抗力を得る。",
+          "operation_label": "複素速度のローラン展開と周回積分および座標回転によるクッタ＝ジュコフスキーの定理の導出",
+          "explanation": "遠方における複素速度ポテンシャルを微分してローラン級数で展開・2乗し、ブラジウスの定理の周回積分で 1/z 項のみを抽出して複素流体力を得た後、主流座標系へ回転させて揚力と抗力を分離する。",
           "used_node_ids": [
             "eng.aero.n03_circulation_vortex_potential",
-            "eng.aero.n04_blasius_theorem",
-            "math.complex.ca08_cauchy_integral_formula",
-            "math.complex.lr01_laurent_series_expansion"
+            "eng.aero.n04_blasius_theorem"
           ],
           "sympy_check_hint": null
         },
@@ -686,14 +687,63 @@
           "order": 1,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "F_x - i F_y = \\frac{i\\rho}{2}\\oint_C \\left(\\frac{dw}{dz}\\right)^2 dz,\\quad \\frac{dw}{dz} = U_\\infty e^{-i\\alpha} + \\frac{i\\Gamma}{2\\pi z} + \\sum_{k=2}^{\\infty}\\frac{c_k}{z^k} + 0",
-          "to_latex": "\\left(\\frac{dw}{dz}\\right)^2 = U_\\infty^2 e^{-2i\\alpha} + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi z} + \\mathcal{O}\\!\\left(\\frac{1}{z^2}\\right) \\implies F_x - i F_y = \\frac{i\\rho}{2}\\cdot 2\\pi i\\left(\\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi}\\right) = -i\\rho U_\\infty e^{-i\\alpha}\\Gamma",
-          "operation_label": "(dw/dz)^2 の展開と留数計算",
-          "explanation": "積分路を遠方の円に変形すると 1/z の項のみが 2πi を生み、他のべき項はすべて零になる。",
+          "from_latex": "w(z) = U_\\infty e^{-i\\alpha} z + \\frac{i\\Gamma}{2\\pi}\\ln z + \\sum_{k=1}^{\\infty}\\frac{b_k}{z^k}",
+          "to_latex": "\\left(\\frac{dw}{dz}\\right)^2 = U_\\infty^2 e^{-2i\\alpha} + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi z} + \\sum_{n=2}^{\\infty}\\frac{d_n}{z^n}",
+          "operation_label": "複素速度のローラン展開と (dw/dz)^2 のべき級数展開",
+          "explanation": "一様流と点渦および多重極項からなる複素速度ポテンシャルを z で微分して複素速度のローラン級数を得て、両辺を2乗展開することで 1/z の項と 1/z^2 以下の高次負べき項を分離する。",
           "used_node_ids": [
-            "math.complex.ca08_cauchy_integral_formula",
-            "math.complex.lr01_laurent_series_expansion"
+            "eng.aero.n03_circulation_vortex_potential"
           ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "w(z) = U_\\infty e^{-i\\alpha} z + \\frac{i\\Gamma}{2\\pi}\\ln z + \\sum_{k=1}^{\\infty}\\frac{b_k}{z^k}",
+          "to_latex": "\\frac{dw}{dz} = U_\\infty e^{-i\\alpha} + \\frac{i\\Gamma}{2\\pi z} - \\sum_{k=1}^{\\infty}\\frac{k b_k}{z^{k+1}}",
+          "operation_label": "複素速度ポテンシャル w(z) の z による項別微分",
+          "explanation": "遠方での複素速度ポテンシャル（一様流＋点渦＋物体による多重極展開）の各項を z で微分し、複素速度 dw/dz を求める。",
+          "used_node_ids": [
+            "eng.aero.n03_circulation_vortex_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{dw}{dz} = U_\\infty e^{-i\\alpha} + \\frac{i\\Gamma}{2\\pi z} - \\sum_{k=1}^{\\infty}\\frac{k b_k}{z^{k+1}}",
+          "to_latex": "\\frac{dw}{dz} = U_\\infty e^{-i\\alpha} + \\frac{i\\Gamma}{2\\pi z} + \\sum_{m=2}^{\\infty}\\frac{c_m}{z^m}",
+          "operation_label": "和の添字変換 m = k + 1 と係数 c_m := -(m-1)b_{m-1} の定義",
+          "explanation": "負べきの和の添字を m = k + 1 に置き換え、係数 c_m := -(m-1)b_{m-1} を定義して標準的なローラン級数形式に書き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{dw}{dz} = U_\\infty e^{-i\\alpha} + \\frac{i\\Gamma}{2\\pi z} + \\sum_{m=2}^{\\infty}\\frac{c_m}{z^m}",
+          "to_latex": "\\left(\\frac{dw}{dz}\\right)^2 = U_\\infty^2 e^{-2i\\alpha} + 2 U_\\infty e^{-i\\alpha}\\left(\\frac{i\\Gamma}{2\\pi z}\\right) + \\left(\\frac{i\\Gamma}{2\\pi z}\\right)^2 + 2\\left(U_\\infty e^{-i\\alpha} + \\frac{i\\Gamma}{2\\pi z}\\right)\\sum_{m=2}^{\\infty}\\frac{c_m}{z^m} + \\left(\\sum_{m=2}^{\\infty}\\frac{c_m}{z^m}\\right)^2",
+          "operation_label": "両辺の2乗による (dw/dz)^2 の展開",
+          "explanation": "dw/dz の両辺を2乗し、定数項・1/z 項・m ≥ 2 の和の3つの部分の積を展開する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\left(\\frac{dw}{dz}\\right)^2 = U_\\infty^2 e^{-2i\\alpha} + 2 U_\\infty e^{-i\\alpha}\\left(\\frac{i\\Gamma}{2\\pi z}\\right) + \\left(\\frac{i\\Gamma}{2\\pi z}\\right)^2 + 2\\left(U_\\infty e^{-i\\alpha} + \\frac{i\\Gamma}{2\\pi z}\\right)\\sum_{m=2}^{\\infty}\\frac{c_m}{z^m} + \\left(\\sum_{m=2}^{\\infty}\\frac{c_m}{z^m}\\right)^2",
+          "to_latex": "\\left(\\frac{dw}{dz}\\right)^2 = U_\\infty^2 e^{-2i\\alpha} + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi z} + \\sum_{n=2}^{\\infty}\\frac{d_n}{z^n}",
+          "operation_label": "1/z 項の約分と z^{-2} 以下高次負べき項の統合",
+          "explanation": "1/z の項の係数 2 を約分し、z^{-2} 以下のすべての負べき項を新たなローラン係数 d_n を用いて Σ_{n=2}^∞ d_n / z^n としてまとめる。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -701,16 +751,176 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\left(\\frac{dw}{dz}\\right)^2 = U_\\infty^2 e^{-2i\\alpha} + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi z} + \\mathcal{O}\\!\\left(\\frac{1}{z^2}\\right) \\implies F_x - i F_y = \\frac{i\\rho}{2}\\cdot 2\\pi i\\left(\\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi}\\right) = -i\\rho U_\\infty e^{-i\\alpha}\\Gamma",
-          "to_latex": "(D' - i L') = (F_x - i F_y)e^{i\\alpha} = -i\\rho U_\\infty \\Gamma \\implies L' = \\rho U_\\infty \\Gamma,\\quad D' = 0",
-          "operation_label": "主流方向・垂直方向への回転分解",
-          "explanation": "e^{iα} を掛けて主流方向成分 D' と直交方向成分 L' を分離すると L' = ρ U_∞ Γ, D' = 0 を得る。",
+          "from_latex": "\\left(\\frac{dw}{dz}\\right)^2 = U_\\infty^2 e^{-2i\\alpha} + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi z} + \\sum_{n=2}^{\\infty}\\frac{d_n}{z^n}",
+          "to_latex": "F_x - i F_y = \\frac{i\\rho}{2}\\left(0 + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi}\\cdot 2\\pi i + 0\\right)",
+          "operation_label": "ブラジウスの定理への代入と遠方円 C_R 上での項別周回積分",
+          "explanation": "展開した (dw/dz)^2 をブラジウスの定理に代入し、積分路を遠方円 C_R へ変形して項別積分を行うことで 1/z の項のみを残す。",
           "used_node_ids": [
             "eng.aero.n04_blasius_theorem"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\left(\\frac{dw}{dz}\\right)^2 = U_\\infty^2 e^{-2i\\alpha} + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi z} + \\sum_{n=2}^{\\infty}\\frac{d_n}{z^n}",
+          "to_latex": "F_x - i F_y = \\frac{i\\rho}{2}\\oint_C \\left(U_\\infty^2 e^{-2i\\alpha} + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi z} + \\sum_{n=2}^{\\infty}\\frac{d_n}{z^n}\\right) dz",
+          "operation_label": "ブラジウスの定理を導入し (dw/dz)^2 の展開式を代入",
+          "explanation": "ブラジウスの定理 F_x - i F_y = (iρ/2)∮_C (dw/dz)^2 dz を導入し、前段で求めた (dw/dz)^2 のローラン展開式を被積分関数に代入する。",
+          "used_node_ids": [
+            "eng.aero.n04_blasius_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "F_x - i F_y = \\frac{i\\rho}{2}\\oint_C \\left(U_\\infty^2 e^{-2i\\alpha} + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi z} + \\sum_{n=2}^{\\infty}\\frac{d_n}{z^n}\\right) dz",
+          "to_latex": "F_x - i F_y = \\frac{i\\rho}{2}\\left(U_\\infty^2 e^{-2i\\alpha}\\oint_{C_R} dz + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi}\\oint_{C_R} \\frac{dz}{z} + \\sum_{n=2}^{\\infty} d_n \\oint_{C_R} \\frac{dz}{z^n}\\right)",
+          "operation_label": "積分路の遠方円 C_R への変形と積分の線形性・項別積分の適用",
+          "explanation": "物体外部での正則性により積分路 C を十分遠方の円 C_R（|z| = R）へ変形し、一様収束する級数の項別積分と定数係数のくくり出しを行う。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "F_x - i F_y = \\frac{i\\rho}{2}\\left(U_\\infty^2 e^{-2i\\alpha}\\oint_{C_R} dz + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi}\\oint_{C_R} \\frac{dz}{z} + \\sum_{n=2}^{\\infty} d_n \\oint_{C_R} \\frac{dz}{z^n}\\right)",
+          "to_latex": "F_x - i F_y = \\frac{i\\rho}{2}\\left(0 + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi}\\cdot 2\\pi i + 0\\right)",
+          "operation_label": "z = R e^{iθ} による各項の周回積分値の代入",
+          "explanation": "円 C_R 上の変数変換 z = R e^{iθ}（0 ≤ θ ≤ 2π）より ∮_{C_R} dz = 0、∮_{C_R} z^{-1} dz = 2πi、∮_{C_R} z^{-n} dz = 0（n ≥ 2）となる各積分値を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F_x - i F_y = \\frac{i\\rho}{2}\\left(0 + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi}\\cdot 2\\pi i + 0\\right)",
+          "to_latex": "F_x - i F_y = -i\\rho U_\\infty e^{-i\\alpha}\\Gamma",
+          "operation_label": "複素流体力 F_x - i F_y の代数簡約",
+          "explanation": "周回積分の結果に含まれる定数因子 2π の約分と虚数単位の積の簡約を順に行い、複素流体力 F_x - i F_y の表式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "I*rho/2*(0 + (I*U_inf*exp(-I*alpha)*Gamma/pi)*2*pi*I + 0) == -I*rho*U_inf*exp(-I*alpha)*Gamma"
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "F_x - i F_y = \\frac{i\\rho}{2}\\left(0 + \\frac{i U_\\infty e^{-i\\alpha}\\Gamma}{\\pi}\\cdot 2\\pi i + 0\\right)",
+          "to_latex": "F_x - i F_y = i \\cdot i \\cdot i \\cdot \\rho U_\\infty e^{-i\\alpha}\\Gamma",
+          "operation_label": "零項の除去と因子 2π の約分",
+          "explanation": "括弧内の 0 の項を取り除き、分母の 2π と分子の 2π を約分して残る係数の積を並べる。",
+          "used_node_ids": [],
+          "sympy_check_hint": "I*rho/2*(0 + (I*U_inf*exp(-I*alpha)*Gamma/pi)*2*pi*I + 0) == I*I*I*rho*U_inf*exp(-I*alpha)*Gamma"
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "F_x - i F_y = i \\cdot i \\cdot i \\cdot \\rho U_\\infty e^{-i\\alpha}\\Gamma",
+          "to_latex": "F_x - i F_y = -i\\rho U_\\infty e^{-i\\alpha}\\Gamma",
+          "operation_label": "虚数単位の積 i^3 = -i の簡約",
+          "explanation": "i^2 = -1 を用いて i · i · i = -i と計算し、複素流体力の表式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "I*I*I*rho*U_inf*exp(-I*alpha)*Gamma == -I*rho*U_inf*exp(-I*alpha)*Gamma"
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F_x - i F_y = -i\\rho U_\\infty e^{-i\\alpha}\\Gamma",
+          "to_latex": "(F_x\\cos\\alpha + F_y\\sin\\alpha) - i(-F_x\\sin\\alpha + F_y\\cos\\alpha) = -i\\rho U_\\infty \\Gamma",
+          "operation_label": "回転因子 e^{iα} による主流座標系への射影展開",
+          "explanation": "両辺に e^{iα} を掛けて右辺の指数因子を打ち消し、左辺をオイラーの公式で展開して主流方向および主流直交方向の成分へまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "F_x - i F_y = -i\\rho U_\\infty e^{-i\\alpha}\\Gamma",
+          "to_latex": "(F_x - i F_y)e^{i\\alpha} = -i\\rho U_\\infty e^{-i\\alpha}e^{i\\alpha}\\Gamma",
+          "operation_label": "両辺への回転因子 e^{iα} の乗算",
+          "explanation": "迎え角 α 傾いた主流座標系へ射影するため、等式の両辺に e^{iα} を掛ける。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "(F_x - i F_y)e^{i\\alpha} = -i\\rho U_\\infty e^{-i\\alpha}e^{i\\alpha}\\Gamma",
+          "to_latex": "(F_x - i F_y)e^{i\\alpha} = -i\\rho U_\\infty \\Gamma",
+          "operation_label": "右辺への指数法則 e^{-iα} e^{iα} = 1 の適用",
+          "explanation": "右辺の指数因子について e^{-iα} e^{iα} = e^0 = 1 を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "-I*rho*U_inf*exp(-I*alpha)*exp(I*alpha)*Gamma == -I*rho*U_inf*Gamma"
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "(F_x - i F_y)e^{i\\alpha} = -i\\rho U_\\infty \\Gamma",
+          "to_latex": "(F_x\\cos\\alpha + F_y\\sin\\alpha) - i(-F_x\\sin\\alpha + F_y\\cos\\alpha) = -i\\rho U_\\infty \\Gamma",
+          "operation_label": "左辺へのオイラーの公式の適用と実部・虚部の整理",
+          "explanation": "左辺で e^{iα} = cos α + i sin α を代入して展開し、i^2 = -1 を用いて実部と虚部（負符号付き）にくくり出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(Fx - I*Fy)*exp(I*alpha) == (Fx*cos(alpha) + Fy*sin(alpha)) - I*(-Fx*sin(alpha) + Fy*cos(alpha))"
+        },
+        {
+          "step_id": "s2_5",
+          "order": 5,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(F_x\\cos\\alpha + F_y\\sin\\alpha) - i(-F_x\\sin\\alpha + F_y\\cos\\alpha) = -i\\rho U_\\infty \\Gamma",
+          "to_latex": "L' = \\rho U_\\infty \\Gamma,\\quad D' = 0",
+          "operation_label": "揚力 L' と抗力 D' の定義の代入および実部・虚部比較",
+          "explanation": "主流方向の抗力 D' と主流直交方向の揚力 L' の定義を代入し、両辺の実部と虚部を比較してクッタ＝ジュコフスキーの揚力定理を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "(F_x\\cos\\alpha + F_y\\sin\\alpha) - i(-F_x\\sin\\alpha + F_y\\cos\\alpha) = -i\\rho U_\\infty \\Gamma",
+          "to_latex": "D' - i L' = -i\\rho U_\\infty \\Gamma",
+          "operation_label": "抗力 D' と揚力 L' の成分定義の代入",
+          "explanation": "主流方向成分 D' := F_x cos α + F_y sin α および主流に直交する成分 L' := -F_x sin α + F_y cos α の定義を左辺へ代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "D' - i L' = -i\\rho U_\\infty \\Gamma",
+          "to_latex": "L' = \\rho U_\\infty \\Gamma,\\quad D' = 0",
+          "operation_label": "両辺の実部と虚部の比較",
+          "explanation": "D', L', ρ, U_∞, Γ がすべて実数であることから、両辺の実部を比較して D' = 0、虚部を比較して -L' = -ρ U_∞ Γ すなわち L' = ρ U_∞ Γ を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T10:45:19.121955+00:00"
     },
     {
       "id": "eng.aero.d06_thin_airfoil_integral_eq",
@@ -1100,7 +1310,11 @@
       ],
       "required_math_node_ids": [],
       "assumptions": [
-        "揚力線（束縛渦）は直線 y 軸上にあり、後流渦は x 軸正方向に半無限直線として伸びる"
+        "一様流方向を +x、右翼スパン方向を +y、鉛直上向きを +z とする右手系 (x, y, z) を用いる。",
+        "揚力線（束縛渦）は直線 y 軸上の区間 [-b/2, b/2] にあり、線上の点 (0, y_0, 0) に対して束縛渦線素 dl_b = dy e_y と相対位置ベクトル r_b = (y_0 - y) e_y が平行であるため dl_b × r_b = 0 となり、束縛渦自身は揚力線上に速度を誘起しない。",
+        "非圧縮・非粘性の定常ポテンシャル流およびヘルムホルツの渦定理を仮定し、スパン位置 y の微小区間 dy から下流 +x 方向（x ∈ [0, ∞)）に直進する半無限後流渦糸の循環強度は dΓ_trail = -(dΓ/dy) dy で与えられる。",
+        "翼端 y = ±b/2 において循環は Γ(±b/2) = 0 となり、Γ(y) は [-b/2, b/2] 上で滑らかで、y = y_0 の特異点はコーシーの主値積分として扱う。",
+        "誘導吹き下ろし速度は一様流速度に比べて十分小さく（|w_i(y_0)| ≪ U_∞）、誘導迎角に対して小角近似 arctan(-w_i / U_∞) ≈ -w_i / U_∞ が成り立つ。"
       ],
       "steps": [
         {
@@ -1108,13 +1322,12 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "d\\mathbf{u} = \\frac{d\\Gamma}{4\\pi}\\frac{d\\mathbf{l}\\times\\mathbf{r}}{\\|\\mathbf{r}\\|^3},\\quad d\\Gamma = \\frac{d\\Gamma}{dy}\\,dy",
-          "to_latex": "w_i(y_0) = -\\frac{1}{4\\pi}\\int_{-b/2}^{b/2} \\frac{d\\Gamma/dy}{y_0 - y}\\,dy,\\quad \\alpha_i(y_0) \\approx \\frac{1}{4\\pi U_\\infty}\\int_{-b/2}^{b/2} \\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
-          "operation_label": "半無限後流渦糸の線積分とスパン方向重ね合わせ",
-          "explanation": "強度 (-dΓ/dy)dy を持つ半無限後流渦糸が揚力線上の点 y_0 に誘起する速度をビオ＝サバールの法則で積分し、スパン全体にわたり重ね合わせる。",
+          "from_latex": "d\\mathbf{u} = \\frac{\\Gamma}{4\\pi}\\frac{d\\mathbf{l}\\times\\mathbf{r}}{\\|\\mathbf{r}\\|^3}",
+          "to_latex": "w_i(y_0) = -\\frac{1}{4\\pi}\\int_{-b/2}^{b/2} \\frac{d\\Gamma/dy}{y_0 - y}\\,dy,\\quad \\alpha_i(y_0) \\approx -\\frac{w_i(y_0)}{U_\\infty} = \\frac{1}{4\\pi U_\\infty}\\int_{-b/2}^{b/2} \\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
+          "operation_label": "半無限後流渦糸のビオ＝サバール積分とスパン方向重ね合わせによる誘導迎角の導出",
+          "explanation": "循環保存則に従う半無限後流渦糸が揚力線上の点 y_0 に誘起する鉛直速度を x ∈ [0, ∞) で線積分し、スパン区間 [-b/2, b/2] にわたり主値積分した上で小角近似により誘導迎角を得る。",
           "used_node_ids": [
-            "eng.aero.n03_circulation_vortex_potential",
-            "math.vec.m03_dot_cross_product"
+            "eng.aero.n03_circulation_vortex_potential"
           ],
           "sympy_check_hint": null
         },
@@ -1123,13 +1336,63 @@
           "order": 1,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "d\\mathbf{u} = \\frac{d\\Gamma}{4\\pi}\\frac{d\\mathbf{l}\\times\\mathbf{r}}{\\|\\mathbf{r}\\|^3},\\quad d\\Gamma = \\frac{d\\Gamma}{dy}\\,dy",
-          "to_latex": "dw_i(y_0) = -\\frac{(-d\\Gamma/dy)\\,dy}{4\\pi(y_0 - y)}\\int_0^{\\pi/2}\\sin\\theta\\,d\\theta = -\\frac{(d\\Gamma/dy)\\,dy}{4\\pi(y_0 - y)}",
-          "operation_label": "単一半無限渦糸の誘導速度計算",
-          "explanation": "束縛渦要素は同一直線上にあるため誘導速度に寄与せず、位置 y から下流へ伸びる半無限渦糸のみが距離 |y_0 - y| に対して 1/(4π(y_0 - y)) の寄与を与える。",
+          "from_latex": "d\\mathbf{u} = \\frac{\\Gamma}{4\\pi}\\frac{d\\mathbf{l}\\times\\mathbf{r}}{\\|\\mathbf{r}\\|^3}",
+          "to_latex": "dw_i(x; y, y_0) = -\\frac{1}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy\\,\\frac{(y_0 - y)\\,dx}{\\big(x^2 + (y_0 - y)^2\\big)^{3/2}}",
+          "operation_label": "後流渦糸に対するビオ＝サバール則の座標成分展開",
+          "explanation": "循環強度 -(dΓ/dy)dy を持つ +x 方向の半無限後流渦糸の線素と相対位置ベクトルの外積およびノルムを計算し、鉛直成分 dw_i を求める。",
           "used_node_ids": [
-            "math.vec.m03_dot_cross_product"
+            "eng.aero.n03_circulation_vortex_potential"
           ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "d\\mathbf{u} = \\frac{\\Gamma}{4\\pi}\\frac{d\\mathbf{l}\\times\\mathbf{r}}{\\|\\mathbf{r}\\|^3}",
+          "to_latex": "d\\mathbf{u}_{\\mathrm{trail}} = -\\frac{1}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy\\,\\frac{d\\mathbf{l}\\times\\mathbf{r}}{\\|\\mathbf{r}\\|^3}",
+          "operation_label": "循環保存則による微小後流渦循環強度 -(dΓ/dy)dy の導入",
+          "explanation": "循環の定義とヘルムホルツの渦定理に基づき、スパン位置 y の区間 dy から下流へ放出される後流渦糸の循環強度 Γ を -(dΓ/dy)dy として代入する。",
+          "used_node_ids": [
+            "eng.aero.n03_circulation_vortex_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "d\\mathbf{u}_{\\mathrm{trail}} = -\\frac{1}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy\\,\\frac{d\\mathbf{l}\\times\\mathbf{r}}{\\|\\mathbf{r}\\|^3}",
+          "to_latex": "d\\mathbf{u}_{\\mathrm{trail}} = -\\frac{1}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy\\,\\frac{(dx\\,\\mathbf{e}_x)\\times\\big(-x\\,\\mathbf{e}_x + (y_0 - y)\\mathbf{e}_y\\big)}{\\big\\|-x\\,\\mathbf{e}_x + (y_0 - y)\\mathbf{e}_y\\big\\|^3}",
+          "operation_label": "後流渦線素ベクトルと相対位置ベクトルの代入",
+          "explanation": "後流渦上の点 (x, y, 0) から揚力線上の評価点 (0, y_0, 0) への相対位置ベクトル r = -x e_x + (y_0 - y) e_y と渦線素 dl = dx e_x を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "d\\mathbf{u}_{\\mathrm{trail}} = -\\frac{1}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy\\,\\frac{(dx\\,\\mathbf{e}_x)\\times\\big(-x\\,\\mathbf{e}_x + (y_0 - y)\\mathbf{e}_y\\big)}{\\big\\|-x\\,\\mathbf{e}_x + (y_0 - y)\\mathbf{e}_y\\big\\|^3}",
+          "to_latex": "d\\mathbf{u}_{\\mathrm{trail}} = -\\frac{1}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy\\,\\frac{(y_0 - y)\\,dx\\,\\mathbf{e}_z}{\\big\\|-x\\,\\mathbf{e}_x + (y_0 - y)\\mathbf{e}_y\\big\\|^3}",
+          "operation_label": "右手系単位ベクトルの外積の計算",
+          "explanation": "外積の線形性と e_x × e_x = 0、e_x × e_y = e_z を適用して分子のベクトル積を展開する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "d\\mathbf{u}_{\\mathrm{trail}} = -\\frac{1}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy\\,\\frac{(y_0 - y)\\,dx\\,\\mathbf{e}_z}{\\big\\|-x\\,\\mathbf{e}_x + (y_0 - y)\\mathbf{e}_y\\big\\|^3}",
+          "to_latex": "dw_i(x; y, y_0) = -\\frac{1}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy\\,\\frac{(y_0 - y)\\,dx}{\\big(x^2 + (y_0 - y)^2\\big)^{3/2}}",
+          "operation_label": "ユークリッドノルムの展開と鉛直成分 dw_i の抽出",
+          "explanation": "分母のノルムを √(x^2 + (y_0 - y)^2) として3乗を展開し、e_z 成分を微少誘導鉛直速度 dw_i として取り出す。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -1137,16 +1400,152 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "dw_i(y_0) = -\\frac{(-d\\Gamma/dy)\\,dy}{4\\pi(y_0 - y)}\\int_0^{\\pi/2}\\sin\\theta\\,d\\theta = -\\frac{(d\\Gamma/dy)\\,dy}{4\\pi(y_0 - y)}",
-          "to_latex": "w_i(y_0) = -\\frac{1}{4\\pi}\\int_{-b/2}^{b/2}\\frac{d\\Gamma/dy}{y_0 - y}\\,dy,\\quad \\alpha_i(y_0) = \\arctan\\!\\left(-\\frac{w_i(y_0)}{U_\\infty}\\right) \\approx \\frac{1}{4\\pi U_\\infty}\\int_{-b/2}^{b/2}\\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
-          "operation_label": "スパン積分と小誘導迎角近似",
-          "explanation": "スパン [-b/2, b/2] にわたり主値積分し、|w_i| ≪ U_∞ のもとで誘導迎角 α_i ≈ -w_i / U_∞ を得る。",
+          "from_latex": "dw_i(x; y, y_0) = -\\frac{1}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy\\,\\frac{(y_0 - y)\\,dx}{\\big(x^2 + (y_0 - y)^2\\big)^{3/2}}",
+          "to_latex": "dw_i(y, y_0) = -\\frac{1}{4\\pi}\\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
+          "operation_label": "単一半無限後流渦糸の x 方向線積分の実行",
+          "explanation": "x ∈ [0, ∞) にわたって微少寄与を定積分し、共通因子 (y_0 - y) を約分して単一後流渦糸による誘導速度を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "dw_i(x; y, y_0) = -\\frac{1}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy\\,\\frac{(y_0 - y)\\,dx}{\\big(x^2 + (y_0 - y)^2\\big)^{3/2}}",
+          "to_latex": "dw_i(y, y_0) = -\\frac{y_0 - y}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy \\int_{0}^{\\infty} \\frac{dx}{\\big(x^2 + (y_0 - y)^2\\big)^{3/2}}",
+          "operation_label": "半無限区間 x ∈ [0, ∞) の積分設定と非 x 依存因子のくくり出し",
+          "explanation": "x に依存しない因子 -(y_0 - y)(dΓ/dy)dy / (4π) を積分の外へ出し、x = 0 から ∞ までの広義積分を立てる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "dw_i(y, y_0) = -\\frac{y_0 - y}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy \\int_{0}^{\\infty} \\frac{dx}{\\big(x^2 + (y_0 - y)^2\\big)^{3/2}}",
+          "to_latex": "dw_i(y, y_0) = -\\frac{y_0 - y}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy \\left[\\frac{x}{(y_0 - y)^2\\sqrt{x^2 + (y_0 - y)^2}}\\right]_{0}^{\\infty}",
+          "operation_label": "原始関数の適用（三角置換積分公式）",
+          "explanation": "y ≠ y_0 に対して原始関数 ∫ dx / (x^2 + (y_0 - y)^2)^(3/2) = x / ((y_0 - y)^2 √(x^2 + (y_0 - y)^2)) を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "diff(x/(a**2*sqrt(x**2 + a**2)), x) == 1/(x**2 + a**2)**(Rational(3, 2))"
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "dw_i(y, y_0) = -\\frac{y_0 - y}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy \\left[\\frac{x}{(y_0 - y)^2\\sqrt{x^2 + (y_0 - y)^2}}\\right]_{0}^{\\infty}",
+          "to_latex": "dw_i(y, y_0) = -\\frac{y_0 - y}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy \\cdot \\frac{1}{(y_0 - y)^2}",
+          "operation_label": "積分上限 x → ∞ および下限 x = 0 の極限評価",
+          "explanation": "x → ∞ で x / √(x^2 + (y_0 - y)^2) → 1、x = 0 で 0 となることから定積分の値を 1 / (y_0 - y)^2 と評価する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "limit(x/(a**2*sqrt(x**2 + a**2)), x, oo) - 0 == 1/a**2"
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "dw_i(y, y_0) = -\\frac{y_0 - y}{4\\pi}\\frac{d\\Gamma}{dy}\\,dy \\cdot \\frac{1}{(y_0 - y)^2}",
+          "to_latex": "dw_i(y, y_0) = -\\frac{1}{4\\pi}\\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
+          "operation_label": "共通因子 (y_0 - y) の約分",
+          "explanation": "分子の (y_0 - y) と分母の (y_0 - y)^2 を約分し、単一半無限後流渦糸からの誘導速度の表式を整理する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "-(y0 - y)*dGdy/(4*pi*(y0 - y)**2) == -dGdy/(4*pi*(y0 - y))"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dw_i(y, y_0) = -\\frac{1}{4\\pi}\\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
+          "to_latex": "w_i(y_0) = -\\frac{1}{4\\pi}\\int_{-b/2}^{b/2} \\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
+          "operation_label": "スパン全幅にわたる主値積分による重ね合わせ",
+          "explanation": "全スパン [-b/2, b/2] に分布する微小後流渦糸の寄与をコーシーの主値積分として足し合わせ、全誘導吹き下ろし速度 w_i(y_0) を導出する。",
           "used_node_ids": [
             "eng.aero.n03_circulation_vortex_potential"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "dw_i(y, y_0) = -\\frac{1}{4\\pi}\\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
+          "to_latex": "w_i(y_0) = \\operatorname{P.V.}\\int_{-b/2}^{b/2} \\left(-\\frac{1}{4\\pi}\\frac{d\\Gamma/dy}{y_0 - y}\\right) dy",
+          "operation_label": "スパン区間 [-b/2, b/2] における主値積分の設定",
+          "explanation": "ポテンシャル流の線形重ね合わせ原理により、スパン全域の連続渦層による誘導速度を y = y_0 でのコーシーの主値積分として表す。",
+          "used_node_ids": [
+            "eng.aero.n03_circulation_vortex_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "w_i(y_0) = \\operatorname{P.V.}\\int_{-b/2}^{b/2} \\left(-\\frac{1}{4\\pi}\\frac{d\\Gamma/dy}{y_0 - y}\\right) dy",
+          "to_latex": "w_i(y_0) = -\\frac{1}{4\\pi}\\int_{-b/2}^{b/2} \\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
+          "operation_label": "定数係数 -1/(4π) の積分の外へのくくり出し",
+          "explanation": "積分変数 y に無関係な定数係数 -1/(4π) を積分の外に出し、標準的な主値積分表記の吹き下ろし速度公式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "w_i(y_0) = -\\frac{1}{4\\pi}\\int_{-b/2}^{b/2} \\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
+          "to_latex": "\\alpha_i(y_0) \\approx -\\frac{w_i(y_0)}{U_\\infty} = \\frac{1}{4\\pi U_\\infty}\\int_{-b/2}^{b/2} \\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
+          "operation_label": "小誘導迎角近似による誘導迎角 α_i(y_0) の導出",
+          "explanation": "一様流 U_∞ と下向き速度 -w_i(y_0) の速度三角形から誘導迎角を定義し、|w_i(y_0)| ≪ U_∞ のもとで線形近似を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "w_i(y_0) = -\\frac{1}{4\\pi}\\int_{-b/2}^{b/2} \\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
+          "to_latex": "\\alpha_i(y_0) = \\arctan\\!\\left(-\\frac{w_i(y_0)}{U_\\infty}\\right)",
+          "operation_label": "誘導迎角の幾何学的定義式の導入",
+          "explanation": "正の吹き下ろし角（下向きの流線傾き）に対応させるため、下向き速度成分 -w_i(y_0) と一様流速度 U_∞ の比の逆正接として誘導迎角 α_i(y_0) を導入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\alpha_i(y_0) = \\arctan\\!\\left(-\\frac{w_i(y_0)}{U_\\infty}\\right)",
+          "to_latex": "\\alpha_i(y_0) \\approx -\\frac{w_i(y_0)}{U_\\infty}",
+          "operation_label": "小誘導速度仮定 |w_i(y_0)| ≪ U_∞ による逆正接の線形近似",
+          "explanation": "|-w_i(y_0)/U_∞| ≪ 1 に対して1次テイラー展開 arctan(ξ) ≈ ξ を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\alpha_i(y_0) \\approx -\\frac{w_i(y_0)}{U_\\infty}",
+          "to_latex": "\\alpha_i(y_0) \\approx -\\frac{w_i(y_0)}{U_\\infty} = \\frac{1}{4\\pi U_\\infty}\\int_{-b/2}^{b/2} \\frac{d\\Gamma/dy}{y_0 - y}\\,dy",
+          "operation_label": "w_i(y_0) の積分表現の代入と負号の相殺",
+          "explanation": "先に導出した w_i(y_0) = -(1/(4π)) ∫_{-b/2}^{b/2} (dΓ/dy)/(y_0 - y) dy を代入し、2つの負号を相殺させて誘導迎角の積分表示を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T10:53:44.191942+00:00"
     },
     {
       "id": "eng.aero.d09_prandtl_lifting_line_derivation",

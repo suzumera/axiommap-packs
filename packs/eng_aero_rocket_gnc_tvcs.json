@@ -220,12 +220,14 @@
         "aerosp.launch.n05_dynamic_pressure_max_q"
       ],
       "required_math_node_ids": [
-        "math.calc.m13_taylor_expansion"
+        "aerosp.flt.n01_rigid_body_6dof_eom"
       ],
       "assumptions": [
-        "機体は対称軸を有する軸対称剛体であり、ピッチ軸（y軸）周りの連成項 (I_z - I_x)ω_x ω_z はロール角速度・ヨー角速度が小さいため無視できる。",
-        "ジンバル角 δ は微小であり sin δ ≈ δ と線形化できる。",
-        "座標 x は機首から機尾方向を正にとり、x_cg > x_cp のとき機首上げ迎え角 α > 0 に対して空力法線力が機首上げモーメントを生じる。"
+        "機体固定座標系は重心 x_cg を原点とする主慣性軸であり、慣性乗積 I_xy = I_yz = I_zx = 0 が成り立つとともに、瞬時剛体近似として慣性モーメントの時間変化による角運動量変化は無視できる。",
+        "ピッチ面内の純粋縦揺れ運動であり、ロール角速度 ω_x = 0 およびヨー角速度 ω_z = 0 とみなせ、ピッチ角速度は ω_y = dθ/dt を満たす。",
+        "座標 x は機首から機尾方向を正にとり、空力法線力 N は圧力中心 x_cp に作用し、x_cg > x_cp のとき正の迎え角 α > 0 に対して機首上げモーメントを生じる。",
+        "迎え角 α は微小であり、無次元法線力係数は線形近似 C_N = C_Nα α で表される。",
+        "ジンバル角 δ は微小（|δ| ≪ 1）であって sin δ ≈ δ と1次近似でき、正の δ に対して重心後方距離 l_tvc > 0 に作用する推力横成分が機首下げ（負のピッチ）モーメントを生じる。"
       ],
       "steps": [
         {
@@ -233,15 +235,14 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "I_y \\dot{\\omega}_y - (I_z - I_x)\\omega_z\\omega_x = \\tau_y",
+          "from_latex": "\\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{aero}} + \\mathbf{M}_T",
           "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\delta",
-          "operation_label": "空力モーメントとTVCトルクの代入・微小角線形化",
-          "explanation": "ピッチ軸周りのオイラー回転方程式に対し、縦揺れ以外の角速度を無視し、空力法線力によるモーメントとジンバル推力偏向トルクを合算して微小ジンバル角近似を適用する。",
+          "operation_label": "6自由度剛体回転方程式からのTVCピッチ運動方程式の導出",
+          "explanation": "機体固定座標系の剛体回転運動方程式からピッチ軸成分を抽出して平面縦揺れ運動へ簡約し、動圧と線形空力傾斜による空力モーメントおよび微小ジンバル角近似による推力偏向モーメントを順次代入してTVCピッチ運動方程式を導出する。",
           "used_node_ids": [
+            "aerosp.flt.n01_rigid_body_6dof_eom",
             "aerosp.launch.n01_variable_mass_rocket_eom",
-            "aerosp.launch.n05_dynamic_pressure_max_q",
-            "astro.att.n02_euler_rigid_body_equations",
-            "math.calc.m13_taylor_expansion"
+            "aerosp.launch.n05_dynamic_pressure_max_q"
           ],
           "sympy_check_hint": null
         },
@@ -250,45 +251,162 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "I_y \\dot{\\omega}_y - (I_z - I_x)\\omega_z\\omega_x = \\tau_y",
-          "to_latex": "I_y \\ddot{\\theta} = M_{\\mathrm{aero}} + M_{\\mathrm{tvc}}",
-          "operation_label": "ピッチ面純粋回転への簡約",
-          "explanation": "純粋ピッチ運動（ω_x = ω_z = 0, ω_y = dθ/dt）を仮定し、外力モーメント τ_y を空力モーメント M_aero と推力偏向モーメント M_tvc の和に分解する。",
+          "from_latex": "\\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{aero}} + \\mathbf{M}_T",
+          "to_latex": "I_y \\ddot{\\theta} = M_{\\mathrm{aero},y} + M_{T,y}",
+          "operation_label": "ピッチ軸成分の抽出と純粋ピッチ運動への簡約",
+          "explanation": "主慣性軸上の剛体回転方程式からピッチ軸（y軸）成分を取り出し、ロール・ヨー角速度ゼロの仮定およびピッチ角速度の運動学的関係 ω_y = dθ/dt を適用して平面ピッチ運動方程式を得る。",
           "used_node_ids": [
-            "astro.att.n02_euler_rigid_body_equations"
+            "aerosp.flt.n01_rigid_body_6dof_eom"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_2",
+          "step_id": "s3_1_1",
           "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{aero}} + \\mathbf{M}_T",
+          "to_latex": "I_y \\dot{\\omega}_y - (I_z - I_x)\\omega_z\\omega_x = M_{\\mathrm{aero},y} + M_{T,y}",
+          "operation_label": "主慣性軸におけるピッチ軸（y軸）成分の抽出",
+          "explanation": "主慣性軸において慣性テンソルを対角行列 I = diag(I_x, I_y, I_z)、角速度ベクトルを ω_b = (ω_x, ω_y, ω_z)^T と表し、外積 ω_b × (I ω_b) の第2成分 ω_z I_x ω_x - ω_x I_z ω_z = -(I_z - I_x)ω_z ω_x を計算してy軸成分を書き下す。",
+          "used_node_ids": [
+            "aerosp.flt.n01_rigid_body_6dof_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "I_y \\dot{\\omega}_y - (I_z - I_x)\\omega_z\\omega_x = M_{\\mathrm{aero},y} + M_{T,y}",
+          "to_latex": "I_y \\dot{\\omega}_y = M_{\\mathrm{aero},y} + M_{T,y}",
+          "operation_label": "ロール・ヨー角速度ゼロの代入による連成項の消去",
+          "explanation": "ピッチ面内の純粋縦揺れ運動条件 ω_x = 0 および ω_z = 0 を代入し、慣性連成項 -(I_z - I_x)ω_z ω_x を0とする。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "I_y \\dot{\\omega}_y = M_{\\mathrm{aero},y} + M_{T,y}",
+          "to_latex": "I_y \\ddot{\\theta} = M_{\\mathrm{aero},y} + M_{T,y}",
+          "operation_label": "運動学的関係 ω_y = dθ/dt の代入",
+          "explanation": "平面ピッチ運動においてピッチ角速度がピッチ角の時間微分 ω_y = dθ/dt に等しいことから、角加速度を dω_y/dt = d^2θ/dt^2 へ置換する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 6,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "I_y \\ddot{\\theta} = M_{\\mathrm{aero}} + M_{\\mathrm{tvc}}",
-          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\sin\\delta",
-          "operation_label": "空力モーメントとジンバルトルクの展開",
-          "explanation": "動圧 q を用いた空力法線力 N = q S_ref C_Nα α のモーメント腕 (x_cg - x_cp) と、ノズルジンバル角 δ による推力横成分 T sin δ のモーメント腕 l_tvc を代入する。",
+          "from_latex": "I_y \\ddot{\\theta} = M_{\\mathrm{aero},y} + M_{T,y}",
+          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha + M_{T,y}",
+          "operation_label": "空力法線力によるピッチングモーメントの定式化",
+          "explanation": "圧力中心に作用する空力法線力と重心からのモーメント腕を導入し、動圧および線形迎え角近似を順に代入して空力ピッチングモーメントを表す。",
           "used_node_ids": [
-            "aerosp.launch.n01_variable_mass_rocket_eom",
             "aerosp.launch.n05_dynamic_pressure_max_q"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_3",
-          "order": 4,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\sin\\delta",
-          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\delta",
-          "operation_label": "微小ジンバル角線形化",
-          "explanation": "テイラー展開の1次近似 sin δ ≈ δ を適用して線形ピッチ運動方程式を得る。",
+          "step_id": "s3_2_1",
+          "order": 7,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "I_y \\ddot{\\theta} = M_{\\mathrm{aero},y} + M_{T,y}",
+          "to_latex": "I_y \\ddot{\\theta} = N (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) + M_{T,y}",
+          "operation_label": "空力法線力とモーメント腕の積の代入・導入",
+          "explanation": "圧力中心 x_cp に作用する空力法線力 N と、機首から機尾方向を正とする座標系におけるモーメント腕 (x_cg - x_cp) の積として M_aero,y = N(x_cg - x_cp) を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "I_y \\ddot{\\theta} = N (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) + M_{T,y}",
+          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_N (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) + M_{T,y}",
+          "operation_label": "動圧と無次元法線力係数による法線力定義の代入・導入",
+          "explanation": "動圧 q = (1/2)ρv^2、基準面積 S_ref、無次元法線力係数 C_N を用いた空力法線力の定義 N = q S_ref C_N を代入する。",
           "used_node_ids": [
-            "math.calc.m13_taylor_expansion"
+            "aerosp.launch.n05_dynamic_pressure_max_q"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_N (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) + M_{T,y}",
+          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha + M_{T,y}",
+          "operation_label": "線形空力係数関係 C_N = C_Nα α の代入と係数順の整理",
+          "explanation": "微小迎え角における線形近似 C_N = C_Nα α を代入し、掛け算の交換法則により迎え角 α をモーメント腕の後ろに配置する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "q*S_ref*(C_Na*alpha)*(x_cg - x_cp) == q*S_ref*C_Na*(x_cg - x_cp)*alpha"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 10,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha + M_{T,y}",
+          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\delta",
+          "operation_label": "ジンバル推力偏向（TVC）トルクの導入と微小角線形化",
+          "explanation": "ジンバル位置に作用する推力の機軸垂直成分によるピッチングモーメントを代入し、ジンバル角 δ について1次近似を行うことで最終的な線形TVCピッチ運動方程式を得る。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha + M_{T,y}",
+          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T_\\perp l_{\\mathrm{tvc}}",
+          "operation_label": "推力垂直成分とモーメント腕 l_tvc によるTVCモーメントの代入・導入",
+          "explanation": "重心から後方距離 l_tvc のジンバル支点に作用する推力の機軸垂直成分 T_⊥ が機首下げ（負のピッチ）モーメントを生じることから、M_T,y = -T_⊥ l_tvc を代入する。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T_\\perp l_{\\mathrm{tvc}}",
+          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\sin\\delta",
+          "operation_label": "ジンバル角 δ による推力垂直成分 T_⊥ = T sin δ の代入",
+          "explanation": "推力大きさ T とジンバル偏向角 δ による機軸垂直成分 T_⊥ = T sin δ を代入し、積の順序を T l_tvc sin δ に整える。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom"
+          ],
+          "sympy_check_hint": "-(T*sin(delta))*l_tvc == -T*l_tvc*sin(delta)"
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\sin\\delta",
+          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\delta",
+          "operation_label": "微小ジンバル角に対する1次テイラー近似（sin δ ≈ δ）の適用",
+          "explanation": "ジンバル角 δ が微小であるという仮定に基づき1次のマクローリン近似 sin δ ≈ δ を適用し、線形化されたTVCピッチ運動方程式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T10:50:40.883656+00:00"
     },
     {
       "id": "aerosp.gnc_tvc.d02_static_margin_def",

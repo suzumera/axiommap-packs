@@ -228,14 +228,15 @@
         "eng.aero.n01_euler_bernoulli_incompressible",
         "phys.mech.p02_newton_second_law"
       ],
-      "required_math_node_ids": [
-        "aerosp.evtol_be.n01_actuator_disk_momentum",
-        "math.calc.m02_fundamental_theorem_calc"
-      ],
+      "required_math_node_ids": [],
       "assumptions": [
         "流れは定常・非圧縮・非粘性であり、ロータ円板全体で一様な流れ（1次元流管）とみなせる。",
         "アクチュエータディスクは厚みがゼロであり、通過前後で速度は連続、圧力のみが Δp だけ不連続に上昇する。",
-        "遠方上流および遠方後流では静圧が大気圧 p_∞ に戻る。"
+        "遠方上流および遠方後流では静圧が大気圧 p_∞ に戻る。",
+        "ホバリング状態であるため、遠方上流の流体は静止している（U_∞ = 0）。",
+        "流体密度 ρ > 0、ロータ円板面積 A > 0、推力 T > 0（したがって誘導速度 v_i > 0、遠方後流速度 w > 0）であり、これらによる除算が定義できる。",
+        "定常1次元検査体積に対して運動量保存則 T = m_dot (w - U_∞) および非圧縮の連続の式 m_dot = ρ A v_i が成り立つ。",
+        "円板荷重（Disk Loading）を DL := T/A で定義する。"
       ],
       "steps": [
         {
@@ -243,59 +244,252 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "p + \\frac{1}{2}\\rho u^2 = \\text{const.},\\; T = \\dot{m}w",
+          "from_latex": "p + \\frac{1}{2}\\rho \\|\\mathbf{u}\\|^2 = p_\\infty + \\frac{1}{2}\\rho U_\\infty^2",
           "to_latex": "v_i = \\sqrt{\\frac{T}{2\\rho A}} = \\sqrt{\\frac{\\mathrm{DL}}{2\\rho}},\\quad w = 2 v_i",
-          "operation_label": "ベルヌーイ式と運動量保存則の連立",
-          "explanation": "ディスク上下流にベルヌーイの定理を適用して圧力跳躍 Δp を後流速度 w で表し、検査体積の運動量保存則 T = m_dot w と連立させて w = 2v_i および誘導速度 v_i を得る。",
-          "used_node_ids": [
-            "eng.aero.n01_euler_bernoulli_incompressible",
-            "phys.mech.p02_newton_second_law"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_bernoulli_jump",
-          "order": 2,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "p_\\infty = p_0 + \\frac{1}{2}\\rho v_i^2,\\quad p_0 + \\Delta p + \\frac{1}{2}\\rho v_i^2 = p_\\infty + \\frac{1}{2}\\rho w^2",
-          "to_latex": "\\Delta p = \\frac{1}{2}\\rho w^2",
-          "operation_label": "ディスク上下流でのベルヌーイの定理の適用",
-          "explanation": "静止した遠方上流（u=0, p=p_∞）からディスク直前、およびディスク直後から遠方後流（u=w, p=p_∞）へそれぞれベルヌーイの定理を適用し、両式を差し引いて圧力跳躍 Δp を求める。",
+          "operation_label": "ベルヌーイの定理と運動量保存則の連立による誘導速度の導出",
+          "explanation": "定常非圧縮流のベルヌーイの定理をディスク上下流に適用して圧力跳躍を後流速度で表し、検査体積の運動量保存則および連続の式と連立させて後流速度比 w = 2v_i とホバリング誘導速度 v_i を導く。",
           "used_node_ids": [
             "eng.aero.n01_euler_bernoulli_incompressible"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s3_momentum_balance",
-          "order": 3,
+          "step_id": "s2_1",
+          "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\Delta p = \\frac{1}{2}\\rho w^2",
-          "to_latex": "T = A\\Delta p = \\dot{m}w = \\rho A v_i w \\implies w = 2v_i",
-          "operation_label": "推力と運動量流束の等置",
-          "explanation": "ディスクが流体に与える推力 T = AΔp = (1/2)ρAw^2 と、検査体積を通過する質量流量 m_dot = ρAv_i による運動量増加率 m_dot w を等置することで、遠方後流速度 w = 2v_i を得る。",
+          "from_latex": "p + \\frac{1}{2}\\rho \\|\\mathbf{u}\\|^2 = p_\\infty + \\frac{1}{2}\\rho U_\\infty^2",
+          "to_latex": "\\Delta p = \\frac{1}{2}\\rho w^2",
+          "operation_label": "ディスク上下流へのベルヌーイの定理の適用と圧力跳躍の導出",
+          "explanation": "ホバリング条件 U_∞ = 0 の下でディスク上流側と下流側にベルヌーイの定理をそれぞれ適用し、遠方静圧 p_∞ および共通項を消去して圧力跳躍 Δp を求める。",
           "used_node_ids": [
-            "phys.mech.p02_newton_second_law"
+            "eng.aero.n01_euler_bernoulli_incompressible"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s4_induced_velocity",
-          "order": 4,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "T = A\\Delta p = \\dot{m}w = \\rho A v_i w \\implies w = 2v_i",
-          "to_latex": "v_i = \\sqrt{\\frac{T}{2\\rho A}} = \\sqrt{\\frac{\\mathrm{DL}}{2\\rho}},\\quad w = 2 v_i",
-          "operation_label": "誘導速度の代数解法",
-          "explanation": "w = 2v_i を推力式 T = ρAv_i w に代入して T = 2ρAv_i^2 を得て、円板荷重 DL := T/A を用いて誘導速度 v_i について解く。",
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "p + \\frac{1}{2}\\rho \\|\\mathbf{u}\\|^2 = p_\\infty + \\frac{1}{2}\\rho U_\\infty^2",
+          "to_latex": "p_0 + \\frac{1}{2}\\rho v_i^2 = p_\\infty",
+          "operation_label": "ホバリング条件を代入しディスク上流側にベルヌーイの定理を適用",
+          "explanation": "遠方上流の静止条件 U_∞ = 0 とディスク直前の静圧 p_0・誘導速度 v_i をベルヌーイの定理に代入し、上流領域の保存式を得る。",
           "used_node_ids": [
-            "aerosp.evtol_be.n01_actuator_disk_momentum"
+            "eng.aero.n01_euler_bernoulli_incompressible"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "p_0 + \\frac{1}{2}\\rho v_i^2 = p_\\infty",
+          "to_latex": "p_0 + \\frac{1}{2}\\rho v_i^2 = p_\\infty,\\quad p_0 + \\Delta p + \\frac{1}{2}\\rho v_i^2 = p_\\infty + \\frac{1}{2}\\rho w^2",
+          "operation_label": "ディスク下流側のベルヌーイ式を導入",
+          "explanation": "ディスク直後の静圧 p_0 + Δp・速度 v_i と遠方後流の静圧 p_∞・速度 w に対してベルヌーイの定理を適用した下流側の保存式を導入する。",
+          "used_node_ids": [
+            "eng.aero.n01_euler_bernoulli_incompressible"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "p_0 + \\frac{1}{2}\\rho v_i^2 = p_\\infty,\\quad p_0 + \\Delta p + \\frac{1}{2}\\rho v_i^2 = p_\\infty + \\frac{1}{2}\\rho w^2",
+          "to_latex": "p_0 + \\Delta p + \\frac{1}{2}\\rho v_i^2 = p_0 + \\frac{1}{2}\\rho v_i^2 + \\frac{1}{2}\\rho w^2",
+          "operation_label": "上流側の式を下流側の式へ代入",
+          "explanation": "上流側の関係式 p_∞ = p_0 + (1/2)ρv_i^2 を下流側の式の右辺にある p_∞ に代入し、p_∞ を消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "p_0 + \\Delta p + \\frac{1}{2}\\rho v_i^2 = p_0 + \\frac{1}{2}\\rho v_i^2 + \\frac{1}{2}\\rho w^2",
+          "to_latex": "\\Delta p = \\frac{1}{2}\\rho w^2",
+          "operation_label": "両辺から共通項を減算して相殺",
+          "explanation": "等式の両辺から共通項 p_0 + (1/2)ρv_i^2 を差し引くことで圧力跳躍 Δp = (1/2)ρw^2 を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(p_0 + Delta_p + rho*v_i**2/2) - (p_0 + rho*v_i**2/2) == Delta_p"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 7,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta p = \\frac{1}{2}\\rho w^2",
+          "to_latex": "T = \\frac{1}{2}\\rho A w^2,\\quad T = \\rho A v_i w",
+          "operation_label": "推力の圧力表現と運動量保存表現の導出",
+          "explanation": "圧力跳躍 Δp に円板面積 A を掛けて推力 T = (1/2)ρAw^2 を得るとともに、定常検査体積の運動量保存則と連続の式から推力 T = ρAv_i w を導く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\Delta p = \\frac{1}{2}\\rho w^2",
+          "to_latex": "A\\Delta p = \\frac{1}{2}\\rho A w^2",
+          "operation_label": "両辺にロータ円板面積 A を乗算",
+          "explanation": "圧力跳躍の等式の両辺にロータ円板面積 A を掛けて、円板全体に作用する総圧力力 AΔp を表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": "A*(rho*w**2/2) == rho*A*w**2/2"
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "A\\Delta p = \\frac{1}{2}\\rho A w^2",
+          "to_latex": "T = \\frac{1}{2}\\rho A w^2",
+          "operation_label": "推力の定義式 T = AΔp を代入",
+          "explanation": "円板全面に一様に作用する圧力上昇 Δp による推力 T = AΔp を左辺に代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "T = \\frac{1}{2}\\rho A w^2",
+          "to_latex": "T = \\frac{1}{2}\\rho A w^2,\\quad T = \\dot{m}w",
+          "operation_label": "検査体積の運動量保存則を導入",
+          "explanation": "定常1次元検査体積の運動量保存則 T = m_dot(w - U_∞) にホバリング条件 U_∞ = 0 を用いた推力式 T = m_dot w を導入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "T = \\frac{1}{2}\\rho A w^2,\\quad T = \\dot{m}w",
+          "to_latex": "T = \\frac{1}{2}\\rho A w^2,\\quad T = \\rho A v_i w",
+          "operation_label": "連続の式 m_dot = ρAv_i を代入",
+          "explanation": "非圧縮1次元流管の質量保存則よりディスクを通過する質量流量は m_dot = ρAv_i で与えられるため、これを T = m_dot w へ代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 12,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T = \\frac{1}{2}\\rho A w^2,\\quad T = \\rho A v_i w",
+          "to_latex": "T = \\rho A v_i w,\\quad w = 2 v_i",
+          "operation_label": "推力式の等置による後流速度比の導出",
+          "explanation": "圧力表現と運動量保存表現の推力 T を等置し、非ゼロの共通因子 ρAw で両辺を割ることで遠方後流速度 w = 2v_i を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "T = \\frac{1}{2}\\rho A w^2,\\quad T = \\rho A v_i w",
+          "to_latex": "T = \\rho A v_i w,\\quad \\frac{1}{2}\\rho A w^2 = \\rho A v_i w",
+          "operation_label": "2つの推力表現を等置",
+          "explanation": "推力 T の2つの表現を等置して後流速度 w と誘導速度 v_i の方程式を立て、後段で使用する推力式 T = ρAv_i w も保持する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "T = \\rho A v_i w,\\quad \\frac{1}{2}\\rho A w^2 = \\rho A v_i w",
+          "to_latex": "T = \\rho A v_i w,\\quad \\frac{1}{2}w = v_i",
+          "operation_label": "両辺を非ゼロ因子 ρAw で除算",
+          "explanation": "仮定より ρ > 0, A > 0, w > 0 であるため、等式 (1/2)ρAw^2 = ρAv_i w の両辺を ρAw で割り約分する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(rho*A*w**2/2)/(rho*A*w) == w/2"
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "T = \\rho A v_i w,\\quad \\frac{1}{2}w = v_i",
+          "to_latex": "T = \\rho A v_i w,\\quad w = 2 v_i",
+          "operation_label": "両辺に 2 を乗算",
+          "explanation": "等式 (1/2)w = v_i の両辺に 2 を掛けて、遠方後流速度 w = 2v_i を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "2*(w/2) == w"
+        },
+        {
+          "step_id": "s2_4",
+          "order": 16,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T = \\rho A v_i w,\\quad w = 2 v_i",
+          "to_latex": "v_i = \\sqrt{\\frac{T}{2\\rho A}} = \\sqrt{\\frac{\\mathrm{DL}}{2\\rho}},\\quad w = 2 v_i",
+          "operation_label": "後流速度の代入による誘導速度の導出",
+          "explanation": "w = 2v_i を推力式 T = ρAv_i w に代入して v_i について解き、円板荷重の定義 DL := T/A を適用して最終結論を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "T = \\rho A v_i w,\\quad w = 2 v_i",
+          "to_latex": "T = 2\\rho A v_i^2,\\quad w = 2 v_i",
+          "operation_label": "w = 2v_i を推力式へ代入",
+          "explanation": "得られた関係式 w = 2v_i を推力式 T = ρAv_i w の w に代入し、T = 2ρAv_i^2 を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "rho*A*v_i*(2*v_i) == 2*rho*A*v_i**2"
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "T = 2\\rho A v_i^2,\\quad w = 2 v_i",
+          "to_latex": "v_i^2 = \\frac{T}{2\\rho A},\\quad w = 2 v_i",
+          "operation_label": "両辺を 2ρA で除算して v_i^2 について解く",
+          "explanation": "ρ > 0, A > 0 より両辺を 2ρA で割り、左辺と右辺を入れ替えて v_i^2 = T/(2ρA) を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(2*rho*A*v_i**2)/(2*rho*A) == v_i**2"
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 19,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "v_i^2 = \\frac{T}{2\\rho A},\\quad w = 2 v_i",
+          "to_latex": "v_i = \\sqrt{\\frac{T}{2\\rho A}},\\quad w = 2 v_i",
+          "operation_label": "正の平方根をとる",
+          "explanation": "ホバリング時は T > 0 かつ下向き誘導速度は正（v_i > 0）であるため、両辺の正の平方根をとって v_i を表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 20,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "v_i = \\sqrt{\\frac{T}{2\\rho A}},\\quad w = 2 v_i",
+          "to_latex": "v_i = \\sqrt{\\frac{T}{2\\rho A}} = \\sqrt{\\frac{\\mathrm{DL}}{2\\rho}},\\quad w = 2 v_i",
+          "operation_label": "円板荷重の定義 DL := T/A を代入",
+          "explanation": "円板荷重（Disk Loading）の定義 DL := T/A を平方根内の T/A に代入し、目標の代表式を完成させる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T10:52:22.986558+00:00"
     },
     {
       "id": "deriv_rtr02_hover_ideal_power",

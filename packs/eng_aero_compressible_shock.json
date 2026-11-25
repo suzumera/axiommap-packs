@@ -224,12 +224,13 @@
         "eng.acst.n01_fluid_adiabatic_boundary",
         "phys.thermo.th01_zeroth_law_state_eq"
       ],
-      "required_math_node_ids": [
-        "math.calc.m08_partial_total_diff"
-      ],
+      "required_math_node_ids": [],
       "assumptions": [
-        "静止一様場 (rho_0, p_0, u_0=0) に対する微小擾乱 (rho', p', u')",
-        "非粘性・断熱（等エントロピー）な理想気体"
+        "静止・一様・定常な基準場（u_0 = 0、rho_0 = 定数 > 0、p_0 = 定数 > 0、T_0 = T = 定数 > 0）に対する微小擾乱（|rho'| << rho_0、|p'| << p_0、|u'| << a）を仮定する。",
+        "流体は非粘性・外力なし・断熱可逆（等エントロピー）な理想気体であり、比熱比 gamma > 0 は定数とする。",
+        "擾乱速度場 u' は時間・空間について2階連続微分可能であり、混合偏微分の順序交換（時間微分と空間発散の交換）が可能であるとする。",
+        "理想気体の普遍気体定数 R_u と平均分子量 M_w から比気体定数 R := R_u / M_w を定義し、基準温度を T と表記する。",
+        "音速は正の実数（a > 0）とし、1次線形化近似において擾乱の2次以上の高次積項を無視する。"
       ],
       "steps": [
         {
@@ -237,14 +238,11 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho \\mathbf{u}) = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p,\\quad \\frac{dp}{d\\rho} = \\frac{\\gamma p_0}{\\rho_0}",
-          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\qquad a = \\sqrt{\\gamma R T}",
-          "operation_label": "微小擾乱線形化と波動方程式導出",
-          "explanation": "連続式とオイラー方程式を静止基準状態の周りで1次線形化して速度場を消去し、断熱状態関係と理想気体状態方程式から音速公式を得る。",
-          "used_node_ids": [
-            "eng.acst.n01_fluid_adiabatic_boundary",
-            "phys.thermo.th01_zeroth_law_state_eq"
-          ],
+          "from_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho \\mathbf{u}) = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\qquad a = \\sqrt{\\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s} = \\sqrt{\\gamma R T}",
+          "operation_label": "微小擾乱線形化と等エントロピー・理想気体関係による音速波動方程式の導出",
+          "explanation": "連続方程式とオイラー方程式を静止一様基準場の周りで1次線形化して速度擾乱を消去し、断熱（等エントロピー）状態関係と理想気体状態方程式を導入して圧力波動方程式と音速公式を導く。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -253,12 +251,58 @@
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
           "from_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho \\mathbf{u}) = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
-          "to_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0 \\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p'",
-          "operation_label": "微小擾乱による1次線形化",
-          "explanation": "密度・圧力・速度を基準値と微小擾乱の和に分解し、擾乱の2次以上の高次項を無視して線形化方程式を得る。",
-          "used_node_ids": [
-            "eng.acst.n01_fluid_adiabatic_boundary"
-          ],
+          "to_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "operation_label": "連続方程式の微小擾乱による1次線形化",
+          "explanation": "静止一様基準場に対する密度・速度の微小擾乱展開を連続方程式に代入して線形展開し、定数項と2次微小項を処理して線形化連続方程式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{\\partial \\rho}{\\partial t} + \\nabla\\cdot(\\rho \\mathbf{u}) = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "to_latex": "\\frac{\\partial (\\rho_0 + \\rho')}{\\partial t} + \\nabla\\cdot\\big((\\rho_0 + \\rho')\\mathbf{u}'\\big) = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "operation_label": "連続方程式への微小擾乱展開の代入",
+          "explanation": "前提ノード ACST01 の連続方程式に、静止基準場（u_0 = 0）に対する微小擾乱分解 rho = rho_0 + rho' および u = u' を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{\\partial (\\rho_0 + \\rho')}{\\partial t} + \\nabla\\cdot\\big((\\rho_0 + \\rho')\\mathbf{u}'\\big) = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "to_latex": "\\frac{\\partial \\rho_0}{\\partial t} + \\frac{\\partial \\rho'}{\\partial t} + \\nabla\\cdot(\\rho_0 \\mathbf{u}') + \\nabla\\cdot(\\rho'\\mathbf{u}') = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "operation_label": "微分の線形性による連続方程式の展開",
+          "explanation": "時間偏微分と発散演算の線形性を用いて各項を和の形に展開する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{\\partial \\rho_0}{\\partial t} + \\frac{\\partial \\rho'}{\\partial t} + \\nabla\\cdot(\\rho_0 \\mathbf{u}') + \\nabla\\cdot(\\rho'\\mathbf{u}') = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "to_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' + \\nabla\\cdot(\\rho'\\mathbf{u}') = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "operation_label": "定常一様基準密度の微分消去と定数括り出し",
+          "explanation": "基準密度 rho_0 が時間・空間に関して定数（d(rho_0)/dt = 0、grad(rho_0) = 0）であることを用い、第1項を消去し第3項の rho_0 を発散の外に出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' + \\nabla\\cdot(\\rho'\\mathbf{u}') = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "to_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "operation_label": "連続方程式における2次微小項の省略",
+          "explanation": "擾乱の積 rho' u' を含む2次微小項 div(rho' u') を1次項に対して十分小さいとして省略し、線形化連続方程式を得る。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -266,13 +310,59 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0 \\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p'",
-          "to_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} = \\nabla^2 p'",
-          "operation_label": "速度擾乱の消去",
-          "explanation": "連続式を時間微分し、運動量式の発散を取って差し引くことで速度擾乱を消去する。",
-          "used_node_ids": [
-            "math.calc.m08_partial_total_diff"
-          ],
+          "from_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "to_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0 \\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p'",
+          "operation_label": "オイラー方程式の微小擾乱による1次線形化",
+          "explanation": "オイラー方程式に微小擾乱展開を代入し、一様基準圧力の勾配消去と高次微小項の省略を行って線形化運動量方程式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho\\left(\\frac{\\partial \\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "to_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad (\\rho_0 + \\rho')\\left(\\frac{\\partial \\mathbf{u}'}{\\partial t} + (\\mathbf{u}'\\cdot\\nabla)\\mathbf{u}'\\right) = -\\nabla(p_0 + p')",
+          "operation_label": "オイラー方程式への微小擾乱展開の代入",
+          "explanation": "前提ノード ACST01 のオイラー方程式に、微小擾乱分解 rho = rho_0 + rho'、p = p_0 + p'、u = u' を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad (\\rho_0 + \\rho')\\left(\\frac{\\partial \\mathbf{u}'}{\\partial t} + (\\mathbf{u}'\\cdot\\nabla)\\mathbf{u}'\\right) = -\\nabla(p_0 + p')",
+          "to_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0\\frac{\\partial \\mathbf{u}'}{\\partial t} + \\rho_0(\\mathbf{u}'\\cdot\\nabla)\\mathbf{u}' + \\rho'\\frac{\\partial \\mathbf{u}'}{\\partial t} + \\rho'(\\mathbf{u}'\\cdot\\nabla)\\mathbf{u}' = -\\nabla p_0 - \\nabla p'",
+          "operation_label": "慣性項の乗法展開と圧力勾配の線形展開",
+          "explanation": "左辺の積を分配法則で展開し、右辺の勾配を線形性により基準圧力勾配と擾乱圧力勾配に分離する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0\\frac{\\partial \\mathbf{u}'}{\\partial t} + \\rho_0(\\mathbf{u}'\\cdot\\nabla)\\mathbf{u}' + \\rho'\\frac{\\partial \\mathbf{u}'}{\\partial t} + \\rho'(\\mathbf{u}'\\cdot\\nabla)\\mathbf{u}' = -\\nabla p_0 - \\nabla p'",
+          "to_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0\\frac{\\partial \\mathbf{u}'}{\\partial t} + \\rho_0(\\mathbf{u}'\\cdot\\nabla)\\mathbf{u}' + \\rho'\\frac{\\partial \\mathbf{u}'}{\\partial t} + \\rho'(\\mathbf{u}'\\cdot\\nabla)\\mathbf{u}' = -\\nabla p'",
+          "operation_label": "一様基準圧力の空間勾配の消去",
+          "explanation": "基準圧力 p_0 が空間的に一様であるため grad(p_0) = 0 となり、右辺の基準圧力勾配項を消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0\\frac{\\partial \\mathbf{u}'}{\\partial t} + \\rho_0(\\mathbf{u}'\\cdot\\nabla)\\mathbf{u}' + \\rho'\\frac{\\partial \\mathbf{u}'}{\\partial t} + \\rho'(\\mathbf{u}'\\cdot\\nabla)\\mathbf{u}' = -\\nabla p'",
+          "to_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0 \\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p'",
+          "operation_label": "オイラー方程式における2次・3次微小項の省略",
+          "explanation": "擾乱の2次積および3次積を含む移流項と変動密度慣性項を1次項に対して十分小さいとして省略し、線形化オイラー方程式を得る。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -280,17 +370,184 @@
           "order": 3,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0 \\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p'",
+          "to_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} = \\nabla^2 p'",
+          "operation_label": "速度擾乱の消去による密度・圧力結合方程式の導出",
+          "explanation": "線形化連続方程式を時間微分し、線形化オイラー方程式の発散を取って偏微分順序を交換して代入することにより速度擾乱を消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{\\partial \\rho'}{\\partial t} + \\rho_0 \\nabla\\cdot\\mathbf{u}' = 0,\\quad \\rho_0 \\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p'",
+          "to_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} + \\rho_0 \\frac{\\partial}{\\partial t}(\\nabla\\cdot\\mathbf{u}') = 0,\\quad \\rho_0 \\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p'",
+          "operation_label": "線形化連続方程式の時間偏微分",
+          "explanation": "線形化連続方程式の両辺を時間 t で偏微分し、時間定数 rho_0 を偏微分の外に出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} + \\rho_0 \\frac{\\partial}{\\partial t}(\\nabla\\cdot\\mathbf{u}') = 0,\\quad \\rho_0 \\frac{\\partial \\mathbf{u}'}{\\partial t} = -\\nabla p'",
+          "to_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} + \\rho_0 \\frac{\\partial}{\\partial t}(\\nabla\\cdot\\mathbf{u}') = 0,\\quad \\rho_0 \\nabla\\cdot\\left(\\frac{\\partial \\mathbf{u}'}{\\partial t}\\right) = -\\nabla^2 p'",
+          "operation_label": "線形化オイラー方程式への発散演算の適用",
+          "explanation": "線形化オイラー方程式の両辺に発散演算を作用させ、空間定数 rho_0 を外に出し、右辺にラプラシアン div(grad p') = nabla^2 p' を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} + \\rho_0 \\frac{\\partial}{\\partial t}(\\nabla\\cdot\\mathbf{u}') = 0,\\quad \\rho_0 \\nabla\\cdot\\left(\\frac{\\partial \\mathbf{u}'}{\\partial t}\\right) = -\\nabla^2 p'",
+          "to_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} - \\nabla^2 p' = 0",
+          "operation_label": "偏微分順序交換と運動量発散式の代入による速度消去",
+          "explanation": "2階偏微分の連続性により時間微分と発散の順序を交換し（d/dt(div u') = div(du'/dt)）、第2式を第1式へ代入して速度擾乱 u' を消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} - \\nabla^2 p' = 0",
+          "to_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} = \\nabla^2 p'",
+          "operation_label": "圧力ラプラシアン項の右辺への移項",
+          "explanation": "左辺の -nabla^2 p' を右辺へ移項して符号を反転し、密度の2階時間微分と圧力のラプラシアンを結ぶ式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
           "from_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} = \\nabla^2 p'",
-          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\qquad a = \\sqrt{\\gamma R T}",
-          "operation_label": "断熱関係と理想気体状態方程式の代入",
-          "explanation": "等エントロピー関係 dp'/drho' = gamma p_0 / rho_0 = a^2 および理想気体の状態方程式 p_0 / rho_0 = R T を代入し、圧力の波動方程式と音速を得る。",
-          "used_node_ids": [
-            "eng.acst.n01_fluid_adiabatic_boundary",
-            "phys.thermo.th01_zeroth_law_state_eq"
-          ],
+          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0}",
+          "operation_label": "等エントロピー状態関係の導入による圧力波動方程式の導出",
+          "explanation": "断熱（等エントロピー）過程における圧力・密度の1次関係を導入して密度擾乱を消去し、圧力擾乱に関する波動方程式を導く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} = \\nabla^2 p'",
+          "to_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} = \\nabla^2 p',\\quad p' = a^2 \\rho',\\quad a^2 := \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0}",
+          "operation_label": "等エントロピー状態関係と音速2乗の定義を導入",
+          "explanation": "等エントロピー過程の1次テイラー展開関係 p' = (dp/drho)_s rho' と前提ノード ACST01 の断熱状態関係 dp/drho = gamma p_0 / rho_0 を導入し、音速の2乗 a^2 を定義する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} = \\nabla^2 p',\\quad p' = a^2 \\rho',\\quad a^2 := \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0}",
+          "to_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} = \\nabla^2 p',\\quad \\rho' = \\frac{p'}{a^2},\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0}",
+          "operation_label": "状態関係を密度擾乱について解く",
+          "explanation": "非ゼロ条件 a^2 > 0 のもとで p' = a^2 rho' の両辺を a^2 で割り、rho' を p' で表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{\\partial^2 \\rho'}{\\partial t^2} = \\nabla^2 p',\\quad \\rho' = \\frac{p'}{a^2},\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0}",
+          "to_latex": "\\frac{1}{a^2}\\frac{\\partial^2 p'}{\\partial t^2} = \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0}",
+          "operation_label": "密度擾乱の代入と定数係数の微分外への括り出し",
+          "explanation": "rho' = p' / a^2 を波動方程式の左辺へ代入し、基準状態が定常一様であるため時間に依存しない定数 1/a^2 を2階時間偏微分の外に出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": "diff(p(t)/a**2, t, 2) == diff(p(t), t, 2)/a**2"
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{1}{a^2}\\frac{\\partial^2 p'}{\\partial t^2} = \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0}",
+          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0}",
+          "operation_label": "両辺への音速2乗の乗算による分母払い",
+          "explanation": "等式の両辺に a^2 を掛けて分母を払い、圧力擾乱に関する3次元波動方程式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_5",
+          "order": 5,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0}",
+          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\qquad a = \\sqrt{\\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s} = \\sqrt{\\gamma R T}",
+          "operation_label": "理想気体状態方程式からの音速式の導出",
+          "explanation": "理想気体の状態方程式を比気体定数を用いた密度形式へ変形して音速の2乗に代入し、正の平方根を取って音速公式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0}",
+          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0},\\quad p_0 V = n R_u T,\\quad \\rho_0 = \\frac{n M_w}{V},\\quad R := \\frac{R_u}{M_w}",
+          "operation_label": "理想気体状態方程式・密度・比気体定数の定義を導入",
+          "explanation": "前提ノード TH01 の理想気体状態方程式 p_0 V = n R_u T を基準状態に適用し、モル質量 M_w による密度表現 rho_0 = n M_w / V および比気体定数 R := R_u / M_w の定義を導入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0},\\quad p_0 V = n R_u T,\\quad \\rho_0 = \\frac{n M_w}{V},\\quad R := \\frac{R_u}{M_w}",
+          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0},\\quad \\frac{p_0}{\\rho_0} = R T",
+          "operation_label": "理想気体状態方程式の密度・圧力比形式への変形",
+          "explanation": "p_0 V = n R_u T の両辺を質量 n M_w = rho_0 V（> 0）で割り、R = R_u / M_w を代入して圧力・密度比 p_0 / rho_0 = R T を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(n * R_u * T / V) / (n * M_w / V) == (R_u / M_w) * T"
+        },
+        {
+          "step_id": "s3_5_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\frac{\\gamma p_0}{\\rho_0},\\quad \\frac{p_0}{\\rho_0} = R T",
+          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\gamma R T",
+          "operation_label": "音速の2乗への圧力・密度比の代入",
+          "explanation": "p_0 / rho_0 = R T を a^2 = gamma p_0 / rho_0 に代入して a^2 = gamma R T を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\quad a^2 = \\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s = \\gamma R T",
+          "to_latex": "\\frac{\\partial^2 p'}{\\partial t^2} = a^2 \\nabla^2 p',\\qquad a = \\sqrt{\\left(\\frac{\\partial p}{\\partial \\rho}\\right)_s} = \\sqrt{\\gamma R T}",
+          "operation_label": "正の平方根による音速式の確定",
+          "explanation": "音速が正の物理量（a > 0）であることから各辺の正の平方根を取り、到達目標である微小擾乱の波動方程式と音速公式を得る。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T10:47:10.507931+00:00"
     },
     {
       "id": "eng.comp.d02_mach_number",
@@ -619,12 +876,12 @@
         "phys.thermo.th03_first_law_internal_energy",
         "phys.thermo.th01_zeroth_law_state_eq"
       ],
-      "required_math_node_ids": [
-        "math.calc.m02_fundamental_theorem_calc"
-      ],
+      "required_math_node_ids": [],
       "assumptions": [
-        "等エントロピー過程 (ds = 0)",
-        "比熱一定の理想気体"
+        "定常・断熱・可逆な等エントロピー流れ（ds = 0）",
+        "比熱一定の理想気体（状態方程式 p = \\rho R T、エンタルピー関係 dh = c_p dT、マイヤーの関係 c_p - c_v = R、比熱比 \\gamma = c_p / c_v > 1）",
+        "静状態およびよどみ点状態において T > 0, p > 0, \\rho > 0",
+        "流線に沿った静状態から流速ゼロのよどみ点状態までの連続かつ滑らかな変化"
       ],
       "steps": [
         {
@@ -632,14 +889,12 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "T\\,ds = dh - \\frac{dp}{\\rho} = 0,\\quad \\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
-          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\quad \\frac{\\rho_0}{\\rho} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{1}{\\gamma - 1}}",
-          "operation_label": "等エントロピー積分による全圧・全密度比導出",
-          "explanation": "ギブス関係式 ds = 0 を積分して圧力・密度と温度のべき乗関係を得て、よどみ点温度比を代入する。",
+          "from_latex": "T\\,ds = dh - \\frac{dp}{\\rho},\\quad ds = 0,\\quad \\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
+          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{1}{\\gamma - 1}}",
+          "operation_label": "等エントロピー関係式とよどみ点温度比による全圧比・全密度比の導出",
+          "explanation": "ギブスの関係式に等エントロピー条件と理想気体の状態方程式を適用して積分し、全圧比および全密度比とよどみ点温度比のべき乗関係を得た上で、よどみ点温度比の式を代入する。",
           "used_node_ids": [
-            "eng.comp.n03_stagnation_enthalpy_energy_eq",
-            "phys.thermo.th01_zeroth_law_state_eq",
-            "phys.thermo.th03_first_law_internal_energy"
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
           ],
           "sympy_check_hint": null
         },
@@ -648,15 +903,47 @@
           "order": 1,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "T\\,ds = dh - \\frac{dp}{\\rho} = 0,\\quad \\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
-          "to_latex": "c_p \\frac{dT}{T} = R \\frac{dp}{p} \\implies \\frac{p_0}{p} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
-          "operation_label": "等エントロピー関係の積分",
-          "explanation": "dh = c_p dT と理想気体状態方程式 1/(rho T) = R/p を用いて ds = 0 を積分し、p_0/p と T_0/T の関係を得る。",
-          "used_node_ids": [
-            "math.calc.m02_fundamental_theorem_calc",
-            "phys.thermo.th01_zeroth_law_state_eq",
-            "phys.thermo.th03_first_law_internal_energy"
-          ],
+          "from_latex": "T\\,ds = dh - \\frac{dp}{\\rho},\\quad ds = 0",
+          "to_latex": "c_p \\frac{dT}{T} = R \\frac{dp}{p}`",
+          "operation_label": "ギブス関係式と状態方程式による変数分離形の導出",
+          "explanation": "等エントロピー条件 ds = 0 のもとで、比エンタルピー微分と理想気体の状態方程式をギブスの関係式に代入し、温度と圧力の変数分離形微分方程式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "T\\,ds = dh - \\frac{dp}{\\rho},\\quad ds = 0",
+          "to_latex": "dh = \\frac{dp}{\\rho}`",
+          "operation_label": "等エントロピー条件の代入と移項",
+          "explanation": "ギブスの関係式 T ds = dh - dp/\\rho に等エントロピー条件 ds = 0 を代入し、圧力微分項 dp/\\rho を左辺へ移項する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "dh = \\frac{dp}{\\rho}`",
+          "to_latex": "c_p\\,dT = \\frac{R T}{p}\\,dp",
+          "operation_label": "エンタルピー関係と状態方程式を代入・導入",
+          "explanation": "比熱一定の理想気体の関係 dh = c_p dT と理想気体の状態方程式 p = \\rho R T から得られる 1/\\rho = R T / p をそれぞれ代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "c_p\\,dT = \\frac{R T}{p}\\,dp",
+          "to_latex": "c_p \\frac{dT}{T} = R \\frac{dp}{p}`",
+          "operation_label": "両辺を静温 T で割り変数分離",
+          "explanation": "静温 T > 0 を用いて両辺を T で割り、左辺に温度、右辺に圧力を分離する。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -664,17 +951,168 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "c_p \\frac{dT}{T} = R \\frac{dp}{p} \\implies \\frac{p_0}{p} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
-          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\quad \\frac{\\rho_0}{\\rho} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{1}{\\gamma - 1}}",
-          "operation_label": "よどみ点温度比と状態方程式の適用",
-          "explanation": "T_0/T の式を代入して p_0/p を得、さらに rho_0/rho = (p_0/p)/(T_0/T) より全密度比を得る。",
+          "from_latex": "c_p \\frac{dT}{T} = R \\frac{dp}{p}`",
+          "to_latex": "\\frac{p_0}{p} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "operation_label": "静状態からよどみ点状態までの積分と全圧比の温度比表示",
+          "explanation": "変数分離形微分方程式を静状態からよどみ点状態まで定積分し、比熱比と気体定数の関係を用いて指数化することで全圧比と全温比の関係式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "c_p \\frac{dT}{T} = R \\frac{dp}{p}`",
+          "to_latex": "c_p \\ln\\!\\left(\\frac{T_0}{T}\\right) = R \\ln\\!\\left(\\frac{p_0}{p}\\right)`",
+          "operation_label": "静状態からよどみ点状態まで両辺を定積分",
+          "explanation": "比熱 c_p および気体定数 R が一定であるとして、静状態 (T, p) からよどみ点状態 (T_0, p_0) まで両辺を定積分し、対数の差を商の対数として表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "c_p \\ln\\!\\left(\\frac{T_0}{T}\\right) = R \\ln\\!\\left(\\frac{p_0}{p}\\right)`",
+          "to_latex": "\\ln\\!\\left(\\frac{p_0}{p}\\right) = \\frac{c_p}{R} \\ln\\!\\left(\\frac{T_0}{T}\\right)`",
+          "operation_label": "両辺を R で割り左右を入れ替え",
+          "explanation": "気体定数 R > 0 で両辺を割り、圧力比を含む対数項を左辺に配置する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\ln\\!\\left(\\frac{p_0}{p}\\right) = \\frac{c_p}{R} \\ln\\!\\left(\\frac{T_0}{T}\\right)`",
+          "to_latex": "\\ln\\!\\left(\\frac{p_0}{p}\\right) = \\frac{\\gamma}{\\gamma - 1} \\ln\\!\\left(\\frac{T_0}{T}\\right)`",
+          "operation_label": "マイヤーの関係と比熱比の定義を代入",
+          "explanation": "マイヤーの関係 R = c_p - c_v と比熱比 \\gamma = c_p / c_v より得られる c_p / R = \\gamma / (\\gamma - 1) を右辺の係数に代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "c_p / (c_p - c_p/gamma) == gamma / (gamma - 1)"
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\ln\\!\\left(\\frac{p_0}{p}\\right) = \\frac{\\gamma}{\\gamma - 1} \\ln\\!\\left(\\frac{T_0}{T}\\right)`",
+          "to_latex": "\\frac{p_0}{p} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "operation_label": "対数の係数処理と両辺の指数関数適用",
+          "explanation": "対数の性質 a \\ln x = \\ln(x^a) を右辺に適用した上で両辺の自然指数関数をとり、全圧比と全温比のべき乗関係を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{p_0}{p} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\frac{p_0}{p}\\left(\\frac{T_0}{T}\\right)^{-1}`",
+          "operation_label": "よどみ点温度比の代入と密度比関係式の導入",
+          "explanation": "断熱定常流れのよどみ点温度比を全圧比へ代入してマッハ数表示を確定させ、さらに理想気体の状態方程式から密度比の関係式を導入する。",
           "used_node_ids": [
-            "eng.comp.n03_stagnation_enthalpy_energy_eq",
-            "phys.thermo.th01_zeroth_law_state_eq"
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{p_0}{p} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "operation_label": "よどみ点温度比の式を代入・導入",
+          "explanation": "断熱定常流れのエネルギー保存から得られるよどみ点温度比 T_0 / T = 1 + ((\\gamma - 1)/2)M^2 を代入し、全圧比の関係式を得る。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\frac{p_0}{p}\\left(\\frac{T_0}{T}\\right)^{-1}`",
+          "operation_label": "理想気体の状態方程式から密度比の関係を導入",
+          "explanation": "静状態とよどみ点状態に理想気体の状態方程式 \\rho = p / (R T) をそれぞれ適用して辺々割ることで得られる密度比 \\rho_0 / \\rho = (p_0 / p)(T_0 / T)^{-1} を並記して導入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\frac{p_0}{p}\\left(\\frac{T_0}{T}\\right)^{-1}`",
+          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{1}{\\gamma - 1}}",
+          "operation_label": "指数計算とよどみ点温度比の代入による全密度比の導出",
+          "explanation": "全圧比と温度比の関係を密度比の式へ代入して指数法則によりべき指数を計算し、よどみ点温度比を代入して全密度比の関係式を得る。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\frac{p_0}{p}\\left(\\frac{T_0}{T}\\right)^{-1}`",
+          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1}}\\left(\\frac{T_0}{T}\\right)^{-1}`",
+          "operation_label": "等エントロピー全圧比の温度比表示を代入",
+          "explanation": "密度比の式にある圧力比 p_0 / p に、先に導いた関係式 p_0 / p = (T_0 / T)^{\\gamma / (\\gamma - 1)} を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1}}\\left(\\frac{T_0}{T}\\right)^{-1}`",
+          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1} - 1}`",
+          "operation_label": "指数法則により同じ底のべき乗を結合",
+          "explanation": "同じ底 T_0 / T を持つべき乗の積に指数法則 a^m a^n = a^{m+n} を適用して一つのべき乗にまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(T_0/T)**(gamma/(gamma - 1))*(T_0/T)**(-1) == (T_0/T)**(gamma/(gamma - 1) - 1)"
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\left(\\frac{T_0}{T}\\right)^{\\frac{\\gamma}{\\gamma - 1} - 1}`",
+          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\left(\\frac{T_0}{T}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "operation_label": "べき指数の通分と引き算を実行",
+          "explanation": "べき指数 \\gamma / (\\gamma - 1) - 1 を通分して (\\gamma - (\\gamma - 1)) / (\\gamma - 1) = 1 / (\\gamma - 1) を計算する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "gamma / (gamma - 1) - 1 == 1 / (gamma - 1)"
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\left(\\frac{T_0}{T}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "to_latex": "\\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}},\\qquad \\frac{\\rho_0}{\\rho} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{1}{\\gamma - 1}}",
+          "operation_label": "よどみ点温度比の式を代入",
+          "explanation": "断熱定常流れのよどみ点温度比 T_0 / T = 1 + ((\\gamma - 1)/2)M^2 を密度比の式へ代入し、全密度比の関係式を得る。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
           ],
           "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T10:43:47.110201+00:00"
     },
     {
       "id": "eng.comp.d05_area_velocity_relation",
