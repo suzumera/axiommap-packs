@@ -1,0 +1,758 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_rotorcraft_bemt",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "回転翼航空力学とeVTOL：ホバリング運動量理論・フィギュアオブメリット・翼素運動量理論（BEMT）とフラッピング運動",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『回転翼航空力学とeVTOL：ホバリング運動量理論・フィギュアオブメリット・翼素運動量理論（BEMT）とフラッピング運動』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.evtol_be.n01_actuator_disk_momentum",
+      "short_code": "RTR01",
+      "kind": "theorem_formula",
+      "title": "アクチュエータディスク理論とホバリング誘導速度",
+      "summary": "ロータを無限に薄い圧力不連続面（アクチュエータディスク）とみなし、定常非圧縮ベルヌーイの定理と運動量保存則からホバリング時の誘導速度および遠方後流速度を導く基礎定理。",
+      "canonical_latex": "v_i = \\sqrt{\\frac{T}{2\\rho A}} = \\sqrt{\\frac{\\mathrm{DL}}{2\\rho}},\\quad w = 2 v_i",
+      "aliases_latex": [
+        "T = 2\\rho A v_i^2",
+        "v_i = \\sqrt{T/(2\\rho A)}"
+      ],
+      "keywords": [
+        "アクチュエータディスク",
+        "運動量理論",
+        "誘導速度",
+        "ホバリング",
+        "円板荷重"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rotorcraft",
+        "evtol"
+      ]
+    },
+    {
+      "id": "aerosp.evtol_be.n02_hover_ideal_power_dl",
+      "short_code": "RTR02",
+      "kind": "theorem_formula",
+      "title": "ホバリング理想誘導動力と円板荷重スケーリング",
+      "summary": "ホバリング時に推力を維持するための最小理論動力（誘導動力）と、eVTOLおよび回転翼機の推進効率を支配する推力対動力比の円板荷重スケーリング則。",
+      "canonical_latex": "P_i = T v_i = \\frac{T^{3/2}}{\\sqrt{2\\rho A}} = T\\sqrt{\\frac{\\mathrm{DL}}{2\\rho}},\\quad \\frac{T}{P_i} = \\sqrt{\\frac{2\\rho}{\\mathrm{DL}}}",
+      "aliases_latex": [
+        "P_i = \\frac{T^{3/2}}{\\sqrt{2\\rho A}}",
+        "\\frac{P_i}{T} = \\sqrt{\\frac{\\mathrm{DL}}{2\\rho}}"
+      ],
+      "keywords": [
+        "誘導動力",
+        "円板荷重",
+        "推力対動力比",
+        "ホバリング効率",
+        "eVTOL"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rotorcraft",
+        "evtol"
+      ]
+    },
+    {
+      "id": "aerosp.evtol_be.n03_figure_of_merit",
+      "short_code": "RTR03",
+      "kind": "definition",
+      "title": "ホバリング性能指数（フィギュアオブメリット FM）の定義",
+      "summary": "ホバリング時の理想誘導動力と粘性抵抗や不均一流入を含む実際の所要軸動力の比として定義される、ロータの静的推力発生効率の無次元指標。",
+      "canonical_latex": "\\mathrm{FM} := \\frac{P_i}{P_{\\mathrm{actual}}} = \\frac{T^{3/2}/\\sqrt{2\\rho A}}{P_i + P_0} = \\frac{C_T^{3/2}/\\sqrt{2}}{C_P},\\quad P_{\\mathrm{hover}} = \\frac{P_i}{\\mathrm{FM}}",
+      "aliases_latex": [
+        "\\mathrm{FoM} = \\frac{P_i}{P_{\\mathrm{actual}}}",
+        "\\mathrm{FM} = \\frac{C_T^{3/2}}{\\sqrt{2} C_P}"
+      ],
+      "keywords": [
+        "フィギュアオブメリット",
+        "ホバリング効率",
+        "形状動力",
+        "ロータ性能"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rotorcraft",
+        "evtol"
+      ]
+    },
+    {
+      "id": "aerosp.evtol_be.n04_rotor_dimensionless_coeffs",
+      "short_code": "RTR04",
+      "kind": "definition",
+      "title": "ロータ推力・トルク・動力係数およびソリディティの定義",
+      "summary": "ロータ半径・翼端速度・空気密度を基準として推力・トルク・動力・誘導速度を無次元化するロータ空力標準係数と、円板面積に対するブレード面積比であるソリディティの定義。",
+      "canonical_latex": "\\sigma := \\frac{N_b c}{\\pi R},\\quad C_T := \\frac{T}{\\rho A (\\Omega R)^2},\\quad C_Q := \\frac{Q}{\\rho A (\\Omega R)^2 R},\\quad C_P := \\frac{P}{\\rho A (\\Omega R)^3} = C_Q,\\quad \\lambda_i := \\frac{v_i}{\\Omega R}",
+      "aliases_latex": [
+        "C_T = \\frac{T}{\\rho A v_{\\mathrm{tip}}^2}",
+        "\\lambda_i = \\frac{v_i}{\\Omega R}"
+      ],
+      "keywords": [
+        "推力係数",
+        "動力係数",
+        "ソリディティ",
+        "流入比",
+        "無次元化"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rotorcraft"
+      ]
+    },
+    {
+      "id": "aerosp.evtol_be.n05_blade_element_thrust_torque",
+      "short_code": "RTR05",
+      "kind": "theorem_formula",
+      "title": "翼素理論（BET）による微小推力・動力公式",
+      "summary": "ブレードを半径方向の2次元翼素に分割し、微小流入角仮定のもとで断面揚力・抗力から無次元半径位置における微小推力係数と微小動力係数を導く公式。",
+      "canonical_latex": "\\phi(r) \\approx \\frac{v_i(r)}{\\Omega r} = \\frac{\\lambda(r)}{x},\\quad dC_T = \\frac{\\sigma a}{2}\\left(\\theta - \\phi\\right)x^2\\,dx,\\quad dC_P = \\frac{\\sigma}{2}\\left(a(\\theta - \\phi)\\phi + c_{d0}\\right)x^3\\,dx",
+      "aliases_latex": [
+        "dC_T = \\frac{\\sigma a}{2}(\\theta x^2 - \\lambda x)\\,dx",
+        "dC_P = \\frac{\\sigma}{2}\\big(a(\\theta x - \\lambda)\\lambda + c_{d0} x^3\\big)\\,dx"
+      ],
+      "keywords": [
+        "翼素理論",
+        "BET",
+        "流入角",
+        "揚力傾斜",
+        "微小推力"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rotorcraft"
+      ]
+    },
+    {
+      "id": "aerosp.evtol_be.n06_bemt_inflow_equation",
+      "short_code": "RTR06",
+      "kind": "theorem_formula",
+      "title": "翼素運動量理論（BEMT）の結合流入比方程式",
+      "summary": "円環要素ごとの運動量理論による微小推力と翼素理論による微小推力を等置し、各半径位置の局所流入比をピッチ角と上昇速度比から解析的に解くBEMTの基本方程式。",
+      "canonical_latex": "dC_T = 4\\lambda(x)\\big(\\lambda(x) - \\lambda_c\\big)x\\,dx = \\frac{\\sigma a}{2}\\left(\\theta(x) - \\frac{\\lambda(x)}{x}\\right)x^2\\,dx \\implies \\lambda(x) = \\sqrt{\\left(\\frac{\\sigma a}{16} - \\frac{\\lambda_c}{2}\\right)^2 + \\frac{\\sigma a}{8}\\theta(x) x} - \\left(\\frac{\\sigma a}{16} - \\frac{\\lambda_c}{2}\\right)",
+      "aliases_latex": [
+        "\\lambda(x) = \\sqrt{\\left(\\frac{\\sigma a}{16}\\right)^2 + \\frac{\\sigma a}{8}\\theta(x) x} - \\frac{\\sigma a}{16}"
+      ],
+      "keywords": [
+        "翼素運動量理論",
+        "BEMT",
+        "流入比",
+        "ねじり下げ",
+        "軸流上昇"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rotorcraft",
+        "evtol"
+      ]
+    },
+    {
+      "id": "aerosp.evtol_be.n07_prandtl_tip_loss_bemt",
+      "short_code": "RTR07",
+      "kind": "theorem_formula",
+      "title": "プラントルの翼端損失係数とBEMT補正流入方程式",
+      "summary": "有限枚数ブレードの翼端渦による揚力低下をプラントルの翼端損失関数 F(x) でモデル化し、BEMTの運動量項に組み込んで実効的な局所流入比を求める補正式。",
+      "canonical_latex": "F(x) = \\frac{2}{\\pi}\\arccos\\!\\left(\\exp\\!\\left(-\\frac{N_b}{2}\\frac{1 - x}{x\\phi(x)}\\right)\\right),\\quad dC_T = 4 F(x)\\lambda(x)\\big(\\lambda(x)-\\lambda_c\\big)x\\,dx \\implies \\lambda(x) = \\sqrt{\\left(\\frac{\\sigma a}{16 F} - \\frac{\\lambda_c}{2}\\right)^2 + \\frac{\\sigma a}{8 F}\\theta(x)x} - \\left(\\frac{\\sigma a}{16 F} - \\frac{\\lambda_c}{2}\\right)",
+      "aliases_latex": [
+        "F(r) = \\frac{2}{\\pi}\\arccos(e^{-f})"
+      ],
+      "keywords": [
+        "プラントル翼端損失",
+        "翼端渦",
+        "BEMT",
+        "有限枚数ブレード"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rotorcraft",
+        "evtol"
+      ]
+    },
+    {
+      "id": "aerosp.evtol_be.n08_forward_flight_glauert_inflow",
+      "short_code": "RTR08",
+      "kind": "theorem_formula",
+      "title": "前進飛行時のグルーアート誘導速度公式と無次元流入比",
+      "summary": "前進率 μ とロータ円板迎角 α_d を考慮したグルーアートの運動量仮説に基づき、ホバリングと前進飛行・遷移飛行を連続的に結ぶ無次元流入比の陰的関係式。",
+      "canonical_latex": "\\mu := \\frac{V_\\infty \\cos\\alpha_d}{\\Omega R},\\quad T = 2\\rho A v_i \\sqrt{(V_\\infty\\cos\\alpha_d)^2 + (V_\\infty\\sin\\alpha_d + v_i)^2} \\implies \\lambda = \\mu\\tan\\alpha_d + \\frac{C_T}{2\\sqrt{\\mu^2 + \\lambda^2}}",
+      "aliases_latex": [
+        "\\lambda = \\mu\\tan\\alpha_d + \\frac{C_T}{2\\sqrt{\\mu^2 + \\lambda^2}}"
+      ],
+      "keywords": [
+        "前進率",
+        "グルーアートの公式",
+        "遷移飛行",
+        "誘導流入",
+        "eVTOL"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rotorcraft",
+        "evtol"
+      ]
+    },
+    {
+      "id": "aerosp.evtol_be.n09_blade_flapping_lock_number",
+      "short_code": "RTR09",
+      "kind": "theorem_formula",
+      "title": "ブレードのフラッピング運動方程式とロック数 γ",
+      "summary": "遠心力・ヒンジバネ剛性および翼素空力モーメントの釣合いから導かれるブレードのフラッピング（上下首振り）2階常微分方程式と、空力減衰を支配するロック数 γ。",
+      "canonical_latex": "\\gamma := \\frac{\\rho a c R^4}{I_\\beta},\\quad \\ddot{\\beta} + \\nu_\\beta^2 \\Omega^2 \\beta = \\frac{\\gamma\\Omega^2}{2}\\int_{0}^{1} x^2\\big(\\theta x - \\lambda\\big)\\,dx \\implies \\beta'' + \\frac{\\gamma}{8}\\beta' + \\nu_\\beta^2\\beta = \\frac{\\gamma}{8}\\left(\\theta_0 - \\frac{4}{3}\\lambda\\right)",
+      "aliases_latex": [
+        "\\gamma = \\frac{\\rho a c R^4}{I_\\beta}",
+        "\\beta'' + \\frac{\\gamma}{8}\\beta' + \\nu_\\beta^2\\beta = M_F"
+      ],
+      "keywords": [
+        "フラッピング運動",
+        "ロック数",
+        "方位角",
+        "空力減衰",
+        "回転翼ダイナミクス"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rotorcraft"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv_rtr01_actuator_disk",
+      "target_node_id": "aerosp.evtol_be.n01_actuator_disk_momentum",
+      "route_kind": "deductive",
+      "title": "ベルヌーイの定理と運動量保存則からのホバリング誘導速度の導出",
+      "premise_node_ids": [
+        "eng.aero.n01_euler_bernoulli_incompressible",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [
+        "aerosp.evtol_be.n01_actuator_disk_momentum",
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "流れは定常・非圧縮・非粘性であり、ロータ円板全体で一様な流れ（1次元流管）とみなせる。",
+        "アクチュエータディスクは厚みがゼロであり、通過前後で速度は連続、圧力のみが Δp だけ不連続に上昇する。",
+        "遠方上流および遠方後流では静圧が大気圧 p_∞ に戻る。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p + \\frac{1}{2}\\rho u^2 = \\text{const.},\\; T = \\dot{m}w",
+          "to_latex": "v_i = \\sqrt{\\frac{T}{2\\rho A}} = \\sqrt{\\frac{\\mathrm{DL}}{2\\rho}},\\quad w = 2 v_i",
+          "operation_label": "ベルヌーイ式と運動量保存則の連立",
+          "explanation": "ディスク上下流にベルヌーイの定理を適用して圧力跳躍 Δp を後流速度 w で表し、検査体積の運動量保存則 T = m_dot w と連立させて w = 2v_i および誘導速度 v_i を得る。",
+          "used_node_ids": [
+            "eng.aero.n01_euler_bernoulli_incompressible",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_bernoulli_jump",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_\\infty = p_0 + \\frac{1}{2}\\rho v_i^2,\\quad p_0 + \\Delta p + \\frac{1}{2}\\rho v_i^2 = p_\\infty + \\frac{1}{2}\\rho w^2",
+          "to_latex": "\\Delta p = \\frac{1}{2}\\rho w^2",
+          "operation_label": "ディスク上下流でのベルヌーイの定理の適用",
+          "explanation": "静止した遠方上流（u=0, p=p_∞）からディスク直前、およびディスク直後から遠方後流（u=w, p=p_∞）へそれぞれベルヌーイの定理を適用し、両式を差し引いて圧力跳躍 Δp を求める。",
+          "used_node_ids": [
+            "eng.aero.n01_euler_bernoulli_incompressible"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_momentum_balance",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta p = \\frac{1}{2}\\rho w^2",
+          "to_latex": "T = A\\Delta p = \\dot{m}w = \\rho A v_i w \\implies w = 2v_i",
+          "operation_label": "推力と運動量流束の等置",
+          "explanation": "ディスクが流体に与える推力 T = AΔp = (1/2)ρAw^2 と、検査体積を通過する質量流量 m_dot = ρAv_i による運動量増加率 m_dot w を等置することで、遠方後流速度 w = 2v_i を得る。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_induced_velocity",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T = A\\Delta p = \\dot{m}w = \\rho A v_i w \\implies w = 2v_i",
+          "to_latex": "v_i = \\sqrt{\\frac{T}{2\\rho A}} = \\sqrt{\\frac{\\mathrm{DL}}{2\\rho}},\\quad w = 2 v_i",
+          "operation_label": "誘導速度の代数解法",
+          "explanation": "w = 2v_i を推力式 T = ρAv_i w に代入して T = 2ρAv_i^2 を得て、円板荷重 DL := T/A を用いて誘導速度 v_i について解く。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n01_actuator_disk_momentum"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rtr02_hover_ideal_power",
+      "target_node_id": "aerosp.evtol_be.n02_hover_ideal_power_dl",
+      "route_kind": "deductive",
+      "title": "アクチュエータディスク理論からのホバリング理想誘導動力と円板荷重スケーリングの導出",
+      "premise_node_ids": [
+        "aerosp.evtol_be.n01_actuator_disk_momentum",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "誘導速度は円板面上で一様であり、後流の回転（スワール）損失や翼型粘性抵抗は無視する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T = 2\\rho A v_i^2,\\quad v_i = \\sqrt{\\frac{T}{2\\rho A}}",
+          "to_latex": "P_i = T v_i = \\frac{T^{3/2}}{\\sqrt{2\\rho A}} = T\\sqrt{\\frac{\\mathrm{DL}}{2\\rho}},\\quad \\frac{T}{P_i} = \\sqrt{\\frac{2\\rho}{\\mathrm{DL}}}",
+          "operation_label": "運動エネルギー増加率からの誘導動力導出",
+          "explanation": "単位時間あたりに後流へ与えられる運動エネルギー (1/2)m_dot w^2 がディスクでの仕事率 Tv_i に等しいことから理想誘導動力 P_i を求め、円板荷重 DL による推力対動力比を導く。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n01_actuator_disk_momentum",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_kinetic_power",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T = 2\\rho A v_i^2,\\quad v_i = \\sqrt{\\frac{T}{2\\rho A}}",
+          "to_latex": "P_i = \\frac{1}{2}\\dot{m}w^2 = \\frac{1}{2}(\\rho A v_i)(2 v_i)^2 = T v_i",
+          "operation_label": "後流運動エネルギー流束の計算",
+          "explanation": "質量流量 m_dot = ρAv_i と後流速度 w = 2v_i を用いて流体の運動エネルギー増加率を計算し、P_i = Tv_i となることを示す。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n01_actuator_disk_momentum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_dl_scaling",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_i = \\frac{1}{2}\\dot{m}w^2 = \\frac{1}{2}(\\rho A v_i)(2 v_i)^2 = T v_i",
+          "to_latex": "P_i = T v_i = \\frac{T^{3/2}}{\\sqrt{2\\rho A}} = T\\sqrt{\\frac{\\mathrm{DL}}{2\\rho}},\\quad \\frac{T}{P_i} = \\sqrt{\\frac{2\\rho}{\\mathrm{DL}}}",
+          "operation_label": "誘導速度の代入と円板荷重スケーリング整理",
+          "explanation": "v_i = sqrt(T/(2ρA)) = sqrt(DL/(2ρ)) を P_i = Tv_i に代入し、推力対動力比（パワーローディング）が DL^{-1/2} に比例することを導く。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n01_actuator_disk_momentum"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rtr03_figure_of_merit",
+      "target_node_id": "aerosp.evtol_be.n03_figure_of_merit",
+      "route_kind": "reformulation",
+      "title": "理想誘導動力と実動力の比によるフィギュアオブメリットの定義",
+      "premise_node_ids": [
+        "aerosp.evtol_be.n02_hover_ideal_power_dl"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ホバリング時の実動力は理想誘導動力 P_i と形状抵抗などによる余剰動力 P_0 の和で表される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def_fm",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_i = \\frac{T^{3/2}}{\\sqrt{2\\rho A}},\\quad P_{\\mathrm{actual}} = P_i + P_0",
+          "to_latex": "\\mathrm{FM} := \\frac{P_i}{P_{\\mathrm{actual}}} = \\frac{T^{3/2}/\\sqrt{2\\rho A}}{P_i + P_0} = \\frac{C_T^{3/2}/\\sqrt{2}}{C_P},\\quad P_{\\mathrm{hover}} = \\frac{P_i}{\\mathrm{FM}}",
+          "operation_label": "無次元効率指標としての FM の定義",
+          "explanation": "運動量理論が与える最小理論動力 P_i を分子、実際の軸動力 P_actual を分母にとり、推力係数 C_T と動力係数 C_P でも表現可能なホバリング性能指数 FM を定義する。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n02_hover_ideal_power_dl"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rtr04_dimensionless_coeffs",
+      "target_node_id": "aerosp.evtol_be.n04_rotor_dimensionless_coeffs",
+      "route_kind": "reformulation",
+      "title": "ロータ基準量を用いた推力・動力係数およびソリディティの定義",
+      "premise_node_ids": [
+        "aerosp.evtol_be.n02_hover_ideal_power_dl",
+        "eng.aero.n07_thin_airfoil_glauert_solution"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ブレードは一様翼弦長 c（または代表翼弦長）、枚数 N_b、半径 R、角速度 Ω で回転する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def_coeffs",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A = \\pi R^2,\\quad v_{\\mathrm{tip}} = \\Omega R,\\quad P = \\Omega Q",
+          "to_latex": "\\sigma := \\frac{N_b c}{\\pi R},\\quad C_T := \\frac{T}{\\rho A (\\Omega R)^2},\\quad C_Q := \\frac{Q}{\\rho A (\\Omega R)^2 R},\\quad C_P := \\frac{P}{\\rho A (\\Omega R)^3} = C_Q,\\quad \\lambda_i := \\frac{v_i}{\\Omega R}",
+          "operation_label": "ロータ代表尺度による無次元係数の定義",
+          "explanation": "動圧の基準として ρ(ΩR)^2 を用い、円板面積 A = πR^2 で割ることで C_T, C_Q, C_P を定義し、幾何学的面積比であるソリディティ σ と無次元誘導流入比 λ_i を導入する。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n02_hover_ideal_power_dl",
+            "eng.aero.n07_thin_airfoil_glauert_solution"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rtr05_bet_forces",
+      "target_node_id": "aerosp.evtol_be.n05_blade_element_thrust_torque",
+      "route_kind": "deductive",
+      "title": "薄翼理論と微小角近似に基づく翼素微小推力・動力の導出",
+      "premise_node_ids": [
+        "aerosp.evtol_be.n04_rotor_dimensionless_coeffs",
+        "eng.aero.n07_thin_airfoil_glauert_solution"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "各翼素の局所流れは準定常2次元流とみなせ、揚力係数は c_l = a(θ - φ)（a ≈ 2π）、抗力係数は一定値 c_{d0} とする。",
+        "流入角 φ は微小であり sinφ ≈ φ, cosφ ≈ 1, U_P ≪ U_T が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "c_l = a(\\theta - \\phi),\\quad dL = \\frac{1}{2}\\rho U^2 c\\, c_l\\, dr",
+          "to_latex": "\\phi(r) \\approx \\frac{v_i(r)}{\\Omega r} = \\frac{\\lambda(r)}{x},\\quad dC_T = \\frac{\\sigma a}{2}\\left(\\theta - \\phi\\right)x^2\\,dx,\\quad dC_P = \\frac{\\sigma}{2}\\left(a(\\theta - \\phi)\\phi + c_{d0}\\right)x^3\\,dx",
+          "operation_label": "翼素空力の射影と無次元化",
+          "explanation": "半径位置 r = Rx における合成風速と流入角 φ を求め、翼素の揚力・抗力を回転軸方向（推力）と周方向（トルク）に射影してロータ係数で無次元化する。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n04_rotor_dimensionless_coeffs",
+            "eng.aero.n07_thin_airfoil_glauert_solution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_inflow_angle",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U_T = \\Omega r,\\quad U_P = v_c + v_i(r),\\quad x := \\frac{r}{R}",
+          "to_latex": "\\phi(r) \\approx \\frac{U_P}{U_T} = \\frac{\\lambda(r)}{x},\\quad U \\approx \\Omega R x",
+          "operation_label": "接線速度と軸方向速度による流入角近似",
+          "explanation": "微小流入角近似 tanφ ≈ φ = U_P/U_T および合速度 U = sqrt(U_T^2 + U_P^2) ≈ U_T = ΩRx を適用する。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n04_rotor_dimensionless_coeffs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_element_projection",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\phi(r) \\approx \\frac{U_P}{U_T} = \\frac{\\lambda(r)}{x},\\quad U \\approx \\Omega R x",
+          "to_latex": "dT = N_b(dL\\cos\\phi - dD\\sin\\phi) \\approx \\frac{1}{2}\\rho (\\Omega R)^2 N_b c\\, a(\\theta - \\phi)x^2 R\\,dx,\\quad dQ \\approx \\frac{1}{2}\\rho (\\Omega R)^2 N_b c\\left(a(\\theta - \\phi)\\phi + c_{d0}\\right)x^3 R^2\\,dx",
+          "operation_label": "微小揚力・抗力の軸方向および周方向成分の分解",
+          "explanation": "N_b 枚のブレードについて dL = (1/2)ρU^2 c a(θ - φ)dr と dD = (1/2)ρU^2 c c_{d0} dr を推力方向とトルク方向に分解し、cosφ ≈ 1, sinφ ≈ φ および dDsinφ ≪ dL を適用する。",
+          "used_node_ids": [
+            "eng.aero.n07_thin_airfoil_glauert_solution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_nondimensionalize",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dT = N_b(dL\\cos\\phi - dD\\sin\\phi) \\approx \\frac{1}{2}\\rho (\\Omega R)^2 N_b c\\, a(\\theta - \\phi)x^2 R\\,dx,\\quad dQ \\approx \\frac{1}{2}\\rho (\\Omega R)^2 N_b c\\left(a(\\theta - \\phi)\\phi + c_{d0}\\right)x^3 R^2\\,dx",
+          "to_latex": "\\phi(r) \\approx \\frac{v_i(r)}{\\Omega r} = \\frac{\\lambda(r)}{x},\\quad dC_T = \\frac{\\sigma a}{2}\\left(\\theta - \\phi\\right)x^2\\,dx,\\quad dC_P = \\frac{\\sigma}{2}\\left(a(\\theta - \\phi)\\phi + c_{d0}\\right)x^3\\,dx",
+          "operation_label": "ソリディティ σ と基準動圧による無次元化",
+          "explanation": "dT を ρπR^2(ΩR)^2 で、dQ を ρπR^2(ΩR)^2 R で割り、σ = N_b c/(πR) および dC_P = dC_Q を用いて整理する。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n04_rotor_dimensionless_coeffs"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rtr06_bemt_inflow",
+      "target_node_id": "aerosp.evtol_be.n06_bemt_inflow_equation",
+      "route_kind": "deductive",
+      "title": "円環運動量理論と翼素理論の等置によるBEMT流入方程式の導出",
+      "premise_node_ids": [
+        "aerosp.evtol_be.n01_actuator_disk_momentum",
+        "aerosp.evtol_be.n05_blade_element_thrust_torque"
+      ],
+      "required_math_node_ids": [
+        "aerosp.evtol_be.n06_bemt_inflow_equation"
+      ],
+      "assumptions": [
+        "半径 x の各円環要素は隣接する円環と互いに独立に運動量収支を満たす。",
+        "上昇流がある場合は無次元上昇速度比 λ_c = v_c/(ΩR) とし、総流入比は λ = λ_c + λ_i である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dT_{\\mathrm{mom}} = 4\\pi r \\rho (v_c + v_i)v_i\\,dr,\\quad dC_{T,\\mathrm{bet}} = \\frac{\\sigma a}{2}(\\theta - \\phi)x^2\\,dx",
+          "to_latex": "dC_T = 4\\lambda(x)\\big(\\lambda(x) - \\lambda_c\\big)x\\,dx = \\frac{\\sigma a}{2}\\left(\\theta(x) - \\frac{\\lambda(x)}{x}\\right)x^2\\,dx \\implies \\lambda(x) = \\sqrt{\\left(\\frac{\\sigma a}{16} - \\frac{\\lambda_c}{2}\\right)^2 + \\frac{\\sigma a}{8}\\theta(x) x} - \\left(\\frac{\\sigma a}{16} - \\frac{\\lambda_c}{2}\\right)",
+          "operation_label": "運動量推力と翼素推力の等置および2次方程式の解法",
+          "explanation": "円環面積 dA = 2πrdr に対する運動量理論の微小推力と翼素理論の微小推力を等置し、λ(x) に関する2次方程式の正の根として閉形式解を得る。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n01_actuator_disk_momentum",
+            "aerosp.evtol_be.n05_blade_element_thrust_torque"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_annulus_momentum",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dA = 2\\pi r\\,dr = 2 A x\\,dx,\\quad dT = 2\\rho\\,dA\\,(v_c + v_i)v_i",
+          "to_latex": "dC_T = 4\\lambda(x)\\big(\\lambda(x) - \\lambda_c\\big)x\\,dx",
+          "operation_label": "円環要素の運動量推力の無次元化",
+          "explanation": "dA = 2Ax dx と λ = λ_c + λ_i（すなわち λ_i = λ - λ_c）を代入して ρA(ΩR)^2 で割り、円環要素の微小推力係数 dC_T を表す。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n01_actuator_disk_momentum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_equate_bet",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dC_T = 4\\lambda(x)\\big(\\lambda(x) - \\lambda_c\\big)x\\,dx",
+          "to_latex": "\\lambda(x)^2 + \\left(\\frac{\\sigma a}{8} - \\lambda_c\\right)\\lambda(x) - \\frac{\\sigma a}{8}\\theta(x)x = 0",
+          "operation_label": "翼素微小推力との等置と2次方程式への整理",
+          "explanation": "運動量理論の dC_T と翼素理論の dC_T = (σa/2)(θ - λ/x)x^2 dx を等置し、両辺を 4x dx で割って λ(x) に関する2次方程式に整理する。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n05_blade_element_thrust_torque"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_quadratic_root",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lambda(x)^2 + \\left(\\frac{\\sigma a}{8} - \\lambda_c\\right)\\lambda(x) - \\frac{\\sigma a}{8}\\theta(x)x = 0",
+          "to_latex": "dC_T = 4\\lambda(x)\\big(\\lambda(x) - \\lambda_c\\big)x\\,dx = \\frac{\\sigma a}{2}\\left(\\theta(x) - \\frac{\\lambda(x)}{x}\\right)x^2\\,dx \\implies \\lambda(x) = \\sqrt{\\left(\\frac{\\sigma a}{16} - \\frac{\\lambda_c}{2}\\right)^2 + \\frac{\\sigma a}{8}\\theta(x) x} - \\left(\\frac{\\sigma a}{16} - \\frac{\\lambda_c}{2}\\right)",
+          "operation_label": "解の公式による物理的根の選択",
+          "explanation": "2次方程式の解の公式を適用し、下向き流入（λ ≥ 0）に対応する正の根を選択する。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n06_bemt_inflow_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rtr07_prandtl_tip_loss",
+      "target_node_id": "aerosp.evtol_be.n07_prandtl_tip_loss_bemt",
+      "route_kind": "deductive",
+      "title": "プラントルの翼端損失係数によるBEMT流入方程式の補正",
+      "premise_node_ids": [
+        "aerosp.evtol_be.n06_bemt_inflow_equation",
+        "eng.aero.n08_biot_savart_induced_downwash"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ブレード後流のらせん状渦シートを等間隔の半無限平行渦板列で近似できる（プラントルの近似）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dC_T = 4\\lambda(\\lambda - \\lambda_c)x\\,dx = \\frac{\\sigma a}{2}\\left(\\theta - \\frac{\\lambda}{x}\\right)x^2\\,dx",
+          "to_latex": "F(x) = \\frac{2}{\\pi}\\arccos\\!\\left(\\exp\\!\\left(-\\frac{N_b}{2}\\frac{1 - x}{x\\phi(x)}\\right)\\right),\\quad dC_T = 4 F(x)\\lambda(x)\\big(\\lambda(x)-\\lambda_c\\big)x\\,dx \\implies \\lambda(x) = \\sqrt{\\left(\\frac{\\sigma a}{16 F} - \\frac{\\lambda_c}{2}\\right)^2 + \\frac{\\sigma a}{8 F}\\theta(x)x} - \\left(\\frac{\\sigma a}{16 F} - \\frac{\\lambda_c}{2}\\right)",
+          "operation_label": "翼端損失関数 F(x) の導入とBEMT式の修正",
+          "explanation": "翼端渦による循環の減衰を表すプラントルの損失係数 F(x) を運動量理論の有効円環面積に掛けて dC_T を修正し、補正後の局所流入比を得る。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n06_bemt_inflow_equation",
+            "eng.aero.n08_biot_savart_induced_downwash"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_prandtl_factor",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "f(x) = \\frac{N_b}{2}\\frac{1 - x}{x\\phi(x)}",
+          "to_latex": "F(x) = \\frac{2}{\\pi}\\arccos\\!\\left(\\exp\\!\\left(-\\frac{N_b}{2}\\frac{1 - x}{x\\phi(x)}\\right)\\right)",
+          "operation_label": "らせん渦シート間隔からのプラントル損失関数の定式化",
+          "explanation": "翼端から内側への距離 (1-x)R とらせん渦シート間隔の比から無次元パラメータ f(x) を定義し、等角写像解に基づくプラントルの損失関数 F(x) を得る。",
+          "used_node_ids": [
+            "eng.aero.n08_biot_savart_induced_downwash"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_corrected_bemt",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F(x) = \\frac{2}{\\pi}\\arccos\\!\\left(\\exp\\!\\left(-\\frac{N_b}{2}\\frac{1 - x}{x\\phi(x)}\\right)\\right)",
+          "to_latex": "F(x) = \\frac{2}{\\pi}\\arccos\\!\\left(\\exp\\!\\left(-\\frac{N_b}{2}\\frac{1 - x}{x\\phi(x)}\\right)\\right),\\quad dC_T = 4 F(x)\\lambda(x)\\big(\\lambda(x)-\\lambda_c\\big)x\\,dx \\implies \\lambda(x) = \\sqrt{\\left(\\frac{\\sigma a}{16 F} - \\frac{\\lambda_c}{2}\\right)^2 + \\frac{\\sigma a}{8 F}\\theta(x)x} - \\left(\\frac{\\sigma a}{16 F} - \\frac{\\lambda_c}{2}\\right)",
+          "operation_label": "運動量項への F(x) 乗算と流入比の再解",
+          "explanation": "BEMT式の運動量項を F(x) 倍することで σ を実効的に σ/F に置き換えた形となり、同じ2次方程式から F(x) 補正付き流入比 λ(x) が導かれる。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n06_bemt_inflow_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rtr08_glauert_inflow",
+      "target_node_id": "aerosp.evtol_be.n08_forward_flight_glauert_inflow",
+      "route_kind": "deductive",
+      "title": "前進飛行におけるグルーアートの運動量仮説からの流入比方程式の導出",
+      "premise_node_ids": [
+        "aerosp.evtol_be.n01_actuator_disk_momentum",
+        "aerosp.evtol_be.n04_rotor_dimensionless_coeffs"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ロータ円板を通過する質量流量は、円板位置での合成気流速度の大きさに円板面積と密度を掛けたもので近似できる（グルーアートの仮説）。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T = 2\\rho A v_i U_{\\mathrm{eff}},\\quad \\mu := \\frac{V_\\infty\\cos\\alpha_d}{\\Omega R}",
+          "to_latex": "\\mu := \\frac{V_\\infty \\cos\\alpha_d}{\\Omega R},\\quad T = 2\\rho A v_i \\sqrt{(V_\\infty\\cos\\alpha_d)^2 + (V_\\infty\\sin\\alpha_d + v_i)^2} \\implies \\lambda = \\mu\\tan\\alpha_d + \\frac{C_T}{2\\sqrt{\\mu^2 + \\lambda^2}}",
+          "operation_label": "前進時の質量流量と無次元流入比の結合",
+          "explanation": "一様流成分と誘導速度のベクトル和の大きさで質量流量を評価し、前進率 μ と推力係数 C_T で無次元化して前進飛行流入比 λ の陰的方程式を導く。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n01_actuator_disk_momentum",
+            "aerosp.evtol_be.n04_rotor_dimensionless_coeffs"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_mass_flux",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{V}_{\\mathrm{disk}} = (V_\\infty\\cos\\alpha_d,\\; 0,\\; V_\\infty\\sin\\alpha_d + v_i)",
+          "to_latex": "T = 2\\rho A v_i \\sqrt{(V_\\infty\\cos\\alpha_d)^2 + (V_\\infty\\sin\\alpha_d + v_i)^2}",
+          "operation_label": "合成速度ベクトルによる質量流量の評価",
+          "explanation": "円板に垂直な方向の運動量変化 2v_i に、合成速度の大きさ ||V_disk|| を用いた質量流量 m_dot = ρA||V_disk|| を掛けて推力を表す。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n01_actuator_disk_momentum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_nondim_glauert",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T = 2\\rho A v_i \\sqrt{(V_\\infty\\cos\\alpha_d)^2 + (V_\\infty\\sin\\alpha_d + v_i)^2}",
+          "to_latex": "\\mu := \\frac{V_\\infty \\cos\\alpha_d}{\\Omega R},\\quad T = 2\\rho A v_i \\sqrt{(V_\\infty\\cos\\alpha_d)^2 + (V_\\infty\\sin\\alpha_d + v_i)^2} \\implies \\lambda = \\mu\\tan\\alpha_d + \\frac{C_T}{2\\sqrt{\\mu^2 + \\lambda^2}}",
+          "operation_label": "前進率 μ と総流入比 λ による無次元化",
+          "explanation": "両辺を ρA(ΩR)^2 で割り、λ = (V_∞sinα_d + v_i)/(ΩR) = μtanα_d + λ_i および C_T = 2λ_i sqrt(μ^2 + λ^2) を整理してグルーアートの流入比式を得る。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n04_rotor_dimensionless_coeffs"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "deriv_rtr09_flapping_eom",
+      "target_node_id": "aerosp.evtol_be.n09_blade_flapping_lock_number",
+      "route_kind": "deductive",
+      "title": "フラッピングヒンジ周りのモーメント釣合いからのブレードフラッピング運動方程式の導出",
+      "premise_node_ids": [
+        "aerosp.evtol_be.n05_blade_element_thrust_torque",
+        "phys.mech.p02_newton_second_law",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "フラッピング角 β は微小であり、sinβ ≈ β, cosβ ≈ 1 が成り立つ。",
+        "ヒンジオフセットはゼロ（中心ヒンジ）または等価バネ剛性 K_β により無次元フラッピング固有振動数 ν_β で表される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_\\beta \\ddot{\\beta} + I_\\beta \\nu_\\beta^2 \\Omega^2 \\beta = M_A,\\quad M_A = \\int_{0}^{R} r\\, dL",
+          "to_latex": "\\gamma := \\frac{\\rho a c R^4}{I_\\beta},\\quad \\ddot{\\beta} + \\nu_\\beta^2 \\Omega^2 \\beta = \\frac{\\gamma\\Omega^2}{2}\\int_{0}^{1} x^2\\big(\\theta x - \\lambda\\big)\\,dx \\implies \\beta'' + \\frac{\\gamma}{8}\\beta' + \\nu_\\beta^2\\beta = \\frac{\\gamma}{8}\\left(\\theta_0 - \\frac{4}{3}\\lambda\\right)",
+          "operation_label": "モーメント釣合いと方位角微分変換",
+          "explanation": "遠心力復元モーメントと空力モーメントを等置し、方位角 ψ = Ωt に対する微分へ変換するとともにロック数 γ を導入して空力減衰付きの2階線形常微分方程式を得る。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n05_blade_element_thrust_torque",
+            "math.ode.m06_linear_ode_2nd",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_moment_balance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_\\beta \\ddot{\\beta} + K_\\beta\\beta + I_\\beta \\Omega^2 \\beta = M_A",
+          "to_latex": "\\ddot{\\beta} + \\nu_\\beta^2 \\Omega^2 \\beta = \\frac{1}{I_\\beta}\\int_{0}^{R} \\frac{1}{2}\\rho (\\Omega r)^2 c\\, a\\left(\\theta - \\frac{\\lambda R}{r} - \\frac{\\dot{\\beta}}{\\Omega}\\right) r\\,dr",
+          "operation_label": "翼素空力モーメント積分の代入",
+          "explanation": "フラッピング速度 r dβ/dt による迎角減少 -dβ/dt/Ω を含めた翼素揚力によるヒンジ周りモーメントを半径方向に積分し、回転数正規化剛性 ν_β^2 = 1 + K_β/(I_βΩ^2) を導入する。",
+          "used_node_ids": [
+            "aerosp.evtol_be.n05_blade_element_thrust_torque",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_azimuth_and_lock",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\beta} + \\nu_\\beta^2 \\Omega^2 \\beta = \\frac{1}{I_\\beta}\\int_{0}^{R} \\frac{1}{2}\\rho (\\Omega r)^2 c\\, a\\left(\\theta - \\frac{\\lambda R}{r} - \\frac{\\dot{\\beta}}{\\Omega}\\right) r\\,dr",
+          "to_latex": "\\gamma := \\frac{\\rho a c R^4}{I_\\beta},\\quad \\ddot{\\beta} + \\nu_\\beta^2 \\Omega^2 \\beta = \\frac{\\gamma\\Omega^2}{2}\\int_{0}^{1} x^2\\big(\\theta x - \\lambda\\big)\\,dx \\implies \\beta'' + \\frac{\\gamma}{8}\\beta' + \\nu_\\beta^2\\beta = \\frac{\\gamma}{8}\\left(\\theta_0 - \\frac{4}{3}\\lambda\\right)",
+          "operation_label": "ロック数 γ の導入と方位角 ψ = Ωt への変数変換",
+          "explanation": "d/dt = Ω d/dψ（' は ψ 微分）を適用し、一様ピッチ θ = θ_0 に対して x = r/R で 0 から 1 まで積分することで、減衰係数 γ/8 を持つフラッピング運動方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m16_integral_linearity",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

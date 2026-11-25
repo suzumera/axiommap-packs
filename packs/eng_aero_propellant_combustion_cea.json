@@ -1,0 +1,737 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_propellant_combustion_cea",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "ロケット推進薬化学と燃焼平衡（CEA理論）：断熱火炎温度・ギブズ自由エネルギー最小化・凍結流vs平衡流ノズル膨張とO/F最適混合比",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『ロケット推進薬化学と燃焼平衡（CEA理論）：断熱火炎温度・ギブズ自由エネルギー最小化・凍結流vs平衡流ノズル膨張とO/F最適混合比』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.cea.n01_mixture_of_ratio_stoichiometry",
+      "short_code": "CEA01",
+      "kind": "definition",
+      "title": "推進薬混合比（O/F比）と化学量論当量比の定義",
+      "summary": "酸化剤と燃料の質量流量比であるO/F比、および完全酸化反応を基準とした無次元当量比を定義する。",
+      "canonical_latex": "\\mathrm{O/F} := \\frac{\\dot{m}_{\\mathrm{ox}}}{\\dot{m}_{\\mathrm{f}}},\\quad \\phi := \\frac{(\\mathrm{O/F})_{\\mathrm{st}}}{\\mathrm{O/F}}",
+      "aliases_latex": [
+        "r := \\frac{\\dot{m}_{\\mathrm{ox}}}{\\dot{m}_{\\mathrm{f}}}"
+      ],
+      "keywords": [
+        "混合比",
+        "O/F比",
+        "当量比",
+        "化学量論比",
+        "推進薬"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "combustion_chemistry"
+      ]
+    },
+    {
+      "id": "aerosp.cea.n02_gibbs_free_energy_minimization",
+      "short_code": "CEA02",
+      "kind": "theorem_formula",
+      "title": "ギブズ自由エネルギー最小化と元素保存平衡条件",
+      "summary": "定温・定圧下の多成分反応系において、元素数保存制約のもとでギブズ自由エネルギーを最小化する化学平衡組成の必要条件（CEAの基本方程式）を示す。",
+      "canonical_latex": "G(T,p,\\mathbf{n}) = \\sum_{j=1}^{N_s} n_j \\mu_j,\\quad \\min_{\\mathbf{n} \\ge \\mathbf{0}} \\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right) \\implies \\mu_j = \\sum_{i=1}^{N_e} \\lambda_i a_{ij}",
+      "aliases_latex": [
+        "\\mu_j - \\sum_{i=1}^{N_e} \\lambda_i a_{ij} = 0"
+      ],
+      "keywords": [
+        "ギブズ自由エネルギー",
+        "化学平衡",
+        "CEA",
+        "ラグランジュ未定乗数法",
+        "元素保存"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "thermodynamics",
+        "chemical_equilibrium"
+      ]
+    },
+    {
+      "id": "aerosp.cea.n03_chemical_potential_equilibrium_constant",
+      "short_code": "CEA03",
+      "kind": "theorem_formula",
+      "title": "理想気体混合物の化学ポテンシャルと平衡定数",
+      "summary": "理想気体混合則に基づく化学ポテンシャル表現から、反応系の平衡定数と標準ギブズエネルギー変化の関係式を導く。",
+      "canonical_latex": "\\mu_j(T,p,\\mathbf{n}) = \\mu_j^\\circ(T) + R_u T \\ln\\!\\left(\\frac{n_j}{n_{\\mathrm{tot}}}\\frac{p}{p^\\circ}\\right),\\quad \\Delta G^\\circ(T) = -R_u T \\ln K_p(T)",
+      "aliases_latex": [
+        "K_p(T) = \\prod_{j} \\left(\\frac{p_j}{p^\\circ}\\right)^{\\nu_j} = \\exp\\!\\left(-\\frac{\\Delta G^\\circ(T)}{R_u T}\\right)"
+      ],
+      "keywords": [
+        "化学ポテンシャル",
+        "平衡定数",
+        "理想気体混合物",
+        "質量作用の法則"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "thermodynamics",
+        "chemical_equilibrium"
+      ]
+    },
+    {
+      "id": "aerosp.cea.n04_adiabatic_flame_temperature",
+      "short_code": "CEA04",
+      "kind": "theorem_formula",
+      "title": "定圧断熱火炎温度のエンタルピー保存方程式",
+      "summary": "定圧断熱燃焼室における反応物と平衡生成物の絶対エンタルピー保存則から、燃焼室温度（断熱火炎温度）を決定する陰的方程式を示す。",
+      "canonical_latex": "\\sum_{k \\in \\mathrm{react}} n_k \\bar{h}_k(T_{\\mathrm{in}}) = \\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}}(T_c, p_c) \\bar{h}_j(T_c),\\quad \\bar{h}_j(T) = \\Delta_f \\bar{h}_j^\\circ(T_{\\mathrm{ref}}) + \\int_{T_{\\mathrm{ref}}}^{T} \\bar{c}_{p,j}(T')\\,dT'",
+      "aliases_latex": [
+        "H_{\\mathrm{react}}(T_{\\mathrm{in}}) = H_{\\mathrm{prod}}(T_c, p_c, \\mathbf{n}^{\\mathrm{eq}})"
+      ],
+      "keywords": [
+        "断熱火炎温度",
+        "エンタルピー保存",
+        "生成エンタルピー",
+        "燃焼室温度"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.cea.n05_combustion_gas_molar_mass_tc_m",
+      "short_code": "CEA05",
+      "kind": "theorem_formula",
+      "title": "燃焼ガス平均分子量と特性排気速度のTc/Mw支配則",
+      "summary": "平衡組成から定まる燃焼ガスの平均分子量を用いて比気体定数を表し、特性排気速度が燃焼温度と平均分子量の比の平方根に比例することを示す。",
+      "canonical_latex": "\\overline{M}_w = \\frac{\\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}} M_j}{\\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}}},\\quad R_{\\mathrm{sp}} = \\frac{R_u}{\\overline{M}_w},\\quad c^* = \\frac{1}{\\Gamma(\\gamma)}\\sqrt{\\frac{R_u T_c}{\\overline{M}_w}} \\propto \\sqrt{\\frac{T_c}{\\overline{M}_w}}",
+      "aliases_latex": [
+        "c^* = \\frac{\\sqrt{R_u T_c / \\overline{M}_w}}{\\Gamma(\\gamma)}"
+      ],
+      "keywords": [
+        "平均分子量",
+        "特性排気速度",
+        "比気体定数",
+        "燃焼性能"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.cea.n06_frozen_vs_equilibrium_nozzle_flow",
+      "short_code": "CEA06",
+      "kind": "theorem_formula",
+      "title": "凍結流と平衡流のノズル膨張排気速度関係式",
+      "summary": "等エントロピーノズル膨張において組成を固定する凍結流と局所平衡を保つ平衡流を定式化し、再結合発熱により平衡流排気速度が凍結流以上となることを示す。",
+      "canonical_latex": "v_e^{\\mathrm{fr}} = \\sqrt{2\\big(h(T_c,\\mathbf{n}_c) - h(T_e^{\\mathrm{fr}},\\mathbf{n}_c)\\big)},\\quad v_e^{\\mathrm{eq}} = \\sqrt{2\\big(h(T_c,\\mathbf{n}_c) - h(T_e^{\\mathrm{eq}},\\mathbf{n}_e^{\\mathrm{eq}})\\big)} \\ge v_e^{\\mathrm{fr}}",
+      "aliases_latex": [
+        "I_{\\mathrm{sp}}^{\\mathrm{eq}} \\ge I_{\\mathrm{sp}}^{\\mathrm{fr}}"
+      ],
+      "keywords": [
+        "凍結流",
+        "平衡流",
+        "ノズル膨張",
+        "再結合発熱",
+        "排気速度"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "compressible_flow"
+      ]
+    },
+    {
+      "id": "aerosp.cea.n07_fuel_rich_optimal_of_ratio",
+      "short_code": "CEA07",
+      "kind": "theorem_formula",
+      "title": "燃料過濃側への最適O/F混合比シフト則",
+      "summary": "比推力のO/F比に対する停留条件から、高温下での平均分子量低下効果により最大比推力を与える最適O/F比が化学量論比より燃料過濃側に移動することを示す。",
+      "canonical_latex": "\\frac{\\partial \\ln I_{\\mathrm{sp}}}{\\partial (\\mathrm{O/F})} = 0 \\iff \\frac{1}{T_c}\\frac{\\partial T_c}{\\partial (\\mathrm{O/F})} = \\frac{1}{\\overline{M}_w}\\frac{\\partial \\overline{M}_w}{\\partial (\\mathrm{O/F})} - \\frac{2}{\\eta_{\\mathrm{noz}}}\\frac{\\partial \\eta_{\\mathrm{noz}}}{\\partial (\\mathrm{O/F})} \\implies (\\mathrm{O/F})_{\\mathrm{opt}} < (\\mathrm{O/F})_{\\mathrm{st}}",
+      "aliases_latex": [
+        "\\phi_{\\mathrm{opt}} > 1"
+      ],
+      "keywords": [
+        "最適混合比",
+        "燃料過濃",
+        "比推力最大化",
+        "O/F比"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.cea.n08_dissociation_endothermic_limit",
+      "short_code": "CEA08",
+      "kind": "theorem_formula",
+      "title": "高温解離平衡による実効比熱増大と火炎温度抑制則",
+      "summary": "高温燃焼域における吸熱解離反応の進行が平衡混合気体の実効比熱を増大させ、断熱火炎温度の上昇を抑制する機構を示す。",
+      "canonical_latex": "\\frac{d\\ln K_p}{dT} = \\frac{\\Delta H_{\\mathrm{diss}}^\\circ}{R_u T^2} > 0,\\quad c_{p,\\mathrm{eff}} = c_{p,\\mathrm{fr}} + \\sum_{j=1}^{N_s} \\bar{h}_j \\left(\\frac{\\partial n_j^{\\mathrm{eq}}}{\\partial T}\\right)_p > c_{p,\\mathrm{fr}}",
+      "aliases_latex": [
+        "c_{p,\\mathrm{eff}} = \\left(\\frac{\\partial h}{\\partial T}\\right)_{p,\\mathrm{eq}} > c_{p,\\mathrm{fr}}"
+      ],
+      "keywords": [
+        "解離平衡",
+        "ファントホッフの式",
+        "実効比熱",
+        "火炎温度頭打ち"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "thermodynamics",
+        "chemical_equilibrium"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "aerosp.cea.d01_mixture_of_ratio_stoichiometry",
+      "target_node_id": "aerosp.cea.n01_mixture_of_ratio_stoichiometry",
+      "route_kind": "reformulation",
+      "title": "推進薬の質量流量比による混合比と当量比の定式化",
+      "premise_node_ids": [
+        "eng.rock.n05_choked_mass_flow_rate",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "燃焼室へ供給される酸化剤と燃料の質量流量が定常である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{m} = \\dot{m}_{\\mathrm{ox}} + \\dot{m}_{\\mathrm{f}}",
+          "to_latex": "\\mathrm{O/F} := \\frac{\\dot{m}_{\\mathrm{ox}}}{\\dot{m}_{\\mathrm{f}}},\\quad \\phi := \\frac{(\\mathrm{O/F})_{\\mathrm{st}}}{\\mathrm{O/F}}",
+          "operation_label": "推進薬混合比および当量比の定義",
+          "explanation": "全推進薬質量流量を酸化剤流量と燃料流量の和として表し、両者の比をO/F比、化学量論的完全燃焼比との商を当量比として定義する。",
+          "used_node_ids": [
+            "eng.rock.n05_choked_mass_flow_rate",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.cea.d02_gibbs_free_energy_minimization",
+      "target_node_id": "aerosp.cea.n02_gibbs_free_energy_minimization",
+      "route_kind": "deductive",
+      "title": "熱力学第1・第2法則からのギブズ自由エネルギー最小化平衡条件の導出",
+      "premise_node_ids": [
+        "phys.thermo.th03_first_law_internal_energy",
+        "phys.thermo.th06_second_law_principles",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff",
+        "math.calc.m19_differential_linearity_leibniz"
+      ],
+      "assumptions": [
+        "系は定温・定圧条件下にあり、非膨張仕事は存在しない。",
+        "すべての化学種は単一相の連続混合気体をなす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dU = \\delta Q - p\\,dV,\\quad TdS \\ge \\delta Q",
+          "to_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} \\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right) \\implies \\mu_j = \\sum_{i=1}^{N_e} \\lambda_i a_{ij}",
+          "operation_label": "定温定圧平衡条件とラグランジュ未定乗数法の適用",
+          "explanation": "熱力学第1・第2法則から定温定圧下でのギブズ自由エネルギー減少則を導き、元素保存制約のもとでラグランジュ関数を停留化することで化学平衡条件を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = \\delta Q - p\\,dV,\\quad TdS \\ge \\delta Q",
+          "to_latex": "dG = d(U + pV - TS) = V\\,dp - S\\,dT + (\\delta Q - T\\,dS) \\le 0\\quad (dT = 0,\\; dp = 0)",
+          "operation_label": "ギブズ自由エネルギーの定義と減少則の導出",
+          "explanation": "ギブズ自由エネルギーの定義に全微分のライプニッツ則と熱力学第1・第2法則を適用し、定温定圧下で自発変化がdG <= 0となることを示す。",
+          "used_node_ids": [
+            "math.calc.m19_differential_linearity_leibniz",
+            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dG = V\\,dp - S\\,dT + (\\delta Q - T\\,dS) \\le 0\\quad (dT = 0,\\; dp = 0)",
+          "to_latex": "\\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right)",
+          "operation_label": "元素保存制約付き最小化問題の定式化",
+          "explanation": "平衡状態でGが極小となることと各化学種のモル数に対する元素数保存条件を合わせ、未定乗数を用いてラグランジュ関数を構成する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right)",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial n_j} = 0 \\implies \\mu_j = \\sum_{i=1}^{N_e} \\lambda_i a_{ij}",
+          "operation_label": "停留条件の計算",
+          "explanation": "ギブズ＝デュエム関係により組成微分項が相殺するため、各化学種のモル数に関する偏微分から化学ポテンシャルと元素ポテンシャルの線形結合関係を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.cea.d03_chemical_potential_equilibrium_constant",
+      "target_node_id": "aerosp.cea.n03_chemical_potential_equilibrium_constant",
+      "route_kind": "deductive",
+      "title": "理想気体化学ポテンシャルと質量作用の法則（平衡定数）の導出",
+      "premise_node_ids": [
+        "aerosp.cea.n02_gibbs_free_energy_minimization",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "燃焼ガスは理想気体混合物として振る舞う。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mu_j = \\sum_{i=1}^{N_e} \\lambda_i a_{ij},\\quad pV = n_{\\mathrm{tot}} R_u T",
+          "to_latex": "\\mu_j(T,p,\\mathbf{n}) = \\mu_j^\\circ(T) + R_u T \\ln\\!\\left(\\frac{n_j}{n_{\\mathrm{tot}}}\\frac{p}{p^\\circ}\\right),\\quad \\Delta G^\\circ(T) = -R_u T \\ln K_p(T)",
+          "operation_label": "理想気体状態式の代入と反応平衡定数の導出",
+          "explanation": "分圧による理想気体の化学ポテンシャル表現を反応の元素保存条件に代入し、標準ギブズエネルギー変化と平衡定数の関係式を得る。",
+          "used_node_ids": [
+            "aerosp.cea.n02_gibbs_free_energy_minimization",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "pV = n_{\\mathrm{tot}} R_u T,\\quad p_j = \\frac{n_j}{n_{\\mathrm{tot}}}p",
+          "to_latex": "\\mu_j(T,p,\\mathbf{n}) = \\mu_j^\\circ(T) + R_u T \\ln\\!\\left(\\frac{p_j}{p^\\circ}\\right) = \\mu_j^\\circ(T) + R_u T \\ln\\!\\left(\\frac{n_j}{n_{\\mathrm{tot}}}\\frac{p}{p^\\circ}\\right)",
+          "operation_label": "理想気体混合則による化学ポテンシャル展開",
+          "explanation": "定温下で理想気体状態方程式を積分して標準圧力からの圧力依存性を求め、ドルトンの分圧の法則を用いてモル分率で記述する。",
+          "used_node_ids": [
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu_j(T,p,\\mathbf{n}) = \\mu_j^\\circ(T) + R_u T \\ln\\!\\left(\\frac{p_j}{p^\\circ}\\right),\\quad \\sum_{j} \\nu_j a_{ij} = 0",
+          "to_latex": "\\sum_{j} \\nu_j \\mu_j = \\sum_{j} \\nu_j \\mu_j^\\circ(T) + R_u T \\ln\\!\\left(\\prod_j \\left(\\frac{p_j}{p^\\circ}\\right)^{\\nu_j}\\right) = 0",
+          "operation_label": "化学量論係数による平衡条件の線形結合",
+          "explanation": "任意の独立反応に対して元素保存を表す化学量論係数との積和をとり、元素ポテンシャル項を消去する。",
+          "used_node_ids": [
+            "aerosp.cea.n02_gibbs_free_energy_minimization",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{j} \\nu_j \\mu_j^\\circ(T) + R_u T \\ln\\!\\left(\\prod_j \\left(\\frac{p_j}{p^\\circ}\\right)^{\\nu_j}\\right) = 0",
+          "to_latex": "\\Delta G^\\circ(T) := \\sum_{j} \\nu_j \\mu_j^\\circ(T) = -R_u T \\ln K_p(T)",
+          "operation_label": "平衡定数Kpの定義と整理",
+          "explanation": "反応の分圧積を平衡定数Kpと定義し、標準反応ギブズエネルギーとの対数関係式を得る。",
+          "used_node_ids": [
+            "aerosp.cea.n02_gibbs_free_energy_minimization"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.cea.d04_adiabatic_flame_temperature",
+      "target_node_id": "aerosp.cea.n04_adiabatic_flame_temperature",
+      "route_kind": "deductive",
+      "title": "定圧断熱燃焼におけるエンタルピー保存と断熱火炎温度の導出",
+      "premise_node_ids": [
+        "phys.thermo.th03_first_law_internal_energy",
+        "aerosp.cea.n01_mixture_of_ratio_stoichiometry",
+        "aerosp.cea.n02_gibbs_free_energy_minimization"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m16_integral_linearity"
+      ],
+      "assumptions": [
+        "燃焼室は定圧・断熱であり、壁面への熱損失および軸仕事は零である。",
+        "燃焼室内のガス流速は音速に比べ十分小さく運動エネルギー変化は無視できる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "dU = \\delta Q - p\\,dV,\\quad \\delta Q = 0,\\quad dp = 0",
+          "to_latex": "\\sum_{k \\in \\mathrm{react}} n_k \\bar{h}_k(T_{\\mathrm{in}}) = \\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}}(T_c, p_c) \\bar{h}_j(T_c),\\quad \\bar{h}_j(T) = \\Delta_f \\bar{h}_j^\\circ(T_{\\mathrm{ref}}) + \\int_{T_{\\mathrm{ref}}}^{T} \\bar{c}_{p,j}(T')\\,dT'",
+          "operation_label": "定圧断熱系への第1法則適用と絶対エンタルピー展開",
+          "explanation": "定圧断熱条件下で総エンタルピーが保存することを用い、O/F比で決まる反応物エンタルピーと平衡組成の温度依存エンタルピーを等置する。",
+          "used_node_ids": [
+            "aerosp.cea.n01_mixture_of_ratio_stoichiometry",
+            "aerosp.cea.n02_gibbs_free_energy_minimization",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dU = \\delta Q - p\\,dV,\\quad \\delta Q = 0,\\quad dp = 0",
+          "to_latex": "dH = d(U + pV) = \\delta Q + V\\,dp = 0 \\implies \\sum_{k \\in \\mathrm{react}} n_k \\bar{h}_k(T_{\\mathrm{in}}) = \\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}}(T_c, p_c) \\bar{h}_j(T_c)",
+          "operation_label": "定圧断熱系におけるエンタルピー保存則の導出",
+          "explanation": "エンタルピーの微分に熱力学第1法則を代入し、反応前後の総エンタルピーが等しいことを導く。",
+          "used_node_ids": [
+            "aerosp.cea.n01_mixture_of_ratio_stoichiometry",
+            "aerosp.cea.n02_gibbs_free_energy_minimization",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{k \\in \\mathrm{react}} n_k \\bar{h}_k(T_{\\mathrm{in}}) = \\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}}(T_c, p_c) \\bar{h}_j(T_c)",
+          "to_latex": "\\bar{h}_j(T) = \\Delta_f \\bar{h}_j^\\circ(T_{\\mathrm{ref}}) + \\int_{T_{\\mathrm{ref}}}^{T} \\bar{c}_{p,j}(T')\\,dT'",
+          "operation_label": "標準生成エンタルピーと定圧比熱積分の導入",
+          "explanation": "各化学種の絶対モルエンタルピーを基準温度での生成エンタルピーと定圧モル比熱の温度積分との和で展開し、断熱火炎温度Tcの決定式を完成させる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m16_integral_linearity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.cea.d05_combustion_gas_molar_mass_tc_m",
+      "target_node_id": "aerosp.cea.n05_combustion_gas_molar_mass_tc_m",
+      "route_kind": "deductive",
+      "title": "燃焼ガス平均分子量の算出と特性排気速度支配則の導出",
+      "premise_node_ids": [
+        "aerosp.cea.n04_adiabatic_flame_temperature",
+        "eng.rock.n06_characteristic_velocity_c_star",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "燃焼室内のガスは一様平衡組成の理想気体として扱う。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "c^* = \\frac{\\sqrt{R_{\\mathrm{sp}} T_c}}{\\Gamma(\\gamma)},\\quad pV = n_{\\mathrm{tot}} R_u T_c",
+          "to_latex": "\\overline{M}_w = \\frac{\\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}} M_j}{\\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}}},\\quad R_{\\mathrm{sp}} = \\frac{R_u}{\\overline{M}_w},\\quad c^* = \\frac{1}{\\Gamma(\\gamma)}\\sqrt{\\frac{R_u T_c}{\\overline{M}_w}} \\propto \\sqrt{\\frac{T_c}{\\overline{M}_w}}",
+          "operation_label": "平均分子量による比気体定数とc*の表現",
+          "explanation": "平衡組成から定まる平均分子量により比気体定数を表し、特性排気速度公式に代入することでTc/Mw依存性を得る。",
+          "used_node_ids": [
+            "aerosp.cea.n04_adiabatic_flame_temperature",
+            "eng.rock.n06_characteristic_velocity_c_star",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m_{\\mathrm{tot}} = \\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}} M_j,\\quad n_{\\mathrm{tot}} = \\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}}",
+          "to_latex": "\\overline{M}_w := \\frac{m_{\\mathrm{tot}}}{n_{\\mathrm{tot}}} = \\frac{\\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}} M_j}{\\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}}},\\quad R_{\\mathrm{sp}} = \\frac{R_u}{\\overline{M}_w}",
+          "operation_label": "混合気体の平均分子量と比気体定数の導出",
+          "explanation": "総質量を総物質量で割って平均分子量を定義し、状態方程式から単位質量あたりの気体定数を一般気体定数との商として表す。",
+          "used_node_ids": [
+            "aerosp.cea.n04_adiabatic_flame_temperature",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c^* = \\frac{\\sqrt{R_{\\mathrm{sp}} T_c}}{\\Gamma(\\gamma)},\\quad R_{\\mathrm{sp}} = \\frac{R_u}{\\overline{M}_w}",
+          "to_latex": "c^* = \\frac{1}{\\Gamma(\\gamma)}\\sqrt{\\frac{R_u T_c}{\\overline{M}_w}} \\propto \\sqrt{\\frac{T_c}{\\overline{M}_w}}",
+          "operation_label": "特性排気速度公式への代入",
+          "explanation": "比気体定数を特性排気速度の定義式に代入し、比熱比関数への弱い依存性を除けばc*がTc/Mwの平方根に比例することを導く。",
+          "used_node_ids": [
+            "eng.rock.n06_characteristic_velocity_c_star"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.cea.d06_frozen_vs_equilibrium_nozzle_flow",
+      "target_node_id": "aerosp.cea.n06_frozen_vs_equilibrium_nozzle_flow",
+      "route_kind": "deductive",
+      "title": "等エントロピーノズル膨張における凍結流と平衡流の排気速度比較",
+      "premise_node_ids": [
+        "eng.comp.n03_stagnation_enthalpy_energy_eq",
+        "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
+        "aerosp.cea.n02_gibbs_free_energy_minimization"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "ノズル流れは1次元定常・断熱・可逆（等エントロピー）である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "h_0 = h + \\frac{v^2}{2} = \\mathrm{const.},\\quad s(T_e, p_e, \\mathbf{n}_e) = s(T_c, p_c, \\mathbf{n}_c)",
+          "to_latex": "v_e^{\\mathrm{fr}} = \\sqrt{2\\big(h(T_c,\\mathbf{n}_c) - h(T_e^{\\mathrm{fr}},\\mathbf{n}_c)\\big)},\\quad v_e^{\\mathrm{eq}} = \\sqrt{2\\big(h(T_c,\\mathbf{n}_c) - h(T_e^{\\mathrm{eq}},\\mathbf{n}_e^{\\mathrm{eq}})\\big)} \\ge v_e^{\\mathrm{fr}}",
+          "operation_label": "凍結流・平衡流のエンタルピー落差と再結合発熱効果の導出",
+          "explanation": "断熱定常エネルギー保存則と等エントロピー膨張条件に対し、組成固定と化学平衡の2極限を適用して排気速度の大小関係を導く。",
+          "used_node_ids": [
+            "aerosp.cea.n02_gibbs_free_energy_minimization",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.rock.n04_isentropic_nozzle_exhaust_velocity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "h_0 = h + \\frac{v^2}{2} = \\mathrm{const.}",
+          "to_latex": "v_e = \\sqrt{2\\big(h(T_c,\\mathbf{n}_c) - h(T_e,\\mathbf{n}_e)\\big)},\\quad s(T_e, p_e, \\mathbf{n}_e) = s_c",
+          "operation_label": "ノズル出口速度の一般エンタルピー落差表示",
+          "explanation": "燃焼室（よどみ点）から出口までのエネルギー保存により、排気速度が比エンタルピー減少量の平方根で与えられることを表す。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.rock.n04_isentropic_nozzle_exhaust_velocity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_e = \\sqrt{2\\big(h(T_c,\\mathbf{n}_c) - h(T_e,\\mathbf{n}_e)\\big)},\\quad s(T_e, p_e, \\mathbf{n}_e) = s_c",
+          "to_latex": "v_e^{\\mathrm{fr}} = \\sqrt{2\\big(h(T_c,\\mathbf{n}_c) - h(T_e^{\\mathrm{fr}},\\mathbf{n}_c)\\big)},\\quad v_e^{\\mathrm{eq}} = \\sqrt{2\\big(h(T_c,\\mathbf{n}_c) - h(T_e^{\\mathrm{eq}},\\mathbf{n}_e^{\\mathrm{eq}})\\big)}",
+          "operation_label": "凍結流（組成固定）と平衡流（局所平衡）の出口状態決定",
+          "explanation": "凍結流では組成を燃焼室組成のまま固定し、平衡流では出口圧力下でギブズ最小化と等エントロピー条件を同時満足する組成と温度を決定する。",
+          "used_node_ids": [
+            "aerosp.cea.n02_gibbs_free_energy_minimization",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_e^{\\mathrm{fr}} = \\sqrt{2\\big(h(T_c,\\mathbf{n}_c) - h(T_e^{\\mathrm{fr}},\\mathbf{n}_c)\\big)},\\quad v_e^{\\mathrm{eq}} = \\sqrt{2\\big(h(T_c,\\mathbf{n}_c) - h(T_e^{\\mathrm{eq}},\\mathbf{n}_e^{\\mathrm{eq}})\\big)}",
+          "to_latex": "h(T_e^{\\mathrm{eq}},\\mathbf{n}_e^{\\mathrm{eq}}) \\le h(T_e^{\\mathrm{fr}},\\mathbf{n}_c) \\implies v_e^{\\mathrm{eq}} \\ge v_e^{\\mathrm{fr}}",
+          "operation_label": "再結合発熱による排気速度大小関係の導出",
+          "explanation": "平衡流では温度低下に伴い解離ラジカルが発熱再結合して化学エネルギーが運動エネルギーへ追加変換されるため、排気速度が凍結流以上となる。",
+          "used_node_ids": [
+            "aerosp.cea.n02_gibbs_free_energy_minimization"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.cea.d07_fuel_rich_optimal_of_ratio",
+      "target_node_id": "aerosp.cea.n07_fuel_rich_optimal_of_ratio",
+      "route_kind": "deductive",
+      "title": "比推力対数微分による燃料過濃側O/F最適シフトの導出",
+      "premise_node_ids": [
+        "aerosp.cea.n05_combustion_gas_molar_mass_tc_m",
+        "eng.rock.n02_effective_exhaust_velocity_isp",
+        "eng.rock.n04_isentropic_nozzle_exhaust_velocity"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "燃焼室圧力とノズル膨張比は一定に保たれている。",
+        "化学量論比付近で燃焼温度が極大をとり、燃料過濃側では軽分子（H2等）の残存により平均分子量が減少する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_{\\mathrm{sp}} = \\frac{\\eta_{\\mathrm{noz}}}{g_0}\\sqrt{\\frac{R_u T_c}{\\overline{M}_w}}",
+          "to_latex": "\\frac{\\partial \\ln I_{\\mathrm{sp}}}{\\partial (\\mathrm{O/F})} = 0 \\iff \\frac{1}{T_c}\\frac{\\partial T_c}{\\partial (\\mathrm{O/F})} = \\frac{1}{\\overline{M}_w}\\frac{\\partial \\overline{M}_w}{\\partial (\\mathrm{O/F})} - \\frac{2}{\\eta_{\\mathrm{noz}}}\\frac{\\partial \\eta_{\\mathrm{noz}}}{\\partial (\\mathrm{O/F})} \\implies (\\mathrm{O/F})_{\\mathrm{opt}} < (\\mathrm{O/F})_{\\mathrm{st}}",
+          "operation_label": "比推力の対数微分と極値点シフトの判定",
+          "explanation": "比推力をTc/Mwとノズル膨張因子に分解してO/F比で対数微分し、化学量論比付近でのTcとMwの勾配符号から最適混合比が燃料過濃側に移ることを示す。",
+          "used_node_ids": [
+            "aerosp.cea.n05_combustion_gas_molar_mass_tc_m",
+            "eng.rock.n02_effective_exhaust_velocity_isp",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{\\mathrm{sp}} = \\frac{c_{\\mathrm{eff}}}{g_0},\\quad c_{\\mathrm{eff}} = \\eta_{\\mathrm{noz}}(\\gamma, p_e/p_c)\\sqrt{\\frac{R_u T_c}{\\overline{M}_w}}",
+          "to_latex": "\\ln I_{\\mathrm{sp}} = \\ln \\eta_{\\mathrm{noz}} + \\frac{1}{2}\\ln T_c - \\frac{1}{2}\\ln \\overline{M}_w + \\mathrm{const.}",
+          "operation_label": "比推力の対数分解",
+          "explanation": "比推力をノズル効率因子・火炎温度・平均分子量の積として表し、両辺の自然対数をとって加法形に分解する。",
+          "used_node_ids": [
+            "aerosp.cea.n05_combustion_gas_molar_mass_tc_m",
+            "eng.rock.n02_effective_exhaust_velocity_isp",
+            "eng.rock.n04_isentropic_nozzle_exhaust_velocity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln I_{\\mathrm{sp}} = \\ln \\eta_{\\mathrm{noz}} + \\frac{1}{2}\\ln T_c - \\frac{1}{2}\\ln \\overline{M}_w + \\mathrm{const.}",
+          "to_latex": "\\frac{\\partial \\ln I_{\\mathrm{sp}}}{\\partial (\\mathrm{O/F})} = \\frac{1}{\\eta_{\\mathrm{noz}}}\\frac{\\partial \\eta_{\\mathrm{noz}}}{\\partial (\\mathrm{O/F})} + \\frac{1}{2T_c}\\frac{\\partial T_c}{\\partial (\\mathrm{O/F})} - \\frac{1}{2\\overline{M}_w}\\frac{\\partial \\overline{M}_w}{\\partial (\\mathrm{O/F})} = 0",
+          "operation_label": "O/F比に関する停留条件の導出",
+          "explanation": "連鎖律を用いてO/F比で偏微分し、比推力が極大となる停留条件式を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{T_c}\\frac{\\partial T_c}{\\partial (\\mathrm{O/F})} = \\frac{1}{\\overline{M}_w}\\frac{\\partial \\overline{M}_w}{\\partial (\\mathrm{O/F})} - \\frac{2}{\\eta_{\\mathrm{noz}}}\\frac{\\partial \\eta_{\\mathrm{noz}}}{\\partial (\\mathrm{O/F})}",
+          "to_latex": "\\left.\\frac{\\partial T_c}{\\partial (\\mathrm{O/F})}\\right|_{\\mathrm{opt}} > 0 \\implies (\\mathrm{O/F})_{\\mathrm{opt}} < (\\mathrm{O/F})_{\\mathrm{st}}",
+          "operation_label": "勾配符号による燃料過濃側シフトの結論",
+          "explanation": "化学量論比付近では平均分子量がO/F増加とともに増加するため右辺が正となり、Tcの勾配が正である燃料過濃側に最適O/F比が位置することが導かれる。",
+          "used_node_ids": [
+            "aerosp.cea.n05_combustion_gas_molar_mass_tc_m"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.cea.d08_dissociation_endothermic_limit",
+      "target_node_id": "aerosp.cea.n08_dissociation_endothermic_limit",
+      "route_kind": "deductive",
+      "title": "高温解離平衡による実効比熱増大と火炎温度抑制の導出",
+      "premise_node_ids": [
+        "aerosp.cea.n03_chemical_potential_equilibrium_constant",
+        "aerosp.cea.n04_adiabatic_flame_temperature"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "高温域で進行する主要解離反応は吸熱反応（標準反応エンタルピーが正）である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta G^\\circ(T) = -R_u T \\ln K_p(T),\\quad H = \\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}}(T,p)\\bar{h}_j(T)",
+          "to_latex": "\\frac{d\\ln K_p}{dT} = \\frac{\\Delta H_{\\mathrm{diss}}^\\circ}{R_u T^2} > 0,\\quad c_{p,\\mathrm{eff}} = c_{p,\\mathrm{fr}} + \\sum_{j=1}^{N_s} \\bar{h}_j \\left(\\frac{\\partial n_j^{\\mathrm{eq}}}{\\partial T}\\right)_p > c_{p,\\mathrm{fr}}",
+          "operation_label": "ファントホッフ式と平衡エンタルピーの全微分",
+          "explanation": "平衡定数の温度勾配から高温での解離進行を示し、平衡組成の温度変化項を含む実効比熱が凍結比熱を上回ることを導く。",
+          "used_node_ids": [
+            "aerosp.cea.n03_chemical_potential_equilibrium_constant",
+            "aerosp.cea.n04_adiabatic_flame_temperature",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln K_p(T) = -\\frac{\\Delta G^\\circ(T)}{R_u T} = -\\frac{\\Delta H_{\\mathrm{diss}}^\\circ}{R_u T} + \\frac{\\Delta S_{\\mathrm{diss}}^\\circ}{R_u}",
+          "to_latex": "\\frac{d\\ln K_p}{dT} = \\frac{\\Delta H_{\\mathrm{diss}}^\\circ}{R_u T^2} > 0",
+          "operation_label": "ファントホッフの式の導出",
+          "explanation": "ギブズ＝ヘルムホルツ関係を用いて平衡定数の対数を温度微分し、吸熱解離反応では温度上昇とともに平衡が解離側へ移動することを示す。",
+          "used_node_ids": [
+            "aerosp.cea.n03_chemical_potential_equilibrium_constant",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(T,p) = \\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}}(T,p)\\bar{h}_j(T)",
+          "to_latex": "c_{p,\\mathrm{eff}} := \\left(\\frac{\\partial H}{\\partial T}\\right)_p = \\sum_{j=1}^{N_s} n_j^{\\mathrm{eq}} \\bar{c}_{p,j} + \\sum_{j=1}^{N_s} \\bar{h}_j \\left(\\frac{\\partial n_j^{\\mathrm{eq}}}{\\partial T}\\right)_p > c_{p,\\mathrm{fr}}",
+          "operation_label": "平衡組成変化を含む実効定圧比熱の導出",
+          "explanation": "総エンタルピーを定圧下で温度微分する際、凍結比熱項に加えて吸熱解離に伴う組成変化項が正の寄与を与え、断熱火炎温度の上昇を頭打ちにすることを示す。",
+          "used_node_ids": [
+            "aerosp.cea.n04_adiabatic_flame_temperature",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

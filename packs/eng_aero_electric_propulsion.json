@@ -1,0 +1,817 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_electric_propulsion",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "電気推進と低推力軌道遷移：イオンエンジン空間電荷制限則・ホールスラスタ・シュトゥーリンガー最適比推力とエデルバウム公式",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『電気推進と低推力軌道遷移：イオンエンジン空間電荷制限則・ホールスラスタ・シュトゥーリンガー最適比推力とエデルバウム公式』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.ep.n01_electrostatic_exhaust_velocity",
+      "short_code": "EP01",
+      "kind": "theorem_formula",
+      "title": "静電加速イオンの排気速度と推力・ビーム電流関係式",
+      "summary": "加速電圧 V_b で静電加速された単一荷電イオンの排気速度、質量流量、およびビーム電流による推力表示。",
+      "canonical_latex": "v_e = \\sqrt{\\frac{2qV_b}{m_i}},\\quad \\dot{m}_i = \\frac{m_i}{q}I_b,\\quad F = I_b\\sqrt{\\frac{2m_i V_b}{q}}",
+      "aliases_latex": [
+        "F = \\dot{m}_i v_e = I_b \\sqrt{2 m_i V_b / q}"
+      ],
+      "keywords": [
+        "イオンエンジン",
+        "静電加速",
+        "ビーム電流",
+        "排気速度"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "electric_propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.ep.n02_child_langmuir_space_charge_limit",
+      "short_code": "EP02",
+      "kind": "theorem_formula",
+      "title": "チャイルド＝ラングミュアの空間電荷制限電流密度則",
+      "summary": "平行平板グリッド間隙 d に加速電圧 V_b を印加したとき、イオン自身の空間電荷によって制限される最大抽出電流密度。",
+      "canonical_latex": "J_{\\mathrm{CL}} = \\frac{4\\varepsilon_0}{9}\\sqrt{\\frac{2q}{m_i}}\\frac{V_b^{3/2}}{d^2}",
+      "aliases_latex": [
+        "J_{\\max} = \\frac{4\\varepsilon_0}{9}\\sqrt{\\frac{2q}{m_i}}\\frac{V_b^{3/2}}{d^2}"
+      ],
+      "keywords": [
+        "チャイルド＝ラングミュア則",
+        "空間電荷制限",
+        "イオンエンジン",
+        "推力密度限界"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "electric_propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.ep.n03_electric_propulsion_power_thrust_efficiency",
+      "short_code": "EP03",
+      "kind": "definition",
+      "title": "電気推進の推進効率・ジェットパワーと推力電力比",
+      "summary": "入力電力 P_in と推進効率 \\eta_T に対するジェットパワー P_j および推力電力比 F/P_in の定義。",
+      "canonical_latex": "P_j := \\frac{1}{2}\\dot{m} v_e^2 = \\frac{F v_e}{2} = \\eta_T P_{\\mathrm{in}},\\quad \\frac{F}{P_{\\mathrm{in}}} = \\frac{2\\eta_T}{v_e} = \\frac{2\\eta_T}{g_0 I_{\\mathrm{sp}}}",
+      "aliases_latex": [
+        "\\frac{F}{P_{\\mathrm{in}}} = \\frac{2\\eta_T}{c}"
+      ],
+      "keywords": [
+        "推進効率",
+        "ジェットパワー",
+        "推力電力比",
+        "電気推進"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "electric_propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.ep.n04_hall_thruster_exb_drift_acceleration",
+      "short_code": "EP04",
+      "kind": "theorem_formula",
+      "title": "ホールスラスタの E×B 電子閉込めと準中性静電加速",
+      "summary": "半径方向磁場により電子を周方向ドリフトに閉じ込め、準中性を保ったままイオンを軸方向電場で加速するホールスラスタの推力関係式。",
+      "canonical_latex": "v_{e,\\theta} = \\frac{E_z}{B_r},\\quad r_{Le} \\ll L_c \\ll r_{Li},\\quad F_{\\mathrm{Hall}} = \\eta_m \\eta_v I_b \\sqrt{\\frac{2 m_i V_d}{q}}",
+      "aliases_latex": [
+        "F_{\\mathrm{Hall}} = \\gamma \\eta_m I_b \\sqrt{2 m_i V_d / q}"
+      ],
+      "keywords": [
+        "ホールスラスタ",
+        "E×Bドリフト",
+        "準中性プラズマ",
+        "磁気閉込め"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "electric_propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.ep.n05_power_limited_rocket_mass_model",
+      "short_code": "EP05",
+      "kind": "definition",
+      "title": "電力制限推進機の質量配分と推進剤消費モデル",
+      "summary": "電源比質量 \\alpha_p と作動時間 t_b に基づく電源系質量 m_w および推進剤質量 m_p の構成定義。",
+      "canonical_latex": "m_0 = m_{\\mathrm{pl}} + m_w + m_p,\\quad m_w = \\alpha_p P_{\\mathrm{in}},\\quad m_p = \\frac{2\\eta_T P_{\\mathrm{in}} t_b}{c^2}",
+      "aliases_latex": [
+        "m_w = \\alpha_p P_{\\mathrm{in}},\\quad m_p = \\dot{m} t_b"
+      ],
+      "keywords": [
+        "電力制限ロケット",
+        "電源比質量",
+        "質量配分",
+        "電気推進"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "electric_propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.ep.n06_stuhlinger_payload_fraction",
+      "short_code": "EP06",
+      "kind": "theorem_formula",
+      "title": "シュトゥーリンガーのペイロード質量比と特性速度 v_c",
+      "summary": "電力制限推進における特性速度 v_c と、排気速度 c および要求速度増分 \\Delta v に対するペイロード質量比の表現。",
+      "canonical_latex": "v_c := \\sqrt{\\frac{2\\eta_T t_b}{\\alpha_p}},\\quad \\frac{m_{\\mathrm{pl}}}{m_0} = \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right) - \\frac{c^2}{v_c^2}\\left[1 - \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right)\\right]",
+      "aliases_latex": [
+        "\\frac{m_{\\mathrm{pl}}}{m_0} = \\left(1 + \\frac{c^2}{v_c^2}\\right)e^{-\\Delta v/c} - \\frac{c^2}{v_c^2}"
+      ],
+      "keywords": [
+        "シュトゥーリンガー",
+        "特性速度",
+        "ペイロード比",
+        "電力制限推進"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "electric_propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.ep.n07_stuhlinger_optimal_isp",
+      "short_code": "EP07",
+      "kind": "theorem_formula",
+      "title": "シュトゥーリンガーの最適排気速度（最適比推力）条件",
+      "summary": "ペイロード質量比を最大化する最適排気速度 c^* を定める超越方程式と低 \\Delta v 極限の近似解。",
+      "canonical_latex": "\\frac{\\partial (m_{\\mathrm{pl}}/m_0)}{\\partial c} = 0 \\iff \\exp\\!\\left(\\frac{\\Delta v}{c^*}\\right) - 1 - \\frac{\\Delta v}{2c^*}\\left(1 + \\frac{v_c^2}{(c^*)^2}\\right) = 0 \\implies c^* \\approx v_c \\;\\; (\\Delta v \\ll v_c)",
+      "aliases_latex": [
+        "I_{\\mathrm{sp}}^* = c^* / g_0"
+      ],
+      "keywords": [
+        "最適比推力",
+        "シュトゥーリンガー",
+        "電気推進最適化",
+        "電力制限推進"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "electric_propulsion"
+      ]
+    },
+    {
+      "id": "aerosp.ep.n08_low_thrust_coplanar_edelbaum",
+      "short_code": "EP08",
+      "kind": "theorem_formula",
+      "title": "低推力連続接線加速による共面円軌道遷移の Δv",
+      "summary": "微小推力加速度 a_T の連続接線加速で準円軌道間を螺旋遷移するときの必要速度増分と軌道速度の時間変化。",
+      "canonical_latex": "\\Delta v_{\\mathrm{coplanar}} = |v_1 - v_2| = \\left|\\sqrt{\\frac{\\mu}{r_1}} - \\sqrt{\\frac{\\mu}{r_2}}\\right|,\\quad v(t) = v_0 - a_T t",
+      "aliases_latex": [
+        "\\Delta v = |\\sqrt{\\mu/r_1} - \\sqrt{\\mu/r_2}|"
+      ],
+      "keywords": [
+        "低推力軌道遷移",
+        "螺旋軌道",
+        "エデルバウム",
+        "共面軌道遷移"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "astrodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.ep.n09_edelbaum_inclination_delta_v",
+      "short_code": "EP09",
+      "kind": "theorem_formula",
+      "title": "軌道傾斜角変更を伴う円軌道間低推力遷移のエデルバウム公式",
+      "summary": "円軌道半径変更と軌道傾斜角変更 \\Delta i を同時に行う連続定加速度低推力遷移の最小 \\Delta v および最適ヨー角則。",
+      "canonical_latex": "\\Delta v = \\sqrt{v_1^2 + v_2^2 - 2v_1 v_2\\cos\\!\\left(\\frac{\\pi}{2}\\Delta i\\right)},\\quad \\tan\\beta(t) = \\frac{v_1\\sin\\beta_0}{v_1\\cos\\beta_0 - a_T t}",
+      "aliases_latex": [
+        "\\Delta v = \\sqrt{v_1^2 + v_2^2 - 2v_1 v_2 \\cos(\\frac{\\pi}{2}\\Delta i)}"
+      ],
+      "keywords": [
+        "エデルバウム公式",
+        "軌道傾斜角変更",
+        "低推力軌道遷移",
+        "電気推進ミッション"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "astrodynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "der_ep01_electrostatic_exhaust",
+      "target_node_id": "aerosp.ep.n01_electrostatic_exhaust_velocity",
+      "route_kind": "deductive",
+      "title": "静電ポテンシャルによるイオン加速とビーム電流推力の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "eng.rock.n01_rocket_thrust_equation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "イオンは単一荷電かつ無衝突の静電場内で加速される",
+        "宇宙空間の真空環境を仮定し圧力推力項を無視する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{1}{2}m_i v_e^2 = q V_b,\\quad F = \\dot{m}_i v_e",
+          "to_latex": "v_e = \\sqrt{\\frac{2qV_b}{m_i}},\\quad \\dot{m}_i = \\frac{m_i}{q}I_b,\\quad F = I_b\\sqrt{\\frac{2m_i V_b}{q}}",
+          "operation_label": "静電エネルギー保存と推力式からの消去",
+          "explanation": "イオンの静電ポテンシャルエネルギーを運動エネルギーへ変換して排気速度を求め、ビーム電流と質量流量の関係を推力式へ代入する。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation",
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m_i \\frac{dv}{dt} = q E = -q\\frac{d\\phi}{dz}",
+          "to_latex": "\\frac{1}{2}m_i v_e^2 = q V_b \\implies v_e = \\sqrt{\\frac{2qV_b}{m_i}}",
+          "operation_label": "運動方程式の空間積分",
+          "explanation": "初速ゼロのイオンが電位差 V_b を通過する間の運動方程式を積分し、排気速度 v_e を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2}m_i v_e^2 = q V_b \\implies v_e = \\sqrt{\\frac{2qV_b}{m_i}}",
+          "to_latex": "\\dot{m}_i = \\frac{m_i}{q}I_b,\\quad F = \\dot{m}_i v_e = \\frac{m_i}{q}I_b\\sqrt{\\frac{2qV_b}{m_i}}",
+          "operation_label": "質量流量とビーム電流の代入",
+          "explanation": "単位時間あたりの粒子数にイオン質量を掛けて質量流量をビーム電流 I_b で表し、ロケット推力式へ代入する。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{m}_i = \\frac{m_i}{q}I_b,\\quad F = \\dot{m}_i v_e = \\frac{m_i}{q}I_b\\sqrt{\\frac{2qV_b}{m_i}}",
+          "to_latex": "v_e = \\sqrt{\\frac{2qV_b}{m_i}},\\quad \\dot{m}_i = \\frac{m_i}{q}I_b,\\quad F = I_b\\sqrt{\\frac{2m_i V_b}{q}}",
+          "operation_label": "平方根の整理",
+          "explanation": "m_i/q を根号内に整理し、ビーム電流と加速電圧による推力表式を得る。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_ep02_child_langmuir",
+      "target_node_id": "aerosp.ep.n02_child_langmuir_space_charge_limit",
+      "route_kind": "deductive",
+      "title": "1次元ポアソン方程式からのチャイルド＝ラングミュア則の導出",
+      "premise_node_ids": [
+        "math.pde.electrostatic_1d_gauss_poisson",
+        "aerosp.ep.n01_electrostatic_exhaust_velocity"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "平行平板グリッド間の1次元定常イオン流を仮定する",
+        "エミッタ面 z=0 でイオン初速および電界がゼロであるとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d^2\\phi}{dz^2} = -\\frac{\\rho_i(z)}{\\varepsilon_0},\\quad \\rho_i(z) = \\frac{J}{v(z)},\\quad \\frac{1}{2}m_i v(z)^2 = q\\big(V_b - \\phi(z)\\big)",
+          "to_latex": "J_{\\mathrm{CL}} = \\frac{4\\varepsilon_0}{9}\\sqrt{\\frac{2q}{m_i}}\\frac{V_b^{3/2}}{d^2}",
+          "operation_label": "1次元ポアソン方程式の2回積分",
+          "explanation": "連続の式とエネルギー保存則を1次元静電ポアソン方程式に代入し、空間電荷制限境界条件のもとで2回積分して最大電流密度を導く。",
+          "used_node_ids": [
+            "aerosp.ep.n01_electrostatic_exhaust_velocity",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.pde.electrostatic_1d_gauss_poisson"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2\\phi}{dz^2} = -\\frac{\\rho_i(z)}{\\varepsilon_0},\\quad \\rho_i(z) = \\frac{J}{v(z)},\\quad \\frac{1}{2}m_i v(z)^2 = q\\big(V_b - \\phi(z)\\big)",
+          "to_latex": "\\frac{d^2\\psi}{dz^2} = \\frac{J}{\\varepsilon_0}\\sqrt{\\frac{m_i}{2q}}\\,\\psi^{-1/2}\\quad \\big(\\psi(z) := V_b - \\phi(z)\\big)",
+          "operation_label": "電荷密度の電位関数表示とポアソン方程式への代入",
+          "explanation": "電位降下 \\psi(z) を導入して速度と空間電荷密度を \\psi で表し、ポアソン方程式を非線形2階常微分方程式に帰着させる。",
+          "used_node_ids": [
+            "aerosp.ep.n01_electrostatic_exhaust_velocity",
+            "math.pde.electrostatic_1d_gauss_poisson"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2\\psi}{dz^2} = \\frac{J}{\\varepsilon_0}\\sqrt{\\frac{m_i}{2q}}\\,\\psi^{-1/2}\\quad \\big(\\psi(z) := V_b - \\phi(z)\\big)",
+          "to_latex": "\\left(\\frac{d\\psi}{dz}\\right)^2 = \\frac{4J}{\\varepsilon_0}\\sqrt{\\frac{m_i}{2q}}\\,\\psi^{1/2}\\quad \\big(\\psi(0)=0,\\; \\psi'(0)=0\\big)",
+          "operation_label": "両辺に dψ/dz を乗じた1回目積分",
+          "explanation": "両辺に d\\psi/dz を掛けて積分し、エミッタ面の空間電荷制限条件 \\psi'(0)=0 を用いて積分定数を消去する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left(\\frac{d\\psi}{dz}\\right)^2 = \\frac{4J}{\\varepsilon_0}\\sqrt{\\frac{m_i}{2q}}\\,\\psi^{1/2}\\quad \\big(\\psi(0)=0,\\; \\psi'(0)=0\\big)",
+          "to_latex": "\\int_{0}^{V_b} \\psi^{-1/4}\\,d\\psi = \\sqrt{\\frac{4J}{\\varepsilon_0}}\\left(\\frac{m_i}{2q}\\right)^{1/4}\\int_{0}^{d} dz \\implies J_{\\mathrm{CL}} = \\frac{4\\varepsilon_0}{9}\\sqrt{\\frac{2q}{m_i}}\\frac{V_b^{3/2}}{d^2}",
+          "operation_label": "変数分離積分と電流密度 J についての整理",
+          "explanation": "平方根をとって z=0 から z=d まで変数分離積分を行い、J について解くことでチャイルド＝ラングミュア則を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_ep03_power_thrust_efficiency",
+      "target_node_id": "aerosp.ep.n03_electric_propulsion_power_thrust_efficiency",
+      "route_kind": "reformulation",
+      "title": "電気推進のジェットパワーと推力電力比の定義導出",
+      "premise_node_ids": [
+        "eng.rock.n01_rocket_thrust_equation",
+        "eng.rock.n02_effective_exhaust_velocity_isp"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "真空中作動により排気速度と有効排気速度が一致する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_1",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F = \\dot{m} v_e,\\quad I_{\\mathrm{sp}} = \\frac{v_e}{g_0}",
+          "to_latex": "P_j := \\frac{1}{2}\\dot{m} v_e^2 = \\frac{1}{2} F v_e = \\eta_T P_{\\mathrm{in}}",
+          "operation_label": "ジェット運動エネルギー流束と推進効率の定義",
+          "explanation": "推進剤排気流の単位時間あたり運動エネルギーをジェットパワー P_j と定義し、入力電力 P_in との比を推進効率 \\eta_T とおく。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s1_2",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_j := \\frac{1}{2}\\dot{m} v_e^2 = \\frac{1}{2} F v_e = \\eta_T P_{\\mathrm{in}}",
+          "to_latex": "P_j := \\frac{1}{2}\\dot{m} v_e^2 = \\frac{F v_e}{2} = \\eta_T P_{\\mathrm{in}},\\quad \\frac{F}{P_{\\mathrm{in}}} = \\frac{2\\eta_T}{v_e} = \\frac{2\\eta_T}{g_0 I_{\\mathrm{sp}}}",
+          "operation_label": "推力電力比と比推力の関係整理",
+          "explanation": "F v_e / 2 = \\eta_T P_in を F/P_in について解き、比推力定義を用いて推力と比推力のトレードオフを表す。",
+          "used_node_ids": [
+            "eng.rock.n02_effective_exhaust_velocity_isp"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_ep04_hall_thruster_acceleration",
+      "target_node_id": "aerosp.ep.n04_hall_thruster_exb_drift_acceleration",
+      "route_kind": "deductive",
+      "title": "E×B 電子閉込め条件とホールスラスタ推力式の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "aerosp.ep.n01_electrostatic_exhaust_velocity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "電子は磁化されイオンは非磁化であるスケール分離が成立する",
+        "加速チャネル内は準中性プラズマであり空間電荷制限を受けない"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "-e(\\mathbf{E} + \\mathbf{v}_e \\times \\mathbf{B}) = \\mathbf{0},\\quad \\rho_e \\approx \\rho_i,\\quad F = \\dot{m}_i v_e",
+          "to_latex": "v_{e,\\theta} = \\frac{E_z}{B_r},\\quad r_{Le} \\ll L_c \\ll r_{Li},\\quad F_{\\mathrm{Hall}} = \\eta_m \\eta_v I_b \\sqrt{\\frac{2 m_i V_d}{q}}",
+          "operation_label": "電子ドリフト平衡とイオン静電加速の結合",
+          "explanation": "電子のローレンツ力釣合いから周方向ドリフト速度を定め、イオンは放電電圧 V_d で静電加速されることから推力式を得る。",
+          "used_node_ids": [
+            "aerosp.ep.n01_electrostatic_exhaust_velocity",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-e(\\mathbf{E} + \\mathbf{v}_e \\times \\mathbf{B}) = \\mathbf{0},\\quad \\rho_e \\approx \\rho_i,\\quad F = \\dot{m}_i v_e",
+          "to_latex": "v_{e,\\theta} = \\frac{E_z}{B_r},\\quad r_{Le} = \\frac{m_e v_{\\mathrm{th},e}}{e B_r} \\ll L_c \\ll r_{Li}",
+          "operation_label": "E×B ドリフト速度とラーマー半径のスケール分離",
+          "explanation": "軸方向電場 E_z と半径方向磁場 B_r の直交電磁場における電子の力の釣合いからホール電流速度を求め、電子の磁化条件を記述する。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_{e,\\theta} = \\frac{E_z}{B_r},\\quad r_{Le} = \\frac{m_e v_{\\mathrm{th},e}}{e B_r} \\ll L_c \\ll r_{Li}",
+          "to_latex": "v_{e,\\theta} = \\frac{E_z}{B_r},\\quad r_{Le} \\ll L_c \\ll r_{Li},\\quad F_{\\mathrm{Hall}} = \\eta_m \\eta_v I_b \\sqrt{\\frac{2 m_i V_d}{q}}",
+          "operation_label": "イオン静電推力式への推進剤利用率・電圧利用率の導入",
+          "explanation": "非磁化イオンが放電電圧 V_d で加速される結果として静電推力式を適用し、推進剤利用率 \\eta_m と電圧利用率 \\eta_v を乗じてホールスラスタ推力を得る。",
+          "used_node_ids": [
+            "aerosp.ep.n01_electrostatic_exhaust_velocity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_ep05_power_limited_mass_model",
+      "target_node_id": "aerosp.ep.n05_power_limited_rocket_mass_model",
+      "route_kind": "reformulation",
+      "title": "電力制限推進機の電源質量と推進剤質量の構成定式化",
+      "premise_node_ids": [
+        "aerosp.ep.n03_electric_propulsion_power_thrust_efficiency",
+        "aerosp.rocket.stage_mass_parameters"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "作動期間 t_b にわたり入力電力 P_in と排気速度 c が一定である",
+        "推進機系とタンクの構造質量は電源比質量 \\alpha_p またはペイロード側に含める"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_1",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_j = \\frac{1}{2}\\dot{m} c^2 = \\eta_T P_{\\mathrm{in}},\\quad m_0 = m_{\\mathrm{pl}} + m_w + m_p",
+          "to_latex": "m_w := \\alpha_p P_{\\mathrm{in}},\\quad m_p = \\dot{m} t_b = \\frac{2\\eta_T P_{\\mathrm{in}} t_b}{c^2}",
+          "operation_label": "電源比質量 α_p の定義と推進剤消費量の積算",
+          "explanation": "電源系質量 m_w を電力に比例する形 \\alpha_p P_in で定義し、一定流量 \\dot{m} を作動時間 t_b で積分して推進剤質量 m_p を表す。",
+          "used_node_ids": [
+            "aerosp.ep.n03_electric_propulsion_power_thrust_efficiency",
+            "aerosp.rocket.stage_mass_parameters"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s1_2",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m_w := \\alpha_p P_{\\mathrm{in}},\\quad m_p = \\dot{m} t_b = \\frac{2\\eta_T P_{\\mathrm{in}} t_b}{c^2}",
+          "to_latex": "m_0 = m_{\\mathrm{pl}} + m_w + m_p,\\quad m_w = \\alpha_p P_{\\mathrm{in}},\\quad m_p = \\frac{2\\eta_T P_{\\mathrm{in}} t_b}{c^2}",
+          "operation_label": "電力制限機体質量モデルのまとめ",
+          "explanation": "初期総質量 m_0 の3成分分解と電源系・推進剤質量の電力依存関係を整理する。",
+          "used_node_ids": [
+            "aerosp.rocket.stage_mass_parameters"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_ep06_stuhlinger_payload_fraction",
+      "target_node_id": "aerosp.ep.n06_stuhlinger_payload_fraction",
+      "route_kind": "deductive",
+      "title": "ツィオルコフスキーの式と電力制限質量モデルからのシュトゥーリンガー式の導出",
+      "premise_node_ids": [
+        "aerosp.ep.n05_power_limited_rocket_mass_model",
+        "aerosp.rocket.tsiolkovsky_rocket_equation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "有効排気速度 c および入力電力 P_in は作動時間 t_b 中一定である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta v = c\\ln\\frac{m_0}{m_0 - m_p},\\quad m_0 = m_{\\mathrm{pl}} + \\alpha_p P_{\\mathrm{in}} + m_p,\\quad m_p = \\frac{2\\eta_T P_{\\mathrm{in}} t_b}{c^2}",
+          "to_latex": "v_c := \\sqrt{\\frac{2\\eta_T t_b}{\\alpha_p}},\\quad \\frac{m_{\\mathrm{pl}}}{m_0} = \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right) - \\frac{c^2}{v_c^2}\\left[1 - \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right)\\right]",
+          "operation_label": "推進剤質量比の消去と特性速度による無次元化",
+          "explanation": "ツィオルコフスキーの式から推進剤質量比を \\Delta v/c で表し、特性速度 v_c を用いて電源系質量比を消去することでペイロード比を得る。",
+          "used_node_ids": [
+            "aerosp.ep.n05_power_limited_rocket_mass_model",
+            "aerosp.rocket.tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta v = c\\ln\\frac{m_0}{m_0 - m_p},\\quad m_0 = m_{\\mathrm{pl}} + \\alpha_p P_{\\mathrm{in}} + m_p,\\quad m_p = \\frac{2\\eta_T P_{\\mathrm{in}} t_b}{c^2}",
+          "to_latex": "\\frac{m_p}{m_0} = 1 - \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right),\\quad \\frac{m_w}{m_p} = \\frac{\\alpha_p c^2}{2\\eta_T t_b} = \\frac{c^2}{v_c^2}\\quad \\left(v_c := \\sqrt{\\frac{2\\eta_T t_b}{\\alpha_p}}\\right)",
+          "operation_label": "推進剤比の反転と特性速度 v_c の導入",
+          "explanation": "ロケット方程式を m_p/m_0 について解き、m_w/m_p の比に特性速度 v_c を導入する。",
+          "used_node_ids": [
+            "aerosp.ep.n05_power_limited_rocket_mass_model",
+            "aerosp.rocket.tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{m_p}{m_0} = 1 - \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right),\\quad \\frac{m_w}{m_p} = \\frac{\\alpha_p c^2}{2\\eta_T t_b} = \\frac{c^2}{v_c^2}\\quad \\left(v_c := \\sqrt{\\frac{2\\eta_T t_b}{\\alpha_p}}\\right)",
+          "to_latex": "\\frac{m_{\\mathrm{pl}}}{m_0} = 1 - \\frac{m_p}{m_0} - \\frac{m_w}{m_0} = \\left(1 - \\frac{m_p}{m_0}\\right) - \\frac{c^2}{v_c^2}\\frac{m_p}{m_0}",
+          "operation_label": "質量保存式への m_w/m_0 の代入",
+          "explanation": "全質量比 1 から推進剤質量比と電源質量比 (c^2/v_c^2)(m_p/m_0) を差し引く。",
+          "used_node_ids": [
+            "aerosp.ep.n05_power_limited_rocket_mass_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{m_{\\mathrm{pl}}}{m_0} = 1 - \\frac{m_p}{m_0} - \\frac{m_w}{m_0} = \\left(1 - \\frac{m_p}{m_0}\\right) - \\frac{c^2}{v_c^2}\\frac{m_p}{m_0}",
+          "to_latex": "v_c := \\sqrt{\\frac{2\\eta_T t_b}{\\alpha_p}},\\quad \\frac{m_{\\mathrm{pl}}}{m_0} = \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right) - \\frac{c^2}{v_c^2}\\left[1 - \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right)\\right]",
+          "operation_label": "指数関数表示への書き換え",
+          "explanation": "m_p/m_0 = 1 - \\exp(-\\Delta v/c) を代入してシュトゥーリンガーのペイロード質量比公式を得る。",
+          "used_node_ids": [
+            "aerosp.rocket.tsiolkovsky_rocket_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_ep07_stuhlinger_optimal_isp",
+      "target_node_id": "aerosp.ep.n07_stuhlinger_optimal_isp",
+      "route_kind": "deductive",
+      "title": "ペイロード質量比の最大化によるシュトゥーリンガー最適排気速度の導出",
+      "premise_node_ids": [
+        "aerosp.ep.n06_stuhlinger_payload_fraction"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "要求速度増分 \\Delta v と特性速度 v_c を固定して排気速度 c のみを最適化する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{m_{\\mathrm{pl}}}{m_0} = \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right) - \\frac{c^2}{v_c^2}\\left[1 - \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right)\\right]",
+          "to_latex": "\\frac{\\partial (m_{\\mathrm{pl}}/m_0)}{\\partial c} = 0 \\iff \\exp\\!\\left(\\frac{\\Delta v}{c^*}\\right) - 1 - \\frac{\\Delta v}{2c^*}\\left(1 + \\frac{v_c^2}{(c^*)^2}\\right) = 0 \\implies c^* \\approx v_c \\;\\; (\\Delta v \\ll v_c)",
+          "operation_label": "c に関する偏微分極値条件の導出",
+          "explanation": "ペイロード質量比を排気速度 c で微分してゼロとおき、最適排気速度 c^* を決める超越方程式と小 \\Delta v 近似解を導く。",
+          "used_node_ids": [
+            "aerosp.ep.n06_stuhlinger_payload_fraction",
+            "math.calc.m01_chain_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{m_{\\mathrm{pl}}}{m_0} = \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right) - \\frac{c^2}{v_c^2}\\left[1 - \\exp\\!\\left(-\\frac{\\Delta v}{c}\\right)\\right]",
+          "to_latex": "\\frac{\\partial (m_{\\mathrm{pl}}/m_0)}{\\partial c} = \\frac{\\Delta v}{c^2} e^{-\\Delta v/c}\\left(1 + \\frac{c^2}{v_c^2}\\right) - \\frac{2c}{v_c^2}\\left(1 - e^{-\\Delta v/c}\\right) = 0",
+          "operation_label": "積の微分法と連鎖律による停留条件",
+          "explanation": "m_pl/m_0 = (1 + c^2/v_c^2)e^{-\\Delta v/c} - c^2/v_c^2 を c で微分して停留条件を立てる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial (m_{\\mathrm{pl}}/m_0)}{\\partial c} = \\frac{\\Delta v}{c^2} e^{-\\Delta v/c}\\left(1 + \\frac{c^2}{v_c^2}\\right) - \\frac{2c}{v_c^2}\\left(1 - e^{-\\Delta v/c}\\right) = 0",
+          "to_latex": "\\exp\\!\\left(\\frac{\\Delta v}{c^*}\\right) - 1 = \\frac{\\Delta v}{2c^*}\\left(1 + \\frac{v_c^2}{(c^*)^2}\\right)",
+          "operation_label": "両辺への v_c^2 e^{\\Delta v/c} / (2c) の乗算と整理",
+          "explanation": "指数因子を整理し、最適排気速度 c^* に対する無次元超越方程式を得る。",
+          "used_node_ids": [
+            "aerosp.ep.n06_stuhlinger_payload_fraction"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exp\\!\\left(\\frac{\\Delta v}{c^*}\\right) - 1 = \\frac{\\Delta v}{2c^*}\\left(1 + \\frac{v_c^2}{(c^*)^2}\\right)",
+          "to_latex": "\\frac{\\partial (m_{\\mathrm{pl}}/m_0)}{\\partial c} = 0 \\iff \\exp\\!\\left(\\frac{\\Delta v}{c^*}\\right) - 1 - \\frac{\\Delta v}{2c^*}\\left(1 + \\frac{v_c^2}{(c^*)^2}\\right) = 0 \\implies c^* \\approx v_c \\;\\; (\\Delta v \\ll v_c)",
+          "operation_label": "小速度増分極限の1次テイラー展開",
+          "explanation": "\\Delta v \\ll c^* で \\exp(\\Delta v/c^*) - 1 \\approx \\Delta v/c^* と近似すると 1 + v_c^2/(c^*)^2 \\approx 2 となり c^* \\approx v_c を得る。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_ep08_coplanar_edelbaum",
+      "target_node_id": "aerosp.ep.n08_low_thrust_coplanar_edelbaum",
+      "route_kind": "deductive",
+      "title": "準円軌道接線加速におけるエネルギー収支と共面遷移 Δv の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "math.vec.m04_polar_acceleration"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "推力加速度 a_T は局所重力に比べて十分小さく、各瞬間で準円軌道 v = \\sqrt{\\mu/r} を維持する",
+        "推力は軌道面内の速度接線方向に連続印加される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dv}{dt} = -a_T,\\quad v(r) = \\sqrt{\\frac{\\mu}{r}}",
+          "to_latex": "\\Delta v_{\\mathrm{coplanar}} = |v_1 - v_2| = \\left|\\sqrt{\\frac{\\mu}{r_1}} - \\sqrt{\\frac{\\mu}{r_2}}\\right|,\\quad v(t) = v_0 - a_T t",
+          "operation_label": "軌道速度変化率の積分",
+          "explanation": "外向き螺旋遷移では接線加速により軌道エネルギーが増える一方、準円軌道速度は dv/dt = -a_T で減速するため、総 \\Delta v は初終端の円軌道速度差の絶対値に一致する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.vec.m04_polar_acceleration",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dv}{dt} = -a_T,\\quad v(r) = \\sqrt{\\frac{\\mu}{r}}",
+          "to_latex": "\\frac{d}{dt}\\left(-\\frac{\\mu}{2r}\\right) = \\frac{d}{dt}\\left(\\frac{v^2}{2} - \\frac{\\mu}{r}\\right) = a_T v,\\quad v = \\sqrt{\\frac{\\mu}{r}}",
+          "operation_label": "準円軌道の力学的エネルギー時間微分",
+          "explanation": "接線推力仕事率 a_T v と準円軌道エネルギー E = -\\mu/(2r) = -v^2/2 の時間変化率を等置する。",
+          "used_node_ids": [
+            "math.vec.m04_polar_acceleration",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\left(-\\frac{\\mu}{2r}\\right) = \\frac{d}{dt}\\left(\\frac{v^2}{2} - \\frac{\\mu}{r}\\right) = a_T v,\\quad v = \\sqrt{\\frac{\\mu}{r}}",
+          "to_latex": "\\Delta v_{\\mathrm{coplanar}} = \\int_{0}^{t_f} a_T\\,dt = \\left|\\int_{v_1}^{v_2} (-dv)\\right| = |v_1 - v_2|",
+          "operation_label": "速度変化率 dv/dt = -a_T の時間積分",
+          "explanation": "-v(dv/dt) = a_T v より dv/dt = -a_T となり、推力加速度の時間積分は速度変化の大きさに等しくなる。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta v_{\\mathrm{coplanar}} = \\int_{0}^{t_f} a_T\\,dt = \\left|\\int_{v_1}^{v_2} (-dv)\\right| = |v_1 - v_2|",
+          "to_latex": "\\Delta v_{\\mathrm{coplanar}} = |v_1 - v_2| = \\left|\\sqrt{\\frac{\\mu}{r_1}} - \\sqrt{\\frac{\\mu}{r_2}}\\right|,\\quad v(t) = v_0 - a_T t",
+          "operation_label": "円軌道速度の代入",
+          "explanation": "初軌道および目標軌道の円軌道速度を代入して共面低推力遷移の \\Delta v 公式を得る。",
+          "used_node_ids": [
+            "math.vec.m04_polar_acceleration"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_ep09_edelbaum_inclination",
+      "target_node_id": "aerosp.ep.n09_edelbaum_inclination_delta_v",
+      "route_kind": "deductive",
+      "title": "平均化ガウス変分方程式からのエデルバウム公式の導出",
+      "premise_node_ids": [
+        "aerosp.ep.n08_low_thrust_coplanar_edelbaum"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m31_trig_derivatives"
+      ],
+      "assumptions": [
+        "推力加速度の大きさ a_T は一定で、軌道1周ごとに昇交点・降交点でヨー角 \\beta の符号を反転させる",
+        "1周あたりの軌道半径および傾斜角の変化は微小である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dv}{dt} = -a_T\\cos\\beta,\\quad \\frac{di}{dt} = \\frac{2}{\\pi}\\frac{a_T\\sin\\beta}{v},\\quad \\Delta v = a_T t_f",
+          "to_latex": "\\Delta v = \\sqrt{v_1^2 + v_2^2 - 2v_1 v_2\\cos\\!\\left(\\frac{\\pi}{2}\\Delta i\\right)},\\quad \\tan\\beta(t) = \\frac{v_1\\sin\\beta_0}{v_1\\cos\\beta_0 - a_T t}",
+          "operation_label": "最適ヨー角則の積分と速度空間余弦定理",
+          "explanation": "1周平均化された速度・傾斜角微分方程式に最適ステアリング則 v\\sin\\beta = const を適用して積分し、余弦定理型のエデルバウム公式を導く。",
+          "used_node_ids": [
+            "aerosp.ep.n08_low_thrust_coplanar_edelbaum",
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 1,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dv}{dt} = -a_T\\cos\\beta,\\quad \\frac{di}{dt} = \\frac{2}{\\pi}\\frac{a_T\\sin\\beta}{v},\\quad \\Delta v = a_T t_f",
+          "to_latex": "\\frac{d(v\\sin\\beta)}{dt} = 0 \\implies v\\sin\\beta = v_1\\sin\\beta_0,\\quad v\\cos\\beta = v_1\\cos\\beta_0 - a_T t",
+          "operation_label": "最適ステアリング不変量と接線速度成分の積分",
+          "explanation": "面外速度成分 v\\sin\\beta が一定となる最適ヨー角制御により、v\\cos\\beta が線形に変化することを導く。",
+          "used_node_ids": [
+            "aerosp.ep.n08_low_thrust_coplanar_edelbaum",
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d(v\\sin\\beta)}{dt} = 0 \\implies v\\sin\\beta = v_1\\sin\\beta_0,\\quad v\\cos\\beta = v_1\\cos\\beta_0 - a_T t",
+          "to_latex": "\\Delta i = \\frac{2}{\\pi}\\int_{0}^{t_f} \\frac{a_T v_1\\sin\\beta_0}{v_1^2 - 2 v_1 a_T t \\cos\\beta_0 + (a_T t)^2}\\,dt = \\frac{2}{\\pi}\\left[\\arctan\\!\\left(\\frac{a_T t - v_1\\cos\\beta_0}{v_1\\sin\\beta_0}\\right)\\right]_{0}^{t_f}",
+          "operation_label": "傾斜角変化量 Δi の有理関数積分",
+          "explanation": "v^2 = (v\\sin\\beta)^2 + (v\\cos\\beta)^2 を傾斜角微分方程式へ代入し、0 から t_f まで逆正接関数として積分する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta i = \\frac{2}{\\pi}\\int_{0}^{t_f} \\frac{a_T v_1\\sin\\beta_0}{v_1^2 - 2 v_1 a_T t \\cos\\beta_0 + (a_T t)^2}\\,dt = \\frac{2}{\\pi}\\left[\\arctan\\!\\left(\\frac{a_T t - v_1\\cos\\beta_0}{v_1\\sin\\beta_0}\\right)\\right]_{0}^{t_f}",
+          "to_latex": "\\Delta v = \\sqrt{v_1^2 + v_2^2 - 2v_1 v_2\\cos\\!\\left(\\frac{\\pi}{2}\\Delta i\\right)},\\quad \\tan\\beta(t) = \\frac{v_1\\sin\\beta_0}{v_1\\cos\\beta_0 - a_T t}",
+          "operation_label": "速度三角形の余弦定理による Δv 消去整理",
+          "explanation": "積分結果から始点・終点の偏角差が (\\pi/2)\\Delta i であることを用いて \\beta_0 を消去し、エデルバウム公式を得る。",
+          "used_node_ids": [
+            "math.calc.m31_trig_derivatives"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

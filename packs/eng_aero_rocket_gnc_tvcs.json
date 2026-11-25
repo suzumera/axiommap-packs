@@ -1,0 +1,829 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_rocket_gnc_tvcs",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "ロケット打ち上げ誘導制御（GNC）：ジンバル推力偏向（TVC）・CP/CG空力不安定制御・燃料スロッシング・ポゴ振動と線形接線誘導",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『ロケット打ち上げ誘導制御（GNC）：ジンバル推力偏向（TVC）・CP/CG空力不安定制御・燃料スロッシング・ポゴ振動と線形接線誘導』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom",
+      "short_code": "GNC01",
+      "kind": "theorem_formula",
+      "title": "ジンバル推力偏向（TVC）と空力モーメントを含むロケット縦揺れ運動方程式",
+      "summary": "機首から機尾方向へ座標をとったときの空力法線力モーメントとジンバル推力偏向による制御トルクを釣り合わせたピッチ面回転運動方程式。",
+      "canonical_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\delta",
+      "aliases_latex": [
+        "I_y \\ddot{\\theta} = M_{\\alpha}\\alpha - T l_{\\mathrm{tvc}} \\sin\\delta"
+      ],
+      "keywords": [
+        "ジンバル推力偏向",
+        "TVC",
+        "ピッチ運動方程式",
+        "空力モーメント",
+        "ロケット姿勢制御"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_gnc"
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.n02_static_margin_aero_instability",
+      "short_code": "GNC02",
+      "kind": "definition",
+      "title": "空力中心（CP）・重心（CG）と静安定余裕・空力不安定パラメータの定義",
+      "summary": "ロケットの機体代表長さで無次元化した静安定余裕 SM、およびピッチ運動方程式を支配する空力不安定係数 μ_α と制御効き係数 μ_c の定義。",
+      "canonical_latex": "\\mathrm{SM} := \\frac{x_{\\mathrm{cp}} - x_{\\mathrm{cg}}}{d_{\\mathrm{ref}}},\\quad \\mu_{\\alpha} := \\frac{q S_{\\mathrm{ref}} C_{N\\alpha}(x_{\\mathrm{cg}} - x_{\\mathrm{cp}})}{I_y},\\quad \\mu_c := \\frac{T l_{\\mathrm{tvc}}}{I_y}",
+      "aliases_latex": [
+        "\\ddot{\\theta} - \\mu_{\\alpha}\\alpha = -\\mu_c \\delta"
+      ],
+      "keywords": [
+        "静安定余裕",
+        "空力中心",
+        "重心",
+        "空力不安定係数",
+        "TVC制御効き"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_gnc"
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.n03_unstable_rocket_tvc_tf",
+      "short_code": "GNC03",
+      "kind": "theorem_formula",
+      "title": "空力不安定ロケットのTVC伝達関数と開ループ不安定極",
+      "summary": "微小迎え角近似 α ≈ θ（鉛直上昇・微小姿勢角）のもとで導かれるジンバル角から機体姿勢角への伝達関数と、右半平面に現れる開ループ不安定極。",
+      "canonical_latex": "\\frac{\\theta(s)}{\\delta(s)} = -\\frac{\\mu_c}{s^2 - \\mu_{\\alpha}},\\quad s = \\pm\\sqrt{\\mu_{\\alpha}}\\quad (\\mu_{\\alpha} > 0)",
+      "aliases_latex": [
+        "G_{\\mathrm{rigid}}(s) = -\\frac{\\mu_c}{(s - \\sqrt{\\mu_{\\alpha}})(s + \\sqrt{\\mu_{\\alpha}})}"
+      ],
+      "keywords": [
+        "伝達関数",
+        "開ループ極",
+        "空力不安定",
+        "倒立振子モデル",
+        "ラプラス変換"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_gnc"
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.n04_tvc_pd_attitude_stabilization",
+      "short_code": "GNC04",
+      "kind": "theorem_formula",
+      "title": "TVC-PD姿勢制御則の閉ループ安定化条件と最大ジンバル角制約",
+      "summary": "PDフィードバックによる空力不安定ロケットの閉ループ特性方程式、フルビッツ安定条件、および最大動圧点（Max-Q）近傍での所要ジンバル角下限。",
+      "canonical_latex": "s^2 + \\mu_c K_d s + (\\mu_c K_p - \\mu_{\\alpha}) = 0 \\implies K_p > \\frac{\\mu_{\\alpha}}{\\mu_c},\\; K_d > 0,\\quad \\delta_{\\max} > \\frac{\\mu_{\\alpha}}{\\mu_c}\\alpha_{\\max}",
+      "aliases_latex": [
+        "\\delta = K_p(\\theta - \\theta_{\\mathrm{cmd}}) + K_d\\dot{\\theta}"
+      ],
+      "keywords": [
+        "PD制御",
+        "閉ループ安定性",
+        "ジンバル角制約",
+        "Max-Q",
+        "姿勢安定化"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_gnc"
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.n05_pendulum_slosh_coupled_eom",
+      "short_code": "GNC05",
+      "kind": "theorem_formula",
+      "title": "推進薬スロッシングの等価振り子モデルと機体ピッチ連成運動方程式",
+      "summary": "軸方向加速度 a_ax のもとでタンク内液体推進薬の1次スロッシングモードを等価単振り子で近似した運動方程式と固有角振動数。",
+      "canonical_latex": "\\ddot{\\phi}_k + 2\\zeta_k\\omega_k\\dot{\\phi}_k + \\omega_k^2\\phi_k = -\\frac{\\ddot{z}_{\\mathrm{cg}} + l_{s,k}\\ddot{\\theta}}{l_{p,k}},\\quad \\omega_k^2 = \\frac{a_{\\mathrm{ax}}}{l_{p,k}}",
+      "aliases_latex": [
+        "m_{s,k} l_{p,k}(\\ddot{z}_{\\mathrm{cg}} + l_{s,k}\\ddot{\\theta} + l_{p,k}\\ddot{\\phi}_k) + m_{s,k} a_{\\mathrm{ax}} l_{p,k}\\phi_k = 0"
+      ],
+      "keywords": [
+        "燃料スロッシング",
+        "等価振り子モデル",
+        "連成振動",
+        "固有角振動数",
+        "推進薬タンク"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_gnc"
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.n06_slosh_zero_pole_baffle_condition",
+      "short_code": "GNC06",
+      "kind": "theorem_formula",
+      "title": "スロッシング伝達関数の零点・極配置と位相安定化・バッフル減衰条件",
+      "summary": "スロッシング連成時のTVC伝達関数に現れる反共振零点と共振極の大小関係、およびリングバッフルによる減衰比 ζ_k 確保の安定条件。",
+      "canonical_latex": "\\frac{\\theta(s)}{\\delta(s)} \\propto \\frac{s^2 + \\omega_{z,k}^2}{(s^2 - \\mu_{\\alpha})(s^2 + 2\\zeta_k\\omega_k s + \\omega_k^2)},\\quad \\omega_{z,k}^2 \\approx \\omega_k^2\\!\\left(1 + \\frac{m_{s,k} l_{s,k}^2}{I_y}\\right) > \\omega_k^2",
+      "aliases_latex": [
+        "\\Delta\\omega_k^2 := \\omega_{z,k}^2 - \\omega_k^2 > 0"
+      ],
+      "keywords": [
+        "零点極配置",
+        "位相安定化",
+        "スロッシュバッフル",
+        "反共振",
+        "姿勢制御干渉"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_gnc"
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.n07_pogo_oscillation_loop_eom",
+      "short_code": "GNC07",
+      "kind": "theorem_formula",
+      "title": "推進系・機体構造連成ポゴ（POGO）振動の閉ループ方程式と安定条件",
+      "summary": "機体縦振動モード q_n、配管内推進薬の流体慣性・コンプライアンス、および推力変動 δT が閉ループを形成するポゴ振動の連成系とアキュムレータによる安定化。",
+      "canonical_latex": "M_{\\mathrm{eff}}\\ddot{q}_n + C_n\\dot{q}_n + K_n q_n = \\phi_n \\delta T,\\quad L_f \\dot{w}_f + R_f w_f + \\frac{1}{C_a}\\int w_f\\,dt = -\\rho_f h_f \\phi_{n,\\mathrm{pump}}\\ddot{q}_n",
+      "aliases_latex": [
+        "1 + G_{\\mathrm{struct}}(s)G_{\\mathrm{prop}}(s) = 0"
+      ],
+      "keywords": [
+        "ポゴ振動",
+        "POGO",
+        "流体構造連成",
+        "アキュムレータ",
+        "推力振動"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_gnc"
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.n08_linear_tangent_guidance_law",
+      "short_code": "GNC08",
+      "kind": "theorem_formula",
+      "title": "大気圏外最適上昇のための線形接線誘導則（Linear Tangent Guidance）",
+      "summary": "一様重力場・真空中において所定高度と終端速度に最小燃料（最小時間）で到達するための最適推力ピッチ角の時間則。",
+      "canonical_latex": "\\tan\\theta(t) = a t + b \\iff \\theta(t) = \\arctan(a t + b)",
+      "aliases_latex": [
+        "\\tan\\theta(t) = \\tan\\theta_0 + \\dot{\\theta}_{\\mathrm{tan}} t"
+      ],
+      "keywords": [
+        "線形接線誘導",
+        "LTG",
+        "変分法",
+        "最適上昇軌道",
+        "プライマーベクトル"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_gnc"
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.n09_explicit_peg_velocity_to_go",
+      "short_code": "GNC09",
+      "kind": "theorem_formula",
+      "title": "閉ループ明示的誘導（PEG）の残余必要速度増分と残余燃焼時間更新式",
+      "summary": "ツィオルコフスキーのロケット方程式を時間積分に適用し、現在の航法状態から目標軌道投入までに必要な残余速度増分 v_go と残余燃焼時間 t_go を閉ループで算出する式。",
+      "canonical_latex": "\\mathbf{v}_{\\mathrm{go}} = \\mathbf{v}_{\\mathrm{req}} - \\mathbf{v}(t) - \\Delta\\mathbf{v}_{\\mathrm{grav}}(t_{\\mathrm{go}}),\\quad t_{\\mathrm{go}} = \\tau\\!\\left(1 - \\exp\\!\\left(-\\frac{\\|\\mathbf{v}_{\\mathrm{go}}\\|}{c_{\\mathrm{eff}}}\\right)\\right),\\quad \\tau := \\frac{m}{\\dot{m}}",
+      "aliases_latex": [
+        "\\Delta v_{\\mathrm{go}} = -c_{\\mathrm{eff}}\\ln\\!\\left(1 - \\frac{t_{\\mathrm{go}}}{\\tau}\\right)"
+      ],
+      "keywords": [
+        "PEG",
+        "明示的誘導",
+        "v_go",
+        "t_go",
+        "閉ループ誘導"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_gnc"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "aerosp.gnc_tvc.d01_pitch_eom_from_rigid_body",
+      "target_node_id": "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom",
+      "route_kind": "deductive",
+      "title": "オイラーの剛体回転方程式からのTVCピッチ運動方程式の導出",
+      "premise_node_ids": [
+        "astro.att.n02_euler_rigid_body_equations",
+        "aerosp.launch.n01_variable_mass_rocket_eom",
+        "aerosp.launch.n05_dynamic_pressure_max_q"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m13_taylor_expansion"
+      ],
+      "assumptions": [
+        "機体は対称軸を有する軸対称剛体であり、ピッチ軸（y軸）周りの連成項 (I_z - I_x)ω_x ω_z はロール角速度・ヨー角速度が小さいため無視できる。",
+        "ジンバル角 δ は微小であり sin δ ≈ δ と線形化できる。",
+        "座標 x は機首から機尾方向を正にとり、x_cg > x_cp のとき機首上げ迎え角 α > 0 に対して空力法線力が機首上げモーメントを生じる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_y \\dot{\\omega}_y - (I_z - I_x)\\omega_z\\omega_x = \\tau_y",
+          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\delta",
+          "operation_label": "空力モーメントとTVCトルクの代入・微小角線形化",
+          "explanation": "ピッチ軸周りのオイラー回転方程式に対し、縦揺れ以外の角速度を無視し、空力法線力によるモーメントとジンバル推力偏向トルクを合算して微小ジンバル角近似を適用する。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom",
+            "aerosp.launch.n05_dynamic_pressure_max_q",
+            "astro.att.n02_euler_rigid_body_equations",
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_y \\dot{\\omega}_y - (I_z - I_x)\\omega_z\\omega_x = \\tau_y",
+          "to_latex": "I_y \\ddot{\\theta} = M_{\\mathrm{aero}} + M_{\\mathrm{tvc}}",
+          "operation_label": "ピッチ面純粋回転への簡約",
+          "explanation": "純粋ピッチ運動（ω_x = ω_z = 0, ω_y = dθ/dt）を仮定し、外力モーメント τ_y を空力モーメント M_aero と推力偏向モーメント M_tvc の和に分解する。",
+          "used_node_ids": [
+            "astro.att.n02_euler_rigid_body_equations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_y \\ddot{\\theta} = M_{\\mathrm{aero}} + M_{\\mathrm{tvc}}",
+          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\sin\\delta",
+          "operation_label": "空力モーメントとジンバルトルクの展開",
+          "explanation": "動圧 q を用いた空力法線力 N = q S_ref C_Nα α のモーメント腕 (x_cg - x_cp) と、ノズルジンバル角 δ による推力横成分 T sin δ のモーメント腕 l_tvc を代入する。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom",
+            "aerosp.launch.n05_dynamic_pressure_max_q"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\sin\\delta",
+          "to_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\delta",
+          "operation_label": "微小ジンバル角線形化",
+          "explanation": "テイラー展開の1次近似 sin δ ≈ δ を適用して線形ピッチ運動方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.d02_static_margin_def",
+      "target_node_id": "aerosp.gnc_tvc.n02_static_margin_aero_instability",
+      "route_kind": "reformulation",
+      "title": "ピッチ運動方程式に基づく静安定余裕および空力不安定・制御効きパラメータの定義",
+      "premise_node_ids": [
+        "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "機体座標 x は機首を原点として機尾方向に増加し、d_ref は機体代表直径である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\delta",
+          "to_latex": "\\mathrm{SM} := \\frac{x_{\\mathrm{cp}} - x_{\\mathrm{cg}}}{d_{\\mathrm{ref}}},\\quad \\mu_{\\alpha} := \\frac{q S_{\\mathrm{ref}} C_{N\\alpha}(x_{\\mathrm{cg}} - x_{\\mathrm{cp}})}{I_y},\\quad \\mu_c := \\frac{T l_{\\mathrm{tvc}}}{I_y}",
+          "operation_label": "慣性モーメントによる正規化と無次元静安定余裕の定義",
+          "explanation": "ピッチ運動方程式の両辺を I_y で割り、空力角加速度係数 μ_α とTVC角加速度係数 μ_c を定義するとともに、CPとCGの相対位置を直径で正規化した静安定余裕 SM を定める。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_y \\ddot{\\theta} = q S_{\\mathrm{ref}} C_{N\\alpha} (x_{\\mathrm{cg}} - x_{\\mathrm{cp}}) \\alpha - T l_{\\mathrm{tvc}} \\delta",
+          "to_latex": "\\mathrm{SM} := \\frac{x_{\\mathrm{cp}} - x_{\\mathrm{cg}}}{d_{\\mathrm{ref}}},\\quad \\mu_{\\alpha} := \\frac{q S_{\\mathrm{ref}} C_{N\\alpha}(x_{\\mathrm{cg}} - x_{\\mathrm{cp}})}{I_y},\\quad \\mu_c := \\frac{T l_{\\mathrm{tvc}}}{I_y}",
+          "operation_label": "記号定義の導入",
+          "explanation": "SM < 0（x_cp < x_cg、すなわち空力中心が重心より前方）のとき μ_α > 0 となり、機体は静的に不安定となる。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.d03_unstable_tf_derivation",
+      "target_node_id": "aerosp.gnc_tvc.n03_unstable_rocket_tvc_tf",
+      "route_kind": "deductive",
+      "title": "正規化ピッチ方程式のラプラス変換によるTVC伝達関数と開ループ極の導出",
+      "premise_node_ids": [
+        "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom",
+        "aerosp.gnc_tvc.n02_static_margin_aero_instability"
+      ],
+      "required_math_node_ids": [
+        "math.ode.m06_linear_ode_2nd",
+        "med.pk.n01_pk_mass_balance_boundary"
+      ],
+      "assumptions": [
+        "初期状態は平衡（θ(0)=0, dθ/dt(0)=0）であり、短周期姿勢運動の解析において飛行経路角変動を無視して α ≈ θ とおく。",
+        "解析時間窓内では動圧・推力・慣性モーメントを準定常（凍結係数）とみなす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{\\theta} - \\mu_{\\alpha}\\alpha = -\\mu_c \\delta",
+          "to_latex": "\\frac{\\theta(s)}{\\delta(s)} = -\\frac{\\mu_c}{s^2 - \\mu_{\\alpha}},\\quad s = \\pm\\sqrt{\\mu_{\\alpha}}\\quad (\\mu_{\\alpha} > 0)",
+          "operation_label": "α ≈ θ 近似とラプラス変換による伝達関数・極の導出",
+          "explanation": "正規化ピッチ運動方程式に α ≈ θ を適用し、零初期条件のもとでラプラス変換して伝達関数と特性根を求める。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom",
+            "aerosp.gnc_tvc.n02_static_margin_aero_instability",
+            "math.ode.m06_linear_ode_2nd",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\theta} - \\mu_{\\alpha}\\alpha = -\\mu_c \\delta",
+          "to_latex": "\\ddot{\\theta} - \\mu_{\\alpha}\\theta = -\\mu_c \\delta",
+          "operation_label": "短周期近似 α ≈ θ の適用",
+          "explanation": "無風・微小姿勢変化の短時間スケールにおいて飛行経路角の変動を無視し α ≈ θ を代入する。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom",
+            "aerosp.gnc_tvc.n02_static_margin_aero_instability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\theta} - \\mu_{\\alpha}\\theta = -\\mu_c \\delta",
+          "to_latex": "(s^2 - \\mu_{\\alpha})\\theta(s) = -\\mu_c \\delta(s)",
+          "operation_label": "ラプラス変換の適用",
+          "explanation": "零初期条件で微分法則 L{f''(t)} = s^2 F(s) を適用し代数方程式へ変換する。",
+          "used_node_ids": [
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(s^2 - \\mu_{\\alpha})\\theta(s) = -\\mu_c \\delta(s)",
+          "to_latex": "\\frac{\\theta(s)}{\\delta(s)} = -\\frac{\\mu_c}{s^2 - \\mu_{\\alpha}},\\quad s = \\pm\\sqrt{\\mu_{\\alpha}}\\quad (\\mu_{\\alpha} > 0)",
+          "operation_label": "伝達関数と特性根の算出",
+          "explanation": "出力 θ(s) と入力 δ(s) の比をとり、分母多項式 s^2 - μ_α = 0 を解いて右半平面極 +√μ_α を得る。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.d04_pd_stabilization_derivation",
+      "target_node_id": "aerosp.gnc_tvc.n04_tvc_pd_attitude_stabilization",
+      "route_kind": "deductive",
+      "title": "PD制御フィードバックによる閉ループ安定化条件と最大ジンバル角下限の導出",
+      "premise_node_ids": [
+        "aerosp.gnc_tvc.n03_unstable_rocket_tvc_tf",
+        "astro.att.n09_quaternion_pd_feedback_control"
+      ],
+      "required_math_node_ids": [
+        "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom"
+      ],
+      "assumptions": [
+        "TVCアクチュエータの帯域幅は姿勢制御帯域幅より十分高く、遅れを無視できる。",
+        "横風突風等による最大迎え角 α_max において推力偏向トルクが空力不安定モーメントを上回る必要がある。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(s^2 - \\mu_{\\alpha})\\theta(s) = -\\mu_c \\delta(s)",
+          "to_latex": "s^2 + \\mu_c K_d s + (\\mu_c K_p - \\mu_{\\alpha}) = 0 \\implies K_p > \\frac{\\mu_{\\alpha}}{\\mu_c},\\; K_d > 0,\\quad \\delta_{\\max} > \\frac{\\mu_{\\alpha}}{\\mu_c}\\alpha_{\\max}",
+          "operation_label": "PD制御則の代入とフルビッツ安定条件・制御権限限界の導出",
+          "explanation": "PD制御則を伝達モデルへ代入して閉ループ特性方程式を導き、係数の正値条件と静的モーメント釣合いからゲイン下限と最大ジンバル角要件を得る。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n03_unstable_rocket_tvc_tf",
+            "astro.att.n09_quaternion_pd_feedback_control"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(s^2 - \\mu_{\\alpha})\\theta(s) = -\\mu_c \\delta(s)",
+          "to_latex": "\\big[s^2 + \\mu_c K_d s + (\\mu_c K_p - \\mu_{\\alpha})\\big]\\theta(s) = \\mu_c K_p \\theta_{\\mathrm{cmd}}(s)",
+          "operation_label": "PDフィードバック則の代入",
+          "explanation": "姿勢誤差 PD 制御則 δ(s) = (K_p + K_d s)θ(s) - K_p θ_cmd(s) を代入し、θ(s) について整理する。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n03_unstable_rocket_tvc_tf",
+            "astro.att.n09_quaternion_pd_feedback_control"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\big[s^2 + \\mu_c K_d s + (\\mu_c K_p - \\mu_{\\alpha})\\big]\\theta(s) = \\mu_c K_p \\theta_{\\mathrm{cmd}}(s)",
+          "to_latex": "s^2 + \\mu_c K_d s + (\\mu_c K_p - \\mu_{\\alpha}) = 0 \\implies K_p > \\frac{\\mu_{\\alpha}}{\\mu_c},\\; K_d > 0",
+          "operation_label": "2次系特性方程式の安定条件適用",
+          "explanation": "2次特性方程式の全ての係数が正である条件から、比例ゲイン下限 K_p > μ_α / μ_c と減衰ゲイン K_d > 0 が導かれる。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n03_unstable_rocket_tvc_tf"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "s^2 + \\mu_c K_d s + (\\mu_c K_p - \\mu_{\\alpha}) = 0 \\implies K_p > \\frac{\\mu_{\\alpha}}{\\mu_c},\\; K_d > 0",
+          "to_latex": "s^2 + \\mu_c K_d s + (\\mu_c K_p - \\mu_{\\alpha}) = 0 \\implies K_p > \\frac{\\mu_{\\alpha}}{\\mu_c},\\; K_d > 0,\\quad \\delta_{\\max} > \\frac{\\mu_{\\alpha}}{\\mu_c}\\alpha_{\\max}",
+          "operation_label": "最大空力モーメントに対抗するジンバル角下限の評価",
+          "explanation": "最大迎え角 α_max において μ_c δ_max > μ_α α_max が成立する必要があることから、TVC機構に必要な最大ジンバル角 δ_max が定まる。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.d05_slosh_pendulum_eom",
+      "target_node_id": "aerosp.gnc_tvc.n05_pendulum_slosh_coupled_eom",
+      "route_kind": "deductive",
+      "title": "ラグランジュ力学による等価スロッシング振り子運動方程式の導出",
+      "premise_node_ids": [
+        "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom",
+        "phys.mech.p04_least_action"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m13_taylor_expansion",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "タンク内推進薬の第k次スロッシングモードは、支点が重心から機軸前方へ l_{s,k} 離れた質量 m_{s,k}・長さ l_{p,k} の単振り子で等価表現できる。",
+        "振り子角 φ_k および機体ピッチ角 θ は微小であり、粘性減衰比 ζ_k は実験的・流体力学的線形減衰として付加する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "L_k = \\frac{1}{2} m_{s,k}\\big(\\dot{z}_{\\mathrm{cg}} + l_{s,k}\\dot{\\theta} + l_{p,k}\\dot{\\phi}_k\\big)^2 - m_{s,k} a_{\\mathrm{ax}} l_{p,k}(1 - \\cos\\phi_k)",
+          "to_latex": "\\ddot{\\phi}_k + 2\\zeta_k\\omega_k\\dot{\\phi}_k + \\omega_k^2\\phi_k = -\\frac{\\ddot{z}_{\\mathrm{cg}} + l_{s,k}\\ddot{\\theta}}{l_{p,k}},\\quad \\omega_k^2 = \\frac{a_{\\mathrm{ax}}}{l_{p,k}}",
+          "operation_label": "オイラー＝ラグランジュ方程式の適用と微小角線形化・減衰項導入",
+          "explanation": "軸方向加速度 a_ax を見かけ重力とするスロッシング等価振り子のラグランジアンに最小作用の原理を適用し、微小角線形化と減衰比 ζ_k の導入により連成運動方程式を得る。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n01_pitch_plane_tvc_eom",
+            "math.calc.m13_taylor_expansion",
+            "math.ode.m06_linear_ode_2nd",
+            "phys.mech.p04_least_action"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "L_k = \\frac{1}{2} m_{s,k}\\big(\\dot{z}_{\\mathrm{cg}} + l_{s,k}\\dot{\\theta} + l_{p,k}\\dot{\\phi}_k\\big)^2 - m_{s,k} a_{\\mathrm{ax}} l_{p,k}(1 - \\cos\\phi_k)",
+          "to_latex": "m_{s,k} l_{p,k}(\\ddot{z}_{\\mathrm{cg}} + l_{s,k}\\ddot{\\theta} + l_{p,k}\\ddot{\\phi}_k) + m_{s,k} a_{\\mathrm{ax}} l_{p,k}\\sin\\phi_k = 0",
+          "operation_label": "φ_k に関するオイラー＝ラグランジュ方程式の展開",
+          "explanation": "最小作用の原理 δS = 0 から導かれるオイラー＝ラグランジュ方程式を一般化座標 φ_k に対して計算する。",
+          "used_node_ids": [
+            "phys.mech.p04_least_action"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m_{s,k} l_{p,k}(\\ddot{z}_{\\mathrm{cg}} + l_{s,k}\\ddot{\\theta} + l_{p,k}\\ddot{\\phi}_k) + m_{s,k} a_{\\mathrm{ax}} l_{p,k}\\sin\\phi_k = 0",
+          "to_latex": "\\ddot{\\phi}_k + 2\\zeta_k\\omega_k\\dot{\\phi}_k + \\omega_k^2\\phi_k = -\\frac{\\ddot{z}_{\\mathrm{cg}} + l_{s,k}\\ddot{\\theta}}{l_{p,k}},\\quad \\omega_k^2 = \\frac{a_{\\mathrm{ax}}}{l_{p,k}}",
+          "operation_label": "微小角近似と固有振動数・減衰項の整理",
+          "explanation": "sin φ_k ≈ φ_k と線形化し、両辺を m_{s,k} l_{p,k}^2 で割って固有角振動数 ω_k = √(a_ax / l_{p,k}) とバッフル等による構造・流体減衰項 2ζ_k ω_k dφ_k/dt を導入する。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.d06_slosh_zero_pole_derivation",
+      "target_node_id": "aerosp.gnc_tvc.n06_slosh_zero_pole_baffle_condition",
+      "route_kind": "deductive",
+      "title": "機体・スロッシング連成系のラプラス変換による零点・極配置の導出",
+      "premise_node_ids": [
+        "aerosp.gnc_tvc.n05_pendulum_slosh_coupled_eom",
+        "aerosp.gnc_tvc.n03_unstable_rocket_tvc_tf"
+      ],
+      "required_math_node_ids": [
+        "med.pk.n01_pk_mass_balance_boundary"
+      ],
+      "assumptions": [
+        "並進加速度との連成を分離し、機体ピッチと1次スロッシングモードの2自由度連成系として評価する。",
+        "スロッシング質量 m_{s,k} は機体全体質量に比べて十分小さく、減衰比 ζ_k ≪ 1 である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "(s^2 - \\mu_{\\alpha})\\theta(s) - \\frac{m_{s,k} l_{s,k} l_{p,k}}{I_y} s^2 \\phi_k(s) = -\\mu_c \\delta(s)",
+          "to_latex": "\\frac{\\theta(s)}{\\delta(s)} \\propto \\frac{s^2 + \\omega_{z,k}^2}{(s^2 - \\mu_{\\alpha})(s^2 + 2\\zeta_k\\omega_k s + \\omega_k^2)},\\quad \\omega_{z,k}^2 \\approx \\omega_k^2\\!\\left(1 + \\frac{m_{s,k} l_{s,k}^2}{I_y}\\right) > \\omega_k^2",
+          "operation_label": "連成2自由度方程式の消去による伝達関数・零点極関係式の導出",
+          "explanation": "機体ピッチとスロッシング振り子の連成方程式から φ_k(s) を消去し、伝達関数の分子に現れる反共振零点 ω_{z,k} が共振極 ω_k より大きくなる条件を示す。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n03_unstable_rocket_tvc_tf",
+            "aerosp.gnc_tvc.n05_pendulum_slosh_coupled_eom",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(s^2 - \\mu_{\\alpha})\\theta(s) - \\frac{m_{s,k} l_{s,k} l_{p,k}}{I_y} s^2 \\phi_k(s) = -\\mu_c \\delta(s)",
+          "to_latex": "\\left[(s^2 - \\mu_{\\alpha}) + \\frac{m_{s,k} l_{s,k}^2}{I_y}\\frac{s^4}{s^2 + 2\\zeta_k\\omega_k s + \\omega_k^2}\\right]\\theta(s) = -\\mu_c \\delta(s)",
+          "operation_label": "振り子角 φ_k(s) の消去",
+          "explanation": "スロッシング方程式のラプラス変換 (s^2 + 2ζ_k ω_k s + ω_k^2)φ_k(s) = -(l_{s,k}/l_{p,k}) s^2 θ(s) を用いて φ_k(s) を消去する。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n05_pendulum_slosh_coupled_eom",
+            "med.pk.n01_pk_mass_balance_boundary"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left[(s^2 - \\mu_{\\alpha}) + \\frac{m_{s,k} l_{s,k}^2}{I_y}\\frac{s^4}{s^2 + 2\\zeta_k\\omega_k s + \\omega_k^2}\\right]\\theta(s) = -\\mu_c \\delta(s)",
+          "to_latex": "\\frac{\\theta(s)}{\\delta(s)} \\propto \\frac{s^2 + \\omega_{z,k}^2}{(s^2 - \\mu_{\\alpha})(s^2 + 2\\zeta_k\\omega_k s + \\omega_k^2)},\\quad \\omega_{z,k}^2 \\approx \\omega_k^2\\!\\left(1 + \\frac{m_{s,k} l_{s,k}^2}{I_y}\\right) > \\omega_k^2",
+          "operation_label": "極・零点の同定と位相特性の判定",
+          "explanation": "分母を払って θ(s)/δ(s) を整理すると、分子に零点 s^2 + ω_k^2 + ... が現れ、タンクがCG前方にある場合を含め ω_{z,k} > ω_k となるため、位相遅れがゲイン不安定を招かないようバッフルによる ζ_k 確保が必要となる。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n03_unstable_rocket_tvc_tf"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.d07_pogo_loop_derivation",
+      "target_node_id": "aerosp.gnc_tvc.n07_pogo_oscillation_loop_eom",
+      "route_kind": "deductive",
+      "title": "構造縦振動モードと推進系流体力学の結合によるポゴ振動方程式の導出",
+      "premise_node_ids": [
+        "aerosp.launch.n01_variable_mass_rocket_eom",
+        "eng.rock.n01_rocket_thrust_equation",
+        "aerosp.rc.n01_turbopump_power_balance"
+      ],
+      "required_math_node_ids": [
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "機体の弾性縦振動は第n次固有モード q_n(t) とモード形状 φ_n で近似できる。",
+        "推進薬配管内の非定常1次元流れは集中定数的な流体インダクタンス L_f、流体抵抗 R_f、およびアキュムレータ等のコンプライアンス C_a で表される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\delta F = \\delta(\\dot{m} v_e + (p_e - p_a)A_e)",
+          "to_latex": "M_{\\mathrm{eff}}\\ddot{q}_n + C_n\\dot{q}_n + K_n q_n = \\phi_n \\delta T,\\quad L_f \\dot{w}_f + R_f w_f + \\frac{1}{C_a}\\int w_f\\,dt = -\\rho_f h_f \\phi_{n,\\mathrm{pump}}\\ddot{q}_n",
+          "operation_label": "構造モード方程式と配管流体運動量方程式の連成",
+          "explanation": "推力変動 δT を外力とする機体縦振動モード方程式と、ポンプ位置の機体縦加速度を起振力とする推進薬配管の集中定数流体方程式を結合し、閉ループポゴ振動系を構成する。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom",
+            "aerosp.rc.n01_turbopump_power_balance",
+            "eng.rock.n01_rocket_thrust_equation",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta F = \\delta(\\dot{m} v_e + (p_e - p_a)A_e)",
+          "to_latex": "M_{\\mathrm{eff}}\\ddot{q}_n + C_n\\dot{q}_n + K_n q_n = \\phi_n \\delta T",
+          "operation_label": "推力摂動による縦振動モード励起",
+          "explanation": "推力方程式の摂動 δT がエンジン取付部のモード変位係数 φ_n を通じて一般化座標 q_n の2階振動系を駆動する式を立てる。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M_{\\mathrm{eff}}\\ddot{q}_n + C_n\\dot{q}_n + K_n q_n = \\phi_n \\delta T",
+          "to_latex": "M_{\\mathrm{eff}}\\ddot{q}_n + C_n\\dot{q}_n + K_n q_n = \\phi_n \\delta T,\\quad L_f \\dot{w}_f + R_f w_f + \\frac{1}{C_a}\\int w_f\\,dt = -\\rho_f h_f \\phi_{n,\\mathrm{pump}}\\ddot{q}_n",
+          "operation_label": "配管圧力・流量摂動方程式の結合",
+          "explanation": "ポンプ入口における構造加速度 φ_{n,pump} d^2 q_n/dt^2 が液柱慣性圧力を介して流量変動 w_f を生じ、ターボポンプ・燃焼器を介して δT へ帰還する閉ループ方程式を完成させる。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom",
+            "aerosp.rc.n01_turbopump_power_balance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.d08_ltg_variational_derivation",
+      "target_node_id": "aerosp.gnc_tvc.n08_linear_tangent_guidance_law",
+      "route_kind": "deductive",
+      "title": "一様重力場・真空上昇の変分問題からの線形接線誘導則の導出",
+      "premise_node_ids": [
+        "aerosp.launch.n01_variable_mass_rocket_eom",
+        "phys.mech.p04_least_action"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m09_fundamental_lemma_variations"
+      ],
+      "assumptions": [
+        "大気圏外（空気力 D = L = 0）かつ一様重力場（g = const.）の2次元平面運動を仮定する。",
+        "推力大きさ T(t) と質量変化 m(t) は既知であり、推力方向角 θ(t) のみを制御変数として最終時間 t_f 最小化（燃料最小化）を行う。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{v}_x = a_T(t)\\cos\\theta(t),\\quad \\dot{v}_y = a_T(t)\\sin\\theta(t) - g",
+          "to_latex": "\\tan\\theta(t) = a t + b \\iff \\theta(t) = \\arctan(a t + b)",
+          "operation_label": "ハミルトニアン極値化と線形随伴方程式の積分",
+          "explanation": "水平・鉛直加速度式に対する最適制御ハミルトニアンを構成し、随伴変数の線形時間変化と極値条件 ∂H/∂θ = 0 から線形接線誘導則を導く。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom",
+            "math.calc.m09_fundamental_lemma_variations",
+            "phys.mech.p04_least_action"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{v}_x = a_T(t)\\cos\\theta(t),\\quad \\dot{v}_y = a_T(t)\\sin\\theta(t) - g",
+          "to_latex": "\\dot{\\lambda}_{v_x} = -\\lambda_x,\\; \\dot{\\lambda}_{v_y} = -\\lambda_y,\\; \\dot{\\lambda}_x = \\dot{\\lambda}_y = 0 \\implies \\lambda_{v_x}(t) = c_1,\\; \\lambda_{v_y}(t) = c_2 t + c_3",
+          "operation_label": "随伴変数（コステート）方程式の積分",
+          "explanation": "一様重力場では位置が運動方程式の右辺に現れないため位置随伴変数は定数となり、速度随伴変数（プライマーベクトル）は時間の1次関数となる。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom",
+            "phys.mech.p04_least_action"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\lambda}_{v_x} = -\\lambda_x,\\; \\dot{\\lambda}_{v_y} = -\\lambda_y,\\; \\dot{\\lambda}_x = \\dot{\\lambda}_y = 0 \\implies \\lambda_{v_x}(t) = c_1,\\; \\lambda_{v_y}(t) = c_2 t + c_3",
+          "to_latex": "\\frac{\\partial H}{\\partial \\theta} = a_T(-\\lambda_{v_x}\\sin\\theta + \\lambda_{v_y}\\cos\\theta) = 0 \\implies \\tan\\theta(t) = \\frac{\\lambda_{v_y}(t)}{\\lambda_{v_x}(t)}",
+          "operation_label": "制御変数 θ に関する極値条件の適用",
+          "explanation": "変分法の基本補題による最適性条件 ∂H/∂θ = 0 から、推力ベクトルがプライマーベクトル (λ_{vx}, λ_{vy}) に平行であることが導かれる。",
+          "used_node_ids": [
+            "math.calc.m09_fundamental_lemma_variations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial H}{\\partial \\theta} = a_T(-\\lambda_{v_x}\\sin\\theta + \\lambda_{v_y}\\cos\\theta) = 0 \\implies \\tan\\theta(t) = \\frac{\\lambda_{v_y}(t)}{\\lambda_{v_x}(t)}",
+          "to_latex": "\\tan\\theta(t) = a t + b \\iff \\theta(t) = \\arctan(a t + b)",
+          "operation_label": "定数再定義による線形接線則の完成",
+          "explanation": "a := c_2 / c_1, b := c_3 / c_1 とおくことで、tan θ(t) が時間の1次関数となる線形接線誘導則を得る。",
+          "used_node_ids": [
+            "math.calc.m09_fundamental_lemma_variations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnc_tvc.d09_peg_tgo_derivation",
+      "target_node_id": "aerosp.gnc_tvc.n09_explicit_peg_velocity_to_go",
+      "route_kind": "deductive",
+      "title": "ツィオルコフスキーのロケット方程式からのPEG残余燃焼時間 t_go の導出",
+      "premise_node_ids": [
+        "aerosp.gnc_tvc.n08_linear_tangent_guidance_law",
+        "aerosp.launch.n03_ideal_tsiolkovsky_delta_v"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "上段エンジンの質量流量 dm/dt（一定）および有効排気速度 c_eff が既知である。",
+        "残余必要速度増分 v_go は目標投入速度 v_req と現在速度 v(t) および予測重力損失速度 Δv_grav の差として定義される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta v_{\\mathrm{ideal}} = c_{\\mathrm{eff}}\\ln\\frac{m_0}{m_f}",
+          "to_latex": "\\mathbf{v}_{\\mathrm{go}} = \\mathbf{v}_{\\mathrm{req}} - \\mathbf{v}(t) - \\Delta\\mathbf{v}_{\\mathrm{grav}}(t_{\\mathrm{go}}),\\quad t_{\\mathrm{go}} = \\tau\\!\\left(1 - \\exp\\!\\left(-\\frac{\\|\\mathbf{v}_{\\mathrm{go}}\\|}{c_{\\mathrm{eff}}}\\right)\\right),\\quad \\tau := \\frac{m}{\\dot{m}}",
+          "operation_label": "定質量流量下の質量比展開と残余燃焼時間への反転",
+          "explanation": "現在時刻から燃焼終了までの質量比 m / (m - dm/dt・t_go) をツィオルコフスキーの式に代入し、v_go の大きさから t_go を閉形式で解く。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n08_linear_tangent_guidance_law",
+            "aerosp.launch.n03_ideal_tsiolkovsky_delta_v"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta v_{\\mathrm{ideal}} = c_{\\mathrm{eff}}\\ln\\frac{m_0}{m_f}",
+          "to_latex": "\\|\\mathbf{v}_{\\mathrm{go}}\\| = c_{\\mathrm{eff}}\\ln\\frac{m}{m - \\dot{m}\\,t_{\\mathrm{go}}} = -c_{\\mathrm{eff}}\\ln\\!\\left(1 - \\frac{t_{\\mathrm{go}}}{\\tau}\\right)",
+          "operation_label": "残余燃焼時間 t_go と特性時間 τ の導入",
+          "explanation": "現在質量 m と燃焼終了時質量 m_f = m - (dm/dt)t_go、および比質量時間 τ = m / (dm/dt) をツィオルコフスキーの式に代入する。",
+          "used_node_ids": [
+            "aerosp.launch.n03_ideal_tsiolkovsky_delta_v"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\|\\mathbf{v}_{\\mathrm{go}}\\| = c_{\\mathrm{eff}}\\ln\\frac{m}{m - \\dot{m}\\,t_{\\mathrm{go}}} = -c_{\\mathrm{eff}}\\ln\\!\\left(1 - \\frac{t_{\\mathrm{go}}}{\\tau}\\right)",
+          "to_latex": "\\mathbf{v}_{\\mathrm{go}} = \\mathbf{v}_{\\mathrm{req}} - \\mathbf{v}(t) - \\Delta\\mathbf{v}_{\\mathrm{grav}}(t_{\\mathrm{go}}),\\quad t_{\\mathrm{go}} = \\tau\\!\\left(1 - \\exp\\!\\left(-\\frac{\\|\\mathbf{v}_{\\mathrm{go}}\\|}{c_{\\mathrm{eff}}}\\right)\\right),\\quad \\tau := \\frac{m}{\\dot{m}}",
+          "operation_label": "指数関数による t_go の陽的解法と v_go 定義の結合",
+          "explanation": "対数を指数関数で反転して t_go を陽に解き、線形接線誘導則の推力積分に用いる残余速度増分ベクトル v_go の閉ループ定義と組み合わせる。",
+          "used_node_ids": [
+            "aerosp.gnc_tvc.n08_linear_tangent_guidance_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

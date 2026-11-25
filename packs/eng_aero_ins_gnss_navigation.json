@@ -1,0 +1,786 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_ins_gnss_navigation",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "ロケット航法と慣性・GNSS統合航法：ストラップダウンINS運動方程式・シューラー周期84.4分・アラン分散と誤差状態カルマンフィルタ",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『ロケット航法と慣性・GNSS統合航法：ストラップダウンINS運動方程式・シューラー周期84.4分・アラン分散と誤差状態カルマンフィルタ』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.gnss_ins.n01_specific_force_imu_model",
+      "short_code": "INS01",
+      "kind": "definition",
+      "title": "比力（Specific Force）とIMU観測誤差モデル",
+      "summary": "加速度計が測定する非重力加速度としての比力 f^b と、ジャイロ角速度・加速度計比力に含まれるバイアスおよび白色雑音の確率的観測モデルを定義する。",
+      "canonical_latex": "\\mathbf{f}^b := C_i^b(\\ddot{\\mathbf{r}}^i - \\mathbf{g}^i),\\quad \\tilde{\\mathbf{f}}^b = \\mathbf{f}^b + \\mathbf{b}_a + \\boldsymbol{\\eta}_a,\\quad \\tilde{\\boldsymbol{\\omega}}_{ib}^b = \\boldsymbol{\\omega}_{ib}^b + \\mathbf{b}_g + \\boldsymbol{\\eta}_g",
+      "aliases_latex": [
+        "\\mathbf{f} = \\mathbf{a} - \\mathbf{g}",
+        "\\tilde{\\boldsymbol{\\omega}} = \\boldsymbol{\\omega} + \\mathbf{b}_g + \\mathbf{w}_g"
+      ],
+      "keywords": [
+        "比力",
+        "IMU",
+        "加速度計",
+        "ジャイロスコープ",
+        "等価原理",
+        "センサバイアス"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "navigation",
+        "inertial_sensors"
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+      "short_code": "INS02",
+      "kind": "theorem_formula",
+      "title": "ストラップダウンINSの慣性航法運動方程式（NED/ECEF座標系）",
+      "summary": "機体固定IMUの比力と角速度から、地球自転角速度と輸送速度によるコリオリ効果・遠心力・重力モデルを補正して位置・速度・姿勢クォータニオンを更新する連続時間機械化方程式。",
+      "canonical_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n,\\quad \\dot{q}_b^n = \\frac{1}{2}q_b^n \\otimes \\begin{pmatrix} 0 \\\\ \\boldsymbol{\\omega}_{nb}^b \\end{pmatrix}",
+      "aliases_latex": [
+        "\\dot{\\mathbf{v}}^e = C_b^e\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e + \\mathbf{g}^e"
+      ],
+      "keywords": [
+        "ストラップダウンINS",
+        "機械化方程式",
+        "コリオリ加速度",
+        "姿勢クォータニオン",
+        "ローカル重力"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "navigation",
+        "inertial_navigation"
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.n03_schuler_pendulum_oscillation",
+      "short_code": "INS03",
+      "kind": "theorem_formula",
+      "title": "シューラー振動方程式とシューラー周期（84.4分）",
+      "summary": "水平速度誤差と姿勢傾き誤差が地球曲率半径 R_E を介して結合することで生じる無減衰単振動と、その固有周期 T_S = 2π√(R_E/g) ≈ 84.4 分を与える定理。",
+      "canonical_latex": "\\delta\\ddot{r}_N + \\omega_S^2\\delta r_N = \\delta f_N - R_E\\delta\\dot{\\omega}_E,\\quad \\omega_S := \\sqrt{\\frac{g}{R_E}},\\quad T_S = 2\\pi\\sqrt{\\frac{R_E}{g}} \\approx 84.4\\text{ min}",
+      "aliases_latex": [
+        "\\delta\\ddot{\\phi}_E + \\frac{g}{R_E}\\delta\\phi_E = 0",
+        "T_S = 2\\pi\\sqrt{R_E/g}"
+      ],
+      "keywords": [
+        "シューラー振動",
+        "シューラー周期",
+        "84.4分",
+        "水平誤差結合",
+        "INS誤差動特性"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "navigation",
+        "inertial_navigation"
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.n04_ins_vertical_channel_instability",
+      "short_code": "INS04",
+      "kind": "theorem_formula",
+      "title": "INS鉛直チャネルの指数関数的発散不安定性",
+      "summary": "高度に伴う重力加速度の逆二乗減衰勾配により、自由航法時のINS高度誤差が正のフィードバックを受けて指数関数的に発散することを導く定理。",
+      "canonical_latex": "\\delta\\ddot{h} - \\frac{2g_0}{R_E}\\delta h = -\\delta f_D,\\quad \\lambda_{\\pm} = \\pm\\sqrt{\\frac{2g_0}{R_E}} \\approx \\pm 1.75\\times 10^{-3}\\text{ s}^{-1} \\implies \\delta h(t) \\propto e^{+\\sqrt{2g_0/R_E}\\,t}",
+      "aliases_latex": [
+        "\\delta\\ddot{h} - 2\\omega_S^2\\delta h = \\delta a_z"
+      ],
+      "keywords": [
+        "鉛直チャネル不安定性",
+        "重力勾配",
+        "高度発散",
+        "気圧高度計補償",
+        "GNSS複合"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "navigation",
+        "inertial_navigation"
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.n05_allan_variance_imu_noise",
+      "short_code": "INS05",
+      "kind": "definition",
+      "title": "アラン分散（Allan Variance）とIMU確率誤差同定則",
+      "summary": "平均化時間 τ に対する時間領域二乗平均誤差としてアラン分散を定義し、両対数プロットの傾きから量子化雑音・ランダムウォーク・バイアス不安定性・レートランダムウォークを分離同定する。",
+      "canonical_latex": "\\sigma_A^2(\\tau) := \\frac{1}{2}\\mathbb{E}\\!\\left[\\big(\\bar{\\Omega}_{k+1}(\\tau) - \\bar{\\Omega}_k(\\tau)\\big)^2\\right] = \\sum_{\\mu=-2}^{2} c_\\mu \\tau^{\\mu} = \\frac{3Q^2}{\\tau^2} + \\frac{N^2}{\\tau} + \\frac{2\\ln 2}{\\pi}B^2 + \\frac{K^2\\tau}{3} + \\frac{R^2\\tau^2}{2}",
+      "aliases_latex": [
+        "\\sigma_A(\\tau) = \\frac{N}{\\sqrt{\\tau}}\\text{ (ARW/VRW)},\\quad \\sigma_A(\\tau) = 0.6648 B\\text{ (Bias Instability)}"
+      ],
+      "keywords": [
+        "アラン分散",
+        "角度ランダムウォーク",
+        "バイアス不安定性",
+        "IMU雑音解析",
+        "確率誤差"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "signal_processing",
+        "inertial_sensors"
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.n06_gnss_pseudorange_observation",
+      "short_code": "GNSS01",
+      "kind": "definition",
+      "title": "GNSS擬似距離およびキャリア位相観測方程式",
+      "summary": "衛星-受信機間の幾何距離に加え、受信機時計バイアス・衛星時計誤差・電離層および対流圏伝搬遅延・多経路誤差・熱雑音を含むGNSS基本観測モデルを定義する。",
+      "canonical_latex": "\\rho^{(j)} = \\|\\mathbf{r}^{(j)} - \\mathbf{r}_u\\| + c(\\delta t_u - \\delta t^{(j)}) + I^{(j)} + T^{(j)} + \\varepsilon_\\rho^{(j)},\\quad \\lambda\\Phi^{(j)} = \\|\\mathbf{r}^{(j)} - \\mathbf{r}_u\\| + c(\\delta t_u - \\delta t^{(j)}) - I^{(j)} + T^{(j)} + \\lambda N^{(j)} + \\varepsilon_\\Phi^{(j)}",
+      "aliases_latex": [
+        "\\rho^{(j)} = R^{(j)} + c\\,\\delta t_u + \\varepsilon^{(j)}"
+      ],
+      "keywords": [
+        "GNSS",
+        "擬似距離",
+        "キャリア位相",
+        "時計バイアス",
+        "電離層遅延",
+        "整数値バイアス"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "navigation",
+        "gnss"
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.n07_gnss_dop_gdop",
+      "short_code": "GNSS02",
+      "kind": "theorem_formula",
+      "title": "GNSS測位精度低下率（GDOP/PDOP）と幾何誤差共分散",
+      "summary": "擬似距離観測方程式を視線単位ベクトルで構成される幾何行列 H で線形化し、最小二乗推定量の誤差共分散行列のトレースから衛星配置に依存する精度低下率 GDOP を導出する。",
+      "canonical_latex": "\\mathrm{Cov}(\\delta\\mathbf{x}) = \\sigma_U^2(H^\\top H)^{-1},\\quad \\mathrm{GDOP} := \\sqrt{\\operatorname{tr}\\big((H^\\top H)^{-1}\\big)} = \\sqrt{\\mathrm{PDOP}^2 + \\mathrm{TDOP}^2},\\quad \\sigma_{\\mathrm{pos}} = \\mathrm{PDOP}\\cdot\\sigma_U",
+      "aliases_latex": [
+        "\\mathrm{GDOP} = \\frac{\\sqrt{\\sigma_x^2 + \\sigma_y^2 + \\sigma_z^2 + (c\\sigma_t)^2}}{\\sigma_U}"
+      ],
+      "keywords": [
+        "GDOP",
+        "PDOP",
+        "幾何行列",
+        "最小二乗測位",
+        "衛星配置"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "navigation",
+        "gnss"
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.n08_ins_gnss_error_state_model",
+      "short_code": "ESKF01",
+      "kind": "theorem_formula",
+      "title": "INS/GNSS誤差状態空間モデル（15状態線形化遷移方程式）",
+      "summary": "位置・速度・姿勢の誤差と加速度計・ジャイロバイアス誤差からなる15次元誤差状態ベクトル δx の連続時間摂動方程式と、離散時間状態遷移行列 Φ_k を導出する。",
+      "canonical_latex": "\\delta\\mathbf{x} = \\begin{bmatrix} \\delta\\mathbf{p}^n \\\\ \\delta\\mathbf{v}^n \\\\ \\boldsymbol{\\psi}^n \\\\ \\mathbf{b}_a \\\\ \\mathbf{b}_g \\end{bmatrix} \\in \\mathbb{R}^{15},\\quad \\delta\\dot{\\mathbf{x}} = F(t)\\delta\\mathbf{x} + G(t)\\mathbf{w},\\quad \\Phi_k = \\exp(F_k\\Delta t) \\approx I_{15} + F_k\\Delta t + \\frac{1}{2}F_k^2\\Delta t^2",
+      "aliases_latex": [
+        "\\delta\\dot{\\boldsymbol{\\psi}} = -\\boldsymbol{\\omega}_{in}^n\\times\\delta\\boldsymbol{\\psi} - C_b^n\\delta\\mathbf{b}_g - C_b^n\\boldsymbol{\\eta}_g"
+      ],
+      "keywords": [
+        "誤差状態モデル",
+        "摂動線形化",
+        "15状態INS",
+        "状態遷移行列",
+        "姿勢誤差ベクトル"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "navigation",
+        "kalman_filter"
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.n09_eskf_prediction_update",
+      "short_code": "ESKF02",
+      "kind": "theorem_formula",
+      "title": "誤差状態カルマンフィルタ（ESKF）の更新則と誤差注入リセット",
+      "summary": "INSによる公称状態の予測と誤差共分散の時間発展、GNSS観測イノベーションによるカルマンゲイン更新、および推定誤差を公称状態へ注入して誤差状態を零リセットする閉ループ統合則。",
+      "canonical_latex": "P_{k|k-1} = \\Phi_k P_{k-1|k-1}\\Phi_k^\\top + Q_k,\\quad K_k = P_{k|k-1}H_k^\\top(H_k P_{k|k-1}H_k^\\top + R_k)^{-1},\\quad \\delta\\hat{\\mathbf{x}}_{k|k} = K_k\\mathbf{y}_k,\\quad \\hat{\\mathbf{x}}_{k}^{\\mathrm{nom}} \\leftarrow \\hat{\\mathbf{x}}_{k}^{\\mathrm{nom}} \\oplus \\delta\\hat{\\mathbf{x}}_{k|k},\\quad \\delta\\hat{\\mathbf{x}} \\leftarrow \\mathbf{0}",
+      "aliases_latex": [
+        "P_{k|k} = (I - K_k H_k)P_{k|k-1}(I - K_k H_k)^\\top + K_k R_k K_k^\\top"
+      ],
+      "keywords": [
+        "ESKF",
+        "カルマンフィルタ",
+        "カルマンゲイン",
+        "疎結合・密結合",
+        "誤差注入リセット"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "navigation",
+        "kalman_filter"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "aerosp.gnss_ins.d01_specific_force_def",
+      "target_node_id": "aerosp.gnss_ins.n01_specific_force_imu_model",
+      "route_kind": "reformulation",
+      "title": "等価原理に基づく比力の定義とIMU誤差モデルの定式化",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "phys.rel.gr01_equivalence_principle"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "慣性質量と重力質量が等しい（等価原理）",
+        "加速度計は試験質量に作用する重力以外の接触力（支持力）のみを検出する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\ddot{\\mathbf{r}}^i = \\mathbf{F}_{\\mathrm{non\\text{-}grav}}^i + m\\mathbf{g}^i",
+          "to_latex": "\\mathbf{f}^b := C_i^b(\\ddot{\\mathbf{r}}^i - \\mathbf{g}^i),\\quad \\tilde{\\mathbf{f}}^b = \\mathbf{f}^b + \\mathbf{b}_a + \\boldsymbol{\\eta}_a,\\quad \\tilde{\\boldsymbol{\\omega}}_{ib}^b = \\boldsymbol{\\omega}_{ib}^b + \\mathbf{b}_g + \\boldsymbol{\\eta}_g",
+          "operation_label": "比力の定義と機体座標系変換・誤差加算モデルの導入",
+          "explanation": "ニュートンの第2法則において重力を外力から分離すると、加速度計の試験質量を支える非重力加速度（比力）は慣性加速度から重力を差し引いた量となり、等価原理より局所的に重力と慣性加速度を単独分離できない。これに機体固定座標系への回転変換およびバイアス・白色雑音を加えたものがIMU観測モデルである。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law",
+            "phys.rel.gr01_equivalence_principle"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.d02_strapdown_mechanization",
+      "target_node_id": "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+      "route_kind": "deductive",
+      "title": "回転座標系運動学からのストラップダウンINS機械化方程式の導出",
+      "premise_node_ids": [
+        "aerosp.gnss_ins.n01_specific_force_imu_model",
+        "astro.att.n03_attitude_quaternion_def",
+        "astro.att.n04_quaternion_kinematics_ode",
+        "astro.cw.cw02_rotating_frame_kinematics"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m15_product_rule",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "地球を自転角速度 ω_ie で回転する剛体とみなす",
+        "局所水平座標系（NED）と地球固定座標系（ECEF）の相対角速度を輸送速度 ω_en とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathbf{f}^b = C_i^b(\\ddot{\\mathbf{r}}^i - \\mathbf{g}^i)",
+          "to_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n,\\quad \\dot{q}_b^n = \\frac{1}{2}q_b^n \\otimes \\begin{pmatrix} 0 \\\\ \\boldsymbol{\\omega}_{nb}^b \\end{pmatrix}",
+          "operation_label": "回転座標系微分変換と重力・遠心力統合によるNED機械化",
+          "explanation": "比力方程式をECEFおよびNED座標系で2階時間微分してコリオリ項と遠心力項を分離し、遠心力を重力と統合してローカル重力 g_l^n とすることで速度微分方程式を得る。また機体姿勢は角速度 ω_nb^b を用いたクォータニオン運動学で更新する。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n01_specific_force_imu_model",
+            "astro.att.n04_quaternion_kinematics_ode",
+            "astro.cw.cw02_rotating_frame_kinematics",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_ecef_kinematics",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{f}^b = C_i^b(\\ddot{\\mathbf{r}}^i - \\mathbf{g}^i)",
+          "to_latex": "\\dot{\\mathbf{v}}^e = C_b^e\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e - \\boldsymbol{\\omega}_{ie}^e\\times(\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e) + \\mathbf{g}^e",
+          "operation_label": "ECEF回転座標系におけるコリオリ項・遠心力項の展開",
+          "explanation": "慣性加速度 r̈^i をECEF系での相対速度 v^e の時間微分へ変換し、地球自転角速度 ω_ie によるコリオリ加速度および遠心加速度を陽に書き下す。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n01_specific_force_imu_model",
+            "astro.cw.cw02_rotating_frame_kinematics",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_ned_transport_rate",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{v}}^e = C_b^e\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e - \\boldsymbol{\\omega}_{ie}^e\\times(\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e) + \\mathbf{g}^e",
+          "to_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
+          "operation_label": "NED座標系への変換とローカル重力の導入",
+          "explanation": "方向余弦行列 C_e^n を作用させ、NED系の回転角速度 ω_en^n に伴う輸送項をまとめ、さらに万有引力と遠心力の合力をローカル重力ベクトル g_l^n := g^n - ω_ie^n × (ω_ie^n × r^n) として吸収する。",
+          "used_node_ids": [
+            "math.calc.m15_product_rule",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_position_attitude_closure",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
+          "to_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n,\\quad \\dot{q}_b^n = \\frac{1}{2}q_b^n \\otimes \\begin{pmatrix} 0 \\\\ \\boldsymbol{\\omega}_{nb}^b \\end{pmatrix}",
+          "operation_label": "測地位置変換行列 D^-1 と姿勢クォータニオン運動学の結合",
+          "explanation": "NED速度から緯度・経度・高度 p^n への変換行列 D^-1 を用いて位置微分を追加し、さらに機体角速度から地球自転・輸送角速度を差し引いた ω_nb^b でクォータニオン運動学を閉じる。",
+          "used_node_ids": [
+            "astro.att.n03_attitude_quaternion_def",
+            "astro.att.n04_quaternion_kinematics_ode"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.d03_schuler_oscillation",
+      "target_node_id": "aerosp.gnss_ins.n03_schuler_pendulum_oscillation",
+      "route_kind": "deductive",
+      "title": "水平誤差結合方程式からのシューラー振動と84.4分周期の導出",
+      "premise_node_ids": [
+        "aerosp.gnss_ins.n02_strapdown_ins_mechanization"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "地球を半径 R_E の球体と近似し、低速・微小姿勢誤差を仮定する",
+        "地球自転角速度の寄与を輸送角速度より小さいか定常とみなして主結合項を抽出する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
+          "to_latex": "\\delta\\ddot{r}_N + \\omega_S^2\\delta r_N = \\delta f_N - R_E\\delta\\dot{\\omega}_E,\\quad \\omega_S := \\sqrt{\\frac{g}{R_E}},\\quad T_S = 2\\pi\\sqrt{\\frac{R_E}{g}} \\approx 84.4\\text{ min}",
+          "operation_label": "水平位置誤差と傾き誤差の結合・2階線形ODEへの帰着",
+          "explanation": "北向き位置誤差 δr_N は輸送角速度誤差 δv_N/R_E を通じて東軸回りの傾き誤差 φ_E を生み、φ_E は重力加速度 g を水平方向へ投影して北向き加速度誤差 -g φ_E を生じさせる。この負帰還ループが固有振動数 ω_S = √(g/R_E) の単振動（シューラー周期 84.4分）を構成する。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_horizontal_perturbation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
+          "to_latex": "\\delta\\dot{v}_N = -g\\phi_E + \\delta f_N,\\quad \\dot{\\phi}_E = \\frac{\\delta v_N}{R_E} - \\delta\\omega_E",
+          "operation_label": "微小姿勢誤差による重力水平投影と輸送速度誤差の線形化",
+          "explanation": "静止または定速水平飛行近傍で f^n ≈ (0, 0, -g)^T を摂動展開すると、東軸回りの傾き誤差 φ_E により -g φ_E の偽水平加速度が生じ、同時に北向き速度誤差 δv_N は球面上の輸送角速度誤差 δv_N/R_E として姿勢誤差を変化させる。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_eliminate_tilt_error",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta\\dot{v}_N = -g\\phi_E + \\delta f_N,\\quad \\dot{\\phi}_E = \\frac{\\delta v_N}{R_E} - \\delta\\omega_E",
+          "to_latex": "\\delta\\ddot{r}_N + \\frac{g}{R_E}\\delta r_N = \\delta f_N - R_E\\delta\\dot{\\omega}_E",
+          "operation_label": "位置誤差 δr_N による消去と調和振動子方程式の導出",
+          "explanation": "δv_N = δṙ_N を代入して両辺を時間微分（または積分定数を整理）し、φ_E を消去すると、R_E を振り子長とする物理振り子と等価な2階線形微分方程式が得られる。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": "Eq(Derivative(dr, t, 2) + (g/R_E)*dr, df_N)"
+        },
+        {
+          "step_id": "s4_schuler_period_eval",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta\\ddot{r}_N + \\frac{g}{R_E}\\delta r_N = \\delta f_N - R_E\\delta\\dot{\\omega}_E",
+          "to_latex": "\\delta\\ddot{r}_N + \\omega_S^2\\delta r_N = \\delta f_N - R_E\\delta\\dot{\\omega}_E,\\quad \\omega_S := \\sqrt{\\frac{g}{R_E}},\\quad T_S = 2\\pi\\sqrt{\\frac{R_E}{g}} \\approx 84.4\\text{ min}",
+          "operation_label": "シューラー角周波数と周期の数値評価",
+          "explanation": "地球半径 R_E ≈ 6.371×10^6 m、重力加速度 g ≈ 9.80665 m/s^2 を代入すると ω_S ≈ 1.241×10^-3 rad/s、周期 T_S = 2π/ω_S ≈ 5064 s ≈ 84.4 分が得られる。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.d04_vertical_instability",
+      "target_node_id": "aerosp.gnss_ins.n04_ins_vertical_channel_instability",
+      "route_kind": "deductive",
+      "title": "重力高度勾配によるINS鉛直チャネル指数発散の導出",
+      "premise_node_ids": [
+        "aerosp.gnss_ins.n02_strapdown_ins_mechanization"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m13_taylor_expansion"
+      ],
+      "assumptions": [
+        "高度 h は地球半径 R_E に比べて微小 (h << R_E)",
+        "鉛直方向重力モデルとして球対称逆二乗則 g(h) = g_0 (R_E / (R_E + h))^2 を用いる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{h} = -f_D + g(h),\\quad g(h) = g_0\\left(\\frac{R_E}{R_E + h}\\right)^2",
+          "to_latex": "\\delta\\ddot{h} - \\frac{2g_0}{R_E}\\delta h = -\\delta f_D,\\quad \\lambda_{\\pm} = \\pm\\sqrt{\\frac{2g_0}{R_E}} \\approx \\pm 1.75\\times 10^{-3}\\text{ s}^{-1} \\implies \\delta h(t) \\propto e^{+\\sqrt{2g_0/R_E}\\,t}",
+          "operation_label": "重力モデルの1次テイラー展開と不安定固有値の導出",
+          "explanation": "高度が過大推定されると計算上の重力加速度が小さく評価され、その結果さらに上向きの偽加速度が生じて高度推定誤差が増大する正帰還が生じる。これにより特性根に正の実固有値 λ_+ = √(2g_0/R_E) が現れ、約9.5分で誤差が e 倍に増大する。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_gravity_taylor",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{h} = -f_D + g(h),\\quad g(h) = g_0\\left(\\frac{R_E}{R_E + h}\\right)^2",
+          "to_latex": "\\delta g = \\frac{\\partial g}{\\partial h}\\delta h = -\\frac{2g_0}{R_E}\\delta h",
+          "operation_label": "高度に関する重力加速度の1次摂動展開",
+          "explanation": "g(h) ≈ g_0(1 - 2h/R_E) の1次近似により、高度誤差 δh に伴う重力補償誤差 δg を求める。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_positive_feedback_ode",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta g = \\frac{\\partial g}{\\partial h}\\delta h = -\\frac{2g_0}{R_E}\\delta h",
+          "to_latex": "\\delta\\ddot{h} - \\frac{2g_0}{R_E}\\delta h = -\\delta f_D,\\quad \\lambda_{\\pm} = \\pm\\sqrt{\\frac{2g_0}{R_E}} \\approx \\pm 1.75\\times 10^{-3}\\text{ s}^{-1} \\implies \\delta h(t) \\propto e^{+\\sqrt{2g_0/R_E}\\,t}",
+          "operation_label": "鉛直誤差微分方程式の特性根と発散解の導出",
+          "explanation": "δḧ = -δf_D - δg に代入すると水平方向のシューラー振動とは符号が反転した不安定線形ODEとなり、λ_+ > 0 による指数関数的発散が避けられないため気圧高度計やGNSSによるダンピングが必須となる。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.d05_allan_variance_def",
+      "target_node_id": "aerosp.gnss_ins.n05_allan_variance_imu_noise",
+      "route_kind": "reformulation",
+      "title": "時間領域ブロック平均によるアラン分散とIMU雑音べき乗則の定義",
+      "premise_node_ids": [
+        "aerosp.gnss_ins.n01_specific_force_imu_model",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "IMUの確率誤差は定常増分過程であり、各雑音成分は互いに無相関である",
+        "観測時系列を長さ τ の隣接するクラスタに分割して時間平均をとる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\bar{\\Omega}_k(\\tau) := \\frac{1}{\\tau}\\int_{t_k}^{t_k+\\tau}\\tilde{\\Omega}(t)\\,dt",
+          "to_latex": "\\sigma_A^2(\\tau) := \\frac{1}{2}\\mathbb{E}\\!\\left[\\big(\\bar{\\Omega}_{k+1}(\\tau) - \\bar{\\Omega}_k(\\tau)\\big)^2\\right] = \\sum_{\\mu=-2}^{2} c_\\mu \\tau^{\\mu} = \\frac{3Q^2}{\\tau^2} + \\frac{N^2}{\\tau} + \\frac{2\\ln 2}{\\pi}B^2 + \\frac{K^2\\tau}{3} + \\frac{R^2\\tau^2}{2}",
+          "operation_label": "隣接クラスタ差分の2乗期待値と5種の雑音べき乗展開の定義",
+          "explanation": "通常の標本分散はランダムウォークやドリフトを含む非定常過程で発散するため、長さ τ の隣接平均値の差分の2乗期待値の半分としてアラン分散を定義する。無相関な各雑音（量子化 Q、ランダムウォーク N、バイアス不安定性 B、レートランダムウォーク K、レートランプ R）は τ^μ の異なる傾きとして両対数プロット上で分離同定できる。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n01_specific_force_imu_model",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.d06_gnss_pseudorange_def",
+      "target_node_id": "aerosp.gnss_ins.n06_gnss_pseudorange_observation",
+      "route_kind": "reformulation",
+      "title": "光速度不変原理と伝搬遅延項によるGNSS観測方程式の定義",
+      "premise_node_ids": [
+        "phys.rel.sr01_relativity_postulates",
+        "aerosp.gnss_ins.n02_strapdown_ins_mechanization"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "真空中の光速度 c は慣性系に依存せず一定である",
+        "電離層は分散性媒質であり群遅延（コード）と位相進み（キャリア）で符号が反転する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho^{(j)} := c\\,(t_{\\mathrm{rx}} - t_{\\mathrm{tx}}^{(j)})",
+          "to_latex": "\\rho^{(j)} = \\|\\mathbf{r}^{(j)} - \\mathbf{r}_u\\| + c(\\delta t_u - \\delta t^{(j)}) + I^{(j)} + T^{(j)} + \\varepsilon_\\rho^{(j)},\\quad \\lambda\\Phi^{(j)} = \\|\\mathbf{r}^{(j)} - \\mathbf{r}_u\\| + c(\\delta t_u - \\delta t^{(j)}) - I^{(j)} + T^{(j)} + \\lambda N^{(j)} + \\varepsilon_\\Phi^{(j)}",
+          "operation_label": "伝搬時間差への時計オフセット・大気遅延・整数バイアスの展開",
+          "explanation": "受信時刻と送信時刻の差に真空光速度 c を乗じた見かけの距離（擬似距離）に対し、真の幾何距離・衛星および受信機時計バイアス・電離層および対流圏遅延を陽に分離して表記する。キャリア位相観測では電離層項の符号が負となり、未知の整数値バイアス N^(j) が加わる。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.d07_gnss_gdop",
+      "target_node_id": "aerosp.gnss_ins.n07_gnss_dop_gdop",
+      "route_kind": "deductive",
+      "title": "線形化幾何行列と最小二乗誤差共分散からのGDOP導出",
+      "premise_node_ids": [
+        "aerosp.gnss_ins.n06_gnss_pseudorange_observation",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m13_taylor_expansion"
+      ],
+      "assumptions": [
+        "4機以上の衛星を同時に観測し、幾何行列 H が列フルランクである",
+        "各衛星の擬似距離測定雑音は互いに独立で同一分散 σ_U^2 を持つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\rho^{(j)} = \\|\\mathbf{r}^{(j)} - \\mathbf{r}_u\\| + c\\delta t_u + \\varepsilon^{(j)}",
+          "to_latex": "\\mathrm{Cov}(\\delta\\mathbf{x}) = \\sigma_U^2(H^\\top H)^{-1},\\quad \\mathrm{GDOP} := \\sqrt{\\operatorname{tr}\\big((H^\\top H)^{-1}\\big)} = \\sqrt{\\mathrm{PDOP}^2 + \\mathrm{TDOP}^2},\\quad \\sigma_{\\mathrm{pos}} = \\mathrm{PDOP}\\cdot\\sigma_U",
+          "operation_label": "擬似距離の線形化・最小二乗推定分散と幾何係数GDOPの導出",
+          "explanation": "擬似距離式を推定点周りで1次テイラー展開して視線単位ベクトルからなる幾何行列 H を構成し、最小二乗解の共分散行列 σ_U^2 (H^T H)^-1 の対角和平方根として衛星配置にのみ依存する無次元倍率 GDOP を定義する。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n06_gnss_pseudorange_observation",
+            "math.calc.m13_taylor_expansion",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_linearize_geometry",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho^{(j)} = \\|\\mathbf{r}^{(j)} - \\mathbf{r}_u\\| + c\\delta t_u + \\varepsilon^{(j)}",
+          "to_latex": "\\delta\\boldsymbol{\\rho} = H\\delta\\mathbf{x} + \\boldsymbol{\\varepsilon},\\quad H_{j,:} = \\begin{bmatrix} -(\\mathbf{u}^{(j)})^\\top & 1 \\end{bmatrix},\\quad \\delta\\mathbf{x} = \\begin{bmatrix} \\delta\\mathbf{r}_u \\\\ c\\delta t_u \\end{bmatrix}",
+          "operation_label": "視線単位ベクトルによる1次テイラー展開",
+          "explanation": "衛星 j への単位視線ベクトル u^(j) = (r^(j) - r_u) / ||r^(j) - r_u|| を用いて、位置と時計バイアス誤差の4次元ベクトル δx に関する線形観測モデルを構築する。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n06_gnss_pseudorange_observation",
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_ols_covariance",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta\\boldsymbol{\\rho} = H\\delta\\mathbf{x} + \\boldsymbol{\\varepsilon},\\quad H_{j,:} = \\begin{bmatrix} -(\\mathbf{u}^{(j)})^\\top & 1 \\end{bmatrix},\\quad \\delta\\mathbf{x} = \\begin{bmatrix} \\delta\\mathbf{r}_u \\\\ c\\delta t_u \\end{bmatrix}",
+          "to_latex": "\\delta\\hat{\\mathbf{x}} = (H^\\top H)^{-1}H^\\top\\delta\\boldsymbol{\\rho},\\quad \\mathrm{Cov}(\\delta\\hat{\\mathbf{x}}) = \\sigma_U^2(H^\\top H)^{-1}",
+          "operation_label": "正規方程式の解と誤差共分散行列の計算",
+          "explanation": "等分散・無相関仮定 E[ε ε^T] = σ_U^2 I のもとで最小二乗推定量 δx̂ の共分散を計算すると、幾何行列のグラム行列の逆行列 (H^T H)^-1 が現れる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_gdop_trace",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta\\hat{\\mathbf{x}} = (H^\\top H)^{-1}H^\\top\\delta\\boldsymbol{\\rho},\\quad \\mathrm{Cov}(\\delta\\hat{\\mathbf{x}}) = \\sigma_U^2(H^\\top H)^{-1}",
+          "to_latex": "\\mathrm{Cov}(\\delta\\mathbf{x}) = \\sigma_U^2(H^\\top H)^{-1},\\quad \\mathrm{GDOP} := \\sqrt{\\operatorname{tr}\\big((H^\\top H)^{-1}\\big)} = \\sqrt{\\mathrm{PDOP}^2 + \\mathrm{TDOP}^2},\\quad \\sigma_{\\mathrm{pos}} = \\mathrm{PDOP}\\cdot\\sigma_U",
+          "operation_label": "対角成分のトレースによるPDOP・TDOP・GDOPの定義",
+          "explanation": "位置成分の3対角要素の和の平方根を PDOP、時計成分を TDOP、全体の和の平方根を GDOP と定義することで、測距精度 σ_U と衛星配置の良さを分離して評価できる。",
+          "used_node_ids": [
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.d08_eskf_error_model",
+      "target_node_id": "aerosp.gnss_ins.n08_ins_gnss_error_state_model",
+      "route_kind": "deductive",
+      "title": "INS機械化方程式の摂動線形化による15状態誤差空間モデルの導出",
+      "premise_node_ids": [
+        "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+        "aerosp.gnss_ins.n03_schuler_pendulum_oscillation",
+        "aerosp.gnss_ins.n04_ins_vertical_channel_instability"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m13_taylor_expansion"
+      ],
+      "assumptions": [
+        "真の状態と公称INS状態の差（位置・速度・姿勢・バイアス誤差）は1次近似が成り立つ程度に微小である",
+        "センサバイアスはランダムウォークまたは1次ガウス・マルコフ過程に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{x}}_{\\mathrm{true}} = \\mathbf{f}(\\mathbf{x}_{\\mathrm{true}}, \\mathbf{u}_{\\mathrm{true}})",
+          "to_latex": "\\delta\\mathbf{x} = \\begin{bmatrix} \\delta\\mathbf{p}^n \\\\ \\delta\\mathbf{v}^n \\\\ \\boldsymbol{\\psi}^n \\\\ \\mathbf{b}_a \\\\ \\mathbf{b}_g \\end{bmatrix} \\in \\mathbb{R}^{15},\\quad \\delta\\dot{\\mathbf{x}} = F(t)\\delta\\mathbf{x} + G(t)\\mathbf{w},\\quad \\Phi_k = \\exp(F_k\\Delta t) \\approx I_{15} + F_k\\Delta t + \\frac{1}{2}F_k^2\\Delta t^2",
+          "operation_label": "非線形INS運動方程式の微小摂動展開と行列指数による離散化",
+          "explanation": "位置・速度・微小回転角誤差ベクトル ψ^n と加速度計・ジャイロバイアス誤差を結合した15次元誤差状態ベクトルを定義し、INS機械化方程式の1次摂動展開によりヤコビアン行列 F(t) と雑音駆動行列 G(t) を構成して離散時間状態遷移行列 Φ_k を得る。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+            "aerosp.gnss_ins.n03_schuler_pendulum_oscillation",
+            "aerosp.gnss_ins.n04_ins_vertical_channel_instability",
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_attitude_error_kinematics",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{x}}_{\\mathrm{true}} = \\mathbf{f}(\\mathbf{x}_{\\mathrm{true}}, \\mathbf{u}_{\\mathrm{true}})",
+          "to_latex": "C_b^n\\big|_{\\mathrm{nom}} \\approx (I_3 + [\\boldsymbol{\\psi}^n]_\\times)C_b^n,\\quad \\dot{\\boldsymbol{\\psi}}^n = -\\boldsymbol{\\omega}_{in}^n\\times\\boldsymbol{\\psi}^n - C_b^n\\mathbf{b}_g - C_b^n\\boldsymbol{\\eta}_g",
+          "operation_label": "微小回転行列による姿勢誤差ベクトルの微分方程式導出",
+          "explanation": "クォータニオン誤差の微小角近似 Ĉ_b^n ≈ (I + [ψ^n]_×) C_b^n を用いて、姿勢誤差 ψ^n の時間変化がジャイロバイアス b_g と角速度雑音 η_g によって駆動されることを導く。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_velocity_position_bias_block",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "C_b^n\\big|_{\\mathrm{nom}} \\approx (I_3 + [\\boldsymbol{\\psi}^n]_\\times)C_b^n,\\quad \\dot{\\boldsymbol{\\psi}}^n = -\\boldsymbol{\\omega}_{in}^n\\times\\boldsymbol{\\psi}^n - C_b^n\\mathbf{b}_g - C_b^n\\boldsymbol{\\eta}_g",
+          "to_latex": "\\delta\\dot{\\mathbf{v}}^n = (C_b^n\\mathbf{f}^b)\\times\\boldsymbol{\\psi}^n + C_b^n\\mathbf{b}_a + \\frac{\\partial\\mathbf{g}_l^n}{\\partial\\mathbf{p}^n}\\delta\\mathbf{p}^n + C_b^n\\boldsymbol{\\eta}_a,\\quad \\dot{\\mathbf{b}}_a = \\mathbf{w}_{ba},\\quad \\dot{\\mathbf{b}}_g = \\mathbf{w}_{bg}",
+          "operation_label": "比力回転誤差・重力勾配・バイアス確率過程の統合",
+          "explanation": "シューラー結合項 (C_b^n f^b)×ψ^n と鉛直不安定性を生む重力勾配項 ∂g_l^n/∂p^n を速度誤差式に組み込み、バイアスランダムウォークと合わせて15状態線形システム δẋ = F δx + G w を完成させる。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n03_schuler_pendulum_oscillation",
+            "aerosp.gnss_ins.n04_ins_vertical_channel_instability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_discretize_stm",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta\\dot{\\mathbf{v}}^n = (C_b^n\\mathbf{f}^b)\\times\\boldsymbol{\\psi}^n + C_b^n\\mathbf{b}_a + \\frac{\\partial\\mathbf{g}_l^n}{\\partial\\mathbf{p}^n}\\delta\\mathbf{p}^n + C_b^n\\boldsymbol{\\eta}_a,\\quad \\dot{\\mathbf{b}}_a = \\mathbf{w}_{ba},\\quad \\dot{\\mathbf{b}}_g = \\mathbf{w}_{bg}",
+          "to_latex": "\\delta\\mathbf{x} = \\begin{bmatrix} \\delta\\mathbf{p}^n \\\\ \\delta\\mathbf{v}^n \\\\ \\boldsymbol{\\psi}^n \\\\ \\mathbf{b}_a \\\\ \\mathbf{b}_g \\end{bmatrix} \\in \\mathbb{R}^{15},\\quad \\delta\\dot{\\mathbf{x}} = F(t)\\delta\\mathbf{x} + G(t)\\mathbf{w},\\quad \\Phi_k = \\exp(F_k\\Delta t) \\approx I_{15} + F_k\\Delta t + \\frac{1}{2}F_k^2\\Delta t^2",
+          "operation_label": "サンプル周期 Δt における状態遷移行列の2次テイラー展開",
+          "explanation": "フィルタ更新周期 Δt の間で F(t) を区分定数 F_k とみなし、行列指数関数のべき級数展開によって離散状態遷移行列 Φ_k を計算可能にする。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gnss_ins.d09_eskf_update",
+      "target_node_id": "aerosp.gnss_ins.n09_eskf_prediction_update",
+      "route_kind": "deductive",
+      "title": "最小分散線形推定に基づくESKF予測・更新および誤差注入則の導出",
+      "premise_node_ids": [
+        "aerosp.gnss_ins.n08_ins_gnss_error_state_model",
+        "aerosp.gnss_ins.n06_gnss_pseudorange_observation",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [
+        "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "プロセス雑音 w_k と観測雑音 v_k は互いに無相関な平均零の白色ガウス雑音である",
+        "カルマンゲイン K_k は事後誤差共分散行列 P_{k|k} のトレースを最小化する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\delta\\mathbf{x}_k = \\Phi_k\\delta\\mathbf{x}_{k-1} + \\mathbf{w}_k,\\quad \\mathbf{y}_k = H_k\\delta\\mathbf{x}_k + \\mathbf{v}_k",
+          "to_latex": "P_{k|k-1} = \\Phi_k P_{k-1|k-1}\\Phi_k^\\top + Q_k,\\quad K_k = P_{k|k-1}H_k^\\top(H_k P_{k|k-1}H_k^\\top + R_k)^{-1},\\quad \\delta\\hat{\\mathbf{x}}_{k|k} = K_k\\mathbf{y}_k,\\quad \\hat{\\mathbf{x}}_{k}^{\\mathrm{nom}} \\leftarrow \\hat{\\mathbf{x}}_{k}^{\\mathrm{nom}} \\oplus \\delta\\hat{\\mathbf{x}}_{k|k},\\quad \\delta\\hat{\\mathbf{x}} \\leftarrow \\mathbf{0}",
+          "operation_label": "事後共分散最小化によるカルマンゲイン導出と公称状態への誤差注入",
+          "explanation": "誤差状態は毎回零リセットされるため予測平均は零のまま共分散のみ P_{k|k-1} へ伝搬し、GNSSとの観測残差 y_k に対して事後分散 tr(P_{k|k}) を最小化する最適ゲイン K_k を求める。得られた誤差推定値を公称INS状態へクォータニオン乗算等（⊕）で注入し、誤差状態を零に戻す。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n06_gnss_pseudorange_observation",
+            "aerosp.gnss_ins.n08_ins_gnss_error_state_model",
+            "math.calc.m08_partial_total_diff",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_covariance_prediction",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta\\mathbf{x}_k = \\Phi_k\\delta\\mathbf{x}_{k-1} + \\mathbf{w}_k,\\quad \\mathbf{y}_k = H_k\\delta\\mathbf{x}_k + \\mathbf{v}_k",
+          "to_latex": "P_{k|k-1} = \\Phi_k P_{k-1|k-1}\\Phi_k^\\top + Q_k,\\quad P_{k|k} = (I - K_k H_k)P_{k|k-1}(I - K_k H_k)^\\top + K_k R_k K_k^\\top",
+          "operation_label": "誤差共分散の時間伝搬とJoseph形式事後共分散の記述",
+          "explanation": "システム雑音共分散 Q_k = E[w_k w_k^T] を用いて事前共分散 P_{k|k-1} を更新し、任意のゲイン K_k に対する事後共分散を数値的に安定な対称正定値表現（Joseph形式）で表す。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n08_ins_gnss_error_state_model",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_kalman_gain_optimality",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{k|k-1} = \\Phi_k P_{k-1|k-1}\\Phi_k^\\top + Q_k,\\quad P_{k|k} = (I - K_k H_k)P_{k|k-1}(I - K_k H_k)^\\top + K_k R_k K_k^\\top",
+          "to_latex": "\\frac{\\partial\\operatorname{tr}(P_{k|k})}{\\partial K_k} = 0 \\implies K_k = P_{k|k-1}H_k^\\top(H_k P_{k|k-1}H_k^\\top + R_k)^{-1},\\quad \\delta\\hat{\\mathbf{x}}_{k|k} = K_k\\mathbf{y}_k",
+          "operation_label": "トレース偏微分による最適カルマンゲインの導出",
+          "explanation": "事後共分散のトレースを K_k で行列微分して零と置くことで、最小分散不偏推定量を与える最適カルマンゲイン K_k と誤差状態更新式を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_injection_reset",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial\\operatorname{tr}(P_{k|k})}{\\partial K_k} = 0 \\implies K_k = P_{k|k-1}H_k^\\top(H_k P_{k|k-1}H_k^\\top + R_k)^{-1},\\quad \\delta\\hat{\\mathbf{x}}_{k|k} = K_k\\mathbf{y}_k",
+          "to_latex": "P_{k|k-1} = \\Phi_k P_{k-1|k-1}\\Phi_k^\\top + Q_k,\\quad K_k = P_{k|k-1}H_k^\\top(H_k P_{k|k-1}H_k^\\top + R_k)^{-1},\\quad \\delta\\hat{\\mathbf{x}}_{k|k} = K_k\\mathbf{y}_k,\\quad \\hat{\\mathbf{x}}_{k}^{\\mathrm{nom}} \\leftarrow \\hat{\\mathbf{x}}_{k}^{\\mathrm{nom}} \\oplus \\delta\\hat{\\mathbf{x}}_{k|k},\\quad \\delta\\hat{\\mathbf{x}} \\leftarrow \\mathbf{0}",
+          "operation_label": "公称状態への誤差注入（クォータニオン更新）と誤差状態リセット",
+          "explanation": "推定された位置・速度・バイアス誤差は加算で、姿勢誤差 ψ^n は微小クォータニオン乗算として公称INS状態へ注入し、次のステップの線形化基準点を最新化するため誤差状態ベクトルを零へリセットする。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
+            "aerosp.gnss_ins.n08_ins_gnss_error_state_model"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

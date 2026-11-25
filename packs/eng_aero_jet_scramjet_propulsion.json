@@ -1,0 +1,649 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_jet_scramjet_propulsion",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "航空推進工学：ターボジェット・ターボファンの実在ブレイトンサイクル・バイパス比と推進効率・超音速インレット衝撃波とスクラムジェット熱閉塞",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『航空推進工学：ターボジェット・ターボファンの実在ブレイトンサイクル・バイパス比と推進効率・超音速インレット衝撃波とスクラムジェット熱閉塞』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.jet.n01_airbreathing_thrust_equation",
+      "short_code": "JET01",
+      "kind": "theorem_formula",
+      "title": "空気吸い込み式推進機の推力方程式と燃料流量寄与",
+      "summary": "機体速度V_0で空気流量m_dot_aを吸い込み、燃空比fで燃料を加えて排気速度V_eで噴出するジェットエンジンの推力および推力比燃料消費率（TSFC）の基本式。",
+      "canonical_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a},\\quad \\mathrm{TSFC} := \\frac{\\dot{m}_f}{F} = \\frac{f}{F/\\dot{m}_a}`",
+      "aliases_latex": [
+        "F = \\dot{m}_a\\big[(1+f)V_e - V_0\\big] + (p_e - p_0)A_e"
+      ],
+      "keywords": [
+        "ジェット推進",
+        "推力方程式",
+        "燃空比",
+        "TSFC",
+        "空気吸い込み式エンジン"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "jet_engines"
+      ]
+    },
+    {
+      "id": "aerosp.jet.n02_propulsive_thermal_overall_efficiency",
+      "short_code": "JET02",
+      "kind": "definition",
+      "title": "ジェット推進の推進効率・熱効率・全効率の定義",
+      "summary": "推力仕事率F V_0、ジェット運動エネルギー増加率、燃料の低位発熱量入力を結びつけ、推進効率・熱効率・全効率を定義する。",
+      "canonical_latex": "\\eta_p := \\frac{F V_0}{\\Delta \\dot{E}_k} \\approx \\frac{2 V_0}{V_e + V_0},\\quad \\eta_{\\mathrm{th}} := \\frac{\\Delta \\dot{E}_k}{\\dot{m}_f Q_{\\mathrm{LHV}}},\\quad \\eta_o := \\eta_{\\mathrm{th}}\\eta_p = \\frac{F V_0}{\\dot{m}_f Q_{\\mathrm{LHV}}}",
+      "aliases_latex": [
+        "\\eta_p = \\frac{2}{1 + V_e/V_0}"
+      ],
+      "keywords": [
+        "推進効率",
+        "熱効率",
+        "全効率",
+        "運動エネルギー変化"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.jet.n03_real_component_efficiencies",
+      "short_code": "JET03",
+      "kind": "definition",
+      "title": "実在ジェットサイクルの要素効率と全圧損失パラメータ",
+      "summary": "ディフューザ・圧縮機・タービン・ノズルの断熱効率および燃焼室の全圧回収率を等エントロピー基準過程に対する比として定義する。",
+      "canonical_latex": "\\eta_d := \\frac{h_{02s} - h_0}{h_{02} - h_0},\\quad \\eta_c := \\frac{h_{03s} - h_{02}}{h_{03} - h_{02}},\\quad \\pi_b := \\frac{p_{04}}{p_{03}},\\quad \\eta_t := \\frac{h_{04} - h_{05}}{h_{04} - h_{05s}},\\quad \\eta_n := \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+      "aliases_latex": [
+        "\\eta_c = \\frac{T_{03s} - T_{02}}{T_{03} - T_{02}},\\quad \\eta_t = \\frac{T_{04} - T_{05}}{T_{04} - T_{05s}}"
+      ],
+      "keywords": [
+        "断熱効率",
+        "要素効率",
+        "全圧回収率",
+        "実在ブレイトンサイクル"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "thermodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.jet.n04_real_turbojet_cycle_performance",
+      "short_code": "JET04",
+      "kind": "theorem_formula",
+      "title": "実在ブレイトンサイクル（ターボジェット）の仕事釣合いと排気速度",
+      "summary": "実在ターボジェットにおける圧縮機・タービン動力釣合いと、タービン出口よどみ状態からノズル断熱効率を考慮した実在排気速度の決定式。",
+      "canonical_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad V_e = \\sqrt{2\\eta_n c_{pt} T_{05}\\left[1 - \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right]}",
+      "aliases_latex": [
+        "V_e = \\sqrt{2\\eta_n c_{pt} T_{05}\\left[1 - (p_0/p_{05})^{(\\gamma_t-1)/\\gamma_t}\\right]}"
+      ],
+      "keywords": [
+        "ターボジェット",
+        "ブレイトンサイクル",
+        "動力釣合い",
+        "排気速度"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "jet_engines"
+      ]
+    },
+    {
+      "id": "aerosp.jet.n05_turbofan_bypass_ratio_thrust",
+      "short_code": "JET05",
+      "kind": "theorem_formula",
+      "title": "ターボファンエンジンのバイパス比と推力分配・推進効率向上則",
+      "summary": "バイパス比Bを導入し、コア流とバイパス流へのファン動力配分および総推力式を与えることで、低排気速度・大流量化による推進効率向上機構を記述する。",
+      "canonical_latex": "B := \\frac{\\dot{m}_{\\mathrm{cold}}}{\\dot{m}_{\\mathrm{hot}}},\\quad (1+B)c_{pc}\\Delta T_{0,\\mathrm{fan}} = (1+f)\\eta_m c_{pt}\\Delta T_{t,\\mathrm{fan}},\\quad \\frac{F}{\\dot{m}_{\\mathrm{hot}}} = (1+f)V_{e,\\mathrm{hot}} + B V_{e,\\mathrm{cold}} - (1+B)V_0",
+      "aliases_latex": [
+        "\\frac{F}{\\dot{m}_{\\mathrm{hot}}} = (1+f)V_{e,\\mathrm{hot}} + B V_{e,\\mathrm{cold}} - (1+B)V_0"
+      ],
+      "keywords": [
+        "ターボファン",
+        "バイパス比",
+        "ファン動力釣合い",
+        "推進効率向上"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "jet_engines"
+      ]
+    },
+    {
+      "id": "aerosp.jet.n06_supersonic_inlet_shock_recovery",
+      "short_code": "JET06",
+      "kind": "theorem_formula",
+      "title": "超音速インレットの斜め衝撃波・垂直衝撃波列と全圧回復率",
+      "summary": "多段斜め衝撃波と終端垂直衝撃波の垂直マッハ成分M_{n,k}に対するランキン＝ユゴニオ関係式を積算し、超音速インレットの全圧回復率を与える。",
+      "canonical_latex": "\\pi_d = \\frac{p_{02}}{p_{00}} = \\pi_{\\mathrm{sub}} \\prod_{k=1}^{m} \\left[\\frac{(\\gamma+1)M_{n,k}^2}{2+(\\gamma-1)M_{n,k}^2}\\right]^{\\frac{\\gamma}{\\gamma-1}} \\left[1 + \\frac{2\\gamma}{\\gamma+1}(M_{n,k}^2 - 1)\\right]^{-\\frac{1}{\\gamma-1}},\\quad M_{n,k} = M_{k-1}\\sin\\beta_k",
+      "aliases_latex": [
+        "\\pi_d = \\pi_{\\mathrm{sub}} \\prod_{k=1}^m \\pi_{s,k}(M_{n,k})"
+      ],
+      "keywords": [
+        "超音速インレット",
+        "斜め衝撃波",
+        "全圧回復率",
+        "衝撃波列"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "compressible_flow"
+      ]
+    },
+    {
+      "id": "aerosp.jet.n07_ramjet_scramjet_cycle_transition",
+      "short_code": "JET07",
+      "kind": "theorem_formula",
+      "title": "ラムジェットのラム圧縮限界とスクラムジェットの静温抑制条件",
+      "summary": "高マッハ数飛行時に亜音速まで減速するラムジェットの過大な静温・全圧損失に対し、燃焼器入口マッハ数M_2>1を維持するスクラムジェットが燃焼器入口静温を抑制できることを示す。",
+      "canonical_latex": "T_{02} = T_0\\left(1 + \\frac{\\gamma - 1}{2}M_0^2\\right),\\quad \\frac{T_{\\mathrm{comb,in}}}{T_0} = \\frac{1 + \\frac{\\gamma-1}{2}M_0^2}{1 + \\frac{\\gamma-1}{2}M_2^2} < \\frac{T_{02}}{T_0}\\quad (M_2 > 1)`",
+      "aliases_latex": [
+        "\\frac{T_{\\mathrm{comb,in}}}{T_0} = \\frac{1 + \\frac{\\gamma-1}{2}M_0^2}{1 + \\frac{\\gamma-1}{2}M_2^2}"
+      ],
+      "keywords": [
+        "ラムジェット",
+        "スクラムジェット",
+        "超音速燃焼",
+        "ラム圧縮限界"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "hypersonics"
+      ]
+    },
+    {
+      "id": "aerosp.jet.n08_rayleigh_flow_thermal_choking",
+      "short_code": "JET08",
+      "kind": "theorem_formula",
+      "title": "レイリー流れの熱閉塞（サーマルチョーキング）限界",
+      "summary": "摩擦なし定断面積流への加熱に伴うマッハ数の微分変化式および音速状態M=1（熱閉塞）に至る最大よどみ点温度比を与え、超音速燃焼器の入熱上限を規定する。",
+      "canonical_latex": "\\frac{dM^2}{M^2} = \\frac{(1 + \\gamma M^2)\\left(1 + \\frac{\\gamma-1}{2}M^2\\right)}{1 - M^2}\\frac{dT_0}{T_0},\\quad \\frac{T_0^*}{T_{01}} = \\frac{(1 + \\gamma M_1^2)^2}{(\\gamma + 1)M_1^2\\left(2 + (\\gamma - 1)M_1^2\\right)}",
+      "aliases_latex": [
+        "\\frac{T_0^*}{T_{01}} = \\frac{(1+\\gamma M_1^2)^2}{(\\gamma+1)M_1^2(2+(\\gamma-1)M_1^2)}"
+      ],
+      "keywords": [
+        "レイリー流れ",
+        "熱閉塞",
+        "サーマルチョーキング",
+        "スクラムジェット燃焼器"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "propulsion",
+        "compressible_flow"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_jet01_thrust",
+      "target_node_id": "aerosp.jet.n01_airbreathing_thrust_equation",
+      "route_kind": "deductive",
+      "title": "空気吸い込み式推力方程式の導出",
+      "premise_node_ids": [
+        "eng.rock.n01_rocket_thrust_equation",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "定常1次元検査体積を仮定する",
+        "空気吸込み質量流量と燃料質量流量の和が排気質量流量に等しい"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F = \\dot{m}_e V_e - \\dot{m}_a V_0 + (p_e - p_0)A_e",
+          "to_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e",
+          "operation_label": "検査体積の運動量収支に質量保存と燃空比を適用",
+          "explanation": "吸込み空気の運動量流束を差し引いた推進力式に燃料流量の寄与を組み込み、燃空比fで整理する。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_mass_conservation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F = \\dot{m}_e V_e - \\dot{m}_a V_0 + (p_e - p_0)A_e",
+          "to_latex": "F = (\\dot{m}_a + \\dot{m}_f)V_e - \\dot{m}_a V_0 + (p_e - p_0)A_e",
+          "operation_label": "質量保存則による排気流量の展開",
+          "explanation": "排気質量流量を吸込み空気流量と燃料流量の和に置き換える。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_fuel_air_ratio",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F = (\\dot{m}_a + \\dot{m}_f)V_e - \\dot{m}_a V_0 + (p_e - p_0)A_e",
+          "to_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e",
+          "operation_label": "燃空比の定義による整理",
+          "explanation": "燃空比fを用いて空気流量で括り、空気吸い込み式推力方程式を得る。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_jet02_efficiencies",
+      "target_node_id": "aerosp.jet.n02_propulsive_thermal_overall_efficiency",
+      "route_kind": "reformulation",
+      "title": "推進効率・熱効率・全効率の定式化",
+      "premise_node_ids": [
+        "aerosp.jet.n01_airbreathing_thrust_equation",
+        "phys.thermo.th03_first_law_internal_energy"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "適正膨張および微小燃空比を近似基準とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_p = F V_0,\\quad \\Delta \\dot{E}_k = \\frac{1}{2}\\dot{m}_a\\big[(1+f)V_e^2 - V_0^2\\big]",
+          "to_latex": "\\eta_p = \\frac{F V_0}{\\Delta \\dot{E}_k} \\approx \\frac{2 V_0}{V_e + V_0},\\quad \\eta_{\\mathrm{th}} = \\frac{\\Delta \\dot{E}_k}{\\dot{m}_f Q_{\\mathrm{LHV}}},\\quad \\eta_o = \\eta_{\\mathrm{th}}\\eta_p",
+          "operation_label": "推進仕事率・運動エネルギー増加率・投入熱量による各効率の定義",
+          "explanation": "有効推進動力と流体への運動エネルギー付与率および燃料発熱量の比として推進効率・熱効率・全効率を定義する。",
+          "used_node_ids": [
+            "aerosp.jet.n01_airbreathing_thrust_equation",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_jet03_component_eff",
+      "target_node_id": "aerosp.jet.n03_real_component_efficiencies",
+      "route_kind": "reformulation",
+      "title": "非可逆性を考慮した要素効率の定義",
+      "premise_node_ids": [
+        "eng.comp.n03_stagnation_enthalpy_energy_eq",
+        "eng.comp.n04_isentropic_stagnation_relations",
+        "phys.thermo.th06_second_law_principles"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "各要素内の不可逆損失を等エントロピー過程からの偏差として評価する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Delta s_{\\mathrm{comp}} \\ge 0,\\quad \\frac{T_{0s}}{T_{\\mathrm{in}}} = \\left(\\frac{p_0}{p_{\\mathrm{in}}}\\right)^{\\frac{\\gamma-1}{\\gamma}}",
+          "to_latex": "\\eta_c = \\frac{h_{03s} - h_{02}}{h_{03} - h_{02}},\\quad \\eta_t = \\frac{h_{04} - h_{05}}{h_{04} - h_{05s}},\\quad \\pi_b = \\frac{p_{04}}{p_{03}},\\quad \\eta_n = \\frac{V_e^2/2}{h_{05}-h_{es}}",
+          "operation_label": "理想等エントロピーエンタルピー変化との比による要素効率定義",
+          "explanation": "熱力学第2法則に基づく不可逆損失を反映するため、圧縮・膨張各要素の断熱効率と燃焼室の全圧回収率を定義する。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations",
+            "phys.thermo.th06_second_law_principles"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_jet04_turbojet",
+      "target_node_id": "aerosp.jet.n04_real_turbojet_cycle_performance",
+      "route_kind": "deductive",
+      "title": "実在ターボジェットの動力釣合いと排気速度の導出",
+      "premise_node_ids": [
+        "aerosp.jet.n03_real_component_efficiencies",
+        "eng.comp.n03_stagnation_enthalpy_energy_eq",
+        "eng.comp.n04_isentropic_stagnation_relations"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "定常運転下でタービン出力が機械効率を介して圧縮機を駆動する",
+        "タービン側および圧縮機側で作動ガスの定圧比熱と比熱比をそれぞれ一定とみなす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{m}_a c_{pc}(T_{03} - T_{02}) = \\eta_m \\dot{m}_a(1+f) c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt}(T_{05} - T_{es})",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad V_e = \\sqrt{2\\eta_n c_{pt} T_{05}\\left[1 - \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right]}",
+          "operation_label": "軸動力釣合いの規格化と実在ノズル膨張排気速度の導出",
+          "explanation": "圧縮機とタービンの仕事釣合いを空気流量で割り、ノズル断熱効率と等エントロピー圧力比関係を用いて排気速度を導く。",
+          "used_node_ids": [
+            "aerosp.jet.n03_real_component_efficiencies",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_power_balance",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{m}_a c_{pc}(T_{03} - T_{02}) = \\eta_m \\dot{m}_a(1+f) c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt}(T_{05} - T_{es})",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right)`",
+          "operation_label": "空気流量の消去とノズル入口全温の括り出し",
+          "explanation": "動力釣合い式から空気流量を消去し、ノズル出口の理想静温比の形に変形する。",
+          "used_node_ids": [
+            "aerosp.jet.n03_real_component_efficiencies",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_isentropic_nozzle",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right)`",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad V_e = \\sqrt{2\\eta_n c_{pt} T_{05}\\left[1 - \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right]}",
+          "operation_label": "等エントロピー圧力比関係式の代入と排気速度の解",
+          "explanation": "等エントロピー膨張の温度・圧力比関係を代入して平方根をとり、実在排気速度式を得る。",
+          "used_node_ids": [
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_jet05_turbofan",
+      "target_node_id": "aerosp.jet.n05_turbofan_bypass_ratio_thrust",
+      "route_kind": "deductive",
+      "title": "ターボファンのバイパス比による動力分配と推力式の導出",
+      "premise_node_ids": [
+        "aerosp.jet.n01_airbreathing_thrust_equation",
+        "aerosp.jet.n02_propulsive_thermal_overall_efficiency",
+        "aerosp.jet.n04_real_turbojet_cycle_performance"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "コアノズル・バイパスノズルともに大気圧まで適正膨張する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "F = F_{\\mathrm{hot}} + F_{\\mathrm{cold}},\\quad \\dot{W}_{\\mathrm{fan}} = \\eta_m \\dot{W}_{t,\\mathrm{fan}}",
+          "to_latex": "(1+B)c_{pc}\\Delta T_{0,\\mathrm{fan}} = (1+f)\\eta_m c_{pt}\\Delta T_{t,\\mathrm{fan}},\\quad \\frac{F}{\\dot{m}_{\\mathrm{hot}}} = (1+f)V_{e,\\mathrm{hot}} + B V_{e,\\mathrm{cold}} - (1+B)V_0",
+          "operation_label": "両流路の推力合算とファン駆動動力釣合いのバイパス比表現",
+          "explanation": "コア流とバイパス流に推力式とエネルギー釣合いを適用し、バイパス比Bで無次元規格化する。",
+          "used_node_ids": [
+            "aerosp.jet.n01_airbreathing_thrust_equation",
+            "aerosp.jet.n02_propulsive_thermal_overall_efficiency",
+            "aerosp.jet.n04_real_turbojet_cycle_performance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_two_streams",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F = F_{\\mathrm{hot}} + F_{\\mathrm{cold}},\\quad \\dot{W}_{\\mathrm{fan}} = \\eta_m \\dot{W}_{t,\\mathrm{fan}}",
+          "to_latex": "F = \\dot{m}_{\\mathrm{hot}}\\big[(1+f)V_{e,\\mathrm{hot}} - V_0\\big] + \\dot{m}_{\\mathrm{cold}}(V_{e,\\mathrm{cold}} - V_0),\\quad (\\dot{m}_{\\mathrm{hot}}+\\dot{m}_{\\mathrm{cold}})c_{pc}\\Delta T_{0,\\mathrm{fan}} = \\eta_m \\dot{m}_{\\mathrm{hot}}(1+f)c_{pt}\\Delta T_{t,\\mathrm{fan}}",
+          "operation_label": "コア・バイパス各流路への推力および動力式の展開",
+          "explanation": "コア流とバイパス流それぞれの質量流量を用いて推力とファン仕事釣合いを書き下す。",
+          "used_node_ids": [
+            "aerosp.jet.n01_airbreathing_thrust_equation",
+            "aerosp.jet.n04_real_turbojet_cycle_performance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_bypass_norm",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F = \\dot{m}_{\\mathrm{hot}}\\big[(1+f)V_{e,\\mathrm{hot}} - V_0\\big] + \\dot{m}_{\\mathrm{cold}}(V_{e,\\mathrm{cold}} - V_0),\\quad (\\dot{m}_{\\mathrm{hot}}+\\dot{m}_{\\mathrm{cold}})c_{pc}\\Delta T_{0,\\mathrm{fan}} = \\eta_m \\dot{m}_{\\mathrm{hot}}(1+f)c_{pt}\\Delta T_{t,\\mathrm{fan}}",
+          "to_latex": "(1+B)c_{pc}\\Delta T_{0,\\mathrm{fan}} = (1+f)\\eta_m c_{pt}\\Delta T_{t,\\mathrm{fan}},\\quad \\frac{F}{\\dot{m}_{\\mathrm{hot}}} = (1+f)V_{e,\\mathrm{hot}} + B V_{e,\\mathrm{cold}} - (1+B)V_0",
+          "operation_label": "コア空気流量による除算とバイパス比 B の導入",
+          "explanation": "両式をコア空気流量で割り、バイパス比Bを代入して比推力およびファン仕事配分式を得る。",
+          "used_node_ids": [
+            "aerosp.jet.n02_propulsive_thermal_overall_efficiency"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_jet06_supersonic_inlet",
+      "target_node_id": "aerosp.jet.n06_supersonic_inlet_shock_recovery",
+      "route_kind": "deductive",
+      "title": "超音速インレットの衝撃波列全圧回復率の導出",
+      "premise_node_ids": [
+        "eng.comp.n08_rankine_hugoniot_relations",
+        "eng.comp.n09_normal_shock_entropy_stagnation_loss",
+        "eng.comp.n02_mach_number_and_flow_regimes"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "理想気体・断熱流れであり、各斜め衝撃波は垂直マッハ成分の1次元衝撃波関係式に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\pi_d = \\pi_{\\mathrm{sub}} \\prod_{k=1}^{m} \\frac{p_{0,k}}{p_{0,k-1}},\\quad \\frac{p_{0,k}}{p_{0,k-1}} = \\exp\\!\\left(-\\frac{s_k - s_{k-1}}{R}\\right)`",
+          "to_latex": "\\pi_d = \\pi_{\\mathrm{sub}} \\prod_{k=1}^{m} \\left[\\frac{(\\gamma+1)M_{n,k}^2}{2+(\\gamma-1)M_{n,k}^2}\\right]^{\\frac{\\gamma}{\\gamma-1}} \\left[1 + \\frac{2\\gamma}{\\gamma+1}(M_{n,k}^2 - 1)\\right]^{-\\frac{1}{\\gamma-1}}",
+          "operation_label": "エントロピー増大による全圧損失とランキン＝ユゴニオ関係の積算",
+          "explanation": "各衝撃波でのエントロピー生成による全圧比に垂直マッハ成分のランキン＝ユゴニオ関係式を代入し、全圧回復率を導出する。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n08_rankine_hugoniot_relations",
+            "eng.comp.n09_normal_shock_entropy_stagnation_loss"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_entropy_ratio",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\pi_d = \\pi_{\\mathrm{sub}} \\prod_{k=1}^{m} \\frac{p_{0,k}}{p_{0,k-1}},\\quad \\frac{p_{0,k}}{p_{0,k-1}} = \\exp\\!\\left(-\\frac{s_k - s_{k-1}}{R}\\right)`",
+          "to_latex": "\\pi_d = \\pi_{\\mathrm{sub}} \\prod_{k=1}^{m} \\left(\\frac{T_k}{T_{k-1}}\\right)^{-\\frac{\\gamma}{\\gamma-1}} \\left(\\frac{p_k}{p_{k-1}}\\right)^{\\frac{1}{\\gamma-1}}",
+          "operation_label": "エントロピー変化式とマイヤー関係の展開",
+          "explanation": "理想気体のエントロピー変化式を代入して温度比と圧力比のべき乗積に変換する。",
+          "used_node_ids": [
+            "eng.comp.n09_normal_shock_entropy_stagnation_loss"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_rh_substitution",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\pi_d = \\pi_{\\mathrm{sub}} \\prod_{k=1}^{m} \\left(\\frac{T_k}{T_{k-1}}\\right)^{-\\frac{\\gamma}{\\gamma-1}} \\left(\\frac{p_k}{p_{k-1}}\\right)^{\\frac{1}{\\gamma-1}}",
+          "to_latex": "\\pi_d = \\pi_{\\mathrm{sub}} \\prod_{k=1}^{m} \\left[\\frac{(\\gamma+1)M_{n,k}^2}{2+(\\gamma-1)M_{n,k}^2}\\right]^{\\frac{\\gamma}{\\gamma-1}} \\left[1 + \\frac{2\\gamma}{\\gamma+1}(M_{n,k}^2 - 1)\\right]^{-\\frac{1}{\\gamma-1}}",
+          "operation_label": "垂直マッハ成分 M_{n,k} に対するランキン＝ユゴニオ式の代入",
+          "explanation": "理想気体の状態式により温度比を圧力比と密度比で表し、垂直マッハ成分のランキン＝ユゴニオ関係式を代入する。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n08_rankine_hugoniot_relations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_jet07_scramjet",
+      "target_node_id": "aerosp.jet.n07_ramjet_scramjet_cycle_transition",
+      "route_kind": "deductive",
+      "title": "スクラムジェットによる燃焼器入口静温抑制の導出",
+      "premise_node_ids": [
+        "aerosp.jet.n06_supersonic_inlet_shock_recovery",
+        "eng.comp.n03_stagnation_enthalpy_energy_eq",
+        "aerosp.jet.n04_real_turbojet_cycle_performance"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "インレット・ディフューザ内の流れは断熱である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T_{02} = T_0\\left(1 + \\frac{\\gamma - 1}{2}M_0^2\\right),\\quad T_{02} = T_{\\mathrm{comb,in}}\\left(1 + \\frac{\\gamma - 1}{2}M_2^2\\right)`",
+          "to_latex": "\\frac{T_{\\mathrm{comb,in}}}{T_0} = \\frac{1 + \\frac{\\gamma-1}{2}M_0^2}{1 + \\frac{\\gamma-1}{2}M_2^2} < \\frac{T_{02}}{T_0}\\quad (M_2 > 1)`",
+          "operation_label": "断熱ディフューザにおけるよどみ点温度保存からの静温比導出",
+          "explanation": "主流と燃焼器入口のよどみ点温度を等置することで、超音速燃焼（M_2>1）が静温上昇を抑えることを示す。",
+          "used_node_ids": [
+            "aerosp.jet.n06_supersonic_inlet_shock_recovery",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_stagnation_match",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{02} = T_0\\left(1 + \\frac{\\gamma - 1}{2}M_0^2\\right),\\quad T_{02} = T_{\\mathrm{comb,in}}\\left(1 + \\frac{\\gamma - 1}{2}M_2^2\\right)`",
+          "to_latex": "T_{\\mathrm{comb,in}}\\left(1 + \\frac{\\gamma - 1}{2}M_2^2\\right) = T_0\\left(1 + \\frac{\\gamma - 1}{2}M_0^2\\right)`",
+          "operation_label": "よどみ点温度保存則による等置",
+          "explanation": "断熱過程でT_{02}が保存されることから、燃焼器入口静温と主流静温の関係式を立てる。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_static_temp_bound",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\mathrm{comb,in}}\\left(1 + \\frac{\\gamma - 1}{2}M_2^2\\right) = T_0\\left(1 + \\frac{\\gamma - 1}{2}M_0^2\\right)`",
+          "to_latex": "\\frac{T_{\\mathrm{comb,in}}}{T_0} = \\frac{1 + \\frac{\\gamma-1}{2}M_0^2}{1 + \\frac{\\gamma-1}{2}M_2^2} < \\frac{T_{02}}{T_0}\\quad (M_2 > 1)`",
+          "operation_label": "静温比の整理と超音速燃焼による温度抑制判定",
+          "explanation": "M_2>1のもとで分母が1より大きくなるため、亜音速燃焼（M_2\\ll 1）に比べ静温上昇が抑えられる。",
+          "used_node_ids": [
+            "aerosp.jet.n04_real_turbojet_cycle_performance",
+            "aerosp.jet.n06_supersonic_inlet_shock_recovery"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_jet08_rayleigh_choking",
+      "target_node_id": "aerosp.jet.n08_rayleigh_flow_thermal_choking",
+      "route_kind": "deductive",
+      "title": "レイリー流れのマッハ数変化式と熱閉塞限界の導出",
+      "premise_node_ids": [
+        "eng.comp.n02_mach_number_and_flow_regimes",
+        "eng.comp.n03_stagnation_enthalpy_energy_eq",
+        "eng.comp.n07_normal_shock_conservation_laws",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "定断面積・定常・非粘性・定比熱比の1次元理想気体流れに加熱のみを行う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p + \\rho u^2 = \\mathrm{const.},\\quad \\rho u = \\mathrm{const.},\\quad p = \\rho R T,\\quad T_0 = T\\left(1 + \\frac{\\gamma-1}{2}M^2\\right)`",
+          "to_latex": "\\frac{dM^2}{M^2} = \\frac{(1 + \\gamma M^2)\\left(1 + \\frac{\\gamma-1}{2}M^2\\right)}{1 - M^2}\\frac{dT_0}{T_0},\\quad \\frac{T_0^*}{T_{01}} = \\frac{(1 + \\gamma M_1^2)^2}{(\\gamma + 1)M_1^2\\left(2 + (\\gamma - 1)M_1^2\\right)}`",
+          "operation_label": "1次元保存則の対数微分と音速状態までの積分による熱閉塞条件の導出",
+          "explanation": "運動量保存と質量流束一定条件から圧力・静温の微分関係を求め、よどみ点温度式と結びつけて熱閉塞限界を導く。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n07_normal_shock_conservation_laws",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_momentum_diff",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p + \\rho u^2 = \\mathrm{const.},\\quad \\rho u = \\mathrm{const.},\\quad p = \\rho R T,\\quad T_0 = T\\left(1 + \\frac{\\gamma-1}{2}M^2\\right)`",
+          "to_latex": "\\frac{dp}{p} = -\\frac{\\gamma\\,dM^2}{1 + \\gamma M^2},\\quad \\frac{dT}{T} = \\frac{1 - \\gamma M^2}{1 + \\gamma M^2}\\frac{dM^2}{M^2},\\quad T_0 = T\\left(1 + \\frac{\\gamma-1}{2}M^2\\right)`",
+          "operation_label": "運動量保存・質量流束一定条件の対数微分",
+          "explanation": "p(1+\\gamma M^2)=const.および\\rho u=const.よりT\\propto p^2 M^2となることを用いて、dp/pとdT/TをdM^2で表す。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n07_normal_shock_conservation_laws",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_stagnation_diff",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dp}{p} = -\\frac{\\gamma\\,dM^2}{1 + \\gamma M^2},\\quad \\frac{dT}{T} = \\frac{1 - \\gamma M^2}{1 + \\gamma M^2}\\frac{dM^2}{M^2},\\quad T_0 = T\\left(1 + \\frac{\\gamma-1}{2}M^2\\right)`",
+          "to_latex": "\\frac{dM^2}{M^2} = \\frac{(1 + \\gamma M^2)\\left(1 + \\frac{\\gamma-1}{2}M^2\\right)}{1 - M^2}\\frac{dT_0}{T_0}`",
+          "operation_label": "よどみ点温度式の対数微分によるマッハ数変化式の導出",
+          "explanation": "T_0の定義式を対数微分してdT/Tを消去し、加熱dT_0>0に対するM^2の変化率式を得る。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_choking_ratio",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dM^2}{M^2} = \\frac{(1 + \\gamma M^2)\\left(1 + \\frac{\\gamma-1}{2}M^2\\right)}{1 - M^2}\\frac{dT_0}{T_0}`",
+          "to_latex": "\\frac{dM^2}{M^2} = \\frac{(1 + \\gamma M^2)\\left(1 + \\frac{\\gamma-1}{2}M^2\\right)}{1 - M^2}\\frac{dT_0}{T_0},\\quad \\frac{T_0^*}{T_{01}} = \\frac{(1 + \\gamma M_1^2)^2}{(\\gamma + 1)M_1^2\\left(2 + (\\gamma - 1)M_1^2\\right)}`",
+          "operation_label": "状態1からM=1への積分による熱閉塞限界温度比の導出",
+          "explanation": "M=1を基準状態として圧力・静温比を統合し、超音速燃焼器が熱閉塞に至る最大よどみ点温度比を確定する。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

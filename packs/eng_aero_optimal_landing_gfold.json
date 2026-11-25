@@ -1,0 +1,645 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_optimal_landing_gfold",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "最適軌道設計と凸最適化垂直着陸（GFOLD）：ポントリャーギンの最大原理・ローデンのプライマーベクトル理論・無損失凸化による着陸誘導",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『最適軌道設計と凸最適化垂直着陸（GFOLD）：ポントリャーギンの最大原理・ローデンのプライマーベクトル理論・無損失凸化による着陸誘導』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.gfold.n01_powered_descent_eom",
+      "short_code": "GF01",
+      "kind": "definition",
+      "title": "3次元動力降下（着陸）の可変質量状態空間モデル",
+      "summary": "一様重力場において推力ベクトル制御により降下・着陸する可変質量ロケットの並進運動および質量消費の連立微分方程式。",
+      "canonical_latex": "\\dot{\\mathbf{r}} = \\mathbf{v},\\quad \\dot{\\mathbf{v}} = \\frac{\\mathbf{T}}{m} + \\mathbf{g},\\quad \\dot{m} = -\\alpha \\|\\mathbf{T}\\|,\\quad \\alpha := \\frac{1}{I_{\\mathrm{sp}} g_0}",
+      "aliases_latex": [
+        "\\ddot{\\mathbf{r}} = \\frac{\\mathbf{T}(t)}{m(t)} + \\mathbf{g},\\quad \\dot{m}(t) = -\\frac{\\|\\mathbf{T}(t)\\|}{c_{\\mathrm{eff}}}"
+      ],
+      "keywords": [
+        "動力降下",
+        "可変質量系",
+        "着陸誘導",
+        "状態空間モデル",
+        "推力ベクトル"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "optimal_control"
+      ]
+    },
+    {
+      "id": "aerosp.gfold.n02_pontryagin_maximum_principle",
+      "short_code": "GF02",
+      "kind": "theorem_formula",
+      "title": "ポントリャーギンの最大原理（PMP）と最適制御の必要条件",
+      "summary": "入力制約を伴う最適制御問題において、制御ハミルトニアンの最小化条件と随伴変数（コステート）の微分方程式を与える変分原理の拡張定理。",
+      "canonical_latex": "H(\\mathbf{x}, \\mathbf{u}, \\boldsymbol{\\lambda}) = L(\\mathbf{x}, \\mathbf{u}) + \\boldsymbol{\\lambda}^\\top \\mathbf{f}(\\mathbf{x}, \\mathbf{u}),\\quad \\dot{\\boldsymbol{\\lambda}} = -\\nabla_{\\mathbf{x}} H,\\quad \\mathbf{u}^*(t) = \\arg\\min_{\\mathbf{u} \\in \\mathcal{U}} H(\\mathbf{x}^*(t), \\mathbf{u}, \\boldsymbol{\\lambda}(t))",
+      "aliases_latex": [
+        "H(\\mathbf{x}^*,\\mathbf{u}^*,\\boldsymbol{\\lambda}) \\le H(\\mathbf{x}^*,\\mathbf{u},\\boldsymbol{\\lambda})\\;(\\forall \\mathbf{u}\\in\\mathcal{U}),\\quad \\dot{\\boldsymbol{\\lambda}} = -\\left(\\frac{\\partial H}{\\partial \\mathbf{x}}\\right)^\\top"
+      ],
+      "keywords": [
+        "ポントリャーギンの最大原理",
+        "制御ハミルトニアン",
+        "随伴方程式",
+        "最適制御"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "optimal_control"
+      ]
+    },
+    {
+      "id": "aerosp.gfold.n03_lawden_primer_vector",
+      "short_code": "GF03",
+      "kind": "theorem_formula",
+      "title": "ローデンのプライマーベクトル理論と推力スイッチング関数",
+      "summary": "動力降下の燃料最小問題にPMPを適用した際、速度随伴ベクトルの反数であるプライマーベクトルが最適推力方向と大きさの切替（スイッチング関数）を支配する定理。",
+      "canonical_latex": "\\mathbf{p}(t) := -\\boldsymbol{\\lambda}_v(t),\\quad \\ddot{\\mathbf{p}} = \\mathbf{G}(\\mathbf{r})\\mathbf{p},\\quad \\hat{\\mathbf{u}}^*(t) = \\frac{\\mathbf{p}(t)}{\\|\\mathbf{p}(t)\\|},\\quad S(t) = \\|\\mathbf{p}(t)\\| - \\alpha m(t)\\lambda_m(t) - 1",
+      "aliases_latex": [
+        "\\mathbf{T}^*(t) = T^*(t)\\frac{\\mathbf{p}(t)}{\\|\\mathbf{p}(t)\\|},\\quad S(t) = \\frac{\\|\\boldsymbol{\\lambda}_v(t)\\|}{m(t)} - \\alpha\\lambda_m(t) - 1"
+      ],
+      "keywords": [
+        "プライマーベクトル",
+        "ローデン",
+        "スイッチング関数",
+        "最適推力方向"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "optimal_control"
+      ]
+    },
+    {
+      "id": "aerosp.gfold.n04_bang_bang_thrust_profile",
+      "short_code": "GF04",
+      "kind": "theorem_formula",
+      "title": "一様重力場におけるバング・バング推力則（最大・最小推力切替）",
+      "summary": "一様重力場ではプライマーベクトルが時間の1次関数となり、スイッチング関数の凹性から最適推力大きさが最大推力と最小推力の間で高々2回しか切り替わらない定理。",
+      "canonical_latex": "T^*(t) = \\begin{cases} T_{\\max}, & S(t) > 0 \\\\ T_{\\min}, & S(t) < 0 \\end{cases},\\quad \\mathbf{p}(t) = \\mathbf{c}_1 + \\mathbf{c}_2 t \\implies \\text{at most 2 switches (max-min-max)}",
+      "aliases_latex": [
+        "\\ddot{\\mathbf{p}} = \\mathbf{0} \\implies \\|\\mathbf{p}(t)\\| \\text{ is convex} \\implies \\text{max-min-max thrust profile}"
+      ],
+      "keywords": [
+        "バング・バング制御",
+        "燃料最小着陸",
+        "推力プロファイル",
+        "一様重力場"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "optimal_control"
+      ]
+    },
+    {
+      "id": "aerosp.gfold.n05_nonconvex_landing_ocp",
+      "short_code": "GF05",
+      "kind": "definition",
+      "title": "推力下限・姿勢角・グライドスロープ制約付き非凸着陸最適制御問題",
+      "summary": "実機ロケットエンジンのスロットル下限（非零最小推力制約）、推力ポインティング角制限、および地表衝突回避のためのグライドスロープ制約を含む元の非凸最適制御定式化。",
+      "canonical_latex": "\\min_{\\mathbf{T}, t_f} \\int_0^{t_f} \\|\\mathbf{T}(t)\\|\\,dt \\quad \\text{s.t.}\\quad 0 < T_{\\min} \\le \\|\\mathbf{T}(t)\\| \\le T_{\\max},\\quad \\hat{\\mathbf{e}}_z^\\top \\mathbf{T}(t) \\ge \\|\\mathbf{T}(t)\\|\\cos\\theta_{\\max},\\quad \\hat{\\mathbf{e}}_z^\\top \\mathbf{r}(t) \\ge \\|\\mathbf{r}_{xy}(t)\\|\\tan\\gamma_{\\mathrm{gs}}",
+      "aliases_latex": [
+        "\\min_{\\mathbf{T}, t_f} -m(t_f) \\quad \\text{s.t.}\\quad T_{\\min} \\le \\|\\mathbf{T}(t)\\|_2 \\le T_{\\max},\\; \\mathbf{r}(t)\\in\\mathcal{C}_{\\mathrm{gs}}"
+      ],
+      "keywords": [
+        "非凸最適化",
+        "推力下限制約",
+        "グライドスロープ制約",
+        "ポインティング制約"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "convex_optimization"
+      ]
+    },
+    {
+      "id": "aerosp.gfold.n06_lossless_convexification",
+      "short_code": "GF06",
+      "kind": "theorem_formula",
+      "title": "スラック変数による非凸推力制約の無損失凸化（LCvx）定理",
+      "summary": "非凸な最小推力制約をスラック変数の導入により2次錘制約へと緩和しても、PMPと横断性条件により最適解は必ず元の非凸制約境界上に乗ることを保証する無損失凸化定理。",
+      "canonical_latex": "\\|\\mathbf{T}(t)\\| \\le \\Gamma(t),\\quad T_{\\min} \\le \\Gamma(t) \\le T_{\\max},\\quad \\hat{\\mathbf{e}}_z^\\top \\mathbf{T}(t) \\ge \\Gamma(t)\\cos\\theta_{\\max} \\implies \\|\\mathbf{T}^*(t)\\| = \\Gamma^*(t)\\;\\text{a.e.}",
+      "aliases_latex": [
+        "\\mathcal{U}_{\\mathrm{convex}} = \\{(\\mathbf{T},\\Gamma) : \\|\\mathbf{T}\\|_2 \\le \\Gamma,\\; T_{\\min}\\le\\Gamma\\le T_{\\max}\\} \\implies \\text{exact relaxation}"
+      ],
+      "keywords": [
+        "無損失凸化",
+        "LCvx",
+        "スラック変数",
+        "2次錘制約"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "convex_optimization"
+      ]
+    },
+    {
+      "id": "aerosp.gfold.n07_log_mass_change_of_variables",
+      "short_code": "GF07",
+      "kind": "theorem_formula",
+      "title": "対数質量変数変換（z = ln m）による運動・推力制約の線形化",
+      "summary": "質量を対数変換し推力を質量で正規化した加速度入力を導入することで、非線形な可変質量運動方程式を完全な線形時不変システムへ変換する変数変換則。",
+      "canonical_latex": "z(t) := \\ln m(t),\\quad \\mathbf{u}(t) := \\frac{\\mathbf{T}(t)}{m(t)},\\quad \\sigma(t) := \\frac{\\Gamma(t)}{m(t)} \\implies \\dot{\\mathbf{v}} = \\mathbf{u} + \\mathbf{g},\\quad \\dot{z} = -\\alpha\\sigma,\\quad \\|\\mathbf{u}\\| \\le \\sigma",
+      "aliases_latex": [
+        "\\dot{\\mathbf{r}} = \\mathbf{v},\\quad \\dot{\\mathbf{v}} = \\mathbf{u} + \\mathbf{g},\\quad \\dot{z} = -\\alpha\\sigma,\\quad T_{\\min}e^{-z} \\le \\sigma \\le T_{\\max}e^{-z}"
+      ],
+      "keywords": [
+        "対数質量変換",
+        "変数変換",
+        "線形化",
+        "GFOLD"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "convex_optimization"
+      ]
+    },
+    {
+      "id": "aerosp.gfold.n08_gfold_socp_discretization",
+      "short_code": "GF08",
+      "kind": "theorem_formula",
+      "title": "GFOLDの2次錘計画法（SOCP）離散化と多項式時間大域最適性",
+      "summary": "対数質量による推力上下限の指数制約を2次・1次テイラー展開で凸近似し、離散時間上で2次錘計画問題（SOCP）として定式化することで、機上リアルタイムでの大域最適解保証を実現する手法。",
+      "canonical_latex": "T_{\\min} e^{-z_0(t_k)}\\big[1 - (z_k - z_0(t_k)) + \\tfrac{1}{2}(z_k - z_0(t_k))^2\\big] \\le \\sigma_k \\le T_{\\max} e^{-z_0(t_k)}\\big[1 - (z_k - z_0(t_k))\\big],\\quad \\|\\mathbf{u}_k\\|_2 \\le \\sigma_k",
+      "aliases_latex": [
+        "\\min_{\\mathbf{u}_k, \\sigma_k} \\sum_{k=0}^{N-1} \\sigma_k \\Delta t \\quad \\text{s.t.}\\quad \\mathbf{x}_{k+1} = A\\mathbf{x}_k + B(\\mathbf{u}_k + \\mathbf{g}),\\; \\|\\mathbf{u}_k\\|_2 \\le \\sigma_k"
+      ],
+      "keywords": [
+        "GFOLD",
+        "SOCP",
+        "2次錘計画法",
+        "大域最適解",
+        "垂直着陸"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "convex_optimization"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "aerosp.gfold.d01_powered_descent_eom",
+      "target_node_id": "aerosp.gfold.n01_powered_descent_eom",
+      "route_kind": "deductive",
+      "title": "ニュートン運動方程式と比推力定義からの3次元動力降下状態空間モデルの構成",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "eng.rock.n02_effective_exhaust_velocity_isp",
+        "aerosp.launch.n01_variable_mass_rocket_eom"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "惑星表面付近の狭域降下のため重力加速度ベクトル g は一定の一様重力場とみなす",
+        "大気抗力は微小として無視し、外力は重力と推力ベクトル T のみとする",
+        "比推力 Isp および重力定数 g0 は定数とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\dot{\\mathbf{v}} = \\mathbf{T} + m\\mathbf{g},\\quad c_{\\mathrm{eff}} = I_{\\mathrm{sp}} g_0 = \\frac{\\|\\mathbf{T}\\|}{\\dot{m}_{\\mathrm{prop}}}",
+          "to_latex": "\\dot{\\mathbf{r}} = \\mathbf{v},\\quad \\dot{\\mathbf{v}} = \\frac{\\mathbf{T}}{m} + \\mathbf{g},\\quad \\dot{m} = -\\alpha \\|\\mathbf{T}\\|,\\quad \\alpha := \\frac{1}{I_{\\mathrm{sp}} g_0}",
+          "operation_label": "3次元並進運動方程式と質量消費率の結合",
+          "explanation": "ニュートンの第2法則に推力と重力を代入し、有効排気速度と比推力の定義から質量減少率を推力ノルムの線形関数として状態空間モデルにまとめる。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom",
+            "eng.rock.n02_effective_exhaust_velocity_isp",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gfold.d02_pontryagin_maximum_principle",
+      "target_node_id": "aerosp.gfold.n02_pontryagin_maximum_principle",
+      "route_kind": "deductive",
+      "title": "変分法とルジャンドル変換を用いたポントリャーギンの最大原理の導出",
+      "premise_node_ids": [
+        "phys.mech.p04_least_action",
+        "math.calc.m10_integration_by_parts",
+        "math.calc.m09_fundamental_lemma_variations",
+        "math.calc.m11_legendre_transform"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "状態空間のダイナミクス dx/dt = f(x, u) と評価関数積分 L(x, u) は状態変数 x に関して連続微分可能とする",
+        "許容制御集合 U は閉集合であり、終端時刻および終端状態の変分に対して横断性条件が成立する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\delta J_a = \\delta \\int_{0}^{t_f} \\Big[L(\\mathbf{x},\\mathbf{u}) + \\boldsymbol{\\lambda}^\\top\\big(\\mathbf{f}(\\mathbf{x},\\mathbf{u}) - \\dot{\\mathbf{x}}\\big)\\Big]\\,dt = 0",
+          "to_latex": "H(\\mathbf{x}, \\mathbf{u}, \\boldsymbol{\\lambda}) = L(\\mathbf{x}, \\mathbf{u}) + \\boldsymbol{\\lambda}^\\top \\mathbf{f}(\\mathbf{x}, \\mathbf{u}),\\quad \\dot{\\boldsymbol{\\lambda}} = -\\nabla_{\\mathbf{x}} H,\\quad \\mathbf{u}^*(t) = \\arg\\min_{\\mathbf{u} \\in \\mathcal{U}} H(\\mathbf{x}^*(t), \\mathbf{u}, \\boldsymbol{\\lambda}(t))",
+          "operation_label": "拡大評価汎関数の変分とハミルトニアン定式化",
+          "explanation": "随伴変数を用いた拡大汎関数の第1変分に部分積分と変分法の基本補題を適用し、随伴方程式および強変分によるハミルトニアン最小化条件を導く。",
+          "used_node_ids": [
+            "math.calc.m09_fundamental_lemma_variations",
+            "math.calc.m10_integration_by_parts",
+            "math.calc.m11_legendre_transform",
+            "phys.mech.p04_least_action"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_hamiltonian_def",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta J_a = \\delta \\int_{0}^{t_f} \\Big[L(\\mathbf{x},\\mathbf{u}) + \\boldsymbol{\\lambda}^\\top\\big(\\mathbf{f}(\\mathbf{x},\\mathbf{u}) - \\dot{\\mathbf{x}}\\big)\\Big]\\,dt = 0",
+          "to_latex": "H(\\mathbf{x},\\mathbf{u},\\boldsymbol{\\lambda}) := L(\\mathbf{x},\\mathbf{u}) + \\boldsymbol{\\lambda}^\\top\\mathbf{f}(\\mathbf{x},\\mathbf{u}) \\implies \\delta J_a = \\int_0^{t_f}\\Big[(\\nabla_{\\mathbf{x}}H + \\dot{\\boldsymbol{\\lambda}})^\\top\\delta\\mathbf{x} + \\nabla_{\\mathbf{u}}H^\\top\\delta\\mathbf{u}\\Big]\\,dt = 0",
+          "operation_label": "ハミルトニアンの導入と部分積分",
+          "explanation": "ラグランジュ未定乗数としての随伴ベクトルとハミルトニアンを定義し、-lambda^T d(delta x)/dt の項に部分積分を適用して境界項を整理する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "math.calc.m10_integration_by_parts",
+            "math.calc.m11_legendre_transform"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_costate_eq",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H(\\mathbf{x},\\mathbf{u},\\boldsymbol{\\lambda}) := L(\\mathbf{x},\\mathbf{u}) + \\boldsymbol{\\lambda}^\\top\\mathbf{f}(\\mathbf{x},\\mathbf{u}) \\implies \\delta J_a = \\int_0^{t_f}\\Big[(\\nabla_{\\mathbf{x}}H + \\dot{\\boldsymbol{\\lambda}})^\\top\\delta\\mathbf{x} + \\nabla_{\\mathbf{u}}H^\\top\\delta\\mathbf{u}\\Big]\\,dt = 0",
+          "to_latex": "\\dot{\\boldsymbol{\\lambda}} = -\\nabla_{\\mathbf{x}}H,\\quad \\delta J_a = \\int_0^{t_f}\\Big[H(\\mathbf{x}^*,\\mathbf{u},\\boldsymbol{\\lambda}) - H(\\mathbf{x}^*,\\mathbf{u}^*,\\boldsymbol{\\lambda})\\Big]\\,dt \\ge 0",
+          "operation_label": "変分法の基本補題による随伴方程式と針状変分",
+          "explanation": "任意の状態変分 delta x に対して係数を零と置くことで随伴方程式が得られ、許容制御集合 U の境界を含む針状変分に対してハミルトニアン増分が非負である必要条件が導かれる。",
+          "used_node_ids": [
+            "math.calc.m09_fundamental_lemma_variations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_min_principle",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\boldsymbol{\\lambda}} = -\\nabla_{\\mathbf{x}}H,\\quad \\delta J_a = \\int_0^{t_f}\\Big[H(\\mathbf{x}^*,\\mathbf{u},\\boldsymbol{\\lambda}) - H(\\mathbf{x}^*,\\mathbf{u}^*,\\boldsymbol{\\lambda})\\Big]\\,dt \\ge 0",
+          "to_latex": "H(\\mathbf{x}, \\mathbf{u}, \\boldsymbol{\\lambda}) = L(\\mathbf{x}, \\mathbf{u}) + \\boldsymbol{\\lambda}^\\top \\mathbf{f}(\\mathbf{x}, \\mathbf{u}),\\quad \\dot{\\boldsymbol{\\lambda}} = -\\nabla_{\\mathbf{x}} H,\\quad \\mathbf{u}^*(t) = \\arg\\min_{\\mathbf{u} \\in \\mathcal{U}} H(\\mathbf{x}^*(t), \\mathbf{u}, \\boldsymbol{\\lambda}(t))",
+          "operation_label": "最適制御の点ごとの最小化条件の確定",
+          "explanation": "任意の時刻 t において許容集合 U 上でハミルトニアンを最小化する制御入力 u*(t) を選ぶことが最適性の必要条件（PMP）となる。",
+          "used_node_ids": [
+            "math.calc.m09_fundamental_lemma_variations"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gfold.d03_lawden_primer_vector",
+      "target_node_id": "aerosp.gfold.n03_lawden_primer_vector",
+      "route_kind": "deductive",
+      "title": "動力降下システムへのPMP適用によるローデンのプライマーベクトル理論の導出",
+      "premise_node_ids": [
+        "aerosp.gfold.n01_powered_descent_eom",
+        "aerosp.gfold.n02_pontryagin_maximum_principle",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "評価関数は総燃料消費量（すなわち推力ノルムの時間積分）の最小化とする",
+        "重力加速度 g(r) の勾配行列を G(r) = d g / d r と置く"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "H = \\|\\mathbf{T}\\| + \\boldsymbol{\\lambda}_r^\\top\\mathbf{v} + \\boldsymbol{\\lambda}_v^\\top\\left(\\frac{\\mathbf{T}}{m} + \\mathbf{g}(\\mathbf{r})\\right) - \\alpha\\lambda_m\\|\\mathbf{T}\\|",
+          "to_latex": "\\mathbf{p}(t) := -\\boldsymbol{\\lambda}_v(t),\\quad \\ddot{\\mathbf{p}} = \\mathbf{G}(\\mathbf{r})\\mathbf{p},\\quad \\hat{\\mathbf{u}}^*(t) = \\frac{\\mathbf{p}(t)}{\\|\\mathbf{p}(t)\\|},\\quad S(t) = \\|\\mathbf{p}(t)\\| - \\alpha m(t)\\lambda_m(t) - 1",
+          "operation_label": "ハミルトニアンの推力方向最小化と随伴微分方程式の展開",
+          "explanation": "動力降下のハミルトニアンにおいて推力ベクトル T の方向をプライマーベクトル p = -lambda_v と一致させることで最小化し、位置・速度の随伴方程式から p の2階微分方程式を得る。",
+          "used_node_ids": [
+            "aerosp.gfold.n01_powered_descent_eom",
+            "aerosp.gfold.n02_pontryagin_maximum_principle",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_costate_dynamics",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H = \\|\\mathbf{T}\\| + \\boldsymbol{\\lambda}_r^\\top\\mathbf{v} + \\boldsymbol{\\lambda}_v^\\top\\left(\\frac{\\mathbf{T}}{m} + \\mathbf{g}(\\mathbf{r})\\right) - \\alpha\\lambda_m\\|\\mathbf{T}\\|",
+          "to_latex": "\\dot{\\boldsymbol{\\lambda}}_r = -\\mathbf{G}(\\mathbf{r})^\\top\\boldsymbol{\\lambda}_v,\\quad \\dot{\\boldsymbol{\\lambda}}_v = -\\boldsymbol{\\lambda}_r,\\quad \\mathbf{p} := -\\boldsymbol{\\lambda}_v \\implies \\ddot{\\mathbf{p}} = \\mathbf{G}(\\mathbf{r})\\mathbf{p}",
+          "operation_label": "位置・速度随伴方程式の連立と重力勾配による2階常微分方程式化",
+          "explanation": "重力勾配行列 G(r) の対称性を用いて位置と速度の随伴方程式を連立消去すると、プライマーベクトル p に関する2階線形方程式が得られる。",
+          "used_node_ids": [
+            "aerosp.gfold.n02_pontryagin_maximum_principle",
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_cauchy_schwarz_dir",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\boldsymbol{\\lambda}}_r = -\\mathbf{G}(\\mathbf{r})^\\top\\boldsymbol{\\lambda}_v,\\quad \\dot{\\boldsymbol{\\lambda}}_v = -\\boldsymbol{\\lambda}_r,\\quad \\mathbf{p} := -\\boldsymbol{\\lambda}_v \\implies \\ddot{\\mathbf{p}} = \\mathbf{G}(\\mathbf{r})\\mathbf{p}",
+          "to_latex": "\\mathbf{p}(t) := -\\boldsymbol{\\lambda}_v(t),\\quad \\ddot{\\mathbf{p}} = \\mathbf{G}(\\mathbf{r})\\mathbf{p},\\quad \\hat{\\mathbf{u}}^*(t) = \\frac{\\mathbf{p}(t)}{\\|\\mathbf{p}(t)\\|},\\quad S(t) = \\|\\mathbf{p}(t)\\| - \\alpha m(t)\\lambda_m(t) - 1",
+          "operation_label": "内積最小化による最適推力方向とスイッチング関数の抽出",
+          "explanation": "ハミルトニアンの T 依存項 T^T (-p/m) + (1 - alpha*lambda_m)||T|| を最小化するため、コーシー＝シュワルツの不等式より推力単位方向 u_hat* は p/||p|| となり、係数からスイッチング関数 S(t) が定義される。",
+          "used_node_ids": [
+            "aerosp.gfold.n02_pontryagin_maximum_principle",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gfold.d04_bang_bang_thrust_profile",
+      "target_node_id": "aerosp.gfold.n04_bang_bang_thrust_profile",
+      "route_kind": "deductive",
+      "title": "一様重力場でのプライマーベクトル線形解とバング・バング推力則の導出",
+      "premise_node_ids": [
+        "aerosp.gfold.n03_lawden_primer_vector",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "一様重力場 g = const. のため重力勾配行列 G(r) = 0 とする",
+        "特異制御区間（S(t) = 0 が有限時間持続する区間）は一般の着陸境界条件では発生しないとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{\\mathbf{p}} = \\mathbf{0},\\quad S(t) = \\|\\mathbf{p}(t)\\| - \\alpha m(t)\\lambda_m(t) - 1",
+          "to_latex": "T^*(t) = \\begin{cases} T_{\\max}, & S(t) > 0 \\\\ T_{\\min}, & S(t) < 0 \\end{cases},\\quad \\mathbf{p}(t) = \\mathbf{c}_1 + \\mathbf{c}_2 t \\implies \\text{at most 2 switches (max-min-max)}",
+          "operation_label": "プライマーベクトルの線形解とスイッチング関数の凸性解析",
+          "explanation": "一様重力場では d^2 p/dt^2 = 0 から p(t) が時間の1次関数となり、そのノルム ||p(t)|| が凸関数となるため、S(t) の符号反転が高々2回に制限され max-min-max 型のバング・バング制御が導かれる。",
+          "used_node_ids": [
+            "aerosp.gfold.n03_lawden_primer_vector",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_linear_primer",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{\\mathbf{p}} = \\mathbf{0},\\quad S(t) = \\|\\mathbf{p}(t)\\| - \\alpha m(t)\\lambda_m(t) - 1",
+          "to_latex": "\\mathbf{p}(t) = \\mathbf{c}_1 + \\mathbf{c}_2 t,\\quad \\frac{d}{dt}\\big(m(t)\\lambda_m(t)\\big) = \\frac{T(t)\\|\\mathbf{p}(t)\\|}{m(t)} - \\alpha T(t)\\lambda_m(t)",
+          "operation_label": "一様重力下での p(t) 積分と質量随伴項の時間微分",
+          "explanation": "2階微分が零の線形常微分方程式を積分して p(t) = c1 + c2 t を得て、さらに質量随伴変数 lambda_m の時間発展を評価する。",
+          "used_node_ids": [
+            "aerosp.gfold.n03_lawden_primer_vector",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_bang_bang_switches",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{p}(t) = \\mathbf{c}_1 + \\mathbf{c}_2 t,\\quad \\frac{d}{dt}\\big(m(t)\\lambda_m(t)\\big) = \\frac{T(t)\\|\\mathbf{p}(t)\\|}{m(t)} - \\alpha T(t)\\lambda_m(t)",
+          "to_latex": "T^*(t) = \\begin{cases} T_{\\max}, & S(t) > 0 \\\\ T_{\\min}, & S(t) < 0 \\end{cases},\\quad \\mathbf{p}(t) = \\mathbf{c}_1 + \\mathbf{c}_2 t \\implies \\text{at most 2 switches (max-min-max)}",
+          "operation_label": "ハミルトニアン最小化による極値推力選択と切替回数上限",
+          "explanation": "H の T に関する線形項 -T S(t)/m を最小化するには S(t) > 0 で T_max、S(t) < 0 で T_min を選ぶ必要があり、||c1 + c2 t|| の凸性から切替は最大2回（max-min-max）となる。",
+          "used_node_ids": [
+            "aerosp.gfold.n03_lawden_primer_vector"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gfold.d05_nonconvex_landing_ocp",
+      "target_node_id": "aerosp.gfold.n05_nonconvex_landing_ocp",
+      "route_kind": "reformulation",
+      "title": "動力降下モデルへの実機推力下限・幾何制約の組み込み",
+      "premise_node_ids": [
+        "aerosp.gfold.n01_powered_descent_eom",
+        "aerosp.launch.n03_ideal_tsiolkovsky_delta_v"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "推進機関の再着火不能またはスロットル制限により非零の最小推力 T_min > 0 が課される",
+        "着陸時の機体姿勢維持とセンサー視界確保のため鉛直軸からの最大傾斜角 theta_max を制限する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\min_{\\mathbf{T}, t_f} -m(t_f),\\quad \\dot{m} = -\\alpha\\|\\mathbf{T}\\|",
+          "to_latex": "\\min_{\\mathbf{T}, t_f} \\int_0^{t_f} \\|\\mathbf{T}(t)\\|\\,dt \\quad \\text{s.t.}\\quad 0 < T_{\\min} \\le \\|\\mathbf{T}(t)\\| \\le T_{\\max},\\quad \\hat{\\mathbf{e}}_z^\\top \\mathbf{T}(t) \\ge \\|\\mathbf{T}(t)\\|\\cos\\theta_{\\max},\\quad \\hat{\\mathbf{e}}_z^\\top \\mathbf{r}(t) \\ge \\|\\mathbf{r}_{xy}(t)\\|\\tan\\gamma_{\\mathrm{gs}}",
+          "operation_label": "燃料最小評価関数と非凸推力制約・錐制約の定式化",
+          "explanation": "終端質量最大化（推進薬消費最小化）を目的関数とし、ドーナツ状の非凸な推力環状制約 T_min <= ||T|| <= T_max、推力ポインティング角制約、および地表グライドスロープ錐制約を明示的に設定する。",
+          "used_node_ids": [
+            "aerosp.gfold.n01_powered_descent_eom",
+            "aerosp.launch.n03_ideal_tsiolkovsky_delta_v"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gfold.d06_lossless_convexification",
+      "target_node_id": "aerosp.gfold.n06_lossless_convexification",
+      "route_kind": "deductive",
+      "title": "PMPと横断性条件による無損失凸化（LCvx）の厳密性証明",
+      "premise_node_ids": [
+        "aerosp.gfold.n05_nonconvex_landing_ocp",
+        "aerosp.gfold.n02_pontryagin_maximum_principle",
+        "math.opt.opt05_hyperplane_separation"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "問題に実行可能解が存在し、終端時刻 t_f または目標状態に対する横断性条件から速度随伴ベクトルが零にならない（非自明性）とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "0 < T_{\\min} \\le \\|\\mathbf{T}(t)\\| \\le T_{\\max},\\quad \\hat{\\mathbf{e}}_z^\\top \\mathbf{T}(t) \\ge \\|\\mathbf{T}(t)\\|\\cos\\theta_{\\max}",
+          "to_latex": "\\|\\mathbf{T}(t)\\| \\le \\Gamma(t),\\quad T_{\\min} \\le \\Gamma(t) \\le T_{\\max},\\quad \\hat{\\mathbf{e}}_z^\\top \\mathbf{T}(t) \\ge \\Gamma(t)\\cos\\theta_{\\max} \\implies \\|\\mathbf{T}^*(t)\\| = \\Gamma^*(t)\\;\\text{a.e.}",
+          "operation_label": "スラック変数緩和とPMPによる境界一致の証明",
+          "explanation": "スラック変数 Gamma を導入して非凸な下限とポインティング制約を2次錘の凸集合へ緩和した上で、緩和問題のハミルトニアンを最小化する T* が必然的に 2次錘境界 ||T*|| = Gamma* 上に乗ることを示す。",
+          "used_node_ids": [
+            "aerosp.gfold.n02_pontryagin_maximum_principle",
+            "aerosp.gfold.n05_nonconvex_landing_ocp",
+            "math.opt.opt05_hyperplane_separation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_slack_relaxation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "0 < T_{\\min} \\le \\|\\mathbf{T}(t)\\| \\le T_{\\max},\\quad \\hat{\\mathbf{e}}_z^\\top \\mathbf{T}(t) \\ge \\|\\mathbf{T}(t)\\|\\cos\\theta_{\\max}",
+          "to_latex": "\\mathcal{U}_{\\mathrm{cvx}} = \\big\\{(\\mathbf{T},\\Gamma) : \\|\\mathbf{T}\\| \\le \\Gamma,\\; T_{\\min}\\le\\Gamma\\le T_{\\max},\\; \\hat{\\mathbf{e}}_z^\\top\\mathbf{T} \\ge \\Gamma\\cos\\theta_{\\max}\\big\\}",
+          "operation_label": "スラック変数 Gamma による凸集合への埋め込み",
+          "explanation": "目的関数と質量減少率の ||T|| をスラック変数 Gamma に置き換え、||T|| <= Gamma という2次錘制約を導入することで実行可能制御集合を凸化する。",
+          "used_node_ids": [
+            "aerosp.gfold.n05_nonconvex_landing_ocp"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_pmp_boundary",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathcal{U}_{\\mathrm{cvx}} = \\big\\{(\\mathbf{T},\\Gamma) : \\|\\mathbf{T}\\| \\le \\Gamma,\\; T_{\\min}\\le\\Gamma\\le T_{\\max},\\; \\hat{\\mathbf{e}}_z^\\top\\mathbf{T} \\ge \\Gamma\\cos\\theta_{\\max}\\big\\}",
+          "to_latex": "\\|\\mathbf{T}(t)\\| \\le \\Gamma(t),\\quad T_{\\min} \\le \\Gamma(t) \\le T_{\\max},\\quad \\hat{\\mathbf{e}}_z^\\top \\mathbf{T}(t) \\ge \\Gamma(t)\\cos\\theta_{\\max} \\implies \\|\\mathbf{T}^*(t)\\| = \\Gamma^*(t)\\;\\text{a.e.}",
+          "operation_label": "ハミルトニアン線形関数最小化と支持超平面による境界達成",
+          "explanation": "固定された Gamma* に対して T はハミルトニアンの線形項 lambda_v^T T / m のみに現れるため、lambda_v が非零であれば凸集合上の線形最小化解は必ず極端点境界 ||T*|| = Gamma* に到達する。",
+          "used_node_ids": [
+            "aerosp.gfold.n02_pontryagin_maximum_principle",
+            "math.opt.opt05_hyperplane_separation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gfold.d07_log_mass_change_of_variables",
+      "target_node_id": "aerosp.gfold.n07_log_mass_change_of_variables",
+      "route_kind": "deductive",
+      "title": "対数質量変数変換による可変質量運動方程式の線形化",
+      "premise_node_ids": [
+        "aerosp.gfold.n01_powered_descent_eom",
+        "aerosp.gfold.n06_lossless_convexification",
+        "math.calc.m01_chain_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ロケット質量は常に正 m(t) > 0 であり、対数変換 z(t) = ln m(t) が一対一に定義される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{v}} = \\frac{\\mathbf{T}}{m} + \\mathbf{g},\\quad \\dot{m} = -\\alpha\\Gamma,\\quad \\|\\mathbf{T}\\| \\le \\Gamma",
+          "to_latex": "z(t) := \\ln m(t),\\quad \\mathbf{u}(t) := \\frac{\\mathbf{T}(t)}{m(t)},\\quad \\sigma(t) := \\frac{\\Gamma(t)}{m(t)} \\implies \\dot{\\mathbf{v}} = \\mathbf{u} + \\mathbf{g},\\quad \\dot{z} = -\\alpha\\sigma,\\quad \\|\\mathbf{u}\\| \\le \\sigma",
+          "operation_label": "質量正規化入力と対数質量微分による線形系への変換",
+          "explanation": "推力とスラック変数をそれぞれ質量で割った加速度入力 u, sigma を定義し、z = ln m に連鎖律を適用することで、非線形な質量除算を消去した線形状態空間方程式を得る。",
+          "used_node_ids": [
+            "aerosp.gfold.n01_powered_descent_eom",
+            "aerosp.gfold.n06_lossless_convexification",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_accel_norm",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{v}} = \\frac{\\mathbf{T}}{m} + \\mathbf{g},\\quad \\dot{m} = -\\alpha\\Gamma,\\quad \\|\\mathbf{T}\\| \\le \\Gamma",
+          "to_latex": "\\mathbf{u} := \\frac{\\mathbf{T}}{m},\\quad \\sigma := \\frac{\\Gamma}{m} \\implies \\dot{\\mathbf{v}} = \\mathbf{u} + \\mathbf{g},\\quad \\|\\mathbf{u}\\| \\le \\sigma",
+          "operation_label": "推力加速度入力の定義と2次錘制約の保存",
+          "explanation": "正の質量 m で両辺を除することで、速度方程式が入力 u に関して線形になり、2次錘制約 ||T|| <= Gamma は ||u|| <= sigma としてそのまま保存される。",
+          "used_node_ids": [
+            "aerosp.gfold.n01_powered_descent_eom",
+            "aerosp.gfold.n06_lossless_convexification"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_log_mass_deriv",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{u} := \\frac{\\mathbf{T}}{m},\\quad \\sigma := \\frac{\\Gamma}{m} \\implies \\dot{\\mathbf{v}} = \\mathbf{u} + \\mathbf{g},\\quad \\|\\mathbf{u}\\| \\le \\sigma",
+          "to_latex": "z(t) := \\ln m(t),\\quad \\mathbf{u}(t) := \\frac{\\mathbf{T}(t)}{m(t)},\\quad \\sigma(t) := \\frac{\\Gamma(t)}{m(t)} \\implies \\dot{\\mathbf{v}} = \\mathbf{u} + \\mathbf{g},\\quad \\dot{z} = -\\alpha\\sigma,\\quad \\|\\mathbf{u}\\| \\le \\sigma",
+          "operation_label": "連鎖律を用いた対数質量の時間微分計算",
+          "explanation": "dz/dt = (1/m)(dm/dt) = -alpha * Gamma / m = -alpha * sigma となり、質量の時間発展もスラック加速度 sigma に関して完全な線形微分方程式となる。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "aerosp.gfold.d08_gfold_socp_discretization",
+      "target_node_id": "aerosp.gfold.n08_gfold_socp_discretization",
+      "route_kind": "deductive",
+      "title": "指数型推力制約のテイラー凸近似とGFOLDのSOCP定式化",
+      "premise_node_ids": [
+        "aerosp.gfold.n07_log_mass_change_of_variables",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "時間区間 [0, t_f] を N 等分し、離散時刻 t_k における零次ホールドまたは区分線形補間を用いる",
+        "基準質量軌道 z_0(t_k) = ln(m_0 - alpha * T_max * t_k) からの偏差は十分に小さいとする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "T_{\\min} e^{-z(t_k)} \\le \\sigma_k \\le T_{\\max} e^{-z(t_k)},\\quad \\|\\mathbf{u}_k\\|_2 \\le \\sigma_k",
+          "to_latex": "T_{\\min} e^{-z_0(t_k)}\\big[1 - (z_k - z_0(t_k)) + \\tfrac{1}{2}(z_k - z_0(t_k))^2\\big] \\le \\sigma_k \\le T_{\\max} e^{-z_0(t_k)}\\big[1 - (z_k - z_0(t_k))\\big],\\quad \\|\\mathbf{u}_k\\|_2 \\le \\sigma_k",
+          "operation_label": "指数関数 e^{-z} の2次・1次テイラー凸近似によるSOCP化",
+          "explanation": "下限制約の非線形項 e^{-z} を2次テイラー展開（凸2次関数）で、上限制約の凹関数側を1次接線（線形関数）で近似し、すべて線形および2次錘制約のみのSOCPを構成する。",
+          "used_node_ids": [
+            "aerosp.gfold.n07_log_mass_change_of_variables",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_exp_taylor",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "T_{\\min} e^{-z(t_k)} \\le \\sigma_k \\le T_{\\max} e^{-z(t_k)},\\quad \\|\\mathbf{u}_k\\|_2 \\le \\sigma_k",
+          "to_latex": "e^{-z_k} \\approx e^{-z_0(t_k)}\\big[1 - \\Delta z_k + \\tfrac{1}{2}\\Delta z_k^2\\big],\\quad e^{-z_k} \\ge e^{-z_0(t_k)}\\big[1 - \\Delta z_k\\big]\\quad (\\Delta z_k := z_k - z_0(t_k))",
+          "operation_label": "基準点 z_0 周りの指数関数のテイラー展開",
+          "explanation": "指数関数の導関数公式を用いて基準点 z_0 周りでテイラー展開すると、2次近似は凸2次式、1次接線はグローバルな下界を与える線形不等式となる。",
+          "used_node_ids": [
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_socp_form",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "e^{-z_k} \\approx e^{-z_0(t_k)}\\big[1 - \\Delta z_k + \\tfrac{1}{2}\\Delta z_k^2\\big],\\quad e^{-z_k} \\ge e^{-z_0(t_k)}\\big[1 - \\Delta z_k\\big]\\quad (\\Delta z_k := z_k - z_0(t_k))",
+          "to_latex": "T_{\\min} e^{-z_0(t_k)}\\big[1 - (z_k - z_0(t_k)) + \\tfrac{1}{2}(z_k - z_0(t_k))^2\\big] \\le \\sigma_k \\le T_{\\max} e^{-z_0(t_k)}\\big[1 - (z_k - z_0(t_k))\\big],\\quad \\|\\mathbf{u}_k\\|_2 \\le \\sigma_k",
+          "operation_label": "凸2次制約の2次錘表現とSOCP問題の完成",
+          "explanation": "左辺の凸2次不等式は2次錘（SOC）へ等価変換でき、右辺は線形不等式であるため、内点法により多項式時間で大域最適解が求まるGFOLDのSOCP定式化が完成する。",
+          "used_node_ids": [
+            "aerosp.gfold.n07_log_mass_change_of_variables"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

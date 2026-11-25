@@ -1,0 +1,666 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_launch_vibroacoustics",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "ロケット打ち上げ構造環境工学：ジェット音響パワー・マイルズの式によるランダム振動PSD応答・衝撃応答スペクトル（SRS）とフェアリング分離力学",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『ロケット打ち上げ構造環境工学：ジェット音響パワー・マイルズの式によるランダム振動PSD応答・衝撃応答スペクトル（SRS）とフェアリング分離力学』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.psd_srs.n01_jet_acoustic_power",
+      "short_code": "VA01",
+      "kind": "empirical_hypothesis",
+      "title": "ロケットジェット音響パワーと音響効率",
+      "summary": "ロケット排気ジェットの機械的運動エネルギー流束の一部が音響効率で放射音に変換される経験則と音響パワーレベルの定義。",
+      "canonical_latex": "W_a = \\eta_a \\frac{1}{2} F v_e = \\frac{\\eta_a}{2} \\dot{m} v_e^2,\\quad L_W = 10\\log_{10}\\!\\left(\\frac{W_a}{W_0}\\right)\\;\\text{dB}",
+      "aliases_latex": [
+        "W_a = \\frac{1}{2}\\eta_a F v_e"
+      ],
+      "keywords": [
+        "ジェット音響パワー",
+        "音響効率",
+        "リフトオフ音響",
+        "ライトヒル8乗則"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "vibroacoustics"
+      ]
+    },
+    {
+      "id": "aerosp.psd_srs.n02_fairing_acoustic_transmission",
+      "short_code": "VA02",
+      "kind": "theorem_formula",
+      "title": "フェアリング内部音圧レベルと音響透過損失（質量則）",
+      "summary": "フェアリング外板の面密度による音響透過損失（質量則）から内部音圧レベルを算定する関係式。",
+      "canonical_latex": "L_{p,\\mathrm{in}} = L_{p,\\mathrm{ext}} - \\mathrm{TL},\\quad \\mathrm{TL} = 10\\log_{10}\\!\\left[1 + \\left(\\frac{\\omega m_s}{2\\rho_0 c_0}\\right)^2\\right]",
+      "aliases_latex": [
+        "\\mathrm{TL} \\approx 20\\log_{10}\\!\\left(\\frac{\\omega m_s}{2\\rho_0 c_0}\\right)"
+      ],
+      "keywords": [
+        "透過損失",
+        "質量則",
+        "フェアリング内部音響",
+        "音圧レベル"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "vibroacoustics"
+      ]
+    },
+    {
+      "id": "aerosp.psd_srs.n03_sdof_damped_frf",
+      "short_code": "VA03",
+      "kind": "definition",
+      "title": "1自由度粘性減衰振動系の基礎励振と周波数応答関数",
+      "summary": "基礎加速度励振を受ける1自由度粘性減衰系の運動方程式と絶対加速度の周波数応答関数（FRF）およびQ値の定義。",
+      "canonical_latex": "\\ddot{u} + 2\\zeta\\omega_n\\dot{u} + \\omega_n^2 u = -\\ddot{y},\\quad H(\\omega) = \\frac{1 + i 2\\zeta(\\omega/\\omega_n)}{1 - (\\omega/\\omega_n)^2 + i 2\\zeta(\\omega/\\omega_n)},\\quad Q = \\frac{1}{2\\zeta}",
+      "aliases_latex": [
+        "|H(r)|^2 = \\frac{1 + 4\\zeta^2 r^2}{(1 - r^2)^2 + 4\\zeta^2 r^2}"
+      ],
+      "keywords": [
+        "1自由度振動系",
+        "周波数応答関数",
+        "減衰比",
+        "Q値"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "structural_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.psd_srs.n04_random_vibration_psd_response",
+      "short_code": "VA04",
+      "kind": "definition",
+      "title": "ランダム振動のパワースペクトル密度（PSD）入出力関係とRMS値",
+      "summary": "定常エルゴード確率過程としてのランダム振動における入力PSDと出力PSDの線形伝達関係および二乗平均平方根（RMS）加速度の定義。",
+      "canonical_latex": "G_{\\mathrm{out}}(f) = |H(f)|^2 G_{\\mathrm{in}}(f),\\qquad g_{\\mathrm{rms}} = \\sqrt{\\int_{0}^{\\infty} G_{\\mathrm{out}}(f)\\,df}",
+      "aliases_latex": [
+        "\\sigma_a^2 = \\int_0^\\infty |H(f)|^2 G_{\\mathrm{in}}(f)\\,df"
+      ],
+      "keywords": [
+        "ランダム振動",
+        "PSD",
+        "パワースペクトル密度",
+        "GRMS"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "structural_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.psd_srs.n05_miles_equation",
+      "short_code": "VA05",
+      "kind": "theorem_formula",
+      "title": "マイルズの式（Miles' Equation）によるRMS加速度応答",
+      "summary": "広帯域ランダム励振を受ける小減衰1自由度系のRMS加速度応答を固有振動数・Q値・入力PSD値から評価する閉形式公式。",
+      "canonical_latex": "g_{\\mathrm{rms}} = \\sqrt{\\frac{\\pi}{2} f_n Q\\, G_{\\mathrm{in}}(f_n)} = \\sqrt{\\frac{\\pi}{4\\zeta} f_n G_{\\mathrm{in}}(f_n)}",
+      "aliases_latex": [
+        "g_{\\mathrm{rms}} = \\sqrt{\\frac{\\pi}{2} f_n Q G_{\\mathrm{in}}}"
+      ],
+      "keywords": [
+        "マイルズの式",
+        "ランダム振動応答",
+        "RMS加速度",
+        "ホワイトノイズ近似"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "structural_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.psd_srs.n06_shock_response_spectrum",
+      "short_code": "VA06",
+      "kind": "definition",
+      "title": "衝撃応答スペクトル（SRS）の定義",
+      "summary": "火工品作動等による過渡衝撃入力に対し、固有振動数ごとの1自由度系が示す最大絶対加速度応答を整理したスペクトルの定義。",
+      "canonical_latex": "\\mathrm{SRS}(f_n, \\zeta) := \\max_{t \\ge 0} |a_{\\mathrm{abs}}(t; f_n, \\zeta)|,\\quad a_{\\mathrm{abs}}(t) = -\\omega_n^2 u(t) - 2\\zeta\\omega_n\\dot{u}(t)",
+      "aliases_latex": [
+        "\\mathrm{SRS}(f_n) = \\max_t |\\ddot{u}(t) + \\ddot{y}(t)|"
+      ],
+      "keywords": [
+        "SRS",
+        "衝撃応答スペクトル",
+        "パイロショック",
+        "最大絶対加速度"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "structural_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.psd_srs.n07_srs_pseudo_velocity_duhamel",
+      "short_code": "VA07",
+      "kind": "theorem_formula",
+      "title": "デュアメル積分によるSRSの擬似速度表現",
+      "summary": "デュアメル積分によって相対変位応答を表し、小減衰条件下でSRSと擬似速度の対応関係を導く定理。",
+      "canonical_latex": "u(t) = -\\frac{1}{\\omega_d}\\int_{0}^{t} \\ddot{y}(\\tau)e^{-\\zeta\\omega_n(t-\\tau)}\\sin\\big(\\omega_d(t-\\tau)\\big)\\,d\\tau,\\quad v_{\\mathrm{pv}}(f_n) := \\omega_n u_{\\max} \\approx \\frac{\\mathrm{SRS}(f_n)}{2\\pi f_n}",
+      "aliases_latex": [
+        "v_{\\mathrm{pv}} \\approx \\frac{\\mathrm{SRS}}{\\omega_n}"
+      ],
+      "keywords": [
+        "デュアメル積分",
+        "擬似速度",
+        "SRS",
+        "衝撃損傷評価"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "structural_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.psd_srs.n08_fairing_separation_dynamics",
+      "short_code": "VA08",
+      "kind": "theorem_formula",
+      "title": "フェアリング分離の剛体並進・回転結合運動方程式",
+      "summary": "分離機構の推力およびオフセットモーメント・ヒンジ抵抗を受けるフェアリング半殻の並進・回転運動方程式と分離エネルギー則。",
+      "canonical_latex": "m_f \\ddot{x}_c = F_{\\mathrm{sep}}(t),\\quad I_f \\ddot{\\theta} = F_{\\mathrm{sep}}(t)\\,d_{\\mathrm{off}} - M_{\\mathrm{hinge}}(\\theta),\\quad v_{\\mathrm{rel}} = \\sqrt{\\frac{2 E_{\\mathrm{sep}}}{m_{\\mathrm{eff}}}}",
+      "aliases_latex": [
+        "I_f \\ddot{\\theta} = \\tau_{\\mathrm{sep}} - M_{\\mathrm{hinge}}"
+      ],
+      "keywords": [
+        "フェアリング分離",
+        "剛体運動",
+        "ヒンジモーメント",
+        "分離速度"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "launch_dynamics"
+      ]
+    },
+    {
+      "id": "aerosp.psd_srs.n09_fairing_clearance_envelope",
+      "short_code": "VA09",
+      "kind": "theorem_formula",
+      "title": "機体加速度下のフェアリング分離クリアランス条件",
+      "summary": "分離中のフェアリング半殻の並進・回転およびロケット機体の横方向加速度を考慮した最小クリアランス保証条件。",
+      "canonical_latex": "r_{\\mathrm{min}}(t) = x_c(t) - L_{\\mathrm{tip}}\\sin\\theta(t) - \\frac{1}{2}a_{\\mathrm{lat}} t^2 > \\delta_{\\mathrm{req}}",
+      "aliases_latex": [
+        "x_c(t) - L_{\\mathrm{tip}}\\sin\\theta(t) > \\delta_{\\mathrm{req}} + \\frac{1}{2}a_{\\mathrm{lat}} t^2"
+      ],
+      "keywords": [
+        "クリアランス包絡",
+        "フェアリング分離",
+        "干渉回避",
+        "横方向加速度"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "launch_dynamics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv_va01_jet_acoustic_power",
+      "target_node_id": "aerosp.psd_srs.n01_jet_acoustic_power",
+      "route_kind": "inductive",
+      "title": "推力・排気速度と流体エネルギー流束からのジェット音響パワー定式化",
+      "premise_node_ids": [
+        "eng.rock.n01_rocket_thrust_equation",
+        "eng.acst.n01_fluid_adiabatic_boundary"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "最適膨張近傍で推力の主成分が運動量推力 F = \\dot{m} v_e で近似できる",
+        "ジェットの機械的パワーに対する音響放射効率 \\eta_a が実験的に与えられる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_{\\mathrm{jet}} = \\frac{1}{2}\\dot{m} v_e^2 = \\frac{1}{2} F v_e",
+          "to_latex": "W_a = \\eta_a \\frac{1}{2} F v_e = \\frac{\\eta_a}{2} \\dot{m} v_e^2,\\quad L_W = 10\\log_{10}\\!\\left(\\frac{W_a}{W_0}\\right)\\;\\text{dB}",
+          "operation_label": "音響効率とデシベル定義の適用",
+          "explanation": "排気ジェットの運動エネルギー流束に経験的音響効率を乗じて音響パワーを求め、基準パワー W_0=10^{-12}\\text{ W} に対する対数表示で音響パワーレベルを定義する。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "eng.rock.n01_rocket_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_va02_fairing_transmission",
+      "target_node_id": "aerosp.psd_srs.n02_fairing_acoustic_transmission",
+      "route_kind": "deductive",
+      "title": "インテンシティ透過率からのフェアリング音響透過損失式導出",
+      "premise_node_ids": [
+        "aerosp.psd_srs.n01_jet_acoustic_power",
+        "eng.acst.n01_fluid_adiabatic_boundary",
+        "eng.ant.n01_poynting_isotropic_flux"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "質量制御領域においてフェアリング壁は面密度 m_s の剛体板として振る舞う",
+        "垂直入射または拡散音場等価のインピーダンスモデルを適用する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "I_{\\mathrm{in}} = \\tau(\\omega) I_{\\mathrm{ext}},\\quad \\tau(\\omega) = \\frac{1}{1 + \\left(\\frac{\\omega m_s}{2\\rho_0 c_0}\\right)^2}",
+          "to_latex": "L_{p,\\mathrm{in}} = L_{p,\\mathrm{ext}} - \\mathrm{TL},\\quad \\mathrm{TL} = 10\\log_{10}\\!\\left[1 + \\left(\\frac{\\omega m_s}{2\\rho_0 c_0}\\right)^2\\right]",
+          "operation_label": "音響インテンシティ比のデシベル変換",
+          "explanation": "壁面を透過する音響インテンシティ比から音圧レベル差としての透過損失を導出する。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n01_jet_acoustic_power",
+            "eng.acst.n01_fluid_adiabatic_boundary",
+            "eng.ant.n01_poynting_isotropic_flux"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_db_conversion",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "I_{\\mathrm{in}} = \\tau(\\omega) I_{\\mathrm{ext}},\\quad \\tau(\\omega) = \\frac{1}{1 + \\left(\\frac{\\omega m_s}{2\\rho_0 c_0}\\right)^2}",
+          "to_latex": "10\\log_{10}\\!\\left(\\frac{I_{\\mathrm{in}}}{I_{\\mathrm{ref}}}\\right) = 10\\log_{10}\\!\\left(\\frac{I_{\\mathrm{ext}}}{I_{\\mathrm{ref}}}\\right) + 10\\log_{10}\\tau(\\omega)",
+          "operation_label": "基準値による正規化と対数変換",
+          "explanation": "両辺を基準音響インテンシティで除し、常用対数をとって10倍することで音圧レベルの和の形にする。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_tl_definition",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "10\\log_{10}\\!\\left(\\frac{I_{\\mathrm{in}}}{I_{\\mathrm{ref}}}\\right) = 10\\log_{10}\\!\\left(\\frac{I_{\\mathrm{ext}}}{I_{\\mathrm{ref}}}\\right) + 10\\log_{10}\\tau(\\omega)",
+          "to_latex": "L_{p,\\mathrm{in}} = L_{p,\\mathrm{ext}} - \\mathrm{TL},\\quad \\mathrm{TL} = 10\\log_{10}\\!\\left[1 + \\left(\\frac{\\omega m_s}{2\\rho_0 c_0}\\right)^2\\right]",
+          "operation_label": "透過損失の定義代入",
+          "explanation": "透過損失 TL := -10 log10(tau) を導入し、フェアリング内外の音圧レベル関係式を得る。",
+          "used_node_ids": [
+            "eng.acst.n01_fluid_adiabatic_boundary"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_va03_sdof_frf",
+      "target_node_id": "aerosp.psd_srs.n03_sdof_damped_frf",
+      "route_kind": "reformulation",
+      "title": "ニュートン運動方程式からの1自由度基礎励振FRFの定式化",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "構造減衰を等価粘性減衰比 \\zeta でモデル化する",
+        "調和定常応答 u(t) = U e^{i\\omega t} を仮定する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m(\\ddot{u} + \\ddot{y}) = -c\\dot{u} - k u",
+          "to_latex": "\\ddot{u} + 2\\zeta\\omega_n\\dot{u} + \\omega_n^2 u = -\\ddot{y},\\quad H(\\omega) = \\frac{1 + i 2\\zeta(\\omega/\\omega_n)}{1 - (\\omega/\\omega_n)^2 + i 2\\zeta(\\omega/\\omega_n)},\\quad Q = \\frac{1}{2\\zeta}",
+          "operation_label": "無次元パラメータ導入と周波数領域変換",
+          "explanation": "固有角振動数 \\omega_n=\\sqrt{k/m} と減衰比 \\zeta=c/(2m\\omega_n) を定義し、絶対加速度伝達率としての周波数応答関数 H(\\omega) および共振倍率 Q を定義する。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_va04_random_psd",
+      "target_node_id": "aerosp.psd_srs.n04_random_vibration_psd_response",
+      "route_kind": "reformulation",
+      "title": "線形系の周波数応答関数と確率過程のPSD入出力関係の定義",
+      "premise_node_ids": [
+        "aerosp.psd_srs.n03_sdof_damped_frf",
+        "math.prob.pr01_kolmogorov_axioms"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "入力加速度は平均零の定常エルゴード確率過程である",
+        "系は線形時不変である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sigma_a^2 = \\mathbb{E}[a_{\\mathrm{abs}}^2(t)] = \\int_{0}^{\\infty} G_{\\mathrm{out}}(f)\\,df",
+          "to_latex": "G_{\\mathrm{out}}(f) = |H(f)|^2 G_{\\mathrm{in}}(f),\\qquad g_{\\mathrm{rms}} = \\sqrt{\\int_{0}^{\\infty} G_{\\mathrm{out}}(f)\\,df}",
+          "operation_label": "ウィーナー＝ヒンチン関係と伝達関数の適用",
+          "explanation": "線形系の自己相関関数のフーリエ変換（PSD）が周波数応答関数の絶対値二乗で変換される性質から出力PSDを定義し、分散の平方根としてRMS値を定める。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n03_sdof_damped_frf",
+            "math.prob.pr01_kolmogorov_axioms"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_va05_miles_equation",
+      "target_node_id": "aerosp.psd_srs.n05_miles_equation",
+      "route_kind": "deductive",
+      "title": "PSD応答積分のホワイトノイズ近似によるマイルズの式の導出",
+      "premise_node_ids": [
+        "aerosp.psd_srs.n03_sdof_damped_frf",
+        "aerosp.psd_srs.n04_random_vibration_psd_response"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "assumptions": [
+        "入力PSD G_in(f) は共振周波数 f_n 近傍の半値幅内でほぼ一定である",
+        "構造減衰は小さい（\\zeta \\ll 1、すなわち Q \\gg 1）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "g_{\\mathrm{rms}} = \\sqrt{\\int_{0}^{\\infty} |H(f)|^2 G_{\\mathrm{in}}(f)\\,df}",
+          "to_latex": "g_{\\mathrm{rms}} = \\sqrt{\\frac{\\pi}{2} f_n Q\\, G_{\\mathrm{in}}(f_n)} = \\sqrt{\\frac{\\pi}{4\\zeta} f_n G_{\\mathrm{in}}(f_n)}",
+          "operation_label": "共振近傍定数近似と留数積分による評価",
+          "explanation": "入力PSDを共振周波数での値で代表させて積分の外に出し、FRF二乗積分の解析値を用いてマイルズの式を得る。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n03_sdof_damped_frf",
+            "aerosp.psd_srs.n04_random_vibration_psd_response",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_white_noise_approx",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_{\\mathrm{rms}} = \\sqrt{\\int_{0}^{\\infty} |H(f)|^2 G_{\\mathrm{in}}(f)\\,df}",
+          "to_latex": "g_{\\mathrm{rms}} \\approx \\sqrt{G_{\\mathrm{in}}(f_n) \\int_{0}^{\\infty} |H(f)|^2\\,df}",
+          "operation_label": "ホワイトノイズ近似による積分の簡略化",
+          "explanation": "共振ピークが鋭いため、積分への寄与が f_n 近傍に集中するとみなし、G_in(f) を G_in(f_n) で置き換える。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n04_random_vibration_psd_response"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_dimless_substitution",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_{\\mathrm{rms}} \\approx \\sqrt{G_{\\mathrm{in}}(f_n) \\int_{0}^{\\infty} |H(f)|^2\\,df}",
+          "to_latex": "g_{\\mathrm{rms}} \\approx \\sqrt{G_{\\mathrm{in}}(f_n) f_n \\int_{0}^{\\infty} \\frac{1 + 4\\zeta^2 r^2}{(1 - r^2)^2 + 4\\zeta^2 r^2}\\,dr}",
+          "operation_label": "無次元周波数比による置換積分",
+          "explanation": "周波数比 r = f / f_n で置換積分（df = f_n dr）し、1自由度系のFRF絶対値二乗の表式を代入する。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n03_sdof_damped_frf",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_residue_eval",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "g_{\\mathrm{rms}} \\approx \\sqrt{G_{\\mathrm{in}}(f_n) f_n \\int_{0}^{\\infty} \\frac{1 + 4\\zeta^2 r^2}{(1 - r^2)^2 + 4\\zeta^2 r^2}\\,dr}",
+          "to_latex": "g_{\\mathrm{rms}} = \\sqrt{\\frac{\\pi}{2} f_n Q\\, G_{\\mathrm{in}}(f_n)} = \\sqrt{\\frac{\\pi}{4\\zeta} f_n G_{\\mathrm{in}}(f_n)}",
+          "operation_label": "有理関数積分の評価とQ値代入",
+          "explanation": "積分値 \\pi(1+4\\zeta^2)/(4\\zeta) に小減衰近似 \\zeta \\ll 1 および Q = 1/(2\\zeta) を適用してマイルズの式を得る。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n03_sdof_damped_frf"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_va06_srs_definition",
+      "target_node_id": "aerosp.psd_srs.n06_shock_response_spectrum",
+      "route_kind": "reformulation",
+      "title": "1自由度振動系の最大絶対加速度応答としてのSRS定義",
+      "premise_node_ids": [
+        "aerosp.psd_srs.n03_sdof_damped_frf"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "標準的な衝撃評価では Q = 10（\\zeta = 0.05）を用いることが多い",
+        "初期状態は静止（u(0)=0, \\dot{u}(0)=0）とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "a_{\\mathrm{abs}}(t) = \\ddot{u}(t) + \\ddot{y}(t) = -\\omega_n^2 u(t) - 2\\zeta\\omega_n\\dot{u}(t)",
+          "to_latex": "\\mathrm{SRS}(f_n, \\zeta) := \\max_{t \\ge 0} |a_{\\mathrm{abs}}(t; f_n, \\zeta)|,\\quad a_{\\mathrm{abs}}(t) = -\\omega_n^2 u(t) - 2\\zeta\\omega_n\\dot{u}(t)",
+          "operation_label": "時間領域最大値演算子の適用",
+          "explanation": "1自由度系の運動方程式から得られる絶対加速度時刻歴に対し、固有振動数 f_n を掃引したときの絶対値最大値を衝撃応答スペクトル（SRS）として定義する。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n03_sdof_damped_frf"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_va07_srs_duhamel",
+      "target_node_id": "aerosp.psd_srs.n07_srs_pseudo_velocity_duhamel",
+      "route_kind": "deductive",
+      "title": "デュアメル積分によるSRSの擬似速度近似式の導出",
+      "premise_node_ids": [
+        "aerosp.psd_srs.n06_shock_response_spectrum"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "初期変位・初期速度は零である",
+        "減衰比は十分小さい（\\zeta \\ll 1）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{u} + 2\\zeta\\omega_n\\dot{u} + \\omega_n^2 u = -\\ddot{y}(t),\\quad u(0)=\\dot{u}(0)=0",
+          "to_latex": "u(t) = -\\frac{1}{\\omega_d}\\int_{0}^{t} \\ddot{y}(\\tau)e^{-\\zeta\\omega_n(t-\\tau)}\\sin\\big(\\omega_d(t-\\tau)\\big)\\,d\\tau,\\quad v_{\\mathrm{pv}}(f_n) := \\omega_n u_{\\max} \\approx \\frac{\\mathrm{SRS}(f_n)}{2\\pi f_n}",
+          "operation_label": "インパルス応答の畳み込みと小減衰近似",
+          "explanation": "デュアメル積分で相対変位解を表し、小減衰条件下で絶対加速度最大値と擬似速度の対応関係を導く。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n06_shock_response_spectrum",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_impulse_resp",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ddot{u} + 2\\zeta\\omega_n\\dot{u} + \\omega_n^2 u = -\\ddot{y}(t),\\quad u(0)=\\dot{u}(0)=0",
+          "to_latex": "h_{\\mathrm{imp}}(t) = \\frac{1}{\\omega_d}e^{-\\zeta\\omega_n t}\\sin(\\omega_d t)\\quad (\\omega_d := \\omega_n\\sqrt{1-\\zeta^2})",
+          "operation_label": "減衰自由振動のインパルス応答導出",
+          "explanation": "1自由度粘性減衰系の単位インパルス入力に対する応答関数を求める。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n06_shock_response_spectrum"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_convolution",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "h_{\\mathrm{imp}}(t) = \\frac{1}{\\omega_d}e^{-\\zeta\\omega_n t}\\sin(\\omega_d t)\\quad (\\omega_d := \\omega_n\\sqrt{1-\\zeta^2})",
+          "to_latex": "u(t) = -\\frac{1}{\\omega_d}\\int_{0}^{t} \\ddot{y}(\\tau)e^{-\\zeta\\omega_n(t-\\tau)}\\sin\\big(\\omega_d(t-\\tau)\\big)\\,d\\tau",
+          "operation_label": "デュアメル積分による重ね合わせ",
+          "explanation": "線形系の重ね合わせの原理より、任意時刻歴入力 -\\ddot{y}(\\tau) とインパルス応答の畳み込み積分を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s4_pseudo_vel",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u(t) = -\\frac{1}{\\omega_d}\\int_{0}^{t} \\ddot{y}(\\tau)e^{-\\zeta\\omega_n(t-\\tau)}\\sin\\big(\\omega_d(t-\\tau)\\big)\\,d\\tau",
+          "to_latex": "u(t) = -\\frac{1}{\\omega_d}\\int_{0}^{t} \\ddot{y}(\\tau)e^{-\\zeta\\omega_n(t-\\tau)}\\sin\\big(\\omega_d(t-\\tau)\\big)\\,d\\tau,\\quad v_{\\mathrm{pv}}(f_n) := \\omega_n u_{\\max} \\approx \\frac{\\mathrm{SRS}(f_n)}{2\\pi f_n}",
+          "operation_label": "擬似速度の定義と小減衰近似の適用",
+          "explanation": "小減衰では a_abs \\approx -\\omega_n^2 u となるため、SRS \\approx \\omega_n^2 u_max = \\omega_n v_pv より擬似速度との換算式を得る。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n06_shock_response_spectrum"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_va08_fairing_separation",
+      "target_node_id": "aerosp.psd_srs.n08_fairing_separation_dynamics",
+      "route_kind": "deductive",
+      "title": "剛体運動方程式からのフェアリング分離動力学モデル導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "astro.att.n02_euler_rigid_body_equations"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "フェアリング半殻は分離中に剛体として近似できる",
+        "空気力は高高度真空中での分離を想定し無視する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m_f \\ddot{\\mathbf{r}}_c = \\mathbf{F}_{\\mathrm{sep}},\\quad \\mathbf{I}_f\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}_f\\boldsymbol{\\omega}) = \\boldsymbol{\\tau}_{\\mathrm{sep}}",
+          "to_latex": "m_f \\ddot{x}_c = F_{\\mathrm{sep}}(t),\\quad I_f \\ddot{\\theta} = F_{\\mathrm{sep}}(t)\\,d_{\\mathrm{off}} - M_{\\mathrm{hinge}}(\\theta),\\quad v_{\\mathrm{rel}} = \\sqrt{\\frac{2 E_{\\mathrm{sep}}}{m_{\\mathrm{eff}}}}",
+          "operation_label": "平面運動への縮約とエネルギー保存則の適用",
+          "explanation": "3次元剛体方程式を分離面内の並進・回転に縮約し、分離エネルギーから相対分離速度を導く。",
+          "used_node_ids": [
+            "astro.att.n02_euler_rigid_body_equations",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_planar_reduction",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m_f \\ddot{\\mathbf{r}}_c = \\mathbf{F}_{\\mathrm{sep}},\\quad \\mathbf{I}_f\\dot{\\boldsymbol{\\omega}} + \\boldsymbol{\\omega}\\times(\\mathbf{I}_f\\boldsymbol{\\omega}) = \\boldsymbol{\\tau}_{\\mathrm{sep}}",
+          "to_latex": "m_f \\ddot{x}_c = F_{\\mathrm{sep}}(t),\\quad I_f \\ddot{\\theta} = F_{\\mathrm{sep}}(t)\\,d_{\\mathrm{off}} - M_{\\mathrm{hinge}}(\\theta)",
+          "operation_label": "主軸平面運動への縮約とトルク代入",
+          "explanation": "分離方向 x_c とピッチ角 \\theta の平面運動に縮約し、推力作用点オフセットによるモーメントとヒンジ反力を代入する。",
+          "used_node_ids": [
+            "astro.att.n02_euler_rigid_body_equations",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_energy_balance",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m_f \\ddot{x}_c = F_{\\mathrm{sep}}(t),\\quad I_f \\ddot{\\theta} = F_{\\mathrm{sep}}(t)\\,d_{\\mathrm{off}} - M_{\\mathrm{hinge}}(\\theta)",
+          "to_latex": "m_f \\ddot{x}_c = F_{\\mathrm{sep}}(t),\\quad I_f \\ddot{\\theta} = F_{\\mathrm{sep}}(t)\\,d_{\\mathrm{off}} - M_{\\mathrm{hinge}}(\\theta),\\quad v_{\\mathrm{rel}} = \\sqrt{\\frac{2 E_{\\mathrm{sep}}}{m_{\\mathrm{eff}}}}",
+          "operation_label": "仕事・エネルギー定理による分離速度の算出",
+          "explanation": "スプリング等に蓄えられた有効分離エネルギー E_sep が相対運動エネルギーに変換される関係から分離速度を求める。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv_va09_fairing_clearance",
+      "target_node_id": "aerosp.psd_srs.n09_fairing_clearance_envelope",
+      "route_kind": "deductive",
+      "title": "フェアリング分離運動と機体横加速度からの最小クリアランス条件導出",
+      "premise_node_ids": [
+        "aerosp.psd_srs.n08_fairing_separation_dynamics",
+        "aerosp.launch.n01_variable_mass_rocket_eom"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "分離中の機体横加速度 a_lat は一定上限値で包絡評価する",
+        "フェアリング先端の後退量を幾何学的に L_tip sin(\\theta) で評価する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "r_{\\mathrm{crit}}(t) = x_c(t) - L_{\\mathrm{tip}}\\sin\\theta(t) + x_{\\mathrm{rocket}}(t)",
+          "to_latex": "r_{\\mathrm{min}}(t) = x_c(t) - L_{\\mathrm{tip}}\\sin\\theta(t) - \\frac{1}{2}a_{\\mathrm{lat}} t^2 > \\delta_{\\mathrm{req}}",
+          "operation_label": "機体横変位の導入と安全余裕判定",
+          "explanation": "フェアリング重心移動と回転による先端接近量に機体の横加速度による相対接近を加え、必要クリアランス条件を導く。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom",
+            "aerosp.psd_srs.n08_fairing_separation_dynamics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_lateral_accel",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_{\\mathrm{crit}}(t) = x_c(t) - L_{\\mathrm{tip}}\\sin\\theta(t) + x_{\\mathrm{rocket}}(t)",
+          "to_latex": "r_{\\mathrm{min}}(t) = x_c(t) - L_{\\mathrm{tip}}\\sin\\theta(t) - \\frac{1}{2}a_{\\mathrm{lat}} t^2",
+          "operation_label": "ロケット横加速度による最悪変位の代入",
+          "explanation": "ロケットの横方向加速度 a_lat による最悪側への相対変位 -1/2 a_lat t^2 を代入する。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_clearance_ineq",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "r_{\\mathrm{min}}(t) = x_c(t) - L_{\\mathrm{tip}}\\sin\\theta(t) - \\frac{1}{2}a_{\\mathrm{lat}} t^2",
+          "to_latex": "r_{\\mathrm{min}}(t) = x_c(t) - L_{\\mathrm{tip}}\\sin\\theta(t) - \\frac{1}{2}a_{\\mathrm{lat}} t^2 > \\delta_{\\mathrm{req}}",
+          "operation_label": "非干渉クリアランス下限の適用",
+          "explanation": "弾性変形量や製造公差を含む必要余裕 \\delta_req を全時刻で上回ることを設計条件とする。",
+          "used_node_ids": [
+            "aerosp.psd_srs.n08_fairing_separation_dynamics"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,803 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_space_environment_drag",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "大気モデルと宇宙環境：標準大気ISA・低軌道大気抵抗による軌道寿命・バンアレン帯磁気ミラー捕捉と太陽放射圧",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『大気モデルと宇宙環境：標準大気ISA・低軌道大気抵抗による軌道寿命・バンアレン帯磁気ミラー捕捉と太陽放射圧』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.env.n01_isa_hydrostatic_geopotential",
+      "short_code": "ENV01",
+      "kind": "theorem_formula",
+      "title": "大気の静水圧平衡とジオポテンシャル高度",
+      "summary": "重力場中の大気微小要素の力の釣合いと逆二乗重力を吸収するジオポテンシャル高度の変換により、標準大気ISAの基礎となる静水圧平衡式を与える。",
+      "canonical_latex": "\\frac{dp}{dh} = -\\rho g(h),\\quad H := \\frac{R_E h}{R_E + h} \\implies \\frac{dp}{dH} = -\\rho g_0",
+      "aliases_latex": [
+        "dp = -\\rho g_0\\,dH",
+        "H = \\frac{R_E h}{R_E + h}"
+      ],
+      "keywords": [
+        "静水圧平衡",
+        "ジオポテンシャル高度",
+        "標準大気",
+        "ISA"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "atmospheric_physics"
+      ]
+    },
+    {
+      "id": "aerosp.env.n02_isa_troposphere_stratosphere",
+      "short_code": "ENV02",
+      "kind": "theorem_formula",
+      "title": "国際標準大気（ISA）の温度勾配層・等温層の圧力高度分布",
+      "summary": "ジオポテンシャル高度に対する気温減率が一定の対流圏・中間圏と、気温一定の等温成層圏における圧力・高度関係式を与える。",
+      "canonical_latex": "\\frac{p}{p_b} = \\left(1 + \\frac{L(H - H_b)}{T_b}\\right)^{-\\frac{g_0}{R_{\\mathrm{sp}} L}}\\; (L \\neq 0),\\qquad \\frac{p}{p_b} = \\exp\\!\\left(-\\frac{g_0(H - H_b)}{R_{\\mathrm{sp}} T_b}\\right)\\; (L = 0)",
+      "aliases_latex": [
+        "\\frac{p}{p_b} = \\left(\\frac{T}{T_b}\\right)^{-\\frac{g_0}{R_{\\mathrm{sp}} L}}"
+      ],
+      "keywords": [
+        "国際標準大気",
+        "ISA",
+        "気温減率",
+        "対流圏",
+        "成層圏"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "atmospheric_physics"
+      ]
+    },
+    {
+      "id": "aerosp.env.n03_exponential_scale_height_atm",
+      "short_code": "ENV03",
+      "kind": "theorem_formula",
+      "title": "指数関数大気モデルとスケールハイト",
+      "summary": "局所等温・一定重力加速度の近似のもとで、大気密度が高度に対して指数関数的に減衰するモデルと特性尺度であるスケールハイトを定義する。",
+      "canonical_latex": "\\rho(h) = \\rho_0 \\exp\\!\\left(-\\frac{h - h_0}{H_s}\\right),\\qquad H_s := \\frac{R_{\\mathrm{sp}} T}{g_0}",
+      "aliases_latex": [
+        "\\rho(h) = \\rho_0 e^{-(h-h_0)/H_s}"
+      ],
+      "keywords": [
+        "スケールハイト",
+        "指数関数大気",
+        "大気密度モデル"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.env.n04_ballistic_coefficient_drag",
+      "short_code": "ENV04",
+      "kind": "definition",
+      "title": "弾道係数と宇宙機の大気抵抗加速度",
+      "summary": "宇宙機の質量・抗力係数・代表断面積をまとめた弾道係数および希薄大気中での抗力加速度ベクトルを定義する。",
+      "canonical_latex": "B_c := \\frac{m}{C_D A},\\qquad \\mathbf{a}_D = -\\frac{1}{2}\\rho \\frac{C_D A}{m} v_{\\mathrm{rel}}\\mathbf{v}_{\\mathrm{rel}} = -\\frac{\\rho v_{\\mathrm{rel}}\\mathbf{v}_{\\mathrm{rel}}}{2 B_c}",
+      "aliases_latex": [
+        "\\beta_{\\mathrm{ball}} = \\frac{C_D A}{m} = \\frac{1}{B_c}"
+      ],
+      "keywords": [
+        "弾道係数",
+        "大気抵抗",
+        "低軌道",
+        "抗力係数"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.env.n05_circular_orbit_drag_decay_rate",
+      "short_code": "ENV05",
+      "kind": "theorem_formula",
+      "title": "大気抵抗による円軌道の軌道長半径・周期減衰率",
+      "summary": "大気抵抗が軌道エネルギーを散逸させることによる円軌道の軌道長半径および軌道周期の時間変化率を与える。",
+      "canonical_latex": "\\frac{da}{dt} = -\\frac{\\rho \\sqrt{\\mu a}}{B_c},\\qquad \\frac{dT_{\\mathrm{orb}}}{dt} = -\\frac{3\\pi \\rho a}{B_c}",
+      "aliases_latex": [
+        "\\dot{a} = -\\frac{\\rho v a}{B_c}"
+      ],
+      "keywords": [
+        "軌道減衰",
+        "軌道エネルギー散逸",
+        "大気抵抗",
+        "LEO"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.env.n06_leo_orbital_lifetime_estimate",
+      "short_code": "ENV06",
+      "kind": "theorem_formula",
+      "title": "指数関数大気における低軌道衛星の軌道寿命公式",
+      "summary": "指数関数大気密度モデルと円軌道減衰率を積分することで、低軌道（LEO）宇宙機が再突入高度まで降下する概算軌道寿命を導出する。",
+      "canonical_latex": "\\tau_{\\mathrm{life}} \\approx \\frac{B_c H_s}{\\rho(h_0)\\sqrt{\\mu r_0}}\\left[1 - \\exp\\!\\left(-\\frac{h_0 - h_f}{H_s}\\right)\\right] \\approx \\frac{B_c H_s}{\\rho(h_0)\\sqrt{\\mu r_0}}",
+      "aliases_latex": [
+        "\\tau_{\\mathrm{life}} \\approx \\frac{H_s}{|\\dot{h}_0|}"
+      ],
+      "keywords": [
+        "軌道寿命",
+        "低軌道",
+        "再突入",
+        "大気抵抗"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "orbital_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.env.n07_magnetic_moment_adiabatic_invariant",
+      "short_code": "ENV07",
+      "kind": "theorem_formula",
+      "title": "荷電粒子の磁気モーメント（第1断熱不変量）とピッチ角保存",
+      "summary": "緩やかに変化する磁場中を旋回運動する荷電粒子において、ラーモア円軌道が囲む磁束の保存から磁気モーメントとピッチ角関係式が保存されることを示す。",
+      "canonical_latex": "\\mu_m := \\frac{m v_\\perp^2}{2 B} = \\text{const.},\\qquad \\frac{\\sin^2\\alpha}{B} = \\text{const.}\\quad \\left(\\sin\\alpha := \\frac{v_\\perp}{v}\\right)",
+      "aliases_latex": [
+        "\\frac{v_\\perp^2}{B} = \\text{const.}"
+      ],
+      "keywords": [
+        "磁気モーメント",
+        "第1断熱不変量",
+        "ピッチ角",
+        "ローレンツ力"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "space_environment",
+        "plasma_physics"
+      ]
+    },
+    {
+      "id": "aerosp.env.n08_magnetic_mirror_trapping_condition",
+      "short_code": "ENV08",
+      "kind": "theorem_formula",
+      "title": "バンアレン帯の磁気ミラー捕捉条件とロスコーン",
+      "summary": "地球双極子磁場中における磁気モーメント保存則から、高緯度側の磁気ミラー点で反射して放射線帯（バンアレン帯）に捕捉される赤道面ピッチ角の臨界条件を与える。",
+      "canonical_latex": "\\sin^2\\alpha_{\\mathrm{eq}} \\ge \\frac{B_{\\mathrm{eq}}}{B_{\\mathrm{mir}}} = \\frac{\\cos^6\\lambda_m}{\\sqrt{4 - 3\\cos^2\\lambda_m}}",
+      "aliases_latex": [
+        "\\sin\\alpha_{\\mathrm{loss}} = \\sqrt{\\frac{B_{\\mathrm{eq}}}{B_{\\mathrm{mir}}}}"
+      ],
+      "keywords": [
+        "バンアレン帯",
+        "磁気ミラー",
+        "ロスコーン",
+        "双極子磁場"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "space_environment",
+        "plasma_physics"
+      ]
+    },
+    {
+      "id": "aerosp.env.n09_solar_radiation_pressure_force",
+      "short_code": "ENV09",
+      "kind": "theorem_formula",
+      "title": "太陽放射圧（SRP）と宇宙機への摂動加速度",
+      "summary": "太陽光のポインティング・フラックスと光子の運動量輸送、および機体表面の反射率係数から、太陽放射圧およびそれによる摂動加速度を与える。",
+      "canonical_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\qquad \\mathbf{a}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R \\frac{A}{m} \\hat{\\mathbf{s}}",
+      "aliases_latex": [
+        "\\mathbf{a}_{\\mathrm{SRP}} = -\\frac{S_0}{c}\\left(\\frac{1\\text{ AU}}{r}\\right)^2 C_R \\frac{A}{m} \\hat{\\mathbf{s}}"
+      ],
+      "keywords": [
+        "太陽放射圧",
+        "SRP",
+        "ソーラーセイル",
+        "軌道摂動"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "space_environment",
+        "orbital_mechanics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "der_env01_hydrostatic_geopotential",
+      "target_node_id": "aerosp.env.n01_isa_hydrostatic_geopotential",
+      "route_kind": "deductive",
+      "title": "鉛直気柱の静的釣合いとジオポテンシャル高度変換による静水圧平衡式の導出",
+      "premise_node_ids": [
+        "math.mech.static_equilibrium_principle",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "大気は静止した連続体流体であり、鉛直方向の粘性応力や加速度は無視できる",
+        "地球重力加速度は球対称逆二乗則に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum F_z = 0\\text{ on fluid element } \\Delta z = dh",
+          "to_latex": "\\frac{dp}{dh} = -\\rho g(h),\\quad H := \\frac{R_E h}{R_E + h} \\implies \\frac{dp}{dH} = -\\rho g_0",
+          "operation_label": "静水圧平衡とジオポテンシャル座標変換の統合",
+          "explanation": "微小気柱の上下面圧力差と重力の釣合いから幾何高度に関する静水圧平衡式を得て、ジオポテンシャル高度を導入することで定数重力加速度による表記へ変換する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.mech.static_equilibrium_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(p + dp)A - pA + \\rho g(h) A\\,dh = 0",
+          "to_latex": "\\frac{dp}{dh} = -\\rho g(h)",
+          "operation_label": "鉛直方向の力の釣合い適用",
+          "explanation": "断面積 A、厚さ dh の微小大気要素に対して静力学の力の釣合いを適用し、両辺を A dh で割る。",
+          "used_node_ids": [
+            "math.mech.static_equilibrium_principle"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dp}{dh} = -\\rho g(h),\\quad g(h) = g_0\\left(\\frac{R_E}{R_E + h}\\right)^2",
+          "to_latex": "\\frac{dp}{dh} = -\\rho g_0\\left(\\frac{R_E}{R_E + h}\\right)^2",
+          "operation_label": "逆二乗重力加速度の代入",
+          "explanation": "海面基準の重力加速度 g_0 と地球半径 R_E を用いて高度 h における重力加速度 g(h) を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dp}{dh} = -\\rho g_0\\left(\\frac{R_E}{R_E + h}\\right)^2,\\quad dH = \\left(\\frac{R_E}{R_E + h}\\right)^2 dh",
+          "to_latex": "\\frac{dp}{dh} = -\\rho g(h),\\quad H := \\frac{R_E h}{R_E + h} \\implies \\frac{dp}{dH} = -\\rho g_0",
+          "operation_label": "ジオポテンシャル高度による変数変換",
+          "explanation": "ジオポテンシャル高度 H の微分関係と連鎖律を適用し、重力加速度を定数 g_0 に吸収させた静水圧平衡式を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_env02_isa_pressure_profiles",
+      "target_node_id": "aerosp.env.n02_isa_troposphere_stratosphere",
+      "route_kind": "deductive",
+      "title": "静水圧平衡式と理想気体状態方程式からのISA圧力高度分布の導出",
+      "premise_node_ids": [
+        "aerosp.env.n01_isa_hydrostatic_geopotential",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.m43_definite_integral_substitution"
+      ],
+      "assumptions": [
+        "大気は乾燥空気の理想気体（比気体定数 R_sp 一定）として振る舞う",
+        "各層内で気温減率 L = dT/dH は一定である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dp}{dH} = -\\rho g_0,\\quad p = \\rho R_{\\mathrm{sp}} T(H)",
+          "to_latex": "\\frac{p}{p_b} = \\left(1 + \\frac{L(H - H_b)}{T_b}\\right)^{-\\frac{g_0}{R_{\\mathrm{sp}} L}}\\; (L \\neq 0),\\qquad \\frac{p}{p_b} = \\exp\\!\\left(-\\frac{g_0(H - H_b)}{R_{\\mathrm{sp}} T_b}\\right)\\; (L = 0)",
+          "operation_label": "理想気体状態方程式の代入と高度積分",
+          "explanation": "静水圧平衡式に理想気体の状態方程式を代入して変数分離し、線形温度層および等温層について層基底 (H_b, p_b, T_b) から積分する。",
+          "used_node_ids": [
+            "aerosp.env.n01_isa_hydrostatic_geopotential",
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dp}{dH} = -\\rho g_0,\\quad \\rho = \\frac{p}{R_{\\mathrm{sp}} T}",
+          "to_latex": "\\frac{dp}{p} = -\\frac{g_0}{R_{\\mathrm{sp}} T(H)}\\,dH",
+          "operation_label": "状態方程式による密度の消去",
+          "explanation": "理想気体の状態方程式から密度を圧力と温度で表して静水圧平衡式に代入し、変数分離形に整理する。",
+          "used_node_ids": [
+            "aerosp.env.n01_isa_hydrostatic_geopotential",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dp}{p} = -\\frac{g_0}{R_{\\mathrm{sp}} (T_b + L(H - H_b))}\\,dH\\; (L \\neq 0)",
+          "to_latex": "\\ln\\frac{p}{p_b} = -\\frac{g_0}{R_{\\mathrm{sp}} L}\\ln\\!\\left(1 + \\frac{L(H - H_b)}{T_b}\\right)",
+          "operation_label": "温度勾配層における定積分",
+          "explanation": "T(H) = T_b + L(H - H_b) を代入し、置換積分を用いて層基底から高度 H まで積分する。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.m43_definite_integral_substitution"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln\\frac{p}{p_b} = -\\frac{g_0}{R_{\\mathrm{sp}} L}\\ln\\!\\left(1 + \\frac{L(H - H_b)}{T_b}\\right)",
+          "to_latex": "\\frac{p}{p_b} = \\left(1 + \\frac{L(H - H_b)}{T_b}\\right)^{-\\frac{g_0}{R_{\\mathrm{sp}} L}}\\; (L \\neq 0),\\qquad \\frac{p}{p_b} = \\exp\\!\\left(-\\frac{g_0(H - H_b)}{R_{\\mathrm{sp}} T_b}\\right)\\; (L = 0)",
+          "operation_label": "指数変換と等温極限の適用",
+          "explanation": "両辺の指数をとって対流圏等のべき乗則を得て、L -> 0 の極限（または T = T_b での直接積分）により等温成層圏の指数則を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_env03_exponential_scale_height",
+      "target_node_id": "aerosp.env.n03_exponential_scale_height_atm",
+      "route_kind": "deductive",
+      "title": "等温ISA圧力式からの指数関数大気密度モデルとスケールハイトの導出",
+      "premise_node_ids": [
+        "aerosp.env.n02_isa_troposphere_stratosphere",
+        "phys.thermo.th01_zeroth_law_state_eq"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "対象高度帯において温度 T および重力加速度 g_0 が局所的に一定とみなせる",
+        "ジオポテンシャル高度差と幾何高度差を局所的に同一視する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right),\\quad p = \\rho R_{\\mathrm{sp}} T",
+          "to_latex": "\\rho(h) = \\rho_0 \\exp\\!\\left(-\\frac{h - h_0}{H_s}\\right),\\qquad H_s := \\frac{R_{\\mathrm{sp}} T}{g_0}",
+          "operation_label": "等温大気圧力則の密度変換とスケールハイト定義",
+          "explanation": "等温層の圧力指数公式に理想気体状態方程式を適用して密度比へ変換し、特性高度スケール H_s を定義する。",
+          "used_node_ids": [
+            "aerosp.env.n02_isa_troposphere_stratosphere",
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right),\\quad \\frac{\\rho}{\\rho_0} = \\frac{p / (R_{\\mathrm{sp}} T)}{p_0 / (R_{\\mathrm{sp}} T)}",
+          "to_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right)",
+          "operation_label": "等温条件による圧力比と密度比の等置",
+          "explanation": "温度および比気体定数が一定であるため、圧力比はそのまま密度比に等しくなる。",
+          "used_node_ids": [
+            "phys.thermo.th01_zeroth_law_state_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right),\\quad H_s := \\frac{R_{\\mathrm{sp}} T}{g_0}",
+          "to_latex": "\\rho(h) = \\rho_0 \\exp\\!\\left(-\\frac{h - h_0}{H_s}\\right),\\qquad H_s := \\frac{R_{\\mathrm{sp}} T}{g_0}",
+          "operation_label": "スケールハイトの定義と代入",
+          "explanation": "密度が 1/e 倍になる高度幅としてスケールハイト H_s を定義し、指数大気密度公式を完成させる。",
+          "used_node_ids": [
+            "aerosp.env.n02_isa_troposphere_stratosphere"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_env04_ballistic_coefficient",
+      "target_node_id": "aerosp.env.n04_ballistic_coefficient_drag",
+      "route_kind": "reformulation",
+      "title": "動圧定義とニュートン第2法則に基づく弾道係数と抗力加速度の定義",
+      "premise_node_ids": [
+        "aerosp.launch.n05_dynamic_pressure_max_q",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "希薄自由分子流領域において抗力は動圧と投影断面積・抗力係数の積で表される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "q = \\frac{1}{2}\\rho v_{\\mathrm{rel}}^2,\\quad \\mathbf{F}_D = -q C_D A \\hat{\\mathbf{v}}_{\\mathrm{rel}} = m\\mathbf{a}_D",
+          "to_latex": "B_c := \\frac{m}{C_D A},\\qquad \\mathbf{a}_D = -\\frac{1}{2}\\rho \\frac{C_D A}{m} v_{\\mathrm{rel}}\\mathbf{v}_{\\mathrm{rel}} = -\\frac{\\rho v_{\\mathrm{rel}}\\mathbf{v}_{\\mathrm{rel}}}{2 B_c}",
+          "operation_label": "弾道係数の導入と抗力加速度の表現",
+          "explanation": "動圧 q に抗力係数 C_D と断面積 A を掛けて大気抵抗力を構成し、運動方程式から質量 m で割った機体固有パラメータの逆数として弾道係数 B_c を定義する。",
+          "used_node_ids": [
+            "aerosp.launch.n05_dynamic_pressure_max_q",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_env05_circular_orbit_decay_rate",
+      "target_node_id": "aerosp.env.n05_circular_orbit_drag_decay_rate",
+      "route_kind": "deductive",
+      "title": "軌道力学エネルギー散逸率からの円軌道半径・周期減衰率の導出",
+      "premise_node_ids": [
+        "aerosp.env.n04_ballistic_coefficient_drag",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule"
+      ],
+      "assumptions": [
+        "軌道は準円軌道（e ≈ 0）を保ちながら緩やかに減衰する",
+        "大気共回転速度は軌道速度に対して無視できる（v_rel ≈ v = sqrt(μ/a)）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "E = -\\frac{\\mu m}{2a},\\quad \\frac{dE}{dt} = m\\mathbf{a}_D\\cdot\\mathbf{v}",
+          "to_latex": "\\frac{da}{dt} = -\\frac{\\rho \\sqrt{\\mu a}}{B_c},\\qquad \\frac{dT_{\\mathrm{orb}}}{dt} = -\\frac{3\\pi \\rho a}{B_c}",
+          "operation_label": "力学エネルギー散逸率とケプラー第3法則の微分",
+          "explanation": "大気抵抗による負の仕事率をケプラー軌道エネルギーの時間微分と等置して軌道長半径の減衰率を求め、さらに軌道周期の定義を微分して周期減衰率を得る。",
+          "used_node_ids": [
+            "aerosp.env.n04_ballistic_coefficient_drag",
+            "math.calc.m01_chain_rule",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dE}{dt} = \\frac{\\mu m}{2a^2}\\frac{da}{dt},\\quad m\\mathbf{a}_D\\cdot\\mathbf{v} = -\\frac{m\\rho v^3}{2 B_c}",
+          "to_latex": "\\frac{\\mu m}{2a^2}\\frac{da}{dt} = -\\frac{m\\rho v^3}{2 B_c}",
+          "operation_label": "軌道エネルギー時間微分と抵抗仕事率の等置",
+          "explanation": "円軌道エネルギー E = -μm/(2a) の時間微分と、抗力加速度に速度を内積した単位時間当たりの散逸エネルギーを等置する。",
+          "used_node_ids": [
+            "aerosp.env.n04_ballistic_coefficient_drag",
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\mu m}{2a^2}\\frac{da}{dt} = -\\frac{m\\rho v^3}{2 B_c}",
+          "to_latex": "\\frac{da}{dt} = -\\frac{\\rho \\sqrt{\\mu a}}{B_c}",
+          "operation_label": "円軌道速度の代入と整理",
+          "explanation": "円軌道速度 v = sqrt(μ/a) を代入し、da/dt について解く。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{da}{dt} = -\\frac{\\rho \\sqrt{\\mu a}}{B_c}",
+          "to_latex": "\\frac{da}{dt} = -\\frac{\\rho \\sqrt{\\mu a}}{B_c},\\qquad \\frac{dT_{\\mathrm{orb}}}{dt} = -\\frac{3\\pi \\rho a}{B_c}",
+          "operation_label": "ケプラー周期関係式の連鎖律微分",
+          "explanation": "軌道周期 T_orb = 2π sqrt(a^3/μ) を連鎖律で時間微分し、da/dt を代入して周期減衰率を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_env06_leo_orbital_lifetime",
+      "target_node_id": "aerosp.env.n06_leo_orbital_lifetime_estimate",
+      "route_kind": "deductive",
+      "title": "指数関数大気密度と円軌道減衰率の積分によるLEO軌道寿命の導出",
+      "premise_node_ids": [
+        "aerosp.env.n03_exponential_scale_height_atm",
+        "aerosp.env.n05_circular_orbit_drag_decay_rate"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc",
+        "math.calc.t06_exp_power_derivatives"
+      ],
+      "assumptions": [
+        "降下過程においてスケールハイト H_s は定数であり、軌道半径変化は地球半径に比べて小さい（sqrt(r) ≈ sqrt(r_0)）",
+        "太陽活動度や地磁気嵐による大気密度の時間変動は無視する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{dh}{dt} = -\\frac{\\rho(h)\\sqrt{\\mu r}}{B_c},\\quad \\rho(h) = \\rho(h_0)e^{-(h-h_0)/H_s}",
+          "to_latex": "\\tau_{\\mathrm{life}} \\approx \\frac{B_c H_s}{\\rho(h_0)\\sqrt{\\mu r_0}}\\left[1 - \\exp\\!\\left(-\\frac{h_0 - h_f}{H_s}\\right)\\right] \\approx \\frac{B_c H_s}{\\rho(h_0)\\sqrt{\\mu r_0}}",
+          "operation_label": "高度減衰微分方程式の変数分離積分",
+          "explanation": "指数関数大気モデルを軌道減衰率の式に代入し、初期高度 h_0 から再突入高度 h_f まで積分して低軌道衛星の軌道寿命公式を得る。",
+          "used_node_ids": [
+            "aerosp.env.n03_exponential_scale_height_atm",
+            "aerosp.env.n05_circular_orbit_drag_decay_rate",
+            "math.calc.m02_fundamental_theorem_calc"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dh}{dt} = -\\frac{\\rho(h_0)e^{-(h-h_0)/H_s}\\sqrt{\\mu r_0}}{B_c}",
+          "to_latex": "dt = -\\frac{B_c}{\\rho(h_0)\\sqrt{\\mu r_0}} e^{(h-h_0)/H_s}\\,dh",
+          "operation_label": "近似定数係数化と変数分離",
+          "explanation": "高度変化範囲で r ≈ r_0 と近似し、時間微分方程式を変数分離形に書き換える。",
+          "used_node_ids": [
+            "aerosp.env.n03_exponential_scale_height_atm",
+            "aerosp.env.n05_circular_orbit_drag_decay_rate"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dt = -\\frac{B_c}{\\rho(h_0)\\sqrt{\\mu r_0}} e^{(h-h_0)/H_s}\\,dh",
+          "to_latex": "\\tau_{\\mathrm{life}} \\approx \\frac{B_c H_s}{\\rho(h_0)\\sqrt{\\mu r_0}}\\left[1 - \\exp\\!\\left(-\\frac{h_0 - h_f}{H_s}\\right)\\right]",
+          "operation_label": "初期高度から再突入高度までの定積分",
+          "explanation": "h = h_0 から h = h_f まで指数関数を積分し、軌道寿命の閉形式表現を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.calc.t06_exp_power_derivatives"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tau_{\\mathrm{life}} \\approx \\frac{B_c H_s}{\\rho(h_0)\\sqrt{\\mu r_0}}\\left[1 - \\exp\\!\\left(-\\frac{h_0 - h_f}{H_s}\\right)\\right]",
+          "to_latex": "\\tau_{\\mathrm{life}} \\approx \\frac{B_c H_s}{\\rho(h_0)\\sqrt{\\mu r_0}}\\left[1 - \\exp\\!\\left(-\\frac{h_0 - h_f}{H_s}\\right)\\right] \\approx \\frac{B_c H_s}{\\rho(h_0)\\sqrt{\\mu r_0}}",
+          "operation_label": "高高度極限による簡約化",
+          "explanation": "初期高度と再突入高度の差がスケールハイトより十分大きい（h_0 - h_f >> H_s）条件を適用し、指数項を省略した簡便寿命式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_env07_magnetic_moment_invariant",
+      "target_node_id": "aerosp.env.n07_magnetic_moment_adiabatic_invariant",
+      "route_kind": "deductive",
+      "title": "ローレンツ力運動と断熱不変性からの磁気モーメント・ピッチ角保存則の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "磁場の空間・時間変化は粒子のラーモア半径および旋回周期に比べて十分緩やかである（断熱近似）",
+        "静電場および非電磁的摂動力は存在しない"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m\\frac{d\\mathbf{v}}{dt} = q(\\mathbf{v}\\times\\mathbf{B}),\\quad \\Phi_B = \\pi r_L^2 B = \\text{const.}",
+          "to_latex": "\\mu_m := \\frac{m v_\\perp^2}{2 B} = \\text{const.},\\qquad \\frac{\\sin^2\\alpha}{B} = \\text{const.}\\quad \\left(\\sin\\alpha := \\frac{v_\\perp}{v}\\right)",
+          "operation_label": "運動エネルギー保存とラーモア磁束断熱不変量の結合",
+          "explanation": "ローレンツ力が仕事をしないことから全速力 v が保存され、旋回軌道が囲む磁束 Φ_B の断熱不変性から磁気モーメントおよびピッチ角保存則を導く。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\frac{d\\mathbf{v}}{dt}\\cdot\\mathbf{v} = q(\\mathbf{v}\\times\\mathbf{B})\\cdot\\mathbf{v} = 0",
+          "to_latex": "\\frac{1}{2}m v^2 = \\text{const.},\\quad r_L = \\frac{m v_\\perp}{|q| B}",
+          "operation_label": "運動エネルギー保存とラーモア半径の算出",
+          "explanation": "ローレンツ力と速度ベクトルの直交性から運動エネルギー保存を導き、磁場垂直方向の遠心力釣合いからラーモア半径 r_L を得る。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{2}m v^2 = \\text{const.},\\quad r_L = \\frac{m v_\\perp}{|q| B}",
+          "to_latex": "\\mu_m := \\frac{m v_\\perp^2}{2 B} = \\text{const.}",
+          "operation_label": "旋回磁束の断熱不変性適用",
+          "explanation": "作用積分に対応するラーモア円内の磁束 Φ_B = π r_L^2 B = (2π m / q^2) μ_m が断熱不変量として保存されることから磁気モーメント μ_m の保存を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mu_m := \\frac{m v_\\perp^2}{2 B} = \\text{const.}",
+          "to_latex": "\\mu_m := \\frac{m v_\\perp^2}{2 B} = \\text{const.},\\qquad \\frac{\\sin^2\\alpha}{B} = \\text{const.}\\quad \\left(\\sin\\alpha := \\frac{v_\\perp}{v}\\right)",
+          "operation_label": "ピッチ角による表現への書き換え",
+          "explanation": "全速力 v が一定であることから v_⊥ = v sinα を代入し、ピッチ角と磁束密度の比の保存則を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_env08_magnetic_mirror_trapping",
+      "target_node_id": "aerosp.env.n08_magnetic_mirror_trapping_condition",
+      "route_kind": "deductive",
+      "title": "磁気モーメント保存と地球双極子磁場モデルからのバンアレン帯捕捉条件の導出",
+      "premise_node_ids": [
+        "aerosp.env.n07_magnetic_moment_adiabatic_invariant"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "地球磁場は中心双極子磁場で近似でき、磁力線に沿った磁場強度分布は緯度 λ の関数で表される",
+        "粒子が地球大気（高緯度損失高度 λ_m）に達する前にミラー反射されれば捕捉される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\sin^2\\alpha_{\\mathrm{eq}}}{B_{\\mathrm{eq}}} = \\frac{\\sin^2\\alpha_{\\mathrm{mir}}}{B_{\\mathrm{mir}}},\\quad \\alpha_{\\mathrm{mir}} = \\frac{\\pi}{2}",
+          "to_latex": "\\sin^2\\alpha_{\\mathrm{eq}} \\ge \\frac{B_{\\mathrm{eq}}}{B_{\\mathrm{mir}}} = \\frac{\\cos^6\\lambda_m}{\\sqrt{4 - 3\\cos^2\\lambda_m}}",
+          "operation_label": "反射点条件と双極子磁場強度比の適用",
+          "explanation": "反射点（α = π/2）で磁力線平行速度が零になる条件と双極子磁力線上の磁場強度式を組み合わせ、捕捉に必要な赤道ピッチ角の下限を求める。",
+          "used_node_ids": [
+            "aerosp.env.n07_magnetic_moment_adiabatic_invariant"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\sin^2\\alpha_{\\mathrm{eq}}}{B_{\\mathrm{eq}}} = \\frac{\\sin^2\\alpha(\\lambda)}{B(\\lambda)},\\quad \\alpha_{\\mathrm{mir}} = \\frac{\\pi}{2}",
+          "to_latex": "\\sin^2\\alpha_{\\mathrm{eq}} = \\frac{B_{\\mathrm{eq}}}{B_{\\mathrm{mir}}}",
+          "operation_label": "磁気ミラー点における反射条件の代入",
+          "explanation": "ミラー点では v_∥ = 0 すなわち sin(α_mir) = 1 となるため、赤道ピッチ角とミラー点磁場強度の関係式を得る。",
+          "used_node_ids": [
+            "aerosp.env.n07_magnetic_moment_adiabatic_invariant"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sin^2\\alpha_{\\mathrm{eq}} = \\frac{B_{\\mathrm{eq}}}{B_{\\mathrm{mir}}}",
+          "to_latex": "\\sin^2\\alpha_{\\mathrm{eq}} \\ge \\frac{B_{\\mathrm{eq}}}{B_{\\mathrm{mir}}} = \\frac{\\cos^6\\lambda_m}{\\sqrt{4 - 3\\cos^2\\lambda_m}}",
+          "operation_label": "双極子磁場モデルと大気損失境界の代入",
+          "explanation": "双極子磁力線上の磁場強度 B(λ) = B_eq sqrt(4 - 3 cos^2 λ) / cos^6 λ を用い、大気と衝突する損失高度の磁気緯度 λ_m より手前で反射する条件を不等式で表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der_env09_solar_radiation_pressure",
+      "target_node_id": "aerosp.env.n09_solar_radiation_pressure_force",
+      "route_kind": "deductive",
+      "title": "等方放射フラックス保存と光速不変則からの太陽放射圧加速度の導出",
+      "premise_node_ids": [
+        "eng.ant.n01_poynting_isotropic_flux",
+        "phys.rel.sr01_relativity_postulates",
+        "phys.mech.p02_newton_second_law"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "太陽は等方点光源として放射し、1 AU における太陽定数は S_0 である",
+        "宇宙機の反射・吸収特性は実効放射圧係数 C_R で代表される"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S(r) = \\frac{P_{\\mathrm{rad}}}{4\\pi r^2} = S_0\\left(\\frac{r_0}{r}\\right)^2,\\quad p_{\\mathrm{photon}} = \\frac{E_{\\mathrm{photon}}}{c}",
+          "to_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\qquad \\mathbf{a}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R \\frac{A}{m} \\hat{\\mathbf{s}}",
+          "operation_label": "放射フラックスの逆二乗則と運動量輸送の結合",
+          "explanation": "球対称放射電力保存による太陽フラックスの距離依存性を光速 c で割って放射圧を得て、宇宙機の反射係数と面積質量比を掛けて加速度を導く。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "phys.mech.p02_newton_second_law",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S(r) = \\frac{P_{\\mathrm{rad}}}{4\\pi r^2} = S_0\\left(\\frac{r_0}{r}\\right)^2",
+          "to_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2",
+          "operation_label": "単位面積当たり運動量流束への変換",
+          "explanation": "光子のエネルギー E と運動量 E/c の関係から、エネルギー流束 S(r) を光速 c で割ることで太陽放射圧 P_SRP(r) を得る。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\quad \\mathbf{F}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r) C_R A \\hat{\\mathbf{s}} = m\\mathbf{a}_{\\mathrm{SRP}}",
+          "to_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\qquad \\mathbf{a}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R \\frac{A}{m} \\hat{\\mathbf{s}}",
+          "operation_label": "反射率係数とニュートン第2法則の適用",
+          "explanation": "機体表面の吸収・反射による運動量交換を反射圧係数 C_R（完全吸収で 1、鏡面全反射で 2）と投影面積 A で表し、質量 m で割って太陽方向単位ベクトル s_hat の逆向き（反太陽方向）の加速度を得る。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

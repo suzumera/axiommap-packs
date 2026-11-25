@@ -1,0 +1,807 @@
+{
+  "pack_meta": {
+    "pack_id": "astro_orbit_determination_conjunction",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "orbital_mechanics",
+    "title": "精密軌道決定（OD）とデブリ衝突回避：状態遷移行列（STM）変分方程式・バッチ最小二乗軌道決定・共分散楕円体と衝突確率Pc評価",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『精密軌道決定（OD）とデブリ衝突回避：状態遷移行列（STM）変分方程式・バッチ最小二乗軌道決定・共分散楕円体と衝突確率Pc評価』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "orbita.od_stm_p.n01_nonlinear_od_state_dynamics",
+      "short_code": "OD01",
+      "kind": "definition",
+      "title": "精密軌道決定の状態空間モデルと観測方程式",
+      "summary": "6次元状態ベクトル（位置・速度）、摂動を含む非線形軌道運動方程式、および観測局からの非線形観測モデルの定式化。",
+      "canonical_latex": "\\mathbf{X}(t) = \\begin{pmatrix} \\mathbf{r}(t) \\\\ \\mathbf{v}(t) \\end{pmatrix} \\in \\mathbb{R}^6,\\quad \\dot{\\mathbf{X}}(t) = \\mathbf{f}(\\mathbf{X}(t), t),\\quad \\mathbf{y}_k = \\mathbf{h}(\\mathbf{X}(t_k), t_k) + \\boldsymbol{\\epsilon}_k",
+      "aliases_latex": [
+        "\\dot{\\mathbf{X}} = \\mathbf{f}(\\mathbf{X}, t),\\quad \\mathbf{y}_k = \\mathbf{h}(\\mathbf{X}_k) + \\boldsymbol{\\epsilon}_k"
+      ],
+      "keywords": [
+        "軌道決定",
+        "状態ベクトル",
+        "観測モデル",
+        "状態空間"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "orbit_determination"
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.n02_stm_variational_equation",
+      "short_code": "OD02",
+      "kind": "theorem_formula",
+      "title": "状態遷移行列（STM）の変分方程式",
+      "summary": "参照軌道周りの微小摂動の時間発展を記述する状態遷移行列（STM）の定義と、ヤコビアン行列を用いた線形微分方程式（変分方程式）。",
+      "canonical_latex": "\\Phi(t, t_0) := \\frac{\\partial \\mathbf{X}(t)}{\\partial \\mathbf{X}(t_0)},\\quad \\dot{\\Phi}(t, t_0) = A(t)\\Phi(t, t_0),\\quad \\Phi(t_0, t_0) = I_6,\\quad A(t) := \\left.\\frac{\\partial \\mathbf{f}(\\mathbf{X}, t)}{\\partial \\mathbf{X}}\\right|_{\\mathbf{X}^*(t)}",
+      "aliases_latex": [
+        "\\delta\\mathbf{X}(t) = \\Phi(t, t_0)\\delta\\mathbf{X}(t_0),\\quad \\dot{\\Phi} = A(t)\\Phi"
+      ],
+      "keywords": [
+        "状態遷移行列",
+        "STM",
+        "変分方程式",
+        "ヤコビアン"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "orbit_determination"
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.n03_gravity_gradient_jacobian_stm",
+      "short_code": "OD03",
+      "kind": "theorem_formula",
+      "title": "2体＋摂動重力場のヤコビアン行列（重力勾配テンソル）",
+      "summary": "変分方程式におけるダイナミクスヤコビアン行列A(t)のブロック構造と、中心重力場および摂動加速度に対する重力勾配テンソルG(r)の明示式。",
+      "canonical_latex": "A(t) = \\begin{pmatrix} 0_3 & I_3 \\\\ G(t) & 0_3 \\end{pmatrix},\\quad G(\\mathbf{r}) = \\frac{\\partial \\mathbf{a}_{\\mathrm{grav}}}{\\partial \\mathbf{r}} = -\\frac{\\mu}{r^3}\\left(I_3 - \\frac{3\\mathbf{r}\\mathbf{r}^\\top}{r^2}\\right) + \\frac{\\partial \\mathbf{a}_p}{\\partial \\mathbf{r}}",
+      "aliases_latex": [
+        "G(\\mathbf{r}) = \\frac{\\mu}{r^5}(3\\mathbf{r}\\mathbf{r}^\\top - r^2 I_3) + \\frac{\\partial \\mathbf{a}_p}{\\partial \\mathbf{r}}"
+      ],
+      "keywords": [
+        "重力勾配テンソル",
+        "ヤコビアン行列",
+        "変分方程式",
+        "2体問題"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "orbit_determination"
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.n04_batch_wls_normal_equation",
+      "short_code": "OD04",
+      "kind": "theorem_formula",
+      "title": "バッチ重み付き最小二乗（WLS）軌道決定の正規方程式",
+      "summary": "非線形観測残差をSTMで元期状態補正量へ線形写像し、観測重み行列Wのもとで重み付き残差二乗和を最小化する正規方程式と更新則。",
+      "canonical_latex": "\\Delta \\hat{\\mathbf{X}}_0 = (H^\\top W H)^{-1} H^\\top W \\Delta \\mathbf{y},\\quad H = \\begin{pmatrix} \\tilde{H}_1 \\Phi(t_1, t_0) \\\\ \\vdots \\\\ \\tilde{H}_m \\Phi(t_m, t_0) \\end{pmatrix},\\quad \\tilde{H}_k = \\left.\\frac{\\partial \\mathbf{h}}{\\partial \\mathbf{X}}\\right|_{\\mathbf{X}^*(t_k)}",
+      "aliases_latex": [
+        "(H^\\top W H)\\Delta\\hat{\\mathbf{X}}_0 = H^\\top W \\Delta\\mathbf{y}"
+      ],
+      "keywords": [
+        "バッチ最小二乗",
+        "WLS",
+        "正規方程式",
+        "精密軌道決定"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "orbit_determination"
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.n05_a_priori_map_covariance",
+      "short_code": "OD05",
+      "kind": "theorem_formula",
+      "title": "事前情報付きバッチWLS（MAP推定）と事後誤差共分散行列",
+      "summary": "事前推定値と事前誤差共分散行列P_bar_0を組み込んだ最大事後確率（MAP）推定の正規方程式と、推定値の事後誤差共分散行列P_0。",
+      "canonical_latex": "\\Delta \\hat{\\mathbf{X}}_0 = (\\bar{P}_0^{-1} + H^\\top W H)^{-1}(\\bar{P}_0^{-1}\\Delta\\bar{\\mathbf{X}}_0 + H^\\top W \\Delta\\mathbf{y}),\\quad P_0 = (\\bar{P}_0^{-1} + H^\\top W H)^{-1}",
+      "aliases_latex": [
+        "P_0^{-1} = \\bar{P}_0^{-1} + H^\\top W H"
+      ],
+      "keywords": [
+        "MAP推定",
+        "事前共分散",
+        "事後共分散",
+        "情報行列"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "orbit_determination"
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.n06_covariance_propagation_stm",
+      "short_code": "OD06",
+      "kind": "theorem_formula",
+      "title": "STMによる軌道誤差共分散行列の時間伝播",
+      "summary": "元期t_0における事後誤差共分散行列P_0を状態遷移行列Phi(t, t_0)による合同変換で任意時刻tへ線形伝播させる公式。",
+      "canonical_latex": "P(t) = \\Phi(t, t_0)\\, P_0\\, \\Phi(t, t_0)^\\top",
+      "aliases_latex": [
+        "P(t) = \\Phi P_0 \\Phi^\\top"
+      ],
+      "keywords": [
+        "共分散伝播",
+        "誤差楕円体",
+        "状態遷移行列"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "conjunction_assessment"
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.n07_tca_and_b_plane_geometry",
+      "short_code": "OD07",
+      "kind": "definition",
+      "title": "最接近時刻（TCA）条件とB平面（Encounter Plane）座標系",
+      "summary": "2物体間の相対位置と相対速度が直交する最接近時刻（TCA）の定義と、相対速度に垂直な2次元B平面（Encounter Plane）の正規直交基底。",
+      "canonical_latex": "\\mathbf{r}_{\\mathrm{rel}}(t_{\\mathrm{TCA}}) \\cdot \\mathbf{v}_{\\mathrm{rel}}(t_{\\mathrm{TCA}}) = 0,\\quad \\hat{\\boldsymbol{\\xi}}_B = \\frac{\\mathbf{v}_{\\mathrm{rel}} \\times \\mathbf{v}_p}{\\|\\mathbf{v}_{\\mathrm{rel}} \\times \\mathbf{v}_p\\|},\\quad \\hat{\\boldsymbol{\\eta}}_B = \\frac{\\mathbf{v}_{\\mathrm{rel}}}{\\|\\mathbf{v}_{\\mathrm{rel}}\\|},\\quad \\hat{\\boldsymbol{\\zeta}}_B = \\hat{\\boldsymbol{\\xi}}_B \\times \\hat{\\boldsymbol{\\eta}}_B",
+      "aliases_latex": [
+        "\\frac{d}{dt}\\|\\mathbf{r}_{\\mathrm{rel}}(t)\\|^2 = 0 \\iff \\mathbf{r}_{\\mathrm{rel}}\\cdot\\mathbf{v}_{\\mathrm{rel}} = 0"
+      ],
+      "keywords": [
+        "TCA",
+        "最接近時刻",
+        "B平面",
+        "衝突評価"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "conjunction_assessment"
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.n08_combined_covariance_mahalanobis",
+      "short_code": "OD08",
+      "kind": "theorem_formula",
+      "title": "合算位置共分散楕円体とマハラノビス距離",
+      "summary": "主衛星と副物体（デブリ）の独立な位置誤差共分散を合算した共分散楕円体P_combと、不確実性を考慮した無次元ミス距離尺度であるマハラノビス距離。",
+      "canonical_latex": "P_{\\mathrm{comb}} = P_{r,1}(t_{\\mathrm{TCA}}) + P_{r,2}(t_{\\mathrm{TCA}}),\\quad d_M^2 = \\mathbf{r}_{\\mathrm{rel}}^\\top P_{\\mathrm{comb}}^{-1} \\mathbf{r}_{\\mathrm{rel}}",
+      "aliases_latex": [
+        "d_M = \\sqrt{\\mathbf{r}_{\\mathrm{rel}}^\\top (P_{r,1}+P_{r,2})^{-1} \\mathbf{r}_{\\mathrm{rel}}}"
+      ],
+      "keywords": [
+        "合算共分散",
+        "マハラノビス距離",
+        "共分散楕円体",
+        "ミス距離"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "conjunction_assessment"
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.n09_2d_b_plane_collision_probability",
+      "short_code": "OD09",
+      "kind": "theorem_formula",
+      "title": "B平面射影に基づく2次元衝突確率（Pc）積分公式",
+      "summary": "高速遭遇・線形相対運動の仮定のもとで、合算位置共分散をB平面へ射影し、合算衝突半径R_Aの円盤上で2次元ガウス密度を積分する衝突確率Pc公式。",
+      "canonical_latex": "P_c = \\frac{1}{2\\pi\\sqrt{\\det C_B}} \\iint_{x_B^2 + z_B^2 \\le R_A^2} \\exp\\!\\left(-\\frac{1}{2}(\\mathbf{u} - \\boldsymbol{\\mu}_B)^\\top C_B^{-1} (\\mathbf{u} - \\boldsymbol{\\mu}_B)\\right) d x_B\\, d z_B,\\quad C_B = T_B P_{\\mathrm{comb}} T_B^\\top",
+      "aliases_latex": [
+        "P_c = \\iint_{\\|\\mathbf{u}\\|\\le R_A} \\mathcal{N}(\\mathbf{u};\\boldsymbol{\\mu}_B, C_B)\\,d\\mathbf{u}"
+      ],
+      "keywords": [
+        "衝突確率",
+        "Pc",
+        "B平面射影",
+        "デブリ回避"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "conjunction_assessment"
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.n10_cam_deltav_mahalanobis_tradeoff",
+      "short_code": "OD10",
+      "kind": "theorem_formula",
+      "title": "衝突回避マヌーバ（CAM）のΔv感度と確率希釈効果",
+      "summary": "マヌーバ時刻t_mでの速度増分Delta v_mによるTCAでのミス距離変化のSTM線形感度、およびミス距離が大きい領域で共分散拡大によりPcが低下する確率希釈現象。",
+      "canonical_latex": "\\Delta \\mathbf{r}(t_{\\mathrm{TCA}}) \\approx \\Phi_{rv}(t_{\\mathrm{TCA}}, t_m)\\,\\Delta\\mathbf{v}_m,\\quad \\frac{\\partial P_c}{\\partial \\sigma_B} < 0 \\iff \\|\\boldsymbol{\\mu}_B\\|^2 \\ll \\sigma_B^2,\\quad \\frac{\\partial P_c}{\\partial \\sigma_B} > 0 \\text{ (small } \\sigma_B \\text{ with } \\|\\boldsymbol{\\mu}_B\\| > R_A\\text{)}",
+      "aliases_latex": [
+        "\\Delta\\mathbf{r}_{\\mathrm{TCA}} \\approx \\Phi_{rv}\\Delta\\mathbf{v}_m"
+      ],
+      "keywords": [
+        "CAM",
+        "衝突回避マヌーバ",
+        "確率希釈",
+        "STM感度"
+      ],
+      "domain_tags": [
+        "orbital_mechanics",
+        "conjunction_assessment"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "orbita.od_stm_p.d01_nonlinear_od_state_dynamics",
+      "target_node_id": "orbita.od_stm_p.n01_nonlinear_od_state_dynamics",
+      "route_kind": "reformulation",
+      "title": "摂動2体問題と観測幾何から状態空間モデルへの定式化",
+      "premise_node_ids": [
+        "astro.orbit.pj01_perturbed_two_body_eom",
+        "phys.orbit.g02_topocentric_geometry"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "宇宙機の運動は2体中心重力と摂動加速度の和で記述される。",
+        "観測誤差ベクトルは平均零の確率的雑音として加わる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\ddot{\\mathbf{r}} = -\\frac{\\mu}{r^3}\\mathbf{r} + \\mathbf{a}_p,\\quad \\mathbf{r}_i = \\mathbf{R}_i + \\rho_i\\hat{\\boldsymbol{\\rho}}_i",
+          "to_latex": "\\mathbf{X}(t) = \\begin{pmatrix} \\mathbf{r}(t) \\\\ \\mathbf{v}(t) \\end{pmatrix} \\in \\mathbb{R}^6,\\quad \\dot{\\mathbf{X}}(t) = \\mathbf{f}(\\mathbf{X}(t), t),\\quad \\mathbf{y}_k = \\mathbf{h}(\\mathbf{X}(t_k), t_k) + \\boldsymbol{\\epsilon}_k",
+          "operation_label": "1階状態空間表現と観測モデルの定義",
+          "explanation": "2階の摂動軌道運動方程式を位置rと速度vの6次元状態ベクトルXの1階常微分方程式系に書き換え、観測局と目標の位置関係から非線形観測ベクトルy_kを定義する。",
+          "used_node_ids": [
+            "astro.orbit.pj01_perturbed_two_body_eom",
+            "phys.orbit.g02_topocentric_geometry"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.d02_stm_variational_equation",
+      "target_node_id": "orbita.od_stm_p.n02_stm_variational_equation",
+      "route_kind": "deductive",
+      "title": "非線形軌道ダイナミクスの1次線形化によるSTM変分方程式の導出",
+      "premise_node_ids": [
+        "orbita.od_stm_p.n01_nonlinear_od_state_dynamics"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "状態軌道X(t)は参照軌道X*(t)の近傍にあり、f(X, t)はXに関して連続微分可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\dot{\\mathbf{X}}(t) = \\mathbf{f}(\\mathbf{X}(t), t)",
+          "to_latex": "\\Phi(t, t_0) := \\frac{\\partial \\mathbf{X}(t)}{\\partial \\mathbf{X}(t_0)},\\quad \\dot{\\Phi}(t, t_0) = A(t)\\Phi(t, t_0),\\quad \\Phi(t_0, t_0) = I_6,\\quad A(t) := \\left.\\frac{\\partial \\mathbf{f}(\\mathbf{X}, t)}{\\partial \\mathbf{X}}\\right|_{\\mathbf{X}^*(t)}",
+          "operation_label": "初期状態に対する偏微分と連鎖律の適用",
+          "explanation": "非線形状態方程式を参照軌道周りで1次線形化するか、初期状態X(t_0)で直接偏微分して時間微分と空間偏微分の順序交換と連鎖律を適用することでSTMの変分方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m08_partial_total_diff",
+            "orbita.od_stm_p.n01_nonlinear_od_state_dynamics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{X}}(t) = \\mathbf{f}(\\mathbf{X}(t), t)",
+          "to_latex": "\\frac{d}{dt}\\left(\\frac{\\partial \\mathbf{X}(t)}{\\partial \\mathbf{X}(t_0)}\\right) = \\frac{\\partial \\mathbf{f}(\\mathbf{X}(t), t)}{\\partial \\mathbf{X}(t_0)}",
+          "operation_label": "初期状態ベクトルによる偏微分と微分順序の交換",
+          "explanation": "状態方程式の両辺を元期状態X(t_0)で偏微分し、tとX(t_0)が独立変数であることから時間微分と偏微分を交換する。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff",
+            "orbita.od_stm_p.n01_nonlinear_od_state_dynamics"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\left(\\frac{\\partial \\mathbf{X}(t)}{\\partial \\mathbf{X}(t_0)}\\right) = \\frac{\\partial \\mathbf{f}(\\mathbf{X}(t), t)}{\\partial \\mathbf{X}(t_0)}",
+          "to_latex": "\\frac{d}{dt}\\left(\\frac{\\partial \\mathbf{X}(t)}{\\partial \\mathbf{X}(t_0)}\\right) = \\left.\\frac{\\partial \\mathbf{f}(\\mathbf{X}, t)}{\\partial \\mathbf{X}}\\right|_{\\mathbf{X}^*(t)} \\frac{\\partial \\mathbf{X}(t)}{\\partial \\mathbf{X}(t_0)}",
+          "operation_label": "合成関数の連鎖律によるヤコビアンの分離",
+          "explanation": "多変数関数の連鎖律を用いて、右辺を状態Xに関するヤコビアン行列A(t)とSTMの積に分解する。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\left(\\frac{\\partial \\mathbf{X}(t)}{\\partial \\mathbf{X}(t_0)}\\right) = \\left.\\frac{\\partial \\mathbf{f}(\\mathbf{X}, t)}{\\partial \\mathbf{X}}\\right|_{\\mathbf{X}^*(t)} \\frac{\\partial \\mathbf{X}(t)}{\\partial \\mathbf{X}(t_0)}",
+          "to_latex": "\\Phi(t, t_0) := \\frac{\\partial \\mathbf{X}(t)}{\\partial \\mathbf{X}(t_0)},\\quad \\dot{\\Phi}(t, t_0) = A(t)\\Phi(t, t_0),\\quad \\Phi(t_0, t_0) = I_6,\\quad A(t) := \\left.\\frac{\\partial \\mathbf{f}(\\mathbf{X}, t)}{\\partial \\mathbf{X}}\\right|_{\\mathbf{X}^*(t)}",
+          "operation_label": "STM記号の導入と初期条件の設定",
+          "explanation": "Phi(t, t_0)とA(t)を定義し、t = t_0における恒等写像の微分から初期条件Phi(t_0, t_0) = I_6を付す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.d03_gravity_gradient_jacobian_stm",
+      "target_node_id": "orbita.od_stm_p.n03_gravity_gradient_jacobian_stm",
+      "route_kind": "deductive",
+      "title": "2体重力加速度の偏微分による重力勾配テンソルの導出",
+      "premise_node_ids": [
+        "orbita.od_stm_p.n02_stm_variational_equation",
+        "phys.orbit.g01_two_body_eom",
+        "astro.orbit.pj01_perturbed_two_body_eom"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m08_partial_total_diff"
+      ],
+      "assumptions": [
+        "非重力摂動加速度a_pが速度に依存しない（または速度依存項を別途扱う）重力場モデルを想定する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "A(t) = \\frac{\\partial}{\\partial (\\mathbf{r},\\mathbf{v})}\\begin{pmatrix} \\mathbf{v} \\\\ -\\frac{\\mu}{r^3}\\mathbf{r} + \\mathbf{a}_p(\\mathbf{r}) \\end{pmatrix}",
+          "to_latex": "A(t) = \\begin{pmatrix} 0_3 & I_3 \\\\ G(t) & 0_3 \\end{pmatrix},\\quad G(\\mathbf{r}) = \\frac{\\partial \\mathbf{a}_{\\mathrm{grav}}}{\\partial \\mathbf{r}} = -\\frac{\\mu}{r^3}\\left(I_3 - \\frac{3\\mathbf{r}\\mathbf{r}^\\top}{r^2}\\right) + \\frac{\\partial \\mathbf{a}_p}{\\partial \\mathbf{r}}",
+          "operation_label": "2体重力ベクトルの位置微分とブロック行列化",
+          "explanation": "位置ベクトルrのノルムr = sqrt(r^T r)の偏微分を計算し、積の微分則を2体重力項に適用して重力勾配テンソルG(r)を求める。",
+          "used_node_ids": [
+            "astro.orbit.pj01_perturbed_two_body_eom",
+            "math.calc.m08_partial_total_diff",
+            "orbita.od_stm_p.n02_stm_variational_equation",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A(t) = \\frac{\\partial}{\\partial (\\mathbf{r},\\mathbf{v})}\\begin{pmatrix} \\mathbf{v} \\\\ -\\frac{\\mu}{r^3}\\mathbf{r} + \\mathbf{a}_p(\\mathbf{r}) \\end{pmatrix}",
+          "to_latex": "A(t) = \\begin{pmatrix} 0_3 & I_3 \\\\ G(\\mathbf{r}) & 0_3 \\end{pmatrix},\\quad G(\\mathbf{r}) = \\frac{\\partial}{\\partial \\mathbf{r}}\\left(-\\frac{\\mu}{r^3}\\mathbf{r}\\right) + \\frac{\\partial \\mathbf{a}_p}{\\partial \\mathbf{r}}",
+          "operation_label": "位置・速度ブロックごとの偏微分展開",
+          "explanation": "dr/dt = vの偏微分から上段ブロック(0_3, I_3)を得て、下段左ブロックに加速度の位置勾配G(r)を置く。",
+          "used_node_ids": [
+            "astro.orbit.pj01_perturbed_two_body_eom",
+            "phys.orbit.g01_two_body_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "A(t) = \\begin{pmatrix} 0_3 & I_3 \\\\ G(\\mathbf{r}) & 0_3 \\end{pmatrix},\\quad G(\\mathbf{r}) = \\frac{\\partial}{\\partial \\mathbf{r}}\\left(-\\frac{\\mu}{r^3}\\mathbf{r}\\right) + \\frac{\\partial \\mathbf{a}_p}{\\partial \\mathbf{r}}",
+          "to_latex": "A(t) = \\begin{pmatrix} 0_3 & I_3 \\\\ G(t) & 0_3 \\end{pmatrix},\\quad G(\\mathbf{r}) = \\frac{\\partial \\mathbf{a}_{\\mathrm{grav}}}{\\partial \\mathbf{r}} = -\\frac{\\mu}{r^3}\\left(I_3 - \\frac{3\\mathbf{r}\\mathbf{r}^\\top}{r^2}\\right) + \\frac{\\partial \\mathbf{a}_p}{\\partial \\mathbf{r}}",
+          "operation_label": "スカラー因子r^{-3}の勾配と積の微分の適用",
+          "explanation": "partial(r^{-3})/partial r = -3 r^{-5} r^T を用いて積の微分を実行し、重力勾配テンソルG(r)を得る。",
+          "used_node_ids": [
+            "math.calc.m08_partial_total_diff"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.d04_batch_wls_normal_equation",
+      "target_node_id": "orbita.od_stm_p.n04_batch_wls_normal_equation",
+      "route_kind": "deductive",
+      "title": "観測残差の線形化と重み付き最小二乗正規方程式の導出",
+      "premise_node_ids": [
+        "orbita.od_stm_p.n01_nonlinear_od_state_dynamics",
+        "orbita.od_stm_p.n02_stm_variational_equation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m13_taylor_expansion"
+      ],
+      "assumptions": [
+        "参照軌道周りの状態補正量Delta X_0は微小であり、1次テイラー展開で十分近似できる。",
+        "情報行列H^T W Hは正則である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J(\\Delta \\mathbf{X}_0) = \\frac{1}{2}\\sum_{k=1}^m \\big(\\mathbf{y}_k - \\mathbf{h}(\\mathbf{X}(t_k), t_k)\\big)^\\top W_k \\big(\\mathbf{y}_k - \\mathbf{h}(\\mathbf{X}(t_k), t_k)\\big)",
+          "to_latex": "\\Delta \\hat{\\mathbf{X}}_0 = (H^\\top W H)^{-1} H^\\top W \\Delta \\mathbf{y},\\quad H = \\begin{pmatrix} \\tilde{H}_1 \\Phi(t_1, t_0) \\\\ \\vdots \\\\ \\tilde{H}_m \\Phi(t_m, t_0) \\end{pmatrix},\\quad \\tilde{H}_k = \\left.\\frac{\\partial \\mathbf{h}}{\\partial \\mathbf{X}}\\right|_{\\mathbf{X}^*(t_k)}",
+          "operation_label": "観測モデルの線形化と目的関数の停留条件",
+          "explanation": "各時刻の観測残差をSTMを用いて元期状態補正量Delta X_0の線形関数で表し、重み付き二乗和の勾配を零とおくことでバッチWLSの正規方程式を導く。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion",
+            "orbita.od_stm_p.n01_nonlinear_od_state_dynamics",
+            "orbita.od_stm_p.n02_stm_variational_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J(\\Delta \\mathbf{X}_0) = \\frac{1}{2}\\sum_{k=1}^m \\big(\\mathbf{y}_k - \\mathbf{h}(\\mathbf{X}(t_k), t_k)\\big)^\\top W_k \\big(\\mathbf{y}_k - \\mathbf{h}(\\mathbf{X}(t_k), t_k)\\big)",
+          "to_latex": "\\Delta\\mathbf{y}_k \\approx \\tilde{H}_k \\Phi(t_k, t_0)\\Delta\\mathbf{X}_0 + \\boldsymbol{\\epsilon}_k,\\quad J(\\Delta\\mathbf{X}_0) \\approx \\frac{1}{2}(\\Delta\\mathbf{y} - H\\Delta\\mathbf{X}_0)^\\top W (\\Delta\\mathbf{y} - H\\Delta\\mathbf{X}_0)",
+          "operation_label": "テイラー1次展開とSTMによる元期への写像",
+          "explanation": "観測関数hを参照軌道周りで1次展開し、Delta X(t_k) = Phi(t_k, t_0) Delta X_0を代入して、全時刻の観測を縦に積んだ計画行列Hを構成する。",
+          "used_node_ids": [
+            "math.calc.m13_taylor_expansion",
+            "orbita.od_stm_p.n02_stm_variational_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta\\mathbf{y}_k \\approx \\tilde{H}_k \\Phi(t_k, t_0)\\Delta\\mathbf{X}_0 + \\boldsymbol{\\epsilon}_k,\\quad J(\\Delta\\mathbf{X}_0) \\approx \\frac{1}{2}(\\Delta\\mathbf{y} - H\\Delta\\mathbf{X}_0)^\\top W (\\Delta\\mathbf{y} - H\\Delta\\mathbf{X}_0)",
+          "to_latex": "\\frac{\\partial J}{\\partial (\\Delta\\mathbf{X}_0)} = -H^\\top W (\\Delta\\mathbf{y} - H\\Delta\\mathbf{X}_0) = \\mathbf{0}",
+          "operation_label": "2次形式の目的関数の微分（停留条件）",
+          "explanation": "Delta X_0に関する2次形式の勾配を零とおき、正規方程式の線形連立系を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\partial J}{\\partial (\\Delta\\mathbf{X}_0)} = -H^\\top W (\\Delta\\mathbf{y} - H\\Delta\\mathbf{X}_0) = \\mathbf{0}",
+          "to_latex": "\\Delta \\hat{\\mathbf{X}}_0 = (H^\\top W H)^{-1} H^\\top W \\Delta \\mathbf{y},\\quad H = \\begin{pmatrix} \\tilde{H}_1 \\Phi(t_1, t_0) \\\\ \\vdots \\\\ \\tilde{H}_m \\Phi(t_m, t_0) \\end{pmatrix},\\quad \\tilde{H}_k = \\left.\\frac{\\partial \\mathbf{h}}{\\partial \\mathbf{X}}\\right|_{\\mathbf{X}^*(t_k)}",
+          "operation_label": "情報行列の逆行列による解の明示",
+          "explanation": "正則な情報行列H^T W Hの逆行列を左から乗じて、バッチ重み付き最小二乗解を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.d05_a_priori_map_covariance",
+      "target_node_id": "orbita.od_stm_p.n05_a_priori_map_covariance",
+      "route_kind": "deductive",
+      "title": "事前共分散の正則化項導入によるMAP推定と事後共分散の導出",
+      "premise_node_ids": [
+        "orbita.od_stm_p.n04_batch_wls_normal_equation"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "assumptions": [
+        "事前推定誤差と観測雑音は互いに独立な正規分布に従い、W = R^{-1}（観測誤差共分散の逆行列）と選ぶ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "J_{\\mathrm{MAP}}(\\Delta\\mathbf{X}_0) = \\frac{1}{2}(\\Delta\\bar{\\mathbf{X}}_0 - \\Delta\\mathbf{X}_0)^\\top \\bar{P}_0^{-1}(\\Delta\\bar{\\mathbf{X}}_0 - \\Delta\\mathbf{X}_0) + \\frac{1}{2}(\\Delta\\mathbf{y} - H\\Delta\\mathbf{X}_0)^\\top W (\\Delta\\mathbf{y} - H\\Delta\\mathbf{X}_0)",
+          "to_latex": "\\Delta \\hat{\\mathbf{X}}_0 = (\\bar{P}_0^{-1} + H^\\top W H)^{-1}(\\bar{P}_0^{-1}\\Delta\\bar{\\mathbf{X}}_0 + H^\\top W \\Delta\\mathbf{y}),\\quad P_0 = (\\bar{P}_0^{-1} + H^\\top W H)^{-1}",
+          "operation_label": "事前罰則項付き目的関数の最小化と誤差共分散評価",
+          "explanation": "事前情報による2次形式の罰則項を加えたMAP目的関数を最小化して推定量を得て、推定誤差の期待値計算から事後共分散行列P_0を導出する。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness",
+            "orbita.od_stm_p.n04_batch_wls_normal_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "J_{\\mathrm{MAP}}(\\Delta\\mathbf{X}_0) = \\frac{1}{2}(\\Delta\\bar{\\mathbf{X}}_0 - \\Delta\\mathbf{X}_0)^\\top \\bar{P}_0^{-1}(\\Delta\\bar{\\mathbf{X}}_0 - \\Delta\\mathbf{X}_0) + \\frac{1}{2}(\\Delta\\mathbf{y} - H\\Delta\\mathbf{X}_0)^\\top W (\\Delta\\mathbf{y} - H\\Delta\\mathbf{X}_0)",
+          "to_latex": "(\\bar{P}_0^{-1} + H^\\top W H)\\Delta\\hat{\\mathbf{X}}_0 = \\bar{P}_0^{-1}\\Delta\\bar{\\mathbf{X}}_0 + H^\\top W \\Delta\\mathbf{y}",
+          "operation_label": "勾配零条件によるMAP正規方程式の導出",
+          "explanation": "J_MAPをDelta X_0で微分して零とおくことで、事前情報行列P_bar_0^{-1}が加算された正規方程式を得る。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n04_batch_wls_normal_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\bar{P}_0^{-1} + H^\\top W H)\\Delta\\hat{\\mathbf{X}}_0 = \\bar{P}_0^{-1}\\Delta\\bar{\\mathbf{X}}_0 + H^\\top W \\Delta\\mathbf{y}",
+          "to_latex": "\\Delta \\hat{\\mathbf{X}}_0 = (\\bar{P}_0^{-1} + H^\\top W H)^{-1}(\\bar{P}_0^{-1}\\Delta\\bar{\\mathbf{X}}_0 + H^\\top W \\Delta\\mathbf{y}),\\quad P_0 = (\\bar{P}_0^{-1} + H^\\top W H)^{-1}",
+          "operation_label": "正定値情報行列の反転と事後共分散の同定",
+          "explanation": "正定値対称な情報行列(P_bar_0^{-1} + H^T W H)を反転して推定解を得て、W = R^{-1}のとき推定誤差共分散E[e_0 e_0^T]がその逆行列P_0に一致することを示す。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.d06_covariance_propagation_stm",
+      "target_node_id": "orbita.od_stm_p.n06_covariance_propagation_stm",
+      "route_kind": "deductive",
+      "title": "STM線形誤差写像に基づく共分散行列の時間伝播",
+      "premise_node_ids": [
+        "orbita.od_stm_p.n02_stm_variational_equation",
+        "orbita.od_stm_p.n05_a_priori_map_covariance"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "軌道誤差は線形領域にあり、過程雑音（プロセスノイズ）は無視できるか別項で扱う。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P(t) := \\mathbb{E}\\big[\\delta\\mathbf{X}(t)\\delta\\mathbf{X}(t)^\\top\\big],\\quad \\delta\\mathbf{X}(t) = \\Phi(t, t_0)\\delta\\mathbf{X}_0",
+          "to_latex": "P(t) = \\Phi(t, t_0)\\, P_0\\, \\Phi(t, t_0)^\\top",
+          "operation_label": "線形写像の期待値展開",
+          "explanation": "時刻tにおける推定誤差ベクトルをSTMで元期誤差に結びつけ、期待値演算の線形性から共分散伝播式を導く。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n02_stm_variational_equation",
+            "orbita.od_stm_p.n05_a_priori_map_covariance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P(t) := \\mathbb{E}\\big[\\delta\\mathbf{X}(t)\\delta\\mathbf{X}(t)^\\top\\big],\\quad \\delta\\mathbf{X}(t) = \\Phi(t, t_0)\\delta\\mathbf{X}_0",
+          "to_latex": "P(t) = \\mathbb{E}\\big[\\Phi(t, t_0)\\delta\\mathbf{X}_0\\delta\\mathbf{X}_0^\\top\\Phi(t, t_0)^\\top\\big]",
+          "operation_label": "STMによる誤差外積の展開",
+          "explanation": "delta X(t) = Phi(t, t_0) delta X_0 を共分散の定義式に代入する。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n02_stm_variational_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P(t) = \\mathbb{E}\\big[\\Phi(t, t_0)\\delta\\mathbf{X}_0\\delta\\mathbf{X}_0^\\top\\Phi(t, t_0)^\\top\\big]",
+          "to_latex": "P(t) = \\Phi(t, t_0)\\, P_0\\, \\Phi(t, t_0)^\\top",
+          "operation_label": "確定行列の期待値外への括り出し",
+          "explanation": "確定的な行列Phi(t, t_0)を期待値記号の外へ出し、P_0 = E[delta X_0 delta X_0^T]を代入する。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n05_a_priori_map_covariance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.d07_tca_and_b_plane_geometry",
+      "target_node_id": "orbita.od_stm_p.n07_tca_and_b_plane_geometry",
+      "route_kind": "reformulation",
+      "title": "相対位置ベクトルの最小化条件とB平面正規直交基底の定義",
+      "premise_node_ids": [
+        "astro.cw.cw01_lvlh_frame_def"
+      ],
+      "required_math_node_ids": [
+        "math.vec.m03_dot_cross_product"
+      ],
+      "assumptions": [
+        "遭遇時間窓において相対速度ベクトルv_relは非零であり、主衛星速度v_pと平行でない。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{d}{dt}\\left(\\frac{1}{2}\\|\\mathbf{r}_{\\mathrm{rel}}(t)\\|^2\\right) = 0,\\quad \\mathbf{v}_{\\mathrm{rel}} = \\mathbf{v}_1 - \\mathbf{v}_2",
+          "to_latex": "\\mathbf{r}_{\\mathrm{rel}}(t_{\\mathrm{TCA}}) \\cdot \\mathbf{v}_{\\mathrm{rel}}(t_{\\mathrm{TCA}}) = 0,\\quad \\hat{\\boldsymbol{\\xi}}_B = \\frac{\\mathbf{v}_{\\mathrm{rel}} \\times \\mathbf{v}_p}{\\|\\mathbf{v}_{\\mathrm{rel}} \\times \\mathbf{v}_p\\|},\\quad \\hat{\\boldsymbol{\\eta}}_B = \\frac{\\mathbf{v}_{\\mathrm{rel}}}{\\|\\mathbf{v}_{\\mathrm{rel}}\\|},\\quad \\hat{\\boldsymbol{\\zeta}}_B = \\hat{\\boldsymbol{\\xi}}_B \\times \\hat{\\boldsymbol{\\eta}}_B",
+          "operation_label": "最接近停留条件と遭遇平面基底の構築",
+          "explanation": "相対距離の2乗の時間微分を零とおくことでTCA条件を定め、相対速度方向eta_Bに直交する2次元B平面を張る正規直交基底(xi_B, zeta_B)を定義する。",
+          "used_node_ids": [
+            "astro.cw.cw01_lvlh_frame_def",
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.d08_combined_covariance_mahalanobis",
+      "target_node_id": "orbita.od_stm_p.n08_combined_covariance_mahalanobis",
+      "route_kind": "deductive",
+      "title": "独立な2物体の位置誤差の合算とマハラノビス距離の導出",
+      "premise_node_ids": [
+        "orbita.od_stm_p.n06_covariance_propagation_stm",
+        "orbita.od_stm_p.n07_tca_and_b_plane_geometry"
+      ],
+      "required_math_node_ids": [
+        "math.calc.e04_quadratic_form_definiteness"
+      ],
+      "assumptions": [
+        "主衛星と副物体の軌道推定誤差は互いに統計的に独立であり、それぞれの位置共分散行列P_{r,1}, P_{r,2}の和は正定値である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\delta\\mathbf{r}_{\\mathrm{rel}} = \\delta\\mathbf{r}_1 - \\delta\\mathbf{r}_2,\\quad \\mathbb{E}[\\delta\\mathbf{r}_1\\delta\\mathbf{r}_2^\\top] = 0_3",
+          "to_latex": "P_{\\mathrm{comb}} = P_{r,1}(t_{\\mathrm{TCA}}) + P_{r,2}(t_{\\mathrm{TCA}}),\\quad d_M^2 = \\mathbf{r}_{\\mathrm{rel}}^\\top P_{\\mathrm{comb}}^{-1} \\mathbf{r}_{\\mathrm{rel}}",
+          "operation_label": "独立誤差の共分散加算と標準化2次形式の定義",
+          "explanation": "独立な2物体の位置誤差の差に対する共分散が各々の位置共分散の和となることを示し、その逆行列で計量したマハラノビス距離の2乗を導く。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness",
+            "orbita.od_stm_p.n06_covariance_propagation_stm",
+            "orbita.od_stm_p.n07_tca_and_b_plane_geometry"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta\\mathbf{r}_{\\mathrm{rel}} = \\delta\\mathbf{r}_1 - \\delta\\mathbf{r}_2,\\quad \\mathbb{E}[\\delta\\mathbf{r}_1\\delta\\mathbf{r}_2^\\top] = 0_3",
+          "to_latex": "P_{\\mathrm{comb}} = \\mathbb{E}[\\delta\\mathbf{r}_{\\mathrm{rel}}\\delta\\mathbf{r}_{\\mathrm{rel}}^\\top] = P_{r,1}(t_{\\mathrm{TCA}}) + P_{r,2}(t_{\\mathrm{TCA}})",
+          "operation_label": "交差項の消去による合算共分散の算出",
+          "explanation": "独立性により交差共分散項が零となるため、相対位置誤差の共分散は2物体のTCA位置共分散の和となる。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n06_covariance_propagation_stm"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\mathrm{comb}} = \\mathbb{E}[\\delta\\mathbf{r}_{\\mathrm{rel}}\\delta\\mathbf{r}_{\\mathrm{rel}}^\\top] = P_{r,1}(t_{\\mathrm{TCA}}) + P_{r,2}(t_{\\mathrm{TCA}})",
+          "to_latex": "P_{\\mathrm{comb}} = P_{r,1}(t_{\\mathrm{TCA}}) + P_{r,2}(t_{\\mathrm{TCA}}),\\quad d_M^2 = \\mathbf{r}_{\\mathrm{rel}}^\\top P_{\\mathrm{comb}}^{-1} \\mathbf{r}_{\\mathrm{rel}}",
+          "operation_label": "正定値計量によるマハラノビス距離の導入",
+          "explanation": "正定値対称行列P_combの逆行列を計量テンソルとして相対位置ベクトルの2次形式をとり、ミス距離を標準偏差単位で測るd_M^2を定義する。",
+          "used_node_ids": [
+            "math.calc.e04_quadratic_form_definiteness"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.d09_2d_b_plane_collision_probability",
+      "target_node_id": "orbita.od_stm_p.n09_2d_b_plane_collision_probability",
+      "route_kind": "deductive",
+      "title": "3次元ガウス密度のB平面への周辺化による2次元衝突確率Pcの導出",
+      "premise_node_ids": [
+        "orbita.od_stm_p.n07_tca_and_b_plane_geometry",
+        "orbita.od_stm_p.n08_combined_covariance_mahalanobis"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "遭遇時間中の相対運動は等速直線運動とみなせる（高速遭遇近似）。",
+        "位置誤差は相対速度方向に対して一様に伸びた円柱領域を通過し、速度誤差は無視できる。",
+        "2物体は合算半径R_A = R_1 + R_2の剛体球として近似される。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "P_c = \\iiint_{\\mathcal{V}_{\\mathrm{cyl}}} \\frac{1}{(2\\pi)^{3/2}\\sqrt{\\det P_{\\mathrm{comb}}}}\\exp\\!\\left(-\\frac{1}{2}(\\mathbf{r}-\\mathbf{r}_{\\mathrm{rel}})^\\top P_{\\mathrm{comb}}^{-1}(\\mathbf{r}-\\mathbf{r}_{\\mathrm{rel}})\\right)d^3\\mathbf{r}",
+          "to_latex": "P_c = \\frac{1}{2\\pi\\sqrt{\\det C_B}} \\iint_{x_B^2 + z_B^2 \\le R_A^2} \\exp\\!\\left(-\\frac{1}{2}(\\mathbf{u} - \\boldsymbol{\\mu}_B)^\\top C_B^{-1} (\\mathbf{u} - \\boldsymbol{\\mu}_B)\\right) d x_B\\, d z_B,\\quad C_B = T_B P_{\\mathrm{comb}} T_B^\\top",
+          "operation_label": "相対速度方向の無限積分による2次元周辺化",
+          "explanation": "衝突掃引体積（相対速度方向に無限長に伸びた半径R_Aの円柱）上で3次元ガウス分布を積分し、相対速度方向を解析的に積分消去することでB平面上の2次元ガウス積分に帰着させる。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n07_tca_and_b_plane_geometry",
+            "orbita.od_stm_p.n08_combined_covariance_mahalanobis"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_c = \\iiint_{\\mathcal{V}_{\\mathrm{cyl}}} \\frac{1}{(2\\pi)^{3/2}\\sqrt{\\det P_{\\mathrm{comb}}}}\\exp\\!\\left(-\\frac{1}{2}(\\mathbf{r}-\\mathbf{r}_{\\mathrm{rel}})^\\top P_{\\mathrm{comb}}^{-1}(\\mathbf{r}-\\mathbf{r}_{\\mathrm{rel}})\\right)d^3\\mathbf{r}",
+          "to_latex": "\\mathbf{u} = T_B\\mathbf{r} = \\begin{pmatrix} x_B \\\\ z_B \\end{pmatrix},\\quad \\boldsymbol{\\mu}_B = T_B\\mathbf{r}_{\\mathrm{rel}},\\quad C_B = T_B P_{\\mathrm{comb}} T_B^\\top,\\quad T_B = \\begin{pmatrix} \\hat{\\boldsymbol{\\xi}}_B^\\top \\\\ \\hat{\\boldsymbol{\\zeta}}_B^\\top \\end{pmatrix}",
+          "operation_label": "B平面射影行列T_Bによる座標変換",
+          "explanation": "B平面の正規直交基底xi_B, zeta_Bからなる射影行列T_Bを定義し、B平面上の平均ミスベクトルmu_Bと2x2共分散行列C_Bを構成する。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n07_tca_and_b_plane_geometry"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{u} = T_B\\mathbf{r} = \\begin{pmatrix} x_B \\\\ z_B \\end{pmatrix},\\quad \\boldsymbol{\\mu}_B = T_B\\mathbf{r}_{\\mathrm{rel}},\\quad C_B = T_B P_{\\mathrm{comb}} T_B^\\top,\\quad T_B = \\begin{pmatrix} \\hat{\\boldsymbol{\\xi}}_B^\\top \\\\ \\hat{\\boldsymbol{\\zeta}}_B^\\top \\end{pmatrix}",
+          "to_latex": "P_c = \\frac{1}{2\\pi\\sqrt{\\det C_B}} \\iint_{x_B^2 + z_B^2 \\le R_A^2} \\exp\\!\\left(-\\frac{1}{2}(\\mathbf{u} - \\boldsymbol{\\mu}_B)^\\top C_B^{-1} (\\mathbf{u} - \\boldsymbol{\\mu}_B)\\right) d x_B\\, d z_B,\\quad C_B = T_B P_{\\mathrm{comb}} T_B^\\top",
+          "operation_label": "多変量正規分布の周辺化と衝突円盤積分",
+          "explanation": "相対速度方向eta_Bの座標を(-infty, +infty)で積分消去すると2次元周辺正規分布が得られ、半径R_Aの衝突円盤上の面積分に帰着する。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n08_combined_covariance_mahalanobis"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "orbita.od_stm_p.d10_cam_deltav_mahalanobis_tradeoff",
+      "target_node_id": "orbita.od_stm_p.n10_cam_deltav_mahalanobis_tradeoff",
+      "route_kind": "deductive",
+      "title": "STMによるCAMミス距離感度と確率希釈効果の導出",
+      "premise_node_ids": [
+        "orbita.od_stm_p.n02_stm_variational_equation",
+        "orbita.od_stm_p.n09_2d_b_plane_collision_probability",
+        "astro.cw.cw08_cw_state_transition_matrix"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "衝突回避マヌーバDelta v_mは時刻t_mにおける瞬間的な速度増分としてモデル化される。",
+        "確率希釈の定性的評価では等方的なB平面共分散C_B = sigma_B^2 I_2を考える。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\delta\\mathbf{X}(t_m) = \\begin{pmatrix} \\mathbf{0} \\\\ \\Delta\\mathbf{v}_m \\end{pmatrix},\\quad P_c \\approx \\frac{R_A^2}{2\\sigma_B^2}\\exp\\!\\left(-\\frac{\\|\\boldsymbol{\\mu}_B\\|^2}{2\\sigma_B^2}\\right)",
+          "to_latex": "\\Delta \\mathbf{r}(t_{\\mathrm{TCA}}) \\approx \\Phi_{rv}(t_{\\mathrm{TCA}}, t_m)\\,\\Delta\\mathbf{v}_m,\\quad \\frac{\\partial P_c}{\\partial \\sigma_B} < 0 \\iff \\|\\boldsymbol{\\mu}_B\\|^2 \\ll \\sigma_B^2,\\quad \\frac{\\partial P_c}{\\partial \\sigma_B} > 0 \\text{ (small } \\sigma_B \\text{ with } \\|\\boldsymbol{\\mu}_B\\| > R_A\\text{)}",
+          "operation_label": "STM感度伝播とPcのsigma_B微分による符号反転解析",
+          "explanation": "マヌーバ時刻の速度摂動をSTMの位置-速度ブロックPhi_rvでTCA位置変位へ伝播させ、さらに小半径近似のPcをsigma_Bで微分することで、ミス距離と標準偏差の比に応じた確率希釈現象を示す。",
+          "used_node_ids": [
+            "astro.cw.cw08_cw_state_transition_matrix",
+            "orbita.od_stm_p.n02_stm_variational_equation",
+            "orbita.od_stm_p.n09_2d_b_plane_collision_probability"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\delta\\mathbf{X}(t_m) = \\begin{pmatrix} \\mathbf{0} \\\\ \\Delta\\mathbf{v}_m \\end{pmatrix},\\quad P_c \\approx \\frac{R_A^2}{2\\sigma_B^2}\\exp\\!\\left(-\\frac{\\|\\boldsymbol{\\mu}_B\\|^2}{2\\sigma_B^2}\\right)",
+          "to_latex": "\\Delta \\mathbf{r}(t_{\\mathrm{TCA}}) \\approx \\Phi_{rv}(t_{\\mathrm{TCA}}, t_m)\\,\\Delta\\mathbf{v}_m,\\quad \\frac{\\partial P_c}{\\partial \\sigma_B} \\approx \\frac{R_A^2}{2\\sigma_B^5}(\\|\\boldsymbol{\\mu}_B\\|^2 - 2\\sigma_B^2)\\exp\\!\\left(-\\frac{\\|\\boldsymbol{\\mu}_B\\|^2}{2\\sigma_B^2}\\right)",
+          "operation_label": "STMブロック積とPcの偏導関数の計算",
+          "explanation": "Phi(t_TCA, t_m)の位置行と速度列の積からDelta rを導き、等方近似されたPcをsigma_Bで偏微分する。",
+          "used_node_ids": [
+            "astro.cw.cw08_cw_state_transition_matrix",
+            "orbita.od_stm_p.n02_stm_variational_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Delta \\mathbf{r}(t_{\\mathrm{TCA}}) \\approx \\Phi_{rv}(t_{\\mathrm{TCA}}, t_m)\\,\\Delta\\mathbf{v}_m,\\quad \\frac{\\partial P_c}{\\partial \\sigma_B} \\approx \\frac{R_A^2}{2\\sigma_B^5}(\\|\\boldsymbol{\\mu}_B\\|^2 - 2\\sigma_B^2)\\exp\\!\\left(-\\frac{\\|\\boldsymbol{\\mu}_B\\|^2}{2\\sigma_B^2}\\right)",
+          "to_latex": "\\Delta \\mathbf{r}(t_{\\mathrm{TCA}}) \\approx \\Phi_{rv}(t_{\\mathrm{TCA}}, t_m)\\,\\Delta\\mathbf{v}_m,\\quad \\frac{\\partial P_c}{\\partial \\sigma_B} < 0 \\iff \\|\\boldsymbol{\\mu}_B\\|^2 \\ll \\sigma_B^2,\\quad \\frac{\\partial P_c}{\\partial \\sigma_B} > 0 \\text{ (small } \\sigma_B \\text{ with } \\|\\boldsymbol{\\mu}_B\\| > R_A\\text{)}",
+          "operation_label": "偏導関数の符号判定と確率希釈領域の特定",
+          "explanation": "||mu_B||^2 < 2 sigma_B^2 の領域では不確実性sigma_Bの増大とともにPcが減少する確率希釈が生じ、真に安全な軌道評価には単なるPc最小化だけでなくミス距離・マハラノビス距離との併用が必要となる。",
+          "used_node_ids": [
+            "orbita.od_stm_p.n09_2d_b_plane_collision_probability"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}

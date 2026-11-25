@@ -1,0 +1,688 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_turbopump_cavitation",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "ロケットターボポンプ流体力学：NPSH・トーマキャビテーション数・吸込比速度・オイラーのターボ機械方程式とインデューサ旋回キャビテーション",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『ロケットターボポンプ流体力学：NPSH・トーマキャビテーション数・吸込比速度・オイラーのターボ機械方程式とインデューサ旋回キャビテーション』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.npsh.n01_euler_turbomachinery_head",
+      "short_code": "NPSH01",
+      "kind": "theorem_formula",
+      "title": "オイラーのターボ機械方程式と理論揚程",
+      "summary": "インペラやインデューサなどの回転翼列を通過する流体の角運動量変化から、理論揚程と軸動力を与える基本方程式。",
+      "canonical_latex": "H_{\\mathrm{th}} = \\frac{u_2 c_{u2} - u_1 c_{u1}}{g},\\qquad P_{\\mathrm{shaft}} = \\dot{m}(u_2 c_{u2} - u_1 c_{u1})",
+      "aliases_latex": [
+        "\\Delta h_0 = u_2 c_{u2} - u_1 c_{u1}"
+      ],
+      "keywords": [
+        "オイラーのターボ機械方程式",
+        "理論揚程",
+        "角運動量保存則",
+        "ターボポンプ"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "fluid_mechanics",
+        "turbomachinery"
+      ]
+    },
+    {
+      "id": "aerosp.npsh.n02_npsh_available_definition",
+      "short_code": "NPSH02",
+      "kind": "definition",
+      "title": "有効吸込ヘッド（NPSHa）の定義",
+      "summary": "ポンプ吸込口における流体の全圧と飽和蒸気圧との差を液柱高さ（ヘッド）で表した、キャビテーションに対する圧力余裕の指標。",
+      "canonical_latex": "\\mathrm{NPSH}_a := \\frac{p_{s0}}{\\rho g} + \\frac{c_0^2}{2g} - \\frac{p_v}{\\rho g} = \\frac{p_{t0} - p_v}{\\rho g}",
+      "aliases_latex": [
+        "H_{sv} = \\frac{p_{t0} - p_v}{\\rho g}"
+      ],
+      "keywords": [
+        "有効吸込ヘッド",
+        "NPSHa",
+        "飽和蒸気圧",
+        "キャビテーション"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "fluid_mechanics",
+        "turbomachinery"
+      ]
+    },
+    {
+      "id": "aerosp.npsh.n03_npsh_required_blade_drop",
+      "short_code": "NPSH03",
+      "kind": "theorem_formula",
+      "title": "必要吸込ヘッド（NPSHr）と翼面局所圧力低下の関係",
+      "summary": "羽根車入口の動圧および翼負圧面での局所的な相対速度加速による圧力降下から定まる、キャビテーション抑止に必要な最小吸込ヘッド。",
+      "canonical_latex": "\\mathrm{NPSH}_r = \\frac{c_1^2}{2g} + \\lambda_c \\frac{w_1^2}{2g},\\qquad \\mathrm{NPSH}_a \\ge \\mathrm{NPSH}_r",
+      "aliases_latex": [
+        "\\mathrm{NPSH}_r = \\frac{c_1^2}{2g} + \\sigma_b \\frac{w_1^2}{2g}"
+      ],
+      "keywords": [
+        "必要吸込ヘッド",
+        "NPSHr",
+        "局所圧力低下",
+        "キャビテーション発生限界"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "fluid_mechanics",
+        "turbomachinery"
+      ]
+    },
+    {
+      "id": "aerosp.npsh.n04_thoma_cavitation_number",
+      "short_code": "NPSH04",
+      "kind": "definition",
+      "title": "トーマのキャビテーション数 \\sigma_T の定義",
+      "summary": "ポンプの全揚程に対する有効吸込ヘッドまたは必要吸込ヘッドの無次元比であり、異なる運転条件間でのキャビテーション相似則に用いられる。",
+      "canonical_latex": "\\sigma_T := \\frac{\\mathrm{NPSH}_a}{H},\\qquad \\sigma_c := \\frac{\\mathrm{NPSH}_r}{H}",
+      "aliases_latex": [
+        "\\sigma = \\frac{\\mathrm{NPSH}}{H}"
+      ],
+      "keywords": [
+        "トーマのキャビテーション数",
+        "相似則",
+        "無次元数",
+        "ポンプ揚程"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "fluid_mechanics",
+        "turbomachinery"
+      ]
+    },
+    {
+      "id": "aerosp.npsh.n05_suction_specific_speed",
+      "short_code": "NPSH05",
+      "kind": "definition",
+      "title": "吸込比速度 S_s の定義と無次元表示",
+      "summary": "回転数・体積流量・必要吸込ヘッドから構成される、ポンプの耐キャビテーション吸込性能を評価するための特性指標。",
+      "canonical_latex": "S_s := \\frac{N\\sqrt{Q}}{(\\mathrm{NPSH}_r)^{3/4}},\\qquad S_s^* := \\frac{\\omega\\sqrt{Q}}{(g\\,\\mathrm{NPSH}_r)^{3/4}}",
+      "aliases_latex": [
+        "N_{ss} = \\frac{N Q^{1/2}}{\\mathrm{NPSH}_r^{3/4}}"
+      ],
+      "keywords": [
+        "吸込比速度",
+        "耐キャビテーション性能",
+        "比速度",
+        "インデューサ"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "fluid_mechanics",
+        "turbomachinery"
+      ]
+    },
+    {
+      "id": "aerosp.npsh.n06_inducer_cavitation_number",
+      "short_code": "NPSH06",
+      "kind": "definition",
+      "title": "インデューサのキャビテーション数 K と流量係数 \\phi の定義",
+      "summary": "インデューサ先端周速の動圧を基準としたキャビテーション数と、軸流速度と周速の比である流量係数の定義。",
+      "canonical_latex": "K := \\frac{p_1 - p_v}{\\frac{1}{2}\\rho u_t^2} = \\frac{2g\\,\\mathrm{NPSH}_a - c_1^2}{u_t^2},\\qquad \\phi := \\frac{c_{m1}}{u_t}",
+      "aliases_latex": [
+        "\\sigma_t = \\frac{p_1 - p_v}{\\frac{1}{2}\\rho u_t^2}"
+      ],
+      "keywords": [
+        "インデューサ",
+        "キャビテーション数",
+        "流量係数",
+        "先端周速"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "fluid_mechanics",
+        "turbomachinery"
+      ]
+    },
+    {
+      "id": "aerosp.npsh.n07_inducer_optimal_flow_coefficient",
+      "short_code": "NPSH07",
+      "kind": "theorem_formula",
+      "title": "吸込比速度最大化によるインデューサ最適流量係数 \\phi_{\\mathrm{opt}}",
+      "summary": "予旋回のない軸流入口において吸込比速度を最大化する流量係数と、そのときの最小必要吸込ヘッドを与える最適設計条件。",
+      "canonical_latex": "\\phi_{\\mathrm{opt}} = \\sqrt{\\frac{\\lambda_c}{2(1 + \\lambda_c)}},\\qquad \\mathrm{NPSH}_{r,\\mathrm{opt}} = \\frac{3\\lambda_c}{2(1 + \\lambda_c)}\\frac{u_t^2}{2g}",
+      "aliases_latex": [
+        "\\phi_{\\mathrm{opt}} = \\left(\\frac{\\lambda_c}{2 + 2\\lambda_c}\\right)^{1/2}"
+      ],
+      "keywords": [
+        "最適流量係数",
+        "吸込比速度最大化",
+        "インデューサ設計",
+        "最適吸込性能"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "fluid_mechanics",
+        "turbomachinery"
+      ]
+    },
+    {
+      "id": "aerosp.npsh.n08_cavitation_surge_compliance",
+      "short_code": "NPSH08",
+      "kind": "theorem_formula",
+      "title": "キャビテーションコンプライアンスとサージ固有振動数",
+      "summary": "インデューサ内キャビティ体積の圧力依存性（コンプライアンス）と吸込管路の流体イナータンスが結合して生じる軸方向サージ振動の固有角振動数。",
+      "canonical_latex": "\\omega_{\\mathrm{surge}} = \\frac{1}{\\sqrt{L_{\\mathrm{in}} C_c}},\\qquad C_c := -\\frac{\\partial V_c}{\\partial p_1},\\qquad L_{\\mathrm{in}} := \\frac{\\rho l_{\\mathrm{in}}}{A_{\\mathrm{in}}}",
+      "aliases_latex": [
+        "f_{\\mathrm{surge}} = \\frac{1}{2\\pi\\sqrt{L_{\\mathrm{in}} C_c}}"
+      ],
+      "keywords": [
+        "キャビテーションサージ",
+        "キャビテーションコンプライアンス",
+        "流体イナータンス",
+        "POGO振動"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "fluid_mechanics",
+        "turbomachinery"
+      ]
+    },
+    {
+      "id": "aerosp.npsh.n09_rotating_cavitation_onset",
+      "short_code": "NPSH09",
+      "kind": "theorem_formula",
+      "title": "インデューサ旋回キャビテーションの発生条件と超同期伝播周波数",
+      "summary": "キャビティ長が翼間ピッチに近づく際に隣接翼との干渉によって発生する旋回キャビテーションの臨界パラメータと、回転周波数よりわずかに高い超同期周波数則。",
+      "canonical_latex": "\\frac{K}{2\\alpha} \\lesssim 1 + \\frac{1}{2}\\sigma_{\\mathrm{b}},\\qquad f_{rc} = Z_c \\left(1 + \\delta_{rc}\\right)f_n\\quad (\\delta_{rc} \\approx 0.1 \\sim 0.25)",
+      "aliases_latex": [
+        "\\frac{K}{2\\alpha} \\approx 1,\\quad \\omega_{rc} = (1 + \\delta_{rc})\\omega"
+      ],
+      "keywords": [
+        "旋回キャビテーション",
+        "超同期振動",
+        "迎え角比",
+        "ロケットターボポンプ"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "fluid_mechanics",
+        "turbomachinery"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "der.aerosp.npsh.n01_euler_turbomachinery_head",
+      "target_node_id": "aerosp.npsh.n01_euler_turbomachinery_head",
+      "route_kind": "deductive",
+      "title": "角運動量保存則からのオイラーターボ機械方程式の導出",
+      "premise_node_ids": [
+        "phys.mech.p02_newton_second_law",
+        "math.vec.m03_dot_cross_product",
+        "aerosp.rc.n01_turbopump_power_balance"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m02_fundamental_theorem_calc"
+      ],
+      "assumptions": [
+        "定常・軸対称な1次元平均流線流れを仮定する。",
+        "羽根車内の流体はすべて同じ入口・出口条件を通過し、壁面摩擦トルクは無視する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\boldsymbol{\\tau} = \\frac{d}{dt}\\int_{V}\\rho(\\mathbf{r}\\times\\mathbf{c})\\,dV",
+          "to_latex": "H_{\\mathrm{th}} = \\frac{u_2 c_{u2} - u_1 c_{u1}}{g},\\qquad P_{\\mathrm{shaft}} = \\dot{m}(u_2 c_{u2} - u_1 c_{u1})",
+          "operation_label": "角運動量収支と周速変換による理論揚程の導出",
+          "explanation": "検査体積に対する定常角運動量保存則から軸トルクを求め、角速度を掛けて軸動力と理論揚程を得る。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "math.vec.m03_dot_cross_product",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\boldsymbol{\\tau} = \\frac{d}{dt}\\int_{V}\\rho(\\mathbf{r}\\times\\mathbf{c})\\,dV",
+          "to_latex": "\\tau_z = \\dot{m}(r_2 c_{u2} - r_1 c_{u1})",
+          "operation_label": "定常検査体積への角運動量流束の適用",
+          "explanation": "回転軸方向成分を取り出し、入口と出口の角運動量流束の差として軸トルクを表す。",
+          "used_node_ids": [
+            "math.calc.m02_fundamental_theorem_calc",
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tau_z = \\dot{m}(r_2 c_{u2} - r_1 c_{u1})",
+          "to_latex": "P_{\\mathrm{shaft}} = \\omega \\tau_z = \\dot{m}(u_2 c_{u2} - u_1 c_{u1})",
+          "operation_label": "周速 u = r\\omega の導入と軸動力の計算",
+          "explanation": "軸トルクに角速度 \\omega を乗じ、各半径位置の周速 u_1 = r_1\\omega, u_2 = r_2\\omega で整理する。",
+          "used_node_ids": [
+            "aerosp.rc.n01_turbopump_power_balance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_{\\mathrm{shaft}} = \\omega \\tau_z = \\dot{m}(u_2 c_{u2} - u_1 c_{u1})",
+          "to_latex": "H_{\\mathrm{th}} = \\frac{u_2 c_{u2} - u_1 c_{u1}}{g},\\qquad P_{\\mathrm{shaft}} = \\dot{m}(u_2 c_{u2} - u_1 c_{u1})",
+          "operation_label": "重量流量 \\dot{m}g による理論揚程への換算",
+          "explanation": "軸動力 P_{\\mathrm{shaft}} = \\dot{m} g H_{\\mathrm{th}} の関係を用いて単位重量当たりのエネルギーである理論揚程を得る。",
+          "used_node_ids": [
+            "aerosp.rc.n01_turbopump_power_balance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.aerosp.npsh.n02_npsh_available_definition",
+      "target_node_id": "aerosp.npsh.n02_npsh_available_definition",
+      "route_kind": "reformulation",
+      "title": "ベルヌーイの全圧表示に基づくNPSHaの定義",
+      "premise_node_ids": [
+        "eng.aero.n01_euler_bernoulli_incompressible"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "吸込流路内の作動流体は非圧縮性であり、飽和蒸気圧 p_v は入口温度で一定とする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_{t0} = p_{s0} + \\frac{1}{2}\\rho c_0^2",
+          "to_latex": "\\mathrm{NPSH}_a := \\frac{p_{s0}}{\\rho g} + \\frac{c_0^2}{2g} - \\frac{p_v}{\\rho g} = \\frac{p_{t0} - p_v}{\\rho g}",
+          "operation_label": "全圧と蒸気圧の差のヘッド換算による定義",
+          "explanation": "吸込基準面における静圧と動圧の和（全圧 p_{t0}）から飽和蒸気圧 p_v を差し引き、\\rho g で除してヘッド表示として定義する。",
+          "used_node_ids": [
+            "eng.aero.n01_euler_bernoulli_incompressible"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.aerosp.npsh.n03_npsh_required_blade_drop",
+      "target_node_id": "aerosp.npsh.n03_npsh_required_blade_drop",
+      "route_kind": "deductive",
+      "title": "翼面局所減圧モデルによるNPSHrの導出",
+      "premise_node_ids": [
+        "eng.aero.n01_euler_bernoulli_incompressible",
+        "aerosp.npsh.n02_npsh_available_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "羽根車入口から翼負圧面最小圧力点までの損失は無視し、局所減圧は相対動圧の定数倍 \\lambda_c で表されるものとする。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_{t1} = p_1 + \\frac{1}{2}\\rho c_1^2",
+          "to_latex": "\\mathrm{NPSH}_r = \\frac{c_1^2}{2g} + \\lambda_c \\frac{w_1^2}{2g},\\qquad \\mathrm{NPSH}_a \\ge \\mathrm{NPSH}_r",
+          "operation_label": "翼面減圧モデルと非キャビテーション条件の連立",
+          "explanation": "羽根入口の静圧から翼負圧面最小圧力までの低下量を相対動圧で表し、最小圧力が蒸気圧以上となる条件からNPSHrを導く。",
+          "used_node_ids": [
+            "aerosp.npsh.n02_npsh_available_definition",
+            "eng.aero.n01_euler_bernoulli_incompressible"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_{t1} = p_1 + \\frac{1}{2}\\rho c_1^2",
+          "to_latex": "p_1 - p_{\\min} = \\lambda_c \\frac{1}{2}\\rho w_1^2",
+          "operation_label": "翼負圧面の局所圧力降下のモデル化",
+          "explanation": "翼前縁付近の剥離や加速による圧力降下 p_1 - p_{\\min} を、入口相対速度 w_1 の動圧と翼形状係数 \\lambda_c の積で与える。",
+          "used_node_ids": [
+            "eng.aero.n01_euler_bernoulli_incompressible"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_1 - p_{\\min} = \\lambda_c \\frac{1}{2}\\rho w_1^2",
+          "to_latex": "p_{t1} - p_v \\ge \\frac{1}{2}\\rho c_1^2 + \\lambda_c \\frac{1}{2}\\rho w_1^2",
+          "operation_label": "非キャビテーション条件 p_{\\min} \\ge p_v の適用",
+          "explanation": "p_1 = p_{t1} - \\frac{1}{2}\\rho c_1^2 を代入し、キャビテーションを抑制するための条件 p_{\\min} \\ge p_v を課す。",
+          "used_node_ids": [
+            "aerosp.npsh.n02_npsh_available_definition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_{t1} - p_v \\ge \\frac{1}{2}\\rho c_1^2 + \\lambda_c \\frac{1}{2}\\rho w_1^2",
+          "to_latex": "\\mathrm{NPSH}_r = \\frac{c_1^2}{2g} + \\lambda_c \\frac{w_1^2}{2g},\\qquad \\mathrm{NPSH}_a \\ge \\mathrm{NPSH}_r",
+          "operation_label": "ヘッド表示への換算とNPSHrの定義",
+          "explanation": "両辺を \\rho g で割り、左辺を有効吸込ヘッド \\mathrm{NPSH}_a と同一視することで、右辺を必要吸込ヘッド \\mathrm{NPSH}_r として得る。",
+          "used_node_ids": [
+            "aerosp.npsh.n02_npsh_available_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.aerosp.npsh.n04_thoma_cavitation_number",
+      "target_node_id": "aerosp.npsh.n04_thoma_cavitation_number",
+      "route_kind": "reformulation",
+      "title": "吸込ヘッドとポンプ全揚程の無次元比としてのトーマ数定義",
+      "premise_node_ids": [
+        "aerosp.npsh.n02_npsh_available_definition",
+        "aerosp.npsh.n03_npsh_required_blade_drop",
+        "aerosp.npsh.n01_euler_turbomachinery_head"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "ポンプ全揚程 H > 0 であり、幾何学的に相似なターボ機械群を比較する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathrm{NPSH}_a,\\; \\mathrm{NPSH}_r,\\; H",
+          "to_latex": "\\sigma_T := \\frac{\\mathrm{NPSH}_a}{H},\\qquad \\sigma_c := \\frac{\\mathrm{NPSH}_r}{H}",
+          "operation_label": "全揚程による無次元化としてのトーマ数定義",
+          "explanation": "有効吸込ヘッドおよび必要吸込ヘッドをポンプ全揚程 H で除することで、有効トーマ数 \\sigma_T と臨界トーマ数 \\sigma_c を定義する。",
+          "used_node_ids": [
+            "aerosp.npsh.n01_euler_turbomachinery_head",
+            "aerosp.npsh.n02_npsh_available_definition",
+            "aerosp.npsh.n03_npsh_required_blade_drop"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.aerosp.npsh.n05_suction_specific_speed",
+      "target_node_id": "aerosp.npsh.n05_suction_specific_speed",
+      "route_kind": "reformulation",
+      "title": "吸込相似則に基づく吸込比速度の定義",
+      "premise_node_ids": [
+        "aerosp.npsh.n03_npsh_required_blade_drop"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "相似な入口流路において流量 Q \\propto N D^3、必要吸込ヘッド \\mathrm{NPSH}_r \\propto N^2 D^2 / g が成り立つ。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "N,\\; \\omega,\\; Q,\\; \\mathrm{NPSH}_r",
+          "to_latex": "S_s := \\frac{N\\sqrt{Q}}{(\\mathrm{NPSH}_r)^{3/4}},\\qquad S_s^* := \\frac{\\omega\\sqrt{Q}}{(g\\,\\mathrm{NPSH}_r)^{3/4}}",
+          "operation_label": "代表寸法 D を消去した吸込相似パラメータの構成",
+          "explanation": "流量と必要吸込ヘッドの相似式から羽根車直径 D を消去し、有次元および無次元の吸込比速度を定義する。",
+          "used_node_ids": [
+            "aerosp.npsh.n03_npsh_required_blade_drop"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.aerosp.npsh.n06_inducer_cavitation_number",
+      "target_node_id": "aerosp.npsh.n06_inducer_cavitation_number",
+      "route_kind": "reformulation",
+      "title": "インデューサ先端周速基準のキャビテーション数と流量係数の定義",
+      "premise_node_ids": [
+        "aerosp.npsh.n02_npsh_available_definition"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "インデューサ入口の静圧差を先端周速 u_t の動圧 \\frac{1}{2}\\rho u_t^2 で正規化する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\mathrm{NPSH}_a = \\frac{p_1 - p_v}{\\rho g} + \\frac{c_1^2}{2g},\\quad u_t,\\; c_{m1}",
+          "to_latex": "K := \\frac{p_1 - p_v}{\\frac{1}{2}\\rho u_t^2} = \\frac{2g\\,\\mathrm{NPSH}_a - c_1^2}{u_t^2},\\qquad \\phi := \\frac{c_{m1}}{u_t}",
+          "operation_label": "先端動圧と周速による正規化定義",
+          "explanation": "入口静圧と蒸気圧の差を先端周速動圧で割ったキャビテーション数 K と、子午面速度と周速の比である流量係数 \\phi を定義する。",
+          "used_node_ids": [
+            "aerosp.npsh.n02_npsh_available_definition"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.aerosp.npsh.n07_inducer_optimal_flow_coefficient",
+      "target_node_id": "aerosp.npsh.n07_inducer_optimal_flow_coefficient",
+      "route_kind": "deductive",
+      "title": "吸込比速度最大化条件からの最適流量係数の導出",
+      "premise_node_ids": [
+        "aerosp.npsh.n03_npsh_required_blade_drop",
+        "aerosp.npsh.n05_suction_specific_speed",
+        "aerosp.npsh.n06_inducer_cavitation_number"
+      ],
+      "required_math_node_ids": [
+        "math.calc.m01_chain_rule",
+        "math.calc.m15_product_rule"
+      ],
+      "assumptions": [
+        "インデューサ入口流れは予旋回なし（c_1 = c_{m1} = \\phi u_t）とし、ボス比は一定とみなす。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S_s^* = \\frac{\\omega\\sqrt{Q}}{(g\\,\\mathrm{NPSH}_r)^{3/4}},\\quad \\mathrm{NPSH}_r = \\frac{u_t^2}{2g}\\big[(1+\\lambda_c)\\phi^2 + \\lambda_c\\big]",
+          "to_latex": "\\phi_{\\mathrm{opt}} = \\sqrt{\\frac{\\lambda_c}{2(1 + \\lambda_c)}},\\qquad \\mathrm{NPSH}_{r,\\mathrm{opt}} = \\frac{3\\lambda_c}{2(1 + \\lambda_c)}\\frac{u_t^2}{2g}",
+          "operation_label": "吸込比速度の流量係数に対する停留点計算",
+          "explanation": "無次元吸込比速度を流量係数 \\phi の関数として表し、微分して零とおくことで吸込性能を最大化する最適流量係数を得る。",
+          "used_node_ids": [
+            "aerosp.npsh.n03_npsh_required_blade_drop",
+            "aerosp.npsh.n05_suction_specific_speed",
+            "aerosp.npsh.n06_inducer_cavitation_number",
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": "diff(phi**2 / ((1 + lam)*phi**2 + lam)**3, phi)"
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_s^* = \\frac{\\omega\\sqrt{Q}}{(g\\,\\mathrm{NPSH}_r)^{3/4}},\\quad \\mathrm{NPSH}_r = \\frac{u_t^2}{2g}\\big[(1+\\lambda_c)\\phi^2 + \\lambda_c\\big]",
+          "to_latex": "S_s^* \\propto \\frac{\\phi^{1/2}}{\\big[(1+\\lambda_c)\\phi^2 + \\lambda_c\\big]^{3/4}}",
+          "operation_label": "流量 Q \\propto \\phi u_t と速度三角形の代入",
+          "explanation": "予旋回なしの速度三角形 w_1^2 = c_{m1}^2 + u_t^2 = u_t^2(\\phi^2 + 1) および流量 Q \\propto \\phi u_t を吸込比速度の定義式に代入する。",
+          "used_node_ids": [
+            "aerosp.npsh.n03_npsh_required_blade_drop",
+            "aerosp.npsh.n05_suction_specific_speed",
+            "aerosp.npsh.n06_inducer_cavitation_number"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_s^* \\propto \\frac{\\phi^{1/2}}{\\big[(1+\\lambda_c)\\phi^2 + \\lambda_c\\big]^{3/4}}",
+          "to_latex": "\\frac{d}{d\\phi}\\left(\\frac{\\phi^2}{\\big[(1+\\lambda_c)\\phi^2 + \\lambda_c\\big]^3}\\right) = 0 \\implies 2\\lambda_c - 4(1+\\lambda_c)\\phi^2 = 0",
+          "operation_label": "4乗して微分し最大値条件を導出",
+          "explanation": "(S_s^*)^4 の分子分母を \\phi で微分して零とおくことで、極大を与える代数方程式を得る。",
+          "used_node_ids": [
+            "math.calc.m01_chain_rule",
+            "math.calc.m15_product_rule"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{d\\phi}\\left(\\frac{\\phi^2}{\\big[(1+\\lambda_c)\\phi^2 + \\lambda_c\\big]^3}\\right) = 0 \\implies 2\\lambda_c - 4(1+\\lambda_c)\\phi^2 = 0",
+          "to_latex": "\\phi_{\\mathrm{opt}} = \\sqrt{\\frac{\\lambda_c}{2(1 + \\lambda_c)}},\\qquad \\mathrm{NPSH}_{r,\\mathrm{opt}} = \\frac{3\\lambda_c}{2(1 + \\lambda_c)}\\frac{u_t^2}{2g}",
+          "operation_label": "最適流量係数 \\phi_{\\mathrm{opt}} の求解と \\mathrm{NPSH}_r への代入",
+          "explanation": "正の根として \\phi_{\\mathrm{opt}} を求め、これを \\mathrm{NPSH}_r の式に代入して最小必要吸込ヘッドを得る。",
+          "used_node_ids": [
+            "aerosp.npsh.n03_npsh_required_blade_drop"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.aerosp.npsh.n08_cavitation_surge_compliance",
+      "target_node_id": "aerosp.npsh.n08_cavitation_surge_compliance",
+      "route_kind": "deductive",
+      "title": "吸込管路の非定常運動量式と連続式からのキャビテーションサージ固有振動数導出",
+      "premise_node_ids": [
+        "aerosp.npsh.n06_inducer_cavitation_number",
+        "eng.aero.n01_euler_bernoulli_incompressible"
+      ],
+      "required_math_node_ids": [
+        "math.ode.m06_linear_ode_2nd"
+      ],
+      "assumptions": [
+        "上流タンク圧力 p_0 と下流ポンプ出口流量 Q_2 は定常一定であり、管路抵抗およびマスフローゲインファクタはゼロとして固有振動数を求める。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "p_0 - p_1 = L_{\\mathrm{in}}\\frac{dQ_1}{dt},\\quad Q_2 - Q_1 = \\frac{dV_c}{dt} = -C_c\\frac{dp_1}{dt}",
+          "to_latex": "\\omega_{\\mathrm{surge}} = \\frac{1}{\\sqrt{L_{\\mathrm{in}} C_c}},\\qquad C_c := -\\frac{\\partial V_c}{\\partial p_1},\\qquad L_{\\mathrm{in}} := \\frac{\\rho l_{\\mathrm{in}}}{A_{\\mathrm{in}}}",
+          "operation_label": "流体イナータンスとキャビティコンプライアンスによる2階線形ODEの導出",
+          "explanation": "吸込管の非定常運動量方程式とキャビティ体積変化を含む連続の式を連立して単振動方程式を導き、サージ固有角振動数を得る。",
+          "used_node_ids": [
+            "eng.aero.n01_euler_bernoulli_incompressible",
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "p_0 - p_1 = L_{\\mathrm{in}}\\frac{dQ_1}{dt},\\quad Q_2 - Q_1 = \\frac{dV_c}{dt} = -C_c\\frac{dp_1}{dt}",
+          "to_latex": "\\frac{d^2 p_1}{dt^2} + \\frac{1}{L_{\\mathrm{in}} C_c}(p_1 - p_0) = 0",
+          "operation_label": "時間微分と Q_1 の消去による圧力振動方程式の導出",
+          "explanation": "連続の式を時間微分し、dQ_2/dt = 0 のもとで dQ_1/dt = C_c d^2 p_1 / dt^2 を運動量式に代入して入口圧力 p_1 の2階常微分方程式を得る。",
+          "used_node_ids": [
+            "eng.aero.n01_euler_bernoulli_incompressible"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d^2 p_1}{dt^2} + \\frac{1}{L_{\\mathrm{in}} C_c}(p_1 - p_0) = 0",
+          "to_latex": "\\omega_{\\mathrm{surge}} = \\frac{1}{\\sqrt{L_{\\mathrm{in}} C_c}},\\qquad C_c := -\\frac{\\partial V_c}{\\partial p_1},\\qquad L_{\\mathrm{in}} := \\frac{\\rho l_{\\mathrm{in}}}{A_{\\mathrm{in}}}",
+          "operation_label": "2階定数係数線形ODEからの固有角振動数抽出",
+          "explanation": "単振動の標準形と比較し、キャビテーションサージの固有角振動数 \\omega_{\\mathrm{surge}} を得る。",
+          "used_node_ids": [
+            "math.ode.m06_linear_ode_2nd"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "der.aerosp.npsh.n09_rotating_cavitation_onset",
+      "target_node_id": "aerosp.npsh.n09_rotating_cavitation_onset",
+      "route_kind": "deductive",
+      "title": "平板翼列キャビティ長モデルに基づく旋回キャビテーション発生条件と伝播周波数則",
+      "premise_node_ids": [
+        "aerosp.npsh.n06_inducer_cavitation_number",
+        "aerosp.npsh.n08_cavitation_surge_compliance"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "小迎え角 \\alpha の平板翼列における翼間ピッチ h に対するキャビティ長さ l_c の比が臨界値（約 0.65）に達すると、隣接翼前縁との干渉により不安定化する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "K = \\frac{p_1 - p_v}{\\frac{1}{2}\\rho u_t^2},\\quad l_c \\propto \\frac{2\\alpha h}{K}",
+          "to_latex": "\\frac{K}{2\\alpha} \\lesssim 1 + \\frac{1}{2}\\sigma_{\\mathrm{b}},\\qquad f_{rc} = Z_c \\left(1 + \\delta_{rc}\\right)f_n\\quad (\\delta_{rc} \\approx 0.1 \\sim 0.25)",
+          "operation_label": "キャビティ・翼間干渉条件と超同期伝播則の統合",
+          "explanation": "キャビティ長と翼間ピッチの比から旋回キャビテーション開始の無次元条件 K/(2\\alpha) を導き、翼列間の位相伝播から超同期周波数則を得る。",
+          "used_node_ids": [
+            "aerosp.npsh.n06_inducer_cavitation_number",
+            "aerosp.npsh.n08_cavitation_surge_compliance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "K = \\frac{p_1 - p_v}{\\frac{1}{2}\\rho u_t^2},\\quad l_c \\propto \\frac{2\\alpha h}{K}",
+          "to_latex": "\\frac{l_c}{h} \\approx \\frac{2\\alpha}{K} \\gtrsim 0.65 \\iff \\frac{K}{2\\alpha} \\lesssim 1 + \\frac{1}{2}\\sigma_{\\mathrm{b}}",
+          "operation_label": "隣接翼前縁干渉による臨界迎え角比の導出",
+          "explanation": "線形翼列理論におけるキャビティ長と翼間ピッチの比 l_c / h が臨界値に達する条件を K / (2\\alpha) の上限として表す。",
+          "used_node_ids": [
+            "aerosp.npsh.n06_inducer_cavitation_number"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{l_c}{h} \\approx \\frac{2\\alpha}{K} \\gtrsim 0.65 \\iff \\frac{K}{2\\alpha} \\lesssim 1 + \\frac{1}{2}\\sigma_{\\mathrm{b}}",
+          "to_latex": "f_{rc} = Z_c \\left(1 + \\delta_{rc}\\right)f_n\\quad (\\delta_{rc} \\approx 0.1 \\sim 0.25)",
+          "operation_label": "回転座標系上の伝播速度加算による超同期周波数表示",
+          "explanation": "インデューサ回転座標系上で回転方向に伝播するセル数 Z_c の摂動波に対し、静止座標系から観測される周波数が軸回転周波数 f_n の (1 + \\delta_{rc}) 倍となることを表す。",
+          "used_node_ids": [
+            "aerosp.npsh.n08_cavitation_surge_compliance"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
