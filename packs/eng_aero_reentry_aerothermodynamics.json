@@ -1,0 +1,631 @@
+{
+  "pack_meta": {
+    "pack_id": "eng_aero_reentry_aerothermodynamics",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "aerospace_engineering",
+    "title": "再突入力学・極超音速空力加熱と垂直着陸：アレン＝エガーズ方程式・サットン＝グレーブス加熱率・斜め衝撃波と逆噴射着陸",
+    "language": "ja",
+    "description": "既存の node_registry にある物理・数学ノードを最大限再利用しながら、『再突入力学・極超音速空力加熱と垂直着陸：アレン＝エガーズ方程式・サットン＝グレーブス加熱率・斜め衝撃波と逆噴射着陸』の主要公式群を閉じた島として構成すること。"
+  },
+  "nodes": [
+    {
+      "id": "aerosp.reentry.n01_oblique_shock_relations",
+      "short_code": "RE01",
+      "kind": "theorem_formula",
+      "title": "斜め衝撃波関係式と θ-β-M 方程式",
+      "summary": "超音速流が偏向角 θ で圧縮される際に形成される衝撃波角 β と上流マッハ数 M_1 を結ぶ斜め衝撃波の基本関係式。",
+      "canonical_latex": "\\tan\\theta = 2\\cot\\beta \\frac{M_1^2\\sin^2\\beta - 1}{M_1^2(\\gamma + \\cos 2\\beta) + 2}",
+      "aliases_latex": [
+        "\\tan\\theta = \\frac{2}{\\tan\\beta}\\frac{M_{1n}^2 - 1}{M_1^2(\\gamma + \\cos 2\\beta) + 2}"
+      ],
+      "keywords": [
+        "oblique shock",
+        "wedge flow",
+        "Mach number",
+        "theta-beta-M relation",
+        "shock angle"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "gas_dynamics",
+        "hypersonic_aerodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.reentry.n02_hypersonic_newtonian_pressure",
+      "short_code": "RE02",
+      "kind": "theorem_formula",
+      "title": "極超音速ニュートン流体理論と局所圧力係数",
+      "summary": "極超音速極限（M -> ∞, γ -> 1）において、流体粒子が物体表面に完全非弾性衝突して接線方向にのみ流れると仮定したニュートン衝撃圧力則。",
+      "canonical_latex": "C_p = 2\\sin^2\\theta",
+      "aliases_latex": [
+        "p - p_\\infty = \\rho_\\infty V_\\infty^2 \\sin^2\\theta",
+        "C_{p,\\max} = 2"
+      ],
+      "keywords": [
+        "hypersonic flow",
+        "Newtonian impact theory",
+        "pressure coefficient",
+        "sine squared law"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "hypersonic_aerodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.reentry.n03_allen_eggers_velocity_profile",
+      "short_code": "RE03",
+      "kind": "theorem_formula",
+      "title": "アレン＝エガーズの弾道再突入速度方程式",
+      "summary": "一定突入角と指数関数大気モデルを仮定し、重力と揚力を無視して大気抗力のみで減速する弾道宇宙機の速度降下解析解。",
+      "canonical_latex": "V(h) = V_E \\exp\\!\\left(-\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
+      "aliases_latex": [
+        "\\ln\\frac{V}{V_E} = -\\frac{\\rho(h) H_s}{2 B_c \\sin\\gamma_E}"
+      ],
+      "keywords": [
+        "Allen-Eggers",
+        "ballistic reentry",
+        "velocity profile",
+        "scale height",
+        "ballistic coefficient"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "atmospheric_entry",
+        "flight_mechanics"
+      ]
+    },
+    {
+      "id": "aerosp.reentry.n04_allen_eggers_peak_deceleration",
+      "short_code": "RE04",
+      "kind": "theorem_formula",
+      "title": "弾道再突入の最大減速度およびピーク減速高度",
+      "summary": "弾道再突入における最大抗力加速度（ピーク減速度）が弾道係数に依存せず突入速度と突入角のみで一意に決定されるアレン＝エガーズの極限定理。",
+      "canonical_latex": "a_{D,\\max} = \\frac{V_E^2 \\sin\\gamma_E}{2 e H_s},\\qquad h_{\\max\\text{-}a} = H_s \\ln\\!\\left(\\frac{\\rho_0 H_s}{B_c \\sin\\gamma_E}\\right)",
+      "aliases_latex": [
+        "\\left(-\\frac{dV}{dt}\\right)_{\\max} = \\frac{V_E^2 \\sin\\gamma_E}{2 e H_s}"
+      ],
+      "keywords": [
+        "peak deceleration",
+        "reentry g-load",
+        "ballistic coefficient independence",
+        "entry flight mechanics"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "atmospheric_entry"
+      ]
+    },
+    {
+      "id": "aerosp.reentry.n05_sutton_graves_stagnation_heat_flux",
+      "short_code": "RE05",
+      "kind": "theorem_formula",
+      "title": "サットン＝グレーブスのよどみ点対流熱流束相関式",
+      "summary": "極超音速再突入時の鈍頭物体よどみ点における層流境界熱伝達率を大気密度・飛行速度・ノーズ半径の関数として表す工学公式。",
+      "canonical_latex": "q_s = k_{\\mathrm{SG}} \\sqrt{\\frac{\\rho}{R_n}} V^3",
+      "aliases_latex": [
+        "\\dot{q}_{\\mathrm{stag}} = C \\sqrt{\\frac{\\rho_\\infty}{R_n}} V_\\infty^3"
+      ],
+      "keywords": [
+        "Sutton-Graves",
+        "stagnation point heating",
+        "aerothermodynamics",
+        "convective heat transfer",
+        "nose radius"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "aerothermodynamics",
+        "hypersonic_aerodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.reentry.n06_allen_eggers_peak_heating_rate",
+      "short_code": "RE06",
+      "kind": "theorem_formula",
+      "title": "アレン＝エガーズの最大加熱率とピーク加熱高度",
+      "summary": "弾道飛行経路とサットン＝グレーブス則を連立し、対流熱流束が最大となる飛行速度比（V/V_E = e^(-1/6)）とピーク加熱高度を導く公式。",
+      "canonical_latex": "q_{s,\\max} = k_{\\mathrm{SG}} \\sqrt{\\frac{B_c \\sin\\gamma_E}{3 e H_s R_n}} V_E^3,\\qquad h_{\\max\\text{-}q} = H_s \\ln\\!\\left(\\frac{3\\rho_0 H_s}{B_c \\sin\\gamma_E}\\right)",
+      "aliases_latex": [
+        "V(h_{\\max\\text{-}q}) = V_E e^{-1/6}"
+      ],
+      "keywords": [
+        "peak heat flux",
+        "reentry aerothermodynamics",
+        "maximum heating altitude",
+        "ballistic entry"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "aerothermodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.reentry.n07_blunt_body_heating_reduction",
+      "short_code": "RE07",
+      "kind": "theorem_formula",
+      "title": "ブラントボディ概念による総受熱量抑制則",
+      "summary": "大きなノーズ曲率半径 R_n と低弾道係数によって強力な離脱衝撃波を形成し、運動エネルギー散逸を機体壁面加熱ではなく衝撃層ガス加熱へ逃す鈍頭熱防御定理。",
+      "canonical_latex": "Q_{\\mathrm{tot}} = \\int_0^\\infty q_s\\,dt = k_{\\mathrm{SG}}\\sqrt{\\frac{\\pi B_c H_s}{R_n \\sin\\gamma_E}}\\,V_E^2 \\propto \\frac{1}{\\sqrt{R_n}}",
+      "aliases_latex": [
+        "Q_{\\mathrm{tot}} \\propto \\sqrt{\\frac{B_c}{R_n}}"
+      ],
+      "keywords": [
+        "blunt body concept",
+        "heat shield",
+        "total heat load",
+        "detached shock",
+        "thermal protection system"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "aerothermodynamics"
+      ]
+    },
+    {
+      "id": "aerosp.reentry.n08_supersonic_retropropulsion_landing",
+      "short_code": "RE08",
+      "kind": "theorem_formula",
+      "title": "超音速逆噴射と抗力連成垂直降下方程式",
+      "summary": "再使用ロケットの再突入・垂直着陸において、大気抵抗加速度と逆噴射推力加速度が同相に作用して超音速領域から終末軟着陸へと移行する減速釣合い式。",
+      "canonical_latex": "m \\frac{dv}{dt} = -T_c - \\frac{1}{2} C_D(M, C_T) \\rho A v^2 + m g \\sin\\gamma",
+      "aliases_latex": [
+        "\\dot{v} = -\\frac{T_c}{m} - \\frac{\\rho v^2}{2 B_c^*} + g\\sin\\gamma"
+      ],
+      "keywords": [
+        "supersonic retropropulsion",
+        "vertical landing",
+        "powered descent",
+        "thrust coefficient",
+        "reusable launch vehicle"
+      ],
+      "domain_tags": [
+        "aerospace_engineering",
+        "rocket_propulsion",
+        "flight_mechanics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "derivation.aerosp.reentry.n01",
+      "target_node_id": "aerosp.reentry.n01_oblique_shock_relations",
+      "route_kind": "deductive",
+      "title": "垂直衝撃波関係式からの斜め衝撃波 θ-β-M 方程式の導出",
+      "premise_node_ids": [
+        "eng.comp.n08_rankine_hugoniot_relations"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "定常2次元超音速完全気体流れ",
+        "衝撃波面に平行な接線方向速度成分は衝撃波前後で不変"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{\\rho_2}{\\rho_1} = \\frac{(\\gamma + 1)M_{1n}^2}{2 + (\\gamma - 1)M_{1n}^2},\\quad M_{1n} = M_1\\sin\\beta",
+          "to_latex": "\\tan\\theta = 2\\cot\\beta \\frac{M_1^2\\sin^2\\beta - 1}{M_1^2(\\gamma + \\cos 2\\beta) + 2}",
+          "operation_label": "接線・法線速度成分分解と幾何学的偏向角変形",
+          "explanation": "衝撃波前後の速度成分を法線成分と接線成分に分解し、接線成分の連続性とランキン＝ユゴニオ密度比を組み合わせて偏向角 θ の正接を展開する。",
+          "used_node_ids": [
+            "eng.comp.n08_rankine_hugoniot_relations"
+          ]
+        },
+        {
+          "step_id": "s2_geom_tan_ratio",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\rho_2}{\\rho_1} = \\frac{(\\gamma + 1)M_{1n}^2}{2 + (\\gamma - 1)M_{1n}^2},\\quad M_{1n} = M_1\\sin\\beta",
+          "to_latex": "\\frac{\\tan(\\beta - \\theta)}{\\tan\\beta} = \\frac{u_{2n}}{u_{1n}} = \\frac{\\rho_1}{\\rho_2} = \\frac{2 + (\\gamma - 1)M_1^2\\sin^2\\beta}{(\\gamma + 1)M_1^2\\sin^2\\beta}",
+          "operation_label": "質量保存と速度三角形の関係の代入",
+          "explanation": "衝撃波面の接線方向速度が保存される（u_t1 = u_t2）ことから、u_2n / u_1n = tan(β - θ) / tan β = ρ_1 / ρ_2 が成り立つ。",
+          "used_node_ids": [
+            "eng.comp.n08_rankine_hugoniot_relations"
+          ]
+        },
+        {
+          "step_id": "s3_trig_expansion",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\tan(\\beta - \\theta)}{\\tan\\beta} = \\frac{2 + (\\gamma - 1)M_1^2\\sin^2\\beta}{(\\gamma + 1)M_1^2\\sin^2\\beta}",
+          "to_latex": "\\tan\\theta = 2\\cot\\beta \\frac{M_1^2\\sin^2\\beta - 1}{M_1^2(\\gamma + \\cos 2\\beta) + 2}",
+          "operation_label": "加法定理と三角関数の整理",
+          "explanation": "tan(β - θ) = (tan β - tan θ) / (1 + tan β tan θ) を用いて tan θ について解き、2倍角の公式を用いて分母を整理する。",
+          "used_node_ids": []
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.reentry.n02",
+      "target_node_id": "aerosp.reentry.n02_hypersonic_newtonian_pressure",
+      "route_kind": "deductive",
+      "title": "斜め衝撃波の極超音速極限によるニュートン圧力則の導出",
+      "premise_node_ids": [
+        "aerosp.reentry.n01_oblique_shock_relations",
+        "eng.comp.n08_rankine_hugoniot_relations"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "M_1 -> ∞（極超音速）",
+        "比熱比 γ -> 1（高温解離による有効比熱比低下）",
+        "衝撃波角 β が物体傾斜角 θ に漸近（β -> θ）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{p_2 - p_1}{\\frac{1}{2}\\rho_1 V_1^2} = \\frac{4}{\\gamma + 1}\\left(\\sin^2\\beta - \\frac{1}{M_1^2}\\right)",
+          "to_latex": "C_p = 2\\sin^2\\theta",
+          "operation_label": "斜め衝撃波後圧力係数の極超音速・薄層極限操作",
+          "explanation": "ランキン＝ユゴニオ圧力比から圧力係数を構成し、マッハ数無限大かつ衝撃層が物体表面に張り付く極限を取ることでニュートン則を導く。",
+          "used_node_ids": [
+            "aerosp.reentry.n01_oblique_shock_relations",
+            "eng.comp.n08_rankine_hugoniot_relations"
+          ]
+        },
+        {
+          "step_id": "s2_cp_oblique_form",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{p_2 - p_1}{\\frac{1}{2}\\rho_1 V_1^2} = \\frac{4}{\\gamma + 1}\\left(\\sin^2\\beta - \\frac{1}{M_1^2}\\right)",
+          "to_latex": "\\lim_{M_1 \\to \\infty} C_p = \\frac{4}{\\gamma + 1}\\sin^2\\beta",
+          "operation_label": "マッハ数無限大の極限評価",
+          "explanation": "1 / M_1^2 の項を 0 に漸近させ、極超音速極限における圧力係数を得る。",
+          "used_node_ids": [
+            "eng.comp.n08_rankine_hugoniot_relations"
+          ]
+        },
+        {
+          "step_id": "s3_gamma_one_limit",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\lim_{M_1 \\to \\infty} C_p = \\frac{4}{\\gamma + 1}\\sin^2\\beta",
+          "to_latex": "C_p = 2\\sin^2\\theta",
+          "operation_label": "有効比熱比 γ -> 1 および衝撃波付着 β -> θ 極限",
+          "explanation": "極超音速衝撃波背後の解離平衡により γ -> 1 となると衝撃波は表面に張り付き β -> θ となるため、4 / (1 + 1) sin^2 θ = 2 sin^2 θ が導かれる。",
+          "used_node_ids": [
+            "aerosp.reentry.n01_oblique_shock_relations"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.reentry.n03",
+      "target_node_id": "aerosp.reentry.n03_allen_eggers_velocity_profile",
+      "route_kind": "deductive",
+      "title": "大気運動方程式と指数関数大気からのアレン＝エガーズ速度解の導出",
+      "premise_node_ids": [
+        "aerosp.env.n03_exponential_scale_height_atm",
+        "aerosp.env.n04_ballistic_coefficient_drag"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "直線弾道軌道（進入角 γ_E は一定）",
+        "重力加速度成分および揚力は抗力に比べて無視可能（a_D >> g）",
+        "大気密度は等温指数関数モデルに従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m \\frac{dV}{dt} = -\\frac{1}{2}\\rho(h) C_D A V^2,\\quad \\frac{dh}{dt} = -V \\sin\\gamma_E",
+          "to_latex": "V(h) = V_E \\exp\\!\\left(-\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
+          "operation_label": "連立微分方程式の変数分離と積分",
+          "explanation": "高度 h を独立変数に変換して弾道係数 B_c を代入し、指数関数大気密度を高度積分して速度降下解を得る。",
+          "used_node_ids": [
+            "aerosp.env.n03_exponential_scale_height_atm",
+            "aerosp.env.n04_ballistic_coefficient_drag"
+          ]
+        },
+        {
+          "step_id": "s2_altitude_variable_change",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m \\frac{dV}{dt} = -\\frac{1}{2}\\rho(h) C_D A V^2,\\quad \\frac{dh}{dt} = -V \\sin\\gamma_E",
+          "to_latex": "\\frac{dV}{V} = \\frac{\\rho_0 e^{-h/H_s}}{2 B_c \\sin\\gamma_E}\\,dh",
+          "operation_label": "時間微分から高度微分への変換と弾道係数の導入",
+          "explanation": "dV/dt = (dV/dh)(dh/dt) = -V sin γ_E (dV/dh) を運動方程式に代入し、B_c = m / (C_D A) を用いて整理する。",
+          "used_node_ids": [
+            "aerosp.env.n03_exponential_scale_height_atm",
+            "aerosp.env.n04_ballistic_coefficient_drag"
+          ]
+        },
+        {
+          "step_id": "s3_integrate_height",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dV}{V} = \\frac{\\rho_0 e^{-h/H_s}}{2 B_c \\sin\\gamma_E}\\,dh",
+          "to_latex": "V(h) = V_E \\exp\\!\\left(-\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
+          "operation_label": "大気圏外境界条件（h -> ∞ で V -> V_E）での定積分",
+          "explanation": "両辺を大気圏上界から高度 h まで積分し、指数関数の肩に高度分布をまとめる。",
+          "used_node_ids": []
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.reentry.n04",
+      "target_node_id": "aerosp.reentry.n04_allen_eggers_peak_deceleration",
+      "route_kind": "deductive",
+      "title": "アレン＝エガーズ減速方程式の極値解析によるピーク減速度と高度の導出",
+      "premise_node_ids": [
+        "aerosp.reentry.n03_allen_eggers_velocity_profile"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "弾道再突入解析解が成立",
+        "減速度 a_D = -dV/dt の極値条件 d(a_D)/dh = 0 を適用"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "a_D(h) = \\frac{\\rho_0 e^{-h/H_s} V_E^2}{2 B_c}\\exp\\!\\left(-\\frac{\\rho_0 H_s}{B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
+          "to_latex": "a_{D,\\max} = \\frac{V_E^2 \\sin\\gamma_E}{2 e H_s},\\qquad h_{\\max\\text{-}a} = H_s \\ln\\!\\left(\\frac{\\rho_0 H_s}{B_c \\sin\\gamma_E}\\right)",
+          "operation_label": "抗力加速度の微分極値計算と最大値評価",
+          "explanation": "無次元変数を用いて抗力加速度を微分し、極値を与える密度および高度を決定して代入する。",
+          "used_node_ids": [
+            "aerosp.reentry.n03_allen_eggers_velocity_profile"
+          ]
+        },
+        {
+          "step_id": "s2_dimensionless_drag_derivative",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "a_D(h) = \\frac{\\rho_0 e^{-h/H_s} V_E^2}{2 B_c}\\exp\\!\\left(-\\frac{\\rho_0 H_s}{B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
+          "to_latex": "\\frac{d a_D}{dh} = 0 \\iff \\frac{\\rho(h_{\\max\\text{-}a}) H_s}{B_c \\sin\\gamma_E} = 1",
+          "operation_label": "極値条件による無次元パラメータの特定",
+          "explanation": "f(z) = z exp(-z) の最大値が z = 1 で与えられる数学的性質を適用する（z = ρ H_s / (B_c sin γ_E)）。",
+          "used_node_ids": []
+        },
+        {
+          "step_id": "s3_substitute_peak_values",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d a_D}{dh} = 0 \\iff \\frac{\\rho(h_{\\max\\text{-}a}) H_s}{B_c \\sin\\gamma_E} = 1",
+          "to_latex": "a_{D,\\max} = \\frac{V_E^2 \\sin\\gamma_E}{2 e H_s},\\qquad h_{\\max\\text{-}a} = H_s \\ln\\!\\left(\\frac{\\rho_0 H_s}{B_c \\sin\\gamma_E}\\right)",
+          "operation_label": "極値高度および最大減速度の明示的導出",
+          "explanation": "z=1 を a_D の式に代入すると B_c が厳密に相殺され、最大減速度が弾道係数に完全に無関係となり突入速度と進入角のみで決まることが示される。",
+          "used_node_ids": []
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.reentry.n05",
+      "target_node_id": "aerosp.reentry.n05_sutton_graves_stagnation_heat_flux",
+      "route_kind": "inductive",
+      "title": "境界層相似解とよどみ点速度勾配によるサットン＝グレーブス公式の構成",
+      "premise_node_ids": [
+        "aerosp.env.n03_exponential_scale_height_atm",
+        "aerosp.reentry.n03_allen_eggers_velocity_profile"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "鈍頭球殻前方の軸対称層流境界層",
+        "プラントル数・ルイス数は定数かつ極超音速冷壁近似（h_w << h_0）",
+        "よどみ点外部速度勾配はニュートン衝撃波理論 (du_e/dx)_0 = (1/R_n) sqrt(2(p_0 - p_infty)/rho_0) に従う"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "q_s = \\frac{k_w}{\\mathrm{Pr}}\\left(\\frac{\\partial T}{\\partial y}\\right)_w \\propto \\sqrt{\\rho_e \\mu_e \\left(\\frac{du_e}{dx}\\right)_0}\\,(h_0 - h_w)",
+          "to_latex": "q_s = k_{\\mathrm{SG}} \\sqrt{\\frac{\\rho}{R_n}} V^3",
+          "operation_label": "フェイ＝リドル型層流境界層熱流束の次元・相似パラメータ縮約",
+          "explanation": "よどみ点外部速度勾配が (V/R_n) sqrt(2 rho_infty / rho_0) に比例し、全エンタルピー差が h_0 ≈ V^2 / 2 で支配されることから、熱流束が sqrt(rho/R_n) V^3 にスケールすることを導く。",
+          "used_node_ids": [
+            "aerosp.env.n03_exponential_scale_height_atm",
+            "aerosp.reentry.n03_allen_eggers_velocity_profile"
+          ]
+        },
+        {
+          "step_id": "s2_boundary_layer_scaling",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q_s = \\frac{k_w}{\\mathrm{Pr}}\\left(\\frac{\\partial T}{\\partial y}\\right)_w \\propto \\sqrt{\\rho_e \\mu_e \\left(\\frac{du_e}{dx}\\right)_0}\\,(h_0 - h_w)",
+          "to_latex": "q_s \\propto \\sqrt{\\rho_\\infty}\\sqrt{\\frac{V}{R_n}}\\,\\left(\\frac{1}{2}V^2\\right)",
+          "operation_label": "よどみ点速度勾配と全エンタルピーのスケーリング代入",
+          "explanation": "ニュートン流による速度勾配 (du_e/dx)_0 ∝ V / R_n および全エンタルピー h_0 ∝ V^2 を境界熱流束の相似比例式に代入する。",
+          "used_node_ids": []
+        },
+        {
+          "step_id": "s3_sutton_graves_constant",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q_s \\propto \\sqrt{\\rho_\\infty}\\sqrt{\\frac{V}{R_n}}\\,\\left(\\frac{1}{2}V^2\\right)",
+          "to_latex": "q_s = k_{\\mathrm{SG}} \\sqrt{\\frac{\\rho}{R_n}} V^3",
+          "operation_label": "大気成分依存定数 k_SG による比例係数の同定",
+          "explanation": "地球大気（N2-O2）物性値を取り込んだ定数 k_SG（約 1.7429 × 10^-4 W s^3 / (m^(1/2) kg^(1/2))）を導入し、標準的工学公式として確立する。",
+          "used_node_ids": []
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.reentry.n06",
+      "target_node_id": "aerosp.reentry.n06_allen_eggers_peak_heating_rate",
+      "route_kind": "deductive",
+      "title": "アレン＝エガーズ弾道解を用いたピーク加熱率およびピーク加熱高度の導出",
+      "premise_node_ids": [
+        "aerosp.reentry.n04_allen_eggers_peak_deceleration",
+        "aerosp.reentry.n05_sutton_graves_stagnation_heat_flux"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "サットン＝グレーブスの対流熱流束則が全軌道で適用可能",
+        "アレン＝エガーズの弾道速度分布 V(h) を使用"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "q_s(h) = k_{\\mathrm{SG}} \\sqrt{\\frac{\\rho_0 e^{-h/H_s}}{R_n}} V_E^3 \\exp\\!\\left(-\\frac{3\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
+          "to_latex": "q_{s,\\max} = k_{\\mathrm{SG}} \\sqrt{\\frac{B_c \\sin\\gamma_E}{3 e H_s R_n}} V_E^3,\\qquad h_{\\max\\text{-}q} = H_s \\ln\\!\\left(\\frac{3\\rho_0 H_s}{B_c \\sin\\gamma_E}\\right)",
+          "operation_label": "熱流束高度関数の微分極値計算",
+          "explanation": "熱流束 q_s(h) の高度微分 dq_s/dh = 0 を解くことで、ピーク加熱が最大減速高度よりも高空で発生すること、および最大熱流束値を解析的に導く。",
+          "used_node_ids": [
+            "aerosp.reentry.n04_allen_eggers_peak_deceleration",
+            "aerosp.reentry.n05_sutton_graves_stagnation_heat_flux"
+          ]
+        },
+        {
+          "step_id": "s2_differentiate_heat_flux",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q_s(h) = k_{\\mathrm{SG}} \\sqrt{\\frac{\\rho_0 e^{-h/H_s}}{R_n}} V_E^3 \\exp\\!\\left(-\\frac{3\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
+          "to_latex": "\\frac{d q_s}{dh} = 0 \\iff \\frac{\\rho(h_{\\max\\text{-}q}) H_s}{B_c \\sin\\gamma_E} = \\frac{1}{3}",
+          "operation_label": "極値を与える無次元密度パラメータの決定",
+          "explanation": "g(z) = sqrt(z) exp(-3z/2) の最大値条件を求めると z = 1/3 となる（z = ρ H_s / (B_c sin γ_E)）。これは最大減速高度条件（z = 1）の 3 倍高い大気密度（すなわちより高高度）に対応する。",
+          "used_node_ids": []
+        },
+        {
+          "step_id": "s3_substitute_qmax_values",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d q_s}{dh} = 0 \\iff \\frac{\\rho(h_{\\max\\text{-}q}) H_s}{B_c \\sin\\gamma_E} = \\frac{1}{3}",
+          "to_latex": "q_{s,\\max} = k_{\\mathrm{SG}} \\sqrt{\\frac{B_c \\sin\\gamma_E}{3 e H_s R_n}} V_E^3,\\qquad h_{\\max\\text{-}q} = H_s \\ln\\!\\left(\\frac{3\\rho_0 H_s}{B_c \\sin\\gamma_E}\\right)",
+          "operation_label": "ピーク熱流束とピーク高度の確定",
+          "explanation": "z = 1/3 を熱流束の式に代入し、速度比が V / V_E = exp(-1/6) ≈ 0.846 となる点でのピーク加熱率を得る。",
+          "used_node_ids": []
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.reentry.n07",
+      "target_node_id": "aerosp.reentry.n07_blunt_body_heating_reduction",
+      "route_kind": "deductive",
+      "title": "アレン＝エガーズ積分による全受熱量の導出と鈍頭形状（大曲率半径）の優位性",
+      "premise_node_ids": [
+        "aerosp.reentry.n05_sutton_graves_stagnation_heat_flux",
+        "aerosp.reentry.n03_allen_eggers_velocity_profile"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "弾道突入時の全受熱量 Q_tot = ∫ q_s dt の時間積分",
+        "大気圏外から地表（または減速完了）までの積分範囲"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Q_{\\mathrm{tot}} = \\int_0^\\infty q_s\\,dt = \\int_0^\\infty k_{\\mathrm{SG}}\\sqrt{\\frac{\\rho(h)}{R_n}} V^3\\,\\frac{dh}{V\\sin\\gamma_E}",
+          "to_latex": "Q_{\\mathrm{tot}} = k_{\\mathrm{SG}}\\sqrt{\\frac{\\pi B_c H_s}{R_n \\sin\\gamma_E}}\\,V_E^2 \\propto \\frac{1}{\\sqrt{R_n}}",
+          "operation_label": "熱流束の時間積分とガウス積分型変換",
+          "explanation": "軌道経路に沿ってサットン＝グレーブス熱流束を積分し、全受熱量が 1/sqrt(R_n) に比例して減少し、かつ sqrt(B_c) に比例することを示す。",
+          "used_node_ids": [
+            "aerosp.reentry.n03_allen_eggers_velocity_profile",
+            "aerosp.reentry.n05_sutton_graves_stagnation_heat_flux"
+          ]
+        },
+        {
+          "step_id": "s2_variable_transformation_gamma",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q_{\\mathrm{tot}} = \\int_0^\\infty q_s\\,dt = \\int_0^\\infty k_{\\mathrm{SG}}\\sqrt{\\frac{\\rho(h)}{R_n}} V^3\\,\\frac{dh}{V\\sin\\gamma_E}",
+          "to_latex": "Q_{\\mathrm{tot}} = \\frac{k_{\\mathrm{SG}}}{\\sin\\gamma_E \\sqrt{R_n}} V_E^2 \\int_0^\\infty \\sqrt{\\rho}\\,\\exp\\!\\left(-\\frac{\\rho H_s}{B_c \\sin\\gamma_E}\\right)\\,\\frac{H_s}{\\rho}\\,d\\rho",
+          "operation_label": "積分変数を高度 h から大気密度 ρ への置換",
+          "explanation": "dh = -(H_s / ρ) dρ を用いて大気密度積分の形式に整える。",
+          "used_node_ids": []
+        },
+        {
+          "step_id": "s3_evaluate_gaussian_heat_integral",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Q_{\\mathrm{tot}} = \\frac{k_{\\mathrm{SG}}}{\\sin\\gamma_E \\sqrt{R_n}} V_E^2 \\int_0^\\infty \\sqrt{\\rho}\\,\\exp\\!\\left(-\\frac{\\rho H_s}{B_c \\sin\\gamma_E}\\right)\\,\\frac{H_s}{\\rho}\\,d\\rho",
+          "to_latex": "Q_{\\mathrm{tot}} = k_{\\mathrm{SG}}\\sqrt{\\frac{\\pi B_c H_s}{R_n \\sin\\gamma_E}}\\,V_E^2 \\propto \\frac{1}{\\sqrt{R_n}}",
+          "operation_label": "ガンマ関数（Γ(1/2) = √π）の適用と鈍頭化効果の証明",
+          "explanation": "変数変換 u = ρ H_s / (B_c sin γ_E) を行うと積分は ∫ u^(-1/2) e^-u du = Γ(1/2) = √π と評価され、ノーズ半径 R_n を大きく（ブラントボディ化）することで機体への受熱量を抑制できる原理が証明される。",
+          "used_node_ids": []
+        }
+      ]
+    },
+    {
+      "id": "derivation.aerosp.reentry.n08",
+      "target_node_id": "aerosp.reentry.n08_supersonic_retropropulsion_landing",
+      "route_kind": "deductive",
+      "title": "パワードディセント運動方程式と抗力・推力逆噴射連成降下則の導出",
+      "premise_node_ids": [
+        "aerosp.gfold.n01_powered_descent_eom",
+        "aerosp.launch.n02_gravity_turn_kinematics",
+        "aerosp.env.n04_ballistic_coefficient_drag"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "機体軸が速度ベクトルと反平行（逆噴射・零迎え角降下）",
+        "逆噴射ジェットプルームと超音速対向流の干渉により実効抗力係数 C_D が推力係数 C_T に依存"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "m \\dot{\\mathbf{v}} = \\mathbf{T} + \\mathbf{D} + m\\mathbf{g},\\quad \\mathbf{T} = -T_c \\hat{\\mathbf{v}},\\quad \\mathbf{D} = -\\frac{1}{2}\\rho C_D A v^2 \\hat{\\mathbf{v}}",
+          "to_latex": "m \\frac{dv}{dt} = -T_c - \\frac{1}{2} C_D(M, C_T) \\rho A v^2 + m g \\sin\\gamma",
+          "operation_label": "速度進行方向への投射と超音速逆噴射連成力の定式化",
+          "explanation": "GFOLD基礎運動方程式に大気抗力ベクトルを明示的に結合し、速度軸方向の1次元スカラー運動方程式へと射影する。",
+          "used_node_ids": [
+            "aerosp.env.n04_ballistic_coefficient_drag",
+            "aerosp.gfold.n01_powered_descent_eom",
+            "aerosp.launch.n02_gravity_turn_kinematics"
+          ]
+        },
+        {
+          "step_id": "s2_project_velocity_axis",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m \\dot{\\mathbf{v}} = \\mathbf{T} + \\mathbf{D} + m\\mathbf{g},\\quad \\mathbf{T} = -T_c \\hat{\\mathbf{v}},\\quad \\mathbf{D} = -\\frac{1}{2}\\rho C_D A v^2 \\hat{\\mathbf{v}}",
+          "to_latex": "m \\frac{dv}{dt} = -T_c - D(v, h) + m g \\sin\\gamma",
+          "operation_label": "軌道傾斜角 γ の接線方向運動方程式展開",
+          "explanation": "逆噴射推力 T_c と空力抗力 D がいずれも減速方向（-v方向）に作用し、重力加速度成分 g sin γ が降下を加速する釣合い関係を記述する。",
+          "used_node_ids": [
+            "aerosp.launch.n02_gravity_turn_kinematics"
+          ]
+        },
+        {
+          "step_id": "s3_thrust_coefficient_drag_coupling",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m \\frac{dv}{dt} = -T_c - D(v, h) + m g \\sin\\gamma",
+          "to_latex": "m \\frac{dv}{dt} = -T_c - \\frac{1}{2} C_D(M, C_T) \\rho A v^2 + m g \\sin\\gamma",
+          "operation_label": "逆噴射推力係数 C_T による空力抗力変調モデルの導入",
+          "explanation": "推力係数 C_T = T_c / (1/2 rho v^2 A) に伴う対向ジェットによる衝撃波離脱距離増大および実効空力抗力係数 C_D(M, C_T) の変化を取り込んだ終末減速方程式を確立する。",
+          "used_node_ids": [
+            "aerosp.env.n04_ballistic_coefficient_drag"
+          ]
+        }
+      ]
+    }
+  ]
+}
