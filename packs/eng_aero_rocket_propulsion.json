@@ -181,13 +181,14 @@
         "phys.mech.p03_action_reaction",
         "astro.orbit.mt01_variable_mass_rocket_eom"
       ],
-      "required_math_node_ids": [
-        "math.calc.m02_fundamental_theorem_calc"
-      ],
+      "required_math_node_ids": [],
       "assumptions": [
-        "エンジン内部の定常流",
-        "ノズル出口面での一様1次元流",
-        "ノズル外部全体への大気圧作用"
+        "エンジンを囲む検査体積（CV）は機体に固定されており、エンジン内部および検査体積内の流れは定常である（時間微分項が零）",
+        "推進剤の排気方向を +x 軸（単位ベクトル \\hat{\\mathbf{i}}）、機体の前進推力方向を -x 軸と定める",
+        "ノズル出口面（面積 A_e）での流れは一様1次元流であり、速度 \\mathbf{v}_e = v_e \\hat{\\mathbf{i}}（v_e > 0）、静圧 p_e、密度 \\rho_e をとり、外向き法線は \\mathbf{n} = \\hat{\\mathbf{i}} である",
+        "検査表面（CS）のうちノズル出口面 A_e を除く外部表面全体には一様な大気圧 p_a が垂直内向きに作用し、外部空気との粘性せん断力および検査体積内流体への重力は推力導出上無視する",
+        "出口面以外の検査表面では質量流出入がない（\\mathbf{v}\\cdot\\mathbf{n} = 0）",
+        "推進剤の定常質量流量を \\dot{m} = \\rho_e A_e v_e > 0 と定義する"
       ],
       "steps": [
         {
@@ -195,10 +196,10 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\frac{d}{dt}\\int_{\\mathrm{CV}} \\rho\\mathbf{v}\\,dV + \\int_{\\mathrm{CS}} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "from_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\frac{d\\mathbf{p}_{\\mathrm{sys}}}{dt}",
           "to_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e",
-          "operation_label": "検査体積運動量収支の適用",
-          "explanation": "ロケットエンジンを囲む検査体積に運動量保存則と作用・反作用の法則を適用し、推力を運動量流束と圧力差の和として得る。",
+          "operation_label": "検査体積運動量保存則と作用・反作用の法則によるロケット推力方程式の導出",
+          "explanation": "物質系の運動の第2法則にレイノルズ輸送定理と定常1次元流条件を適用し、検査表面の圧力差と機体反力の釣り合いから出口運動量流束を求め、作用・反作用の法則により推力方程式を導く。",
           "used_node_ids": [
             "astro.orbit.mt01_variable_mass_rocket_eom",
             "phys.mech.p02_newton_second_law",
@@ -211,14 +212,51 @@
           "order": 1,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\frac{d}{dt}\\int_{\\mathrm{CV}} \\rho\\mathbf{v}\\,dV + \\int_{\\mathrm{CS}} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
-          "to_latex": "R_x + p_a A_e - p_e A_e = \\dot{m} v_e",
-          "operation_label": "定常1次元流と圧力合力の評価",
-          "explanation": "定常流の仮定により体積積分時間微分を零とし、機体からの構造反力と検査表面の圧力差（大気圧と出口静圧の差）を出口運動量流束と等置する。",
+          "from_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\frac{d\\mathbf{p}_{\\mathrm{sys}}}{dt}",
+          "to_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "operation_label": "検査体積への運動量保存則と定常・出口限定条件の適用",
+          "explanation": "運動の第2法則にレイノルズ輸送定理を適用して検査体積表現へ変換し、定常流の仮定と非通過表面の流出入零条件により出口面のみの運動量流束へ簡約する。",
           "used_node_ids": [
-            "math.calc.m02_fundamental_theorem_calc",
             "phys.mech.p02_newton_second_law"
           ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\frac{d\\mathbf{p}_{\\mathrm{sys}}}{dt}",
+          "to_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\frac{d}{dt}\\int_{\\mathrm{CV}} \\rho\\mathbf{v}\\,dV + \\int_{\\mathrm{CS}} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "operation_label": "レイノルズ輸送定理による検査体積・検査表面表現への変換",
+          "explanation": "物質系に対する運動の第2法則の運動量時間変化率にレイノルズ輸送定理を適用し、検査体積（CV）内の運動量体積積分の時間微分と検査表面（CS）を通過する運動量流束の面積積分の和で表す。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\frac{d}{dt}\\int_{\\mathrm{CV}} \\rho\\mathbf{v}\\,dV + \\int_{\\mathrm{CS}} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "to_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\int_{\\mathrm{CS}} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "operation_label": "定常流条件による体積積分時間微分の消去",
+          "explanation": "エンジン内部の流れが定常であるという仮定により、検査体積内の運動量の総和は時間変化しないため、時間微分項を零として消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\int_{\\mathrm{CS}} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "to_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "operation_label": "非通過表面の運動量流束の消去による出口面への積分限定",
+          "explanation": "ノズル出口面 A_e を除く検査表面では流体の通過がないため \\mathbf{v}\\cdot\\mathbf{n} = 0 となり、検査表面全体の面積積分を出口面 A_e 上の積分のみに限定する。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -226,17 +264,158 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
+          "from_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "to_latex": "\\mathbf{R} + \\int_{A_e} p_a\\,\\mathbf{n}\\,dA - \\int_{A_e} p_e\\,\\mathbf{n}\\,dA = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "operation_label": "外力総和の構造反力および出口面上の大気圧・静圧差への分解",
+          "explanation": "検査体積に作用する外力を機体からの構造反力と検査表面圧力積分に分け、閉曲面に対する一様大気圧の積分が零となる恒等式を用いて圧力項を出口面 A_e 上の積分に帰着させる。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\sum \\mathbf{F}_{\\mathrm{ext}} = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "to_latex": "\\mathbf{R} - \\oint_{\\mathrm{CS}} p\\,\\mathbf{n}\\,dA = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "operation_label": "外力総和の構造反力と表面圧力積分への分解",
+          "explanation": "検査体積に作用する外力総和を、機体構造が検査体積に及ぼす反力 \\mathbf{R} と、検査表面全体に外向き法線 \\mathbf{n} と逆向きに作用する静圧合力 -\\oint_{\\mathrm{CS}} p\\,\\mathbf{n}\\,dA の和に分解する。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\mathbf{R} - \\oint_{\\mathrm{CS}} p\\,\\mathbf{n}\\,dA = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "to_latex": "\\mathbf{R} - \\int_{\\mathrm{CS}\\setminus A_e} p_a\\,\\mathbf{n}\\,dA - \\int_{A_e} p_e\\,\\mathbf{n}\\,dA = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "operation_label": "検査表面の外部領域とノズル出口面への分割および圧力値の代入",
+          "explanation": "閉じた検査表面 CS を大気圧 p_a が作用する外部表面 \\mathrm{CS}\\setminus A_e と静圧 p_e が作用するノズル出口面 A_e に分割し、それぞれの面上の圧力を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\mathbf{R} - \\int_{\\mathrm{CS}\\setminus A_e} p_a\\,\\mathbf{n}\\,dA - \\int_{A_e} p_e\\,\\mathbf{n}\\,dA = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "to_latex": "\\mathbf{R} + \\int_{A_e} p_a\\,\\mathbf{n}\\,dA - \\int_{A_e} p_e\\,\\mathbf{n}\\,dA = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "operation_label": "閉曲面一様大気圧積分の恒等式による外部表面積分の置換",
+          "explanation": "一様な大気圧に対する閉曲面積分 \\oint_{\\mathrm{CS}} p_a\\,\\mathbf{n}\\,dA = \\int_{\\mathrm{CS}\\setminus A_e} p_a\\,\\mathbf{n}\\,dA + \\int_{A_e} p_a\\,\\mathbf{n}\\,dA = \\mathbf{0} より、-\\int_{\\mathrm{CS}\\setminus A_e} p_a\\,\\mathbf{n}\\,dA = +\\int_{A_e} p_a\\,\\mathbf{n}\\,dA を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\mathbf{R} + \\int_{A_e} p_a\\,\\mathbf{n}\\,dA - \\int_{A_e} p_e\\,\\mathbf{n}\\,dA = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "to_latex": "R_x + p_a A_e - p_e A_e = \\dot{m} v_e",
+          "operation_label": "排気軸方向への射影と一様1次元出口流束の評価",
+          "explanation": "ベクトル方程式を排気軸方向へ射影し、出口面での一様1次元流仮定により面積分を実行した後、質量流量の定義を代入してスカラー釣り合い式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\mathbf{R} + \\int_{A_e} p_a\\,\\mathbf{n}\\,dA - \\int_{A_e} p_e\\,\\mathbf{n}\\,dA = \\int_{A_e} \\rho\\mathbf{v}(\\mathbf{v}\\cdot\\mathbf{n})\\,dA",
+          "to_latex": "R_x + \\int_{A_e} p_a\\,dA - \\int_{A_e} p_e\\,dA = \\int_{A_e} \\rho_e v_e^2\\,dA",
+          "operation_label": "排気軸単位ベクトルとの内積によるスカラー成分への射影",
+          "explanation": "両辺に排気方向の単位ベクトル \\hat{\\mathbf{i}} との内積をとり、\\mathbf{R}\\cdot\\hat{\\mathbf{i}} = R_x、出口面上で \\mathbf{n}\\cdot\\hat{\\mathbf{i}} = 1、\\mathbf{v} = v_e\\hat{\\mathbf{i}}、\\rho = \\rho_e を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "R_x + \\int_{A_e} p_a\\,dA - \\int_{A_e} p_e\\,dA = \\int_{A_e} \\rho_e v_e^2\\,dA",
+          "to_latex": "R_x + p_a A_e - p_e A_e = \\rho_e v_e^2 A_e",
+          "operation_label": "出口面一様仮定による面積分の評価",
+          "explanation": "出口面 A_e 上で p_a、p_e、\\rho_e、v_e が一様であることから各被積分定数を積分の外へ出し、\\int_{A_e} dA = A_e として各項の面積分を実行する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "R_x + p_a A_e - p_e A_e = \\rho_e v_e^2 A_e",
+          "to_latex": "R_x + p_a A_e - p_e A_e = \\dot{m} v_e",
+          "operation_label": "推進剤質量流量の定義 \\dot{m} = \\rho_e A_e v_e の代入",
+          "explanation": "右辺の積を (\\rho_e A_e v_e) v_e と見なし、定常1次元出口流における質量流量の定義 \\dot{m} = \\rho_e A_e v_e を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "rho_e * v_e**2 * A_e == (rho_e * A_e * v_e) * v_e"
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
           "from_latex": "R_x + p_a A_e - p_e A_e = \\dot{m} v_e",
-          "to_latex": "F = R_x = \\dot{m} v_e + (p_e - p_a) A_e",
-          "operation_label": "作用・反作用による推力の整理",
-          "explanation": "作用・反作用の法則からエンジンが機体に及ぼす推力 F は構造反力 R_x に等しいため、移項してロケット推力方程式を得る。",
+          "to_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e",
+          "operation_label": "圧力項の移項と作用・反作用の法則による推力方程式の導出",
+          "explanation": "圧力項を右辺へ移項して面積 A_e でくくり、運動の第3法則（作用・反作用の法則）から推力 F と構造反力 R_x を等置してロケット推力方程式を得る。",
           "used_node_ids": [
             "astro.orbit.mt01_variable_mass_rocket_eom",
             "phys.mech.p03_action_reaction"
           ],
-          "sympy_check_hint": "Eq(F, mdot*v_e + (p_e - p_a)*A_e)"
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "R_x + p_a A_e - p_e A_e = \\dot{m} v_e",
+          "to_latex": "R_x = \\dot{m} v_e + p_e A_e - p_a A_e",
+          "operation_label": "圧力項の右辺への移項",
+          "explanation": "左辺の +p_a A_e と -p_e A_e の符号を反転させて右辺へ移項し、構造反力 R_x について解く。",
+          "used_node_ids": [],
+          "sympy_check_hint": "m_dot*v_e - (p_a*A_e - p_e*A_e) == m_dot*v_e + p_e*A_e - p_a*A_e"
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "R_x = \\dot{m} v_e + p_e A_e - p_a A_e",
+          "to_latex": "R_x = \\dot{m} v_e + (p_e - p_a) A_e",
+          "operation_label": "出口面積 A_e による圧力差項の共通因数くくり出し",
+          "explanation": "右辺の圧力項 p_e A_e - p_a A_e から共通因数 A_e をくくり出して (p_e - p_a) A_e の形にまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": "m_dot*v_e + p_e*A_e - p_a*A_e == m_dot*v_e + (p_e - p_a)*A_e"
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "R_x = \\dot{m} v_e + (p_e - p_a) A_e",
+          "to_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e",
+          "operation_label": "作用・反作用の法則による推力 F = R_x の代入",
+          "explanation": "運動の第3法則（作用・反作用の法則）および可変質量系ロケットの推力定義により、エンジンが機体に及ぼす進行方向（-x方向）の推力の大きさ F は機体が検査体積に及ぼす反力 R_x に等しいため、R_x = F を代入する。",
+          "used_node_ids": [
+            "astro.orbit.mt01_variable_mass_rocket_eom",
+            "phys.mech.p03_action_reaction"
+          ],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T09:50:30.904916+00:00"
     },
     {
       "id": "eng.rock.d02_effective_velocity_isp",
@@ -387,12 +566,15 @@
         "phys.thermo.th03_first_law_internal_energy"
       ],
       "required_math_node_ids": [
-        "math.calc.m02_fundamental_theorem_calc"
+        "eng.comp.n03_stagnation_enthalpy_energy_eq",
+        "eng.comp.n04_isentropic_stagnation_relations"
       ],
       "assumptions": [
-        "比熱一定の理想気体",
-        "燃焼室内の流速無視（よどみ点温度 T_c, よどみ点圧力 p_c）",
-        "断熱可逆過程"
+        "準1次元定常流れであり、外部との熱交換・軸仕事・粘性散逸および体積力は無視できる",
+        "比熱一定の理想気体であり、比熱比 \\gamma = c_p / c_v > 1 および比気体定数 R_{\\mathrm{sp}} = c_p - c_v > 0 が一定である",
+        "燃焼室内の流速は無視できる（u_c \\approx 0）ため燃焼室状態がよどみ点状態（T_0 = T_c, p_0 = p_c）に一致し、T_c > T_e > 0 かつ p_c > p_e > 0 である",
+        "ノズル内の膨張過程は断熱かつ可逆な等エントロピー流れである",
+        "ノズル出口における流れは順方向（v_e > 0）である"
       ],
       "steps": [
         {
@@ -400,13 +582,13 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "h_c = h_e + \\frac{1}{2}v_e^2,\\quad p\\rho^{-\\gamma} = \\mathrm{const.}",
+          "from_latex": "h_0 = h + \\frac{u^2}{2},\\quad \\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2,\\quad \\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
           "to_latex": "v_e = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
-          "operation_label": "エネルギー保存とポアソン関係式の結合",
-          "explanation": "全エンタルピー保存と等エントロピー膨張の圧力・温度関係からノズル出口の排気速度を求める。",
+          "operation_label": "定常エネルギー保存則と等エントロピー関係式の結合",
+          "explanation": "断熱定常エネルギー保存則からノズル出口の排気速度を燃焼室と出口の温度差で表し、さらに等エントロピーよどみ点関係式から導かれる温度・圧力比および理想気体の比熱関係を代入して排気速度の圧力比表示を得る。",
           "used_node_ids": [
-            "phys.thermo.th01_zeroth_law_state_eq",
-            "phys.thermo.th03_first_law_internal_energy"
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations"
           ],
           "sympy_check_hint": null
         },
@@ -415,14 +597,63 @@
           "order": 1,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "h_c = h_e + \\frac{1}{2}v_e^2,\\quad p\\rho^{-\\gamma} = \\mathrm{const.}",
-          "to_latex": "v_e = \\sqrt{2 c_p (T_c - T_e)} = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left(1 - \\frac{T_e}{T_c}\\right)}",
-          "operation_label": "定圧比熱と気体定数の関係代入",
-          "explanation": "理想気体のエンタルピー差 h_c - h_e = c_p(T_c - T_e) およびマイヤーの関係 c_p = gamma R_sp / (gamma - 1) を代入して v_e を温度比で表す。",
+          "from_latex": "h_0 = h + \\frac{u^2}{2}",
+          "to_latex": "v_e = \\sqrt{2 c_p (T_c - T_e)}",
+          "operation_label": "定常エネルギー保存則からの排気速度の温度表示導出",
+          "explanation": "燃焼室よどみ点とノズル出口に全エンタルピー保存則を適用し、定圧比熱一定の理想気体関係を用いて排気速度を温度差で表す。",
           "used_node_ids": [
-            "phys.thermo.th01_zeroth_law_state_eq",
-            "phys.thermo.th03_first_law_internal_energy"
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
           ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "h_0 = h + \\frac{u^2}{2}",
+          "to_latex": "h_c = h_e + \\frac{1}{2}v_e^2",
+          "operation_label": "燃焼室よどみ点とノズル出口状態の代入",
+          "explanation": "燃焼室内で流速が無視できることから全エンタルピーを h_0 = h_c とし、ノズル出口の静エンタルピー h = h_e および流速 u = v_e を代入する。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "h_c = h_e + \\frac{1}{2}v_e^2",
+          "to_latex": "\\frac{1}{2}v_e^2 = h_c - h_e",
+          "operation_label": "出口静エンタルピーの移項",
+          "explanation": "両辺から h_e を引き、運動エネルギー項を左辺に分離して両辺を入れ替える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{1}{2}v_e^2 = h_c - h_e",
+          "to_latex": "\\frac{1}{2}v_e^2 = c_p (T_c - T_e)",
+          "operation_label": "理想気体の定圧比熱によるエンタルピー差の代入",
+          "explanation": "定圧比熱 c_p が一定の理想気体におけるエンタルピー差 h_c - h_e = c_p (T_c - T_e) を右辺に代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{1}{2}v_e^2 = c_p (T_c - T_e)",
+          "to_latex": "v_e = \\sqrt{2 c_p (T_c - T_e)}",
+          "operation_label": "両辺の2倍と正の平方根の取得",
+          "explanation": "両辺に 2 を掛けて v_e^2 = 2 c_p (T_c - T_e) とした後、v_e > 0 および T_c > T_e の仮定の下で正の平方根をとる。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -430,17 +661,130 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "v_e = \\sqrt{2 c_p (T_c - T_e)} = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left(1 - \\frac{T_e}{T_c}\\right)}",
-          "to_latex": "v_e = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
-          "operation_label": "等エントロピー温度圧力比の代入",
-          "explanation": "等エントロピー関係 T_e/T_c = (p_e/p_c)^((gamma-1)/gamma) を代入し、排気速度の圧力比表示を得る。",
+          "from_latex": "\\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2,\\quad \\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "to_latex": "\\frac{T_e}{T_c} = \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}",
+          "operation_label": "等エントロピーよどみ点関係式の導入と温度・圧力比の導出",
+          "explanation": "断熱定常流および等エントロピー流のよどみ点温度比・圧力比の公式を燃焼室とノズル出口に適用し、出口マッハ数を消去して温度比と圧力比の関係式を導く。",
           "used_node_ids": [
-            "math.calc.m02_fundamental_theorem_calc",
-            "phys.thermo.th03_first_law_internal_energy"
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2,\\quad \\frac{p_0}{p} = \\left(1 + \\frac{\\gamma - 1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "to_latex": "\\frac{T_c}{T_e} = 1 + \\frac{\\gamma - 1}{2}M_e^2,\\quad \\frac{p_c}{p_e} = \\left(1 + \\frac{\\gamma - 1}{2}M_e^2\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "operation_label": "燃焼室よどみ点とノズル出口状態の代入",
+          "explanation": "よどみ点状態を燃焼室（T_0 = T_c, p_0 = p_c）、静状態をノズル出口（T = T_e, p = p_e, M = M_e）として2つの関係式に代入する。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{T_c}{T_e} = 1 + \\frac{\\gamma - 1}{2}M_e^2,\\quad \\frac{p_c}{p_e} = \\left(1 + \\frac{\\gamma - 1}{2}M_e^2\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "to_latex": "\\frac{p_c}{p_e} = \\left(\\frac{T_c}{T_e}\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "operation_label": "出口マッハ数項の消去",
+          "explanation": "第1式の 1 + (\\gamma - 1)/2 \\cdot M_e^2 = T_c / T_e を第2式の括弧内に代入して出口マッハ数 M_e を消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{p_c}{p_e} = \\left(\\frac{T_c}{T_e}\\right)^{\\frac{\\gamma}{\\gamma - 1}}",
+          "to_latex": "\\frac{T_c}{T_e} = \\left(\\frac{p_c}{p_e}\\right)^{\\frac{\\gamma - 1}{\\gamma}}",
+          "operation_label": "両辺の指数 (\\gamma - 1)/\\gamma 乗の適用",
+          "explanation": "\\gamma > 1 かつ温度比・圧力比が正であることから、両辺を (\\gamma - 1)/\\gamma 乗して温度比 T_c / T_e について解く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{T_c}{T_e} = \\left(\\frac{p_c}{p_e}\\right)^{\\frac{\\gamma - 1}{\\gamma}}",
+          "to_latex": "\\frac{T_e}{T_c} = \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}",
+          "operation_label": "両辺の逆数の取得",
+          "explanation": "非ゼロの正量に対する等式の両辺で逆数をとり、T_e / T_c を圧力比 p_e / p_c のべき乗で表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_e = \\sqrt{2 c_p (T_c - T_e)}",
+          "to_latex": "v_e = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
+          "operation_label": "マイヤーの関係式と等エントロピー圧力比の代入",
+          "explanation": "温度表示の排気速度式から燃焼室温度 T_c をくくり出し、定圧比熱を比熱比と比気体定数で表して、導出した等エントロピー温度・圧力比を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "v_e = \\sqrt{2 c_p (T_c - T_e)}",
+          "to_latex": "v_e = \\sqrt{2 c_p T_c \\left(1 - \\frac{T_e}{T_c}\\right)}",
+          "operation_label": "燃焼室温度 T_c のくくり出し",
+          "explanation": "T_c > 0 の下で括弧内の (T_c - T_e) から共通因数 T_c をくくり出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": "2*c_p*(T_c - T_e) == 2*c_p*T_c*(1 - T_e/T_c)"
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "v_e = \\sqrt{2 c_p T_c \\left(1 - \\frac{T_e}{T_c}\\right)}",
+          "to_latex": "v_e = \\sqrt{2 \\frac{\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left(1 - \\frac{T_e}{T_c}\\right)}",
+          "operation_label": "マイヤーの関係式と比熱比の定義による定圧比熱の代入",
+          "explanation": "c_p - c_v = R_{\\mathrm{sp}} と \\gamma = c_p / c_v（\\gamma > 1）から得られる関係式 c_p = (\\gamma / (\\gamma - 1)) R_{\\mathrm{sp}} を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "v_e = \\sqrt{2 \\frac{\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left(1 - \\frac{T_e}{T_c}\\right)}",
+          "to_latex": "v_e = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left(1 - \\frac{T_e}{T_c}\\right)}",
+          "operation_label": "分子の乗算による係数分数の整理",
+          "explanation": "定数 2 を分数 \\gamma / (\\gamma - 1) の分子に掛けて係数を単一の分数にまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "v_e = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left(1 - \\frac{T_e}{T_c}\\right)}",
+          "to_latex": "v_e = \\sqrt{\\frac{2\\gamma}{\\gamma - 1} R_{\\mathrm{sp}} T_c \\left[1 - \\left(\\frac{p_e}{p_c}\\right)^{\\frac{\\gamma - 1}{\\gamma}}\\right]}",
+          "operation_label": "等エントロピー温度・圧力比の代入",
+          "explanation": "前段で導出した等エントロピー関係 T_e / T_c = (p_e / p_c)^{(\\gamma - 1)/\\gamma} を括弧内に代入し、排気速度の圧力比表示を完成させる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T10:01:59.159909+00:00"
     },
     {
       "id": "eng.rock.d05_choked_mass_flow",
@@ -451,10 +795,17 @@
         "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
         "phys.thermo.th01_zeroth_law_state_eq"
       ],
-      "required_math_node_ids": [],
+      "required_math_node_ids": [
+        "eng.comp.n01_acoustic_wave_speed_of_sound",
+        "eng.comp.n02_mach_number_and_flow_regimes",
+        "eng.comp.n03_stagnation_enthalpy_energy_eq",
+        "eng.comp.n04_isentropic_stagnation_relations"
+      ],
       "assumptions": [
-        "スロートでの臨界状態（M_t = 1）",
-        "等エントロピー理想気体流"
+        "準1次元定常・等エントロピー理想気体流れ（比熱比 \\gamma > 1、比気体定数 R_{\\mathrm{sp}} > 0 は一定）",
+        "理想気体の状態方程式 p = \\rho R_{\\mathrm{sp}} T が成り立ち、燃焼室内は流速零のよどみ状態（T_0 = T_c, p_0 = p_c, \\rho_0 = \\rho_c）とみなせる",
+        "スロート（断面積 A_t > 0）において流れがチョークし、臨界状態（M_t = 1）に達している",
+        "燃焼室圧力 p_c > 0 および燃焼室温度 T_c > 0 が成り立つ"
       ],
       "steps": [
         {
@@ -462,13 +813,15 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "\\dot{m} = \\rho_t A_t v_t,\\quad M_t = 1",
+          "from_latex": "\\frac{T_c}{T_t} = 1 + \\frac{\\gamma - 1}{2} M_t^2,\\quad \\frac{\\rho_c}{\\rho_t} = \\left(1 + \\frac{\\gamma - 1}{2} M_t^2\\right)^{\\frac{1}{\\gamma - 1}},\\quad M_t = 1",
           "to_latex": "\\dot{m} = \\Gamma(\\gamma)\\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}},\\quad \\Gamma(\\gamma) := \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{\\gamma + 1}{2(\\gamma - 1)}}",
-          "operation_label": "臨界状態量の代入",
-          "explanation": "スロートにおける臨界密度・臨界温度・音速を連続の式に代入し、チョーク質量流量を得る。",
+          "operation_label": "臨界状態量・音速・状態方程式を用いたチョーク質量流量公式の導出",
+          "explanation": "等エントロピーよどみ点関係式に臨界条件 M_t = 1 を代入してスロートの温度・密度比を求め、音速と理想気体の状態方程式を連続の式 \\dot{m} = \\rho_t A_t v_t へ順次代入し、無次元流量関数 \\Gamma(\\gamma) でまとめる。",
           "used_node_ids": [
-            "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
-            "phys.thermo.th01_zeroth_law_state_eq"
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations"
           ],
           "sympy_check_hint": null
         },
@@ -477,14 +830,65 @@
           "order": 1,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\dot{m} = \\rho_t A_t v_t,\\quad M_t = 1",
-          "to_latex": "\\frac{T_t}{T_c} = \\frac{2}{\\gamma + 1},\\quad \\frac{\\rho_t}{\\rho_c} = \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\gamma R_{\\mathrm{sp}} T_t}",
-          "operation_label": "臨界比とスロート音速の評価",
-          "explanation": "M_t = 1 のとき v_t^2 = gamma R_sp T_t となり、エネルギー保存式から臨界温度比と臨界密度比が求まる。",
+          "from_latex": "\\frac{T_c}{T_t} = 1 + \\frac{\\gamma - 1}{2} M_t^2,\\quad \\frac{\\rho_c}{\\rho_t} = \\left(1 + \\frac{\\gamma - 1}{2} M_t^2\\right)^{\\frac{1}{\\gamma - 1}},\\quad M_t = 1",
+          "to_latex": "T_t = \\frac{2}{\\gamma + 1} T_c,\\quad \\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "operation_label": "等エントロピー関係式からの臨界温度・臨界密度の導出",
+          "explanation": "よどみ点温度・密度関係式にスロート臨界条件 M_t = 1 を代入し、通分と逆数変換によってスロートの臨界温度 T_t と臨界密度 \\rho_t を燃焼室状態量で表す。",
           "used_node_ids": [
-            "eng.rock.n04_isentropic_nozzle_exhaust_velocity",
-            "phys.thermo.th01_zeroth_law_state_eq"
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations"
           ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{T_c}{T_t} = 1 + \\frac{\\gamma - 1}{2} M_t^2,\\quad \\frac{\\rho_c}{\\rho_t} = \\left(1 + \\frac{\\gamma - 1}{2} M_t^2\\right)^{\\frac{1}{\\gamma - 1}},\\quad M_t = 1",
+          "to_latex": "\\frac{T_c}{T_t} = 1 + \\frac{\\gamma - 1}{2},\\quad \\frac{\\rho_c}{\\rho_t} = \\left(1 + \\frac{\\gamma - 1}{2}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "operation_label": "臨界マッハ数 M_t = 1 の代入",
+          "explanation": "等エントロピーよどみ点温度関係式および密度関係式の M_t に臨界値 1 を代入する。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": "1 + (gamma - 1)/2 * 1**2 == 1 + (gamma - 1)/2"
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{T_c}{T_t} = 1 + \\frac{\\gamma - 1}{2},\\quad \\frac{\\rho_c}{\\rho_t} = \\left(1 + \\frac{\\gamma - 1}{2}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "to_latex": "\\frac{T_c}{T_t} = \\frac{\\gamma + 1}{2},\\quad \\frac{\\rho_c}{\\rho_t} = \\left(\\frac{\\gamma + 1}{2}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "operation_label": "括弧内和の通分計算",
+          "explanation": "1 + (\\gamma - 1)/2 を分母 2 で通分し、(\\gamma + 1)/2 へまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": "simplify(1 + (gamma - 1)/2) == (gamma + 1)/2"
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{T_c}{T_t} = \\frac{\\gamma + 1}{2},\\quad \\frac{\\rho_c}{\\rho_t} = \\left(\\frac{\\gamma + 1}{2}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "to_latex": "\\frac{T_t}{T_c} = \\frac{2}{\\gamma + 1},\\quad \\frac{\\rho_t}{\\rho_c} = \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "operation_label": "両辺の逆数をとる変形",
+          "explanation": "T_t / T_c と \\rho_t / \\rho_c を得るために、両式の左辺および右辺それぞれの逆数をとる。",
+          "used_node_ids": [],
+          "sympy_check_hint": "1 / ((gamma + 1)/2)**(1/(gamma - 1)) == (2/(gamma + 1))**(1/(gamma - 1))"
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{T_t}{T_c} = \\frac{2}{\\gamma + 1},\\quad \\frac{\\rho_t}{\\rho_c} = \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "to_latex": "T_t = \\frac{2}{\\gamma + 1} T_c,\\quad \\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "operation_label": "両辺に T_c および \\rho_c を乗じて分母を払う",
+          "explanation": "第1式の両辺に T_c、第2式の両辺に \\rho_c を掛けて、スロート温度 T_t とスロート密度 \\rho_t を明示する。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -492,16 +896,190 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\frac{T_t}{T_c} = \\frac{2}{\\gamma + 1},\\quad \\frac{\\rho_t}{\\rho_c} = \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\gamma R_{\\mathrm{sp}} T_t}",
-          "to_latex": "\\dot{m} = \\Gamma(\\gamma)\\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}},\\quad \\Gamma(\\gamma) := \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{\\gamma + 1}{2(\\gamma - 1)}}",
-          "operation_label": "状態方程式と質量流量の整理",
-          "explanation": "理想気体の状態方程式 rho_c = p_c/(R_sp T_c) を用いて mdot = rho_t A_t v_t を整理し、Gamma(gamma) による公式を得る。",
+          "from_latex": "T_t = \\frac{2}{\\gamma + 1} T_c,\\quad \\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "to_latex": "\\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c},\\quad \\rho_c = \\frac{p_c}{R_{\\mathrm{sp}} T_c} \\",
+          "operation_label": "スロート流速の燃焼室温度表示と理想気体状態方程式の導入",
+          "explanation": "音速とマッハ数の定義からスロート流速 v_t を燃焼室温度 T_c で表し、さらに燃焼室密度 \\rho_c を消去するため理想気体の状態方程式を導入する。",
           "used_node_ids": [
-            "phys.thermo.th01_zeroth_law_state_eq"
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n02_mach_number_and_flow_regimes"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "T_t = \\frac{2}{\\gamma + 1} T_c,\\quad \\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}}",
+          "to_latex": "T_t = \\frac{2}{\\gamma + 1} T_c,\\quad \\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = M_t \\sqrt{\\gamma R_{\\mathrm{sp}} T_t} \\",
+          "operation_label": "音速式とマッハ数定義式を代入・導入",
+          "explanation": "音速 a_t = \\sqrt{\\gamma R_{\\mathrm{sp}} T_t} とマッハ数の定義 M_t = v_t / a_t から、スロート流速の表現 v_t = M_t \\sqrt{\\gamma R_{\\mathrm{sp}} T_t} を導入する。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "T_t = \\frac{2}{\\gamma + 1} T_c,\\quad \\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = M_t \\sqrt{\\gamma R_{\\mathrm{sp}} T_t} \\",
+          "to_latex": "T_t = \\frac{2}{\\gamma + 1} T_c,\\quad \\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\gamma R_{\\mathrm{sp}} T_t} \\",
+          "operation_label": "スロート流速式への M_t = 1 の代入",
+          "explanation": "スロート流速式 v_t = M_t \\sqrt{\\gamma R_{\\mathrm{sp}} T_t} に臨界条件 M_t = 1 を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "1 * sqrt(gamma * R_sp * T_t) == sqrt(gamma * R_sp * T_t)"
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "T_t = \\frac{2}{\\gamma + 1} T_c,\\quad \\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\gamma R_{\\mathrm{sp}} T_t} \\",
+          "to_latex": "\\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "operation_label": "臨界温度 T_t のスロート流速への代入",
+          "explanation": "スロート流速式 v_t = \\sqrt{\\gamma R_{\\mathrm{sp}} T_t} の T_t に T_t = \\frac{2}{\\gamma + 1} T_c を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "sqrt(gamma * R_sp * (2 / (gamma + 1) * T_c)) == sqrt(2 * gamma / (gamma + 1) * R_sp * T_c)"
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "to_latex": "\\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c},\\quad \\rho_c = \\frac{p_c}{R_{\\mathrm{sp}} T_c} \\",
+          "operation_label": "理想気体の状態方程式を導入",
+          "explanation": "仮定した理想気体の状態方程式 p_c = \\rho_c R_{\\mathrm{sp}} T_c を \\rho_c について解いた式 \\rho_c = p_c / (R_{\\mathrm{sp}} T_c) を導入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c},\\quad \\rho_c = \\frac{p_c}{R_{\\mathrm{sp}} T_c} \\",
+          "to_latex": "\\dot{m} = \\frac{p_c A_t}{R_{\\mathrm{sp}} T_c}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}} \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "operation_label": "連続の式への臨界密度および臨界流速の代入",
+          "explanation": "燃焼室密度 \\rho_c をスロート密度 \\rho_t へ代入し、質量流量の定義式 \\dot{m} = \\rho_t A_t v_t にスロートの密度と流速を順次代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\rho_t = \\rho_c \\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c},\\quad \\rho_c = \\frac{p_c}{R_{\\mathrm{sp}} T_c} \\",
+          "to_latex": "\\rho_t = \\frac{p_c}{R_{\\mathrm{sp}} T_c}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "operation_label": "燃焼室密度 \\rho_c のスロート密度式への代入",
+          "explanation": "\\rho_t の式の \\rho_c に理想気体の状態方程式 \\rho_c = p_c / (R_{\\mathrm{sp}} T_c) を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\rho_t = \\frac{p_c}{R_{\\mathrm{sp}} T_c}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "to_latex": "\\dot{m} = \\rho_t A_t v_t,\\quad \\rho_t = \\frac{p_c}{R_{\\mathrm{sp}} T_c}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "operation_label": "1次元連続の式（質量流量の定義）を導入",
+          "explanation": "スロート断面における定常1次元質量流量の定義式 \\dot{m} = \\rho_t A_t v_t を導入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\dot{m} = \\rho_t A_t v_t,\\quad \\rho_t = \\frac{p_c}{R_{\\mathrm{sp}} T_c}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}},\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "to_latex": "\\dot{m} = \\frac{p_c A_t}{R_{\\mathrm{sp}} T_c}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}} v_t,\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "operation_label": "質量流量式へのスロート密度 \\rho_t の代入",
+          "explanation": "\\dot{m} = \\rho_t A_t v_t の \\rho_t に \\frac{p_c}{R_{\\mathrm{sp}} T_c}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}} を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\dot{m} = \\frac{p_c A_t}{R_{\\mathrm{sp}} T_c}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}} v_t,\\quad v_t = \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "to_latex": "\\dot{m} = \\frac{p_c A_t}{R_{\\mathrm{sp}} T_c}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}} \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "operation_label": "質量流量式へのスロート流速 v_t の代入",
+          "explanation": "質量流量式の v_t に \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{m} = \\frac{p_c A_t}{R_{\\mathrm{sp}} T_c}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}} \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "to_latex": "\\dot{m} = \\Gamma(\\gamma)\\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}},\\quad \\Gamma(\\gamma) := \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{\\gamma + 1}{2(\\gamma - 1)}}",
+          "operation_label": "根号の分解・約分および無次元流量関数 \\Gamma(\\gamma) による標準化",
+          "explanation": "根号内の正値因子を分解して R_{\\mathrm{sp}} T_c を約分し、2 / (\\gamma + 1) のべき指数を統合して無次元流量関数 \\Gamma(\\gamma) を定義する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\dot{m} = \\frac{p_c A_t}{R_{\\mathrm{sp}} T_c}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}} \\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} \\",
+          "to_latex": "\\dot{m} = \\frac{p_c A_t}{R_{\\mathrm{sp}} T_c}\\sqrt{R_{\\mathrm{sp}} T_c}\\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{2}}",
+          "operation_label": "根号内の正値因子の平方根への分解",
+          "explanation": "\\gamma > 1, R_{\\mathrm{sp}} > 0, T_c > 0 の正値性より、\\sqrt{\\frac{2\\gamma}{\\gamma + 1} R_{\\mathrm{sp}} T_c} を \\sqrt{R_{\\mathrm{sp}} T_c}\\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{2}} に分解する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "sqrt(2 * gamma / (gamma + 1) * R_sp * T_c) == sqrt(R_sp * T_c) * sqrt(gamma) * (2 / (gamma + 1))**(Rational(1, 2))"
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\dot{m} = \\frac{p_c A_t}{R_{\\mathrm{sp}} T_c}\\sqrt{R_{\\mathrm{sp}} T_c}\\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{2}}",
+          "to_latex": "\\dot{m} = \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{2}} \\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}}",
+          "operation_label": "R_{\\mathrm{sp}} T_c の約分",
+          "explanation": "分母の R_{\\mathrm{sp}} T_c と分子の \\sqrt{R_{\\mathrm{sp}} T_c} を約分して \\frac{1}{\\sqrt{R_{\\mathrm{sp}} T_c}} とし、\\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}} を分離する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "sqrt(R_sp * T_c) / (R_sp * T_c) == 1 / sqrt(R_sp * T_c)"
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\dot{m} = \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{\\gamma - 1}}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{1}{2}} \\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}}",
+          "to_latex": "\\dot{m} = \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{\\gamma + 1}{2(\\gamma - 1)}} \\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}}",
+          "operation_label": "指数法則によるべき指数の加算と通分",
+          "explanation": "同一の底 2 / (\\gamma + 1) に対する積を指数法則でまとめ、べき指数 \\frac{1}{\\gamma - 1} + \\frac{1}{2} を通分して \\frac{\\gamma + 1}{2(\\gamma - 1)} とする。",
+          "used_node_ids": [],
+          "sympy_check_hint": "simplify(1/(gamma - 1) + Rational(1, 2)) == (gamma + 1)/(2*(gamma - 1))"
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\dot{m} = \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{\\gamma + 1}{2(\\gamma - 1)}} \\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}}",
+          "to_latex": "\\dot{m} = \\Gamma(\\gamma)\\frac{p_c A_t}{\\sqrt{R_{\\mathrm{sp}} T_c}},\\quad \\Gamma(\\gamma) := \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{\\gamma + 1}{2(\\gamma - 1)}}",
+          "operation_label": "無次元流量関数 \\Gamma(\\gamma) の定義と代入",
+          "explanation": "比熱比のみに依存する係数 \\sqrt{\\gamma}\\left(\\frac{2}{\\gamma + 1}\\right)^{\\frac{\\gamma + 1}{2(\\gamma - 1)}} を \\Gamma(\\gamma) と定義して代入し、チョーク質量流量公式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T09:53:36.452819+00:00"
     },
     {
       "id": "eng.rock.d06_characteristic_velocity",

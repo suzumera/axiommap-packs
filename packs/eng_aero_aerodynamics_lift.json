@@ -242,9 +242,13 @@
       "required_math_node_ids": [],
       "assumptions": [
         "非粘性（粘性応力零）",
-        "非圧縮性（密度 ρ 一定）",
+        "非圧縮性（密度 ρ が空間・時間にわたり一定の正値定数）",
         "定常流（∂u/∂t = 0）",
-        "渦なし流れ（∇×u = 0）"
+        "渦なし流れ（∇×u = 0）",
+        "外力（重力などの体積力）が無視できること",
+        "速度場 u(r) と圧力場 p(r) が連続微分可能（C^1級）で、流れ領域が弧状連結であること",
+        "微小流体素片の体積は非ゼロ（ΔV > 0）であること",
+        "無限遠方 r → r_∞ において一様流（p → p_∞, ‖u‖ → U_∞）となること"
       ],
       "steps": [
         {
@@ -252,10 +256,10 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p",
+          "from_latex": "\\mathbf{F} = m\\ddot{\\mathbf{r}}",
           "to_latex": "p + \\frac{1}{2}\\rho\\|\\mathbf{u}\\|^2 = p_\\infty + \\frac{1}{2}\\rho U_\\infty^2 = \\text{const.}",
-          "operation_label": "渦なし定常オイラー方程式の勾配形式への変形と空間積分",
-          "explanation": "非粘性流体素片にニュートンの第2法則を適用し、定常・渦なし条件を用いて移流項を運動エネルギー勾配へ書き換え、線積分によりベルヌーイ定数の一様性を得る。",
+          "operation_label": "ニュートンの第2法則から定常非圧縮ポテンシャル流のベルヌーイの定理を導出",
+          "explanation": "微小流体素片にニュートンの第2法則と圧力勾配力を適用して定常オイラー方程式を導き、ベクトル恒等式と渦なし条件で全圧の勾配が零であることを示したのち、勾配線積分と無限遠境界条件からベルヌーイの定理を得る。",
           "used_node_ids": [
             "math.vec.m03_dot_cross_product",
             "math.vec.m05_gradient_line_integral",
@@ -268,14 +272,63 @@
           "order": 1,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p",
-          "to_latex": "\\rho\\left(\\frac{1}{2}\\nabla(\\|\\mathbf{u}\\|^2) - \\mathbf{u}\\times(\\nabla\\times\\mathbf{u})\\right) = -\\nabla p",
-          "operation_label": "定常条件とベクトル恒等式による移流加速度の変形",
-          "explanation": "定常流では物質微分の時間項が消え、ベクトル解析の恒等式 (u·∇)u = (1/2)∇(‖u‖^2) - u×(∇×u) を適用する。",
+          "from_latex": "\\mathbf{F} = m\\ddot{\\mathbf{r}}",
+          "to_latex": "\\rho(\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\nabla p",
+          "operation_label": "ニュートンの第2法則からの定常オイラー方程式の導出",
+          "explanation": "非粘性・外力なしの微小流体素片に運動方程式を適用して微小体積で割り、物質微分を展開した上で定常条件を代入して定常オイラー方程式を得る。",
           "used_node_ids": [
-            "math.vec.m03_dot_cross_product",
             "phys.mech.p02_newton_second_law"
           ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\mathbf{F} = m\\ddot{\\mathbf{r}}",
+          "to_latex": "-\\nabla p\\,\\Delta V = \\rho\\,\\Delta V\\,\\frac{D\\mathbf{u}}{Dt}",
+          "operation_label": "微小流体素片への圧力勾配力・質量・加速度の代入",
+          "explanation": "ニュートンの第2法則に対し、体積 ΔV の流体素片に働く正味の圧力勾配力 F = -∇p ΔV、質量 m = ρ ΔV、および流体粒子の加速度 r̈ = Du/Dt を代入する。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "-\\nabla p\\,\\Delta V = \\rho\\,\\Delta V\\,\\frac{D\\mathbf{u}}{Dt}",
+          "to_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p",
+          "operation_label": "微小体積 ΔV による両辺の除算と左辺・右辺の入替え",
+          "explanation": "両辺を ΔV > 0 で割って体積要素を消去し、加速度項を左辺、圧力勾配項を右辺に入れ替える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\rho\\frac{D\\mathbf{u}}{Dt} = -\\nabla p",
+          "to_latex": "\\rho\\left(\\frac{\\partial\\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "operation_label": "物質微分のオイラー記述への展開",
+          "explanation": "流体粒子に沿う物質微分 Du/Dt を、固定点における局所時間変化率 ∂u/∂t と移流項 (u·∇)u の和として展開する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\rho\\left(\\frac{\\partial\\mathbf{u}}{\\partial t} + (\\mathbf{u}\\cdot\\nabla)\\mathbf{u}\\right) = -\\nabla p",
+          "to_latex": "\\rho(\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\nabla p",
+          "operation_label": "定常流条件 ∂u/∂t = 0 の代入",
+          "explanation": "流れが定常である仮定 ∂u/∂t = 0 を代入し、局所時間微分項を消去する。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -283,16 +336,132 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
+          "from_latex": "\\rho(\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\nabla p",
+          "to_latex": "\\nabla\\left(p + \\frac{1}{2}\\rho\\|\\mathbf{u}\\|^2\\right) = \\mathbf{0}",
+          "operation_label": "ベクトル恒等式と渦なし条件による勾配形式への変形",
+          "explanation": "移流項を運動エネルギー勾配と渦度を含む外積項へ書き換え、渦なし条件と密度一定の仮定を用いて単一の勾配演算子の中にまとめる。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\rho(\\mathbf{u}\\cdot\\nabla)\\mathbf{u} = -\\nabla p",
+          "to_latex": "\\rho\\left(\\frac{1}{2}\\nabla(\\|\\mathbf{u}\\|^2) - \\mathbf{u}\\times(\\nabla\\times\\mathbf{u})\\right) = -\\nabla p",
+          "operation_label": "ベクトル解析の恒等式による移流項の書き換え",
+          "explanation": "内積・外積の微分公式から従うベクトル恒等式 (u·∇)u = (1/2)∇(‖u‖^2) - u×(∇×u) を左辺の移流項に適用する。",
+          "used_node_ids": [
+            "math.vec.m03_dot_cross_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
           "from_latex": "\\rho\\left(\\frac{1}{2}\\nabla(\\|\\mathbf{u}\\|^2) - \\mathbf{u}\\times(\\nabla\\times\\mathbf{u})\\right) = -\\nabla p",
-          "to_latex": "\\nabla\\left(p + \\frac{1}{2}\\rho\\|\\mathbf{u}\\|^2\\right) = \\mathbf{0} \\implies p + \\frac{1}{2}\\rho\\|\\mathbf{u}\\|^2 = p_\\infty + \\frac{1}{2}\\rho U_\\infty^2",
-          "operation_label": "渦なし条件の代入と勾配線積分による保存則導出",
-          "explanation": "渦なし条件 ∇×u = 0 により全圧の勾配が恒等的に零となり、任意の経路に沿う線積分から全領域でベルヌーイの式が成立する。",
+          "to_latex": "\\frac{1}{2}\\rho\\nabla(\\|\\mathbf{u}\\|^2) = -\\nabla p",
+          "operation_label": "渦なし条件 ∇×u = 0 の代入",
+          "explanation": "渦なし流れの条件 ∇×u = 0 を代入して外積項 u×(∇×u) を消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{1}{2}\\rho\\nabla(\\|\\mathbf{u}\\|^2) = -\\nabla p",
+          "to_latex": "\\nabla p + \\frac{1}{2}\\rho\\nabla(\\|\\mathbf{u}\\|^2) = \\mathbf{0}",
+          "operation_label": "右辺の圧力勾配項 -∇p の左辺への移項",
+          "explanation": "右辺の -∇p を左辺に移項して符号を正に反転させ、右辺を零ベクトルとする。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\nabla p + \\frac{1}{2}\\rho\\nabla(\\|\\mathbf{u}\\|^2) = \\mathbf{0}",
+          "to_latex": "\\nabla\\left(p + \\frac{1}{2}\\rho\\|\\mathbf{u}\\|^2\\right) = \\mathbf{0}",
+          "operation_label": "密度 ρ 一定の条件を用いた勾配演算子の線形結合",
+          "explanation": "非圧縮性により密度 ρ が空間座標に依存しない定数であるため、定数 (1/2)ρ を勾配演算子 ∇ の内側に入れて和を1つの勾配へまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\nabla\\left(p + \\frac{1}{2}\\rho\\|\\mathbf{u}\\|^2\\right) = \\mathbf{0}",
+          "to_latex": "p + \\frac{1}{2}\\rho\\|\\mathbf{u}\\|^2 = p_\\infty + \\frac{1}{2}\\rho U_\\infty^2 = \\text{const.}",
+          "operation_label": "勾配線積分と無限遠境界条件によるベルヌーイ定数の導出",
+          "explanation": "全圧勾配の零ベクトル式を無限遠点から任意点まで線積分して勾配の基本定理を適用し、移項と無限遠一様流条件の代入によってベルヌーイの定理を得る。",
           "used_node_ids": [
             "math.vec.m05_gradient_line_integral"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\nabla\\left(p + \\frac{1}{2}\\rho\\|\\mathbf{u}\\|^2\\right) = \\mathbf{0}",
+          "to_latex": "\\int_{\\mathbf{r}_\\infty}^{\\mathbf{r}} \\nabla\\left(p + \\frac{1}{2}\\rho\\|\\mathbf{u}\\|^2\\right)\\cdot d\\mathbf{r}' = 0",
+          "operation_label": "無限遠点 r_∞ から任意点 r への経路に沿った線積分",
+          "explanation": "流れ領域内の任意の滑らかな経路を選び、無限遠点 r_∞ から任意の位置 r まで微小変位 dr' との内積をとって両辺を線積分する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\int_{\\mathbf{r}_\\infty}^{\\mathbf{r}} \\nabla\\left(p + \\frac{1}{2}\\rho\\|\\mathbf{u}\\|^2\\right)\\cdot d\\mathbf{r}' = 0",
+          "to_latex": "\\left(p(\\mathbf{r}) + \\frac{1}{2}\\rho\\|\\mathbf{u}(\\mathbf{r})\\|^2\\right) - \\left(p(\\mathbf{r}_\\infty) + \\frac{1}{2}\\rho\\|\\mathbf{u}(\\mathbf{r}_\\infty)\\|^2\\right) = 0",
+          "operation_label": "勾配線積分の基本定理の適用",
+          "explanation": "勾配ベクトルの線積分がスカラーポテンシャルの始点と終点の差に等しいという基本定理を左辺に適用する。",
+          "used_node_ids": [
+            "math.vec.m05_gradient_line_integral"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\left(p(\\mathbf{r}) + \\frac{1}{2}\\rho\\|\\mathbf{u}(\\mathbf{r})\\|^2\\right) - \\left(p(\\mathbf{r}_\\infty) + \\frac{1}{2}\\rho\\|\\mathbf{u}(\\mathbf{r}_\\infty)\\|^2\\right) = 0",
+          "to_latex": "p(\\mathbf{r}) + \\frac{1}{2}\\rho\\|\\mathbf{u}(\\mathbf{r})\\|^2 = p(\\mathbf{r}_\\infty) + \\frac{1}{2}\\rho\\|\\mathbf{u}(\\mathbf{r}_\\infty)\\|^2",
+          "operation_label": "始点 r_∞ における評価項の右辺への移項",
+          "explanation": "無限遠点 r_∞ における括弧項を右辺へ移項して符号を正にする。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "p(\\mathbf{r}) + \\frac{1}{2}\\rho\\|\\mathbf{u}(\\mathbf{r})\\|^2 = p(\\mathbf{r}_\\infty) + \\frac{1}{2}\\rho\\|\\mathbf{u}(\\mathbf{r}_\\infty)\\|^2",
+          "to_latex": "p + \\frac{1}{2}\\rho\\|\\mathbf{u}\\|^2 = p_\\infty + \\frac{1}{2}\\rho U_\\infty^2 = \\text{const.}",
+          "operation_label": "無限遠一様流の境界条件の代入と定数性の明示",
+          "explanation": "無限遠の境界条件 p(r_∞) = p_∞ および ‖u(r_∞)‖ = U_∞ を代入し、任意点 r に依らない定数であることを表すため引数表記を省略して結論のベルヌーイの式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T09:57:56.224113+00:00"
     },
     {
       "id": "eng.aero.d02_cr_to_complex_potential",
@@ -615,7 +784,12 @@
       ],
       "required_math_node_ids": [],
       "assumptions": [
-        "主値積分（グラウエルト積分公式）の適用"
+        "定常・非圧縮・非粘性の2次元一様ポテンシャル流（U_∞ > 0, ρ > 0）を仮定する。",
+        "薄翼近似（|α| ≪ 1 かつ |dz_c/dx| ≪ 1）が成り立ち、キャンバ線勾配 dz_c/dx は [0, c] 上で区分的に滑らかでフーリエ余弦展開可能であるとする。",
+        "翼弦長は c > 0 であり、開区間 θ ∈ (0, π) において sin θ ≠ 0 である。",
+        "後縁 x = c（θ = π）においてクッタの条件 γ(c) = 0（θ 座標で γ(π) = 0）が成立する。",
+        "グラウエルトのコーシー主値積分恒等式 PV∫_0^π cos(nθ_0)/(cos θ_0 - cos θ) dθ_0 = π sin(nθ)/sin θ（n ≥ 0）が適用可能であり、級数和と積分の順序交換が許される。",
+        "キャンバ線形状 dz_c/dx およびゼロ揚力迎角 α_{L=0} は迎角 α に依存しない（dα_{L=0}/dα = 0）。"
       ],
       "steps": [
         {
@@ -623,14 +797,13 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "\\frac{1}{2\\pi}\\int_{0}^{c} \\frac{\\gamma(\\xi)}{x - \\xi}\\,d\\xi = U_\\infty\\left(\\alpha - \\frac{dz_c}{dx}\\right),\\quad \\gamma(c)=0",
-          "to_latex": "c_l = 2\\pi\\left(A_0 + \\frac{A_1}{2}\\right) = 2\\pi(\\alpha - \\alpha_{L=0}),\\quad \\frac{dc_l}{d\\alpha} = 2\\pi",
-          "operation_label": "変数変換 x=(c/2)(1-cos θ) によるフーリエ展開と循環積分",
-          "explanation": "角度変数 θ へ置換し、クッタの条件 γ(π)=0 を満たすグラウエルト級数で展開して係数を決定し、L' = ρ U_∞ Γ から揚力傾斜 2π を導く。",
+          "from_latex": "\\frac{1}{2\\pi}\\int_{0}^{c} \\frac{\\gamma(\\xi)}{x - \\xi}\\,d\\xi = U_\\infty\\left(\\alpha - \\frac{dz_c}{dx}\\right),\\quad \\gamma(c) = 0,\\quad \\Gamma = \\int_{0}^{c}\\gamma(\\xi)\\,d\\xi",
+          "to_latex": "\\gamma(\\theta) = 2U_\\infty\\left(A_0\\frac{1+\\cos\\theta}{\\sin\\theta} + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta\\right),\\quad c_l = 2\\pi\\left(A_0 + \\frac{A_1}{2}\\right) = 2\\pi(\\alpha - \\alpha_{L=0}),\\quad \\frac{dc_l}{d\\alpha} = 2\\pi",
+          "operation_label": "グラウエルト変換とフーリエ展開による薄翼理論の解と揚力傾斜2πの導出",
+          "explanation": "薄翼理論の渦層積分方程式に角度座標変換とクッタの条件を満たすグラウエルト級数解を適用し、主値積分と直交性から展開係数および循環を求めて、クッタ＝ジュコフスキーの定理により揚力係数と揚力傾斜 2π を導く。",
           "used_node_ids": [
             "eng.aero.n05_kutta_joukowski_theorem",
-            "eng.aero.n06_kutta_condition_thin_airfoil",
-            "math.calc.m43_definite_integral_substitution"
+            "eng.aero.n06_kutta_condition_thin_airfoil"
           ],
           "sympy_check_hint": null
         },
@@ -639,14 +812,65 @@
           "order": 1,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\frac{1}{2\\pi}\\int_{0}^{c} \\frac{\\gamma(\\xi)}{x - \\xi}\\,d\\xi = U_\\infty\\left(\\alpha - \\frac{dz_c}{dx}\\right),\\quad \\gamma(c)=0",
-          "to_latex": "\\xi = \\frac{c}{2}(1 - \\cos\\theta_0),\\quad \\gamma(\\theta_0) = 2U_\\infty\\left(A_0\\frac{1+\\cos\\theta_0}{\\sin\\theta_0} + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\right) \\implies A_0 = \\alpha - \\frac{1}{\\pi}\\int_0^\\pi\\frac{dz_c}{dx}\\,d\\theta_0,\\quad A_n = \\frac{2}{\\pi}\\int_0^\\pi\\frac{dz_c}{dx}\\cos n\\theta_0\\,d\\theta_0",
-          "operation_label": "角度座標への置換積分とフーリエ係数の決定",
-          "explanation": "グラウエルトの主値積分恒等式 ∫_0^π (cos nθ_0)/(cos θ_0 - cos θ) dθ_0 = π sin nθ / sin θ を用いて級数係数 A_0, A_n をフーリエ変換で求める。",
+          "from_latex": "\\frac{1}{2\\pi}\\int_{0}^{c} \\frac{\\gamma(\\xi)}{x - \\xi}\\,d\\xi = U_\\infty\\left(\\alpha - \\frac{dz_c}{dx}\\right),\\quad \\gamma(c) = 0",
+          "to_latex": "\\frac{1}{\\pi}\\int_{0}^{\\pi} \\frac{A_0(1+\\cos\\theta_0) + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\sin\\theta_0}{\\cos\\theta_0 - \\cos\\theta}\\,d\\theta_0 = \\alpha - \\frac{dz_c}{dx}\\right.",
+          "operation_label": "グラウエルト角度座標変換と級数解の導入",
+          "explanation": "翼弦方向座標を角度変数へ置換し、後縁で零となるグラウエルトのフーリエ級数解を渦層積分方程式に代入する。",
           "used_node_ids": [
-            "eng.aero.n06_kutta_condition_thin_airfoil",
-            "math.calc.m43_definite_integral_substitution"
+            "eng.aero.n06_kutta_condition_thin_airfoil"
           ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{1}{2\\pi}\\int_{0}^{c} \\frac{\\gamma(\\xi)}{x - \\xi}\\,d\\xi = U_\\infty\\left(\\alpha - \\frac{dz_c}{dx}\\right),\\quad \\gamma(c) = 0",
+          "to_latex": "x = \\frac{c}{2}(1-\\cos\\theta),\\quad \\xi = \\frac{c}{2}(1-\\cos\\theta_0),\\quad d\\xi = \\frac{c}{2}\\sin\\theta_0\\,d\\theta_0,\\quad x - \\xi = \\frac{c}{2}(\\cos\\theta_0 - \\cos\\theta)\\right.",
+          "operation_label": "グラウエルト変数変換と微小要素および座標差の計算",
+          "explanation": "翼弦座標 x, ξ ∈ [0, c] を角度変数 θ, θ_0 ∈ [0, π] に対応させ、ξ を θ_0 で微分して微小要素 dξ を求めるとともに差 x - ξ を計算する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "diff((c/2)*(1 - cos(theta_0)), theta_0) == (c/2)*sin(theta_0)"
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "x = \\frac{c}{2}(1-\\cos\\theta),\\quad \\xi = \\frac{c}{2}(1-\\cos\\theta_0),\\quad d\\xi = \\frac{c}{2}\\sin\\theta_0\\,d\\theta_0,\\quad x - \\xi = \\frac{c}{2}(\\cos\\theta_0 - \\cos\\theta)\\right.",
+          "to_latex": "\\frac{1}{2\\pi}\\int_{0}^{\\pi} \\frac{\\gamma(\\theta_0)\\sin\\theta_0}{\\cos\\theta_0 - \\cos\\theta}\\,d\\theta_0 = U_\\infty\\left(\\alpha - \\frac{dz_c}{dx}\\right),\\quad \\gamma(\\pi) = 0",
+          "operation_label": "薄翼渦層積分方程式への置換代入と c/2 の約分",
+          "explanation": "薄翼理論の渦層積分方程式に変数変換を代入し、積分区間を [0, π] に変換するとともに分子分母の c/2 を約分し、後縁条件 x = c を θ = π へ書き換える。",
+          "used_node_ids": [
+            "eng.aero.n06_kutta_condition_thin_airfoil"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{1}{2\\pi}\\int_{0}^{\\pi} \\frac{\\gamma(\\theta_0)\\sin\\theta_0}{\\cos\\theta_0 - \\cos\\theta}\\,d\\theta_0 = U_\\infty\\left(\\alpha - \\frac{dz_c}{dx}\\right),\\quad \\gamma(\\pi) = 0",
+          "to_latex": "\\gamma(\\theta_0) = 2U_\\infty\\left(A_0\\frac{1+\\cos\\theta_0}{\\sin\\theta_0} + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\right)\\right.",
+          "operation_label": "クッタ条件を満たすグラウエルト級数解の導入",
+          "explanation": "前縁（θ_0 = 0）の 1/√x 型特異性と後縁（θ_0 = π）のクッタ条件 γ(π) = 0 をともに満たす展開基底としてグラウエルトの級数形を導入する。",
+          "used_node_ids": [
+            "eng.aero.n06_kutta_condition_thin_airfoil"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\gamma(\\theta_0) = 2U_\\infty\\left(A_0\\frac{1+\\cos\\theta_0}{\\sin\\theta_0} + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\right)\\right.",
+          "to_latex": "\\frac{1}{\\pi}\\int_{0}^{\\pi} \\frac{A_0(1+\\cos\\theta_0) + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\sin\\theta_0}{\\cos\\theta_0 - \\cos\\theta}\\,d\\theta_0 = \\alpha - \\frac{dz_c}{dx}\\right.",
+          "operation_label": "級数解の積分方程式への代入および係数 2U_∞ の約分",
+          "explanation": "変換後の渦層積分方程式に γ(θ_0) の級数表現を代入して sin θ_0 を約分し、両辺を U_∞ で割って 2/(2π) = 1/π に整理する。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -654,17 +878,216 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\xi = \\frac{c}{2}(1 - \\cos\\theta_0),\\quad \\gamma(\\theta_0) = 2U_\\infty\\left(A_0\\frac{1+\\cos\\theta_0}{\\sin\\theta_0} + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\right) \\implies A_0 = \\alpha - \\frac{1}{\\pi}\\int_0^\\pi\\frac{dz_c}{dx}\\,d\\theta_0,\\quad A_n = \\frac{2}{\\pi}\\int_0^\\pi\\frac{dz_c}{dx}\\cos n\\theta_0\\,d\\theta_0",
-          "to_latex": "\\Gamma = \\frac{c}{2}\\int_0^\\pi \\gamma(\\theta_0)\\sin\\theta_0\\,d\\theta_0 = \\pi c U_\\infty\\left(A_0 + \\frac{A_1}{2}\\right) \\implies c_l = \\frac{\\rho U_\\infty \\Gamma}{\\frac{1}{2}\\rho U_\\infty^2 c} = 2\\pi\\left(A_0 + \\frac{A_1}{2}\\right) = 2\\pi(\\alpha - \\alpha_{L=0}),\\quad \\frac{dc_l}{d\\alpha} = 2\\pi",
-          "operation_label": "全循環の積分とクッタ＝ジュコフスキー定理による揚力係数算出",
-          "explanation": "sin θ_0 を掛けて [0,π] で積分すると直交性により A_0 と A_1 のみが残り、揚力係数 c_l とその迎角微分 2π が求まる。",
+          "from_latex": "\\frac{1}{\\pi}\\int_{0}^{\\pi} \\frac{A_0(1+\\cos\\theta_0) + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\sin\\theta_0}{\\cos\\theta_0 - \\cos\\theta}\\,d\\theta_0 = \\alpha - \\frac{dz_c}{dx}\\right.",
+          "to_latex": "\\frac{dz_c}{dx} = (\\alpha - A_0) + \\sum_{n=1}^{\\infty}A_n\\cos n\\theta",
+          "operation_label": "グラウエルト主値積分による渦層積分方程式の簡約",
+          "explanation": "三角関数の積和公式とグラウエルトの主値積分恒等式を適用して積分を評価し、キャンバ線勾配のフーリエ余弦級数表現を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{1}{\\pi}\\int_{0}^{\\pi} \\frac{A_0(1+\\cos\\theta_0) + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\sin\\theta_0}{\\cos\\theta_0 - \\cos\\theta}\\,d\\theta_0 = \\alpha - \\frac{dz_c}{dx}\\right.",
+          "to_latex": "\\frac{1}{\\pi}\\int_{0}^{\\pi} \\frac{A_0(1+\\cos\\theta_0) + \\frac{1}{2}\\sum_{n=1}^{\\infty}A_n\\big[\\cos(n-1)\\theta_0 - \\cos(n+1)\\theta_0\\big]}{\\cos\\theta_0 - \\cos\\theta}\\,d\\theta_0 = \\alpha - \\frac{dz_c}{dx}\\right.",
+          "operation_label": "積和公式による分子の sin nθ_0 sin θ_0 の展開",
+          "explanation": "主値積分公式を直接適用できるよう、三角関数の積和公式を用いて sin nθ_0 sin θ_0 を余弦関数の差へ変換する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "sin(n*theta_0)*sin(theta_0) == (cos((n - 1)*theta_0) - cos((n + 1)*theta_0))/2"
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{1}{\\pi}\\int_{0}^{\\pi} \\frac{A_0(1+\\cos\\theta_0) + \\frac{1}{2}\\sum_{n=1}^{\\infty}A_n\\big[\\cos(n-1)\\theta_0 - \\cos(n+1)\\theta_0\\big]}{\\cos\\theta_0 - \\cos\\theta}\\,d\\theta_0 = \\alpha - \\frac{dz_c}{dx}\\right.",
+          "to_latex": "A_0(0 + 1) + \\frac{1}{2}\\sum_{n=1}^{\\infty}A_n\\frac{\\sin(n-1)\\theta - \\sin(n+1)\\theta}{\\sin\\theta} = \\alpha - \\frac{dz_c}{dx}\\right.",
+          "operation_label": "グラウエルト主値積分恒等式の各項への適用",
+          "explanation": "主値積分恒等式 PV∫_0^π cos(mθ_0)/(cos θ_0 - cos θ) dθ_0 = π sin(mθ)/sin θ を m = 0, 1, n-1, n+1 にそれぞれ適用し、定数項は 0、cos θ_0 の項は π となることを用いて 1/π を約分する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "A_0(0 + 1) + \\frac{1}{2}\\sum_{n=1}^{\\infty}A_n\\frac{\\sin(n-1)\\theta - \\sin(n+1)\\theta}{\\sin\\theta} = \\alpha - \\frac{dz_c}{dx}\\right.",
+          "to_latex": "A_0 - \\sum_{n=1}^{\\infty}A_n\\cos n\\theta = \\alpha - \\frac{dz_c}{dx}\\right.",
+          "operation_label": "正弦の和差公式の適用と sin θ の約分",
+          "explanation": "分子の sin(n-1)θ - sin(n+1)θ に和差公式を適用して -2 cos nθ sin θ とし、係数 1/2 と分母 sin θ を約分する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(sin((n - 1)*theta) - sin((n + 1)*theta))/(2*sin(theta)) == -cos(n*theta)"
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "A_0 - \\sum_{n=1}^{\\infty}A_n\\cos n\\theta = \\alpha - \\frac{dz_c}{dx}\\right.",
+          "to_latex": "\\frac{dz_c}{dx} = (\\alpha - A_0) + \\sum_{n=1}^{\\infty}A_n\\cos n\\theta",
+          "operation_label": "移項によるキャンバ線勾配のフーリエ余弦級数形への整理",
+          "explanation": "左辺と右辺の間で -dz_c/dx と A_0 - ∑ A_n cos nθ を移項し、dz_c/dx について標準的なフーリエ余弦展開の形に整える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dz_c}{dx} = (\\alpha - A_0) + \\sum_{n=1}^{\\infty}A_n\\cos n\\theta",
+          "to_latex": "A_0 = \\alpha - \\frac{1}{\\pi}\\int_{0}^{\\pi}\\frac{dz_c}{dx}\\,d\\theta_0,\\quad A_n = \\frac{2}{\\pi}\\int_{0}^{\\pi}\\frac{dz_c}{dx}\\cos n\\theta_0\\,d\\theta_0\\quad (n \\ge 1)\\right.",
+          "operation_label": "フーリエ余弦直交性による展開係数 A_0, A_n の決定",
+          "explanation": "余弦関数族 {1, cos θ, cos 2θ, ...} の区間 [0, π] における直交性を利用して展開係数 A_0 と A_n を求める。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{dz_c}{dx} = (\\alpha - A_0) + \\sum_{n=1}^{\\infty}A_n\\cos n\\theta",
+          "to_latex": "A_0 = \\alpha - \\frac{1}{\\pi}\\int_{0}^{\\pi}\\frac{dz_c}{dx}\\,d\\theta_0,\\quad \\frac{dz_c}{dx} = (\\alpha - A_0) + \\sum_{n=1}^{\\infty}A_n\\cos n\\theta",
+          "operation_label": "区間 [0, π] の直接積分による定数係数 A_0 の抽出",
+          "explanation": "θ を θ_0 に置き換えて両辺を 0 から π まで積分し、∫_0^π cos nθ_0 dθ_0 = 0（n ≥ 1）となることから (α - A_0)π を得て、A_0 について解く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "A_0 = \\alpha - \\frac{1}{\\pi}\\int_{0}^{\\pi}\\frac{dz_c}{dx}\\,d\\theta_0,\\quad \\frac{dz_c}{dx} = (\\alpha - A_0) + \\sum_{n=1}^{\\infty}A_n\\cos n\\theta",
+          "to_latex": "A_0 = \\alpha - \\frac{1}{\\pi}\\int_{0}^{\\pi}\\frac{dz_c}{dx}\\,d\\theta_0,\\quad A_n = \\frac{2}{\\pi}\\int_{0}^{\\pi}\\frac{dz_c}{dx}\\cos n\\theta_0\\,d\\theta_0\\quad (n \\ge 1)\\right.",
+          "operation_label": "cos mθ_0 を乗じた直交積分による高次係数 A_n の抽出",
+          "explanation": "両辺に cos mθ_0（m ≥ 1）を掛けて [0, π] で積分し、直交関係 ∫_0^π cos nθ_0 cos mθ_0 dθ_0 = (π/2)δ_{nm} を用いて A_n（n ≥ 1）を決定する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma = \\int_{0}^{c}\\gamma(\\xi)\\,d\\xi,\\quad \\gamma(\\theta_0) = 2U_\\infty\\left(A_0\\frac{1+\\cos\\theta_0}{\\sin\\theta_0} + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\right)\\right.",
+          "to_latex": "\\Gamma = \\pi c U_\\infty\\left(A_0 + \\frac{A_1}{2}\\right)\\right.",
+          "operation_label": "全循環 Γ の積分評価",
+          "explanation": "全循環の定義式にグラウエルト変数変換と級数解を代入し、三角関数の直交性によって A_0 と A_1 のみが寄与することを示す。",
           "used_node_ids": [
-            "eng.aero.n05_kutta_joukowski_theorem",
-            "math.calc.m43_definite_integral_substitution"
+            "eng.aero.n06_kutta_condition_thin_airfoil"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\Gamma = \\int_{0}^{c}\\gamma(\\xi)\\,d\\xi,\\quad \\gamma(\\theta_0) = 2U_\\infty\\left(A_0\\frac{1+\\cos\\theta_0}{\\sin\\theta_0} + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\right)\\right.",
+          "to_latex": "\\Gamma = c U_\\infty\\int_{0}^{\\pi}\\left(A_0(1+\\cos\\theta_0) + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\sin\\theta_0\\right)d\\theta_0",
+          "operation_label": "全循環積分への dξ 置換とグラウエルト級数解の代入",
+          "explanation": "循環の定義式に dξ = (c/2)sin θ_0 dθ_0 と γ(θ_0) の級数表現を代入し、(c/2)・2U_∞ = cU_∞ と sin θ_0 の約分を行う。",
+          "used_node_ids": [
+            "eng.aero.n06_kutta_condition_thin_airfoil"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\Gamma = c U_\\infty\\int_{0}^{\\pi}\\left(A_0(1+\\cos\\theta_0) + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta_0\\sin\\theta_0\\right)d\\theta_0",
+          "to_latex": "\\Gamma = c U_\\infty\\left(A_0\\pi + \\sum_{n=1}^{\\infty}A_n\\frac{\\pi}{2}\\delta_{n1}\\right)\\right.",
+          "operation_label": "[0, π] 上の定積分評価と正弦関数の直交性適用",
+          "explanation": "第1項の積分 ∫_0^π (1 + cos θ_0) dθ_0 = π と、正弦関数の直交関係 ∫_0^π sin nθ_0 sin θ_0 dθ_0 = (π/2)δ_{n1} をそれぞれ評価する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "integrate(1 + cos(theta_0), (theta_0, 0, pi)) == pi"
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\Gamma = c U_\\infty\\left(A_0\\pi + \\sum_{n=1}^{\\infty}A_n\\frac{\\pi}{2}\\delta_{n1}\\right)\\right.",
+          "to_latex": "\\Gamma = \\pi c U_\\infty\\left(A_0 + \\frac{A_1}{2}\\right)\\right.",
+          "operation_label": "クロネッカーのデルタによる縮約と共通因数 π のくくり出し",
+          "explanation": "δ_{n1} により n = 1 の項のみを残して級数和を縮約し、共通因数 π を括弧の外へくくり出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": "c*U_inf*(A_0*pi + A_1*pi/2) == pi*c*U_inf*(A_0 + A_1/2)"
+        },
+        {
+          "step_id": "s2_5",
+          "order": 5,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma = \\pi c U_\\infty\\left(A_0 + \\frac{A_1}{2}\\right)\\right.",
+          "to_latex": "\\gamma(\\theta) = 2U_\\infty\\left(A_0\\frac{1+\\cos\\theta}{\\sin\\theta} + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta\\right),\\quad c_l = 2\\pi\\left(A_0 + \\frac{A_1}{2}\\right) = 2\\pi(\\alpha - \\alpha_{L=0}),\\quad \\frac{dc_l}{d\\alpha} = 2\\pi",
+          "operation_label": "揚力係数 c_l、ゼロ揚力角、および揚力傾斜 2π の導出",
+          "explanation": "クッタ＝ジュコフスキーの定理で単位幅揚力を求め、動圧と翼弦長で無次元化した後、A_0 と A_1 を代入して迎角で微分する。",
+          "used_node_ids": [
+            "eng.aero.n05_kutta_joukowski_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\Gamma = \\pi c U_\\infty\\left(A_0 + \\frac{A_1}{2}\\right)\\right.",
+          "to_latex": "L' = \\rho U_\\infty \\Gamma = \\pi \\rho U_\\infty^2 c\\left(A_0 + \\frac{A_1}{2}\\right)\\right.",
+          "operation_label": "クッタ＝ジュコフスキーの揚力定理の適用",
+          "explanation": "得られた循環 Γ をクッタ＝ジュコフスキーの定理 L' = ρ U_∞ Γ に代入し、単位スパンあたりの揚力 L' を求める。",
+          "used_node_ids": [
+            "eng.aero.n05_kutta_joukowski_theorem"
+          ],
+          "sympy_check_hint": "rho*U_inf*(pi*c*U_inf*(A_0 + A_1/2)) == pi*rho*U_inf**2*c*(A_0 + A_1/2)"
+        },
+        {
+          "step_id": "s3_5_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "L' = \\rho U_\\infty \\Gamma = \\pi \\rho U_\\infty^2 c\\left(A_0 + \\frac{A_1}{2}\\right)\\right.",
+          "to_latex": "c_l = \\frac{L'}{\\frac{1}{2}\\rho U_\\infty^2 c} = 2\\pi\\left(A_0 + \\frac{A_1}{2}\\right)\\right.",
+          "operation_label": "2次元揚力係数の定義による無次元化と約分",
+          "explanation": "揚力 L' を動圧 (1/2)ρ U_∞^2 と翼弦長 c の積で割り、共通因子 ρ U_∞^2 c を約分して揚力係数 c_l を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(pi*rho*U_inf**2*c*(A_0 + A_1/2))/((rho*U_inf**2*c)/2) == 2*pi*(A_0 + A_1/2)"
+        },
+        {
+          "step_id": "s3_5_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "c_l = \\frac{L'}{\\frac{1}{2}\\rho U_\\infty^2 c} = 2\\pi\\left(A_0 + \\frac{A_1}{2}\\right)\\right.",
+          "to_latex": "c_l = 2\\pi\\left(\\alpha - \\frac{1}{\\pi}\\int_{0}^{\\pi}\\frac{dz_c}{dx}(1 - \\cos\\theta_0)\\,d\\theta_0\\right) = 2\\pi(\\alpha - \\alpha_{L=0})",
+          "operation_label": "展開係数 A_0, A_1 の代入とゼロ揚力角 α_{L=0} の定義導入",
+          "explanation": "先に求めた A_0 と A_1 の積分表示を A_0 + A_1/2 に代入して 1/π の積分を 1 つにまとめ、α_{L=0} := (1/π)∫_0^π (dz_c/dx)(1 - cos θ_0) dθ_0 を導入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "c_l = 2\\pi\\left(\\alpha - \\frac{1}{\\pi}\\int_{0}^{\\pi}\\frac{dz_c}{dx}(1 - \\cos\\theta_0)\\,d\\theta_0\\right) = 2\\pi(\\alpha - \\alpha_{L=0})",
+          "to_latex": "\\gamma(\\theta) = 2U_\\infty\\left(A_0\\frac{1+\\cos\\theta}{\\sin\\theta} + \\sum_{n=1}^{\\infty}A_n\\sin n\\theta\\right),\\quad c_l = 2\\pi\\left(A_0 + \\frac{A_1}{2}\\right) = 2\\pi(\\alpha - \\alpha_{L=0}),\\quad \\frac{dc_l}{d\\alpha} = 2\\pi",
+          "operation_label": "迎角 α による微分と最終到達式の統合",
+          "explanation": "α_{L=0} が α に依存しない定数であることを用いて c_l を α で微分して揚力傾斜 dc_l/dα = 2π を得て、グラウエルトの渦強さ級数解および揚力係数式と併せて最終結論をまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": "diff(2*pi*(alpha - alpha_L0), alpha) == 2*pi"
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T09:55:11.724125+00:00"
     },
     {
       "id": "eng.aero.d08_biot_savart_downwash",

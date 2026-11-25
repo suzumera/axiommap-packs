@@ -265,13 +265,14 @@
         "astro.att.n04_quaternion_kinematics_ode",
         "astro.cw.cw02_rotating_frame_kinematics"
       ],
-      "required_math_node_ids": [
-        "math.calc.m15_product_rule",
-        "math.vec.m03_dot_cross_product"
-      ],
+      "required_math_node_ids": [],
       "assumptions": [
-        "地球を自転角速度 ω_ie で回転する剛体とみなす",
-        "局所水平座標系（NED）と地球固定座標系（ECEF）の相対角速度を輸送速度 ω_en とする"
+        "地球を一定角速度 ω_ie（時間微分 dω_ie/dt = 0）で自転する剛体とみなす",
+        "局所水平座標系（NED）と地球固定座標系（ECEF）の相対角速度を輸送速度 ω_en とし、NED相対速度を v^n = C_e^n v^e と定義する",
+        "各座標系間の方向余弦行列は直交行列であり、その時間微分は相対角速度の歪対称行列積（dC_a^b/dt = C_a^b [ω_ba^a]_×）で与えられる",
+        "地球参照楕円体上の非特異領域（|φ| < π/2 かつ R_M + h ≠ 0, R_N + h ≠ 0）において測地位置変換行列 D^{-1} が正則に定義される",
+        "姿勢クォータニオン q_b^n = (q_0, q_v^T)^T は単位ノルム制約 ||q_b^n|| = 1 を満たし、機体相対角速度は ω_nb^b = ω_ib^b - C_n^b(ω_ie^n + ω_en^n) で与えられる",
+        "位置・速度・姿勢ベクトルは時間に関して2階連続微分可能である"
       ],
       "steps": [
         {
@@ -281,63 +282,296 @@
           "parent_step_id": null,
           "from_latex": "\\mathbf{f}^b = C_i^b(\\ddot{\\mathbf{r}}^i - \\mathbf{g}^i)",
           "to_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n,\\quad \\dot{q}_b^n = \\frac{1}{2}q_b^n \\otimes \\begin{pmatrix} 0 \\\\ \\boldsymbol{\\omega}_{nb}^b \\end{pmatrix}",
-          "operation_label": "回転座標系微分変換と重力・遠心力統合によるNED機械化",
-          "explanation": "比力方程式をECEFおよびNED座標系で2階時間微分してコリオリ項と遠心力項を分離し、遠心力を重力と統合してローカル重力 g_l^n とすることで速度微分方程式を得る。また機体姿勢は角速度 ω_nb^b を用いたクォータニオン運動学で更新する。",
+          "operation_label": "比力方程式の回転座標系微分変換と位置・姿勢運動学の統合によるNED機械化方程式の導出",
+          "explanation": "比力定義式を慣性加速度について解いてECEF座標系で2階時間微分し、さらにNED座標系へ変換して輸送項とローカル重力 g_l^n をまとめることで速度微分方程式を得る。これに測地位置変換行列 D^{-1} による位置微分と相対角速度 ω_nb^b を用いたクォータニオン姿勢微分方程式を結合し、ストラップダウンINS機械化方程式を完成させる。",
           "used_node_ids": [
-            "aerosp.gnss_ins.n01_specific_force_imu_model",
-            "astro.att.n04_quaternion_kinematics_ode",
-            "astro.cw.cw02_rotating_frame_kinematics",
-            "math.vec.m03_dot_cross_product"
+            "aerosp.gnss_ins.n01_specific_force_imu_model"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_ecef_kinematics",
+          "step_id": "s2_1",
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
           "from_latex": "\\mathbf{f}^b = C_i^b(\\ddot{\\mathbf{r}}^i - \\mathbf{g}^i)",
-          "to_latex": "\\dot{\\mathbf{v}}^e = C_b^e\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e - \\boldsymbol{\\omega}_{ie}^e\\times(\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e) + \\mathbf{g}^e",
-          "operation_label": "ECEF回転座標系におけるコリオリ項・遠心力項の展開",
-          "explanation": "慣性加速度 r̈^i をECEF系での相対速度 v^e の時間微分へ変換し、地球自転角速度 ω_ie によるコリオリ加速度および遠心加速度を陽に書き下す。",
+          "to_latex": "\\frac{d}{dt}\\big(C_e^i(\\mathbf{v}^e + \\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e)\\big) = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "operation_label": "比力式の逆変換およびECEF位置ベクトルの1階時間微分導入",
+          "explanation": "比力定義式に逆変換行列 C_b^i を作用させて慣性加速度を分離し、ECEF位置座標変換 r^i = C_e^i r^e を代入して1階時間微分を実行する。",
           "used_node_ids": [
-            "aerosp.gnss_ins.n01_specific_force_imu_model",
-            "astro.cw.cw02_rotating_frame_kinematics",
-            "math.vec.m03_dot_cross_product"
+            "aerosp.gnss_ins.n01_specific_force_imu_model"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s3_ned_transport_rate",
+          "step_id": "s3_1_1",
           "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\mathbf{f}^b = C_i^b(\\ddot{\\mathbf{r}}^i - \\mathbf{g}^i)",
+          "to_latex": "C_b^i\\mathbf{f}^b = \\ddot{\\mathbf{r}}^i - \\mathbf{g}^i",
+          "operation_label": "方向余弦行列 C_b^i の左乗と直交関係 C_b^i C_i^b = I_3 の適用",
+          "explanation": "比力定義式の両辺に左から直交行列 C_b^i = (C_i^b)^{-1} を掛け、右辺の C_b^i C_i^b を単位行列 I_3 へ簡約する。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n01_specific_force_imu_model"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "C_b^i\\mathbf{f}^b = \\ddot{\\mathbf{r}}^i - \\mathbf{g}^i",
+          "to_latex": "\\ddot{\\mathbf{r}}^i = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "operation_label": "重力加速度項の移項と左右辺の入れ替え",
+          "explanation": "右辺の重力項 -g^i を左辺へ移項した上で左右辺を入れ替え、慣性加速度 r̈^i を陽に表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\ddot{\\mathbf{r}}^i = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "to_latex": "\\frac{d^2}{dt^2}\\big(C_e^i\\mathbf{r}^e\\big) = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "operation_label": "位置座標変換 r^i = C_e^i r^e を代入・導入",
+          "explanation": "慣性座標系の位置ベクトル r^i をECEF座標系の位置ベクトル r^e と方向余弦行列 C_e^i の積 r^i = C_e^i r^e に置き換え、左辺の2階時間微分を明示する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{d^2}{dt^2}\\big(C_e^i\\mathbf{r}^e\\big) = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "to_latex": "\\frac{d}{dt}\\big(C_e^i(\\mathbf{v}^e + \\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e)\\big) = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "operation_label": "積の微分法則と姿勢行列微分 dC_e^i/dt = C_e^i [ω_ie^e]_× による1階微分の実行",
+          "explanation": "左辺の内側の時間微分に積の微分法則を適用し、dC_e^i/dt = C_e^i [ω_ie^e]_× および ECEF相対速度の定義 v^e := dr^e/dt を用いて1階時間微分を実行する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 7,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{d}{dt}\\big(C_e^i(\\mathbf{v}^e + \\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e)\\big) = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "to_latex": "\\dot{\\mathbf{v}}^e = C_b^e\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e - \\boldsymbol{\\omega}_{ie}^e\\times(\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e) + \\mathbf{g}^e",
+          "operation_label": "2階時間微分の展開とECEF速度微分方程式への変換",
+          "explanation": "残りの時間微分を展開してコリオリ項と遠心力項を分離し、C_i^e を作用させてECEF座標系での速度微分方程式を導く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{d}{dt}\\big(C_e^i(\\mathbf{v}^e + \\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e)\\big) = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "to_latex": "C_e^i\\big(\\dot{\\mathbf{v}}^e + \\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e\\big) + C_e^i\\big(\\boldsymbol{\\omega}_{ie}^e\\times(\\mathbf{v}^e + \\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e)\\big) = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "operation_label": "積の微分法則と定常自転仮定 dω_ie^e/dt = 0 による2階微分の実行",
+          "explanation": "左辺に再び積の微分法則、dC_e^i/dt = C_e^i [ω_ie^e]_×、および定常自転仮定 dω_ie^e/dt = 0 を適用して時間微分を実行する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "C_e^i\\big(\\dot{\\mathbf{v}}^e + \\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e\\big) + C_e^i\\big(\\boldsymbol{\\omega}_{ie}^e\\times(\\mathbf{v}^e + \\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e)\\big) = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "to_latex": "C_e^i\\big(\\dot{\\mathbf{v}}^e + 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e + \\boldsymbol{\\omega}_{ie}^e\\times(\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e)\\big) = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "operation_label": "線形性と外積の分配法則によるコリオリ項の結合",
+          "explanation": "共通の行列 C_e^i をくくり出し、外積を分配して生じる2つの ω_ie^e × v^e を 2 ω_ie^e × v^e へまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "C_e^i\\big(\\dot{\\mathbf{v}}^e + 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e + \\boldsymbol{\\omega}_{ie}^e\\times(\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e)\\big) = C_b^i\\mathbf{f}^b + \\mathbf{g}^i",
+          "to_latex": "\\dot{\\mathbf{v}}^e + 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e + \\boldsymbol{\\omega}_{ie}^e\\times(\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e) = C_b^e\\mathbf{f}^b + \\mathbf{g}^e",
+          "operation_label": "方向余弦行列 C_i^e の左乗によるECEF座標表現への変換",
+          "explanation": "両辺の左から C_i^e = (C_e^i)^{-1} を乗じ、C_i^e C_e^i = I_3、C_i^e C_b^i = C_b^e、および g^e = C_i^e g^i を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\dot{\\mathbf{v}}^e + 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e + \\boldsymbol{\\omega}_{ie}^e\\times(\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e) = C_b^e\\mathbf{f}^b + \\mathbf{g}^e",
+          "to_latex": "\\dot{\\mathbf{v}}^e = C_b^e\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e - \\boldsymbol{\\omega}_{ie}^e\\times(\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e) + \\mathbf{g}^e",
+          "operation_label": "コリオリ加速度項と遠心力加速度項の右辺への移項",
+          "explanation": "左辺の 2 ω_ie^e × v^e および ω_ie^e × (ω_ie^e × r^e) を右辺へ移項し、ECEF速度の時間微分 dv^e/dt について解く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 12,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
           "from_latex": "\\dot{\\mathbf{v}}^e = C_b^e\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e - \\boldsymbol{\\omega}_{ie}^e\\times(\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e) + \\mathbf{g}^e",
-          "to_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
-          "operation_label": "NED座標系への変換とローカル重力の導入",
-          "explanation": "方向余弦行列 C_e^n を作用させ、NED系の回転角速度 ω_en^n に伴う輸送項をまとめ、さらに万有引力と遠心力の合力をローカル重力ベクトル g_l^n := g^n - ω_ie^n × (ω_ie^n × r^n) として吸収する。",
-          "used_node_ids": [
-            "math.calc.m15_product_rule",
-            "math.vec.m03_dot_cross_product"
-          ],
+          "to_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{ie}^n\\times(\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{r}^n) + \\mathbf{g}^n",
+          "operation_label": "NED座標系への速度ベクトル微分変換と輸送速度項の統合",
+          "explanation": "方向余弦行列 C_e^n を作用させてNED座標表現へ変換し、輸送角速度 ω_en^n による見かけの加速度項をコリオリ項と結合する。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s4_position_attitude_closure",
-          "order": 4,
+          "step_id": "s3_3_1",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\dot{\\mathbf{v}}^e = C_b^e\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{v}^e - \\boldsymbol{\\omega}_{ie}^e\\times(\\boldsymbol{\\omega}_{ie}^e\\times\\mathbf{r}^e) + \\mathbf{g}^e",
+          "to_latex": "C_e^n\\dot{\\mathbf{v}}^e = C_b^n\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{ie}^n\\times(\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{r}^n) + \\mathbf{g}^n",
+          "operation_label": "C_e^n の左乗と直交変換による外積保存の適用",
+          "explanation": "両辺に左から C_e^n を乗じ、C_e^n C_b^e = C_b^n と直交変換による外積保存則 C_e^n(a × b) = (C_e^n a) × (C_e^n b) を用いて右辺をNED表現に書き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "C_e^n\\dot{\\mathbf{v}}^e = C_b^n\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{ie}^n\\times(\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{r}^n) + \\mathbf{g}^n",
+          "to_latex": "\\dot{\\mathbf{v}}^n + \\boldsymbol{\\omega}_{en}^n\\times\\mathbf{v}^n = C_b^n\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{ie}^n\\times(\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{r}^n) + \\mathbf{g}^n",
+          "operation_label": "速度変換の微分則 C_e^n dv^e/dt = dv^n/dt + ω_en^n × v^n を代入・導入",
+          "explanation": "v^e = C_n^e v^n を時間微分し dC_n^e/dt = C_n^e [ω_en^n]_× を適用して得られる C_e^n dv^e/dt = dv^n/dt + ω_en^n × v^n を左辺に代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\dot{\\mathbf{v}}^n + \\boldsymbol{\\omega}_{en}^n\\times\\mathbf{v}^n = C_b^n\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{ie}^n\\times(\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{r}^n) + \\mathbf{g}^n",
+          "to_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{en}^n\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{ie}^n\\times(\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{r}^n) + \\mathbf{g}^n",
+          "operation_label": "輸送角速度項 ω_en^n × v^n の右辺への移項",
+          "explanation": "左辺の輸送項 ω_en^n × v^n を右辺へ移項し、dv^n/dt について整理する準備を行う。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - 2\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{en}^n\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{ie}^n\\times(\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{r}^n) + \\mathbf{g}^n",
+          "to_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{ie}^n\\times(\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{r}^n) + \\mathbf{g}^n",
+          "operation_label": "外積の分配法則によるコリオリ項と輸送項のくくり出し",
+          "explanation": "右辺の -2 ω_ie^n × v^n と -ω_en^n × v^n に外積の線形性を適用し、-(2 ω_ie^n + ω_en^n) × v^n として1項にまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 17,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{ie}^n\\times(\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{r}^n) + \\mathbf{g}^n",
+          "to_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
+          "operation_label": "ローカル重力ベクトルの導入と測地位置微分方程式の構成",
+          "explanation": "万有引力と遠心力の合力をローカル重力 g_l^n として吸収し、さらに楕円体曲率半径に基づく測地位置微分方程式 dp^n/dt = D^{-1} v^n を併記する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n - \\boldsymbol{\\omega}_{ie}^n\\times(\\boldsymbol{\\omega}_{ie}^n\\times\\mathbf{r}^n) + \\mathbf{g}^n",
+          "to_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
+          "operation_label": "ローカル重力ベクトル g_l^n := g^n - ω_ie^n × (ω_ie^n × r^n) の定義導入と置換",
+          "explanation": "万有引力 g^n と地球自転による遠心力 -ω_ie^n × (ω_ie^n × r^n) の和をローカル重力ベクトル g_l^n と定義して代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 19,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
           "from_latex": "\\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
+          "to_latex": "\\dot{\\varphi} = \\frac{v_N}{R_M + h},\\; \\dot{\\lambda} = \\frac{v_E}{(R_N + h)\\cos\\varphi},\\; \\dot{h} = -v_D,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
+          "operation_label": "楕円体曲率半径 R_M, R_N を用いた測地位置微分関係式を代入・導入",
+          "explanation": "NED速度成分 v^n = (v_N, v_E, v_D)^T と子午線曲率半径 R_M・卯酉線曲率半径 R_N を用い、緯度 φ・経度 λ・高度 h の時間微分方程式を連立系へ導入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 20,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\dot{\\varphi} = \\frac{v_N}{R_M + h},\\; \\dot{\\lambda} = \\frac{v_E}{(R_N + h)\\cos\\varphi},\\; \\dot{h} = -v_D,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
+          "to_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
+          "operation_label": "測地位置変換行列 D^{-1} の定義によるベクトル方程式化",
+          "explanation": "測地位置ベクトル p^n := (φ, λ, h)^T および対角行列 D^{-1} := diag(1/(R_M + h), 1/((R_N + h)cos φ), -1) を定義し、3つの成分式を行列ベクトル積へまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_5",
+          "order": 21,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
           "to_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n,\\quad \\dot{q}_b^n = \\frac{1}{2}q_b^n \\otimes \\begin{pmatrix} 0 \\\\ \\boldsymbol{\\omega}_{nb}^b \\end{pmatrix}",
-          "operation_label": "測地位置変換行列 D^-1 と姿勢クォータニオン運動学の結合",
-          "explanation": "NED速度から緯度・経度・高度 p^n への変換行列 D^-1 を用いて位置微分を追加し、さらに機体角速度から地球自転・輸送角速度を差し引いた ω_nb^b でクォータニオン運動学を閉じる。",
-          "used_node_ids": [
-            "astro.att.n03_attitude_quaternion_def",
-            "astro.att.n04_quaternion_kinematics_ode"
-          ],
+          "operation_label": "クォータニオン姿勢運動学方程式の導入と純虚クォータニオン積表示への変換",
+          "explanation": "NED座標系に対する機体相対角速度 ω_nb^b を用いたクォータニオン姿勢微分方程式を導入し、行列積表示を展開してクォータニオン積形式へ書き換えることで機械化方程式を閉じる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_1",
+          "order": 22,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n",
+          "to_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n,\\quad \\dot{q}_b^n = \\frac{1}{2}\\begin{pmatrix} 0 & -(\\boldsymbol{\\omega}_{nb}^b)^\\top \\\\ \\boldsymbol{\\omega}_{nb}^b & -[\\boldsymbol{\\omega}_{nb}^b]_\\times \\end{pmatrix}\\begin{pmatrix} q_0 \\\\ \\mathbf{q}_v \\end{pmatrix}",
+          "operation_label": "相対角速度 ω_nb^b を用いたクォータニオン姿勢運動学方程式（行列表現）を代入・導入",
+          "explanation": "姿勢クォータニオン q_b^n = (q_0, q_v^T)^T と機体相対角速度 ω_nb^b = ω_ib^b - C_n^b(ω_ie^n + ω_en^n) を用い、4×4行列形式のクォータニオン運動学微分方程式を連立系へ追加する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_2",
+          "order": 23,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n,\\quad \\dot{q}_b^n = \\frac{1}{2}\\begin{pmatrix} 0 & -(\\boldsymbol{\\omega}_{nb}^b)^\\top \\\\ \\boldsymbol{\\omega}_{nb}^b & -[\\boldsymbol{\\omega}_{nb}^b]_\\times \\end{pmatrix}\\begin{pmatrix} q_0 \\\\ \\mathbf{q}_v \\end{pmatrix}",
+          "to_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n,\\quad \\dot{q}_b^n = \\frac{1}{2}\\begin{pmatrix} -\\mathbf{q}_v^\\top\\boldsymbol{\\omega}_{nb}^b \\\\ q_0\\boldsymbol{\\omega}_{nb}^b + \\mathbf{q}_v\\times\\boldsymbol{\\omega}_{nb}^b \\end{pmatrix}",
+          "operation_label": "ブロック行列積の展開と外積反交換性 -[ω_nb^b]_× q_v = q_v × ω_nb^b の適用",
+          "explanation": "4×4ブロック行列積をスカラー部とベクトル部に展開し、-(ω_nb^b)^T q_v = -q_v^T ω_nb^b および歪対称行列積 -[ω_nb^b]_× q_v = -ω_nb^b × q_v = q_v × ω_nb^b を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_3",
+          "order": 24,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n,\\quad \\dot{q}_b^n = \\frac{1}{2}\\begin{pmatrix} -\\mathbf{q}_v^\\top\\boldsymbol{\\omega}_{nb}^b \\\\ q_0\\boldsymbol{\\omega}_{nb}^b + \\mathbf{q}_v\\times\\boldsymbol{\\omega}_{nb}^b \\end{pmatrix}",
+          "to_latex": "\\dot{\\mathbf{p}}^n = D^{-1}\\mathbf{v}^n,\\quad \\dot{\\mathbf{v}}^n = C_b^n\\mathbf{f}^b - (2\\boldsymbol{\\omega}_{ie}^n + \\boldsymbol{\\omega}_{en}^n)\\times\\mathbf{v}^n + \\mathbf{g}_l^n,\\quad \\dot{q}_b^n = \\frac{1}{2}q_b^n \\otimes \\begin{pmatrix} 0 \\\\ \\boldsymbol{\\omega}_{nb}^b \\end{pmatrix}",
+          "operation_label": "ハミルトン積の定義による純虚クォータニオン積表現への書き換え",
+          "explanation": "スカラー部 0・ベクトル部 ω_nb^b の純虚クォータニオンとのハミルトン積 q_b^n ⊗ (0, (ω_nb^b)^T)^T = (-q_v^T ω_nb^b, q_0 ω_nb^b + q_v × ω_nb^b)^T を適用し、目標の機械化方程式に着地する。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T09:57:14.248970+00:00"
     },
     {
       "id": "aerosp.gnss_ins.d03_schuler_oscillation",

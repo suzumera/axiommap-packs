@@ -361,8 +361,10 @@
       ],
       "required_math_node_ids": [],
       "assumptions": [
-        "定常・断熱・外部仕事なし（全エンタルピー保存）",
-        "比熱比一定の理想気体（熱量的に完全な気体）"
+        "1次元定常流かつ断熱（\\delta q = 0）・軸仕事および外力仕事なし（\\delta w_s = 0）であり、流線に沿ってエネルギー式が積分可能である。",
+        "熱量的に完全な気体（理想気体の状態方程式、マイヤーの関係式 c_p - c_v = R、定圧比熱 c_p および比熱比 \\gamma = c_p / c_v が一定でエンタルピーが h = c_p T と表される）。",
+        "局所静温 T > 0、音速 a = \\sqrt{\\gamma R T} > 0、比熱比 \\gamma > 1 を満たし、除算に用いる c_p T \\neq 0 および \\gamma - 1 \\neq 0 が保証される。",
+        "よどみ点状態（h_0, T_0）は流体を断熱的かつ可逆的に流速 u = 0 まで減速させた基準状態として定義される。"
       ],
       "steps": [
         {
@@ -370,29 +372,62 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "h + \\frac{u^2}{2} = h_0,\\quad h = c_p T,\\quad c_p = \\frac{\\gamma R}{\\gamma - 1}",
+          "from_latex": "\\delta q - \\delta w_s = dh + d\\!\\left(\\frac{u^2}{2}\\right),\\; \\delta q = 0,\\; \\delta w_s = 0",
           "to_latex": "\\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
-          "operation_label": "よどみ点温度・静温比の導出",
-          "explanation": "全エンタルピー保存則に理想気体の定圧比熱と音速・マッハ数の定義を代入し、T0/T を M の関数として表す。",
+          "operation_label": "定常断熱エネルギー保存則からのよどみ点温度比の導出",
+          "explanation": "定常断熱流のエネルギー保存則から全エンタルピー保存式を導き、理想気体の定圧比熱・音速・マッハ数の定義を順に代入してよどみ点温度と静温の比を表す。",
           "used_node_ids": [
             "eng.comp.n01_acoustic_wave_speed_of_sound",
-            "eng.comp.n02_mach_number_and_flow_regimes",
-            "phys.thermo.th03_first_law_internal_energy"
+            "eng.comp.n02_mach_number_and_flow_regimes"
           ],
-          "sympy_check_hint": "simplify((1 + (gamma - 1)*u**2 / (2*gamma*R*T)) - (1 + (gamma - 1)/2 * M**2))"
+          "sympy_check_hint": null
         },
         {
           "step_id": "s2_1",
           "order": 1,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "h + \\frac{u^2}{2} = h_0,\\quad h = c_p T,\\quad c_p = \\frac{\\gamma R}{\\gamma - 1}",
-          "to_latex": "c_p T + \\frac{u^2}{2} = c_p T_0",
-          "operation_label": "エンタルピーへの温度代入",
-          "explanation": "熱量的に完全な気体では h = c_p T, h_0 = c_p T_0 となるため、エネルギー保存式を温度で書き換える。",
-          "used_node_ids": [
-            "phys.thermo.th03_first_law_internal_energy"
-          ],
+          "from_latex": "\\delta q - \\delta w_s = dh + d\\!\\left(\\frac{u^2}{2}\\right),\\; \\delta q = 0,\\; \\delta w_s = 0",
+          "to_latex": "h_0 := h + \\frac{u^2}{2} = \\text{const.}",
+          "operation_label": "全エンタルピー保存則の導出",
+          "explanation": "単位質量あたりの定常流れのエネルギー式に断熱・外部仕事なしの条件を代入して積分し、全エンタルピーの定義を与える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\delta q - \\delta w_s = dh + d\\!\\left(\\frac{u^2}{2}\\right),\\; \\delta q = 0,\\; \\delta w_s = 0",
+          "to_latex": "dh + d\\!\\left(\\frac{u^2}{2}\\right) = 0",
+          "operation_label": "断熱および外部仕事なしの条件を代入",
+          "explanation": "開いた系の定常エネルギー保存式に \\delta q = 0 および \\delta w_s = 0 を代入し、右辺と左辺を入れ替える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "dh + d\\!\\left(\\frac{u^2}{2}\\right) = 0",
+          "to_latex": "h + \\frac{u^2}{2} = \\text{const.}",
+          "operation_label": "流線に沿った不定積分の適用",
+          "explanation": "全微分がゼロであることから、流線に沿って不定積分し、エンタルピーと単位質量あたり運動エネルギーの和が定数であることを得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "h + \\frac{u^2}{2} = \\text{const.}",
+          "to_latex": "h_0 := h + \\frac{u^2}{2} = \\text{const.}",
+          "operation_label": "よどみ点エンタルピーの定義を代入・導入",
+          "explanation": "流速 u = 0 のよどみ点状態におけるエンタルピーを h_0 として定義し、全エンタルピー保存則として表す。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
@@ -400,31 +435,179 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "c_p T + \\frac{u^2}{2} = c_p T_0",
-          "to_latex": "\\frac{T_0}{T} = 1 + \\frac{(\\gamma - 1)u^2}{2\\gamma R T}",
-          "operation_label": "c_p T による除算と整理",
-          "explanation": "両辺を c_p T で割り、c_p = gamma R / (gamma - 1) を代入する。",
-          "used_node_ids": [
-            "phys.thermo.th03_first_law_internal_energy"
-          ],
+          "from_latex": "c_p - c_v = R,\\quad \\gamma := \\frac{c_p}{c_v}",
+          "to_latex": "c_p = \\frac{\\gamma R}{\\gamma - 1}",
+          "operation_label": "定圧比熱の比熱比・気体定数表示の導出",
+          "explanation": "マイヤーの関係式と比熱比の定義から c_v を消去し、定圧比熱 c_p を \\gamma と R で表す。",
+          "used_node_ids": [],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "c_p - c_v = R,\\quad \\gamma := \\frac{c_p}{c_v}",
+          "to_latex": "c_p - \\frac{c_p}{\\gamma} = R",
+          "operation_label": "比熱比の定義から c_v を消去・代入",
+          "explanation": "比熱比の定義 \\gamma = c_p / c_v より得られる c_v = c_p / \\gamma をマイヤーの関係式 c_p - c_v = R に代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "c_p - \\frac{c_p}{\\gamma} = R",
+          "to_latex": "c_p\\left(1 - \\frac{1}{\\gamma}\\right) = R",
+          "operation_label": "共通因数 c_p のくくり出し",
+          "explanation": "左辺の2項から共通因数 c_p をくくり出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": "c_p - c_p/gamma == c_p*(1 - 1/gamma)"
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "c_p\\left(1 - \\frac{1}{\\gamma}\\right) = R",
+          "to_latex": "c_p\\left(\\frac{\\gamma - 1}{\\gamma}\\right) = R",
+          "operation_label": "括弧内の通分",
+          "explanation": "括弧内の 1 - 1/\\gamma を分母 \\gamma で通分する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "c_p*(1 - 1/gamma) == c_p*(gamma - 1)/gamma"
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "c_p\\left(\\frac{\\gamma - 1}{\\gamma}\\right) = R",
+          "to_latex": "c_p = \\frac{\\gamma R}{\\gamma - 1}",
+          "operation_label": "両辺への逆数乗算による c_p の解出",
+          "explanation": "\\gamma > 1 の条件のもとで両辺に \\gamma / (\\gamma - 1) を掛け、c_p について解く。",
+          "used_node_ids": [],
+          "sympy_check_hint": "solve(c_p*(gamma - 1)/gamma - R, c_p)[0] == gamma*R/(gamma - 1)"
         },
         {
           "step_id": "s2_3",
           "order": 3,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
+          "from_latex": "h + \\frac{u^2}{2} = h_0",
+          "to_latex": "\\frac{T_0}{T} = 1 + \\frac{(\\gamma - 1)u^2}{2\\gamma R T}",
+          "operation_label": "エンタルピーの温度表示と c_p T による規格化",
+          "explanation": "完全気体のエンタルピー h = c_p T を代入して両辺を c_p T で割り、さらに c_p = \\gamma R / (\\gamma - 1) を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "h + \\frac{u^2}{2} = h_0",
+          "to_latex": "c_p T + \\frac{u^2}{2} = c_p T_0",
+          "operation_label": "完全気体のエンタルピー関係を代入・導入",
+          "explanation": "熱量的に完全な気体の関係式 h = c_p T および h_0 = c_p T_0 を全エンタルピー保存式に代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "c_p T + \\frac{u^2}{2} = c_p T_0",
+          "to_latex": "1 + \\frac{u^2}{2 c_p T} = \\frac{T_0}{T}",
+          "operation_label": "両辺を c_p T で割る",
+          "explanation": "c_p T \\neq 0 のもとで両辺を c_p T で割り、第1項と右辺を約分する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(c_p*T + u**2/2)/(c_p*T) == 1 + u**2/(2*c_p*T)"
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "1 + \\frac{u^2}{2 c_p T} = \\frac{T_0}{T}",
+          "to_latex": "\\frac{T_0}{T} = 1 + \\frac{u^2}{2 c_p T}",
+          "operation_label": "左辺と右辺の入替え",
+          "explanation": "等式の対称性により、目的の温度比 T_0 / T を左辺に配置する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{T_0}{T} = 1 + \\frac{u^2}{2 c_p T}",
+          "to_latex": "\\frac{T_0}{T} = 1 + \\frac{(\\gamma - 1)u^2}{2\\gamma R T}",
+          "operation_label": "定圧比熱の表記を代入・導入",
+          "explanation": "先ほど導出した c_p = \\gamma R / (\\gamma - 1) を右辺第2項の分母に代入して繁分数を解消する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "1 + u**2/(2*(gamma*R/(gamma - 1))*T) == 1 + (gamma - 1)*u**2/(2*gamma*R*T)"
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
           "from_latex": "\\frac{T_0}{T} = 1 + \\frac{(\\gamma - 1)u^2}{2\\gamma R T}",
           "to_latex": "\\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
-          "operation_label": "音速とマッハ数の代入",
-          "explanation": "a^2 = gamma R T および M = u/a を代入し、T_0/T の標準形式を得る。",
+          "operation_label": "音速とマッハ数の定義による無次元化",
+          "explanation": "係数を括り出した上で音速 a = \\sqrt{\\gamma R T} とマッハ数 M = u / a を順に代入し、よどみ点温度比の標準形を得る。",
           "used_node_ids": [
             "eng.comp.n01_acoustic_wave_speed_of_sound",
             "eng.comp.n02_mach_number_and_flow_regimes"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{T_0}{T} = 1 + \\frac{(\\gamma - 1)u^2}{2\\gamma R T}",
+          "to_latex": "\\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}\\left(\\frac{u^2}{\\gamma R T}\\right)",
+          "operation_label": "係数 (\\gamma - 1)/2 の分離",
+          "explanation": "右辺第2項から無次元係数 (\\gamma - 1)/2 と速度・音速比の項 u^2 / (\\gamma R T) を分離して括弧でまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": "1 + (gamma - 1)*u**2/(2*gamma*R*T) == 1 + (gamma - 1)/2 * (u**2/(gamma*R*T))"
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}\\left(\\frac{u^2}{\\gamma R T}\\right)",
+          "to_latex": "\\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}\\left(\\frac{u}{a}\\right)^2",
+          "operation_label": "理想気体の音速の式を代入・導入",
+          "explanation": "理想気体の音速 a = \\sqrt{\\gamma R T} より得られる a^2 = \\gamma R T を分母に代入し、2乗の商としてまとめる。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}\\left(\\frac{u}{a}\\right)^2",
+          "to_latex": "\\frac{T_0}{T} = 1 + \\frac{\\gamma - 1}{2}M^2",
+          "operation_label": "マッハ数の定義を代入・導入",
+          "explanation": "マッハ数の定義 M := u / a を代入し、断熱定常流れにおけるよどみ点温度と静温の比の最終式を得る。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T09:52:24.040319+00:00"
     },
     {
       "id": "eng.comp.d04_isentropic_stagnation_pressure",

@@ -170,13 +170,14 @@
         "phys.mech.p02_newton_second_law",
         "eng.rock.n02_effective_exhaust_velocity_isp"
       ],
-      "required_math_node_ids": [
-        "math.calc.m02_fundamental_theorem_calc"
-      ],
+      "required_math_node_ids": [],
       "assumptions": [
         "重力、大気抗力などの外力はゼロとする1次元運動",
         "排気速度 c_eff は燃焼期間を通じて一定",
-        "噴射ガスは機体後方へ瞬時に定常排気される"
+        "噴射ガスは機体後方へ瞬時に定常排気される",
+        "機体質量 m(t) は燃焼期間を通じて正かつ連続微分可能（m(t) >= m_f > 0）であり、推進剤消費により単調減少する（dm/dt < 0）",
+        "燃焼開始時（t = 0）の機体質量と速度をそれぞれ m_0, v_0、燃焼終了時（t = t_f）の機体質量と速度をそれぞれ m_f, v_f とする",
+        "標準重力加速度 g_0 は定数であり、比推力 I_sp は c_eff / g_0 により定義される"
       ],
       "steps": [
         {
@@ -184,59 +185,290 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "m(t) \\frac{dv}{dt} = -c_{\\mathrm{eff}} \\frac{dm}{dt}",
-          "to_latex": "\\Delta v = c_{\\mathrm{eff}} \\ln\\left(\\frac{m_0}{m_f}\\right)",
-          "operation_label": "運動方程式の積分概要",
-          "explanation": "可変質量の運動量保存則から導かれる運動方程式を変数分離し、初期質量から最終質量まで積分して速度増分を得る。",
+          "from_latex": "F_{\\mathrm{ext}} = \\frac{dP}{dt} = 0",
+          "to_latex": "\\Delta v = c_{\\mathrm{eff}} \\ln\\left(\\frac{m_0}{m_f}\\right) = I_{\\mathrm{sp}} g_0 \\ln\\left(\\frac{m_0}{m_f}\\right)",
+          "operation_label": "可変質量系の運動量保存則からツィオルコフスキーの公式への導出概要",
+          "explanation": "外力ゼロの系における運動量保存則から可変質量ロケットの微分方程式を導き、変数分離と定積分、対数法則および比推力の定義を用いてツィオルコフスキーのロケット方程式を得る。",
           "used_node_ids": [
-            "eng.rock.n02_effective_exhaust_velocity_isp",
-            "math.calc.m02_fundamental_theorem_calc",
-            "phys.mech.p02_newton_second_law"
+            "eng.rock.n02_effective_exhaust_velocity_isp"
           ],
-          "sympy_check_hint": "integrate(-c/m, (m, m0, mf))"
+          "sympy_check_hint": "-c_eff*integrate(1/m, (m, m0, mf)) == c_eff*log(m0/mf)"
         },
         {
-          "step_id": "s2_momentum_conservation",
+          "step_id": "s2_1",
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "P(t) = m v,\\quad P(t+\\Delta t) = (m + \\Delta m)(v + \\Delta v) + (-\\Delta m)(v - c_{\\mathrm{eff}})",
-          "to_latex": "m \\, dv + c_{\\mathrm{eff}} \\, dm = 0",
-          "operation_label": "微小時間における系全体の運動量保存の展開",
-          "explanation": "閉じた系（機体＋微小放出ガス）の運動量保存を考え、2次の微小項を無視して時間極限をとると反力と加速の微分釣合いが得られる。",
+          "from_latex": "F_{\\mathrm{ext}} = \\frac{dP}{dt} = 0",
+          "to_latex": "m\\,\\Delta v + c_{\\mathrm{eff}}\\,\\Delta m + \\Delta m\\,\\Delta v = 0",
+          "operation_label": "閉鎖系の運動量保存則の定式化と微小差分展開",
+          "explanation": "時刻 t と t+Δt における機体と噴射ガス全体の運動量を比較し、積を展開して相殺可能な項を取り除く。",
           "used_node_ids": [
-            "eng.rock.n02_effective_exhaust_velocity_isp",
-            "phys.mech.p02_newton_second_law"
+            "eng.rock.n02_effective_exhaust_velocity_isp"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s3_separation_of_variables",
+          "step_id": "s3_1_1",
           "order": 3,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "m \\, dv + c_{\\mathrm{eff}} \\, dm = 0",
-          "to_latex": "dv = -c_{\\mathrm{eff}} \\frac{dm}{m}",
-          "operation_label": "変数分離の実行",
-          "explanation": "両辺を機体質量 m で除算し、速度変化 dv と質量変化比 dm/m の微分関係式を整理する。",
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "F_{\\mathrm{ext}} = \\frac{dP}{dt} = 0",
+          "to_latex": "P(t+\\Delta t) - P(t) = 0",
+          "operation_label": "時刻 t から t+Δt への有限時間差分の導入",
+          "explanation": "外力がゼロで全運動量 P が時間に対して一定に保たれるため、微小時間 Δt 前後での全運動量の差がゼロになる式へ書き換える。",
           "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s4_definite_integration",
+          "step_id": "s3_1_2",
           "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "P(t+\\Delta t) - P(t) = 0",
+          "to_latex": "(m + \\Delta m)(v + \\Delta v) + (-\\Delta m)(v - c_{\\mathrm{eff}}) - m v = 0",
+          "operation_label": "機体・噴射ガスの運動量と有効排気速度の代入・導入",
+          "explanation": "時刻 t の運動量 P(t)=mv と、微小時間 Δt 間に質量 -Δm（>0）のガスが機体後方へ相対速度 c_eff（対地速度 v - c_eff）で噴射された時刻 t+Δt の運動量 P(t+Δt) を代入する。",
+          "used_node_ids": [
+            "eng.rock.n02_effective_exhaust_velocity_isp"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "(m + \\Delta m)(v + \\Delta v) + (-\\Delta m)(v - c_{\\mathrm{eff}}) - m v = 0",
+          "to_latex": "m v + m\\,\\Delta v + v\\,\\Delta m + \\Delta m\\,\\Delta v - v\\,\\Delta m + c_{\\mathrm{eff}}\\,\\Delta m - m v = 0",
+          "operation_label": "左辺の多項式積の展開",
+          "explanation": "分配法則を適用して (m+Δm)(v+Δv) と (-Δm)(v-c_eff) の括弧をすべて展開する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(m + dm)*(v + dv) + (-dm)*(v - c_eff) - m*v == m*v + m*dv + v*dm + dm*dv - v*dm + c_eff*dm - m*v"
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "m v + m\\,\\Delta v + v\\,\\Delta m + \\Delta m\\,\\Delta v - v\\,\\Delta m + c_{\\mathrm{eff}}\\,\\Delta m - m v = 0",
+          "to_latex": "m\\,\\Delta v + c_{\\mathrm{eff}}\\,\\Delta m + \\Delta m\\,\\Delta v = 0",
+          "operation_label": "符号が逆の同類項の相殺",
+          "explanation": "左辺に含まれる mv と -mv、および vΔm と -vΔm をそれぞれ相殺して消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "m*v + m*dv + v*dm + dm*dv - v*dm + c_eff*dm - m*v == m*dv + c_eff*dm + dm*dv"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 7,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "dv = -c_{\\mathrm{eff}} \\frac{dm}{m}",
-          "to_latex": "\\Delta v = v_f - v_0 = c_{\\mathrm{eff}} \\ln\\left(\\frac{m_0}{m_f}\\right)",
-          "operation_label": "微積分学の基本定理による定積分",
-          "explanation": "質量 m を m_0 から m_f まで、速度 v を v_0 から v_f まで積分し、対数関数の性質 \\ln(m_f/m_0) = -\\ln(m_0/m_f) を適用する。",
+          "from_latex": "m\\,\\Delta v + c_{\\mathrm{eff}}\\,\\Delta m + \\Delta m\\,\\Delta v = 0",
+          "to_latex": "m\\frac{dv}{dt} = -c_{\\mathrm{eff}}\\frac{dm}{dt}",
+          "operation_label": "微小極限操作による可変質量運動方程式の導出",
+          "explanation": "差分方程式を微小時間 Δt で割り、Δt→0 の極限をとって2次微小項を消去したのち、右辺へ移項して運動方程式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "m\\,\\Delta v + c_{\\mathrm{eff}}\\,\\Delta m + \\Delta m\\,\\Delta v = 0",
+          "to_latex": "m\\frac{\\Delta v}{\\Delta t} + c_{\\mathrm{eff}}\\frac{\\Delta m}{\\Delta t} + \\Delta m\\frac{\\Delta v}{\\Delta t} = 0",
+          "operation_label": "両辺の微小時間 Δt による除算",
+          "explanation": "Δt > 0 を用いて方程式の両辺を Δt で割り、各変数の時間に対する平均変化率を明示する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "m\\frac{\\Delta v}{\\Delta t} + c_{\\mathrm{eff}}\\frac{\\Delta m}{\\Delta t} + \\Delta m\\frac{\\Delta v}{\\Delta t} = 0",
+          "to_latex": "m\\frac{dv}{dt} + c_{\\mathrm{eff}}\\frac{dm}{dt} = 0",
+          "operation_label": "Δt→0 の極限操作と2次微小項の消去",
+          "explanation": "Δt→0 の極限をとると、質量変化率と速度変化率は導関数 dm/dt, dv/dt となり、係数 Δm が 0 に収束するため第3項 Δm(Δv/Δt) は 0 になる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "m\\frac{dv}{dt} + c_{\\mathrm{eff}}\\frac{dm}{dt} = 0",
+          "to_latex": "m\\frac{dv}{dt} = -c_{\\mathrm{eff}}\\frac{dm}{dt}",
+          "operation_label": "第2項の右辺への移項",
+          "explanation": "左辺の第2項 c_eff(dm/dt) を符号反転して右辺へ移項し、加速度項と推力反力項を分離する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 11,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\frac{dv}{dt} = -c_{\\mathrm{eff}}\\frac{dm}{dt}",
+          "to_latex": "\\int_{v_0}^{v_f} dv = \\int_{m_0}^{m_f} \\left(-c_{\\mathrm{eff}}\\frac{1}{m}\\right) dm",
+          "operation_label": "変数分離と定積分方程式の立式",
+          "explanation": "常微分方程式を変数分離して速度と質量の微分関係に直し、燃焼開始から終了までの区間で定積分を設定する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "m\\frac{dv}{dt} = -c_{\\mathrm{eff}}\\frac{dm}{dt}",
+          "to_latex": "m\\,dv = -c_{\\mathrm{eff}}\\,dm",
+          "operation_label": "両辺への微小時間要素 dt の乗算",
+          "explanation": "連鎖律（全微分関係）に基づき両辺に時間微分要素 dt を掛けて、時間 t を消去した微分形式へ変換する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "m\\,dv = -c_{\\mathrm{eff}}\\,dm",
+          "to_latex": "dv = -c_{\\mathrm{eff}}\\frac{dm}{m}",
+          "operation_label": "両辺の質量 m による除算（変数分離）",
+          "explanation": "機体質量 m > 0 の仮定により両辺を m で割り、左辺を速度 v のみ、右辺を質量 m のみの式に分離する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "dv = -c_{\\mathrm{eff}}\\frac{dm}{m}",
+          "to_latex": "\\int_{v_0}^{v_f} dv = \\int_{m_0}^{m_f} \\left(-c_{\\mathrm{eff}}\\frac{1}{m}\\right) dm",
+          "operation_label": "燃焼開始から終了までの両辺定積分の適用",
+          "explanation": "初期状態 (v_0, m_0) から最終状態 (v_f, m_f) まで両辺をそれぞれ変数 v と m について定積分する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 15,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int_{v_0}^{v_f} dv = \\int_{m_0}^{m_f} \\left(-c_{\\mathrm{eff}}\\frac{1}{m}\\right) dm",
+          "to_latex": "v_f - v_0 = -c_{\\mathrm{eff}}\\big(\\ln m_f - \\ln m_0\\big)",
+          "operation_label": "定積分の実行と境界値の評価",
+          "explanation": "定数係数 -c_eff を積分外にくくり出し、原始関数を求めて積分区間の上下端を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "-c_eff*integrate(1/m, (m, m0, mf)) == -c_eff*(log(mf) - log(m0))"
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\int_{v_0}^{v_f} dv = \\int_{m_0}^{m_f} \\left(-c_{\\mathrm{eff}}\\frac{1}{m}\\right) dm",
+          "to_latex": "\\int_{v_0}^{v_f} dv = -c_{\\mathrm{eff}}\\int_{m_0}^{m_f} \\frac{1}{m}\\,dm",
+          "operation_label": "定数係数 -c_eff の積分記号外へのくくり出し",
+          "explanation": "有効排気速度 c_eff が燃焼期間を通じて一定であるという仮定を用い、積分の線形性により -c_eff を積分記号の外へ出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\int_{v_0}^{v_f} dv = -c_{\\mathrm{eff}}\\int_{m_0}^{m_f} \\frac{1}{m}\\,dm",
+          "to_latex": "\\big[v\\big]_{v_0}^{v_f} = -c_{\\mathrm{eff}}\\big[\\ln m\\big]_{m_0}^{m_f}",
+          "operation_label": "被積分関数の原始関数の適用",
+          "explanation": "1 の原始関数として v、および m > 0 における 1/m の原始関数として自然対数 ln m を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\big[v\\big]_{v_0}^{v_f} = -c_{\\mathrm{eff}}\\big[\\ln m\\big]_{m_0}^{m_f}",
+          "to_latex": "v_f - v_0 = -c_{\\mathrm{eff}}\\big(\\ln m_f - \\ln m_0\\big)",
+          "operation_label": "積分区間の上下端の代入評価",
+          "explanation": "各原始関数に上端値（v_f, m_f）と下端値（v_0, m_0）を代入して差をとる。",
+          "used_node_ids": [],
+          "sympy_check_hint": "integrate(1, (v, v0, vf)) == vf - v0"
+        },
+        {
+          "step_id": "s2_5",
+          "order": 19,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "v_f - v_0 = -c_{\\mathrm{eff}}\\big(\\ln m_f - \\ln m_0\\big)",
+          "to_latex": "\\Delta v = c_{\\mathrm{eff}} \\ln\\left(\\frac{m_0}{m_f}\\right) = I_{\\mathrm{sp}} g_0 \\ln\\left(\\frac{m_0}{m_f}\\right)",
+          "operation_label": "対数法則による整理と比推力表示への変換",
+          "explanation": "速度増分 Δv を導入し、対数の性質によって負号を質量比 m_0/m_f の形に吸収した上で、比推力定義式を用いて I_sp 表示を併記する。",
           "used_node_ids": [
-            "math.calc.m02_fundamental_theorem_calc"
+            "eng.rock.n02_effective_exhaust_velocity_isp"
           ],
-          "sympy_check_hint": "integrate(-c/m, (m, m0, mf))"
+          "sympy_check_hint": "-c_eff*(log(mf) - log(m0)) == c_eff*log(m0/mf)"
+        },
+        {
+          "step_id": "s3_5_1",
+          "order": 20,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "v_f - v_0 = -c_{\\mathrm{eff}}\\big(\\ln m_f - \\ln m_0\\big)",
+          "to_latex": "\\Delta v = -c_{\\mathrm{eff}}\\big(\\ln m_f - \\ln m_0\\big)",
+          "operation_label": "速度増分 Δv := v_f - v_0 の定義による置換",
+          "explanation": "左辺の速度変化量 v_f - v_0 を速度増分 Δv として書き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_2",
+          "order": 21,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\Delta v = -c_{\\mathrm{eff}}\\big(\\ln m_f - \\ln m_0\\big)",
+          "to_latex": "\\Delta v = -c_{\\mathrm{eff}}\\ln\\left(\\frac{m_f}{m_0}\\right)",
+          "operation_label": "対数の差の公式 ln(m_f) - ln(m_0) = ln(m_f/m_0) の適用",
+          "explanation": "自然対数の性質を用いて右辺の括弧内の対数の差を一つの商の対数へまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": "-c_eff*(log(mf) - log(m0)) == -c_eff*log(mf/m0)"
+        },
+        {
+          "step_id": "s3_5_3",
+          "order": 22,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\Delta v = -c_{\\mathrm{eff}}\\ln\\left(\\frac{m_f}{m_0}\\right)",
+          "to_latex": "\\Delta v = c_{\\mathrm{eff}} \\ln\\left(\\frac{m_0}{m_f}\\right)",
+          "operation_label": "負号の吸収による対数真数の逆数化",
+          "explanation": "対数則 -ln(a/b) = ln(b/a) を適用し、右辺の負号を吸収して初期質量と最終質量の比 m_0/m_f（>1）で表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": "-c_eff*log(mf/m0) == c_eff*log(m0/mf)"
+        },
+        {
+          "step_id": "s3_5_4",
+          "order": 23,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\Delta v = c_{\\mathrm{eff}} \\ln\\left(\\frac{m_0}{m_f}\\right)",
+          "to_latex": "\\Delta v = c_{\\mathrm{eff}} \\ln\\left(\\frac{m_0}{m_f}\\right) = I_{\\mathrm{sp}} g_0 \\ln\\left(\\frac{m_0}{m_f}\\right)",
+          "operation_label": "比推力の定義関係 c_eff = I_sp g_0 の代入・導入",
+          "explanation": "比推力と有効排気速度の関係 I_sp = c_eff / g_0 より得られる c_eff = I_sp g_0 を代入し、比推力による等価表現を得る。",
+          "used_node_ids": [
+            "eng.rock.n02_effective_exhaust_velocity_isp"
+          ],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T09:59:08.332534+00:00"
     },
     {
       "id": "derivation.aerosp.rocket.stage_mass_parameters",

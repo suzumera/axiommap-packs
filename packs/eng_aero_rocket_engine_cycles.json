@@ -204,67 +204,263 @@
         "eng.rock.n05_choked_mass_flow_rate"
       ],
       "required_math_node_ids": [
-        "math.calc.t06_exp_power_derivatives"
+        "aerosp.jet.n03_real_component_efficiencies",
+        "aerosp.jet.n04_real_turbojet_cycle_performance",
+        "eng.comp.n03_stagnation_enthalpy_energy_eq",
+        "eng.comp.n04_isentropic_stagnation_relations"
       ],
       "assumptions": [
-        "ポンプ内の流体は非圧縮性等圧上昇過程に従う",
-        "タービン内の駆動ガス膨張は理想気体の断熱過程に従い等エントロピー効率でモデル化される",
-        "軸受け・ギア等の機械的伝達効率を eta_m とする"
+        "ポンプ内の各推進剤流体は非圧縮性（密度 \\rho_i が一定）であり、定常流れの昇圧過程に従う",
+        "各ポンプの効率 \\eta_{p,i} > 0、密度 \\rho_i > 0、および機械伝達効率 \\eta_m > 0 であり、ゼロ除算は生じない",
+        "タービン駆動ガスは比熱比 \\gamma_t > 1 かつ定圧比熱 c_{p,t} が一定の理想気体であり、断熱定常流れに従う",
+        "タービン出口圧力 p_{te} に対応する等エントロピー膨張終状態 T_{te,s} に基づいてタービン等エントロピー効率 \\eta_t が定義される",
+        "タービンと全ポンプは機械的に結合され、軸受け・ギア等の機械伝達効率を \\eta_m とする"
       ],
       "steps": [
         {
-          "step_id": "tp_s1_overview",
+          "step_id": "s1_overview",
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "P_p = \\eta_m P_t",
+          "from_latex": "\\dot{W}_{p,\\mathrm{id},i} = \\dot{m}_{p,i}\\int_{p_{\\mathrm{in},i}}^{p_{\\mathrm{out},i}} \\frac{dp}{\\rho_i},\\quad P_t = \\dot{m}_t (h_{0t} - h_{te}),\\quad P_p = \\eta_m P_t",
           "to_latex": "\\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} = \\eta_m\\dot{m}_t\\eta_t c_{p,t}T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t-1}{\\gamma_t}}\\right]",
-          "operation_label": "動力平衡条件の展開",
-          "explanation": "ポンプ流体の非圧縮性仕事率の総和とタービンガスの断熱膨張仕事率の機械結合釣合いを連立させる。",
+          "operation_label": "ターボポンプ動力釣合い方程式の全体導出",
+          "explanation": "各ポンプの非圧縮性水力所要動力の総和と、断熱理想気体タービンの等エントロピー膨張出力を機械伝達効率 \\eta_m で結合し、ターボポンプの動力釣合い方程式を導出する。",
           "used_node_ids": [
-            "phys.thermo.th03_first_law_internal_energy"
-          ]
+            "aerosp.jet.n03_real_component_efficiencies",
+            "aerosp.jet.n04_real_turbojet_cycle_performance",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": null
         },
         {
-          "step_id": "tp_s2_pump",
+          "step_id": "s2_1",
           "order": 2,
           "granularity_level": 2,
-          "parent_step_id": "tp_s1_overview",
-          "from_latex": "P_p = \\sum_{i} \\dot{W}_{p,i}",
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\dot{W}_{p,\\mathrm{id},i} = \\dot{m}_{p,i}\\int_{p_{\\mathrm{in},i}}^{p_{\\mathrm{out},i}} \\frac{dp}{\\rho_i} ",
           "to_latex": "P_p = \\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}}",
-          "operation_label": "ポンプ水力動力の定式化",
-          "explanation": "各推進剤成分（酸化剤・燃料）の単位質量あたり静圧上昇分 Delta p / rho をポンプ効率で除し質量流量を乗じて全所要動力を得る。",
-          "used_node_ids": [
-            "phys.thermo.th03_first_law_internal_energy"
-          ]
+          "operation_label": "ポンプ総所要動力の導出",
+          "explanation": "非圧縮性仮定のもとで各推進剤ポンプの理想動力を圧力積分から求め、ポンプ効率で除して全ポンプの総所要動力を表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         },
         {
-          "step_id": "tp_s3_turb",
+          "step_id": "s3_1_1",
           "order": 3,
-          "granularity_level": 2,
-          "parent_step_id": "tp_s1_overview",
-          "from_latex": "P_p = \\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}}",
-          "to_latex": "P_t = \\dot{m}_t \\eta_t c_{p,t} T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t-1}{\\gamma_t}}\\right]",
-          "operation_label": "タービン断熱膨張出力の定式化",
-          "explanation": "等エントロピー膨張における温度比落差にタービン効率 eta_t、定圧比熱 c_{p,t}、流入淀み点温度 T_{0t}、ガス質量流量を乗じる。",
-          "used_node_ids": [
-            "phys.thermo.th03_first_law_internal_energy"
-          ]
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\dot{W}_{p,\\mathrm{id},i} = \\dot{m}_{p,i}\\int_{p_{\\mathrm{in},i}}^{p_{\\mathrm{out},i}} \\frac{dp}{\\rho_i} ",
+          "to_latex": "\\dot{W}_{p,\\mathrm{id},i} = \\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i} ",
+          "operation_label": "非圧縮性の定密度仮定による圧力積分の実行",
+          "explanation": "密度 \\rho_i を定数として積分の外へ出し、\\Delta p_{p,i} := p_{\\mathrm{out},i} - p_{\\mathrm{in},i} を用いてポンプ i の理想水力動力を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         },
         {
-          "step_id": "tp_s4_equate",
+          "step_id": "s3_1_2",
           "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\dot{W}_{p,\\mathrm{id},i} = \\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i} ",
+          "to_latex": "\\eta_{p,i}\\dot{W}_{p,i} = \\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i} ",
+          "operation_label": "ポンプ効率 \\eta_{p,i} の定義を代入・導入",
+          "explanation": "ポンプ効率の定義 \\eta_{p,i} := \\dot{W}_{p,\\mathrm{id},i}/\\dot{W}_{p,i} より \\dot{W}_{p,\\mathrm{id},i} = \\eta_{p,i}\\dot{W}_{p,i} を左辺へ代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\eta_{p,i}\\dot{W}_{p,i} = \\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i} ",
+          "to_latex": "\\dot{W}_{p,i} = \\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} ",
+          "operation_label": "両辺を \\eta_{p,i} で割る",
+          "explanation": "仮定 \\eta_{p,i} > 0 より両辺を \\eta_{p,i} で除し、ポンプ i の実軸所要動力 \\dot{W}_{p,i} について解く。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(m_dot_pi*dp_pi/rho_i)/eta_pi == m_dot_pi*dp_pi/(rho_i*eta_pi)"
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\dot{W}_{p,i} = \\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} ",
+          "to_latex": "P_p = \\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}}",
+          "operation_label": "全ポンプ i についての総和を取る",
+          "explanation": "総ポンプ所要動力 P_p := \\sum_i \\dot{W}_{p,i} の定義に従い、各ポンプの所要動力を全成分 i について足し合わせる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 7,
           "granularity_level": 2,
-          "parent_step_id": "tp_s1_overview",
-          "from_latex": "P_p = \\eta_m P_t",
-          "to_latex": "\\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} = \\eta_m\\dot{m}_t\\eta_t c_{p,t}T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t-1}{\\gamma_t}}\\right]",
-          "operation_label": "軸動力結合方程式の同定",
-          "explanation": "機械伝達効率 eta_m を介してポンプ所要動力とタービン出力を等置し、目的の平衡方程式を完結させる。",
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_t = \\dot{m}_t (h_{0t} - h_{te})",
+          "to_latex": "P_t = \\dot{m}_t \\eta_t c_{p,t} T_{0t}\\left(1 - \\frac{T_{te,s}}{T_{0t}}\\right) ",
+          "operation_label": "断熱タービン出力の温度比表現への変換",
+          "explanation": "タービン等エントロピー効率と理想気体の定圧比熱によるエンタルピー変化式を適用し、タービン軸出力を入口全温と等エントロピー温度比で表す。",
           "used_node_ids": [
-            "phys.thermo.th03_first_law_internal_energy"
-          ]
+            "aerosp.jet.n03_real_component_efficiencies",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "P_t = \\dot{m}_t (h_{0t} - h_{te})",
+          "to_latex": "P_t = \\dot{m}_t \\eta_t (h_{0t} - h_{te,s}) ",
+          "operation_label": "タービン等エントロピー効率 \\eta_t を代入・導入",
+          "explanation": "断熱定常流れのエンタルピー落差 (h_{0t} - h_{te}) に、等エントロピー効率の定義 \\eta_t := (h_{0t} - h_{te})/(h_{0t} - h_{te,s}) を適用して置き換える。",
+          "used_node_ids": [
+            "aerosp.jet.n03_real_component_efficiencies",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "P_t = \\dot{m}_t \\eta_t (h_{0t} - h_{te,s}) ",
+          "to_latex": "P_t = \\dot{m}_t \\eta_t c_{p,t} (T_{0t} - T_{te,s}) ",
+          "operation_label": "理想気体のエンタルピー温度関係式を代入",
+          "explanation": "定比熱理想気体の関係 h_{0t} - h_{te,s} = c_{p,t}(T_{0t} - T_{te,s}) を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "m_dot_t*eta_t*(c_pt*T_0t - c_pt*T_tes) == m_dot_t*eta_t*c_pt*(T_0t - T_tes)"
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "P_t = \\dot{m}_t \\eta_t c_{p,t} (T_{0t} - T_{te,s}) ",
+          "to_latex": "P_t = \\dot{m}_t \\eta_t c_{p,t} T_{0t}\\left(1 - \\frac{T_{te,s}}{T_{0t}}\\right) ",
+          "operation_label": "入口よどみ点温度 T_{0t} を括弧の外へくくり出す",
+          "explanation": "T_{0t} > 0 を因子として括り出し、温度差を無次元温度比 T_{te,s}/T_{0t} を用いた形へ変形する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "m_dot_t*eta_t*c_pt*(T_0t - T_tes) == m_dot_t*eta_t*c_pt*T_0t*(1 - T_tes/T_0t)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 11,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{p_{0t}}{p_{te}} = \\left(1 + \\frac{\\gamma_t - 1}{2}M_{te}^2\\right)^{\\frac{\\gamma_t}{\\gamma_t - 1}} ",
+          "to_latex": "P_t = \\dot{m}_t \\eta_t c_{p,t} T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right] ",
+          "operation_label": "等エントロピー圧力比によるタービン軸出力の完成",
+          "explanation": "等エントロピー流れのよどみ点温度・圧力関係式から温度比を圧力比へ変換し、タービン軸出力の最終表式を得る。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{p_{0t}}{p_{te}} = \\left(1 + \\frac{\\gamma_t - 1}{2}M_{te}^2\\right)^{\\frac{\\gamma_t}{\\gamma_t - 1}} ",
+          "to_latex": "\\frac{p_{0t}}{p_{te}} = \\left(\\frac{T_{0t}}{T_{te,s}}\\right)^{\\frac{\\gamma_t}{\\gamma_t - 1}} ",
+          "operation_label": "よどみ点温度比関係式を代入・導入",
+          "explanation": "等エントロピー膨張におけるマッハ数と温度比の関係 T_{0t}/T_{te,s} = 1 + \\frac{\\gamma_t - 1}{2}M_{te}^2 を右辺の括弧内へ代入する。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{p_{0t}}{p_{te}} = \\left(\\frac{T_{0t}}{T_{te,s}}\\right)^{\\frac{\\gamma_t}{\\gamma_t - 1}} ",
+          "to_latex": "\\frac{p_{te}}{p_{0t}} = \\left(\\frac{T_{te,s}}{T_{0t}}\\right)^{\\frac{\\gamma_t}{\\gamma_t - 1}} ",
+          "operation_label": "両辺の逆数を取る",
+          "explanation": "分母分子を反転させ、出口対入口の圧力比 p_{te}/p_{0t} と温度比 T_{te,s}/T_{0t} の関係に書き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": "1/(p_0t/p_te) == p_te/p_0t"
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{p_{te}}{p_{0t}} = \\left(\\frac{T_{te,s}}{T_{0t}}\\right)^{\\frac{\\gamma_t}{\\gamma_t - 1}} ",
+          "to_latex": "\\frac{T_{te,s}}{T_{0t}} = \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}} ",
+          "operation_label": "両辺を (\\gamma_t - 1)/\\gamma_t 乗する",
+          "explanation": "指数法則に従い両辺に指数 (\\gamma_t - 1)/\\gamma_t を作用させて、温度比 T_{te,s}/T_{0t} を圧力比で表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": "((T_tes/T_0t)**(gamma_t/(gamma_t - 1)))**((gamma_t - 1)/gamma_t) == T_tes/T_0t"
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "P_t = \\dot{m}_t \\eta_t c_{p,t} T_{0t}\\left(1 - \\frac{T_{te,s}}{T_{0t}}\\right) ",
+          "to_latex": "P_t = \\dot{m}_t \\eta_t c_{p,t} T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right] ",
+          "operation_label": "等エントロピー温度比の圧力比表現を代入・導入",
+          "explanation": "前ステップで得た T_{te,s}/T_{0t} = (p_{te}/p_{0t})^{\\frac{\\gamma_t - 1}{\\gamma_t}} をタービン軸出力の式へ代入する。",
+          "used_node_ids": [
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 16,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "P_p = \\eta_m P_t ",
+          "to_latex": "\\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} = \\eta_m\\dot{m}_t\\eta_t c_{p,t}T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t-1}{\\gamma_t}}\\right]",
+          "operation_label": "軸動力結合による釣合い方程式の完結",
+          "explanation": "機械伝達効率 \\eta_m を介した軸動力平衡式に、導出したポンプ総所要動力とタービン軸出力を順次代入する。",
+          "used_node_ids": [
+            "aerosp.jet.n04_real_turbojet_cycle_performance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "P_p = \\eta_m P_t ",
+          "to_latex": "\\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} = \\eta_m P_t ",
+          "operation_label": "ポンプ総所要動力 P_p の式を代入・導入",
+          "explanation": "機械結合条件 P_p = \\eta_m P_t の左辺へ、ポンプ総所要動力 P_p = \\sum_i \\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} を代入する。",
+          "used_node_ids": [
+            "aerosp.jet.n04_real_turbojet_cycle_performance"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} = \\eta_m P_t ",
+          "to_latex": "\\sum_{i}\\frac{\\dot{m}_{p,i}\\Delta p_{p,i}}{\\rho_i\\eta_{p,i}} = \\eta_m\\dot{m}_t\\eta_t c_{p,t}T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t-1}{\\gamma_t}}\\right]",
+          "operation_label": "タービン軸出力 P_t の式を代入・導入",
+          "explanation": "右辺の P_t へタービン軸出力 P_t = \\dot{m}_t \\eta_t c_{p,t} T_{0t}\\left[1 - \\left(\\frac{p_{te}}{p_{0t}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right] を代入し、ターボポンプの動力釣合い方程式を完結させる。",
+          "used_node_ids": [
+            "aerosp.jet.n04_real_turbojet_cycle_performance"
+          ],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T10:00:24.753768+00:00"
     },
     {
       "id": "aerosp.rc.d02_gas_generator_cycle_balance",

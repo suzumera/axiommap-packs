@@ -174,13 +174,15 @@
         "phys.mech.p02_newton_second_law",
         "eng.rock.n01_rocket_thrust_equation"
       ],
-      "required_math_node_ids": [
-        "math.vec.m03_dot_cross_product"
-      ],
+      "required_math_node_ids": [],
       "assumptions": [
-        "地球自転によるコリオリ力および遠心力は微小として無視する平面近似",
+        "地球自転によるコリオリ力および遠心力は微小として無視する平面近似とし、局所水平・鉛直基底は時間に対し一定とみなす",
         "機体は質点として扱い、ピッチ面内の2次元運動のみを考慮する",
-        "推力ベクトルは機軸に平行に作用し、機軸と速度ベクトルのなす角を迎え角αとする"
+        "推力ベクトルは機軸に平行に作用し、機軸と速度ベクトルのなす角を迎え角αとする",
+        "可変質量ロケットの瞬間制御体積に対し、推進剤放出に伴う運動量輸送効果はロケット推力方程式による推力Tに含めて外力として扱い、瞬間質量mに対して運動の第2法則を適用する",
+        "飛行速度はv > 0かつ時間に関して連続微分可能であり、接線・主法線単位ベクトルが一意に定義される",
+        "空気力は速度逆向きの抗力Dと速度直交上向きの揚力Lに分解され、横力はゼロとする",
+        "重力加速度の大きさgは局所鉛直下向きに作用する"
       ],
       "steps": [
         {
@@ -188,57 +190,238 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "m\\mathbf{a} = \\mathbf{T} + \\mathbf{A} + m\\mathbf{g}",
+          "from_latex": "m\\ddot{\\mathbf{r}} = \\mathbf{F}",
           "to_latex": "m\\dot{v} = T\\cos\\alpha - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = T\\sin\\alpha + L - mg\\cos\\gamma",
-          "operation_label": "運動方程式の速度座標系成分分解",
-          "explanation": "ニュートンの第2法則に基づき、機体に作用する外力（推力、空気力、重力）を速度ベクトルの接線方向と法線方向に投影して各成分の運動方程式を得る。",
-          "used_node_ids": [
-            "eng.rock.n01_rocket_thrust_equation",
-            "phys.mech.p02_newton_second_law"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_accel_frenet",
-          "order": 2,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "m\\mathbf{a} = \\mathbf{T} + \\mathbf{A} + m\\mathbf{g}",
-          "to_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = \\mathbf{T} + \\mathbf{A} + m\\mathbf{g}",
-          "operation_label": "軌道接線・法線加速度ベクトルの展開",
-          "explanation": "速度ベクトル v = v t_hat を時間微分すると、接線加速度 v_dot t_hat と曲率による向心加速度 v gamma_dot n_hat に分解される。",
-          "used_node_ids": [
-            "phys.mech.p02_newton_second_law"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s3_forces_projection",
-          "order": 3,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = \\mathbf{T} + \\mathbf{A} + m\\mathbf{g}",
-          "to_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = (T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}",
-          "operation_label": "推力・抗力・揚力・重力の直交成分投影",
-          "explanation": "推力 T は速度ベクトルに対し角度 α をなし、空気力は抗力 -D t_hat と揚力 L n_hat に分解され、局所鉛直下向きの重力 mg は局所水平角 γ に応じて -mg sinγ t_hat および -mg cosγ n_hat に投影される。",
+          "operation_label": "運動方程式の速度座標系成分分解の全体導出",
+          "explanation": "運動の第2法則に推力・空気力・重力を導入し、速度ベクトルに基づく接線・主法線基底で加速度と各外力を展開した上で内積によりスカラー運動方程式を導く。",
           "used_node_ids": [
             "eng.rock.n01_rocket_thrust_equation"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s4_component_separation",
+          "step_id": "s2_1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\ddot{\\mathbf{r}} = \\mathbf{F}",
+          "to_latex": "m\\dot{\\mathbf{v}} = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "operation_label": "速度表示と推力・空力・重力ベクトルの導入",
+          "explanation": "位置の2階微分を速度の時間微分へ書き換え、合力に推力・空気力・重力を代入した上で推力を大きさと方向単位ベクトルで表す。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "m\\ddot{\\mathbf{r}} = \\mathbf{F}",
+          "to_latex": "m\\dot{\\mathbf{v}} = \\mathbf{F}",
+          "operation_label": "速度ベクトルの定義の代入",
+          "explanation": "位置ベクトルの1階時間微分として速度ベクトル v = r_dot を定義し、加速度 r_ddot を v_dot に置き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
           "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "m\\dot{\\mathbf{v}} = \\mathbf{F}",
+          "to_latex": "m\\dot{\\mathbf{v}} = \\mathbf{T} + \\mathbf{A} + m\\mathbf{g}",
+          "operation_label": "合力の外力成分和の代入・導入",
+          "explanation": "機体に作用する合力 F に推力ベクトル T、空気力ベクトル A、および重力ベクトル mg の和を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "m\\dot{\\mathbf{v}} = \\mathbf{T} + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m\\dot{\\mathbf{v}} = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "operation_label": "ロケット推力方程式の推力大きさの導入",
+          "explanation": "ロケット推力方程式に基づく推力の大きさ T と機軸方向単位ベクトル e_T を導入し、推力ベクトルを T e_T に書き換える。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 6,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m\\dot{\\mathbf{v}} = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "operation_label": "速度座標系における加速度ベクトルの展開",
+          "explanation": "速度ベクトルを速さと接線単位ベクトルの積で表して時間微分し、飛行経路角の時間変化による主法線加速度成分を導出する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 7,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "m\\dot{\\mathbf{v}} = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m\\frac{d}{dt}(v\\hat{\\mathbf{t}}) = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "operation_label": "速度ベクトルの極形式表示の代入",
+          "explanation": "速さ v と速度方向単位接線ベクトル t_hat を用いて速度ベクトル v = v t_hat を左辺に代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "m\\frac{d}{dt}(v\\hat{\\mathbf{t}}) = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m\\left(\\dot{v}\\hat{\\mathbf{t}} + v\\frac{d\\hat{\\mathbf{t}}}{dt}\\right) = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "operation_label": "積の微分法則の適用",
+          "explanation": "左辺の時間微分 d/dt(v t_hat) に積の微分法則を適用し、速さの時間変化項と単位接線ベクトルの時間変化項に展開する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "m\\left(\\dot{v}\\hat{\\mathbf{t}} + v\\frac{d\\hat{\\mathbf{t}}}{dt}\\right) = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m\\left(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}(-\\sin\\gamma\\,\\hat{\\mathbf{i}}_h + \\cos\\gamma\\,\\hat{\\mathbf{k}}_v)\\right) = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "operation_label": "接線単位ベクトルの経路角微分と連鎖律の適用",
+          "explanation": "局所水平基底 i_h と鉛直上向き基底 k_v を用いた t_hat = cos(gamma) i_h + sin(gamma) k_v に対し、合成関数の微分法則を適用して時間微分を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "m\\left(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}(-\\sin\\gamma\\,\\hat{\\mathbf{i}}_h + \\cos\\gamma\\,\\hat{\\mathbf{k}}_v)\\right) = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "operation_label": "主法線単位ベクトルの定義の代入",
+          "explanation": "接線ベクトルに直交し飛行経路角増加方向を向く主法線単位ベクトル n_hat := -sin(gamma) i_h + cos(gamma) k_v を導入して左辺を書き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 11,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = (T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}",
+          "operation_label": "外力ベクトルの接線・法線基底への成分分解",
+          "explanation": "推力・空気力・重力の各ベクトルを接線単位ベクトルと主法線単位ベクトルで順次表し、基底ごとに係数をまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = T\\hat{\\mathbf{e}}_T + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = T(\\cos\\alpha\\,\\hat{\\mathbf{t}} + \\sin\\alpha\\,\\hat{\\mathbf{n}}) + \\mathbf{A} + m\\mathbf{g}",
+          "operation_label": "推力方向ベクトルの迎え角分解の代入",
+          "explanation": "推力方向単位ベクトルが速度方向から主法線側へ迎え角 alpha だけ傾いていることから、e_T = cos(alpha) t_hat + sin(alpha) n_hat を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = T(\\cos\\alpha\\,\\hat{\\mathbf{t}} + \\sin\\alpha\\,\\hat{\\mathbf{n}}) + \\mathbf{A} + m\\mathbf{g}",
+          "to_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = T(\\cos\\alpha\\,\\hat{\\mathbf{t}} + \\sin\\alpha\\,\\hat{\\mathbf{n}}) + (-D\\hat{\\mathbf{t}} + L\\hat{\\mathbf{n}}) + m\\mathbf{g}",
+          "operation_label": "空気力の抗力・揚力成分への分解の代入",
+          "explanation": "空気力ベクトル A を速度と逆向きの抗力 -D t_hat と主法線方向の揚力 L n_hat の和として代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = T(\\cos\\alpha\\,\\hat{\\mathbf{t}} + \\sin\\alpha\\,\\hat{\\mathbf{n}}) + (-D\\hat{\\mathbf{t}} + L\\hat{\\mathbf{n}}) + m\\mathbf{g}",
+          "to_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = T(\\cos\\alpha\\,\\hat{\\mathbf{t}} + \\sin\\alpha\\,\\hat{\\mathbf{n}}) + (-D\\hat{\\mathbf{t}} + L\\hat{\\mathbf{n}}) + m(-g\\sin\\gamma\\,\\hat{\\mathbf{t}} - g\\cos\\gamma\\,\\hat{\\mathbf{n}})",
+          "operation_label": "重力ベクトルの接線・法線投影の代入",
+          "explanation": "鉛直下向き重力 g = -g k_v に直交基底関係 k_v = sin(gamma) t_hat + cos(gamma) n_hat を適用した g = -g sin(gamma) t_hat - g cos(gamma) n_hat を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = T(\\cos\\alpha\\,\\hat{\\mathbf{t}} + \\sin\\alpha\\,\\hat{\\mathbf{n}}) + (-D\\hat{\\mathbf{t}} + L\\hat{\\mathbf{n}}) + m(-g\\sin\\gamma\\,\\hat{\\mathbf{t}} - g\\cos\\gamma\\,\\hat{\\mathbf{n}})",
+          "to_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = (T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}",
+          "operation_label": "共通基底ベクトルによる右辺係数のくくり出し",
+          "explanation": "右辺の括弧を展開し、接線基底 t_hat の係数と主法線基底 n_hat の係数をそれぞれ一つの括弧にまとめる。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(T*cos(alpha)*t_hat + T*sin(alpha)*n_hat) + (-D*t_hat + L*n_hat) + m*(-g*sin(gam)*t_hat - g*cos(gam)*n_hat) == (T*cos(alpha) - D - m*g*sin(gam))*t_hat + (T*sin(alpha) + L - m*g*cos(gam))*n_hat"
+        },
+        {
+          "step_id": "s2_4",
+          "order": 16,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
           "from_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = (T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}",
           "to_latex": "m\\dot{v} = T\\cos\\alpha - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = T\\sin\\alpha + L - mg\\cos\\gamma",
-          "operation_label": "各基底ごとのスカラー微分方程式の分離",
-          "explanation": "直交基底 t_hat と n_hat の成分をそれぞれ等置することにより、速度の大きさおよび飛行経路角に関する連立常微分方程式が確定する。",
+          "operation_label": "正規直交基底によるスカラー運動方程式の抽出",
+          "explanation": "左辺に質量を分配した上で接線・主法線単位ベクトルとの内積をそれぞれ計算し、2本のスカラー常微分方程式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "m(\\dot{v}\\hat{\\mathbf{t}} + v\\dot{\\gamma}\\hat{\\mathbf{n}}) = (T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}",
+          "to_latex": "m\\dot{v}\\hat{\\mathbf{t}} + mv\\dot{\\gamma}\\hat{\\mathbf{n}} = (T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}",
+          "operation_label": "左辺の質量係数の分配",
+          "explanation": "分配法則を用いて左辺の質量 m を接線加速度項および主法線加速度項へそれぞれ掛ける。",
+          "used_node_ids": [],
+          "sympy_check_hint": "m*(v_dot*t_hat + v*gamma_dot*n_hat) == m*v_dot*t_hat + m*v*gamma_dot*n_hat"
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "m\\dot{v}\\hat{\\mathbf{t}} + mv\\dot{\\gamma}\\hat{\\mathbf{n}} = (T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}",
+          "to_latex": "\\hat{\\mathbf{t}}\\cdot(m\\dot{v}\\hat{\\mathbf{t}} + mv\\dot{\\gamma}\\hat{\\mathbf{n}}) = \\hat{\\mathbf{t}}\\cdot\\big[(T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}\\big],\\quad \\hat{\\mathbf{n}}\\cdot(m\\dot{v}\\hat{\\mathbf{t}} + mv\\dot{\\gamma}\\hat{\\mathbf{n}}) = \\hat{\\mathbf{n}}\\cdot\\big[(T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}\\big]",
+          "operation_label": "各単位基底ベクトルとの内積演算の適用",
+          "explanation": "ベクトル等式の両辺に対して、接線単位ベクトル t_hat との内積および主法線単位ベクトル n_hat との内積をそれぞれ適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 19,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\hat{\\mathbf{t}}\\cdot(m\\dot{v}\\hat{\\mathbf{t}} + mv\\dot{\\gamma}\\hat{\\mathbf{n}}) = \\hat{\\mathbf{t}}\\cdot\\big[(T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}\\big],\\quad \\hat{\\mathbf{n}}\\cdot(m\\dot{v}\\hat{\\mathbf{t}} + mv\\dot{\\gamma}\\hat{\\mathbf{n}}) = \\hat{\\mathbf{n}}\\cdot\\big[(T\\cos\\alpha - D - mg\\sin\\gamma)\\hat{\\mathbf{t}} + (T\\sin\\alpha + L - mg\\cos\\gamma)\\hat{\\mathbf{n}}\\big]",
+          "to_latex": "m\\dot{v} = T\\cos\\alpha - D - mg\\sin\\gamma,\\quad mv\\dot{\\gamma} = T\\sin\\alpha + L - mg\\cos\\gamma",
+          "operation_label": "基底の正規直交性を用いた内積の計算",
+          "explanation": "基底の正規直交関係 t_hat・t_hat = 1, n_hat・n_hat = 1, t_hat・n_hat = 0 を適用して内積を計算し、目標のスカラー運動方程式を得る。",
           "used_node_ids": [],
           "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T09:51:33.268383+00:00"
     },
     {
       "id": "aerosp.launch.d02_gravity_turn_kinematics",
