@@ -228,7 +228,14 @@
       "route_kind": "deductive",
       "title": "ラグランジュの平均値の定理からのロルの定理の導出",
       "premise_node_ids": [],
-      "required_math_node_ids": [],
+      "required_math_node_ids": [
+        "math.alg.nonzero_factor_fraction_cancel",
+        "math.alg.nonzero_scalar_division",
+        "math.alg.real_additive_inverse_axiom",
+        "math.alg.real_strict_ineq_pos_product",
+        "math.alg.real_trichotomy_axiom",
+        "math.calc.m47_lagrange_mean_value_theorem"
+      ],
       "assumptions": [
         "f \\in C([a,b]) \\cap D((a,b))",
         "f(a) = f(b)",
@@ -240,11 +247,18 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "f \\in C([a,b]) \\cap D((a,b)) \\land f(a) = f(b)",
+          "from_latex": "f \\in C([a,b]) \\cap D((a,b)) \\land f(a) = f(b) \\land a < b",
           "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } f'(c) = 0",
-          "operation_label": "平均値の定理の特殊化",
-          "explanation": "ラグランジュの平均値の定理において端点値の一致 f(a)=f(b) を代入し、導関数が0となる内点cの存在を得る。",
-          "used_node_ids": [],
+          "operation_label": "ラグランジュの平均値の定理と端点条件による導関数の零点の導出",
+          "explanation": "仮定より関数 f はラグランジュの平均値の定理の適用条件を満たすため、開区間 (a,b) 内に f(b)-f(a)=f'(c)(b-a) を満たす点 c が存在する。端点条件 f(a)=f(b) を代入して左辺を 0 とし、区間幅 b-a の非零性を示して両辺を b-a で割ることで f'(c)=0 を導く。",
+          "used_node_ids": [
+            "math.alg.nonzero_factor_fraction_cancel",
+            "math.alg.nonzero_scalar_division",
+            "math.alg.real_additive_inverse_axiom",
+            "math.alg.real_strict_ineq_pos_product",
+            "math.alg.real_trichotomy_axiom",
+            "math.calc.m47_lagrange_mean_value_theorem"
+          ],
           "sympy_check_hint": null
         },
         {
@@ -252,26 +266,169 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "f \\in C([a,b]) \\cap D((a,b)),\\quad a < b",
-          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } f(b) - f(a) = f'(c)(b - a)",
+          "from_latex": "f \\in C([a,b]) \\cap D((a,b)) \\land f(a) = f(b) \\land a < b",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } 0 = f'(c)(b - a))",
+          "operation_label": "平均値の定理の適用と端点一致条件の代入",
+          "explanation": "連続性と微分可能性の仮定からラグランジュの平均値の定理を適用し、端点値の一致 f(a)=f(b) を代入して左辺を 0 に書き換える。",
+          "used_node_ids": [
+            "math.alg.real_additive_inverse_axiom",
+            "math.calc.m47_lagrange_mean_value_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "f \\in C([a,b]) \\cap D((a,b))",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } f(b) - f(a) = f'(c)(b - a))",
           "operation_label": "ラグランジュの平均値の定理の適用",
-          "explanation": "閉区間[a,b]上で連続かつ開区間(a,b)上で微分可能であるため、平均値の定理が成立する。",
+          "explanation": "関数 f は閉区間 [a,b] 上で連続かつ開区間 (a,b) 上で微分可能であるため、ラグランジュの平均値の定理により f(b)-f(a)=f'(c)(b-a) を満たす点 c ∈ (a,b) が存在する。",
+          "used_node_ids": [
+            "math.calc.m47_lagrange_mean_value_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\exists c \\in (a,b)\\text{ s.t. } f(b) - f(a) = f'(c)(b - a))",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } f(a) - f(a) = f'(c)(b - a))",
+          "operation_label": "端点一致条件 f(a) = f(b) を代入・導入",
+          "explanation": "仮定の端点一致条件 f(a) = f(b) を導入し、平均値の定理の等式の左辺にある f(b) を f(a) に置き換える。",
           "used_node_ids": [],
           "sympy_check_hint": null
         },
         {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\exists c \\in (a,b)\\text{ s.t. } f(a) - f(a) = f'(c)(b - a))",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } 0 = f'(c)(b - a))",
+          "operation_label": "加法逆元による左辺の零化",
+          "explanation": "実数 f(a) とその加法逆元 -f(a) の和は加法単位元 0 に等しいという公理により、左辺の f(a) - f(a) を 0 に書き換える。",
+          "used_node_ids": [
+            "math.alg.real_additive_inverse_axiom"
+          ],
+          "sympy_check_hint": "fa - fa == 0"
+        },
+        {
           "step_id": "s2_2",
-          "order": 3,
+          "order": 6,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "f(b) - f(a) = f'(c)(b - a),\\quad f(a) = f(b),\\quad b - a > 0",
-          "to_latex": "0 = f'(c)(b - a) \\implies f'(c) = 0",
-          "operation_label": "端点条件の代入と除算",
-          "explanation": "f(a)=f(b)より左辺は0となり、b-a≠0で両辺を割ることでf'(c)=0を得る。",
+          "from_latex": "a < b",
+          "to_latex": "b - a \\neq 0",
+          "operation_label": "区間幅 b - a の正値性と非零性の導出",
+          "explanation": "区間の端点に関する仮定 a < b を移項して b - a > 0 を導き、実数の全順序の三分律から b - a ≠ 0 を確定させる。",
+          "used_node_ids": [
+            "math.alg.real_strict_ineq_pos_product",
+            "math.alg.real_trichotomy_axiom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 7,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "a < b",
+          "to_latex": "b - a > 0",
+          "operation_label": "不等式の移項による差の正値化",
+          "explanation": "実数の厳密不等式の移項保存則 A > B ⇔ A - B > 0 を b > a に適用し、b - a > 0 を得る。",
+          "used_node_ids": [
+            "math.alg.real_strict_ineq_pos_product"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "b - a > 0",
+          "to_latex": "b - a \\neq 0",
+          "operation_label": "実数の三分律による非零性の確定",
+          "explanation": "実数の全順序の三分律（x_1 ≠ x_2 ⇔ x_1 < x_2 ∨ x_2 < x_1）において x_1 = b - a、x_2 = 0 とおき、b - a > 0 より b - a ≠ 0 を得る。",
+          "used_node_ids": [
+            "math.alg.real_trichotomy_axiom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 9,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exists c \\in (a,b)\\text{ s.t. } 0 = f'(c)(b - a),\\quad b - a \\neq 0",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } f'(c) = 0",
+          "operation_label": "非零の区間幅による両辺の除算と約分",
+          "explanation": "b - a ≠ 0 を用いて 0 = f'(c)(b - a) の両辺を b - a で割り、右辺の約分と左辺の零の除算を行って f'(c) = 0 を導く。",
+          "used_node_ids": [
+            "math.alg.nonzero_factor_fraction_cancel",
+            "math.alg.nonzero_scalar_division"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\exists c \\in (a,b)\\text{ s.t. } 0 = f'(c)(b - a))",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } \\frac{0}{b - a} = \\frac{f'(c)(b - a)}{b - a})",
+          "operation_label": "非零値 b - a を代入・導入し両辺を除算",
+          "explanation": "先に導いた b - a ≠ 0 を導入し、非零実数による等式の両辺除算規則を用いて等式 0 = f'(c)(b - a) の両辺を b - a で割る。",
+          "used_node_ids": [
+            "math.alg.nonzero_scalar_division"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\exists c \\in (a,b)\\text{ s.t. } \\frac{0}{b - a} = \\frac{f'(c)(b - a)}{b - a})",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } \\frac{0}{b - a} = f'(c))",
+          "operation_label": "右辺の非零共通因数 b - a の約分",
+          "explanation": "b - a ≠ 0 であるため、分数における非零共通因数の約分法則 hA/h = A（h = b - a, A = f'(c)）を右辺に適用して b - a を約分する。",
+          "used_node_ids": [
+            "math.alg.nonzero_factor_fraction_cancel"
+          ],
+          "sympy_check_hint": "fp*(b - a)/(b - a) == fp"
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\exists c \\in (a,b)\\text{ s.t. } \\frac{0}{b - a} = f'(c))",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } 0 = f'(c))",
+          "operation_label": "左辺の零の除算の計算",
+          "explanation": "分子が 0 で分母 b - a が非零であることから、左辺の商 0/(b - a) を 0 に書き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": "0/(b - a) == 0"
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\exists c \\in (a,b)\\text{ s.t. } 0 = f'(c))",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } f'(c) = 0",
+          "operation_label": "等号の対称性による左辺と右辺の入れ替え",
+          "explanation": "等号の対称律（A = B ⇔ B = A）を適用して 0 = f'(c) の左辺と右辺を入れ替え、目的の式 f'(c) = 0 を得る。",
           "used_node_ids": [],
           "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T02:17:50.462966+00:00"
     },
     {
       "id": "deriv.math.calc.t02_cauchy_mvt",
@@ -282,7 +439,17 @@
         "math.calc.t01_rolle_theorem"
       ],
       "required_math_node_ids": [
-        "math.calc.m36_derivative_linearity"
+        "math.alg.nonzero_factor_fraction_cancel",
+        "math.alg.nonzero_scalar_division",
+        "math.alg.real_addition_associativity",
+        "math.alg.real_additive_identity",
+        "math.alg.real_additive_inverse_axiom",
+        "math.alg.real_commutative_law",
+        "math.alg.real_distributive_law",
+        "math.alg.real_transposition",
+        "math.calc.function_linear_combination_def",
+        "math.calc.m36_derivative_linearity",
+        "math.calc.m53_continuous_algebra_closure"
       ],
       "assumptions": [
         "f, g \\in C([a,b]) \\cap D((a,b))",
@@ -297,10 +464,20 @@
           "parent_step_id": null,
           "from_latex": "f, g \\in C([a,b]) \\cap D((a,b)) \\land \\forall x \\in (a,b),\\; g'(x) \\neq 0",
           "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } \\frac{f(b) - f(a)}{g(b) - g(a)} = \\frac{f'(c)}{g'(c)}",
-          "operation_label": "補助関数へのロルの定理の適用",
-          "explanation": "両端で値が等しくなる線形結合の補助関数を構成し、ロルの定理を適用して導関数の比の等式を導く。",
+          "operation_label": "補助関数へのロルの定理の適用によるコーシーの平均値の定理の導出",
+          "explanation": "分母の非零性を背理法で示した後、両端点が等しくなる線形結合の補助関数を構成し、ロルの定理と微分の線形性・除算により導関数の比の等式を導く。",
           "used_node_ids": [
+            "math.alg.nonzero_factor_fraction_cancel",
+            "math.alg.nonzero_scalar_division",
+            "math.alg.real_addition_associativity",
+            "math.alg.real_additive_identity",
+            "math.alg.real_additive_inverse_axiom",
+            "math.alg.real_commutative_law",
+            "math.alg.real_distributive_law",
+            "math.alg.real_transposition",
+            "math.calc.function_linear_combination_def",
             "math.calc.m36_derivative_linearity",
+            "math.calc.m53_continuous_algebra_closure",
             "math.calc.t01_rolle_theorem"
           ],
           "sympy_check_hint": null
@@ -311,43 +488,301 @@
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
           "from_latex": "g \\in C([a,b]) \\cap D((a,b)) \\land \\forall x \\in (a,b),\\; g'(x) \\neq 0",
-          "to_latex": "g(b) \\neq g(a),\\quad \\Phi(x) := \\big(f(b)-f(a)\\big)g(x) - \\big(g(b)-g(a)\\big)f(x)",
-          "operation_label": "分母の非零性確認と補助関数構成",
-          "explanation": "もしg(a)=g(b)ならばロルの定理によりg'(c)=0となるcが存在し仮定に反するためg(b)≠g(a)。続いて補助関数Φ(x)を定義する。",
+          "to_latex": "g(b) - g(a) \\neq 0,\\quad \\Phi(x) := \\big(f(b) - f(a)\\big)g(x) - \\big(g(b) - g(a)\\big)f(x)\\quad (x \\in [a,b])",
+          "operation_label": "分母の非零性の確認と補助関数の構成",
+          "explanation": "g(a)=g(b)と仮定するとロルの定理により仮定g'(x)≠0に矛盾するためg(b)-g(a)≠0を示し、続いて補助関数Φ(x)を定義する。",
+          "used_node_ids": [
+            "math.alg.real_transposition",
+            "math.calc.function_linear_combination_def",
+            "math.calc.t01_rolle_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "g \\in C([a,b]) \\cap D((a,b)) \\land g(a) = g(b)\\text{ (背理法の仮定)}",
+          "to_latex": "\\exists c_0 \\in (a,b)\\text{ s.t. } g'(c_0) = 0",
+          "operation_label": "背理法の仮定に対するロルの定理の適用",
+          "explanation": "背理法としてg(a)=g(b)を仮定すると、gは[a,b]で連続かつ(a,b)で微分可能であるため、ロルの定理によりg'(c_0)=0となるc_0∈(a,b)が存在する。",
           "used_node_ids": [
             "math.calc.t01_rolle_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\big(\\exists c_0 \\in (a,b)\\text{ s.t. } g'(c_0) = 0\\big) \\land \\big(\\forall x \\in (a,b),\\; g'(x) \\neq 0\\big)\\text{ (仮定を導入)}",
+          "to_latex": "g(b) \\neq g(a)\\quad \\big(\\text{すなわち } g(a) = g(b)\\text{ の否定}\\big)$",
+          "operation_label": "仮定との矛盾による等号の否定（前提条件を導入）",
+          "explanation": "前ステップで得たg'(c_0)=0は前提条件「すべてのx∈(a,b)でg'(x)≠0」と矛盾するため、背理法の仮定g(a)=g(b)は否定されg(b)≠g(a)が成り立つ。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "g(b) \\neq g(a)\\quad \\big(\\text{すなわち } g(a) = g(b)\\text{ の否定}\\big)$",
+          "to_latex": "g(b) - g(a) \\neq 0",
+          "operation_label": "移項による差の非零性の導出",
+          "explanation": "g(b)=g(a)と同値な等式g(b)-g(a)=0の否定として、g(b)-g(a)≠0を得る。",
+          "used_node_ids": [
+            "math.alg.real_transposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "g(b) - g(a) \\neq 0",
+          "to_latex": "\\Phi(x) := \\big(f(b) - f(a)\\big)g(x) - \\big(g(b) - g(a)\\big)f(x)\\quad (x \\in [a,b])",
+          "operation_label": "線形結合による補助関数の定義を導入",
+          "explanation": "定数係数(f(b)-f(a))および-(g(b)-g(a))を用いたg(x)とf(x)の線形結合として、区間[a,b]上の補助関数Φ(x)を定義する。",
+          "used_node_ids": [
+            "math.calc.function_linear_combination_def"
           ],
           "sympy_check_hint": null
         },
         {
           "step_id": "s2_2",
-          "order": 3,
+          "order": 7,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\Phi(a) = f(b)g(a) - f(a)g(b) = \\Phi(b)",
+          "from_latex": "\\Phi(x) := \\big(f(b) - f(a)\\big)g(x) - \\big(g(b) - g(a)\\big)f(x)\\quad (x \\in [a,b])",
+          "to_latex": "\\Phi(b) - \\Phi(a) = 0",
+          "operation_label": "補助関数の両端点における値の差の零化",
+          "explanation": "Φ(b)-Φ(a)に定義を代入し、実数の交換・結合・分配法則と加法逆元を用いて計算してΦ(b)-Φ(a)=0を示す。",
+          "used_node_ids": [
+            "math.alg.real_addition_associativity",
+            "math.alg.real_additive_inverse_axiom",
+            "math.alg.real_commutative_law",
+            "math.alg.real_distributive_law",
+            "math.calc.function_linear_combination_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\Phi(x) := \\big(f(b) - f(a)\\big)g(x) - \\big(g(b) - g(a)\\big)f(x)\\quad (x \\in [a,b])",
+          "to_latex": "\\Phi(b) - \\Phi(a) = \\Big(\\big(f(b)-f(a)\\big)g(b) - \\big(g(b)-g(a)\\big)f(b)\\Big) - \\Big(\\big(f(b)-f(a)\\big)g(a) - \\big(g(b)-g(a)\\big)f(a)\\Big)$",
+          "operation_label": "両端点 x=b, x=a の代入による差の構成",
+          "explanation": "線形結合の定義式にx=bおよびx=aを点ごとに代入し、両端点の関数値の差Φ(b)-Φ(a)を書き下す。",
+          "used_node_ids": [
+            "math.calc.function_linear_combination_def"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\Phi(b) - \\Phi(a) = \\Big(\\big(f(b)-f(a)\\big)g(b) - \\big(g(b)-g(a)\\big)f(b)\\Big) - \\Big(\\big(f(b)-f(a)\\big)g(a) - \\big(g(b)-g(a)\\big)f(a)\\Big)$",
+          "to_latex": "\\Phi(b) - \\Phi(a) = \\Big(\\big(f(b)-f(a)\\big)g(b) - \\big(f(b)-f(a)\\big)g(a)\\Big) - \\Big(\\big(g(b)-g(a)\\big)f(b) - \\big(g(b)-g(a)\\big)f(a)\\Big)$",
+          "operation_label": "加法の交換法則と結合法則による同係数項の並べ替え",
+          "explanation": "実数の加法の交換法則と結合法則を用い、係数(f(b)-f(a))を含む項同士と係数(g(b)-g(a))を含む項同士をそれぞれまとめる。",
+          "used_node_ids": [
+            "math.alg.real_addition_associativity",
+            "math.alg.real_commutative_law"
+          ],
+          "sympy_check_hint": "((f_b - f_a)*g_b - (g_b - g_a)*f_b) - ((f_b - f_a)*g_a - (g_b - g_a)*f_a) == ((f_b - f_a)*g_b - (f_b - f_a)*g_a) - ((g_b - g_a)*f_b - (g_b - g_a)*f_a)"
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\Phi(b) - \\Phi(a) = \\Big(\\big(f(b)-f(a)\\big)g(b) - \\big(f(b)-f(a)\\big)g(a)\\Big) - \\Big(\\big(g(b)-g(a)\\big)f(b) - \\big(g(b)-g(a)\\big)f(a)\\Big)$",
+          "to_latex": "\\Phi(b) - \\Phi(a) = \\big(f(b)-f(a)\\big)\\big(g(b)-g(a)\\big) - \\big(g(b)-g(a)\\big)\\big(f(b)-f(a)\\big)$",
+          "operation_label": "分配法則による共通因数のくくり出し",
+          "explanation": "前半の組から共通因数(f(b)-f(a))を、後半の組から共通因数(g(b)-g(a))を分配法則によりそれぞれくくり出す。",
+          "used_node_ids": [
+            "math.alg.real_distributive_law"
+          ],
+          "sympy_check_hint": "((f_b - f_a)*g_b - (f_b - f_a)*g_a) - ((g_b - g_a)*f_b - (g_b - g_a)*f_a) == (f_b - f_a)*(g_b - g_a) - (g_b - g_a)*(f_b - f_a)"
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\Phi(b) - \\Phi(a) = \\big(f(b)-f(a)\\big)\\big(g(b)-g(a)\\big) - \\big(g(b)-g(a)\\big)\\big(f(b)-f(a)\\big)$",
+          "to_latex": "\\Phi(b) - \\Phi(a) = 0",
+          "operation_label": "乗法の交換法則と加法逆元による相殺",
+          "explanation": "乗法の交換法則より(g(b)-g(a))(f(b)-f(a))=(f(b)-f(a))(g(b)-g(a))が成り立つため、加法逆元の和として右辺が0となる。",
+          "used_node_ids": [
+            "math.alg.real_additive_inverse_axiom",
+            "math.alg.real_commutative_law"
+          ],
+          "sympy_check_hint": "(f_b - f_a)*(g_b - g_a) - (g_b - g_a)*(f_b - f_a) == 0"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 12,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Phi(b) - \\Phi(a) = 0,\\quad f, g \\in C([a,b]) \\cap D((a,b))",
           "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } \\Phi'(c) = 0",
-          "operation_label": "補助関数へのロルの定理適用",
-          "explanation": "Φは[a,b]で連続、(a,b)で微分可能かつΦ(a)=Φ(b)を満たすため、ロルの定理によりΦ'(c)=0となるc∈(a,b)が存在する。",
+          "operation_label": "補助関数の正則性確認とロルの定理の適用",
+          "explanation": "Φ(a)=Φ(b)とΦの閉区間連続性・開区間微分可能性を確認し、補助関数Φにロルの定理を適用してΦ'(c)=0なる点cの存在を得る。",
+          "used_node_ids": [
+            "math.alg.real_additive_identity",
+            "math.alg.real_transposition",
+            "math.calc.m36_derivative_linearity",
+            "math.calc.m53_continuous_algebra_closure",
+            "math.calc.t01_rolle_theorem"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\Phi(b) - \\Phi(a) = 0",
+          "to_latex": "\\Phi(a) = \\Phi(b)\\quad \\big(\\text{すなわち } \\Phi(b) = \\Phi(a)\\big)$",
+          "operation_label": "移項法則による両端値の一致の導出",
+          "explanation": "等式Φ(b)-Φ(a)=0において-Φ(a)を右辺へ移項し、加法単位元の公理より0+Φ(a)=Φ(a)となることからΦ(a)=Φ(b)を得る。",
+          "used_node_ids": [
+            "math.alg.real_additive_identity",
+            "math.alg.real_transposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\Phi(a) = \\Phi(b) \\land f, g \\in C([a,b])\\text{ (仮定を導入)}",
+          "to_latex": "\\Phi \\in C([a,b]) \\land \\Phi(a) = \\Phi(b)$",
+          "operation_label": "連続関数の線形結合の閉性による連続性の確認（仮定を導入）",
+          "explanation": "仮定f,g∈C([a,b])を導入し、連続関数の定数倍と和が再び連続関数になる性質を線形結合Φに適用してΦ∈C([a,b])を得る。",
+          "used_node_ids": [
+            "math.calc.m53_continuous_algebra_closure"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\Phi \\in C([a,b]) \\land \\Phi(a) = \\Phi(b) \\land f, g \\in D((a,b))\\text{ (仮定を導入)}",
+          "to_latex": "\\Phi \\in C([a,b]) \\cap D((a,b)) \\land \\Phi(a) = \\Phi(b)$",
+          "operation_label": "微分の線形性による微分可能性の確認（仮定を導入）",
+          "explanation": "仮定f,g∈D((a,b))を導入し、線形結合の微分可能性をΦに適用してΦ∈D((a,b))を得る。",
+          "used_node_ids": [
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\Phi \\in C([a,b]) \\cap D((a,b)) \\land \\Phi(a) = \\Phi(b)$",
+          "to_latex": "\\exists c \\in (a,b)\\text{ s.t. } \\Phi'(c) = 0",
+          "operation_label": "ロルの定理の補助関数への適用",
+          "explanation": "Φが[a,b]で連続、(a,b)で微分可能かつΦ(a)=Φ(b)のすべてを満たすため、ロルの定理を適用してΦ'(c)=0となるc∈(a,b)が存在することを得る。",
           "used_node_ids": [
             "math.calc.t01_rolle_theorem"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_3",
-          "order": 4,
+          "step_id": "s2_4",
+          "order": 17,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\Phi'(c) = \\big(f(b)-f(a)\\big)g'(c) - \\big(g(b)-g(a)\\big)f'(c) = 0",
+          "from_latex": "\\Phi'(c) = 0,\\quad \\Phi(x) := \\big(f(b) - f(a)\\big)g(x) - \\big(g(b) - g(a)\\big)f(x)$",
           "to_latex": "\\frac{f(b) - f(a)}{g(b) - g(a)} = \\frac{f'(c)}{g'(c)}",
-          "operation_label": "微分の線形性と比への整理",
-          "explanation": "微分の線形性よりΦ'(c)を計算し、g(b)-g(a)≠0およびg'(c)≠0で割ることでコーシーの平均値の定理を得る。",
+          "operation_label": "導関数の計算と非零因子による除算",
+          "explanation": "微分の線形性でΦ'(c)=0を展開して移項し、非零なg(b)-g(a)とg'(c)で両辺を順に割ることでコーシーの平均値の定理の等式を導く。",
+          "used_node_ids": [
+            "math.alg.nonzero_factor_fraction_cancel",
+            "math.alg.nonzero_scalar_division",
+            "math.alg.real_additive_identity",
+            "math.alg.real_transposition",
+            "math.calc.m36_derivative_linearity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\Phi'(c) = 0,\\quad \\Phi(x) := \\big(f(b) - f(a)\\big)g(x) - \\big(g(b) - g(a)\\big)f(x)\\text{ (定義を代入)}",
+          "to_latex": "\\big(f(b) - f(a)\\big)g'(c) - \\big(g(b) - g(a)\\big)f'(c) = 0",
+          "operation_label": "微分の線形性の適用（補助関数の定義を代入）",
+          "explanation": "補助関数Φ(x)の定義を代入し、微分作用素の線形性を用いてx=cでの導関数Φ'(c)を計算する。",
           "used_node_ids": [
             "math.calc.m36_derivative_linearity"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 19,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\big(f(b) - f(a)\\big)g'(c) - \\big(g(b) - g(a)\\big)f'(c) = 0",
+          "to_latex": "\\big(f(b) - f(a)\\big)g'(c) = \\big(g(b) - g(a)\\big)f'(c)$",
+          "operation_label": "移項法則による右辺への項の移動",
+          "explanation": "左辺の負項-(g(b)-g(a))f'(c)を移項法則により右辺へ移し、0+(g(b)-g(a))f'(c)=(g(b)-g(a))f'(c)と整理する。",
+          "used_node_ids": [
+            "math.alg.real_additive_identity",
+            "math.alg.real_transposition"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 20,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\big(f(b) - f(a)\\big)g'(c) = \\big(g(b) - g(a)\\big)f'(c)$",
+          "to_latex": "\\frac{f(b) - f(a)}{g(b) - g(a)}\\,g'(c) = f'(c)$",
+          "operation_label": "非零実数 g(b)-g(a) による両辺の除算と約分（非零条件を導入）",
+          "explanation": "既に示したg(b)-g(a)≠0を導入して等式の両辺をg(b)-g(a)で割り、右辺の共通因数g(b)-g(a)を約分する。",
+          "used_node_ids": [
+            "math.alg.nonzero_factor_fraction_cancel",
+            "math.alg.nonzero_scalar_division"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 21,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{f(b) - f(a)}{g(b) - g(a)}\\,g'(c) = f'(c)$",
+          "to_latex": "\\frac{f(b) - f(a)}{g(b) - g(a)} = \\frac{f'(c)}{g'(c)}",
+          "operation_label": "非零実数 g'(c) による両辺の除算と約分（仮定 g'(c)≠0 を導入）",
+          "explanation": "c∈(a,b)と仮定より成り立つg'(c)≠0を導入して等式の両辺をg'(c)で割り、左辺の共通因数g'(c)を約分して目標式を得る。",
+          "used_node_ids": [
+            "math.alg.nonzero_factor_fraction_cancel",
+            "math.alg.nonzero_scalar_division"
+          ],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-25T02:19:01.920158+00:00"
     },
     {
       "id": "deriv.math.calc.t04_taylor_lagrange_remainder",
