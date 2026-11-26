@@ -1309,10 +1309,15 @@
         "eng.comp.n02_mach_number_and_flow_regimes",
         "phys.thermo.th01_zeroth_law_state_eq"
       ],
-      "required_math_node_ids": [],
+      "required_math_node_ids": [
+        "eng.comp.n01_acoustic_wave_speed_of_sound",
+        "eng.comp.n03_stagnation_enthalpy_energy_eq"
+      ],
       "assumptions": [
-        "比熱比一定の理想気体",
-        "非自明解 (u_1 != u_2)"
+        "定常・断熱・1次元非粘性流れ（垂直衝撃波の前後で外部との仕事・熱交換がない）",
+        "比熱比一定の理想気体（p = \\rho R T、h = c_p T = \\frac{\\gamma}{\\gamma - 1}\\frac{p}{\\rho}、\\gamma > 1）",
+        "衝撃波を伴う非自明解（u_1 \\neq u_2）",
+        "各物理量および分母の非ゼロ条件（\\rho_k > 0,\\; u_k > 0,\\; p_k > 0,\\; T_k > 0,\\; \\gamma M_1^2 - \\frac{\\gamma - 1}{2} \\neq 0）"
       ],
       "steps": [
         {
@@ -1320,14 +1325,15 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad \\frac{\\gamma}{\\gamma-1}\\frac{p_1}{\\rho_1} + \\frac{u_1^2}{2} = \\frac{\\gamma}{\\gamma-1}\\frac{p_2}{\\rho_2} + \\frac{u_2^2}{2}",
+          "from_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad h_1 + \\frac{u_1^2}{2} = h_2 + \\frac{u_2^2}{2}",
           "to_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad \\frac{\\rho_2}{\\rho_1} = \\frac{(\\gamma + 1)M_1^2}{2 + (\\gamma - 1)M_1^2},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
-          "operation_label": "プラントル関係式経由での代数求解",
-          "explanation": "保存則からプラントル関係式 u_1 u_2 = a*^2 と運動量保存の圧力比を導き、M_2, p_2/p_1, rho_2/rho_1 を M_1 で陽に表す。",
+          "operation_label": "保存則からのランキン＝ユゴニオ関係式の導出",
+          "explanation": "垂直衝撃波前後の保存則からプラントル関係式 u_1 u_2 = a^{*2} と臨界マッハ数関係式を導き、M_2^2、p_2/p_1、\\rho_2/\\rho_1 を上流マッハ数 M_1 で表す。",
           "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
             "eng.comp.n02_mach_number_and_flow_regimes",
-            "eng.comp.n07_normal_shock_conservation_laws",
-            "phys.thermo.th01_zeroth_law_state_eq"
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n07_normal_shock_conservation_laws"
           ],
           "sympy_check_hint": null
         },
@@ -1336,10 +1342,319 @@
           "order": 1,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad \\frac{\\gamma}{\\gamma-1}\\frac{p_1}{\\rho_1} + \\frac{u_1^2}{2} = \\frac{\\gamma}{\\gamma-1}\\frac{p_2}{\\rho_2} + \\frac{u_2^2}{2}",
-          "to_latex": "u_1 u_2 = a^{*2},\\quad \\frac{p_2}{p_1} = \\frac{1 + \\gamma M_1^2}{1 + \\gamma M_2^2}",
-          "operation_label": "プラントル関係式と運動量比の導出",
-          "explanation": "運動量式と連続式から (p_2 - p_1)/(rho_1 u_1) = u_1 - u_2 を得てエネルギー式と組み合わせ、プラントル関係式 u_1 u_2 = a*^2 と圧力比のM_1, M_2表示を導く。",
+          "from_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad h_1 + \\frac{u_1^2}{2} = h_2 + \\frac{u_2^2}{2}",
+          "to_latex": "\\frac{p_2}{\\rho_2 u_2} - \\frac{p_1}{\\rho_1 u_1} = u_1 - u_2,\\quad \\frac{\\gamma}{\\gamma - 1}\\frac{p_k}{\\rho_k} + \\frac{u_k^2}{2} = \\frac{\\gamma + 1}{2(\\gamma - 1)} a^{*2}\\quad (k=1,2)",
+          "operation_label": "保存則の理想気体表示と圧力・速度差式の導出",
+          "explanation": "保存則に理想気体の比エンタルピーと臨界音速によるよどみ点エンタルピーを代入し、連続の式と運動量保存則から圧力・速度差の関係式を得る。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n07_normal_shock_conservation_laws"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad h_1 + \\frac{u_1^2}{2} = h_2 + \\frac{u_2^2}{2}",
+          "to_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad \\frac{\\gamma}{\\gamma - 1}\\frac{p_1}{\\rho_1} + \\frac{u_1^2}{2} = \\frac{\\gamma}{\\gamma - 1}\\frac{p_2}{\\rho_2} + \\frac{u_2^2}{2}",
+          "operation_label": "理想気体の比エンタルピーの代入",
+          "explanation": "比熱比一定の理想気体の状態方程式 p = \\rho R T および比エンタルピー h = c_p T = \\frac{\\gamma R}{\\gamma - 1}T より得られる h = \\frac{\\gamma}{\\gamma - 1}\\frac{p}{\\rho} をエネルギー保存則へ代入する。",
+          "used_node_ids": [
+            "eng.comp.n07_normal_shock_conservation_laws"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2,\\quad \\frac{\\gamma}{\\gamma - 1}\\frac{p_1}{\\rho_1} + \\frac{u_1^2}{2} = \\frac{\\gamma}{\\gamma - 1}\\frac{p_2}{\\rho_2} + \\frac{u_2^2}{2}",
+          "to_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_2 - p_1 = \\rho_1 u_1^2 - \\rho_2 u_2^2,\\quad \\frac{\\gamma}{\\gamma - 1}\\frac{p_1}{\\rho_1} + \\frac{u_1^2}{2} = \\frac{\\gamma}{\\gamma - 1}\\frac{p_2}{\\rho_2} + \\frac{u_2^2}{2}",
+          "operation_label": "運動量保存則における圧力項の移項",
+          "explanation": "運動量保存則 p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2 から p_1 を右辺へ、\\rho_2 u_2^2 を左辺へ移項して左右を入れ替え、圧力差 p_2 - p_1 を単離する。",
+          "used_node_ids": [
+            "eng.comp.n07_normal_shock_conservation_laws"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\rho_1 u_1 = \\rho_2 u_2,\\quad p_2 - p_1 = \\rho_1 u_1^2 - \\rho_2 u_2^2,\\quad \\frac{\\gamma}{\\gamma - 1}\\frac{p_1}{\\rho_1} + \\frac{u_1^2}{2} = \\frac{\\gamma}{\\gamma - 1}\\frac{p_2}{\\rho_2} + \\frac{u_2^2}{2}",
+          "to_latex": "\\frac{p_2}{\\rho_2 u_2} - \\frac{p_1}{\\rho_1 u_1} = u_1 - u_2,\\quad \\frac{\\gamma}{\\gamma - 1}\\frac{p_1}{\\rho_1} + \\frac{u_1^2}{2} = \\frac{\\gamma}{\\gamma - 1}\\frac{p_2}{\\rho_2} + \\frac{u_2^2}{2}",
+          "operation_label": "連続の式を用いた質量流束による両辺の除算",
+          "explanation": "質量流束 \\rho_1 u_1 = \\rho_2 u_2 \\neq 0 で p_2 - p_1 = \\rho_1 u_1^2 - \\rho_2 u_2^2 の両辺を割り、p_2 の分母を \\rho_2 u_2、p_1 の分母を \\rho_1 u_1 として各項を約分する。",
+          "used_node_ids": [
+            "eng.comp.n07_normal_shock_conservation_laws"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{p_2}{\\rho_2 u_2} - \\frac{p_1}{\\rho_1 u_1} = u_1 - u_2,\\quad \\frac{\\gamma}{\\gamma - 1}\\frac{p_1}{\\rho_1} + \\frac{u_1^2}{2} = \\frac{\\gamma}{\\gamma - 1}\\frac{p_2}{\\rho_2} + \\frac{u_2^2}{2}",
+          "to_latex": "\\frac{p_2}{\\rho_2 u_2} - \\frac{p_1}{\\rho_1 u_1} = u_1 - u_2,\\quad \\frac{\\gamma}{\\gamma - 1}\\frac{p_k}{\\rho_k} + \\frac{u_k^2}{2} = \\frac{\\gamma + 1}{2(\\gamma - 1)} a^{*2}\\quad (k=1,2)",
+          "operation_label": "臨界音速状態におけるよどみ点エンタルピーの導入",
+          "explanation": "断熱定常流のよどみ点エンタルピー保存 h_0 = h + u^2/2 = \\text{const.} と音速関係式 a^2 = \\gamma p / \\rho を用い、u = a = a^* の臨界状態での値 h_0 = \\frac{a^{*2}}{\\gamma - 1} + \\frac{a^{*2}}{2} = \\frac{\\gamma + 1}{2(\\gamma - 1)} a^{*2} と等置する。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": "a_star**2/(gamma - 1) + a_star**2/2 == (gamma + 1)/(2*(gamma - 1))*a_star**2"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{p_2}{\\rho_2 u_2} - \\frac{p_1}{\\rho_1 u_1} = u_1 - u_2,\\quad \\frac{\\gamma}{\\gamma - 1}\\frac{p_k}{\\rho_k} + \\frac{u_k^2}{2} = \\frac{\\gamma + 1}{2(\\gamma - 1)} a^{*2}\\quad (k=1,2)",
+          "to_latex": "u_1 u_2 = a^{*2}",
+          "operation_label": "プラントル関係式の導出",
+          "explanation": "エネルギー保存則から p_k/(\\rho_k u_k) を求めて圧力・速度差式へ代入し、非自明解条件 u_1 \\neq u_2 を用いてプラントル関係式 u_1 u_2 = a^{*2} を導く。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n07_normal_shock_conservation_laws"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{p_2}{\\rho_2 u_2} - \\frac{p_1}{\\rho_1 u_1} = u_1 - u_2,\\quad \\frac{\\gamma}{\\gamma - 1}\\frac{p_k}{\\rho_k} + \\frac{u_k^2}{2} = \\frac{\\gamma + 1}{2(\\gamma - 1)} a^{*2}\\quad (k=1,2)",
+          "to_latex": "\\frac{p_2}{\\rho_2 u_2} - \\frac{p_1}{\\rho_1 u_1} = u_1 - u_2,\\quad \\frac{p_k}{\\rho_k u_k} = \\frac{\\gamma + 1}{2\\gamma}\\frac{a^{*2}}{u_k} - \\frac{\\gamma - 1}{2\\gamma} u_k\\quad (k=1,2)",
+          "operation_label": "エネルギー式の p_k/(ρ_k u_k) についての変形",
+          "explanation": "エネルギー保存則で u_k^2/2 を右辺へ移項し、両辺に \\frac{\\gamma - 1}{\\gamma u_k}（\\gamma \\neq 1,\\; u_k \\neq 0）を掛けて \\frac{p_k}{\\rho_k u_k} を表す。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": "(gamma - 1)/(gamma*uk)*((gamma + 1)/(2*(gamma - 1))*a_star**2 - uk**2/2) == (gamma + 1)/(2*gamma)*a_star**2/uk - (gamma - 1)/(2*gamma)*uk"
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{p_2}{\\rho_2 u_2} - \\frac{p_1}{\\rho_1 u_1} = u_1 - u_2,\\quad \\frac{p_k}{\\rho_k u_k} = \\frac{\\gamma + 1}{2\\gamma}\\frac{a^{*2}}{u_k} - \\frac{\\gamma - 1}{2\\gamma} u_k\\quad (k=1,2)",
+          "to_latex": "\\frac{\\gamma + 1}{2\\gamma} a^{*2}\\left(\\frac{1}{u_2} - \\frac{1}{u_1}\\right) + \\frac{\\gamma - 1}{2\\gamma}(u_1 - u_2) = u_1 - u_2",
+          "operation_label": "圧力・速度差式への代入と同類項のくくり出し",
+          "explanation": "\\frac{p_2}{\\rho_2 u_2} と \\frac{p_1}{\\rho_1 u_1} の表式を \\frac{p_2}{\\rho_2 u_2} - \\frac{p_1}{\\rho_1 u_1} = u_1 - u_2 へ代入し、a^{*2} の項と流速の項をそれぞれ共通因数でくくる。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n07_normal_shock_conservation_laws"
+          ],
+          "sympy_check_hint": "((gamma + 1)/(2*gamma)*a_star**2/u2 - (gamma - 1)/(2*gamma)*u2) - ((gamma + 1)/(2*gamma)*a_star**2/u1 - (gamma - 1)/(2*gamma)*u1) == (gamma + 1)/(2*gamma)*a_star**2*(1/u2 - 1/u1) + (gamma - 1)/(2*gamma)*(u1 - u2).expand()"
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{\\gamma + 1}{2\\gamma} a^{*2}\\left(\\frac{1}{u_2} - \\frac{1}{u_1}\\right) + \\frac{\\gamma - 1}{2\\gamma}(u_1 - u_2) = u_1 - u_2",
+          "to_latex": "\\frac{\\gamma + 1}{2\\gamma}\\frac{a^{*2}}{u_1 u_2} + \\frac{\\gamma - 1}{2\\gamma} = 1",
+          "operation_label": "通分と非自明解条件 (u_1 - u_2 ≠ 0) による除算",
+          "explanation": "\\frac{1}{u_2} - \\frac{1}{u_1} = \\frac{u_1 - u_2}{u_1 u_2} と通分した上で、u_1 - u_2 \\neq 0 を用いて両辺を (u_1 - u_2) で割る。",
+          "used_node_ids": [
+            "eng.comp.n07_normal_shock_conservation_laws"
+          ],
+          "sympy_check_hint": "(1/u2 - 1/u1)/(u1 - u2) == 1/(u1*u2).simplify()"
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{\\gamma + 1}{2\\gamma}\\frac{a^{*2}}{u_1 u_2} + \\frac{\\gamma - 1}{2\\gamma} = 1",
+          "to_latex": "u_1 u_2 = a^{*2}",
+          "operation_label": "定数項の移項と両辺の約分",
+          "explanation": "\\frac{\\gamma - 1}{2\\gamma} を右辺へ移項して 1 - \\frac{\\gamma - 1}{2\\gamma} = \\frac{\\gamma + 1}{2\\gamma} を得た後、両辺を \\frac{\\gamma + 1}{2\\gamma} \\neq 0 で割り u_1 u_2 を掛けてプラントル関係式を得る。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": "1 - (gamma - 1)/(2*gamma) == (gamma + 1)/(2*gamma).simplify()"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "u_1 u_2 = a^{*2}",
+          "to_latex": "M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "臨界マッハ数関係式による下流マッハ数 M_2^2 の求解",
+          "explanation": "よどみ点温度関係式から臨界マッハ数 M_k^* とマッハ数 M_k の関係式を導き、M_1^{*2} M_2^{*2} = 1 へ代入して M_2^2 を M_1^2 で解く。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "u_1 u_2 = a^{*2}",
+          "to_latex": "M_1^{*2} M_2^{*2} = 1,\\quad M_k^{*2} := \\frac{u_k^2}{a^{*2}} = \\frac{(\\gamma + 1)M_k^2}{2 + (\\gamma - 1)M_k^2}\\quad (k=1,2)",
+          "operation_label": "臨界マッハ数関係式の導入",
+          "explanation": "u_1 u_2 = a^{*2} の両辺を a^{*2} で割り2乗して M_1^{*2} M_2^{*2} = 1 とする。またよどみ点温度比 \\frac{T_0}{T_k} = 1 + \\frac{\\gamma - 1}{2}M_k^2 と臨界条件 M^*=1 の \\frac{T_0}{T^*} = \\frac{\\gamma + 1}{2} の比、および a^2 = \\gamma R T,\\; M_k = u_k/a_k より M_k^{*2} = M_k^2 \\frac{T_k}{T^*} = \\frac{(\\gamma + 1)M_k^2}{2 + (\\gamma - 1)M_k^2} を導入する。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": "Mk**2*((gamma + 1)/2)/(1 + (gamma - 1)/2*Mk**2) == (gamma + 1)*Mk**2/(2 + (gamma - 1)*Mk**2).simplify()"
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "M_1^{*2} M_2^{*2} = 1,\\quad M_k^{*2} := \\frac{u_k^2}{a^{*2}} = \\frac{(\\gamma + 1)M_k^2}{2 + (\\gamma - 1)M_k^2}\\quad (k=1,2)",
+          "to_latex": "(\\gamma + 1)^2 M_1^2 M_2^2 = \\big(2 + (\\gamma - 1)M_1^2\\big)\\big(2 + (\\gamma - 1)M_2^2\\big)",
+          "operation_label": "M_k^{*2} の代入と分母払い",
+          "explanation": "M_1^{*2} と M_2^{*2} の表式を M_1^{*2} M_2^{*2} = 1 へ代入し、両辺に分母 \\big(2 + (\\gamma - 1)M_1^2\\big)\\big(2 + (\\gamma - 1)M_2^2\\big) を掛けて分母を払う。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "(\\gamma + 1)^2 M_1^2 M_2^2 = \\big(2 + (\\gamma - 1)M_1^2\\big)\\big(2 + (\\gamma - 1)M_2^2\\big)",
+          "to_latex": "\\big[4\\gamma M_1^2 - 2(\\gamma - 1)\\big] M_2^2 = 4 + 2(\\gamma - 1)M_1^2",
+          "operation_label": "右辺の展開および M_2^2 項の移項・係数計算",
+          "explanation": "右辺を展開した 4 + 2(\\gamma - 1)M_1^2 + 2(\\gamma - 1)M_2^2 + (\\gamma - 1)^2 M_1^2 M_2^2 のうち M_2^2 を含む項を左辺へ移項し、(\\gamma + 1)^2 - (\\gamma - 1)^2 = 4\\gamma を適用して M_2^2 の係数をまとめる。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": "(gamma + 1)**2*M1**2 - 2*(gamma - 1) - (gamma - 1)**2*M1**2 == 4*gamma*M1**2 - 2*(gamma - 1).simplify()"
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\big[4\\gamma M_1^2 - 2(\\gamma - 1)\\big] M_2^2 = 4 + 2(\\gamma - 1)M_1^2",
+          "to_latex": "M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "両辺の除算と分子分母の 4 による約分",
+          "explanation": "両辺を 4\\gamma M_1^2 - 2(\\gamma - 1) \\neq 0 で割り、右辺の分子および分母をそれぞれ 4 で割って約分する。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": "(4 + 2*(gamma - 1)*M1**2)/(4*gamma*M1**2 - 2*(gamma - 1)) == (1 + (gamma - 1)/2*M1**2)/(gamma*M1**2 - (gamma - 1)/2).simplify()"
+        },
+        {
+          "step_id": "s2_4",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "to_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "運動量保存則からの圧力比 p_2/p_1 の導出",
+          "explanation": "運動量保存則とマッハ数の定義から得られる圧力比の式へ M_2^2 を代入し、共通因数 (1 + \\gamma M_1^2) を約分して静圧比公式を得る。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n07_normal_shock_conservation_laws"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "to_latex": "\\frac{p_2}{p_1} = \\frac{1 + \\gamma M_1^2}{1 + \\gamma M_2^2},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "運動量保存則・音速・マッハ数定義の導入による圧力比表示",
+          "explanation": "運動量保存則 p_1 + \\rho_1 u_1^2 = p_2 + \\rho_2 u_2^2 に理想気体の音速 a_k^2 = \\gamma p_k / \\rho_k とマッハ数 M_k = u_k / a_k から得る \\rho_k u_k^2 = \\gamma p_k M_k^2 を代入し、p_1(1 + \\gamma M_1^2) = p_2(1 + \\gamma M_2^2) を割り算して圧力比の式を導入する。",
+          "used_node_ids": [
+            "eng.comp.n01_acoustic_wave_speed_of_sound",
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n07_normal_shock_conservation_laws"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 2,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{p_2}{p_1} = \\frac{1 + \\gamma M_1^2}{1 + \\gamma M_2^2},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "to_latex": "\\frac{p_2}{p_1} = \\frac{(1 + \\gamma M_1^2)\\left(\\gamma M_1^2 - \\frac{\\gamma - 1}{2}\\right)}{\\left(\\gamma M_1^2 - \\frac{\\gamma - 1}{2}\\right) + \\gamma\\left(1 + \\frac{\\gamma - 1}{2}M_1^2\\right)},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "M_2^2 の代入と繁分数の解消",
+          "explanation": "圧力比の分母 1 + \\gamma M_2^2 に M_2^2 の表式を代入し、右辺の分子と分母に \\left(\\gamma M_1^2 - \\frac{\\gamma - 1}{2}\\right) を掛けて繁分数を単一の分数式にする。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": "(1 + gamma*M1**2)/(1 + gamma*(1 + (gamma - 1)/2*M1**2)/(gamma*M1**2 - (gamma - 1)/2)) == (1 + gamma*M1**2)*(gamma*M1**2 - (gamma - 1)/2)/((gamma*M1**2 - (gamma - 1)/2) + gamma*(1 + (gamma - 1)/2*M1**2)).simplify()"
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{p_2}{p_1} = \\frac{(1 + \\gamma M_1^2)\\left(\\gamma M_1^2 - \\frac{\\gamma - 1}{2}\\right)}{\\left(\\gamma M_1^2 - \\frac{\\gamma - 1}{2}\\right) + \\gamma\\left(1 + \\frac{\\gamma - 1}{2}M_1^2\\right)},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "to_latex": "\\frac{p_2}{p_1} = \\frac{(1 + \\gamma M_1^2)\\left(\\gamma M_1^2 - \\frac{\\gamma - 1}{2}\\right)}{\\frac{\\gamma + 1}{2}(1 + \\gamma M_1^2)},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "分母の展開と共通因数 (1 + γ M_1^2) の因数分解",
+          "explanation": "分母を展開して M_1^2 の項 \\frac{\\gamma(\\gamma + 1)}{2}M_1^2 と定数項 \\frac{\\gamma + 1}{2} をまとめ、\\frac{\\gamma + 1}{2}(1 + \\gamma M_1^2) へと因数分解する。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": "(gamma*M1**2 - (gamma - 1)/2) + gamma*(1 + (gamma - 1)/2*M1**2) == (gamma + 1)/2*(1 + gamma*M1**2).simplify()"
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{p_2}{p_1} = \\frac{(1 + \\gamma M_1^2)\\left(\\gamma M_1^2 - \\frac{\\gamma - 1}{2}\\right)}{\\frac{\\gamma + 1}{2}(1 + \\gamma M_1^2)},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "to_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "共通因数の約分と 1 の分離",
+          "explanation": "分子・分母の (1 + \\gamma M_1^2) \\neq 0 を約分して \\frac{2\\gamma M_1^2 - (\\gamma - 1)}{\\gamma + 1} を得た後、分子を (\\gamma + 1) + 2\\gamma(M_1^2 - 1) と書き換えて定数 1 を分離する。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes"
+          ],
+          "sympy_check_hint": "(1 + gamma*M1**2)*(gamma*M1**2 - (gamma - 1)/2)/((gamma + 1)/2*(1 + gamma*M1**2)) == 1 + 2*gamma/(gamma + 1)*(M1**2 - 1).simplify()"
+        },
+        {
+          "step_id": "s2_5",
+          "order": 5,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "to_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad \\frac{\\rho_2}{\\rho_1} = \\frac{(\\gamma + 1)M_1^2}{2 + (\\gamma - 1)M_1^2},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "連続の式とプラントル関係式からの密度比 ρ_2/ρ_1 の導出",
+          "explanation": "連続の式とプラントル関係式から密度比を M_1^{*2} で表し、臨界マッハ数関係式を代入してランキン＝ユゴニオの密度比公式を導く。",
+          "used_node_ids": [
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n07_normal_shock_conservation_laws"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_1",
+          "order": 1,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "to_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad \\frac{\\rho_2}{\\rho_1} = \\frac{u_1^2}{a^{*2}} = M_1^{*2},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "operation_label": "連続の式およびプラントル関係式の導入",
+          "explanation": "連続の式 \\rho_1 u_1 = \\rho_2 u_2 より \\frac{\\rho_2}{\\rho_1} = \\frac{u_1}{u_2} を導入し、さらにプラントル関係式 u_1 u_2 = a^{*2} より u_2 = \\frac{a^{*2}}{u_1} を代入して \\frac{\\rho_2}{\\rho_1} = \\frac{u_1^2}{a^{*2}} = M_1^{*2} を得る。",
           "used_node_ids": [
             "eng.comp.n02_mach_number_and_flow_regimes",
             "eng.comp.n07_normal_shock_conservation_laws"
@@ -1347,34 +1662,23 @@
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_2",
+          "step_id": "s3_5_2",
           "order": 2,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "u_1 u_2 = a^{*2},\\quad \\frac{p_2}{p_1} = \\frac{1 + \\gamma M_1^2}{1 + \\gamma M_2^2}",
-          "to_latex": "M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
-          "operation_label": "臨界マッハ数関係による M2 の求解",
-          "explanation": "M*^2 = (gamma+1)M^2 / (2 + (gamma-1)M^2) を M*_1 M*_2 = 1 に代入し、M_2^2 を M_1^2 で解く。",
-          "used_node_ids": [
-            "eng.comp.n02_mach_number_and_flow_regimes"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_3",
-          "order": 3,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad \\frac{\\rho_2}{\\rho_1} = \\frac{u_1^2}{a^{*2}} = M_1^{*2},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
           "to_latex": "\\frac{p_2}{p_1} = 1 + \\frac{2\\gamma}{\\gamma + 1}(M_1^2 - 1),\\quad \\frac{\\rho_2}{\\rho_1} = \\frac{(\\gamma + 1)M_1^2}{2 + (\\gamma - 1)M_1^2},\\quad M_2^2 = \\frac{1 + \\frac{\\gamma - 1}{2}M_1^2}{\\gamma M_1^2 - \\frac{\\gamma - 1}{2}}",
-          "operation_label": "圧力比と密度比の整理",
-          "explanation": "M_2^2 を p_2/p_1 に代入して圧力比を得、さらに連続式 rho_2/rho_1 = u_1/u_2 = M*_1^2 から密度比を得る。",
+          "operation_label": "臨界マッハ数関係式 M_1^{*2} の代入",
+          "explanation": "先に導出した臨界マッハ数関係式 M_1^{*2} = \\frac{(\\gamma + 1)M_1^2}{2 + (\\gamma - 1)M_1^2} を \\frac{\\rho_2}{\\rho_1} = M_1^{*2} に代入し、ランキン＝ユゴニオの垂直衝撃波関係式の 3 式を完成させる。",
           "used_node_ids": [
-            "phys.thermo.th01_zeroth_law_state_eq"
+            "eng.comp.n02_mach_number_and_flow_regimes",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
           ],
           "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-26T13:59:51.920827+00:00"
     },
     {
       "id": "eng.comp.d09_shock_entropy_and_loss",
