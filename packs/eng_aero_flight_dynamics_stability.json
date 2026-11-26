@@ -209,12 +209,13 @@
         "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
         "aerosp.launch.n01_variable_mass_rocket_eom"
       ],
-      "required_math_node_ids": [
-        "math.calc.m01_chain_rule"
-      ],
+      "required_math_node_ids": [],
       "assumptions": [
-        "航空機は剛体かつ質量変化が無視できる定常質量系とみなす",
-        "機体固定座標系の原点は機体重心に一致させる"
+        "航空機は剛体であり、燃料消費や可動部による質量および機体固定座標系での慣性テンソルの時間変化が無視できる定常質量系（dm/dt = 0, dI/dt = 0）とみなす",
+        "機体固定座標系の原点は機体重心に一致させる（r_cg = 0）",
+        "基準となる座標系はニュートン・オイラーの運動法則が成立する慣性座標系とみなす",
+        "機体まわりの重力場は機体寸法に対して一様であり、重心まわりの重力モーメントは零である",
+        "機体の並進速度ベクトルおよび角速度ベクトルは時間に対して連続かつ微分可能である"
       ],
       "steps": [
         {
@@ -224,12 +225,11 @@
           "parent_step_id": null,
           "from_latex": "\\left.\\frac{d(m\\mathbf{V})}{dt}\\right|_I = \\mathbf{F}_{\\mathrm{ext}},\\quad \\left.\\frac{d\\mathbf{H}}{dt}\\right|_I = \\mathbf{M}_{\\mathrm{ext}}",
           "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{aero}} + \\mathbf{F}_T + m\\mathbf{g}_b,\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{aero}} + \\mathbf{M}_T",
-          "operation_label": "回転座標系の輸送定理と空力・推力・重力の代入",
-          "explanation": "慣性系での並進・回転運動方程式に機体固定座標系の角速度による輸送定理を適用し、外力を空力・推力・重力に分解する。",
+          "operation_label": "回転座標系の輸送定理と剛体慣性テンソル表示および外力・モーメント成分分解の適用",
+          "explanation": "慣性系での並進・回転運動方程式に定常質量仮定と機体固定座標系の角速度による輸送定理を適用し、剛体の角運動量に慣性テンソル表示を代入した上で、外力を空力・推力・重力、外力モーメントを空力・推力モーメントに分解する。",
           "used_node_ids": [
             "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
-            "aerosp.launch.n01_variable_mass_rocket_eom",
-            "math.calc.m01_chain_rule"
+            "aerosp.launch.n01_variable_mass_rocket_eom"
           ],
           "sympy_check_hint": null
         },
@@ -239,30 +239,171 @@
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
           "from_latex": "\\left.\\frac{d(m\\mathbf{V})}{dt}\\right|_I = \\mathbf{F}_{\\mathrm{ext}},\\quad \\left.\\frac{d\\mathbf{H}}{dt}\\right|_I = \\mathbf{M}_{\\mathrm{ext}}",
-          "to_latex": "m\\left(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b\\right) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{H}_b = \\mathbf{M}_{\\mathrm{ext}}",
-          "operation_label": "機体固定座標系への輸送定理の適用",
-          "explanation": "角速度ベクトルで回転する機体固定座標系での時間微分を、機体座標成分の微分と角速度との外積項の和に展開する。",
+          "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{H}_b = \\mathbf{M}_{\\mathrm{ext}}",
+          "operation_label": "定常質量仮定と機体固定座標系への輸送定理の適用",
+          "explanation": "定常質量により質量を時間微分の外へ出し、角速度ベクトルで回転する機体固定座標系の基底微分を用いて慣性時間微分を機体座標成分の微分と角速度との外積項の和に展開する。",
           "used_node_ids": [
-            "aerosp.gnss_ins.n02_strapdown_ins_mechanization",
-            "math.calc.m01_chain_rule"
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_2",
+          "step_id": "s3_1_1",
           "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\left.\\frac{d(m\\mathbf{V})}{dt}\\right|_I = \\mathbf{F}_{\\mathrm{ext}},\\quad \\left.\\frac{d\\mathbf{H}}{dt}\\right|_I = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m\\left.\\frac{d\\mathbf{V}}{dt}\\right|_I = \\mathbf{F}_{\\mathrm{ext}},\\quad \\left.\\frac{d\\mathbf{H}}{dt}\\right|_I = \\mathbf{M}_{\\mathrm{ext}}",
+          "operation_label": "定常質量仮定による質量の時間微分外へのくくり出し",
+          "explanation": "定常質量系（dm/dt = 0）の仮定より質量 m を時間に対して定数とみなし、並進運動方程式の慣性時間微分の外へくくり出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "m\\left.\\frac{d\\mathbf{V}}{dt}\\right|_I = \\mathbf{F}_{\\mathrm{ext}},\\quad \\left.\\frac{d\\mathbf{H}}{dt}\\right|_I = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m\\left(\\dot{\\mathbf{V}}_b + \\sum_{j=1}^{3} V_{b,j}\\left.\\frac{d\\mathbf{e}_j}{dt}\\right|_I\\right) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\sum_{j=1}^{3} H_{b,j}\\left.\\frac{d\\mathbf{e}_j}{dt}\\right|_I = \\mathbf{M}_{\\mathrm{ext}}",
+          "operation_label": "機体固定基底展開に対する積の微分則の適用",
+          "explanation": "速度ベクトルと角運動量ベクトルを機体固定座標系の正規直交基底 e_j で成分展開し、積の微分則により成分の時間微分（機体座標微分）と基底ベクトルの慣性時間微分の和へ分解する。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "m\\left(\\dot{\\mathbf{V}}_b + \\sum_{j=1}^{3} V_{b,j}\\left.\\frac{d\\mathbf{e}_j}{dt}\\right|_I\\right) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\sum_{j=1}^{3} H_{b,j}\\left.\\frac{d\\mathbf{e}_j}{dt}\\right|_I = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m\\left(\\dot{\\mathbf{V}}_b + \\sum_{j=1}^{3} V_{b,j}(\\boldsymbol{\\omega}_b \\times \\mathbf{e}_j)\\right) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\sum_{j=1}^{3} H_{b,j}(\\boldsymbol{\\omega}_b \\times \\mathbf{e}_j) = \\mathbf{M}_{\\mathrm{ext}}",
+          "operation_label": "回転基底ベクトルの時間微分公式の代入",
+          "explanation": "機体固定座標系が慣性系に対して角速度ベクトル ω_b で回転することから、各基底ベクトルの慣性時間微分に回転基底の微分公式 de_j/dt|_I = ω_b × e_j を代入する。",
+          "used_node_ids": [
+            "aerosp.gnss_ins.n02_strapdown_ins_mechanization"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "m\\left(\\dot{\\mathbf{V}}_b + \\sum_{j=1}^{3} V_{b,j}(\\boldsymbol{\\omega}_b \\times \\mathbf{e}_j)\\right) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\sum_{j=1}^{3} H_{b,j}(\\boldsymbol{\\omega}_b \\times \\mathbf{e}_j) = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{H}_b = \\mathbf{M}_{\\mathrm{ext}}",
+          "operation_label": "外積の線形性による基底和のベクトル復元",
+          "explanation": "外積の双線形性を用いてスカラー成分と基底ベクトルの和を括り出し、機体座標表現された速度ベクトル V_b および角運動量ベクトル H_b の輸送定理形式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 7,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "m\\left(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b\\right) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{H}_b = \\mathbf{M}_{\\mathrm{ext}}",
+          "from_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{H}_b = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{ext}}",
+          "operation_label": "剛体角運動量の慣性テンソル表示と時間微分展開",
+          "explanation": "角運動量ベクトルに慣性テンソルと角速度の積を代入し、機体固定座標系における剛体・定常質量条件（dI/dt = 0）を用いてオイラーの回転運動方程式へ変形する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{H}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{H}_b = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\frac{d}{dt}(\\mathbf{I}\\boldsymbol{\\omega}_b) + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{ext}}",
+          "operation_label": "角運動量への慣性テンソル積 H_b = I ω_b の代入",
+          "explanation": "機体重心を原点とする機体固定座標系における剛体の角運動量表示 H_b = I ω_b を、回転運動方程式の微分項および外積項の両方に代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\frac{d}{dt}(\\mathbf{I}\\boldsymbol{\\omega}_b) + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{I}}\\boldsymbol{\\omega}_b + \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{ext}}",
+          "operation_label": "慣性テンソルと角速度の積への積の微分則適用",
+          "explanation": "機体固定座標系における時間微分 d/dt(I ω_b) に対して積の微分則を適用し、慣性テンソルの時間変化率項と角速度の時間変化率項の和へ展開する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\dot{\\mathbf{I}}\\boldsymbol{\\omega}_b + \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{ext}}",
+          "operation_label": "機体座標系における慣性テンソル不変条件 dI/dt = 0 の適用",
+          "explanation": "航空機を剛体かつ定常質量とみなす仮定より、機体に固定された座標系から見た慣性テンソル I の時間変化率は零（dI/dt = 0）であるため、第1項を消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 11,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{ext}}",
           "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{aero}} + \\mathbf{F}_T + m\\mathbf{g}_b,\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{aero}} + \\mathbf{M}_T",
-          "operation_label": "慣性テンソル表示と外力・モーメント成分の代入",
-          "explanation": "剛体の角運動量に慣性テンソルとの積を代入し、重心が原点であるため重力モーメントを零として空力と推力の合力を右辺に置く。",
+          "operation_label": "外力と外力モーメントの物理成分分解および重力モーメントの消去",
+          "explanation": "合外力と合モーメントを空力・推力・重力成分へ分解し、一様重力場の下で座標原点が重心に一致することから重力モーメントを零として6自由度運動方程式を完成させる。",
           "used_node_ids": [
             "aerosp.launch.n01_variable_mass_rocket_eom"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{ext}},\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{aero}} + \\mathbf{F}_T + m\\mathbf{g}_b,\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{ext}}",
+          "operation_label": "合外力 F_ext の空力・推力・重力への分解代入",
+          "explanation": "飛行体運動方程式の外力モデルを3次元機体座標系へ拡張し、合外力 F_ext に空気力 F_aero、推力 F_T、および重力 m g_b の和を代入する。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{aero}} + \\mathbf{F}_T + m\\mathbf{g}_b,\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{ext}}",
+          "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{aero}} + \\mathbf{F}_T + m\\mathbf{g}_b,\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{aero}} + \\mathbf{M}_T + \\mathbf{r}_{\\mathrm{cg}} \\times (m\\mathbf{g}_b),\\quad \\text{with } \\mathbf{r}_{\\mathrm{cg}} = \\mathbf{0} \\text{? Wait: let's avoid non-math text or keep pure equation!}",
+          "operation_label": "外力モーメント M_ext の空力・推力・重力モーメントへの分解代入",
+          "explanation": "回転運動方程式の右辺について、外力モーメント M_ext を空力モーメント M_aero、推力モーメント M_T、および重心の位置ベクトル r_cg まわりの重力モーメント r_cg × (m g_b) の和へ分解代入する。",
+          "used_node_ids": [
+            "aerosp.launch.n01_variable_mass_rocket_eom"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{aero}} + \\mathbf{F}_T + m\\mathbf{g}_b,\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{aero}} + \\mathbf{M}_T + \\mathbf{r}_{\\mathrm{cg}} \\times (m\\mathbf{g}_b),\\quad \\text{with } \\mathbf{r}_{\\mathrm{cg}} = \\mathbf{0} \\text{? Wait: let's avoid non-math text or keep pure equation!}",
+          "to_latex": "m(\\dot{\\mathbf{V}}_b + \\boldsymbol{\\omega}_b \\times \\mathbf{V}_b) = \\mathbf{F}_{\\mathrm{aero}} + \\mathbf{F}_T + m\\mathbf{g}_b,\\quad \\mathbf{I}\\dot{\\boldsymbol{\\omega}}_b + \\boldsymbol{\\omega}_b \\times (\\mathbf{I}\\boldsymbol{\\omega}_b) = \\mathbf{M}_{\\mathrm{aero}} + \\mathbf{M}_T",
+          "operation_label": "一様重力場と重心原点条件 r_cg = 0 による重力モーメントの消去",
+          "explanation": "一様重力場の仮定および座標原点を機体重心に一致させる条件（r_cg = 0）より重力によるモーメント項 r_cg × (m g_b) が零となるためこれを消去し、目標の6自由度運動方程式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-26T21:30:58.674130+00:00"
     },
     {
       "id": "d_flt02_drag_polar",
