@@ -199,8 +199,10 @@
       ],
       "required_math_node_ids": [],
       "assumptions": [
-        "定常1次元検査体積を仮定する",
-        "空気吸込み質量流量と燃料質量流量の和が排気質量流量に等しい"
+        "定常1次元検査体積を仮定し、検査体積に働く外力と正味運動量流束変化が釣り合うとする。",
+        "空気吸込み質量流量と燃料質量流量の和が排気質量流量に等しい（\\dot{m}_e = \\dot{m}_a + \\dot{m}_f）。",
+        "吸込み空気質量流量 \\dot{m}_a > 0 かつ推力 F \\neq 0 であり、ゼロ除算は生じない。",
+        "燃料の軸方向流入運動量は吸込み空気の運動量流束に比べて無視でき、検査体積外面の圧力は一様な大気圧 p_0（= p_a）、排気断面 A_e での圧力 p_e は一様とする。"
       ],
       "steps": [
         {
@@ -208,45 +210,166 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "F = \\dot{m}_e V_e - \\dot{m}_a V_0 + (p_e - p_0)A_e",
-          "to_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e",
-          "operation_label": "検査体積の運動量収支に質量保存と燃空比を適用",
-          "explanation": "吸込み空気の運動量流束を差し引いた推進力式に燃料流量の寄与を組み込み、燃空比fで整理する。",
-          "used_node_ids": [
-            "eng.rock.n01_rocket_thrust_equation",
-            "phys.mech.p02_newton_second_law"
-          ],
-          "sympy_check_hint": null
-        },
-        {
-          "step_id": "s2_mass_conservation",
-          "order": 2,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "F = \\dot{m}_e V_e - \\dot{m}_a V_0 + (p_e - p_0)A_e",
-          "to_latex": "F = (\\dot{m}_a + \\dot{m}_f)V_e - \\dot{m}_a V_0 + (p_e - p_0)A_e",
-          "operation_label": "質量保存則による排気流量の展開",
-          "explanation": "排気質量流量を吸込み空気流量と燃料流量の和に置き換える。",
+          "from_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e",
+          "to_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a},\\quad \\mathrm{TSFC} := \\frac{\\dot{m}_f}{F} = \\frac{f}{F/\\dot{m}_a}",
+          "operation_label": "ロケット推力式から空気吸い込み式推力方程式とTSFC関係式を導出",
+          "explanation": "ロケット推力方程式に吸込み空気の流入運動量流束を導入し、質量保存則と燃空比 f の定義を用いて推力式を整理した上で、推力燃料消費率（TSFC）の比推力表示を導く。",
           "used_node_ids": [
             "eng.rock.n01_rocket_thrust_equation"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s3_fuel_air_ratio",
-          "order": 3,
+          "step_id": "s2_1",
+          "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "F = (\\dot{m}_a + \\dot{m}_f)V_e - \\dot{m}_a V_0 + (p_e - p_0)A_e",
-          "to_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e",
-          "operation_label": "燃空比の定義による整理",
-          "explanation": "燃空比fを用いて空気流量で括り、空気吸い込み式推力方程式を得る。",
+          "from_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e",
+          "to_latex": "F = \\dot{m}_e V_e - \\dot{m}_a V_0 + (p_e - p_0) A_e",
+          "operation_label": "検査体積の記号対応付けと吸込み空気運動量流束の導入",
+          "explanation": "ロケット推力方程式の排気質量流量・排気速度・大気圧を空気吸い込み式推進機の表記に対応させ、検査体積入口から流入する空気の運動量流束を差し引く。",
           "used_node_ids": [
-            "phys.mech.p02_newton_second_law"
+            "eng.rock.n01_rocket_thrust_equation"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "F = \\dot{m} v_e + (p_e - p_a) A_e",
+          "to_latex": "F = \\dot{m}_e V_e + (p_e - p_0) A_e",
+          "operation_label": "推進機の排気・大気パラメータへ記号を対応付け",
+          "explanation": "ロケット推力方程式における質量流量 \\dot{m} を排気質量流量 \\dot{m}_e、排気速度 v_e を V_e、周囲大気圧 p_a を p_0 へそれぞれ置き換えて表記を統一する。",
+          "used_node_ids": [
+            "eng.rock.n01_rocket_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "F = \\dot{m}_e V_e + (p_e - p_0) A_e",
+          "to_latex": "F = \\dot{m}_e V_e - \\dot{m}_a V_0 + (p_e - p_0) A_e",
+          "operation_label": "検査体積入口の吸込み空気運動量流束を導入",
+          "explanation": "定常1次元検査体積の運動量収支に基づき、入口断面から飛行速度 V_0 で流入する空気質量流量 \\dot{m}_a の運動量流束 \\dot{m}_a V_0 を排気運動量流束から差し引く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 5,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F = \\dot{m}_e V_e - \\dot{m}_a V_0 + (p_e - p_0) A_e",
+          "to_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a}",
+          "operation_label": "質量保存則の代入と燃空比による推力式の因数分解",
+          "explanation": "排気質量流量に質量保存則を適用し、燃空比 f を導入して吸込み空気質量流量 \\dot{m}_a で運動量項を括る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "F = \\dot{m}_e V_e - \\dot{m}_a V_0 + (p_e - p_0) A_e",
+          "to_latex": "F = (\\dot{m}_a + \\dot{m}_f) V_e - \\dot{m}_a V_0 + (p_e - p_0) A_e",
+          "operation_label": "質量保存則を代入・導入",
+          "explanation": "仮定された定常質量保存則 \\dot{m}_e = \\dot{m}_a + \\dot{m}_f を排気質量流量 \\dot{m}_e へ代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 7,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "F = (\\dot{m}_a + \\dot{m}_f) V_e - \\dot{m}_a V_0 + (p_e - p_0) A_e",
+          "to_latex": "F = (\\dot{m}_a + f \\dot{m}_a) V_e - \\dot{m}_a V_0 + (p_e - p_0) A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a}",
+          "operation_label": "燃空比の定義を導入して燃料流量を置換",
+          "explanation": "燃空比 f := \\dot{m}_f / \\dot{m}_a（\\dot{m}_a > 0）を定義し、そこから得られる \\dot{m}_f = f \\dot{m}_a を式中の \\dot{m}_f に代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "F = (\\dot{m}_a + f \\dot{m}_a) V_e - \\dot{m}_a V_0 + (p_e - p_0) A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a}",
+          "to_latex": "F = \\dot{m}_a (1 + f) V_e - \\dot{m}_a V_0 + (p_e - p_0) A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a}",
+          "operation_label": "排気項から共通因数 \\dot{m}_a をくくり出し",
+          "explanation": "第1項の係数 (\\dot{m}_a + f\\dot{m}_a) から共通因数 \\dot{m}_a をくくり出し、\\dot{m}_a(1 + f) と表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(m_a + f*m_a)*V_e - m_a*V_0 + (p_e - p_0)*A_e == m_a*(1 + f)*V_e - m_a*V_0 + (p_e - p_0)*A_e"
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "F = \\dot{m}_a (1 + f) V_e - \\dot{m}_a V_0 + (p_e - p_0) A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a}",
+          "to_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a}",
+          "operation_label": "運動量項全体から共通因数 \\dot{m}_a をくくり出し",
+          "explanation": "排気運動量項 \\dot{m}_a(1 + f)V_e と吸込み運動量項 -\\dot{m}_a V_0 から共通因数 \\dot{m}_a をくくり出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": "m_a*(1 + f)*V_e - m_a*V_0 + (p_e - p_0)*A_e == m_a*((1 + f)*V_e - V_0) + (p_e - p_0)*A_e"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 10,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a}",
+          "to_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a},\\quad \\mathrm{TSFC} := \\frac{\\dot{m}_f}{F} = \\frac{f}{F/\\dot{m}_a}",
+          "operation_label": "推力燃料消費率（TSFC）の定義と比推力表示の導出",
+          "explanation": "TSFCの定義式を導入し、分母・分子を空気質量流量で割って燃空比と比推力（F/\\dot{m}_a）による表現を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a}",
+          "to_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a},\\quad \\mathrm{TSFC} := \\frac{\\dot{m}_f}{F}",
+          "operation_label": "推力燃料消費率（TSFC）の定義を導入",
+          "explanation": "単位推力あたりの燃料質量流量として、推力燃料消費率 \\mathrm{TSFC} := \\dot{m}_f / F（F \\neq 0）を定義して並記する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a},\\quad \\mathrm{TSFC} := \\frac{\\dot{m}_f}{F}",
+          "to_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a},\\quad \\mathrm{TSFC} := \\frac{\\dot{m}_f}{F} = \\frac{\\dot{m}_f/\\dot{m}_a}{F/\\dot{m}_a}",
+          "operation_label": "TSFCの分母・分子を空気質量流量で除算",
+          "explanation": "\\dot{m}_a > 0 の仮定のもとで、\\dot{m}_f / F の分子と分母をそれぞれ \\dot{m}_a で割り、比の形で書き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": "m_f/F == (m_f/m_a)/(F/m_a)"
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a},\\quad \\mathrm{TSFC} := \\frac{\\dot{m}_f}{F} = \\frac{\\dot{m}_f/\\dot{m}_a}{F/\\dot{m}_a}",
+          "to_latex": "F = \\dot{m}_a\\big[(1 + f)V_e - V_0\\big] + (p_e - p_0)A_e,\\quad f := \\frac{\\dot{m}_f}{\\dot{m}_a},\\quad \\mathrm{TSFC} := \\frac{\\dot{m}_f}{F} = \\frac{f}{F/\\dot{m}_a}",
+          "operation_label": "燃空比の定義をTSFCの分子へ代入",
+          "explanation": "分子の \\dot{m}_f / \\dot{m}_a を燃空比の定義 f で置き換え、目標となる代表式に到達する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-27T08:23:29.170679+00:00"
     },
     {
       "id": "drv_jet02_efficiencies",
@@ -322,10 +445,16 @@
         "eng.comp.n03_stagnation_enthalpy_energy_eq",
         "eng.comp.n04_isentropic_stagnation_relations"
       ],
-      "required_math_node_ids": [],
+      "required_math_node_ids": [
+        "aerosp.jet.n01_airbreathing_thrust_equation"
+      ],
       "assumptions": [
         "定常運転下でタービン出力が機械効率を介して圧縮機を駆動する",
-        "タービン側および圧縮機側で作動ガスの定圧比熱と比熱比をそれぞれ一定とみなす"
+        "タービン側および圧縮機側で作動ガスの定圧比熱と比熱比をそれぞれ一定とみなす",
+        "空気質量流量は正であり（\\dot{m}_a > 0）、非ゼロ除算が成立する",
+        "圧縮機からタービンへの抽気・漏洩は無視し、タービン質量流量を \\dot{m}_a + \\dot{m}_f とする",
+        "ノズルの理想（等エントロピー）膨張出口静圧は大気圧と一致し（p_{es} = p_0）、ノズル内部で全温変化はない",
+        "排気速度は正方向であり（V_e > 0）、ノズル入口全温は正（T_{05} > 0）かつ膨張比は p_{05} \\ge p_0 を満たす"
       ],
       "steps": [
         {
@@ -333,11 +462,12 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "\\dot{m}_a c_{pc}(T_{03} - T_{02}) = \\eta_m \\dot{m}_a(1+f) c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt}(T_{05} - T_{es})",
+          "from_latex": "\\dot{m}_a (h_{03} - h_{02}) = (\\dot{m}_a + \\dot{m}_f)\\eta_m(h_{04} - h_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
           "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad V_e = \\sqrt{2\\eta_n c_{pt} T_{05}\\left[1 - \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right]}",
-          "operation_label": "軸動力釣合いの規格化と実在ノズル膨張排気速度の導出",
-          "explanation": "圧縮機とタービンの仕事釣合いを空気流量で割り、ノズル断熱効率と等エントロピー圧力比関係を用いて排気速度を導く。",
+          "operation_label": "軸動力釣合いの規格化と実在ノズル排気速度の導出",
+          "explanation": "圧縮機とタービンのエンタルピー基準の動力釣合い式に燃空比と定圧比熱一定の関係を適用し、ノズル断熱効率の定義と等エントロピーよどみ点関係式から実在ターボジェットの排気速度式を導く。",
           "used_node_ids": [
+            "aerosp.jet.n01_airbreathing_thrust_equation",
             "aerosp.jet.n03_real_component_efficiencies",
             "eng.comp.n03_stagnation_enthalpy_energy_eq",
             "eng.comp.n04_isentropic_stagnation_relations"
@@ -345,14 +475,81 @@
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_power_balance",
+          "step_id": "s2_1",
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\dot{m}_a c_{pc}(T_{03} - T_{02}) = \\eta_m \\dot{m}_a(1+f) c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt}(T_{05} - T_{es})",
-          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right)",
-          "operation_label": "空気流量の消去とノズル入口全温の括り出し",
-          "explanation": "動力釣合い式から空気流量を消去し、ノズル出口の理想静温比の形に変形する。",
+          "from_latex": "\\dot{m}_a (h_{03} - h_{02}) = (\\dot{m}_a + \\dot{m}_f)\\eta_m(h_{04} - h_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "operation_label": "圧縮機・タービン動力釣合いの温度表現への変換",
+          "explanation": "動力釣合い式に燃空比の定義を代入して空気流量で両辺を割り、圧縮機側とタービン側それぞれの定圧比熱一定の仮定を用いて全温差表現へ変換する。",
+          "used_node_ids": [
+            "aerosp.jet.n01_airbreathing_thrust_equation",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\dot{m}_a (h_{03} - h_{02}) = (\\dot{m}_a + \\dot{m}_f)\\eta_m(h_{04} - h_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "to_latex": "\\dot{m}_a (h_{03} - h_{02}) = (\\dot{m}_a + f\\dot{m}_a)\\eta_m(h_{04} - h_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "operation_label": "燃空比の定義を代入・導入",
+          "explanation": "空気吸い込み式推進機の燃空比の定義 f = \\dot{m}_f / \\dot{m}_a より \\dot{m}_f = f\\dot{m}_a をタービン側質量流量に代入する。",
+          "used_node_ids": [
+            "aerosp.jet.n01_airbreathing_thrust_equation"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\dot{m}_a (h_{03} - h_{02}) = (\\dot{m}_a + f\\dot{m}_a)\\eta_m(h_{04} - h_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "to_latex": "\\dot{m}_a (h_{03} - h_{02}) = \\dot{m}_a(1 + f)\\eta_m(h_{04} - h_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "operation_label": "空気質量流量 \\dot{m}_a のくくり出し",
+          "explanation": "タービン側質量流量の和 \\dot{m}_a + f\\dot{m}_a から共通因数 \\dot{m}_a を左へくくり出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(m_a + f*m_a)*eta_m == m_a*(1 + f)*eta_m"
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\dot{m}_a (h_{03} - h_{02}) = \\dot{m}_a(1 + f)\\eta_m(h_{04} - h_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "to_latex": "h_{03} - h_{02} = (1 + f)\\eta_m(h_{04} - h_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "operation_label": "両辺の空気質量流量 \\dot{m}_a による除算",
+          "explanation": "\\dot{m}_a > 0 の仮定のもとで動力釣合い式の両辺を \\dot{m}_a で割り、単位空気流量あたりの仕事釣合いを得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(m_a*(h03 - h02))/m_a - (m_a*(1 + f)*eta_m*(h04 - h05))/m_a == (h03 - h02) - (1 + f)*eta_m*(h04 - h05)"
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "h_{03} - h_{02} = (1 + f)\\eta_m(h_{04} - h_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "operation_label": "定圧比熱一定による全エンタルピー差の置換",
+          "explanation": "圧縮機側で c_{pc} 一定、タービン側で c_{pt} 一定の仮定を適用し、全エンタルピー差 h_{03} - h_{02} = c_{pc}(T_{03} - T_{02}) および h_{04} - h_{05} = c_{pt}(T_{04} - T_{05}) を代入する。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 7,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right)\\quad",
+          "operation_label": "ノズル断熱効率の展開とノズル入口全温のくくり出し",
+          "explanation": "ノズル断熱効率の定義式を排気運動エネルギーについて解き、定圧比熱一定の仮定のもとでノズル入口全温 T_{05} をくくり出す。",
           "used_node_ids": [
             "aerosp.jet.n03_real_component_efficiencies",
             "eng.comp.n03_stagnation_enthalpy_energy_eq"
@@ -360,20 +557,162 @@
           "sympy_check_hint": null
         },
         {
-          "step_id": "s3_isentropic_nozzle",
-          "order": 3,
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\eta_n = \\frac{V_e^2 / 2}{h_{05} - h_{es}}",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n (h_{05} - h_{es})",
+          "operation_label": "ノズル断熱効率定義式の分母払い",
+          "explanation": "ノズル断熱効率の定義式（JET03）の両辺に等エントロピーエンタルピー落差 h_{05} - h_{es} を掛けて分母を払う。",
+          "used_node_ids": [
+            "aerosp.jet.n03_real_component_efficiencies"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n (h_{05} - h_{es})",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt}(T_{05} - T_{es})",
+          "operation_label": "ノズル内定圧比熱一定によるエンタルピー差の置換",
+          "explanation": "タービン・ノズル側で定圧比熱 c_{pt} 一定の仮定を用い、h_{05} - h_{es} = c_{pt}(T_{05} - T_{es}) を代入する。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt}(T_{05} - T_{es})",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right)\\quad",
+          "operation_label": "ノズル入口全温 T_{05} のくくり出し",
+          "explanation": "T_{05} > 0 を用いて T_{05} - T_{es} から T_{05} を共通因数としてくくり出し、温度比 T_{es}/T_{05} の形に変形する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "eta_n*c_pt*(T05 - T_es) == eta_n*c_pt*T05*(1 - T_es/T05)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 11,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right)",
-          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad V_e = \\sqrt{2\\eta_n c_{pt} T_{05}\\left[1 - \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right]}",
-          "operation_label": "等エントロピー圧力比関係式の代入と排気速度の解",
-          "explanation": "等エントロピー膨張の温度・圧力比関係を代入して平方根をとり、実在排気速度式を得る。",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right)\\quad",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right),\\quad \\frac{T_{es}}{T_{05}} = \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}",
+          "operation_label": "等エントロピーノズル膨張の温度比・圧力比関係式の導出",
+          "explanation": "ノズルの理想膨張状態におけるよどみ点温度・圧力関係式からマッハ数を消去し、指数操作と逆数変換により温度比 T_{es}/T_{05} を圧力比 p_0/p_{05} で表す。",
           "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
             "eng.comp.n04_isentropic_stagnation_relations"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right)\\quad",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right),\\quad \\frac{p_{05}}{p_0} = \\left(1 + \\frac{\\gamma_t - 1}{2}M_{es}^2\\right)^{\\frac{\\gamma_t}{\\gamma_t - 1}},\\quad \\frac{T_{05}}{T_{es}} = 1 + \\frac{\\gamma_t - 1}{2}M_{es}^2",
+          "operation_label": "等エントロピーよどみ点温度・圧力関係式を代入・導入",
+          "explanation": "理想ノズル出口静圧 p_{es} = p_0 および断熱定常流れの仮定のもとで、CFL03 と CFL04 のよどみ点温度比・圧力比関係式を導入する。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n04_isentropic_stagnation_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right),\\quad \\frac{p_{05}}{p_0} = \\left(1 + \\frac{\\gamma_t - 1}{2}M_{es}^2\\right)^{\\frac{\\gamma_t}{\\gamma_t - 1}},\\quad \\frac{T_{05}}{T_{es}} = 1 + \\frac{\\gamma_t - 1}{2}M_{es}^2",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right),\\quad \\frac{p_{05}}{p_0} = \\left(\\frac{T_{05}}{T_{es}}\\right)^{\\frac{\\gamma_t}{\\gamma_t - 1}}",
+          "operation_label": "マッハ数を含む共通項の消去",
+          "explanation": "1 + ((\\gamma_t - 1)/2) M_{es}^2 = T_{05}/T_{es} を圧力比の関係式に代入して理想出口マッハ数 M_{es} を消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right),\\quad \\frac{p_{05}}{p_0} = \\left(\\frac{T_{05}}{T_{es}}\\right)^{\\frac{\\gamma_t}{\\gamma_t - 1}}",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right),\\quad \\frac{T_{05}}{T_{es}} = \\left(\\frac{p_{05}}{p_0}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}",
+          "operation_label": "両辺への指数 (\\gamma_t - 1)/\\gamma_t 乗の適用",
+          "explanation": "両辺を (\\gamma_t - 1)/\\gamma_t 乗して右辺の指数を 1 にし、全静温比 T_{05}/T_{es} について解く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right),\\quad \\frac{T_{05}}{T_{es}} = \\left(\\frac{p_{05}}{p_0}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right),\\quad \\frac{T_{es}}{T_{05}} = \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}",
+          "operation_label": "両辺の逆数変換による T_{es}/T_{05} の表現",
+          "explanation": "T_{05}/T_{es} > 0 および p_{05}/p_0 > 0 のもとで両辺の逆数をとり、温度比 T_{es}/T_{05} の圧力比表現を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 16,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right),\\quad \\frac{T_{es}}{T_{05}} = \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad V_e = \\sqrt{2\\eta_n c_{pt} T_{05}\\left[1 - \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right]}",
+          "operation_label": "圧力比の代入と実在排気速度式の完成",
+          "explanation": "導出した等エントロピー温度比・圧力比関係をノズル運動エネルギー式に代入し、2を掛けて正の平方根をとることで実在ターボジェットの排気速度式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left(1 - \\frac{T_{es}}{T_{05}}\\right),\\quad \\frac{T_{es}}{T_{05}} = \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left[1 - \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right]",
+          "operation_label": "温度比への等エントロピー圧力比関係式の代入",
+          "explanation": "T_{es}/T_{05} = (p_0/p_{05})^{(\\gamma_t - 1)/\\gamma_t} をノズル運動エネルギー式に代入し、圧力比に基づく表現へ書き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad \\frac{V_e^2}{2} = \\eta_n c_{pt} T_{05}\\left[1 - \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right]",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad V_e^2 = 2\\eta_n c_{pt} T_{05}\\left[1 - \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right]",
+          "operation_label": "両辺への 2 の乗算",
+          "explanation": "排気速度の2乗 V_e^2 を左辺に孤立させるため、ノズル運動エネルギー式の両辺に 2 を掛ける。",
+          "used_node_ids": [],
+          "sympy_check_hint": "2*(V_e**2/2) == V_e**2"
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 19,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad V_e^2 = 2\\eta_n c_{pt} T_{05}\\left[1 - \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right]",
+          "to_latex": "c_{pc}(T_{03} - T_{02}) = (1 + f)\\eta_m c_{pt}(T_{04} - T_{05}),\\quad V_e = \\sqrt{2\\eta_n c_{pt} T_{05}\\left[1 - \\left(\\frac{p_0}{p_{05}}\\right)^{\\frac{\\gamma_t - 1}{\\gamma_t}}\\right]}",
+          "operation_label": "正の平方根の採取による排気速度の導出",
+          "explanation": "排気速度が正（V_e > 0）かつ p_{05} \\ge p_0 より根号内が非負であることから、両辺の正の平方根をとり実在ターボジェットの排気速度式に到達する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-27T08:24:46.777723+00:00"
     },
     {
       "id": "drv_jet05_turbofan",
