@@ -1,0 +1,766 @@
+{
+  "pack_meta": {
+    "pack_id": "phys_qft12_effective_action_1pi",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "φ4理論の有効作用と1PIグラフ：連結グリーン関数・1粒子既約（1PI）頂点関数と自己エネルギー・おたまじゃくし・有効作用のルジャンドル変換とループ展開",
+    "language": "ja",
+    "description": "自然単位系(ħ=c=1)と計量符号(-,+,+,+)で統一し、既存の古典力学・線形代数・量子力学・特殊相対論・リー群および前章のQFTパックのノードIDを前提として接続すること。"
+  },
+  "nodes": [
+    {
+      "id": "phys.qft12.n01_phi4_generating_functional_z",
+      "short_code": "QFT12_01",
+      "kind": "definition",
+      "title": "φ4理論の生成汎関数 Z[J] と時間順序グリーン関数",
+      "summary": "実スカラーφ4理論の作用に外場源 J(x) を結合させた経路積分生成汎関数 Z[J] と、その汎関数微分によるn点時間順序グリーン関数の定義。",
+      "canonical_latex": "S[\\phi] = \\int d^4x\\left(-\\frac{1}{2}\\partial_\\mu\\phi\\partial^\\mu\\phi - \\frac{1}{2}m^2\\phi^2 - \\frac{\\lambda}{4!}\\phi^4\\right),\\quad Z[J] := \\int \\mathcal{D}\\phi\\,\\exp\\left(iS[\\phi] + i\\int d^4x\\,J(x)\\phi(x)\\right),\\quad G^{(n)}(x_1,\\dots,x_n) = \\left.\\frac{(-i)^n}{Z[0]}\\frac{\\delta^n Z[J]}{\\delta J(x_1)\\cdots\\delta J(x_n)}\\right|_{J=0}",
+      "aliases_latex": [
+        "Z[J] = \\langle \\Omega | T\\exp\\left(i\\int d^4x\\,J(x)\\hat{\\phi}(x)\\right) | \\Omega \\rangle"
+      ],
+      "keywords": [
+        "φ4理論",
+        "生成汎関数",
+        "経路積分",
+        "時間順序グリーン関数",
+        "外場源"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_field_theory"
+      ]
+    },
+    {
+      "id": "phys.qft12.n02_connected_generating_functional_w",
+      "short_code": "QFT12_02",
+      "kind": "theorem_formula",
+      "title": "連結グリーン関数の生成汎関数 W[J] と連結相関関数",
+      "summary": "Z[J] の対数として定義される連結生成汎関数 W[J] = -i ln Z[J] は、非連結グラフ（真空泡や積分解）を除いた連結n点グリーン関数のみを生成する。",
+      "canonical_latex": "W[J] := -i\\ln Z[J]\\;\\big(Z[J] = e^{iW[J]}\\big),\\qquad G_c^{(n)}(x_1,\\dots,x_n) = (-i)^{n-1}\\left.\\frac{\\delta^n W[J]}{\\delta J(x_1)\\cdots\\delta J(x_n)}\\right|_{J=0},\\qquad G^{(2)}(x,y) = G_c^{(2)}(x,y) + G_c^{(1)}(x)G_c^{(1)}(y)",
+      "aliases_latex": [
+        "Z[J] = \\exp(iW[J])"
+      ],
+      "keywords": [
+        "連結グリーン関数",
+        "生成汎関数",
+        "キュムラント展開",
+        "非連結グラフ"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_field_theory"
+      ]
+    },
+    {
+      "id": "phys.qft12.n03_classical_field_legendre_effective_action",
+      "short_code": "QFT12_03",
+      "kind": "definition",
+      "title": "古典場 φ_cl とルジャンドル変換による有効作用 Γ[φ_cl]",
+      "summary": "外場 J 存在下での場の真空期待値（古典場）φ_cl を変数とし、連結生成汎関数 W[J] にルジャンドル変換を施して定義される量子有効作用 Γ[φ_cl]。",
+      "canonical_latex": "\\phi_{\\mathrm{cl}}(x) := \\frac{\\delta W[J]}{\\delta J(x)} = \\langle\\Omega|\\hat{\\phi}(x)|\\Omega\\rangle_J,\\qquad \\Gamma[\\phi_{\\mathrm{cl}}] := W[J] - \\int d^4x\\,J(x)\\phi_{\\mathrm{cl}}(x)",
+      "aliases_latex": [
+        "\\Gamma[\\phi] = W[J_\\phi] - \\int d^4x\\,J_\\phi(x)\\phi(x)"
+      ],
+      "keywords": [
+        "有効作用",
+        "ルジャンドル変換",
+        "古典場",
+        "量子期待値"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_field_theory"
+      ]
+    },
+    {
+      "id": "phys.qft12.n04_quantum_eom_inverse_propagator_identity",
+      "short_code": "QFT12_04",
+      "kind": "theorem_formula",
+      "title": "量子運動方程式と2点関数の逆関係（有効作用の2階変分）",
+      "summary": "有効作用 Γ[φ_cl] の1階変分は外場 -J(x) に等しく（J=0 で量子運動方程式を与える）、2階変分 δ^2Γ/δφ_cl^2 は連結2点関数 δ^2W/δJ^2 の逆演算子となる。",
+      "canonical_latex": "\\frac{\\delta \\Gamma[\\phi_{\\mathrm{cl}}]}{\\delta \\phi_{\\mathrm{cl}}(x)} = -J(x),\\qquad \\int d^4z\\,\\frac{\\delta^2 \\Gamma}{\\delta \\phi_{\\mathrm{cl}}(x)\\delta \\phi_{\\mathrm{cl}}(z)}\\frac{\\delta^2 W}{\\delta J(z)\\delta J(y)} = -\\delta^{(4)}(x-y)",
+      "aliases_latex": [
+        "\\left.\\frac{\\delta \\Gamma[\\phi_{\\mathrm{cl}}]}{\\delta \\phi_{\\mathrm{cl}}(x)}\\right|_{J=0} = 0"
+      ],
+      "keywords": [
+        "量子運動方程式",
+        "有効作用",
+        "逆伝播関数",
+        "2階変分"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_field_theory"
+      ]
+    },
+    {
+      "id": "phys.qft12.n05_one_pi_vertex_functions",
+      "short_code": "QFT12_05",
+      "kind": "theorem_formula",
+      "title": "1粒子既約（1PI）頂点関数 Γ^(n) と連結3点関数の木構造分解",
+      "summary": "有効作用のn階変分として定義される1PI頂点関数 Γ^(n) を用いて、高次連結グリーン関数が完全伝播関数と1PI頂点関数の木グラフ的結合へ分解される。",
+      "canonical_latex": "\\Gamma^{(n)}(x_1,\\dots,x_n) := \\left.\\frac{\\delta^n \\Gamma[\\phi_{\\mathrm{cl}}]}{\\delta \\phi_{\\mathrm{cl}}(x_1)\\cdots\\delta \\phi_{\\mathrm{cl}}(x_n)}\\right|_{\\phi_{\\mathrm{cl}}=v},\\quad \\frac{\\delta^3 W}{\\delta J_x\\delta J_y\\delta J_z} = \\int d^4x'\\,d^4y'\\,d^4z'\\,\\frac{\\delta^2 W}{\\delta J_x\\delta J_{x'}}\\frac{\\delta^2 W}{\\delta J_y\\delta J_{y'}}\\frac{\\delta^2 W}{\\delta J_z\\delta J_{z'}}\\frac{\\delta^3 \\Gamma}{\\delta \\phi_{x'}\\delta \\phi_{y'}\\delta \\phi_{z'}}",
+      "aliases_latex": [
+        "\\Gamma[\\phi_{\\mathrm{cl}}] = \\sum_{n=0}^{\\infty}\\frac{1}{n!}\\int d^4x_1\\cdots d^4x_n\\,\\Gamma^{(n)}(x_1,\\dots,x_n)\\prod_{k=1}^n\\big(\\phi_{\\mathrm{cl}}(x_k)-v\\big)"
+      ],
+      "keywords": [
+        "1PI",
+        "1粒子既約",
+        "頂点関数",
+        "木構造分解"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_field_theory"
+      ]
+    },
+    {
+      "id": "phys.qft12.n06_dyson_equation_self_energy",
+      "short_code": "QFT12_06",
+      "kind": "theorem_formula",
+      "title": "自己エネルギー Σ(p^2) とダイソン方程式（完全伝播関数）",
+      "summary": "1PI 2点関数への量子補正（自己エネルギー -iΣ(p^2)）の幾何級数和をダイソン方程式により畳み込むことで、厳密な完全伝播関数とその極（物理的質量）が得られる。",
+      "canonical_latex": "\\tilde{\\Gamma}^{(2)}(p) = -(p^2 + m^2 + \\Sigma(p^2)),\\qquad \\tilde{G}_c^{(2)}(p) = \\frac{-i}{p^2 + m^2 + \\Sigma(p^2) - i\\epsilon}",
+      "aliases_latex": [
+        "\\tilde{G}_c^{(2)}(p) = \\tilde{G}_0(p) + \\tilde{G}_0(p)\\big(-i\\Sigma(p^2)\\big)\\tilde{G}_c^{(2)}(p)"
+      ],
+      "keywords": [
+        "自己エネルギー",
+        "ダイソン方程式",
+        "完全伝播関数",
+        "質量繰り込み"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_field_theory"
+      ]
+    },
+    {
+      "id": "phys.qft12.n07_tadpole_cancellation_one_point",
+      "short_code": "QFT12_07",
+      "kind": "theorem_formula",
+      "title": "おたまじゃくし（タッドポール）図と1点関数相殺条件",
+      "summary": "1本の外線のみを持つ1PI 1点関数（おたまじゃくし図）は量子的な真空期待値のシフトを表し、Z2対称性が保たれるφ4理論では消滅し、自発的破れやシフト場では Γ^(1)(v)=0 により相殺される。",
+      "canonical_latex": "\\Gamma^{(1)}(v) = \\left.\\frac{\\delta \\Gamma}{\\delta \\phi_{\\mathrm{cl}}}\\right|_{\\phi_{\\mathrm{cl}}=v} = 0,\\qquad \\Gamma_{\\mathrm{tree}}^{(1)}(v) + \\Gamma_{\\mathrm{1\\text{-}loop}}^{\\mathrm{tadpole}}(v) + \\cdots = 0",
+      "aliases_latex": [
+        "\\langle\\Omega|\\hat{\\phi}(x)|\\Omega\\rangle = v \\iff \\langle\\Omega|\\hat{h}(x)|\\Omega\\rangle = 0\\;(\\hat{\\phi}=v+\\hat{h})"
+      ],
+      "keywords": [
+        "おたまじゃくし図",
+        "タッドポール",
+        "1点関数",
+        "真空期待値"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_field_theory"
+      ]
+    },
+    {
+      "id": "phys.qft12.n08_loop_expansion_hbar_effective_action",
+      "short_code": "QFT12_08",
+      "kind": "theorem_formula",
+      "title": "有効作用のループ展開（ħ展開）と1ループ有効作用",
+      "summary": "プランク定数 ħ を明示した経路積分の鞍部点展開により、有効作用は古典作用 S[φ_cl]（0ループ）に 1ループ行列式補正を加えた ħ 展開（ループ数展開）として表される。",
+      "canonical_latex": "\\Gamma[\\phi_{\\mathrm{cl}}] = S[\\phi_{\\mathrm{cl}}] + \\frac{i\\hbar}{2}\\operatorname{Tr}\\ln\\left(-\\frac{\\delta^2 S}{\\delta\\phi_{\\mathrm{cl}}\\delta\\phi_{\\mathrm{cl}}}\\right) + \\mathcal{O}(\\hbar^2),\\qquad L = I - V + 1\\;\\text{(連結グラフのループ数)}",
+      "aliases_latex": [
+        "\\Gamma_{\\mathrm{1\\text{-}loop}}[\\phi_{\\mathrm{cl}}] = \\frac{i\\hbar}{2}\\ln\\det\\big(\\Box - m^2 - \\tfrac{\\lambda}{2}\\phi_{\\mathrm{cl}}^2\\big)"
+      ],
+      "keywords": [
+        "ループ展開",
+        "ħ展開",
+        "鞍部点法",
+        "1ループ有効作用"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_field_theory"
+      ]
+    },
+    {
+      "id": "phys.qft12.n09_coleman_weinberg_effective_potential",
+      "short_code": "QFT12_09",
+      "kind": "theorem_formula",
+      "title": "有効ポテンシャル V_eff(φ_cl) と1ループ・コールマン＝ワインバーグ型補正",
+      "summary": "一様な古典場 φ_cl = const. に対して有効作用を時空体積で割ることで有効ポテンシャル V_eff(φ_cl) が得られ、ウィック回転によりφ4理論の1ループ量子補正ポテンシャルが求まる。",
+      "canonical_latex": "\\Gamma[\\phi_{\\mathrm{cl}}=\\text{const.}] = -\\Omega_4 V_{\\mathrm{eff}}(\\phi_{\\mathrm{cl}}),\\qquad V_{\\mathrm{eff}}^{(1)}(\\phi_{\\mathrm{cl}}) = \\frac{1}{2}m^2\\phi_{\\mathrm{cl}}^2 + \\frac{\\lambda}{4!}\\phi_{\\mathrm{cl}}^4 + \\frac{\\hbar}{2}\\int\\frac{d^4k_E}{(2\\pi)^4}\\ln\\left(k_E^2 + m^2 + \\frac{\\lambda}{2}\\phi_{\\mathrm{cl}}^2\\right)",
+      "aliases_latex": [
+        "\\frac{\\partial V_{\\mathrm{eff}}(\\phi_{\\mathrm{cl}})}{\\partial \\phi_{\\mathrm{cl}}} = 0"
+      ],
+      "keywords": [
+        "有効ポテンシャル",
+        "コールマン・ワインバーグ",
+        "1ループ補正",
+        "ウィック回転"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_field_theory"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "drv.qft12.n01_phi4_generating_functional",
+      "target_node_id": "phys.qft12.n01_phi4_generating_functional_z",
+      "route_kind": "reformulation",
+      "title": "自由スカラー作用へのφ4相互作用と外場源の導入による生成汎関数Z[J]の定義",
+      "premise_node_ids": [
+        "phys.qft.lg01_natural_units_mostly_plus",
+        "phys.qft08.n01_scalar_field_lagrangian_density",
+        "phys.qft.s08_gell_mann_low_epsilon_prescription"
+      ],
+      "required_math_node_ids": [
+        "phys.qft12.n01_phi4_generating_functional_z"
+      ],
+      "assumptions": [
+        "自然単位系 ħ=c=1 および計量符号 (-,+,+,+) を用いる。",
+        "経路積分測度 Dφ と iε 処方箋により時間順序真空期待値が適切に正則化されている。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S_0[\\phi] = \\int d^4x\\left(-\\frac{1}{2}\\partial_\\mu\\phi\\partial^\\mu\\phi - \\frac{1}{2}m^2\\phi^2\\right)",
+          "to_latex": "S[\\phi] = \\int d^4x\\left(-\\frac{1}{2}\\partial_\\mu\\phi\\partial^\\mu\\phi - \\frac{1}{2}m^2\\phi^2 - \\frac{\\lambda}{4!}\\phi^4\\right),\\quad Z[J] := \\int \\mathcal{D}\\phi\\,\\exp\\left(iS[\\phi] + i\\int d^4x\\,J(x)\\phi(x)\\right)",
+          "operation_label": "φ4相互作用項の追加と外場源結合による経路積分定義",
+          "explanation": "自由実スカラー場の作用に4次自己相互作用 -λφ^4/4! を加え、外場源 J(x) との結合項 ∫d^4x J(x)φ(x) を導入して生成汎関数 Z[J] を定義する。",
+          "used_node_ids": [
+            "phys.qft.lg01_natural_units_mostly_plus",
+            "phys.qft08.n01_scalar_field_lagrangian_density"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s1_green_func",
+          "order": 2,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\frac{1}{Z[0]}\\frac{\\delta^n Z[J]}{\\delta J(x_1)\\cdots\\delta J(x_n)}\\Big|_{J=0}",
+          "to_latex": "G^{(n)}(x_1,\\dots,x_n) = \\left.\\frac{(-i)^n}{Z[0]}\\frac{\\delta^n Z[J]}{\\delta J(x_1)\\cdots\\delta J(x_n)}\\right|_{J=0} = \\langle\\Omega|T\\{\\hat{\\phi}(x_1)\\cdots\\hat{\\phi}(x_n)\\}|\\Omega\\rangle",
+          "operation_label": "外場源に対する汎関数微分と時間順序積の対応",
+          "explanation": "exp(i∫Jφ) を J(x_k) で汎関数微分すると iφ(x_k) が降りるため、(-i)^n を掛けて J=0 とおくことで相互作用真空上のn点時間順序グリーン関数が得られる。",
+          "used_node_ids": [
+            "phys.qft.s08_gell_mann_low_epsilon_prescription",
+            "phys.qft12.n01_phi4_generating_functional_z"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.qft12.n02_connected_functional_w",
+      "target_node_id": "phys.qft12.n02_connected_generating_functional_w",
+      "route_kind": "deductive",
+      "title": "Z[J]=exp(iW[J]) からの連結2点・n点グリーン関数の導出",
+      "premise_node_ids": [
+        "phys.qft12.n01_phi4_generating_functional_z"
+      ],
+      "required_math_node_ids": [
+        "phys.qft12.n02_connected_generating_functional_w"
+      ],
+      "assumptions": [
+        "Z[J] は J=0 近傍で非ゼロかつ汎関数微分可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "Z[J] = \\exp\\big(iW[J]\\big)",
+          "to_latex": "G^{(2)}(x,y) = G_c^{(2)}(x,y) + G_c^{(1)}(x)G_c^{(1)}(y)",
+          "operation_label": "対数生成汎関数の2階汎関数微分による連結分解",
+          "explanation": "W[J] = -i ln Z[J] の関係のもとで Z[J] を2回汎関数微分すると、2点関数が連結2点関数と1点関数の積に分解される。",
+          "used_node_ids": [
+            "phys.qft12.n01_phi4_generating_functional_z",
+            "phys.qft12.n02_connected_generating_functional_w"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "Z[J] = \\exp\\big(iW[J]\\big)",
+          "to_latex": "\\frac{(-i)}{Z[J]}\\frac{\\delta Z[J]}{\\delta J(x)} = \\frac{\\delta W[J]}{\\delta J(x)} = G_c^{(1)}(x; J)",
+          "operation_label": "1階汎関数微分による1点連結関数の抽出",
+          "explanation": "Z[J] = exp(iW[J]) を J(x) で1階微分して -i/Z[J] を掛けると、1点連結グリーン関数（外場下の期待値）を得る。",
+          "used_node_ids": [
+            "phys.qft12.n01_phi4_generating_functional_z"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{(-i)}{Z[J]}\\frac{\\delta Z[J]}{\\delta J(x)} = \\frac{\\delta W[J]}{\\delta J(x)} = G_c^{(1)}(x; J)",
+          "to_latex": "\\frac{(-i)^2}{Z[J]}\\frac{\\delta^2 Z[J]}{\\delta J(x)\\delta J(y)} = -i\\frac{\\delta^2 W[J]}{\\delta J(x)\\delta J(y)} + \\frac{\\delta W[J]}{\\delta J(x)}\\frac{\\delta W[J]}{\\delta J(y)}",
+          "operation_label": "積の微分則を用いた2階汎関数微分の展開",
+          "explanation": "δZ/δJ(x) = i(δW/δJ(x))Z[J] をさらに J(y) で微分し (-i)^2/Z[J] を掛けると、W の2階微分項と1階微分の積項が現れる。",
+          "used_node_ids": [
+            "phys.qft12.n02_connected_generating_functional_w"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{(-i)^2}{Z[J]}\\frac{\\delta^2 Z[J]}{\\delta J(x)\\delta J(y)} = -i\\frac{\\delta^2 W[J]}{\\delta J(x)\\delta J(y)} + \\frac{\\delta W[J]}{\\delta J(x)}\\frac{\\delta W[J]}{\\delta J(y)}",
+          "to_latex": "G^{(2)}(x,y) = G_c^{(2)}(x,y) + G_c^{(1)}(x)G_c^{(1)}(y)",
+          "operation_label": "J=0 の評価による連結2点関数の同定",
+          "explanation": "J=0 とおき G_c^(n) = (-i)^(n-1) δ^n W/δJ^n|_{J=0} を代入すれば、全2点関数が連結部分と非連結部分の和で表される。",
+          "used_node_ids": [
+            "phys.qft12.n02_connected_generating_functional_w"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.qft12.n03_legendre_effective_action",
+      "target_node_id": "phys.qft12.n03_classical_field_legendre_effective_action",
+      "route_kind": "reformulation",
+      "title": "外場源 J から古典場 φ_cl へのルジャンドル変換による有効作用の定義",
+      "premise_node_ids": [
+        "phys.qft12.n02_connected_generating_functional_w"
+      ],
+      "required_math_node_ids": [
+        "phys.qft12.n03_classical_field_legendre_effective_action"
+      ],
+      "assumptions": [
+        "写像 J(x) ↦ φ_cl(x) = δW/δJ(x) が局所的に可逆であり、J を φ_cl の汎関数 J[φ_cl] として解ける。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\phi_{\\mathrm{cl}}(x) := \\frac{\\delta W[J]}{\\delta J(x)}",
+          "to_latex": "\\Gamma[\\phi_{\\mathrm{cl}}] := W[J] - \\int d^4x\\,J(x)\\phi_{\\mathrm{cl}}(x)",
+          "operation_label": "共役変数 φ_cl の導入とルジャンドル変換の適用",
+          "explanation": "外場 J に対する W[J] の1階変分を古典場 φ_cl と定義し、独立変数を J から φ_cl へ切り替えるルジャンドル変換により有効作用 Γ[φ_cl] を定義する。",
+          "used_node_ids": [
+            "phys.qft12.n02_connected_generating_functional_w",
+            "phys.qft12.n03_classical_field_legendre_effective_action"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.qft12.n04_quantum_eom_and_inverse_propagator",
+      "target_node_id": "phys.qft12.n04_quantum_eom_inverse_propagator_identity",
+      "route_kind": "deductive",
+      "title": "有効作用の変分による量子運動方程式と2階変分の逆関係",
+      "premise_node_ids": [
+        "phys.qft12.n03_classical_field_legendre_effective_action"
+      ],
+      "required_math_node_ids": [
+        "phys.qft12.n04_quantum_eom_inverse_propagator_identity"
+      ],
+      "assumptions": [
+        "J(x) は φ_cl の滑らかな汎関数として一意に定まる。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Gamma[\\phi_{\\mathrm{cl}}] = W[J] - \\int d^4y\\,J(y)\\phi_{\\mathrm{cl}}(y)",
+          "to_latex": "\\frac{\\delta \\Gamma}{\\delta \\phi_{\\mathrm{cl}}(x)} = -J(x),\\qquad \\int d^4z\\,\\frac{\\delta^2 \\Gamma}{\\delta \\phi_{\\mathrm{cl}}(x)\\delta \\phi_{\\mathrm{cl}}(z)}\\frac{\\delta^2 W}{\\delta J(z)\\delta J(y)} = -\\delta^{(4)}(x-y)",
+          "operation_label": "連鎖律を用いた1階・2階汎関数変分の計算",
+          "explanation": "Γ[φ_cl] を φ_cl(x) で変分して -J(x) を得た後、さらに J(y) で変分して連鎖律を適用することで、2階変分同士の逆行列関係が導かれる。",
+          "used_node_ids": [
+            "phys.qft12.n03_classical_field_legendre_effective_action",
+            "phys.qft12.n04_quantum_eom_inverse_propagator_identity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma[\\phi_{\\mathrm{cl}}] = W[J] - \\int d^4y\\,J(y)\\phi_{\\mathrm{cl}}(y)",
+          "to_latex": "\\frac{\\delta \\Gamma}{\\delta \\phi_{\\mathrm{cl}}(x)} = \\int d^4y\\,\\frac{\\delta W}{\\delta J(y)}\\frac{\\delta J(y)}{\\delta \\phi_{\\mathrm{cl}}(x)} - \\int d^4y\\,\\frac{\\delta J(y)}{\\delta \\phi_{\\mathrm{cl}}(x)}\\phi_{\\mathrm{cl}}(y) - J(x) = -J(x)",
+          "operation_label": "δW/δJ = φ_cl を用いた1階変分項の相殺",
+          "explanation": "連鎖律で現れる W の変分項が δW/δJ(y) = φ_cl(y) により積の第2項と相殺し、量子運動方程式 δΓ/δφ_cl(x) = -J(x) が得られる。",
+          "used_node_ids": [
+            "phys.qft12.n03_classical_field_legendre_effective_action"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\delta \\Gamma}{\\delta \\phi_{\\mathrm{cl}}(x)} = -J(x)",
+          "to_latex": "\\int d^4z\\,\\frac{\\delta^2 \\Gamma}{\\delta \\phi_{\\mathrm{cl}}(x)\\delta \\phi_{\\mathrm{cl}}(z)}\\frac{\\delta \\phi_{\\mathrm{cl}}(z)}{\\delta J(y)} = -\\delta^{(4)}(x-y)",
+          "operation_label": "J(y) による追加変分と連鎖律の適用",
+          "explanation": "量子運動方程式の両辺を J(y) で汎関数微分し、左辺に φ_cl(z) を仲介とした連鎖律を適用する。",
+          "used_node_ids": [
+            "phys.qft12.n04_quantum_eom_inverse_propagator_identity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int d^4z\\,\\frac{\\delta^2 \\Gamma}{\\delta \\phi_{\\mathrm{cl}}(x)\\delta \\phi_{\\mathrm{cl}}(z)}\\frac{\\delta \\phi_{\\mathrm{cl}}(z)}{\\delta J(y)} = -\\delta^{(4)}(x-y)",
+          "to_latex": "\\int d^4z\\,\\frac{\\delta^2 \\Gamma}{\\delta \\phi_{\\mathrm{cl}}(x)\\delta \\phi_{\\mathrm{cl}}(z)}\\frac{\\delta^2 W}{\\delta J(z)\\delta J(y)} = -\\delta^{(4)}(x-y)",
+          "operation_label": "φ_cl = δW/δJ の代入による逆関係の完成",
+          "explanation": "δφ_cl(z)/δJ(y) = δ^2W/(δJ(z)δJ(y)) を代入すれば、Γ^(2) と連結2点関数が互いに逆演算子である恒等式が得られる。",
+          "used_node_ids": [
+            "phys.qft12.n03_classical_field_legendre_effective_action",
+            "phys.qft12.n04_quantum_eom_inverse_propagator_identity"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.qft12.n05_one_pi_tree_decomposition",
+      "target_node_id": "phys.qft12.n05_one_pi_vertex_functions",
+      "route_kind": "deductive",
+      "title": "2点関数の逆関係からの連結3点関数の1PI頂点分解の導出",
+      "premise_node_ids": [
+        "phys.qft12.n04_quantum_eom_inverse_propagator_identity"
+      ],
+      "required_math_node_ids": [
+        "phys.qft12.n05_one_pi_vertex_functions"
+      ],
+      "assumptions": [
+        "各汎関数微分演算子は可換であり、積分の順序交換が可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\int d^4w\\,\\frac{\\delta^2 \\Gamma}{\\delta \\phi_x\\delta \\phi_w}\\frac{\\delta^2 W}{\\delta J_w\\delta J_y} = -\\delta^{(4)}(x-y)",
+          "to_latex": "\\frac{\\delta^3 W}{\\delta J_x\\delta J_y\\delta J_z} = \\int d^4x'\\,d^4y'\\,d^4z'\\,\\frac{\\delta^2 W}{\\delta J_x\\delta J_{x'}}\\frac{\\delta^2 W}{\\delta J_y\\delta J_{y'}}\\frac{\\delta^2 W}{\\delta J_z\\delta J_{z'}}\\frac{\\delta^3 \\Gamma}{\\delta \\phi_{x'}\\delta \\phi_{y'}\\delta \\phi_{z'}}",
+          "operation_label": "2階変分恒等式の追加変分と逆伝播関数の畳み込み",
+          "explanation": "2点関数の逆関係式をさらに J_z で変分し、両辺に δ^2W/(δJδJ) を畳み込むことで、連結3点関数が3本の完全伝播関数と1PI 3点頂点関数の積へ分解される。",
+          "used_node_ids": [
+            "phys.qft12.n04_quantum_eom_inverse_propagator_identity",
+            "phys.qft12.n05_one_pi_vertex_functions"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int d^4w\\,\\frac{\\delta^2 \\Gamma}{\\delta \\phi_x\\delta \\phi_w}\\frac{\\delta^2 W}{\\delta J_w\\delta J_y} = -\\delta^{(4)}(x-y)",
+          "to_latex": "\\int d^4w\\,d^4z'\\,\\frac{\\delta^2 W}{\\delta J_z\\delta J_{z'}}\\frac{\\delta^3 \\Gamma}{\\delta \\phi_x\\delta \\phi_w\\delta \\phi_{z'}}\\frac{\\delta^2 W}{\\delta J_w\\delta J_y} + \\int d^4w\\,\\frac{\\delta^2 \\Gamma}{\\delta \\phi_x\\delta \\phi_w}\\frac{\\delta^3 W}{\\delta J_w\\delta J_y\\delta J_z} = 0",
+          "operation_label": "J_z による汎関数微分と連鎖律の適用",
+          "explanation": "δ/δJ_z = ∫d^4z' (δ^2W/δJ_zδJ_{z'}) δ/δφ_{z'} を用いて第1因子を微分し、第2因子の微分と合わせて右辺の0と等置する。",
+          "used_node_ids": [
+            "phys.qft12.n04_quantum_eom_inverse_propagator_identity"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\int d^4w\\,d^4z'\\,\\frac{\\delta^2 W}{\\delta J_z\\delta J_{z'}}\\frac{\\delta^3 \\Gamma}{\\delta \\phi_x\\delta \\phi_w\\delta \\phi_{z'}}\\frac{\\delta^2 W}{\\delta J_w\\delta J_y} + \\int d^4w\\,\\frac{\\delta^2 \\Gamma}{\\delta \\phi_x\\delta \\phi_w}\\frac{\\delta^3 W}{\\delta J_w\\delta J_y\\delta J_z} = 0",
+          "to_latex": "\\frac{\\delta^3 W}{\\delta J_x\\delta J_y\\delta J_z} = \\int d^4x'\\,d^4y'\\,d^4z'\\,\\frac{\\delta^2 W}{\\delta J_x\\delta J_{x'}}\\frac{\\delta^2 W}{\\delta J_y\\delta J_{y'}}\\frac{\\delta^2 W}{\\delta J_z\\delta J_{z'}}\\frac{\\delta^3 \\Gamma}{\\delta \\phi_{x'}\\delta \\phi_{y'}\\delta \\phi_{z'}}",
+          "operation_label": "逆関係を用いた δ^3W/δJ^3 の孤立化",
+          "explanation": "両辺に δ^2W/(δJ_{x'}δJ_x) を掛けて x について積分し、Γ^(2) との積が -δ(x'-w) となることを使うと、連結3点関数の1PI木分解式が得られる。",
+          "used_node_ids": [
+            "phys.qft12.n04_quantum_eom_inverse_propagator_identity",
+            "phys.qft12.n05_one_pi_vertex_functions"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.qft12.n06_dyson_equation_derivation",
+      "target_node_id": "phys.qft12.n06_dyson_equation_self_energy",
+      "route_kind": "deductive",
+      "title": "1PI自己エネルギー挿入の幾何級数和によるダイソン方程式の導出",
+      "premise_node_ids": [
+        "phys.qft12.n04_quantum_eom_inverse_propagator_identity",
+        "phys.qft06.n07_propagators_feynman_causal"
+      ],
+      "required_math_node_ids": [
+        "phys.qft12.n06_dyson_equation_self_energy"
+      ],
+      "assumptions": [
+        "並進不変性により運動量空間で2点関数が対角化される。",
+        "自己エネルギー補正は摂動論的に幾何級数として総和可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\tilde{G}_0(p) = \\frac{-i}{p^2 + m^2 - i\\epsilon},\\qquad \\tilde{\\Gamma}^{(2)}(p) = -(p^2 + m^2) - \\Sigma(p^2)",
+          "to_latex": "\\tilde{G}_c^{(2)}(p) = \\frac{-i}{p^2 + m^2 + \\Sigma(p^2) - i\\epsilon}",
+          "operation_label": "1PI自己エネルギーの幾何級数和と逆関係による完全伝播関数の導出",
+          "explanation": "自由伝播関数に1PI 2点補正 -iΣ(p^2) を繰り返し挿入した幾何級数を総和する（あるいは運動量空間で Γ^(2) の逆数を取る）ことでダイソン方程式の解を得る。",
+          "used_node_ids": [
+            "phys.qft06.n07_propagators_feynman_causal",
+            "phys.qft12.n04_quantum_eom_inverse_propagator_identity",
+            "phys.qft12.n06_dyson_equation_self_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{G}_0(p) = \\frac{-i}{p^2 + m^2 - i\\epsilon},\\qquad \\tilde{\\Gamma}^{(2)}(p) = -(p^2 + m^2) - \\Sigma(p^2)",
+          "to_latex": "\\tilde{G}_c^{(2)}(p) = \\tilde{G}_0(p) + \\tilde{G}_0(p)\\big(-i\\Sigma(p^2)\\big)\\tilde{G}_0(p) + \\tilde{G}_0(p)\\big(-i\\Sigma(p^2)\\big)\\tilde{G}_0(p)\\big(-i\\Sigma(p^2)\\big)\\tilde{G}_0(p) + \\cdots",
+          "operation_label": "1PI自己エネルギー挿入による全2点グラフの展開",
+          "explanation": "連結2点関数を1粒子既約な自己エネルギーブロック -iΣ(p^2) の直列連結として展開する。",
+          "used_node_ids": [
+            "phys.qft06.n07_propagators_feynman_causal",
+            "phys.qft12.n06_dyson_equation_self_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{G}_c^{(2)}(p) = \\tilde{G}_0(p) + \\tilde{G}_0(p)\\big(-i\\Sigma(p^2)\\big)\\tilde{G}_0(p) + \\tilde{G}_0(p)\\big(-i\\Sigma(p^2)\\big)\\tilde{G}_0(p)\\big(-i\\Sigma(p^2)\\big)\\tilde{G}_0(p) + \\cdots",
+          "to_latex": "\\tilde{G}_c^{(2)}(p) = \\frac{\\tilde{G}_0(p)}{1 - \\big(-i\\Sigma(p^2)\\big)\\tilde{G}_0(p)}",
+          "operation_label": "無限幾何級数の総和（ダイソン方程式の代数解）",
+          "explanation": "公比 (-iΣ(p^2))G_0(p) の等比級数を総和し、G_c^(2) = G_0 + G_0(-iΣ)G_c^(2) を解く。",
+          "used_node_ids": [
+            "phys.qft12.n06_dyson_equation_self_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{G}_c^{(2)}(p) = \\frac{\\tilde{G}_0(p)}{1 - \\big(-i\\Sigma(p^2)\\big)\\tilde{G}_0(p)}",
+          "to_latex": "\\tilde{G}_c^{(2)}(p) = \\frac{-i}{p^2 + m^2 + \\Sigma(p^2) - i\\epsilon}",
+          "operation_label": "自由伝播関数 G_0(p) の代入と整理",
+          "explanation": "G_0(p) = -i/(p^2+m^2-iε) を代入して分母分子を整理すると、質量項が m^2 + Σ(p^2) にシフトした完全伝播関数が得られる。",
+          "used_node_ids": [
+            "phys.qft06.n07_propagators_feynman_causal",
+            "phys.qft12.n06_dyson_equation_self_energy"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.qft12.n07_tadpole_cancellation",
+      "target_node_id": "phys.qft12.n07_tadpole_cancellation_one_point",
+      "route_kind": "deductive",
+      "title": "真空期待値 φ_cl = v における量子運動方程式とおたまじゃくし相殺条件",
+      "premise_node_ids": [
+        "phys.qft12.n04_quantum_eom_inverse_propagator_identity",
+        "phys.qft12.n05_one_pi_vertex_functions"
+      ],
+      "required_math_node_ids": [
+        "phys.qft12.n07_tadpole_cancellation_one_point"
+      ],
+      "assumptions": [
+        "外場 J=0 における真の真空期待値 v = ⟨Ω|φ|Ω⟩ まわりで揺らぎ場 h = φ - v を展開する。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\left.\\frac{\\delta \\Gamma[\\phi_{\\mathrm{cl}}]}{\\delta \\phi_{\\mathrm{cl}}(x)}\\right|_{J=0} = 0,\\qquad \\phi_{\\mathrm{cl}} = v",
+          "to_latex": "\\Gamma^{(1)}(v) = \\Gamma_{\\mathrm{tree}}^{(1)}(v) + \\Gamma_{\\mathrm{1\\text{-}loop}}^{\\mathrm{tadpole}}(v) + \\cdots = 0",
+          "operation_label": "真の真空における1PI 1点頂点関数の相殺条件",
+          "explanation": "J=0 の量子運動方程式 δΓ/δφ_cl = 0 を真の真空期待値 v で評価すると、1PI 1点関数 Γ^(1)(v) が0となり、すべてのおたまじゃくし図の寄与が相殺される。",
+          "used_node_ids": [
+            "phys.qft12.n04_quantum_eom_inverse_propagator_identity",
+            "phys.qft12.n05_one_pi_vertex_functions",
+            "phys.qft12.n07_tadpole_cancellation_one_point"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\left.\\frac{\\delta \\Gamma[\\phi_{\\mathrm{cl}}]}{\\delta \\phi_{\\mathrm{cl}}(x)}\\right|_{J=0} = 0,\\qquad \\phi_{\\mathrm{cl}} = v",
+          "to_latex": "\\Gamma^{(1)}(v) = \\left.\\frac{\\delta \\Gamma[\\phi_{\\mathrm{cl}}]}{\\delta \\phi_{\\mathrm{cl}}(x)}\\right|_{\\phi_{\\mathrm{cl}}=v} = 0",
+          "operation_label": "1PI 1点頂点関数 Γ^(1)(v) の定義の適用",
+          "explanation": "φ_cl = v における Γ の1階変分が 1PI 1点頂点関数 Γ^(1)(v) であり、量子運動方程式によりこれが 0 となる。",
+          "used_node_ids": [
+            "phys.qft12.n04_quantum_eom_inverse_propagator_identity",
+            "phys.qft12.n05_one_pi_vertex_functions"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma^{(1)}(v) = \\left.\\frac{\\delta \\Gamma[\\phi_{\\mathrm{cl}}]}{\\delta \\phi_{\\mathrm{cl}}(x)}\\right|_{\\phi_{\\mathrm{cl}}=v} = 0",
+          "to_latex": "\\Gamma^{(1)}(v) = \\Gamma_{\\mathrm{tree}}^{(1)}(v) + \\Gamma_{\\mathrm{1\\text{-}loop}}^{\\mathrm{tadpole}}(v) + \\cdots = 0",
+          "operation_label": "ループ展開によるおたまじゃくし図の相殺表示",
+          "explanation": "Γ^(1)(v) をループ次数で展開すれば、古典的1点項と1ループ以上のおたまじゃくし（タッドポール）図の和が各次数で打ち消し合う条件が得られる。",
+          "used_node_ids": [
+            "phys.qft12.n07_tadpole_cancellation_one_point"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.qft12.n08_loop_expansion_hbar",
+      "target_node_id": "phys.qft12.n08_loop_expansion_hbar_effective_action",
+      "route_kind": "deductive",
+      "title": "鞍部点展開（ħ展開）による1ループ有効作用の導出",
+      "premise_node_ids": [
+        "phys.qft12.n01_phi4_generating_functional_z",
+        "phys.qft12.n03_classical_field_legendre_effective_action"
+      ],
+      "required_math_node_ids": [
+        "phys.qft12.n08_loop_expansion_hbar_effective_action"
+      ],
+      "assumptions": [
+        "ħ を微小パラメータとみなし、停留点 φ_0 まわりのガウス積分（鞍部点法）が有効である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\exp\\left(\\frac{i}{\\hbar}W[J]\\right) = \\int \\mathcal{D}\\phi\\,\\exp\\left(\\frac{i}{\\hbar}\\Big(S[\\phi] + \\int d^4x\\,J\\phi\\Big)\\right)",
+          "to_latex": "\\Gamma[\\phi_{\\mathrm{cl}}] = S[\\phi_{\\mathrm{cl}}] + \\frac{i\\hbar}{2}\\operatorname{Tr}\\ln\\left(-\\frac{\\delta^2 S}{\\delta\\phi_{\\mathrm{cl}}\\delta\\phi_{\\mathrm{cl}}}\\right) + \\mathcal{O}(\\hbar^2)",
+          "operation_label": "鞍部点展開とガウス汎関数積分による1ループ有効作用の導出",
+          "explanation": "経路積分を古典解まわりで2次まで展開してガウス積分を実行し、ルジャンドル変換を施すことで有効作用の ħ（ループ）展開が得られる。",
+          "used_node_ids": [
+            "phys.qft12.n01_phi4_generating_functional_z",
+            "phys.qft12.n03_classical_field_legendre_effective_action",
+            "phys.qft12.n08_loop_expansion_hbar_effective_action"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\exp\\left(\\frac{i}{\\hbar}W[J]\\right) = \\int \\mathcal{D}\\phi\\,\\exp\\left(\\frac{i}{\\hbar}\\Big(S[\\phi] + \\int d^4x\\,J\\phi\\Big)\\right)",
+          "to_latex": "W[J] = S[\\phi_0] + \\int d^4x\\,J\\phi_0 + \\frac{i\\hbar}{2}\\operatorname{Tr}\\ln\\left(-\\frac{\\delta^2 S}{\\delta\\phi_0\\delta\\phi_0}\\right) + \\mathcal{O}(\\hbar^2)",
+          "operation_label": "停留点 φ_0 まわりのガウス積分評価",
+          "explanation": "δS/δφ|_φ0 + J = 0 を満たす φ_0 まわりで φ = φ_0 + √ħ η と展開し、η のガウス積分から (det(-S''))^(-1/2) を得る。",
+          "used_node_ids": [
+            "phys.qft12.n01_phi4_generating_functional_z"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "W[J] = S[\\phi_0] + \\int d^4x\\,J\\phi_0 + \\frac{i\\hbar}{2}\\operatorname{Tr}\\ln\\left(-\\frac{\\delta^2 S}{\\delta\\phi_0\\delta\\phi_0}\\right) + \\mathcal{O}(\\hbar^2)",
+          "to_latex": "\\Gamma[\\phi_{\\mathrm{cl}}] = S[\\phi_{\\mathrm{cl}}] + \\frac{i\\hbar}{2}\\operatorname{Tr}\\ln\\left(-\\frac{\\delta^2 S}{\\delta\\phi_{\\mathrm{cl}}\\delta\\phi_{\\mathrm{cl}}}\\right) + \\mathcal{O}(\\hbar^2)",
+          "operation_label": "φ_cl = φ_0 + O(ħ) を用いたルジャンドル変換",
+          "explanation": "Γ[φ_cl] = W[J] - ∫Jφ_cl に φ_0 = φ_cl + O(ħ) を代入すると、1次誤差は停留条件 δS/δφ_0 + J = 0 により消え、1ループ有効作用が確定する。",
+          "used_node_ids": [
+            "phys.qft12.n03_classical_field_legendre_effective_action",
+            "phys.qft12.n08_loop_expansion_hbar_effective_action"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    },
+    {
+      "id": "drv.qft12.n09_effective_potential_1loop",
+      "target_node_id": "phys.qft12.n09_coleman_weinberg_effective_potential",
+      "route_kind": "deductive",
+      "title": "一様場配置における1ループ有効作用からの有効ポテンシャル導出",
+      "premise_node_ids": [
+        "phys.qft12.n08_loop_expansion_hbar_effective_action",
+        "phys.qft12.n01_phi4_generating_functional_z"
+      ],
+      "required_math_node_ids": [
+        "phys.qft12.n09_coleman_weinberg_effective_potential"
+      ],
+      "assumptions": [
+        "古典場 φ_cl は時空に依存しない定数である。",
+        "4次元運動量積分に対してウィック回転 k^0 = i k_E^0 が可能である。"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\Gamma[\\phi_{\\mathrm{cl}}] = S[\\phi_{\\mathrm{cl}}] + \\frac{i\\hbar}{2}\\operatorname{Tr}\\ln\\left(-\\frac{\\delta^2 S}{\\delta\\phi_{\\mathrm{cl}}\\delta\\phi_{\\mathrm{cl}}}\\right) + \\mathcal{O}(\\hbar^2)",
+          "to_latex": "V_{\\mathrm{eff}}^{(1)}(\\phi_{\\mathrm{cl}}) = \\frac{1}{2}m^2\\phi_{\\mathrm{cl}}^2 + \\frac{\\lambda}{4!}\\phi_{\\mathrm{cl}}^4 + \\frac{\\hbar}{2}\\int\\frac{d^4k_E}{(2\\pi)^4}\\ln\\left(k_E^2 + m^2 + \\frac{\\lambda}{2}\\phi_{\\mathrm{cl}}^2\\right)",
+          "operation_label": "定数場での運動量対角化とウィック回転による有効ポテンシャル導出",
+          "explanation": "一様場 φ_cl = const. に対して2階変分演算子を運動量空間で対角化し、ウィック回転を行って時空体積 Ω_4 で割ることで1ループ有効ポテンシャルを得る。",
+          "used_node_ids": [
+            "phys.qft12.n01_phi4_generating_functional_z",
+            "phys.qft12.n08_loop_expansion_hbar_effective_action",
+            "phys.qft12.n09_coleman_weinberg_effective_potential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma[\\phi_{\\mathrm{cl}}] = S[\\phi_{\\mathrm{cl}}] + \\frac{i\\hbar}{2}\\operatorname{Tr}\\ln\\left(-\\frac{\\delta^2 S}{\\delta\\phi_{\\mathrm{cl}}\\delta\\phi_{\\mathrm{cl}}}\\right) + \\mathcal{O}(\\hbar^2)",
+          "to_latex": "\\Gamma[\\phi_{\\mathrm{cl}}] = -\\Omega_4\\left(\\frac{1}{2}m^2\\phi_{\\mathrm{cl}}^2 + \\frac{\\lambda}{4!}\\phi_{\\mathrm{cl}}^4\\right) + \\frac{i\\hbar}{2}\\Omega_4\\int\\frac{d^4k}{(2\\pi)^4}\\ln\\left(k^2 + m^2 + \\frac{\\lambda}{2}\\phi_{\\mathrm{cl}}^2\\right)",
+          "operation_label": "φ4作用の2階変分と運動量空間でのトレース評価",
+          "explanation": "-δ^2S/δφ^2 = -□ + m^2 + (λ/2)φ_cl^2 を運動量空間で評価し、Tr -> Ω_4 ∫d^4k/(2π)^4 により積分表示へ書き換える。",
+          "used_node_ids": [
+            "phys.qft12.n01_phi4_generating_functional_z",
+            "phys.qft12.n08_loop_expansion_hbar_effective_action"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\Gamma[\\phi_{\\mathrm{cl}}] = -\\Omega_4\\left(\\frac{1}{2}m^2\\phi_{\\mathrm{cl}}^2 + \\frac{\\lambda}{4!}\\phi_{\\mathrm{cl}}^4\\right) + \\frac{i\\hbar}{2}\\Omega_4\\int\\frac{d^4k}{(2\\pi)^4}\\ln\\left(k^2 + m^2 + \\frac{\\lambda}{2}\\phi_{\\mathrm{cl}}^2\\right)",
+          "to_latex": "V_{\\mathrm{eff}}^{(1)}(\\phi_{\\mathrm{cl}}) = \\frac{1}{2}m^2\\phi_{\\mathrm{cl}}^2 + \\frac{\\lambda}{4!}\\phi_{\\mathrm{cl}}^4 + \\frac{\\hbar}{2}\\int\\frac{d^4k_E}{(2\\pi)^4}\\ln\\left(k_E^2 + m^2 + \\frac{\\lambda}{2}\\phi_{\\mathrm{cl}}^2\\right)",
+          "operation_label": "ウィック回転 k^0 = i k_E^0 と Γ = -Ω_4 V_eff の適用",
+          "explanation": "d^4k = i d^4k_E および k^2 = k_E^2 を用いてユークリッド運動量積分に直し、-Ω_4 で割ることで有効ポテンシャルが得られる。",
+          "used_node_ids": [
+            "phys.qft12.n09_coleman_weinberg_effective_potential"
+          ],
+          "sympy_check_hint": null
+        }
+      ]
+    }
+  ]
+}
