@@ -1,0 +1,659 @@
+{
+  "pack_meta": {
+    "pack_id": "phys_qft03_scattering_s_matrix",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "量子の散乱現象とS行列：運動量固有状態のローレンツ変換・ローレンツ不変散乱断面積・不変散乱振幅・漸近完全性・相互作用描像とε処方箋",
+    "language": "ja",
+    "description": "自然単位系(ħ=c=1)と計量符号(-,+,+,+)で統一し、既存の古典力学・線形代数・量子力学・特殊相対論・リー群および前章のQFTパックのノードIDを前提として接続すること。"
+  },
+  "nodes": [
+    {
+      "id": "phys.qft.s01_lorentz_invariant_measure_states",
+      "short_code": "QFTS01",
+      "kind": "definition",
+      "title": "運動量固有状態のローレンツ変換とローレンツ不変規格化",
+      "summary": "自然単位系（ħ=c=1）および計量(-,+,+,+)のもとで、1粒子運動量固有状態のローレンツ不変な規格化とローレンツ不変積分測度、およびローレンツ変換則を定義する。",
+      "canonical_latex": "\\langle \\mathbf{p}' | \\mathbf{p} \\rangle = 2E_{\\mathbf{p}}(2\\pi)^3\\delta^{(3)}(\\mathbf{p}'-\\mathbf{p}),\\quad \\int \\frac{d^3\\mathbf{p}}{(2\\pi)^3 2E_{\\mathbf{p}}}|\\mathbf{p}\\rangle\\langle\\mathbf{p}| = \\hat{I}_1,\\quad U(\\Lambda)|\\mathbf{p}\\rangle = |\\Lambda\\mathbf{p}\\rangle",
+      "aliases_latex": [
+        "\\int \\frac{d^4 p}{(2\\pi)^4}(2\\pi)\\delta(p^2+m^2)\\theta(p^0) = \\int \\frac{d^3\\mathbf{p}}{(2\\pi)^3 2E_{\\mathbf{p}}}"
+      ],
+      "keywords": [
+        "運動量固有状態",
+        "ローレンツ不変測度",
+        "ローレンツ変換",
+        "規格化条件",
+        "1粒子状態"
+      ],
+      "domain_tags": [
+        "quantum_field_theory",
+        "scattering_theory",
+        "special_relativity"
+      ]
+    },
+    {
+      "id": "phys.qft.s02_asymptotic_states_completeness",
+      "short_code": "QFTS02",
+      "kind": "definition",
+      "title": "漸近状態（in/out状態）と漸近完全性",
+      "summary": "散乱過程の遠過去（t→-∞）および遠未来（t→+∞）において粒子間相互作用が無視できる自由多粒子状態（in状態・out状態）を定義し、各々が全ヒルベルト空間を張る漸近完全性を定式化する。",
+      "canonical_latex": "|\\alpha;\\mathrm{in}\\rangle \\;(t\\to -\\infty),\\quad |\\beta;\\mathrm{out}\\rangle \\;(t\\to +\\infty),\\qquad \\sum_{\\alpha}|\\alpha;\\mathrm{in}\\rangle\\langle\\alpha;\\mathrm{in}| = \\sum_{\\beta}|\\beta;\\mathrm{out}\\rangle\\langle\\beta;\\mathrm{out}| = \\hat{I}",
+      "aliases_latex": [
+        "\\mathcal{H}_{\\mathrm{in}} = \\mathcal{H}_{\\mathrm{out}} = \\mathcal{H}"
+      ],
+      "keywords": [
+        "漸近状態",
+        "in状態",
+        "out状態",
+        "漸近完全性",
+        "フォック空間"
+      ],
+      "domain_tags": [
+        "quantum_field_theory",
+        "scattering_theory"
+      ]
+    },
+    {
+      "id": "phys.qft.s03_s_matrix_unitarity",
+      "short_code": "QFTS03",
+      "kind": "theorem_formula",
+      "title": "S行列の定義とユニタリ性（確率保存）",
+      "summary": "in状態からout状態への遷移振幅としてS行列（散乱行列）を定義し、漸近完全性からS行列のユニタリ性（全遷移確率の和が1であること）を導く。",
+      "canonical_latex": "S_{\\beta\\alpha} := \\langle\\beta;\\mathrm{out}|\\alpha;\\mathrm{in}\\rangle = \\langle\\beta;\\mathrm{in}|\\hat{S}|\\alpha;\\mathrm{in}\\rangle,\\qquad \\hat{S}^\\dagger\\hat{S} = \\hat{S}\\hat{S}^\\dagger = \\hat{I}",
+      "aliases_latex": [
+        "\\sum_{\\beta}|S_{\\beta\\alpha}|^2 = 1"
+      ],
+      "keywords": [
+        "S行列",
+        "散乱行列",
+        "ユニタリ性",
+        "確率保存"
+      ],
+      "domain_tags": [
+        "quantum_field_theory",
+        "scattering_theory"
+      ]
+    },
+    {
+      "id": "phys.qft.s04_t_matrix_invariant_amplitude",
+      "short_code": "QFTS04",
+      "kind": "definition",
+      "title": "T行列とローレンツ不変散乱振幅 M",
+      "summary": "S行列から無散乱成分（恒等演算子）を除いた遷移行列Tを定義し、4元運動量保存のデルタ関数を分離することでローレンツ不変散乱振幅 M を定義する。",
+      "canonical_latex": "\\hat{S} = \\hat{I} + i\\hat{T},\\qquad \\langle f | i\\hat{T} | i \\rangle = (2\\pi)^4\\delta^{(4)}(P_f - P_i)\\,i\\mathcal{M}_{fi}",
+      "aliases_latex": [
+        "S_{fi} = \\delta_{fi} + i(2\\pi)^4\\delta^{(4)}(P_f - P_i)\\mathcal{M}_{fi}"
+      ],
+      "keywords": [
+        "T行列",
+        "不変散乱振幅",
+        "4元運動量保存",
+        "ファインマン振幅"
+      ],
+      "domain_tags": [
+        "quantum_field_theory",
+        "scattering_theory"
+      ]
+    },
+    {
+      "id": "phys.qft.s05_optical_theorem",
+      "short_code": "QFTS05",
+      "kind": "theorem_formula",
+      "title": "光学定理（不変散乱振幅の虚部と全散乱確率）",
+      "summary": "S行列のユニタリ性から遷移行列Tの満たす関係式を導き、前方散乱の不変振幅の虚部が全終状態への遷移確率の和（全断面積）に比例することを主張する光学定理を導出する。",
+      "canonical_latex": "-i(\\hat{T} - \\hat{T}^\\dagger) = \\hat{T}^\\dagger\\hat{T},\\qquad 2\\operatorname{Im}\\mathcal{M}(i\\to i) = \\sum_f \\int d\\Pi_f\\,(2\\pi)^4\\delta^{(4)}(P_f - P_i)|\\mathcal{M}(i\\to f)|^2",
+      "aliases_latex": [
+        "\\operatorname{Im}\\mathcal{M}(i\\to i) = 2E_{\\mathrm{cm}}|\\mathbf{p}_i|\\sigma_{\\mathrm{tot}}"
+      ],
+      "keywords": [
+        "光学定理",
+        "ユニタリ性",
+        "前方散乱",
+        "全散乱断面積"
+      ],
+      "domain_tags": [
+        "quantum_field_theory",
+        "scattering_theory"
+      ]
+    },
+    {
+      "id": "phys.qft.s06_lorentz_invariant_cross_section",
+      "short_code": "QFTS06",
+      "kind": "theorem_formula",
+      "title": "ローレンツ不変散乱断面積とメラーのフラックス因子",
+      "summary": "2粒子衝突における単位時間・単位体積あたりの遷移確率と入射粒子束から微分散乱断面積を導出し、メラーのフラックス因子とローレンツ不変位相空間（LIPS）による不変表現を与える。",
+      "canonical_latex": "d\\sigma = \\frac{1}{4\\sqrt{(p_A\\cdot p_B)^2 - m_A^2 m_B^2}}|\\mathcal{M}_{fi}|^2\\,d\\Phi_n,\\qquad d\\Phi_n := (2\\pi)^4\\delta^{(4)}\\!\\left(p_A+p_B-\\sum_{j=1}^{n}p_j\\right)\\prod_{j=1}^{n}\\frac{d^3\\mathbf{p}_j}{(2\\pi)^3 2E_j}",
+      "aliases_latex": [
+        "\\left(\\frac{d\\sigma}{d\\Omega}\\right)_{\\mathrm{CM}} = \\frac{1}{64\\pi^2 E_{\\mathrm{cm}}^2}\\frac{|\\mathbf{p}_f|}{|\\mathbf{p}_i|}|\\mathcal{M}_{fi}|^2"
+      ],
+      "keywords": [
+        "散乱断面積",
+        "ローレンツ不変",
+        "メラーのフラックス因子",
+        "LIPS",
+        "位相空間積分"
+      ],
+      "domain_tags": [
+        "quantum_field_theory",
+        "scattering_theory",
+        "special_relativity"
+      ]
+    },
+    {
+      "id": "phys.qft.s07_interaction_picture_dyson_s_matrix",
+      "short_code": "QFTS07",
+      "kind": "theorem_formula",
+      "title": "相互作用描像とダイソン級数によるS行列の共変表示",
+      "summary": "ハミルトニアンを自由部と相互作用部に分離した相互作用描像の時間発展演算子（ダイソン級数）の漸近極限として、時間順序積を用いたS行列のローレンツ共変な表現を導く。",
+      "canonical_latex": "\\hat{S} = \\lim_{\\substack{t_+\\to +\\infty \\\\ t_-\\to -\\infty}} U_I(t_+, t_-) = T\\exp\\!\\left(-i\\int_{-\\infty}^{\\infty} H_I(t)\\,dt\\right) = T\\exp\\!\\left(-i\\int d^4x\\,\\mathcal{H}_I(x)\\right)",
+      "aliases_latex": [
+        "\\hat{S} = \\sum_{n=0}^{\\infty}\\frac{(-i)^n}{n!}\\int d^4x_1\\cdots d^4x_n\\,T\\{\\mathcal{H}_I(x_1)\\cdots\\mathcal{H}_I(x_n)\\}"
+      ],
+      "keywords": [
+        "相互作用描像",
+        "ダイソン級数",
+        "時間順序積",
+        "S行列",
+        "摂動論"
+      ],
+      "domain_tags": [
+        "quantum_field_theory",
+        "scattering_theory"
+      ]
+    },
+    {
+      "id": "phys.qft.s08_gell_mann_low_epsilon_prescription",
+      "short_code": "QFTS08",
+      "kind": "theorem_formula",
+      "title": "断熱的スイッチングとε処方箋（ゲル＝マン＝ロウの定理）",
+      "summary": "相互作用を時間的に断熱減衰させる因子 exp(-ε|t|) を導入し、遠過去・遠未来の自由真空 |0⟩ から厳密な相互作用基底状態 |Ω⟩ を生成し、真空期待値（相関関数）を摂動計算可能にするε処方箋を導く。",
+      "canonical_latex": "|\\Omega\\rangle = \\lim_{\\epsilon\\to 0^+}\\frac{U_{I,\\epsilon}(0,-\\infty)|0\\rangle}{\\langle 0|U_{I,\\epsilon}(0,-\\infty)|0\\rangle},\\qquad \\langle\\Omega|T\\{\\phi(x_1)\\cdots\\phi(x_n)\\}|\\Omega\\rangle = \\lim_{\\epsilon\\to 0^+}\\frac{\\langle 0|T\\{\\phi_I(x_1)\\cdots\\phi_I(x_n)\\,\\exp[-i\\int dt\\,e^{-\\epsilon|t|}H_I(t)]\\}|0\\rangle}{\\langle 0|T\\{\\exp[-i\\int dt\\,e^{-\\epsilon|t|}H_I(t)]\\}|0\\rangle}",
+      "aliases_latex": [
+        "H_I^\\epsilon(t) := e^{-\\epsilon|t|}H_I(t)\\quad (\\epsilon > 0)"
+      ],
+      "keywords": [
+        "ε処方箋",
+        "断熱的スイッチング",
+        "ゲル＝マン＝ロウの定理",
+        "相互作用真空",
+        "相関関数"
+      ],
+      "domain_tags": [
+        "quantum_field_theory",
+        "scattering_theory"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "d_qft_s01",
+      "target_node_id": "phys.qft.s01_lorentz_invariant_measure_states",
+      "route_kind": "reformulation",
+      "title": "4元運動量空間のオンシェル不変測度と運動量固有状態の定義",
+      "premise_node_ids": [
+        "phys.rel.sr05_minkowski_metric_interval",
+        "phys.rel.sr08_energy_momentum_relation",
+        "phys.rel.sr02_lorentz_transformation",
+        "phys.qm.op01_dirac_bra_ket_hilbert"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "自然単位系（ħ=c=1）および計量符号(-,+,+,+)を採用する",
+        "スピン0の単一粒子状態を対象とする"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def_measure",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\int \\frac{d^4p}{(2\\pi)^4}(2\\pi)\\delta(p^2+m^2)\\theta(p^0),\\quad p^2 = -E_{\\mathbf{p}}^2 + |\\mathbf{p}|^2 = -m^2",
+          "to_latex": "\\int \\frac{d^3\\mathbf{p}}{(2\\pi)^3 2E_{\\mathbf{p}}}|\\mathbf{p}\\rangle\\langle\\mathbf{p}| = \\hat{I}_1,\\quad \\langle\\mathbf{p}'|\\mathbf{p}\\rangle = 2E_{\\mathbf{p}}(2\\pi)^3\\delta^{(3)}(\\mathbf{p}'-\\mathbf{p}),\\quad U(\\Lambda)|\\mathbf{p}\\rangle = |\\Lambda\\mathbf{p}\\rangle",
+          "operation_label": "不変積分測度の導入と状態の規格化",
+          "explanation": "質量殻条件 p^2+m^2=0 かつ正エネルギー条件 p^0>0 を満たす4元運動量積分を3次元積分へ書き換えることで、ローレンツ不変測度 d^3p/((2π)^3 2E_p) を得る。これに整合するよう1粒子状態 |p⟩ の規格化とローレンツ変換 U(Λ)|p⟩ = |Λp⟩ を定める。",
+          "used_node_ids": [
+            "phys.qm.op01_dirac_bra_ket_hilbert",
+            "phys.rel.sr02_lorentz_transformation",
+            "phys.rel.sr05_minkowski_metric_interval",
+            "phys.rel.sr08_energy_momentum_relation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d_qft_s02",
+      "target_node_id": "phys.qft.s02_asymptotic_states_completeness",
+      "route_kind": "reformulation",
+      "title": "1粒子運動量固有状態から漸近多粒子状態と完全性関係への拡張",
+      "premise_node_ids": [
+        "phys.qft.s01_lorentz_invariant_measure_states",
+        "phys.qm.op03_hermitian_spectral_theorem",
+        "phys.qm.ps07_scattering_amplitude_cross_section"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "相互作用が空間的・時間的に局在した短距離相互作用である",
+        "束縛状態が存在する場合はそれらも漸近状態の基底に含める"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def_asymp",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|\\mathbf{p}_1,\\dots,\\mathbf{p}_n\\rangle_{\\mathrm{free}},\\quad \\sum_{n}|\\psi_n\\rangle\\langle\\psi_n| = \\hat{I}",
+          "to_latex": "|\\alpha;\\mathrm{in}\\rangle \\;(t\\to -\\infty),\\quad |\\beta;\\mathrm{out}\\rangle \\;(t\\to +\\infty),\\qquad \\sum_{\\alpha}|\\alpha;\\mathrm{in}\\rangle\\langle\\alpha;\\mathrm{in}| = \\sum_{\\beta}|\\beta;\\mathrm{out}\\rangle\\langle\\beta;\\mathrm{out}| = \\hat{I}",
+          "operation_label": "漸近状態の導入と完全性関係の仮定",
+          "explanation": "遠過去および遠未来で波束が空間的に分離し自由粒子として振る舞う多粒子状態をそれぞれ in 状態、out 状態として定義し、これらがそれぞれ厳密な全ハミルトニアンの固有状態として完全正規直交系をなすこと（漸近完全性）を要請する。",
+          "used_node_ids": [
+            "phys.qft.s01_lorentz_invariant_measure_states",
+            "phys.qm.op03_hermitian_spectral_theorem",
+            "phys.qm.ps07_scattering_amplitude_cross_section"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d_qft_s03",
+      "target_node_id": "phys.qft.s03_s_matrix_unitarity",
+      "route_kind": "deductive",
+      "title": "漸近完全性からのS行列ユニタリ性の導出",
+      "premise_node_ids": [
+        "phys.qft.s02_asymptotic_states_completeness",
+        "phys.qm.op02_hermitian_operator_observables"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "in状態およびout状態がそれぞれ完全正規直交系をなす（漸近完全性）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "S_{\\beta\\alpha} := \\langle\\beta;\\mathrm{out}|\\alpha;\\mathrm{in}\\rangle,\\quad \\sum_{\\gamma}|\\gamma;\\mathrm{out}\\rangle\\langle\\gamma;\\mathrm{out}| = \\hat{I}",
+          "to_latex": "\\hat{S}^\\dagger\\hat{S} = \\hat{S}\\hat{S}^\\dagger = \\hat{I}",
+          "operation_label": "完全性関係を用いたユニタリ性の導出",
+          "explanation": "S行列要素の定義と in/out 状態の完全性関係を組み合わせることで、S演算子がユニタリ演算子であることを示す。",
+          "used_node_ids": [
+            "phys.qft.s02_asymptotic_states_completeness",
+            "phys.qm.op02_hermitian_operator_observables"
+          ]
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S_{\\beta\\alpha} := \\langle\\beta;\\mathrm{out}|\\alpha;\\mathrm{in}\\rangle,\\quad \\sum_{\\gamma}|\\gamma;\\mathrm{out}\\rangle\\langle\\gamma;\\mathrm{out}| = \\hat{I}",
+          "to_latex": "\\langle\\beta;\\mathrm{in}|\\hat{S}|\\alpha;\\mathrm{in}\\rangle = \\langle\\beta;\\mathrm{out}|\\alpha;\\mathrm{in}\\rangle \\implies |\\alpha;\\mathrm{in}\\rangle = \\sum_{\\gamma} S_{\\gamma\\alpha}|\\gamma;\\mathrm{out}\\rangle,\\quad \\hat{S}|\\gamma;\\mathrm{out}\\rangle = |\\gamma;\\mathrm{in}\\rangle",
+          "operation_label": "S演算子による基底変換の表示",
+          "explanation": "out状態の完全性関係を |α;in⟩ に挿入し、S行列要素が in 基底と out 基底の間の変換行列であることを表す。",
+          "used_node_ids": [
+            "phys.qft.s02_asymptotic_states_completeness"
+          ]
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle\\beta;\\mathrm{in}|\\hat{S}|\\alpha;\\mathrm{in}\\rangle = \\langle\\beta;\\mathrm{out}|\\alpha;\\mathrm{in}\\rangle \\implies |\\alpha;\\mathrm{in}\\rangle = \\sum_{\\gamma} S_{\\gamma\\alpha}|\\gamma;\\mathrm{out}\\rangle,\\quad \\hat{S}|\\gamma;\\mathrm{out}\\rangle = |\\gamma;\\mathrm{in}\\rangle",
+          "to_latex": "\\sum_{\\gamma} S_{\\gamma\\beta}^* S_{\\gamma\\alpha} = \\sum_{\\gamma}\\langle\\beta;\\mathrm{in}|\\gamma;\\mathrm{out}\\rangle\\langle\\gamma;\\mathrm{out}|\\alpha;\\mathrm{in}\\rangle = \\langle\\beta;\\mathrm{in}|\\alpha;\\mathrm{in}\\rangle = \\delta_{\\beta\\alpha}",
+          "operation_label": "out状態の完全性とin状態の直交性の適用",
+          "explanation": "S行列の積を計算し、中間の out 状態の和に完全性関係を適用すると、in 状態の正規直交性から単位行列が得られる。",
+          "used_node_ids": [
+            "phys.qft.s02_asymptotic_states_completeness",
+            "phys.qm.op02_hermitian_operator_observables"
+          ]
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{\\gamma} S_{\\gamma\\beta}^* S_{\\gamma\\alpha} = \\sum_{\\gamma}\\langle\\beta;\\mathrm{in}|\\gamma;\\mathrm{out}\\rangle\\langle\\gamma;\\mathrm{out}|\\alpha;\\mathrm{in}\\rangle = \\langle\\beta;\\mathrm{in}|\\alpha;\\mathrm{in}\\rangle = \\delta_{\\beta\\alpha}",
+          "to_latex": "\\hat{S}^\\dagger\\hat{S} = \\hat{S}\\hat{S}^\\dagger = \\hat{I}",
+          "operation_label": "演算子形式のユニタリ条件への書き換え",
+          "explanation": "同様に in 状態の完全性関係を用いることで逆順の積も恒等演算子となり、S演算子のユニタリ性が確立される。",
+          "used_node_ids": [
+            "phys.qft.s02_asymptotic_states_completeness"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d_qft_s04",
+      "target_node_id": "phys.qft.s04_t_matrix_invariant_amplitude",
+      "route_kind": "reformulation",
+      "title": "S行列の分解と並進不変性に基づく不変散乱振幅の定義",
+      "premise_node_ids": [
+        "phys.qft.s03_s_matrix_unitarity",
+        "phys.qft.s01_lorentz_invariant_measure_states",
+        "phys.rel.sr06_four_velocity_four_momentum"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "時空並進対称性により全4元運動量が保存する",
+        "始状態および終状態はローレンツ不変規格化された運動量固有状態である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_def_t_matrix",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\langle f | \\hat{S} | i \\rangle,\\quad U(\\Lambda)|p\\rangle = |\\Lambda p\\rangle,\\quad P_i^\\mu = \\sum_{a\\in i} p_a^\\mu",
+          "to_latex": "\\hat{S} = \\hat{I} + i\\hat{T},\\qquad \\langle f | i\\hat{T} | i \\rangle = (2\\pi)^4\\delta^{(4)}(P_f - P_i)\\,i\\mathcal{M}_{fi}",
+          "operation_label": "無散乱項の分離と不変振幅の定義",
+          "explanation": "S行列から相互作用しない成分 I を分離して遷移行列 T を定義する。状態と積分測度がローレンツ不変であり、4次元デルタ関数もローレンツ不変であるため、それらを括り出した係数 M_fi はローレンツスカラー（不変散乱振幅）となる。",
+          "used_node_ids": [
+            "phys.qft.s01_lorentz_invariant_measure_states",
+            "phys.qft.s03_s_matrix_unitarity",
+            "phys.rel.sr06_four_velocity_four_momentum"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d_qft_s05",
+      "target_node_id": "phys.qft.s05_optical_theorem",
+      "route_kind": "deductive",
+      "title": "S行列のユニタリ性からの光学定理の導出",
+      "premise_node_ids": [
+        "phys.qft.s03_s_matrix_unitarity",
+        "phys.qft.s04_t_matrix_invariant_amplitude",
+        "phys.qft.s01_lorentz_invariant_measure_states"
+      ],
+      "required_math_node_ids": [
+        "phys.qft.s02_asymptotic_states_completeness"
+      ],
+      "assumptions": [
+        "S行列がユニタリである",
+        "不変位相空間測度 dΠ_f について完全性関係が成り立つ"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{S}^\\dagger\\hat{S} = \\hat{I},\\quad \\hat{S} = \\hat{I} + i\\hat{T}",
+          "to_latex": "-i(\\hat{T} - \\hat{T}^\\dagger) = \\hat{T}^\\dagger\\hat{T},\\qquad 2\\operatorname{Im}\\mathcal{M}(i\\to i) = \\sum_f \\int d\\Pi_f\\,(2\\pi)^4\\delta^{(4)}(P_f - P_i)|\\mathcal{M}(i\\to f)|^2",
+          "operation_label": "ユニタリ条件の展開と前方散乱行列要素の計算",
+          "explanation": "S=I+iT をユニタリ条件に代入して T の満たす非線形関係式を得て、両辺を同一状態間の行列要素で挟み不変振幅 M で書き換えることで光学定理を導く。",
+          "used_node_ids": [
+            "phys.qft.s03_s_matrix_unitarity",
+            "phys.qft.s04_t_matrix_invariant_amplitude"
+          ]
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{S}^\\dagger\\hat{S} = \\hat{I},\\quad \\hat{S} = \\hat{I} + i\\hat{T}",
+          "to_latex": "(\\hat{I} - i\\hat{T}^\\dagger)(\\hat{I} + i\\hat{T}) = \\hat{I} \\implies -i(\\hat{T} - \\hat{T}^\\dagger) = \\hat{T}^\\dagger\\hat{T}",
+          "operation_label": "T行列のユニタリ関係式の導出",
+          "explanation": "S=I+iT を S†S=I に代入して展開し、恒等演算子 I を消去することで T と T† の関係式を得る。",
+          "used_node_ids": [
+            "phys.qft.s03_s_matrix_unitarity",
+            "phys.qft.s04_t_matrix_invariant_amplitude"
+          ]
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(\\hat{I} - i\\hat{T}^\\dagger)(\\hat{I} + i\\hat{T}) = \\hat{I} \\implies -i(\\hat{T} - \\hat{T}^\\dagger) = \\hat{T}^\\dagger\\hat{T}",
+          "to_latex": "-i\\big(\\langle i|\\hat{T}|i\\rangle - \\langle i|\\hat{T}^\\dagger|i\\rangle\\big) = \\sum_f \\int d\\Pi_f\\, |\\langle f|\\hat{T}|i\\rangle|^2",
+          "operation_label": "前方散乱行列要素の取得と中間状態和の挿入",
+          "explanation": "両辺を同じ始状態 ⟨i| と |i⟩ で挟み、右辺の T†T の間に漸近状態の完全性関係 ∑_f ∫ dΠ_f |f⟩⟨f| = I を挿入する。",
+          "used_node_ids": [
+            "phys.qft.s01_lorentz_invariant_measure_states",
+            "phys.qft.s02_asymptotic_states_completeness"
+          ]
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "-i\\big(\\langle i|\\hat{T}|i\\rangle - \\langle i|\\hat{T}^\\dagger|i\\rangle\\big) = \\sum_f \\int d\\Pi_f\\, |\\langle f|\\hat{T}|i\\rangle|^2",
+          "to_latex": "-i(\\hat{T} - \\hat{T}^\\dagger) = \\hat{T}^\\dagger\\hat{T},\\qquad 2\\operatorname{Im}\\mathcal{M}(i\\to i) = \\sum_f \\int d\\Pi_f\\,(2\\pi)^4\\delta^{(4)}(P_f - P_i)|\\mathcal{M}(i\\to f)|^2",
+          "operation_label": "不変振幅への書き換えと運動量デルタ関数の約分",
+          "explanation": "⟨f|T|i⟩ = (2π)^4 δ^(4)(P_f - P_i) M(i→f) を代入し、両辺に共通する (2π)^4 δ^(4)(0) 因子を取り除くことで光学定理を得る。",
+          "used_node_ids": [
+            "phys.qft.s04_t_matrix_invariant_amplitude"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d_qft_s06",
+      "target_node_id": "phys.qft.s06_lorentz_invariant_cross_section",
+      "route_kind": "deductive",
+      "title": "有限時空体積の遷移確率とフラックス因子からのローレンツ不変断面積の導出",
+      "premise_node_ids": [
+        "phys.qft.s04_t_matrix_invariant_amplitude",
+        "phys.qft.s01_lorentz_invariant_measure_states",
+        "phys.qm.ps06_fermis_golden_rule",
+        "phys.qm.ps07_scattering_amplitude_cross_section",
+        "phys.rel.sr08_energy_momentum_relation"
+      ],
+      "required_math_node_ids": [
+        "phys.rel.sr05_minkowski_metric_interval"
+      ],
+      "assumptions": [
+        "入射2粒子は互いに共線（または任意の重心系・実験室系で同一軸上）で衝突する",
+        "相互作用領域の体積 V と時間 T を十分大きく取る正規化処方箋を用いる"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\langle f|i\\hat{T}|i\\rangle = (2\\pi)^4\\delta^{(4)}(P_f - P_i)\\,i\\mathcal{M}_{fi},\\quad F_{\\mathrm{inc}} = \\frac{|\\mathbf{v}_A - \\mathbf{v}_B|}{V}",
+          "to_latex": "d\\sigma = \\frac{1}{4\\sqrt{(p_A\\cdot p_B)^2 - m_A^2 m_B^2}}|\\mathcal{M}_{fi}|^2\\,d\\Phi_n,\\qquad d\\Phi_n := (2\\pi)^4\\delta^{(4)}\\!\\left(p_A+p_B-\\sum_{j=1}^{n}p_j\\right)\\prod_{j=1}^{n}\\frac{d^3\\mathbf{p}_j}{(2\\pi)^3 2E_j}",
+          "operation_label": "遷移確率密度と不変フラックス因子の統合",
+          "explanation": "有限体積 V・有限時間 T で正則化した遷移確率率を入射粒子束で割り、メラーのフラックス因子のローレンツ不変表示を用いることでローレンツ不変な微分散乱断面積を導く。",
+          "used_node_ids": [
+            "phys.qft.s01_lorentz_invariant_measure_states",
+            "phys.qft.s04_t_matrix_invariant_amplitude",
+            "phys.qm.ps06_fermis_golden_rule",
+            "phys.qm.ps07_scattering_amplitude_cross_section"
+          ]
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle f|i\\hat{T}|i\\rangle = (2\\pi)^4\\delta^{(4)}(P_f - P_i)\\,i\\mathcal{M}_{fi},\\quad F_{\\mathrm{inc}} = \\frac{|\\mathbf{v}_A - \\mathbf{v}_B|}{V}",
+          "to_latex": "\\frac{dW}{T} = \\frac{1}{(2E_A V)(2E_B V)} V (2\\pi)^4\\delta^{(4)}(P_f - P_i)|\\mathcal{M}_{fi}|^2 \\prod_{j=1}^{n}\\frac{d^3\\mathbf{p}_j}{(2\\pi)^3 2E_j}",
+          "operation_label": "時空体積因子 VT の分離と単位時間あたりの遷移確率",
+          "explanation": "[(2π)^4 δ^(4)(P_f-P_i)]^2 = VT (2π)^4 δ^(4)(P_f-P_i) および箱規格化因子 1/√(2E_a V) を用いて、単位時間あたりの微分遷移確率 dW/T を求める。",
+          "used_node_ids": [
+            "phys.qft.s01_lorentz_invariant_measure_states",
+            "phys.qft.s04_t_matrix_invariant_amplitude",
+            "phys.qm.ps06_fermis_golden_rule"
+          ]
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{dW}{T} = \\frac{1}{(2E_A V)(2E_B V)} V (2\\pi)^4\\delta^{(4)}(P_f - P_i)|\\mathcal{M}_{fi}|^2 \\prod_{j=1}^{n}\\frac{d^3\\mathbf{p}_j}{(2\\pi)^3 2E_j}",
+          "to_latex": "d\\sigma = \\frac{dW/T}{|\\mathbf{v}_A - \\mathbf{v}_B|/V} = \\frac{1}{4E_A E_B |\\mathbf{v}_A - \\mathbf{v}_B|}|\\mathcal{M}_{fi}|^2\\,d\\Phi_n",
+          "operation_label": "入射フラックスによる除算と体積 V の相殺",
+          "explanation": "微分遷移確率率を入射フラックス |v_A - v_B|/V で割ることで人工的な体積因子 V が完全に相殺し、微分散乱断面積を得る。",
+          "used_node_ids": [
+            "phys.qm.ps07_scattering_amplitude_cross_section"
+          ]
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "d\\sigma = \\frac{dW/T}{|\\mathbf{v}_A - \\mathbf{v}_B|/V} = \\frac{1}{4E_A E_B |\\mathbf{v}_A - \\mathbf{v}_B|}|\\mathcal{M}_{fi}|^2\\,d\\Phi_n",
+          "to_latex": "d\\sigma = \\frac{1}{4\\sqrt{(p_A\\cdot p_B)^2 - m_A^2 m_B^2}}|\\mathcal{M}_{fi}|^2\\,d\\Phi_n,\\qquad d\\Phi_n := (2\\pi)^4\\delta^{(4)}\\!\\left(p_A+p_B-\\sum_{j=1}^{n}p_j\\right)\\prod_{j=1}^{n}\\frac{d^3\\mathbf{p}_j}{(2\\pi)^3 2E_j}",
+          "operation_label": "メラーのフラックス因子のローレンツ不変表示への変形",
+          "explanation": "共線衝突の条件および質量殻関係 p_a^2 = -m_a^2 を用いると E_A E_B |v_A - v_B| = √((p_A·p_B)^2 - m_A^2 m_B^2) となり、断面積全体が明示的にローレンツ不変となる。",
+          "used_node_ids": [
+            "phys.rel.sr05_minkowski_metric_interval",
+            "phys.rel.sr08_energy_momentum_relation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d_qft_s07",
+      "target_node_id": "phys.qft.s07_interaction_picture_dyson_s_matrix",
+      "route_kind": "deductive",
+      "title": "朝永＝シュウィンガー方程式とダイソン級数からのS行列共変表示の導出",
+      "premise_node_ids": [
+        "phys.qm.ps05_interaction_picture_dyson_series",
+        "phys.qft.s03_s_matrix_unitarity"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "全ハミルトニアンが H = H_0 + H_int と分解できる",
+        "相互作用ハミルトニアン密度 H_I(x) が空間的分離に対して可換である（ミクロ因果律）"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "i\\frac{d}{dt}U_I(t,t_0) = H_I(t)U_I(t,t_0),\\quad U_I(t_0,t_0) = \\hat{I}",
+          "to_latex": "\\hat{S} = \\lim_{\\substack{t_+\\to +\\infty \\\\ t_-\\to -\\infty}} U_I(t_+, t_-) = T\\exp\\!\\left(-i\\int_{-\\infty}^{\\infty} H_I(t)\\,dt\\right) = T\\exp\\!\\left(-i\\int d^4x\\,\\mathcal{H}_I(x)\\right)",
+          "operation_label": "逐次積分によるダイソン級数展開と極限操作",
+          "explanation": "相互作用描像の時間発展演算子の微分方程式を積分方程式に直して反復代入し、時間順序積を導入して t_± → ±∞ の極限をとることでS行列のダイソン級数表示を得る。",
+          "used_node_ids": [
+            "phys.qft.s03_s_matrix_unitarity",
+            "phys.qm.ps05_interaction_picture_dyson_series"
+          ]
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "i\\frac{d}{dt}U_I(t,t_0) = H_I(t)U_I(t,t_0),\\quad U_I(t_0,t_0) = \\hat{I}",
+          "to_latex": "U_I(t,t_0) = \\hat{I} + \\sum_{n=1}^{\\infty}(-i)^n\\int_{t_0}^{t}dt_1\\int_{t_0}^{t_1}dt_2\\cdots\\int_{t_0}^{t_{n-1}}dt_n\\,H_I(t_1)\\cdots H_I(t_n)",
+          "operation_label": "積分方程式の反復代入（ピカール反復）",
+          "explanation": "微分方程式を t_0 から t まで積分して逐次代入を無限回繰り返すことで、時間順序 t_1 > t_2 > … > t_n に並んだ積分級数を得る。",
+          "used_node_ids": [
+            "phys.qm.ps05_interaction_picture_dyson_series"
+          ]
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U_I(t,t_0) = \\hat{I} + \\sum_{n=1}^{\\infty}(-i)^n\\int_{t_0}^{t}dt_1\\int_{t_0}^{t_1}dt_2\\cdots\\int_{t_0}^{t_{n-1}}dt_n\\,H_I(t_1)\\cdots H_I(t_n)",
+          "to_latex": "U_I(t,t_0) = \\sum_{n=0}^{\\infty}\\frac{(-i)^n}{n!}\\int_{t_0}^{t}dt_1\\cdots\\int_{t_0}^{t}dt_n\\,T\\{H_I(t_1)\\cdots H_I(t_n)\\} = T\\exp\\!\\left(-i\\int_{t_0}^{t}H_I(t')\\,dt'\\right)",
+          "operation_label": "時間順序積 T による積分領域の対称化",
+          "explanation": "時間順序演算子 T を導入して n! 通りの時間順列をすべて同じ積分領域 [t_0, t]^n に拡張し、指数関数の形式にまとめる。",
+          "used_node_ids": [
+            "phys.qm.ps05_interaction_picture_dyson_series"
+          ]
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "U_I(t,t_0) = \\sum_{n=0}^{\\infty}\\frac{(-i)^n}{n!}\\int_{t_0}^{t}dt_1\\cdots\\int_{t_0}^{t}dt_n\\,T\\{H_I(t_1)\\cdots H_I(t_n)\\} = T\\exp\\!\\left(-i\\int_{t_0}^{t}H_I(t')\\,dt'\\right)",
+          "to_latex": "\\hat{S} = \\lim_{\\substack{t_+\\to +\\infty \\\\ t_-\\to -\\infty}} U_I(t_+, t_-) = T\\exp\\!\\left(-i\\int_{-\\infty}^{\\infty} H_I(t)\\,dt\\right) = T\\exp\\!\\left(-i\\int d^4x\\,\\mathcal{H}_I(x)\\right)",
+          "operation_label": "漸近極限の適用とハミルトニアン密度による4次元積分表示",
+          "explanation": "t_+ → +∞, t_- → -∞ の極限をとり、H_I(t) = ∫ d^3x H_I(x) を代入することでローレンツ不変な4次元時空積分のダイソン公式を得る。",
+          "used_node_ids": [
+            "phys.qft.s03_s_matrix_unitarity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d_qft_s08",
+      "target_node_id": "phys.qft.s08_gell_mann_low_epsilon_prescription",
+      "route_kind": "deductive",
+      "title": "断熱スイッチングによる相互作用真空の構成と真空バブルの相殺",
+      "premise_node_ids": [
+        "phys.qft.s07_interaction_picture_dyson_s_matrix",
+        "phys.qft.s02_asymptotic_states_completeness",
+        "phys.qm.ps02_nondegenerate_perturbation_energy_state"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "自由真空 |0⟩ と相互作用真空 |Ω⟩ の重なり ⟨Ω|0⟩ ≠ 0 が非ゼロである",
+        "基底状態は一意（非縮退）であり、エネルギー最小の状態である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "H_\\epsilon(t) := H_0 + e^{-\\epsilon |t|}H_{\\mathrm{int}},\\quad U_{I,\\epsilon}(t,t_0) = T\\exp\\!\\left(-i\\int_{t_0}^{t}e^{-\\epsilon |t'|}H_I(t')\\,dt'\\right)",
+          "to_latex": "|\\Omega\\rangle = \\lim_{\\epsilon\\to 0^+}\\frac{U_{I,\\epsilon}(0,-\\infty)|0\\rangle}{\\langle 0|U_{I,\\epsilon}(0,-\\infty)|0\\rangle},\\qquad \\langle\\Omega|T\\{\\phi(x_1)\\cdots\\phi(x_n)\\}|\\Omega\\rangle = \\lim_{\\epsilon\\to 0^+}\\frac{\\langle 0|T\\{\\phi_I(x_1)\\cdots\\phi_I(x_n)\\,\\exp[-i\\int dt\\,e^{-\\epsilon|t|}H_I(t)]\\}|0\\rangle}{\\langle 0|T\\{\\exp[-i\\int dt\\,e^{-\\epsilon|t|}H_I(t)]\\}|0\\rangle}",
+          "operation_label": "断熱極限の実行と前後時間発展の結合",
+          "explanation": "断熱減衰因子 exp(-ε|t|) を含む時間発展演算子を自由真空に作用させて ε→0^+ の極限をとることで発散する位相因子を相殺して |Ω⟩ を構成し、さらに t=+∞ から t=-∞ への発展を繋ぐことで相関関数の摂動公式を導く。",
+          "used_node_ids": [
+            "phys.qft.s02_asymptotic_states_completeness",
+            "phys.qft.s07_interaction_picture_dyson_s_matrix",
+            "phys.qm.ps02_nondegenerate_perturbation_energy_state"
+          ]
+        },
+        {
+          "step_id": "s2_step1",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "H_\\epsilon(t) := H_0 + e^{-\\epsilon |t|}H_{\\mathrm{int}},\\quad U_{I,\\epsilon}(t,t_0) = T\\exp\\!\\left(-i\\int_{t_0}^{t}e^{-\\epsilon |t'|}H_I(t')\\,dt'\\right)",
+          "to_latex": "(H - E_\\Omega)\\lim_{\\epsilon\\to 0^+}\\frac{U_{I,\\epsilon}(0,-\\infty)|0\\rangle}{\\langle 0|U_{I,\\epsilon}(0,-\\infty)|0\\rangle} = 0 \\implies |\\Omega\\rangle = \\lim_{\\epsilon\\to 0^+}\\frac{U_{I,\\epsilon}(0,-\\infty)|0\\rangle}{\\langle 0|U_{I,\\epsilon}(0,-\\infty)|0\\rangle}",
+          "operation_label": "ゲル＝マン＝ロウの定理による位相因子の除去と固有状態性の証明",
+          "explanation": "U_{I,ε}(0,-∞)|0⟩ は ε→0^+ で発散する位相因子を含むが、⟨0|U_{I,ε}(0,-∞)|0⟩ で割ることでその特異位相が相殺され、厳密なハミルトニアン H の基底状態 |Ω⟩ に収束する。",
+          "used_node_ids": [
+            "phys.qft.s07_interaction_picture_dyson_s_matrix",
+            "phys.qm.ps02_nondegenerate_perturbation_energy_state"
+          ]
+        },
+        {
+          "step_id": "s2_step2",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "(H - E_\\Omega)\\lim_{\\epsilon\\to 0^+}\\frac{U_{I,\\epsilon}(0,-\\infty)|0\\rangle}{\\langle 0|U_{I,\\epsilon}(0,-\\infty)|0\\rangle} = 0 \\implies |\\Omega\\rangle = \\lim_{\\epsilon\\to 0^+}\\frac{U_{I,\\epsilon}(0,-\\infty)|0\\rangle}{\\langle 0|U_{I,\\epsilon}(0,-\\infty)|0\\rangle}",
+          "to_latex": "\\langle\\Omega| = \\lim_{\\epsilon\\to 0^+}\\frac{\\langle 0|U_{I,\\epsilon}(+\\infty,0)}{\\langle 0|U_{I,\\epsilon}(+\\infty,0)|0\\rangle},\\quad \\langle 0|U_{I,\\epsilon}(+\\infty,-\\infty)|0\\rangle = \\langle 0|U_{I,\\epsilon}(+\\infty,0)|0\\rangle\\langle 0|U_{I,\\epsilon}(0,-\\infty)|0\\rangle",
+          "operation_label": "ブラ側真空の構成と分母因子の統合",
+          "explanation": "同様の断熱極限を時間反転側 (0 → +∞) にも適用してブラ状態 ⟨Ω| を構成し、中間状態に真空のみが寄与することを用いて分母を S 行列の真空期待値にまとめる。",
+          "used_node_ids": [
+            "phys.qft.s02_asymptotic_states_completeness"
+          ]
+        },
+        {
+          "step_id": "s2_step3",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\langle\\Omega| = \\lim_{\\epsilon\\to 0^+}\\frac{\\langle 0|U_{I,\\epsilon}(+\\infty,0)}{\\langle 0|U_{I,\\epsilon}(+\\infty,0)|0\\rangle},\\quad \\langle 0|U_{I,\\epsilon}(+\\infty,-\\infty)|0\\rangle = \\langle 0|U_{I,\\epsilon}(+\\infty,0)|0\\rangle\\langle 0|U_{I,\\epsilon}(0,-\\infty)|0\\rangle",
+          "to_latex": "|\\Omega\\rangle = \\lim_{\\epsilon\\to 0^+}\\frac{U_{I,\\epsilon}(0,-\\infty)|0\\rangle}{\\langle 0|U_{I,\\epsilon}(0,-\\infty)|0\\rangle},\\qquad \\langle\\Omega|T\\{\\phi(x_1)\\cdots\\phi(x_n)\\}|\\Omega\\rangle = \\lim_{\\epsilon\\to 0^+}\\frac{\\langle 0|T\\{\\phi_I(x_1)\\cdots\\phi_I(x_n)\\,\\exp[-i\\int dt\\,e^{-\\epsilon|t|}H_I(t)]\\}|0\\rangle}{\\langle 0|T\\{\\exp[-i\\int dt\\,e^{-\\epsilon|t|}H_I(t)]\\}|0\\rangle}",
+          "operation_label": "ハイゼンベルク場から相互作用描像場への変換と時間順序積の結合",
+          "explanation": "ハイゼンベルク描像の場 φ(x) を U_{I,ε}(0, t) により相互作用描像の場 φ_I(x) へ書き換え、時間順序積 T によって -∞ から +∞ までの発展演算子を一つに統合することで相関関数の基本公式を得る。",
+          "used_node_ids": [
+            "phys.qft.s07_interaction_picture_dyson_s_matrix"
+          ]
+        }
+      ]
+    }
+  ]
+}

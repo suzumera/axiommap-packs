@@ -1,0 +1,740 @@
+{
+  "pack_meta": {
+    "pack_id": "phys_qft02_many_body_fock",
+    "schema_version": "1.0.0",
+    "pack_version": "0.1.0",
+    "domain": "physics",
+    "title": "多粒子系の量子力学と生成消滅演算子：ボゾンとフェルミオンの状態数表示・正準交換/反交換関係とハミルトニアンの生成消滅演算子表示",
+    "language": "ja",
+    "description": "自然単位系(ħ=c=1)と計量符号(-,+,+,+)で統一し、既存の古典力学・線形代数・量子力学・特殊相対論・リー群および前章のQFTパックのノードIDを前提として接続すること。"
+  },
+  "nodes": [
+    {
+      "id": "phys.qft.mb01_identical_particles_symmetrization",
+      "short_code": "MB01",
+      "kind": "definition",
+      "title": "同種多粒子系の置換対称性と対称化・反対称化状態",
+      "summary": "同種多粒子系のヒルベルト空間において、粒子置換演算子の固有値 +1（ボゾン：全対称状態）および -1（フェルミオン：全反対称状態）に制限された状態空間を定義する。",
+      "canonical_latex": "\\hat{P}_{ij}|\\Psi_{\\pm}\\rangle = \\pm|\\Psi_{\\pm}\\rangle,\\quad |\\alpha_1,\\dots,\\alpha_N\\rangle_{\\pm} := \\frac{1}{\\sqrt{N!\\prod_k n_k!}}\\sum_{P\\in S_N}(\\pm 1)^{\\operatorname{sgn}(P)}|\\alpha_{P(1)}\\rangle\\otimes\\cdots\\otimes|\\alpha_{P(N)}\\rangle",
+      "aliases_latex": [
+        "\\Psi_{\\pm}(x_1,\\dots,x_N) = \\frac{1}{\\sqrt{N!}}\\sum_{P\\in S_N}(\\pm 1)^{\\operatorname{sgn}(P)}\\prod_{i=1}^N \\phi_{\\alpha_{P(i)}}(x_i)"
+      ],
+      "keywords": [
+        "同種粒子",
+        "ボゾン",
+        "フェルミオン",
+        "対称化",
+        "反対称化",
+        "スレーター行列式"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics",
+        "qft",
+        "many_body_physics"
+      ]
+    },
+    {
+      "id": "phys.qft.mb02_fock_space_occupation_number",
+      "short_code": "MB02",
+      "kind": "definition",
+      "title": "フォック空間と占有数表示（状態数表示）",
+      "summary": "粒子数 N=0,1,2,... の対称化（または反対称化）N粒子ヒルベルト空間の直和としてフォック空間を定義し、各1粒子状態 k の占有数 n_k の組で基底を指定する。",
+      "canonical_latex": "\\mathcal{F}_{\\pm} := \\bigoplus_{N=0}^{\\infty} \\mathcal{H}_{\\pm}^{(N)},\\quad |n_1,n_2,\\dots\\rangle \\in \\mathcal{F}_{\\pm}\\quad\\left(\\sum_k n_k = N,\\; n_k\\in\\mathbb{Z}_{\\ge 0}\\;(\\text{boson}),\\; n_k\\in\\{0,1\\}\\;(\\text{fermion})\\right),\\quad |\\mathrm{vac}\\rangle := |0,0,\\dots\\rangle",
+      "aliases_latex": [
+        "\\mathcal{F} = \\mathbb{C} \\oplus \\mathcal{H}^{(1)} \\oplus \\mathcal{H}_{\\pm}^{(2)} \\oplus \\cdots"
+      ],
+      "keywords": [
+        "フォック空間",
+        "占有数表示",
+        "状態数表示",
+        "真空状態",
+        "粒子数可変"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics",
+        "qft",
+        "many_body_physics"
+      ]
+    },
+    {
+      "id": "phys.qft.mb03_bosonic_ladder_ccr",
+      "short_code": "MB03",
+      "kind": "theorem_formula",
+      "title": "ボゾンの生成・消滅演算子と正準交換関係（CCR）",
+      "summary": "ボゾンの占有数基底に作用する生成・消滅演算子を定義し、多モードの正準交換関係（CCR）と状態への昇降作用の係数を導出する。",
+      "canonical_latex": "[\\hat{a}_k, \\hat{a}_l^\\dagger] = \\delta_{kl},\\quad [\\hat{a}_k, \\hat{a}_l] = [\\hat{a}_k^\\dagger, \\hat{a}_l^\\dagger] = 0,\\quad \\hat{a}_k^\\dagger|n_k\\rangle = \\sqrt{n_k+1}|n_k+1\\rangle,\\quad \\hat{a}_k|n_k\\rangle = \\sqrt{n_k}|n_k-1\\rangle",
+      "aliases_latex": [
+        "|n_1,n_2,\\dots\\rangle = \\prod_k \\frac{(\\hat{a}_k^\\dagger)^{n_k}}{\\sqrt{n_k!}}|0\\rangle"
+      ],
+      "keywords": [
+        "ボゾン",
+        "生成演算子",
+        "消滅演算子",
+        "正準交換関係",
+        "CCR"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics",
+        "qft",
+        "many_body_physics"
+      ]
+    },
+    {
+      "id": "phys.qft.mb04_fermionic_ladder_car",
+      "short_code": "MB04",
+      "kind": "theorem_formula",
+      "title": "フェルミオンの生成・消滅演算子と正準反交換関係（CAR）",
+      "summary": "フェルミオン状態の反対称性とパウリの排他原理から、生成・消滅演算子が満たす正準反交換関係（CAR）を導出する。",
+      "canonical_latex": "\\{\\hat{c}_i, \\hat{c}_j^\\dagger\\} = \\delta_{ij},\\quad \\{\\hat{c}_i, \\hat{c}_j\\} = \\{\\hat{c}_i^\\dagger, \\hat{c}_j^\\dagger\\} = 0,\\quad (\\hat{c}_i^\\dagger)^2 = 0",
+      "aliases_latex": [
+        "\\hat{c}_i^\\dagger|n_1,\\dots,0_i,\\dots\\rangle = (-1)^{\\sum_{k<i}n_k}|n_1,\\dots,1_i,\\dots\\rangle"
+      ],
+      "keywords": [
+        "フェルミオン",
+        "正準反交換関係",
+        "CAR",
+        "パウリの排他原理",
+        "生成消滅演算子"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics",
+        "qft",
+        "many_body_physics"
+      ]
+    },
+    {
+      "id": "phys.qft.mb05_number_operator_total",
+      "short_code": "MB05",
+      "kind": "theorem_formula",
+      "title": "占有数演算子・全粒子数演算子と交換関係",
+      "summary": "生成・消滅演算子から各モードの占有数演算子と全粒子数演算子を構成し、ボゾン・フェルミオン双方で成り立つ共通の交換関係を示す。",
+      "canonical_latex": "\\hat{n}_k := \\hat{a}_k^\\dagger\\hat{a}_k,\\quad \\hat{N} := \\sum_k \\hat{n}_k,\\quad [\\hat{n}_k, \\hat{a}_l^\\dagger] = \\delta_{kl}\\hat{a}_l^\\dagger,\\quad [\\hat{n}_k, \\hat{a}_l] = -\\delta_{kl}\\hat{a}_l",
+      "aliases_latex": [
+        "[\\hat{N}, \\hat{a}_l^\\dagger] = \\hat{a}_l^\\dagger,\\quad [\\hat{N}, \\hat{a}_l] = -\\hat{a}_l"
+      ],
+      "keywords": [
+        "占有数演算子",
+        "全粒子数演算子",
+        "粒子数保存",
+        "交換関係"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics",
+        "qft",
+        "many_body_physics"
+      ]
+    },
+    {
+      "id": "phys.qft.mb06_field_operators_position",
+      "short_code": "MB06",
+      "kind": "definition",
+      "title": "位置表示の場の演算子（量子場）と同時刻交換・反交換関係",
+      "summary": "1粒子完全正規直交基底で展開した位置表示の場の演算子（量子場）を定義し、その同時刻正準交換・反交換関係を与える。",
+      "canonical_latex": "\\hat{\\psi}(\\mathbf{x}) := \\sum_k \\phi_k(\\mathbf{x})\\hat{a}_k,\\quad \\hat{\\psi}^\\dagger(\\mathbf{x}) := \\sum_k \\phi_k^*(\\mathbf{x})\\hat{a}_k^\\dagger,\\quad [\\hat{\\psi}(\\mathbf{x}), \\hat{\\psi}^\\dagger(\\mathbf{y})]_{\\mp} = \\delta^{(3)}(\\mathbf{x}-\\mathbf{y})",
+      "aliases_latex": [
+        "[\\hat{\\psi}(\\mathbf{x}), \\hat{\\psi}(\\mathbf{y})]_{\\mp} = [\\hat{\\psi}^\\dagger(\\mathbf{x}), \\hat{\\psi}^\\dagger(\\mathbf{y})]_{\\mp} = 0"
+      ],
+      "keywords": [
+        "場の演算子",
+        "量子場",
+        "位置表示",
+        "同時刻交換関係",
+        "第二量子化"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics",
+        "qft",
+        "many_body_physics"
+      ]
+    },
+    {
+      "id": "phys.qft.mb07_one_body_operator_second_quant",
+      "short_code": "MB07",
+      "kind": "theorem_formula",
+      "title": "1体演算子の生成・消滅演算子表示（第二量子化表示）",
+      "summary": "各粒子に独立に作用する1体演算子の和を、任意の正規直交基底の生成・消滅演算子および場の演算子による2次形式で表現する。",
+      "canonical_latex": "\\hat{T} = \\sum_{i,j} \\langle i|\\hat{t}|j\\rangle\\,\\hat{a}_i^\\dagger\\hat{a}_j = \\int d^3x\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{t}(\\mathbf{x})\\hat{\\psi}(\\mathbf{x})",
+      "aliases_latex": [
+        "\\hat{T} = \\sum_{i,j} t_{ij}\\hat{a}_i^\\dagger\\hat{a}_j,\\quad t_{ij} := \\int d^3x\\,\\phi_i^*(\\mathbf{x})\\hat{t}(\\mathbf{x})\\phi_j(\\mathbf{x})"
+      ],
+      "keywords": [
+        "1体演算子",
+        "第二量子化",
+        "行列要素",
+        "運動エネルギー演算子"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics",
+        "qft",
+        "many_body_physics"
+      ]
+    },
+    {
+      "id": "phys.qft.mb08_two_body_operator_second_quant",
+      "short_code": "MB08",
+      "kind": "theorem_formula",
+      "title": "2体相互作用演算子の生成・消滅演算子表示",
+      "summary": "粒子対に働く2体相互作用演算子の和を、自己相互作用を除いた正規順序の4演算子積（生成2・消滅2）で表現する。",
+      "canonical_latex": "\\hat{V} = \\frac{1}{2}\\sum_{i,j,k,l} \\langle i,j|\\hat{v}|k,l\\rangle\\,\\hat{a}_i^\\dagger\\hat{a}_j^\\dagger\\hat{a}_l\\hat{a}_k = \\frac{1}{2}\\int d^3x\\,d^3y\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}^\\dagger(\\mathbf{y})V(\\mathbf{x}-\\mathbf{y})\\hat{\\psi}(\\mathbf{y})\\hat{\\psi}(\\mathbf{x})",
+      "aliases_latex": [
+        "\\langle i,j|\\hat{v}|k,l\\rangle := \\int d^3x\\,d^3y\\,\\phi_i^*(\\mathbf{x})\\phi_j^*(\\mathbf{y})V(\\mathbf{x}-\\mathbf{y})\\phi_k(\\mathbf{x})\\phi_l(\\mathbf{y})"
+      ],
+      "keywords": [
+        "2体相互作用",
+        "正規順序",
+        "第二量子化",
+        "自己相互作用除外"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics",
+        "qft",
+        "many_body_physics"
+      ]
+    },
+    {
+      "id": "phys.qft.mb09_many_body_hamiltonian_second_quant",
+      "short_code": "MB09",
+      "kind": "theorem_formula",
+      "title": "多粒子系ハミルトニアンの生成・消滅演算子表示",
+      "summary": "自然単位系（ħ=c=1）において、運動エネルギー・外場ポテンシャル・2体相互作用からなる多粒子系ハミルトニアンを生成・消滅演算子および場の演算子で統合的に表現する。",
+      "canonical_latex": "\\hat{H} = \\sum_{i,j} h_{ij}\\hat{a}_i^\\dagger\\hat{a}_j + \\frac{1}{2}\\sum_{i,j,k,l} V_{ijkl}\\hat{a}_i^\\dagger\\hat{a}_j^\\dagger\\hat{a}_l\\hat{a}_k = \\int d^3x\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\left(-\\frac{\\nabla^2}{2m} + U(\\mathbf{x})\\right)\\hat{\\psi}(\\mathbf{x}) + \\frac{1}{2}\\int d^3x\\,d^3y\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}^\\dagger(\\mathbf{y})V(\\mathbf{x}-\\mathbf{y})\\hat{\\psi}(\\mathbf{y})\\hat{\\psi}(\\mathbf{x})",
+      "aliases_latex": [
+        "\\hat{H} = \\sum_k \\varepsilon_k \\hat{a}_k^\\dagger\\hat{a}_k + \\frac{1}{2}\\sum_{i,j,k,l} V_{ijkl}\\hat{a}_i^\\dagger\\hat{a}_j^\\dagger\\hat{a}_l\\hat{a}_k"
+      ],
+      "keywords": [
+        "多体ハミルトニアン",
+        "第二量子化",
+        "自然単位系",
+        "場の量子論への橋渡し"
+      ],
+      "domain_tags": [
+        "physics",
+        "quantum_mechanics",
+        "qft",
+        "many_body_physics"
+      ]
+    }
+  ],
+  "derivations": [
+    {
+      "id": "deriv.qft.mb01_identical_particles",
+      "target_node_id": "phys.qft.mb01_identical_particles_symmetrization",
+      "route_kind": "reformulation",
+      "title": "1粒子ヒルベルト空間のテンソル積から対称化・反対称化多粒子状態への構成",
+      "premise_node_ids": [
+        "phys.qm.op01_dirac_bra_ket_hilbert",
+        "phys.qm.wm02_wavefunction_born_rule"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "N個の粒子は完全に同種であり物理的観測量は粒子ラベルの置換に対して不変である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_symmetrization",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|\\Psi\\rangle \\in \\mathcal{H}^{(1)}\\otimes\\cdots\\otimes\\mathcal{H}^{(1)},\\quad |\\hat{P}_{ij}\\Psi|^2 = |\\Psi|^2",
+          "to_latex": "\\hat{P}_{ij}|\\Psi_{\\pm}\\rangle = \\pm|\\Psi_{\\pm}\\rangle,\\quad |\\alpha_1,\\dots,\\alpha_N\\rangle_{\\pm} := \\frac{1}{\\sqrt{N!\\prod_k n_k!}}\\sum_{P\\in S_N}(\\pm 1)^{\\operatorname{sgn}(P)}|\\alpha_{P(1)}\\rangle\\otimes\\cdots\\otimes|\\alpha_{P(N)}\\rangle",
+          "operation_label": "置換不変性による対称・反対称部分空間への射影",
+          "explanation": "確率密度が粒子の入れ替えで不変である要請と1次元表現の選択から、全対称（ボゾン）および全反対称（フェルミオン）な規格化状態を定義する。",
+          "used_node_ids": [
+            "phys.qm.op01_dirac_bra_ket_hilbert",
+            "phys.qm.wm02_wavefunction_born_rule"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deriv.qft.mb02_fock_space",
+      "target_node_id": "phys.qft.mb02_fock_space_occupation_number",
+      "route_kind": "reformulation",
+      "title": "対称化N粒子空間の直和としてのフォック空間と占有数基底の定義",
+      "premise_node_ids": [
+        "phys.qft.mb01_identical_particles_symmetrization",
+        "phys.qm.op09_harmonic_oscillator_spectrum"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "粒子数が固定されない開放系・量子場への拡張を扱うため全Nの空間を直和する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_fock_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|\\alpha_1,\\dots,\\alpha_N\\rangle_{\\pm} \\in \\mathcal{H}_{\\pm}^{(N)}",
+          "to_latex": "\\mathcal{F}_{\\pm} := \\bigoplus_{N=0}^{\\infty} \\mathcal{H}_{\\pm}^{(N)},\\quad |n_1,n_2,\\dots\\rangle \\in \\mathcal{F}_{\\pm}\\quad\\left(\\sum_k n_k = N,\\; n_k\\in\\mathbb{Z}_{\\ge 0}\\;(\\text{boson}),\\; n_k\\in\\{0,1\\}\\;(\\text{fermion})\\right),\\quad |\\mathrm{vac}\\rangle := |0,0,\\dots\\rangle",
+          "operation_label": "N粒子部分空間の直和と占有数ラベルへの書き換え",
+          "explanation": "同種粒子状態はどの1粒子状態に何個の粒子が占有しているかのみで一意に定まるため、N=0の真空状態を含む直和空間の占有数基底を導入する。",
+          "used_node_ids": [
+            "phys.qft.mb01_identical_particles_symmetrization",
+            "phys.qm.op09_harmonic_oscillator_spectrum"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deriv.qft.mb03_bosonic_ccr",
+      "target_node_id": "phys.qft.mb03_bosonic_ladder_ccr",
+      "route_kind": "deductive",
+      "title": "占有数基底と調和振動子代数からのボゾンCCRの導出",
+      "premise_node_ids": [
+        "phys.qft.mb02_fock_space_occupation_number",
+        "phys.qm.op08_ladder_algebra_commutators"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "各モードkの励起は独立な量子調和振動子と同型であり状態は粒子入れ替えで対称である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{a}_k^\\dagger |n_1,\\dots,n_k,\\dots\\rangle \\propto |n_1,\\dots,n_k+1,\\dots\\rangle,\\quad |n_k\\rangle = \\frac{(\\hat{a}_k^\\dagger)^{n_k}}{\\sqrt{n_k!}}|0\\rangle",
+          "to_latex": "[\\hat{a}_k, \\hat{a}_l^\\dagger] = \\delta_{kl},\\quad [\\hat{a}_k, \\hat{a}_l] = [\\hat{a}_k^\\dagger, \\hat{a}_l^\\dagger] = 0,\\quad \\hat{a}_k^\\dagger|n_k\\rangle = \\sqrt{n_k+1}|n_k+1\\rangle,\\quad \\hat{a}_k|n_k\\rangle = \\sqrt{n_k}|n_k-1\\rangle",
+          "operation_label": "1モード調和振動子代数の多モード対称空間への拡張",
+          "explanation": "各モードに1次元調和振動子の昇降演算子代数を適用し、異モード間のボゾン対称性から多モード正準交換関係を導く。",
+          "used_node_ids": [
+            "phys.qft.mb02_fock_space_occupation_number",
+            "phys.qm.op08_ladder_algebra_commutators"
+          ]
+        },
+        {
+          "step_id": "s2_single_mode",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{a}_k^\\dagger |n_1,\\dots,n_k,\\dots\\rangle \\propto |n_1,\\dots,n_k+1,\\dots\\rangle,\\quad |n_k\\rangle = \\frac{(\\hat{a}_k^\\dagger)^{n_k}}{\\sqrt{n_k!}}|0\\rangle",
+          "to_latex": "[\\hat{a}_k, \\hat{a}_k^\\dagger] = 1,\\quad \\hat{a}_k^\\dagger|n_k\\rangle = \\sqrt{n_k+1}|n_k+1\\rangle,\\quad \\hat{a}_k|n_k\\rangle = \\sqrt{n_k}|n_k-1\\rangle",
+          "operation_label": "同一モードの交換関係と規格化定数の決定",
+          "explanation": "1モードの生成・消滅演算子が調和振動子の昇降演算子代数と同一であることから、同モードの交換関係と昇降の係数が確定する。",
+          "used_node_ids": [
+            "phys.qm.op08_ladder_algebra_commutators"
+          ]
+        },
+        {
+          "step_id": "s3_multi_mode_symmetry",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[\\hat{a}_k, \\hat{a}_k^\\dagger] = 1,\\quad \\hat{a}_k^\\dagger|n_k\\rangle = \\sqrt{n_k+1}|n_k+1\\rangle,\\quad \\hat{a}_k|n_k\\rangle = \\sqrt{n_k}|n_k-1\\rangle",
+          "to_latex": "\\hat{a}_k^\\dagger\\hat{a}_l^\\dagger|0\\rangle = \\hat{a}_l^\\dagger\\hat{a}_k^\\dagger|0\\rangle \\implies [\\hat{a}_k^\\dagger, \\hat{a}_l^\\dagger] = 0,\\quad [\\hat{a}_k, \\hat{a}_l] = 0",
+          "operation_label": "ボゾン状態の対称性による異モード演算子の可換性",
+          "explanation": "異なるモードk,lに粒子を生成する順序を変えても同じ対称状態を与えるため、生成演算子同士およびそのエルミート共役である消滅演算子同士は交換する。",
+          "used_node_ids": [
+            "phys.qft.mb02_fock_space_occupation_number"
+          ]
+        },
+        {
+          "step_id": "s4_combine_ccr",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{a}_k^\\dagger\\hat{a}_l^\\dagger|0\\rangle = \\hat{a}_l^\\dagger\\hat{a}_k^\\dagger|0\\rangle \\implies [\\hat{a}_k^\\dagger, \\hat{a}_l^\\dagger] = 0,\\quad [\\hat{a}_k, \\hat{a}_l] = 0",
+          "to_latex": "[\\hat{a}_k, \\hat{a}_l^\\dagger] = \\delta_{kl},\\quad [\\hat{a}_k, \\hat{a}_l] = [\\hat{a}_k^\\dagger, \\hat{a}_l^\\dagger] = 0,\\quad \\hat{a}_k^\\dagger|n_k\\rangle = \\sqrt{n_k+1}|n_k+1\\rangle,\\quad \\hat{a}_k|n_k\\rangle = \\sqrt{n_k}|n_k-1\\rangle",
+          "operation_label": "異なるモード間の独立性によるCCRの完成",
+          "explanation": "k≠lのモードは独立に作用するためa_kとa_l^†も交換し、クロネッカーのデルタでまとめたCCRが得られる。",
+          "used_node_ids": [
+            "phys.qft.mb02_fock_space_occupation_number",
+            "phys.qm.op08_ladder_algebra_commutators"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deriv.qft.mb04_fermionic_car",
+      "target_node_id": "phys.qft.mb04_fermionic_ladder_car",
+      "route_kind": "deductive",
+      "title": "反対称化状態と排他原理からのフェルミオンCARの導出",
+      "premise_node_ids": [
+        "phys.qft.mb01_identical_particles_symmetrization",
+        "phys.qft.mb02_fock_space_occupation_number"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "1粒子状態の占有数は0または1に制限され、状態の順序交換で符号が反転する"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "|\\dots, i, j, \\dots\\rangle_A = -|\\dots, j, i, \\dots\\rangle_A,\\quad n_i \\in \\{0, 1\\}**",
+          "to_latex": "\\{\\hat{c}_i, \\hat{c}_j^\\dagger\\} = \\delta_{ij},\\quad \\{\\hat{c}_i, \\hat{c}_j\\} = \\{\\hat{c}_i^\\dagger, \\hat{c}_j^\\dagger\\} = 0,\\quad (\\hat{c}_i^\\dagger)^2 = 0",
+          "operation_label": "反対称性からの反交換関係の導出",
+          "explanation": "フェルミオン状態の置換反対称性と占有数の二値性（0または1）から、生成・消滅演算子の正準反交換関係を導く。",
+          "used_node_ids": [
+            "phys.qft.mb01_identical_particles_symmetrization",
+            "phys.qft.mb02_fock_space_occupation_number"
+          ]
+        },
+        {
+          "step_id": "s2_anticommute_creation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "|\\dots, i, j, \\dots\\rangle_A = -|\\dots, j, i, \\dots\\rangle_A,\\quad n_i \\in \\{0, 1\\}**",
+          "to_latex": "\\hat{c}_i^\\dagger\\hat{c}_j^\\dagger|\\Psi\\rangle = -\\hat{c}_j^\\dagger\\hat{c}_i^\\dagger|\\Psi\\rangle \\implies \\{\\hat{c}_i^\\dagger, \\hat{c}_j^\\dagger\\} = 0,\\quad \\{\\hat{c}_i, \\hat{c}_j\\} = 0,\\quad (\\hat{c}_i^\\dagger)^2 = 0",
+          "operation_label": "生成演算子の反可換性と冪零性の導出",
+          "explanation": "2粒子を順序を変えて生成すると反対称性により符号が反転するため生成演算子同士は反交換し、エルミート共役により消滅演算子同士も反交換する。i=jから排他原理(c_i^†)^2=0が従う。",
+          "used_node_ids": [
+            "phys.qft.mb01_identical_particles_symmetrization"
+          ]
+        },
+        {
+          "step_id": "s3_same_mode_car",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{c}_i^\\dagger\\hat{c}_j^\\dagger|\\Psi\\rangle = -\\hat{c}_j^\\dagger\\hat{c}_i^\\dagger|\\Psi\\rangle \\implies \\{\\hat{c}_i^\\dagger, \\hat{c}_j^\\dagger\\} = 0,\\quad \\{\\hat{c}_i, \\hat{c}_j\\} = 0,\\quad (\\hat{c}_i^\\dagger)^2 = 0",
+          "to_latex": "\\hat{c}_i\\hat{c}_i^\\dagger|0\\rangle_i = |0\\rangle_i,\\; \\hat{c}_i^\\dagger\\hat{c}_i|1\\rangle_i = |1\\rangle_i \\implies \\{\\hat{c}_i, \\hat{c}_i^\\dagger\\} = 1",
+          "operation_label": "同一モードにおける生成・消滅の反交換関係",
+          "explanation": "占有数0と1の2状態部分空間での作用を直接評価することで、同一モードについて c_i c_i^† + c_i^† c_i = 1 が恒等的に成り立つことを示す。",
+          "used_node_ids": [
+            "phys.qft.mb02_fock_space_occupation_number"
+          ]
+        },
+        {
+          "step_id": "s4_general_car",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{c}_i\\hat{c}_i^\\dagger|0\\rangle_i = |0\\rangle_i,\\; \\hat{c}_i^\\dagger\\hat{c}_i|1\\rangle_i = |1\\rangle_i \\implies \\{\\hat{c}_i, \\hat{c}_i^\\dagger\\} = 1",
+          "to_latex": "\\{\\hat{c}_i, \\hat{c}_j^\\dagger\\} = \\delta_{ij},\\quad \\{\\hat{c}_i, \\hat{c}_j\\} = \\{\\hat{c}_i^\\dagger, \\hat{c}_j^\\dagger\\} = 0,\\quad (\\hat{c}_i^\\dagger)^2 = 0",
+          "operation_label": "異モード反可換性の統合によるCARの完成",
+          "explanation": "i≠jのときモードiの消滅とモードjの生成はフェルミオンの順序符号により反交換するため、{c_i, c_j^†} = δ_{ij} が得られる。",
+          "used_node_ids": [
+            "phys.qft.mb01_identical_particles_symmetrization",
+            "phys.qft.mb02_fock_space_occupation_number"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deriv.qft.mb05_number_operator",
+      "target_node_id": "phys.qft.mb05_number_operator_total",
+      "route_kind": "deductive",
+      "title": "CCR・CARからの占有数演算子と生成消滅演算子の交換関係の導出",
+      "premise_node_ids": [
+        "phys.qft.mb03_bosonic_ladder_ccr",
+        "phys.qft.mb04_fermionic_ladder_car"
+      ],
+      "required_math_node_ids": [
+        "phys.qft.mb05_number_operator_total"
+      ],
+      "assumptions": [
+        "ボゾン(-)とフェルミオン(+)の演算子を統一記号 a_k で表す"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "[\\hat{a}_k, \\hat{a}_l^\\dagger]_{\\mp} = \\delta_{kl},\\quad [\\hat{a}_k, \\hat{a}_l]_{\\mp} = [\\hat{a}_k^\\dagger, \\hat{a}_l^\\dagger]_{\\mp} = 0",
+          "to_latex": "\\hat{n}_k := \\hat{a}_k^\\dagger\\hat{a}_k,\\quad \\hat{N} := \\sum_k \\hat{n}_k,\\quad [\\hat{n}_k, \\hat{a}_l^\\dagger] = \\delta_{kl}\\hat{a}_l^\\dagger,\\quad [\\hat{n}_k, \\hat{a}_l] = -\\delta_{kl}\\hat{a}_l",
+          "operation_label": "交換・反交換恒等式による数演算子代数の導出",
+          "explanation": "CCRおよびCARに演算子積の交換子恒等式を適用し、ボゾン・フェルミオン共通の占有数演算子と昇降演算子の交換関係を導く。",
+          "used_node_ids": [
+            "phys.qft.mb03_bosonic_ladder_ccr",
+            "phys.qft.mb04_fermionic_ladder_car"
+          ]
+        },
+        {
+          "step_id": "s2_commutator_creation",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[\\hat{a}_k, \\hat{a}_l^\\dagger]_{\\mp} = \\delta_{kl},\\quad [\\hat{a}_k, \\hat{a}_l]_{\\mp} = [\\hat{a}_k^\\dagger, \\hat{a}_l^\\dagger]_{\\mp} = 0",
+          "to_latex": "[\\hat{a}_k^\\dagger\\hat{a}_k, \\hat{a}_l^\\dagger] = \\hat{a}_k^\\dagger[\\hat{a}_k, \\hat{a}_l^\\dagger]_\\mp \\pm [\\hat{a}_k^\\dagger, \\hat{a}_l^\\dagger]_\\mp \\hat{a}_k = \\delta_{kl}\\hat{a}_k^\\dagger",
+          "operation_label": "占有数演算子と生成演算子の交換子の計算",
+          "explanation": "[AB, C] = A[B, C]_{-s} + s[A, C]_{-s}B (s=±1) を用いて、n_k と a_l^† の交換関係が統計によらず一致することを示す。",
+          "used_node_ids": [
+            "phys.qft.mb03_bosonic_ladder_ccr",
+            "phys.qft.mb04_fermionic_ladder_car"
+          ]
+        },
+        {
+          "step_id": "s3_commutator_annihilation",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[\\hat{a}_k^\\dagger\\hat{a}_k, \\hat{a}_l^\\dagger] = \\hat{a}_k^\\dagger[\\hat{a}_k, \\hat{a}_l^\\dagger]_\\mp \\pm [\\hat{a}_k^\\dagger, \\hat{a}_l^\\dagger]_\\mp \\hat{a}_k = \\delta_{kl}\\hat{a}_k^\\dagger",
+          "to_latex": "[\\hat{n}_k, \\hat{a}_l] = -([\\hat{n}_k, \\hat{a}_l^\\dagger])^\\dagger = -\\delta_{kl}\\hat{a}_l,\\quad \\hat{N} := \\sum_k \\hat{n}_k",
+          "operation_label": "エルミート共役による消滅演算子との交換関係および全粒子数定義",
+          "explanation": "n_k がエルミート演算子であることから共役を取って消滅演算子との交換関係を得て、全モードの和として全粒子数演算子を定義する。",
+          "used_node_ids": [
+            "phys.qft.mb03_bosonic_ladder_ccr",
+            "phys.qft.mb04_fermionic_ladder_car"
+          ]
+        },
+        {
+          "step_id": "s4_total_number",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "[\\hat{n}_k, \\hat{a}_l] = -([\\hat{n}_k, \\hat{a}_l^\\dagger])^\\dagger = -\\delta_{kl}\\hat{a}_l,\\quad \\hat{N} := \\sum_k \\hat{n}_k",
+          "to_latex": "\\hat{n}_k := \\hat{a}_k^\\dagger\\hat{a}_k,\\quad \\hat{N} := \\sum_k \\hat{n}_k,\\quad [\\hat{n}_k, \\hat{a}_l^\\dagger] = \\delta_{kl}\\hat{a}_l^\\dagger,\\quad [\\hat{n}_k, \\hat{a}_l] = -\\delta_{kl}\\hat{a}_l",
+          "operation_label": "占有数・全粒子数演算子関係の整理",
+          "explanation": "各モードの占有数演算子・全粒子数演算子および昇降演算子との基本交換関係をまとめる。",
+          "used_node_ids": [
+            "phys.qft.mb05_number_operator_total"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deriv.qft.mb06_field_operators",
+      "target_node_id": "phys.qft.mb06_field_operators_position",
+      "route_kind": "reformulation",
+      "title": "1粒子完全正規直交基底による位置表示の場の演算子の定義",
+      "premise_node_ids": [
+        "phys.qft.mb05_number_operator_total",
+        "phys.qm.op03_hermitian_spectral_theorem"
+      ],
+      "required_math_node_ids": [
+        "phys.qft.mb03_bosonic_ladder_ccr",
+        "phys.qft.mb04_fermionic_ladder_car"
+      ],
+      "assumptions": [
+        "1粒子固有関数系 {φ_k(x)} は正規直交完全系をなす"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_field_def",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\sum_k \\phi_k(\\mathbf{x})\\phi_k^*(\\mathbf{y}) = \\delta^{(3)}(\\mathbf{x}-\\mathbf{y}),\\quad [\\hat{a}_k, \\hat{a}_l^\\dagger]_{\\mp} = \\delta_{kl} ",
+          "to_latex": "\\hat{\\psi}(\\mathbf{x}) := \\sum_k \\phi_k(\\mathbf{x})\\hat{a}_k,\\quad \\hat{\\psi}^\\dagger(\\mathbf{x}) := \\sum_k \\phi_k^*(\\mathbf{x})\\hat{a}_k^\\dagger,\\quad [\\hat{\\psi}(\\mathbf{x}), \\hat{\\psi}^\\dagger(\\mathbf{y})]_{\\mp} = \\delta^{(3)}(\\mathbf{x}-\\mathbf{y})",
+          "operation_label": "完全系展開による場の演算子の定義と同時刻代数の導出",
+          "explanation": "1粒子波動関数の完全正規直交系を用いてモード演算子を位置空間へ変換し、完全性関係から同時刻の交換・反交換関係がデルタ関数となることを示す。",
+          "used_node_ids": [
+            "phys.qft.mb03_bosonic_ladder_ccr",
+            "phys.qft.mb04_fermionic_ladder_car",
+            "phys.qm.op03_hermitian_spectral_theorem"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deriv.qft.mb07_one_body_op",
+      "target_node_id": "phys.qft.mb07_one_body_operator_second_quant",
+      "route_kind": "deductive",
+      "title": "固有基底での占有数表現からの1体演算子第二量子化表示の導出",
+      "premise_node_ids": [
+        "phys.qft.mb06_field_operators_position",
+        "phys.qm.op01_dirac_bra_ket_hilbert",
+        "phys.qm.op03_hermitian_spectral_theorem"
+      ],
+      "required_math_node_ids": [
+        "phys.qft.mb05_number_operator_total"
+      ],
+      "assumptions": [
+        "1体演算子 t は対角化可能なエルミート演算子である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{T}^{(N)} = \\sum_{\\alpha=1}^{N} \\hat{t}_\\alpha,\\quad \\hat{\\psi}(\\mathbf{x}) = \\sum_i \\phi_i(\\mathbf{x})\\hat{a}_i",
+          "to_latex": "\\hat{T} = \\sum_{i,j} \\langle i|\\hat{t}|j\\rangle\\,\\hat{a}_i^\\dagger\\hat{a}_j = \\int d^3x\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{t}(\\mathbf{x})\\hat{\\psi}(\\mathbf{x})",
+          "operation_label": "固有基底での和から一般基底・場の演算子表示への変換",
+          "explanation": "1体演算子の固有基底で占有数和として表したのち、一般の正規直交基底および位置表示の場の演算子へユニタリ変換する。",
+          "used_node_ids": [
+            "phys.qft.mb06_field_operators_position",
+            "phys.qm.op01_dirac_bra_ket_hilbert",
+            "phys.qm.op03_hermitian_spectral_theorem"
+          ]
+        },
+        {
+          "step_id": "s2_eigenbasis",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{T}^{(N)} = \\sum_{\\alpha=1}^{N} \\hat{t}_\\alpha,\\quad \\hat{\\psi}(\\mathbf{x}) = \\sum_i \\phi_i(\\mathbf{x})\\hat{a}_i",
+          "to_latex": "\\hat{t}|\\tilde{k}\\rangle = t_k|\\tilde{k}\\rangle \\implies \\hat{T} = \\sum_k t_k \\tilde{a}_k^\\dagger \\tilde{a}_k",
+          "operation_label": "固有基底における占有数演算子による表現",
+          "explanation": "1体演算子 t の固有状態では各粒子が固有値 t_k を寄与するため、多粒子系の期待値・固有値は各固有状態の占有数の重み付き和になる。",
+          "used_node_ids": [
+            "phys.qft.mb05_number_operator_total",
+            "phys.qm.op03_hermitian_spectral_theorem"
+          ]
+        },
+        {
+          "step_id": "s3_basis_transform",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{t}|\\tilde{k}\\rangle = t_k|\\tilde{k}\\rangle \\implies \\hat{T} = \\sum_k t_k \\tilde{a}_k^\\dagger \\tilde{a}_k",
+          "to_latex": "\\tilde{a}_k^\\dagger = \\sum_i \\langle i|\\tilde{k}\\rangle \\hat{a}_i^\\dagger,\\quad \\tilde{a}_k = \\sum_j \\langle \\tilde{k}|j\\rangle \\hat{a}_j \\implies \\hat{T} = \\sum_{i,j} \\left(\\sum_k \\langle i|\\tilde{k}\\rangle t_k \\langle \\tilde{k}|j\\rangle\\right)\\hat{a}_i^\\dagger\\hat{a}_j",
+          "operation_label": "一般基底の生成・消滅演算子への展開",
+          "explanation": "固有基底の生成・消滅演算子を任意の正規直交基底 {|i>} の演算子で展開し代入する。",
+          "used_node_ids": [
+            "phys.qm.op01_dirac_bra_ket_hilbert"
+          ]
+        },
+        {
+          "step_id": "s4_completeness",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\tilde{a}_k^\\dagger = \\sum_i \\langle i|\\tilde{k}\\rangle \\hat{a}_i^\\dagger,\\quad \\tilde{a}_k = \\sum_j \\langle \\tilde{k}|j\\rangle \\hat{a}_j \\implies \\hat{T} = \\sum_{i,j} \\left(\\sum_k \\langle i|\\tilde{k}\\rangle t_k \\langle \\tilde{k}|j\\rangle\\right)\\hat{a}_i^\\dagger\\hat{a}_j",
+          "to_latex": "\\hat{T} = \\sum_{i,j} \\langle i|\\hat{t}|j\\rangle\\,\\hat{a}_i^\\dagger\\hat{a}_j = \\int d^3x\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{t}(\\mathbf{x})\\hat{\\psi}(\\mathbf{x})",
+          "operation_label": "スペクトル分解と場の演算子展開の適用",
+          "explanation": "kに関する和がスペクトル分解により行列要素 <i|t|j> となり、さらに位置基底への展開で場の演算子表示が得られる。",
+          "used_node_ids": [
+            "phys.qft.mb06_field_operators_position",
+            "phys.qm.op03_hermitian_spectral_theorem"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deriv.qft.mb08_two_body_op",
+      "target_node_id": "phys.qft.mb08_two_body_operator_second_quant",
+      "route_kind": "deductive",
+      "title": "数密度演算子積と正規順序化による2体相互作用演算子の導出",
+      "premise_node_ids": [
+        "phys.qft.mb07_one_body_operator_second_quant",
+        "phys.qft.mb03_bosonic_ladder_ccr",
+        "phys.qft.mb04_fermionic_ladder_car"
+      ],
+      "required_math_node_ids": [
+        "phys.qft.mb06_field_operators_position"
+      ],
+      "assumptions": [
+        "2体ポテンシャルは座標にのみ依存する局所ポテンシャル V(x-y) である"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{V}^{(N)} = \\frac{1}{2}\\sum_{\\alpha\\neq\\beta}^{N} \\hat{v}_{\\alpha\\beta}**",
+          "to_latex": "\\hat{V} = \\frac{1}{2}\\sum_{i,j,k,l} \\langle i,j|\\hat{v}|k,l\\rangle\\,\\hat{a}_i^\\dagger\\hat{a}_j^\\dagger\\hat{a}_l\\hat{a}_k = \\frac{1}{2}\\int d^3x\\,d^3y\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}^\\dagger(\\mathbf{y})V(\\mathbf{x}-\\mathbf{y})\\hat{\\psi}(\\mathbf{y})\\hat{\\psi}(\\mathbf{x})",
+          "operation_label": "自己相互作用の除去と正規順序化による2体表示の導出",
+          "explanation": "粒子数密度演算子の積から対角の自己相互作用項を差し引き、交換・反交換関係で正規順序に並べ替えてモード展開する。",
+          "used_node_ids": [
+            "phys.qft.mb03_bosonic_ladder_ccr",
+            "phys.qft.mb04_fermionic_ladder_car",
+            "phys.qft.mb07_one_body_operator_second_quant"
+          ]
+        },
+        {
+          "step_id": "s2_product_one_body",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{V}^{(N)} = \\frac{1}{2}\\sum_{\\alpha\\neq\\beta}^{N} \\hat{v}_{\\alpha\\beta}**",
+          "to_latex": "\\sum_{\\alpha\\neq\\beta} V(\\mathbf{x}_\\alpha-\\mathbf{x}_\\beta) = \\int d^3x\\,d^3y\\,V(\\mathbf{x}-\\mathbf{y})\\big(\\hat{\\rho}(\\mathbf{x})\\hat{\\rho}(\\mathbf{y}) - \\delta^{(3)}(\\mathbf{x}-\\mathbf{y})\\hat{\\rho}(\\mathbf{x})\\big)**",
+          "operation_label": "密度演算子 ρ(x)=ψ^†(x)ψ(x) の積と自己項の差し引き",
+          "explanation": "1体密度演算子 ρ(x) を用いて全対和から α=β の自己相互作用項を差し引いた形で表現する。",
+          "used_node_ids": [
+            "phys.qft.mb06_field_operators_position",
+            "phys.qft.mb07_one_body_operator_second_quant"
+          ]
+        },
+        {
+          "step_id": "s3_normal_ordering",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\sum_{\\alpha\\neq\\beta} V(\\mathbf{x}_\\alpha-\\mathbf{x}_\\beta) = \\int d^3x\\,d^3y\\,V(\\mathbf{x}-\\mathbf{y})\\big(\\hat{\\rho}(\\mathbf{x})\\hat{\\rho}(\\mathbf{y}) - \\delta^{(3)}(\\mathbf{x}-\\mathbf{y})\\hat{\\rho}(\\mathbf{x})\\big)**",
+          "to_latex": "\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}(\\mathbf{x})\\hat{\\psi}^\\dagger(\\mathbf{y})\\hat{\\psi}(\\mathbf{y}) - \\delta^{(3)}(\\mathbf{x}-\\mathbf{y})\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}(\\mathbf{x}) = \\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}^\\dagger(\\mathbf{y})\\hat{\\psi}(\\mathbf{y})\\hat{\\psi}(\\mathbf{x})",
+          "operation_label": "同時刻交換・反交換関係による正規順序化",
+          "explanation": "ψ(x)ψ^†(y) = ±ψ^†(y)ψ(x) + δ(x-y) を代入すると自己項が相殺し、ボゾン・フェルミオンとも生成が左・消滅が右で逆順（y,x）の正規順序が得られる。",
+          "used_node_ids": [
+            "phys.qft.mb06_field_operators_position"
+          ]
+        },
+        {
+          "step_id": "s4_mode_expansion",
+          "order": 4,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}(\\mathbf{x})\\hat{\\psi}^\\dagger(\\mathbf{y})\\hat{\\psi}(\\mathbf{y}) - \\delta^{(3)}(\\mathbf{x}-\\mathbf{y})\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}(\\mathbf{x}) = \\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}^\\dagger(\\mathbf{y})\\hat{\\psi}(\\mathbf{y})\\hat{\\psi}(\\mathbf{x})",
+          "to_latex": "\\hat{V} = \\frac{1}{2}\\sum_{i,j,k,l} \\langle i,j|\\hat{v}|k,l\\rangle\\,\\hat{a}_i^\\dagger\\hat{a}_j^\\dagger\\hat{a}_l\\hat{a}_k = \\frac{1}{2}\\int d^3x\\,d^3y\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}^\\dagger(\\mathbf{y})V(\\mathbf{x}-\\mathbf{y})\\hat{\\psi}(\\mathbf{y})\\hat{\\psi}(\\mathbf{x})",
+          "operation_label": "1粒子モード展開による行列要素表示の導出",
+          "explanation": "場の演算子をモード生成・消滅演算子で展開して積分を実行すると、添字の順序が a_i^† a_j^† a_l a_k の4演算子積となる。",
+          "used_node_ids": [
+            "phys.qft.mb06_field_operators_position"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deriv.qft.mb09_many_body_hamiltonian",
+      "target_node_id": "phys.qft.mb09_many_body_hamiltonian_second_quant",
+      "route_kind": "deductive",
+      "title": "1体および2体演算子表示の統合による多体ハミルトニアンの構成",
+      "premise_node_ids": [
+        "phys.qft.mb07_one_body_operator_second_quant",
+        "phys.qft.mb08_two_body_operator_second_quant"
+      ],
+      "required_math_node_ids": [],
+      "assumptions": [
+        "自然単位系(ħ=c=1)を採用し、非相対論的多粒子系を考える"
+      ],
+      "steps": [
+        {
+          "step_id": "s1_overview",
+          "order": 1,
+          "granularity_level": 1,
+          "parent_step_id": null,
+          "from_latex": "\\hat{H}^{(N)} = \\sum_{\\alpha=1}^{N}\\left(-\\frac{\\nabla_\\alpha^2}{2m} + U(\\mathbf{x}_\\alpha)\\right) + \\frac{1}{2}\\sum_{\\alpha\\neq\\beta}^{N} V(\\mathbf{x}_\\alpha - \\mathbf{x}_\\beta)**",
+          "to_latex": "\\hat{H} = \\sum_{i,j} h_{ij}\\hat{a}_i^\\dagger\\hat{a}_j + \\frac{1}{2}\\sum_{i,j,k,l} V_{ijkl}\\hat{a}_i^\\dagger\\hat{a}_j^\\dagger\\hat{a}_l\\hat{a}_k = \\int d^3x\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\left(-\\frac{\\nabla^2}{2m} + U(\\mathbf{x})\\right)\\hat{\\psi}(\\mathbf{x}) + \\frac{1}{2}\\int d^3x\\,d^3y\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}^\\dagger(\\mathbf{y})V(\\mathbf{x}-\\mathbf{y})\\hat{\\psi}(\\mathbf{y})\\hat{\\psi}(\\mathbf{x})",
+          "operation_label": "1体ハミルトニアンと2体相互作用の第二量子化表示の統合",
+          "explanation": "1体項（運動エネルギー＋外場）と2体相互作用項にそれぞれ第二量子化公式を適用して多粒子系ハミルトニアンを構成する。",
+          "used_node_ids": [
+            "phys.qft.mb07_one_body_operator_second_quant",
+            "phys.qft.mb08_two_body_operator_second_quant"
+          ]
+        },
+        {
+          "step_id": "s2_one_body_part",
+          "order": 2,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H}^{(N)} = \\sum_{\\alpha=1}^{N}\\left(-\\frac{\\nabla_\\alpha^2}{2m} + U(\\mathbf{x}_\\alpha)\\right) + \\frac{1}{2}\\sum_{\\alpha\\neq\\beta}^{N} V(\\mathbf{x}_\\alpha - \\mathbf{x}_\\beta)**",
+          "to_latex": "\\hat{H}_0 = \\sum_{i,j} \\langle i|\\hat{h}|j\\rangle\\,\\hat{a}_i^\\dagger\\hat{a}_j = \\int d^3x\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\left(-\\frac{\\nabla^2}{2m} + U(\\mathbf{x})\\right)\\hat{\\psi}(\\mathbf{x})",
+          "operation_label": "1体ハミルトニアン部分の第二量子化",
+          "explanation": "1体演算子表示を h = -∇^2/(2m) + U(x) に適用し、運動エネルギーと外場ポテンシャルの和を記述する。",
+          "used_node_ids": [
+            "phys.qft.mb07_one_body_operator_second_quant"
+          ]
+        },
+        {
+          "step_id": "s3_two_body_part",
+          "order": 3,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\hat{H}_0 = \\sum_{i,j} \\langle i|\\hat{h}|j\\rangle\\,\\hat{a}_i^\\dagger\\hat{a}_j = \\int d^3x\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\left(-\\frac{\\nabla^2}{2m} + U(\\mathbf{x})\\right)\\hat{\\psi}(\\mathbf{x})",
+          "to_latex": "\\hat{H} = \\sum_{i,j} h_{ij}\\hat{a}_i^\\dagger\\hat{a}_j + \\frac{1}{2}\\sum_{i,j,k,l} V_{ijkl}\\hat{a}_i^\\dagger\\hat{a}_j^\\dagger\\hat{a}_l\\hat{a}_k = \\int d^3x\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\left(-\\frac{\\nabla^2}{2m} + U(\\mathbf{x})\\right)\\hat{\\psi}(\\mathbf{x}) + \\frac{1}{2}\\int d^3x\\,d^3y\\,\\hat{\\psi}^\\dagger(\\mathbf{x})\\hat{\\psi}^\\dagger(\\mathbf{y})V(\\mathbf{x}-\\mathbf{y})\\hat{\\psi}(\\mathbf{y})\\hat{\\psi}(\\mathbf{x})",
+          "operation_label": "2体相互作用項の加算による全ハミルトニアンの完成",
+          "explanation": "2体相互作用演算子の第二量子化表示を加えることで、粒子数に依存しない汎用的な多体ハミルトニアンが完成する。",
+          "used_node_ids": [
+            "phys.qft.mb08_two_body_operator_second_quant"
+          ]
+        }
+      ]
+    }
+  ]
+}
