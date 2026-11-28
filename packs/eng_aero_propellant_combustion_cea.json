@@ -229,13 +229,12 @@
         "phys.thermo.th06_second_law_principles",
         "phys.thermo.th01_zeroth_law_state_eq"
       ],
-      "required_math_node_ids": [
-        "math.calc.m08_partial_total_diff",
-        "math.calc.m19_differential_linearity_leibniz"
-      ],
+      "required_math_node_ids": [],
       "assumptions": [
-        "系は定温・定圧条件下にあり、非膨張仕事は存在しない。",
-        "すべての化学種は単一相の連続混合気体をなす。"
+        "系は定温（dT = 0）・定圧（dp = 0）の準静的条件下にあり、膨張仕事以外の非膨張仕事は存在しない。",
+        "すべての化学種は単一相の連続混合気体をなし、ギブズ自由エネルギー G(T, p, n) はモル数 n に関して1次同次（示量性）かつ連続微分可能である。",
+        "閉鎖系において核反応は生じず、各元素 i の総モル数 b_i^0 は反応の前後で保存される。",
+        "考慮対象の化学種は平衡点において正のモル数（n_j > 0）をとる内点解であり、元素保存制約の勾配は線形独立である。"
       ],
       "steps": [
         {
@@ -243,12 +242,12 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "dU = \\delta Q - p\\,dV,\\quad TdS \\ge \\delta Q",
-          "to_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} \\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right) \\implies \\mu_j = \\sum_{i=1}^{N_e} \\lambda_i a_{ij}",
-          "operation_label": "定温定圧平衡条件とラグランジュ未定乗数法の適用",
-          "explanation": "熱力学第1・第2法則から定温定圧下でのギブズ自由エネルギー減少則を導き、元素保存制約のもとでラグランジュ関数を停留化することで化学平衡条件を得る。",
+          "from_latex": "dU = \\delta Q - p\\,dV,\\quad T\\,dS \\ge \\delta Q",
+          "to_latex": "G(T,p,\\mathbf{n}) = \\sum_{j=1}^{N_s} n_j \\mu_j,\\quad \\min_{\\mathbf{n} \\ge \\mathbf{0}} \\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right) \\implies \\mu_j = \\sum_{i=1}^{N_e} \\lambda_i a_{ij}",
+          "operation_label": "定温定圧平衡条件とラグランジュ未定乗数法による最小化条件の導出",
+          "explanation": "熱力学第1・第2法則から定温定圧下でのギブズ自由エネルギー減少則を導き、示量性からGの積算表示を得た上で、元素保存制約付きラグランジュ関数の停留条件より化学平衡条件を導出する。",
           "used_node_ids": [
-            "math.calc.m08_partial_total_diff",
+            "phys.thermo.th01_zeroth_law_state_eq",
             "phys.thermo.th03_first_law_internal_energy",
             "phys.thermo.th06_second_law_principles"
           ],
@@ -259,47 +258,316 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "dU = \\delta Q - p\\,dV,\\quad TdS \\ge \\delta Q",
-          "to_latex": "dG = d(U + pV - TS) = V\\,dp - S\\,dT + (\\delta Q - T\\,dS) \\le 0\\quad (dT = 0,\\; dp = 0)",
-          "operation_label": "ギブズ自由エネルギーの定義と減少則の導出",
-          "explanation": "ギブズ自由エネルギーの定義に全微分のライプニッツ則と熱力学第1・第2法則を適用し、定温定圧下で自発変化がdG <= 0となることを示す。",
+          "from_latex": "dU = \\delta Q - p\\,dV",
+          "to_latex": "dG = \\delta Q + V\\,dp - T\\,dS - S\\,dT",
+          "operation_label": "ギブズ自由エネルギーの定義と全微分の展開",
+          "explanation": "ギブズ自由エネルギーを定義して全微分をとり、積の微分法則および熱力学第1法則を適用して膨張仕事項を相殺する。",
           "used_node_ids": [
-            "math.calc.m19_differential_linearity_leibniz",
-            "phys.thermo.th03_first_law_internal_energy",
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "dU = \\delta Q - p\\,dV",
+          "to_latex": "G := U + pV - TS,\\quad dU = \\delta Q - p\\,dV",
+          "operation_label": "ギブズ自由エネルギーの定義を代入・導入",
+          "explanation": "熱平衡状態を記述する状態量 U, p, V, T, S を用い、熱力学第1法則の式に加えてギブズ自由エネルギーの定義式 G := U + pV - TS を導入する。",
+          "used_node_ids": [
+            "phys.thermo.th01_zeroth_law_state_eq",
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "G := U + pV - TS,\\quad dU = \\delta Q - p\\,dV",
+          "to_latex": "dG = dU + p\\,dV + V\\,dp - T\\,dS - S\\,dT,\\quad dU = \\delta Q - p\\,dV",
+          "operation_label": "全微分と積の微分法則の適用",
+          "explanation": "G = U + pV - TS の両辺の全微分をとり、積の微分法則 d(pV) = p\\,dV + V\\,dp および d(TS) = T\\,dS + S\\,dT を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "dG = dU + p\\,dV + V\\,dp - T\\,dS - S\\,dT,\\quad dU = \\delta Q - p\\,dV",
+          "to_latex": "dG = (\\delta Q - p\\,dV) + p\\,dV + V\\,dp - T\\,dS - S\\,dT",
+          "operation_label": "熱力学第1法則の代入",
+          "explanation": "非膨張仕事がない場合の熱力学第1法則 dU = \\delta Q - p\\,dV を右辺の dU に代入する。",
+          "used_node_ids": [
+            "phys.thermo.th03_first_law_internal_energy"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "dG = (\\delta Q - p\\,dV) + p\\,dV + V\\,dp - T\\,dS - S\\,dT",
+          "to_latex": "dG = \\delta Q + V\\,dp - T\\,dS - S\\,dT",
+          "operation_label": "膨張仕事項の相殺",
+          "explanation": "括弧を外して -p\\,dV と +p\\,dV の和を 0 として消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(dQ - p*dV) + p*dV + V*dp - T*dS - S*dT == dQ + V*dp - T*dS - S*dT"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 7,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "dG = \\delta Q + V\\,dp - T\\,dS - S\\,dT",
+          "to_latex": "dG \\le 0\\quad (dT = 0,\\; dp = 0)",
+          "operation_label": "定温定圧条件と第2法則による減少則の導出",
+          "explanation": "定温定圧条件を適用し、熱力学第2法則から得られるクラウジウスの不等式を用いて定温定圧下のギブズ自由エネルギー減少則を示す。",
+          "used_node_ids": [
             "phys.thermo.th06_second_law_principles"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_2",
-          "order": 3,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "dG = V\\,dp - S\\,dT + (\\delta Q - T\\,dS) \\le 0\\quad (dT = 0,\\; dp = 0)",
-          "to_latex": "\\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right)",
-          "operation_label": "元素保存制約付き最小化問題の定式化",
-          "explanation": "平衡状態でGが極小となることと各化学種のモル数に対する元素数保存条件を合わせ、未定乗数を用いてラグランジュ関数を構成する。",
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "dG = \\delta Q + V\\,dp - T\\,dS - S\\,dT",
+          "to_latex": "dG = \\delta Q - T\\,dS\\quad (dT = 0,\\; dp = 0)",
+          "operation_label": "定温・定圧条件の代入",
+          "explanation": "定温条件 dT = 0 および定圧条件 dp = 0 を代入し、V\\,dp = 0 と -S\\,dT = 0 を消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "dQ + V*0 - T*dS - S*0 == dQ - T*dS"
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "dG = \\delta Q - T\\,dS\\quad (dT = 0,\\; dp = 0)",
+          "to_latex": "dG = \\delta Q - T\\,dS,\\quad T\\,dS \\ge \\delta Q\\quad (dT = 0,\\; dp = 0)",
+          "operation_label": "クラウジウスの不等式を代入・導入",
+          "explanation": "熱力学第2法則の帰結であるクラウジウスの不等式 T\\,dS \\ge \\delta Q（可逆過程で等号、不可逆自発過程で不等号）を導入する。",
           "used_node_ids": [
-            "math.calc.m08_partial_total_diff",
-            "phys.thermo.th01_zeroth_law_state_eq"
+            "phys.thermo.th06_second_law_principles"
           ],
           "sympy_check_hint": null
         },
         {
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "dG = \\delta Q - T\\,dS,\\quad T\\,dS \\ge \\delta Q\\quad (dT = 0,\\; dp = 0)",
+          "to_latex": "dG = \\delta Q - T\\,dS,\\quad \\delta Q - T\\,dS \\le 0\\quad (dT = 0,\\; dp = 0)",
+          "operation_label": "クラウジウスの不等式の移項",
+          "explanation": "不等式 T\\,dS \\ge \\delta Q の両辺から T\\,dS を引いて向きを反転し、\\delta Q - T\\,dS \\le 0 と変形する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "dG = \\delta Q - T\\,dS,\\quad \\delta Q - T\\,dS \\le 0\\quad (dT = 0,\\; dp = 0)",
+          "to_latex": "dG \\le 0\\quad (dT = 0,\\; dp = 0)",
+          "operation_label": "不等式評価の代入",
+          "explanation": "dG = \\delta Q - T\\,dS に \\delta Q - T\\,dS \\le 0 を代入し、定温定圧下の自発変化でギブズ自由エネルギーが減少（平衡で極小）することを示す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
           "step_id": "s2_3",
-          "order": 4,
+          "order": 12,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right)",
-          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial n_j} = 0 \\implies \\mu_j = \\sum_{i=1}^{N_e} \\lambda_i a_{ij}",
-          "operation_label": "停留条件の計算",
-          "explanation": "ギブズ＝デュエム関係により組成微分項が相殺するため、各化学種のモル数に関する偏微分から化学ポテンシャルと元素ポテンシャルの線形結合関係を得る。",
-          "used_node_ids": [
-            "math.calc.m08_partial_total_diff"
-          ],
+          "from_latex": "dG \\le 0\\quad (dT = 0,\\; dp = 0)",
+          "to_latex": "G(T,p,\\mathbf{n}) = \\sum_{j=1}^{N_s} n_j \\mu_j",
+          "operation_label": "化学ポテンシャルと示量性によるギブズ自由エネルギーの積算表示",
+          "explanation": "組成変化を含む基本関係式に化学ポテンシャルを導入し、G の1次同次性に対するオイラーの同次関数定理から積算表示を導く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "dG \\le 0\\quad (dT = 0,\\; dp = 0)",
+          "to_latex": "dG(T,p,\\mathbf{n}) = -S\\,dT + V\\,dp + \\sum_{j=1}^{N_s} \\mu_j\\,dn_j,\\quad \\mu_j := \\left(\\frac{\\partial G}{\\partial n_j}\\right)_{T,p,n_{k\\neq j}}",
+          "operation_label": "化学ポテンシャルの定義と基本全微分式の導入",
+          "explanation": "N_s 種類の化学種のモル数 \\mathbf{n} = (n_1,\\dots,n_{N_s}) を状態変数に加え、各化学種の化学ポテンシャル \\mu_j := (\\partial G / \\partial n_j)_{T,p,n_{k\\neq j}} を用いて全微分を表す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "dG(T,p,\\mathbf{n}) = -S\\,dT + V\\,dp + \\sum_{j=1}^{N_s} \\mu_j\\,dn_j,\\quad \\mu_j := \\left(\\frac{\\partial G}{\\partial n_j}\\right)_{T,p,n_{k\\neq j}}",
+          "to_latex": "dG\\big|_{T,p} = \\sum_{j=1}^{N_s} \\mu_j\\,dn_j,\\quad \\mu_j := \\left(\\frac{\\partial G}{\\partial n_j}\\right)_{T,p,n_{k\\neq j}}",
+          "operation_label": "定温・定圧条件による微分式の縮約",
+          "explanation": "定温・定圧条件 dT = 0, dp = 0 を代入して温度・圧力微分項を消去し、組成変化のみの微小変化式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "dG\\big|_{T,p} = \\sum_{j=1}^{N_s} \\mu_j\\,dn_j,\\quad \\mu_j := \\left(\\frac{\\partial G}{\\partial n_j}\\right)_{T,p,n_{k\\neq j}}",
+          "to_latex": "G(T,p,\\alpha\\mathbf{n}) = \\alpha G(T,p,\\mathbf{n}),\\quad \\mu_j := \\left(\\frac{\\partial G}{\\partial n_j}\\right)_{T,p,n_{k\\neq j}}",
+          "operation_label": "示量性（1次同次性）を代入・導入",
+          "explanation": "単一相混合気体において T, p を固定し全モル数を \\alpha 倍（\\alpha > 0）にすると G も \\alpha 倍になる示量性（1次同次性）の等式を導入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "G(T,p,\\alpha\\mathbf{n}) = \\alpha G(T,p,\\mathbf{n}),\\quad \\mu_j := \\left(\\frac{\\partial G}{\\partial n_j}\\right)_{T,p,n_{k\\neq j}}",
+          "to_latex": "G(T,p,\\mathbf{n}) = \\sum_{j=1}^{N_s} n_j \\mu_j",
+          "operation_label": "オイラーの同次関数定理の適用",
+          "explanation": "G(T,p,\\alpha\\mathbf{n}) = \\alpha G(T,p,\\mathbf{n}) の両辺を \\alpha で微分して \\alpha = 1 を代入するオイラーの同次関数定理を適用し、偏微分を \\mu_j で表して積算表示を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 17,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "G(T,p,\\mathbf{n}) = \\sum_{j=1}^{N_s} n_j \\mu_j",
+          "to_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} \\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right)",
+          "operation_label": "元素保存制約付き最小化問題とラグランジュ関数の定式化",
+          "explanation": "定温定圧平衡での G の極小化に非負モル数条件と元素保存制約を課し、ラグランジュ未定乗数を導入してラグランジュ関数を構成する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "G(T,p,\\mathbf{n}) = \\sum_{j=1}^{N_s} n_j \\mu_j",
+          "to_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} G(T,p,\\mathbf{n}) = \\min_{\\mathbf{n} \\ge \\mathbf{0}} \\sum_{j=1}^{N_s} n_j \\mu_j",
+          "operation_label": "平衡最小化問題の定式化",
+          "explanation": "定温定圧での減少則 dG \\le 0 に基づき、物理的な非負モル数条件 \\mathbf{n} \\ge \\mathbf{0} のもとでの G(T,p,\\mathbf{n}) の最小化問題として記述する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 19,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} G(T,p,\\mathbf{n}) = \\min_{\\mathbf{n} \\ge \\mathbf{0}} \\sum_{j=1}^{N_s} n_j \\mu_j",
+          "to_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} \\sum_{j=1}^{N_s} n_j \\mu_j \\quad \\text{s.t.}\\quad \\sum_{j=1}^{N_s} a_{ij} n_j = b_i^0\\;\\;(i=1,\\dots,N_e)",
+          "operation_label": "元素保存制約条件を代入・導入",
+          "explanation": "各化学種 j に含まれる元素 i の原子数 a_{ij} と閉鎖系における初期総モル数 b_i^0 を用い、N_e 個の元素保存等式制約を導入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 20,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} \\sum_{j=1}^{N_s} n_j \\mu_j \\quad \\text{s.t.}\\quad \\sum_{j=1}^{N_s} a_{ij} n_j = b_i^0\\;\\;(i=1,\\dots,N_e)",
+          "to_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} \\sum_{j=1}^{N_s} n_j \\mu_j \\quad \\text{s.t.}\\quad b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j = 0\\;\\;(i=1,\\dots,N_e)",
+          "operation_label": "制約式の移項による零等式化",
+          "explanation": "制約等式 \\sum_{j=1}^{N_s} a_{ij} n_j = b_i^0 の左辺を右辺へ移項し、b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j = 0 の標準形に変形する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_4",
+          "order": 21,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} \\sum_{j=1}^{N_s} n_j \\mu_j \\quad \\text{s.t.}\\quad b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j = 0\\;\\;(i=1,\\dots,N_e)",
+          "to_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} \\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right)",
+          "operation_label": "ラグランジュ未定乗数の導入",
+          "explanation": "各元素保存制約にラグランジュ未定乗数 \\lambda_i を乗じて目的関数へ足し合わせ、ラグランジュ関数 \\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) を構成する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_5",
+          "order": 22,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} \\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right)",
+          "to_latex": "\\mu_j = \\sum_{i=1}^{N_e} \\lambda_i a_{ij}",
+          "operation_label": "停留条件の微分計算と平衡条件の導出",
+          "explanation": "ラグランジュ関数を各化学種モル数で偏微分して停留条件を立て、ギブズ＝デュエム関係で組成微分項を消去して化学平衡条件を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_1",
+          "order": 23,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\min_{\\mathbf{n} \\ge \\mathbf{0}} \\mathcal{L}(\\mathbf{n}, \\boldsymbol{\\lambda}) = \\sum_{j=1}^{N_s} n_j \\mu_j + \\sum_{i=1}^{N_e} \\lambda_i \\left(b_i^0 - \\sum_{j=1}^{N_s} a_{ij} n_j\\right)",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial n_j} = \\mu_j + \\sum_{k=1}^{N_s} n_k \\left(\\frac{\\partial \\mu_k}{\\partial n_j}\\right)_{T,p,n_{l\\neq j}} - \\sum_{i=1}^{N_e} \\lambda_i a_{ij} = 0",
+          "operation_label": "モル数による偏微分と積の微分法則の適用",
+          "explanation": "内点最適解（n_j > 0）での停留条件 \\partial \\mathcal{L} / \\partial n_j = 0 を課し、第1項に積の微分法則を、第2項に \\partial n_k / \\partial n_j = \\delta_{kj} を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_2",
+          "order": 24,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\frac{\\partial \\mathcal{L}}{\\partial n_j} = \\mu_j + \\sum_{k=1}^{N_s} n_k \\left(\\frac{\\partial \\mu_k}{\\partial n_j}\\right)_{T,p,n_{l\\neq j}} - \\sum_{i=1}^{N_e} \\lambda_i a_{ij} = 0",
+          "to_latex": "\\frac{\\partial \\mathcal{L}}{\\partial n_j} = \\mu_j + \\sum_{k=1}^{N_s} n_k \\left(\\frac{\\partial \\mu_k}{\\partial n_j}\\right)_{T,p,n_{l\\neq j}} - \\sum_{i=1}^{N_e} \\lambda_i a_{ij} = 0,\\quad \\sum_{k=1}^{N_s} n_k \\left(\\frac{\\partial \\mu_k}{\\partial n_j}\\right)_{T,p,n_{l\\neq j}} = 0",
+          "operation_label": "ギブズ＝デュエム関係を代入・導入",
+          "explanation": "定温定圧下での G = \\sum_k n_k \\mu_k の全微分 dG = \\sum_k \\mu_k\\,dn_k + \\sum_k n_k\\,d\\mu_k と基本関係式 dG = \\sum_k \\mu_k\\,dn_k の差から得られるギブズ＝デュエム関係 \\sum_{k=1}^{N_s} n_k (\\partial \\mu_k / \\partial n_j)_{T,p,n_{l\\neq j}} = 0 を導入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_3",
+          "order": 25,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\frac{\\partial \\mathcal{L}}{\\partial n_j} = \\mu_j + \\sum_{k=1}^{N_s} n_k \\left(\\frac{\\partial \\mu_k}{\\partial n_j}\\right)_{T,p,n_{l\\neq j}} - \\sum_{i=1}^{N_e} \\lambda_i a_{ij} = 0,\\quad \\sum_{k=1}^{N_s} n_k \\left(\\frac{\\partial \\mu_k}{\\partial n_j}\\right)_{T,p,n_{l\\neq j}} = 0",
+          "to_latex": "\\mu_j - \\sum_{i=1}^{N_e} \\lambda_i a_{ij} = 0",
+          "operation_label": "ギブズ＝デュエム関係の代入による組成微分和の消去",
+          "explanation": "停留条件の式に \\sum_{k=1}^{N_s} n_k (\\partial \\mu_k / \\partial n_j)_{T,p,n_{l\\neq j}} = 0 を代入し、化学ポテンシャルの組成微分項を 0 として消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_5_4",
+          "order": 26,
+          "granularity_level": 3,
+          "parent_step_id": "s2_5",
+          "from_latex": "\\mu_j - \\sum_{i=1}^{N_e} \\lambda_i a_{ij} = 0",
+          "to_latex": "\\mu_j = \\sum_{i=1}^{N_e} \\lambda_i a_{ij}",
+          "operation_label": "右辺への移項による平衡条件の導出",
+          "explanation": "左辺の -\\sum_{i=1}^{N_e} \\lambda_i a_{ij} を右辺へ移項し、平衡状態における化学ポテンシャルと元素ポテンシャル（未定乗数）の線形結合関係 \\mu_j = \\sum_{i=1}^{N_e} \\lambda_i a_{ij} を得る。",
+          "used_node_ids": [],
           "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-28T01:57:30.785771+00:00"
     },
     {
       "id": "aerosp.cea.d03_chemical_potential_equilibrium_constant",

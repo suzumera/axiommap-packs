@@ -311,9 +311,12 @@
       ],
       "required_math_node_ids": [],
       "assumptions": [
-        "直線弾道軌道（進入角 γ_E は一定）",
+        "直線弾道軌道（進入角 γ_E は 0 < γ_E ≤ π/2 の一定値であり sin γ_E > 0）",
         "重力加速度成分および揚力は抗力に比べて無視可能（a_D >> g）",
-        "大気密度は等温指数関数モデルに従う"
+        "静止大気（無風条件、v_rel = V > 0）",
+        "突入中の質量 m、抗力係数 C_D、基準面積 A は一定（弾道係数 B_c = m/(C_D A) は定数）",
+        "大気密度は基準高度 h_0 = 0、スケールハイト H_s > 0 一定の等温指数関数モデル ρ(h) = ρ_0 exp(-h/H_s) に従う",
+        "大気圏上界極限 h → ∞ において速度が進入速度 V_E > 0 へ収束し、V(h) は h に関して連続微分可能である"
       ],
       "steps": [
         {
@@ -321,41 +324,219 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "m \\frac{dV}{dt} = -\\frac{1}{2}\\rho(h) C_D A V^2,\\quad \\frac{dh}{dt} = -V \\sin\\gamma_E",
+          "from_latex": "\\frac{dV}{dt} = -\\frac{1}{2}\\rho(h)\\frac{C_D A}{m} V^2,\\quad \\frac{dh}{dt} = -V\\sin\\gamma_E",
           "to_latex": "V(h) = V_E \\exp\\!\\left(-\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
-          "operation_label": "連立微分方程式の変数分離と積分",
-          "explanation": "高度 h を独立変数に変換して弾道係数 B_c を代入し、指数関数大気密度を高度積分して速度降下解を得る。",
+          "operation_label": "弾道再突入運動方程式の変数分離と高度積分",
+          "explanation": "大気抵抗による減速運動方程式に弾道係数と指数関数大気密度を代入し、連鎖律で高度微分へ変換したのち、大気圏外から高度 h まで定積分して速度分布を導出する。",
           "used_node_ids": [
             "aerosp.env.n03_exponential_scale_height_atm",
             "aerosp.env.n04_ballistic_coefficient_drag"
-          ]
+          ],
+          "sympy_check_hint": null
         },
         {
-          "step_id": "s2_altitude_variable_change",
+          "step_id": "s2_1",
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "m \\frac{dV}{dt} = -\\frac{1}{2}\\rho(h) C_D A V^2,\\quad \\frac{dh}{dt} = -V \\sin\\gamma_E",
-          "to_latex": "\\frac{dV}{V} = \\frac{\\rho_0 e^{-h/H_s}}{2 B_c \\sin\\gamma_E}\\,dh",
-          "operation_label": "時間微分から高度微分への変換と弾道係数の導入",
-          "explanation": "dV/dt = (dV/dh)(dh/dt) = -V sin γ_E (dV/dh) を運動方程式に代入し、B_c = m / (C_D A) を用いて整理する。",
+          "from_latex": "\\frac{dV}{dt} = -\\frac{1}{2}\\rho(h)\\frac{C_D A}{m} V^2,\\quad \\frac{dh}{dt} = -V\\sin\\gamma_E",
+          "to_latex": "-V\\sin\\gamma_E \\frac{dV}{dh} = -\\frac{\\rho(h) V^2}{2 B_c}",
+          "operation_label": "弾道係数の導入と連鎖律による高度微分への変換",
+          "explanation": "抗力加速度式へ弾道係数 B_c の定義を代入し、時間微分 dV/dt に連鎖律と高度変化率 dh/dt = -V sin γ_E を適用して高度 h に関する微分方程式へ書き換える。",
           "used_node_ids": [
-            "aerosp.env.n03_exponential_scale_height_atm",
             "aerosp.env.n04_ballistic_coefficient_drag"
-          ]
+          ],
+          "sympy_check_hint": null
         },
         {
-          "step_id": "s3_integrate_height",
+          "step_id": "s3_1_1",
           "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{dV}{dt} = -\\frac{1}{2}\\rho(h)\\frac{C_D A}{m} V^2,\\quad \\frac{dh}{dt} = -V\\sin\\gamma_E",
+          "to_latex": "\\frac{dV}{dt} = -\\frac{\\rho(h) V^2}{2 B_c},\\quad \\frac{dh}{dt} = -V\\sin\\gamma_E",
+          "operation_label": "弾道係数 B_c の定義の代入",
+          "explanation": "ENV04 の定義 B_c := m / (C_D A) より (C_D A)/m = 1/B_c を運動方程式の右辺へ代入する。",
+          "used_node_ids": [
+            "aerosp.env.n04_ballistic_coefficient_drag"
+          ],
+          "sympy_check_hint": "-(1/2)*rho*(C_D*A/m)*V**2 == -rho*V**2/(2*(m/(C_D*A)))"
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{dV}{dt} = -\\frac{\\rho(h) V^2}{2 B_c},\\quad \\frac{dh}{dt} = -V\\sin\\gamma_E",
+          "to_latex": "\\frac{dV}{dh}\\frac{dh}{dt} = -\\frac{\\rho(h) V^2}{2 B_c},\\quad \\frac{dh}{dt} = -V\\sin\\gamma_E",
+          "operation_label": "合成関数の微分法則（連鎖律）の適用",
+          "explanation": "速度 V を高度 h を介した時間の関数とみなし、左辺の時間微分を dV/dt = (dV/dh)(dh/dt) へ書き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{dV}{dh}\\frac{dh}{dt} = -\\frac{\\rho(h) V^2}{2 B_c},\\quad \\frac{dh}{dt} = -V\\sin\\gamma_E",
+          "to_latex": "-V\\sin\\gamma_E \\frac{dV}{dh} = -\\frac{\\rho(h) V^2}{2 B_c}",
+          "operation_label": "高度時間変化率 dh/dt の代入",
+          "explanation": "直線弾道軌道の運動学関係 dh/dt = -V sin γ_E を左辺へ代入し、時刻 t を消去する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 6,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\frac{dV}{V} = \\frac{\\rho_0 e^{-h/H_s}}{2 B_c \\sin\\gamma_E}\\,dh",
+          "from_latex": "-V\\sin\\gamma_E \\frac{dV}{dh} = -\\frac{\\rho(h) V^2}{2 B_c}",
+          "to_latex": "\\frac{1}{V}\\,dV = \\frac{\\rho_0 e^{-h/H_s}}{2 B_c \\sin\\gamma_E}\\,dh",
+          "operation_label": "変数分離と指数関数大気モデルの代入",
+          "explanation": "両辺を -V sin γ_E で除算して変数を分離したのち、ENV03 の指数関数大気密度分布を代入する。",
+          "used_node_ids": [
+            "aerosp.env.n03_exponential_scale_height_atm"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 7,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "-V\\sin\\gamma_E \\frac{dV}{dh} = -\\frac{\\rho(h) V^2}{2 B_c}",
+          "to_latex": "\\frac{dV}{dh} = \\frac{\\rho(h) V}{2 B_c \\sin\\gamma_E}",
+          "operation_label": "両辺を -V sin γ_E で除算",
+          "explanation": "V > 0 および sin γ_E > 0 の仮定のもとで両辺を -V sin γ_E で割り、負符号の相殺と右辺の V の約分を行う。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(-rho*V**2/(2*B_c))/(-V*sin(gamma_E)) == rho*V/(2*B_c*sin(gamma_E))"
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{dV}{dh} = \\frac{\\rho(h) V}{2 B_c \\sin\\gamma_E}",
+          "to_latex": "\\frac{1}{V}\\,dV = \\frac{\\rho(h)}{2 B_c \\sin\\gamma_E}\\,dh",
+          "operation_label": "速度変数と高度変数の分離",
+          "explanation": "両辺を V で割り微小高度 dh を掛けることで、左辺に V のみ、右辺に h のみの微分形式へ分離する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{1}{V}\\,dV = \\frac{\\rho(h)}{2 B_c \\sin\\gamma_E}\\,dh",
+          "to_latex": "\\frac{1}{V}\\,dV = \\frac{\\rho_0 e^{-h/H_s}}{2 B_c \\sin\\gamma_E}\\,dh",
+          "operation_label": "指数関数大気密度モデル ρ(h) の代入",
+          "explanation": "ENV03 の指数関数大気モデルにおいて基準高度 h_0 = 0 とした ρ(h) = ρ_0 exp(-h/H_s) を右辺へ代入する。",
+          "used_node_ids": [
+            "aerosp.env.n03_exponential_scale_height_atm"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_3",
+          "order": 10,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{1}{V}\\,dV = \\frac{\\rho_0 e^{-h/H_s}}{2 B_c \\sin\\gamma_E}\\,dh",
+          "to_latex": "\\ln\\!\\left(\\frac{V(h)}{V_E}\\right) = -\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}",
+          "operation_label": "大気圏上界境界条件による定積分の実行",
+          "explanation": "h → ∞ で V → V_E となる境界条件を用いて両辺を定積分し、左辺の対数項と右辺の指数積分を順次評価する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{1}{V}\\,dV = \\frac{\\rho_0 e^{-h/H_s}}{2 B_c \\sin\\gamma_E}\\,dh",
+          "to_latex": "\\int_{V_E}^{V(h)} \\frac{1}{V'}\\,dV' = \\frac{\\rho_0}{2 B_c \\sin\\gamma_E} \\int_{\\infty}^{h} e^{-h'/H_s}\\,dh'",
+          "operation_label": "大気圏上界から高度 h までの定積分の設定",
+          "explanation": "積分変数 V' と h' を導入し、下端 (h' → ∞, V' = V_E) から上端 (h' = h, V' = V(h)) まで両辺の定積分を設定して右辺の定数係数を積分の外へ括り出す。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\int_{V_E}^{V(h)} \\frac{1}{V'}\\,dV' = \\frac{\\rho_0}{2 B_c \\sin\\gamma_E} \\int_{\\infty}^{h} e^{-h'/H_s}\\,dh'",
+          "to_latex": "\\ln\\!\\left(\\frac{V(h)}{V_E}\\right) = \\frac{\\rho_0}{2 B_c \\sin\\gamma_E} \\int_{\\infty}^{h} e^{-h'/H_s}\\,dh'",
+          "operation_label": "左辺の逆数積分の評価",
+          "explanation": "V(h) > 0 かつ V_E > 0 より ∫_{V_E}^{V(h)} (1/V') dV' = ln V(h) - ln V_E = ln(V(h)/V_E) と評価する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\ln\\!\\left(\\frac{V(h)}{V_E}\\right) = \\frac{\\rho_0}{2 B_c \\sin\\gamma_E} \\int_{\\infty}^{h} e^{-h'/H_s}\\,dh'",
+          "to_latex": "\\ln\\!\\left(\\frac{V(h)}{V_E}\\right) = \\frac{\\rho_0}{2 B_c \\sin\\gamma_E} \\Big[-H_s e^{-h'/H_s}\\Big]_{\\infty}^{h}",
+          "operation_label": "右辺の指数関数の原始関数の算出",
+          "explanation": "指数関数の積分公式 ∫ e^{-h'/H_s} dh' = -H_s e^{-h'/H_s} を右辺の定積分に適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "diff(-H_s*exp(-hp/H_s), hp) == exp(-hp/H_s)"
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\ln\\!\\left(\\frac{V(h)}{V_E}\\right) = \\frac{\\rho_0}{2 B_c \\sin\\gamma_E} \\Big[-H_s e^{-h'/H_s}\\Big]_{\\infty}^{h}",
+          "to_latex": "\\ln\\!\\left(\\frac{V(h)}{V_E}\\right) = -\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}",
+          "operation_label": "積分上下端の代入と無限遠極限の評価",
+          "explanation": "H_s > 0 より lim_{h' → ∞} e^{-h'/H_s} = 0 となるため、上端 h' = h の値から下端の極限 0 を差し引いて右辺を確定する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 15,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\ln\\!\\left(\\frac{V(h)}{V_E}\\right) = -\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}",
           "to_latex": "V(h) = V_E \\exp\\!\\left(-\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
-          "operation_label": "大気圏外境界条件（h -> ∞ で V -> V_E）での定積分",
-          "explanation": "両辺を大気圏上界から高度 h まで積分し、指数関数の肩に高度分布をまとめる。",
-          "used_node_ids": []
+          "operation_label": "対数の解消による速度プロファイル陽表現の導出",
+          "explanation": "両辺の指数関数をとって自然対数を解消し、V_E を乗じてアレン＝エガーズの速度解を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\ln\\!\\left(\\frac{V(h)}{V_E}\\right) = -\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}",
+          "to_latex": "\\frac{V(h)}{V_E} = \\exp\\!\\left(-\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
+          "operation_label": "両辺の指数関数化による対数の解消",
+          "explanation": "両辺に自然指数関数 exp(·) を適用し、exp(ln(V(h)/V_E)) = V(h)/V_E を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "exp(log(V/V_E)) == V/V_E"
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "\\frac{V(h)}{V_E} = \\exp\\!\\left(-\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
+          "to_latex": "V(h) = V_E \\exp\\!\\left(-\\frac{\\rho_0 H_s}{2 B_c \\sin\\gamma_E} e^{-h/H_s}\\right)",
+          "operation_label": "両辺への進入速度 V_E の乗算",
+          "explanation": "両辺に V_E を掛けて V(h) について解き、到達目標であるアレン＝エガーズの弾道再突入速度方程式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "V_E*exp(log(V/V_E)) == V"
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-28T01:58:25.023701+00:00"
     },
     {
       "id": "derivation.aerosp.reentry.n04",
@@ -417,11 +598,21 @@
         "aerosp.env.n03_exponential_scale_height_atm",
         "aerosp.reentry.n03_allen_eggers_velocity_profile"
       ],
-      "required_math_node_ids": [],
+      "required_math_node_ids": [
+        "aerosp.hypab.n05_fay_riddell_stagnation_heat_flux",
+        "aerosp.reentry.n02_hypersonic_newtonian_pressure",
+        "eng.comp.n03_stagnation_enthalpy_energy_eq",
+        "eng.comp.n08_rankine_hugoniot_relations"
+      ],
       "assumptions": [
-        "鈍頭球殻前方の軸対称層流境界層",
-        "プラントル数・ルイス数は定数かつ極超音速冷壁近似（h_w << h_0）",
-        "よどみ点外部速度勾配はニュートン衝撃波理論 (du_e/dx)_0 = (1/R_n) sqrt(2(p_0 - p_infty)/rho_0) に従う"
+        "鈍頭軸対称物体（よどみ点曲率半径 R_n > 0）前方の定常層流境界層であり、境界層厚さは衝撃層厚さに比べて十分薄い。",
+        "プラントル数 Pr は定数であり、ルイス数 Le = 1（または化学平衡による拡散解離寄与の消失）が成り立つ。",
+        "極超音速冷壁近似（h_w ≪ h_{0e}）および一様流静エンタルピーの無視（h_∞ ≪ V^2 / 2）が成立する。",
+        "チャップマン＝ルベシン比 C_CR := (ρ_w μ_w) / (ρ_e μ_e) は飛行条件によらず一定とみなせる。",
+        "よどみ点外部速度勾配はニュートン流理論に基づく関係式 (du_e/dx)_s = (1 / R_n) √(2(p_0 - p_∞) / ρ_0) に従う。",
+        "極超音速強衝撃波極限（M_∞ ≫ 1）かつ一定の有効比熱比 γ > 1 が成立し、衝撃波背後密度比は ρ_0 / ρ_∞ = (γ + 1) / (γ - 1) となる。",
+        "高温気体の粘性係数は気体運動論スケーリング μ_e = c_μ √h_{0e}（c_μ は大気成分に依存する定数）に従う。",
+        "局所自由流密度 ρ = ρ_∞ > 0 および飛行速度 V は、再突入軌道高度 h に沿って与えられる。"
       ],
       "steps": [
         {
@@ -429,38 +620,240 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "q_s = \\frac{k_w}{\\mathrm{Pr}}\\left(\\frac{\\partial T}{\\partial y}\\right)_w \\propto \\sqrt{\\rho_e \\mu_e \\left(\\frac{du_e}{dx}\\right)_0}\\,(h_0 - h_w)",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}(\\rho_e \\mu_e)^{0.4}(\\rho_w \\mu_w)^{0.1}\\sqrt{\\left(\\frac{du_e}{dx}\\right)_s}\\,(h_{0e}-h_w)\\left[1 + (\\mathrm{Le}^a - 1)\\frac{h_D}{h_{0e}}\\right]",
           "to_latex": "q_s = k_{\\mathrm{SG}} \\sqrt{\\frac{\\rho}{R_n}} V^3",
-          "operation_label": "フェイ＝リドル型層流境界層熱流束の次元・相似パラメータ縮約",
-          "explanation": "よどみ点外部速度勾配が (V/R_n) sqrt(2 rho_infty / rho_0) に比例し、全エンタルピー差が h_0 ≈ V^2 / 2 で支配されることから、熱流束が sqrt(rho/R_n) V^3 にスケールすることを導く。",
+          "operation_label": "フェイ＝リドル式からサットン＝グレーブス相関式への縮約導出",
+          "explanation": "フェイ＝リドルの非平衡よどみ点熱流束式を出発点とし、Le=1・冷壁近似・チャップマン＝ルベシン比、ニュートン流よどみ点速度勾配、ランキン＝ユゴニオ極限密度比、全エンタルピーおよび高温粘性則 μ_e ∝ V を順次適用して、よどみ点熱流束の標準相関式 q_s = k_SG √(ρ / R_n) V^3 を構成する。",
           "used_node_ids": [
-            "aerosp.env.n03_exponential_scale_height_atm",
-            "aerosp.reentry.n03_allen_eggers_velocity_profile"
-          ]
+            "aerosp.hypab.n05_fay_riddell_stagnation_heat_flux",
+            "aerosp.reentry.n02_hypersonic_newtonian_pressure",
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n08_rankine_hugoniot_relations"
+          ],
+          "sympy_check_hint": null
         },
         {
-          "step_id": "s2_boundary_layer_scaling",
+          "step_id": "s2_1",
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "q_s = \\frac{k_w}{\\mathrm{Pr}}\\left(\\frac{\\partial T}{\\partial y}\\right)_w \\propto \\sqrt{\\rho_e \\mu_e \\left(\\frac{du_e}{dx}\\right)_0}\\,(h_0 - h_w)",
-          "to_latex": "q_s \\propto \\sqrt{\\rho_\\infty}\\sqrt{\\frac{V}{R_n}}\\,\\left(\\frac{1}{2}V^2\\right)",
-          "operation_label": "よどみ点速度勾配と全エンタルピーのスケーリング代入",
-          "explanation": "ニュートン流による速度勾配 (du_e/dx)_0 ∝ V / R_n および全エンタルピー h_0 ∝ V^2 を境界熱流束の相似比例式に代入する。",
-          "used_node_ids": []
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}(\\rho_e \\mu_e)^{0.4}(\\rho_w \\mu_w)^{0.1}\\sqrt{\\left(\\frac{du_e}{dx}\\right)_s}\\,(h_{0e}-h_w)\\left[1 + (\\mathrm{Le}^a - 1)\\frac{h_D}{h_{0e}}\\right]",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}(\\rho_e \\mu_e)^{1/2}\\sqrt{\\left(\\frac{du_e}{dx}\\right)_s}\\,h_{0e} ",
+          "operation_label": "フェイ＝リドル式への Le = 1・冷壁近似・チャップマン＝ルベシン比の適用",
+          "explanation": "フェイ＝リドル式において Le = 1 および冷壁近似 h_w ≪ h_{0e} を適用し、さらに壁面・外縁の密度粘性積比 C_CR を用いてべき乗を 1/2 乗へ統合する。",
+          "used_node_ids": [
+            "aerosp.hypab.n05_fay_riddell_stagnation_heat_flux"
+          ],
+          "sympy_check_hint": null
         },
         {
-          "step_id": "s3_sutton_graves_constant",
+          "step_id": "s3_1_1",
           "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}(\\rho_e \\mu_e)^{0.4}(\\rho_w \\mu_w)^{0.1}\\sqrt{\\left(\\frac{du_e}{dx}\\right)_s}\\,(h_{0e}-h_w)\\left[1 + (\\mathrm{Le}^a - 1)\\frac{h_D}{h_{0e}}\\right]",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}(\\rho_e \\mu_e)^{0.4}(\\rho_w \\mu_w)^{0.1}\\sqrt{\\left(\\frac{du_e}{dx}\\right)_s}\\,(h_{0e}-h_w) ",
+          "operation_label": "ルイス数 Le = 1 の代入による拡散解離因子の消去",
+          "explanation": "フェイ＝リドルのよどみ点熱流束方程式に仮定 Le = 1 を代入すると Le^a - 1 = 0 となり、拡散解離項の括弧因子が 1 に帰着する。",
+          "used_node_ids": [
+            "aerosp.hypab.n05_fay_riddell_stagnation_heat_flux"
+          ],
+          "sympy_check_hint": "1 + (1**a - 1)*h_D/h_0e == 1"
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}(\\rho_e \\mu_e)^{0.4}(\\rho_w \\mu_w)^{0.1}\\sqrt{\\left(\\frac{du_e}{dx}\\right)_s}\\,(h_{0e}-h_w) ",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}(\\rho_e \\mu_e)^{0.4}(\\rho_w \\mu_w)^{0.1}\\sqrt{\\left(\\frac{du_e}{dx}\\right)_s}\\,h_{0e} ",
+          "operation_label": "極超音速冷壁近似による壁面エンタルピー項の省略",
+          "explanation": "極超音速再突入では壁面エンタルピーがよどみ点全エンタルピーに比べて極めて小さい（h_w ≪ h_{0e}）ため、エンタルピー差を h_{0e} - h_w = h_{0e} と近似する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}(\\rho_e \\mu_e)^{0.4}(\\rho_w \\mu_w)^{0.1}\\sqrt{\\left(\\frac{du_e}{dx}\\right)_s}\\,h_{0e} ",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}(\\rho_e \\mu_e)^{1/2}\\sqrt{\\left(\\frac{du_e}{dx}\\right)_s}\\,h_{0e} ",
+          "operation_label": "チャップマン＝ルベシン比 C_CR の代入・導入と指数統合",
+          "explanation": "定義 ρ_w μ_w = C_CR (ρ_e μ_e) を代入し、指数法則 (ρ_e μ_e)^{0.4} (ρ_e μ_e)^{0.1} = (ρ_e μ_e)^{0.5} = (ρ_e μ_e)^{1/2} を適用する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(rho_e*mu_e)**Rational(2, 5)*(C_CR*rho_e*mu_e)**Rational(1, 10) == C_CR**Rational(1, 10)*(rho_e*mu_e)**Rational(1, 2)"
+        },
+        {
+          "step_id": "s2_2",
+          "order": 6,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "q_s \\propto \\sqrt{\\rho_\\infty}\\sqrt{\\frac{V}{R_n}}\\,\\left(\\frac{1}{2}V^2\\right)",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}(\\rho_e \\mu_e)^{1/2}\\sqrt{\\left(\\frac{du_e}{dx}\\right)_s}\\,h_{0e} ",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}(\\rho_e \\mu_e)^{1/2}\\rho_0^{-1/4}\\rho_\\infty^{1/4}R_n^{-1/2}V^{1/2}h_{0e} ",
+          "operation_label": "ニュートン流理論によるよどみ点速度勾配の代入と展開",
+          "explanation": "仮定したよどみ点速度勾配式とニュートン流のよどみ点圧力係数 C_{p,0} = 2 を順次代入し、二重平方根を各物理量のべき乗へ分解する。",
+          "used_node_ids": [
+            "aerosp.reentry.n02_hypersonic_newtonian_pressure"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 7,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}(\\rho_e \\mu_e)^{1/2}\\sqrt{\\left(\\frac{du_e}{dx}\\right)_s}\\,h_{0e} ",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}(\\rho_e \\mu_e)^{1/2}\\left(\\frac{1}{R_n}\\sqrt{\\frac{2(p_0 - p_\\infty)}{\\rho_0}}\\right)^{1/2}h_{0e} ",
+          "operation_label": "よどみ点速度勾配公式の代入・導入",
+          "explanation": "よどみ点（添字 s および 0 は同一のよどみ点を表す）における外部速度勾配の仮定式 (du_e/dx)_s = (1/R_n) √(2(p_0 - p_∞)/ρ_0) を平方根内へ代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}(\\rho_e \\mu_e)^{1/2}\\left(\\frac{1}{R_n}\\sqrt{\\frac{2(p_0 - p_\\infty)}{\\rho_0}}\\right)^{1/2}h_{0e} ",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}(\\rho_e \\mu_e)^{1/2}\\left(\\frac{1}{R_n}\\sqrt{\\frac{2\\rho_\\infty V^2}{\\rho_0}}\\right)^{1/2}h_{0e} ",
+          "operation_label": "ニュートン流圧力係数に基づくよどみ点圧力差の代入・導入",
+          "explanation": "極超音速ニュートン流体理論の圧力係数式 C_p = 2 sin^2 θ においてよどみ点 θ = π/2 を取ると C_{p,0} = (p_0 - p_∞) / (ρ_∞ V^2 / 2) = 2 となるため、p_0 - p_∞ = ρ_∞ V^2 を代入する。",
+          "used_node_ids": [
+            "aerosp.reentry.n02_hypersonic_newtonian_pressure"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}(\\rho_e \\mu_e)^{1/2}\\left(\\frac{1}{R_n}\\sqrt{\\frac{2\\rho_\\infty V^2}{\\rho_0}}\\right)^{1/2}h_{0e} ",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}(\\rho_e \\mu_e)^{1/2}\\rho_0^{-1/4}\\rho_\\infty^{1/4}R_n^{-1/2}V^{1/2}h_{0e} ",
+          "operation_label": "二重平方根のべき乗展開と各変数の分離",
+          "explanation": "R_n > 0, ρ_0 > 0, ρ_∞ > 0, V > 0 の下で ((1/R_n)(2 ρ_∞ V^2 / ρ_0)^{1/2})^{1/2} = 2^{1/4} ρ_0^{-1/4} ρ_∞^{1/4} R_n^{-1/2} V^{1/2} とべき乗法則に従って展開する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "((2*rho_inf*V**2/rho_0)**Rational(1, 2)/R_n)**Rational(1, 2) == 2**Rational(1, 4)*rho_0**(-Rational(1, 4))*rho_inf**Rational(1, 4)*R_n**(-Rational(1, 2))*V**Rational(1, 2)"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 10,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}(\\rho_e \\mu_e)^{1/2}\\rho_0^{-1/4}\\rho_\\infty^{1/4}R_n^{-1/2}V^{1/2}h_{0e} ",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}\\left(\\frac{\\gamma+1}{\\gamma-1}\\right)^{1/4}\\rho_\\infty^{1/2}\\left(\\frac{c_\\mu}{\\sqrt{2}}V\\right)^{1/2}R_n^{-1/2}V^{1/2}\\left(\\frac{1}{2}V^2\\right) ",
+          "operation_label": "衝撃波密度比・全エンタルピー保存・高温粘性則の代入",
+          "explanation": "境界層外縁がよどみ点状態にあることとランキン＝ユゴニオ極限密度比を用いて ρ_e と ρ_0 を ρ_∞ へ変換し、さらに全エンタルピー h_{0e} = V^2/2 と高温粘性則 μ_e = c_μ V / √2 を代入する。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq",
+            "eng.comp.n08_rankine_hugoniot_relations"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}(\\rho_e \\mu_e)^{1/2}\\rho_0^{-1/4}\\rho_\\infty^{1/4}R_n^{-1/2}V^{1/2}h_{0e} ",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}\\rho_0^{1/4}\\rho_\\infty^{1/4}\\mu_e^{1/2}R_n^{-1/2}V^{1/2}h_{0e} ",
+          "operation_label": "外縁密度 ρ_e = ρ_0 の代入と ρ_0 の指数統合",
+          "explanation": "よどみ点境界層外縁の密度が衝撃波背後よどみ点密度に等しいこと（ρ_e = ρ_0）を代入し、指数法則 ρ_0^{1/2} ρ_0^{-1/4} = ρ_0^{1/4} により ρ_0 のべき乗を統合する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(rho_0*mu_e)**Rational(1, 2)*rho_0**(-Rational(1, 4)) == rho_0**Rational(1, 4)*mu_e**Rational(1, 2)"
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}\\rho_0^{1/4}\\rho_\\infty^{1/4}\\mu_e^{1/2}R_n^{-1/2}V^{1/2}h_{0e} ",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}\\left(\\frac{\\gamma+1}{\\gamma-1}\\right)^{1/4}\\rho_\\infty^{1/2}\\mu_e^{1/2}R_n^{-1/2}V^{1/2}h_{0e} ",
+          "operation_label": "ランキン＝ユゴニオ極限密度比の代入・導入",
+          "explanation": "垂直衝撃波のランキン＝ユゴニオ関係式 ρ_2 / ρ_1 = (γ+1) M_1^2 / (2 + (γ-1) M_1^2) の極超音速極限 M_1 ≫ 1 として ρ_0 = ((γ+1)/(γ-1)) ρ_∞ を代入し、ρ_∞^{1/4} ρ_∞^{1/4} = ρ_∞^{1/2} を得る。",
+          "used_node_ids": [
+            "eng.comp.n08_rankine_hugoniot_relations"
+          ],
+          "sympy_check_hint": "((gamma+1)/(gamma-1)*rho_inf)**Rational(1, 4)*rho_inf**Rational(1, 4) == ((gamma+1)/(gamma-1))**Rational(1, 4)*rho_inf**Rational(1, 2)"
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}\\left(\\frac{\\gamma+1}{\\gamma-1}\\right)^{1/4}\\rho_\\infty^{1/2}\\mu_e^{1/2}R_n^{-1/2}V^{1/2}h_{0e} ",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}\\left(\\frac{\\gamma+1}{\\gamma-1}\\right)^{1/4}\\rho_\\infty^{1/2}\\mu_e^{1/2}R_n^{-1/2}V^{1/2}\\left(\\frac{1}{2}V^2\\right) ",
+          "operation_label": "定常断熱流の全エンタルピー保存式の代入・導入",
+          "explanation": "断熱定常流のエネルギー保存式 h_0 = h + u^2 / 2 において極超音速条件 h_∞ ≪ V^2 / 2 を適用し、よどみ点全エンタルピー h_{0e} = V^2 / 2 を代入する。",
+          "used_node_ids": [
+            "eng.comp.n03_stagnation_enthalpy_energy_eq"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}\\left(\\frac{\\gamma+1}{\\gamma-1}\\right)^{1/4}\\rho_\\infty^{1/2}\\mu_e^{1/2}R_n^{-1/2}V^{1/2}\\left(\\frac{1}{2}V^2\\right) ",
+          "to_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}\\left(\\frac{\\gamma+1}{\\gamma-1}\\right)^{1/4}\\rho_\\infty^{1/2}\\left(\\frac{c_\\mu}{\\sqrt{2}}V\\right)^{1/2}R_n^{-1/2}V^{1/2}\\left(\\frac{1}{2}V^2\\right) ",
+          "operation_label": "高温気体粘性則 μ_e = c_μ √h_{0e} の代入・導入",
+          "explanation": "気体運動論に基づく粘性スケーリング μ_e = c_μ √h_{0e} に h_{0e} = V^2 / 2 を組み合わせた μ_e = (c_μ / √2) V を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_4",
+          "order": 15,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}\\left(\\frac{\\gamma+1}{\\gamma-1}\\right)^{1/4}\\rho_\\infty^{1/2}\\left(\\frac{c_\\mu}{\\sqrt{2}}V\\right)^{1/2}R_n^{-1/2}V^{1/2}\\left(\\frac{1}{2}V^2\\right) ",
           "to_latex": "q_s = k_{\\mathrm{SG}} \\sqrt{\\frac{\\rho}{R_n}} V^3",
-          "operation_label": "大気成分依存定数 k_SG による比例係数の同定",
-          "explanation": "地球大気（N2-O2）物性値を取り込んだ定数 k_SG（約 1.7429 × 10^-4 W s^3 / (m^(1/2) kg^(1/2))）を導入し、標準的工学公式として確立する。",
-          "used_node_ids": []
+          "operation_label": "べき乗整理とサットン＝グレーブス定数 k_SG の定義",
+          "explanation": "定数 2 と速度 V のべき乗を厳密に統合して 2^{1/4}・2^{-1/4} の相殺と V^3 則を導いた後、気体物性定数群を k_SG としてまとめ、標準記法 (q_s, ρ) へ統一する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_1",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "q_w = 0.763\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}2^{1/4}\\left(\\frac{\\gamma+1}{\\gamma-1}\\right)^{1/4}\\rho_\\infty^{1/2}\\left(\\frac{c_\\mu}{\\sqrt{2}}V\\right)^{1/2}R_n^{-1/2}V^{1/2}\\left(\\frac{1}{2}V^2\\right) ",
+          "to_latex": "q_w = \\frac{0.763}{2}\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}c_\\mu^{1/2}\\left(\\frac{\\gamma+1}{\\gamma-1}\\right)^{1/4}\\sqrt{\\frac{\\rho_\\infty}{R_n}}\\,V^3 ",
+          "operation_label": "べき乗法則の適用による定数係数および速度・密度・曲率半径項の乗法統合",
+          "explanation": "2^{1/4} (2^{-1/2})^{1/2} (1/2) = 2^{1/4} 2^{-1/4} / 2 = 1/2 により係数 2 の端数べきが相殺され、速度のべき乗が V^{1/2} V^{1/2} V^2 = V^3、密度と曲率半径が ρ_∞^{1/2} R_n^{-1/2} = √(ρ_∞ / R_n) となる。",
+          "used_node_ids": [],
+          "sympy_check_hint": "2**Rational(1, 4)*rho_inf**Rational(1, 2)*(c_mu*V/sqrt(2))**Rational(1, 2)*R_n**(-Rational(1, 2))*V**Rational(1, 2)*(V**2/2) == Rational(1, 2)*c_mu**Rational(1, 2)*sqrt(rho_inf/R_n)*V**3"
+        },
+        {
+          "step_id": "s3_4_2",
+          "order": 17,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "q_w = \\frac{0.763}{2}\\,\\mathrm{Pr}^{-0.6}C_{\\mathrm{CR}}^{0.1}c_\\mu^{1/2}\\left(\\frac{\\gamma+1}{\\gamma-1}\\right)^{1/4}\\sqrt{\\frac{\\rho_\\infty}{R_n}}\\,V^3 ",
+          "to_latex": "q_w = k_{\\mathrm{SG}} \\sqrt{\\frac{\\rho_\\infty}{R_n}} V^3 ",
+          "operation_label": "サットン＝グレーブス定数 k_SG の定義・置換",
+          "explanation": "大気成分と輸送物性値のみに依存する定数因子群を k_SG := (0.763 / 2) Pr^{-0.6} C_CR^{0.1} c_μ^{1/2} ((γ + 1)/(γ - 1))^{1/4}（地球大気では約 1.7429 × 10^{-4} W・s^3 / (m^{1/2}・kg^{1/2})）と定義して置換する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_4_3",
+          "order": 18,
+          "granularity_level": 3,
+          "parent_step_id": "s2_4",
+          "from_latex": "q_w = k_{\\mathrm{SG}} \\sqrt{\\frac{\\rho_\\infty}{R_n}} V^3 ",
+          "to_latex": "q_s = k_{\\mathrm{SG}} \\sqrt{\\frac{\\rho}{R_n}} V^3",
+          "operation_label": "よどみ点熱流束・自由流密度の標準記法（q_s, ρ）への統一",
+          "explanation": "壁面よどみ点熱流束を q_s := q_w、軌道高度における局所大気密度を ρ := ρ_∞ と記法統一し、サットン＝グレーブスのよどみ点対流熱流束相関式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-28T02:00:23.275871+00:00"
     },
     {
       "id": "derivation.aerosp.reentry.n06",

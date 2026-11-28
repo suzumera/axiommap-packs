@@ -367,10 +367,14 @@
         "aerosp.env.n02_isa_troposphere_stratosphere",
         "phys.thermo.th01_zeroth_law_state_eq"
       ],
-      "required_math_node_ids": [],
+      "required_math_node_ids": [
+        "aerosp.env.n01_isa_hydrostatic_geopotential"
+      ],
       "assumptions": [
-        "対象高度帯において温度 T および重力加速度 g_0 が局所的に一定とみなせる",
-        "ジオポテンシャル高度差と幾何高度差を局所的に同一視する"
+        "対象高度帯は国際標準大気（ISA）の等温層（気温減率 L = 0）であり、温度 T > 0 および標準重力加速度 g_0 > 0 が局所的に一定である",
+        "対象高度帯において空気は理想気体とみなせ、比気体定数 R_sp > 0 を用いた状態方程式 p = \\rho R_{\\mathrm{sp}} T が成り立つ",
+        "対象高度帯では地球半径 R_E に対して h, h_0 \\ll R_E（または高度差が小さく局所的に R_E/(R_E + h) \\approx 1）とみなし、ジオポテンシャル高度差と幾何高度差を同一視する（H - H_0 \\approx h - h_0）",
+        "基準高度 h_0 における基準圧力 p_0 > 0 および基準密度 \\rho_0 > 0 は非ゼロである"
       ],
       "steps": [
         {
@@ -378,13 +382,13 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right),\\quad p = \\rho R_{\\mathrm{sp}} T",
+          "from_latex": "\\frac{p}{p_b} = \\exp\\!\\left(-\\frac{g_0(H - H_b)}{R_{\\mathrm{sp}} T_b}\\right)",
           "to_latex": "\\rho(h) = \\rho_0 \\exp\\!\\left(-\\frac{h - h_0}{H_s}\\right),\\qquad H_s := \\frac{R_{\\mathrm{sp}} T}{g_0}",
-          "operation_label": "等温大気圧力則の密度変換とスケールハイト定義",
-          "explanation": "等温層の圧力指数公式に理想気体状態方程式を適用して密度比へ変換し、特性高度スケール H_s を定義する。",
+          "operation_label": "等温ISA圧力則の密度変換とスケールハイト導入",
+          "explanation": "国際標準大気（ISA）等温層の圧力高度関係式に対し、幾何高度近似と理想気体の状態方程式を適用して密度比へ変換し、スケールハイト H_s を定義して指数関数大気密度モデルを導く。",
           "used_node_ids": [
-            "aerosp.env.n02_isa_troposphere_stratosphere",
-            "phys.thermo.th01_zeroth_law_state_eq"
+            "aerosp.env.n01_isa_hydrostatic_geopotential",
+            "aerosp.env.n02_isa_troposphere_stratosphere"
           ],
           "sympy_check_hint": null
         },
@@ -393,30 +397,155 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right),\\quad \\frac{\\rho}{\\rho_0} = \\frac{p / (R_{\\mathrm{sp}} T)}{p_0 / (R_{\\mathrm{sp}} T)}",
-          "to_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right)",
-          "operation_label": "等温条件による圧力比と密度比の等置",
-          "explanation": "温度および比気体定数が一定であるため、圧力比はそのまま密度比に等しくなる。",
+          "from_latex": "\\frac{p}{p_b} = \\exp\\!\\left(-\\frac{g_0(H - H_b)}{R_{\\mathrm{sp}} T_b}\\right)",
+          "to_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right)",
+          "operation_label": "基準状態の置換と幾何高度差への近似",
+          "explanation": "等温層圧力式（L = 0）の基準添字を b から 0 へ置き換え、ジオポテンシャル高度の定義と低高度近似により幾何高度差 h - h_0 で表す。",
           "used_node_ids": [
-            "phys.thermo.th01_zeroth_law_state_eq"
+            "aerosp.env.n01_isa_hydrostatic_geopotential",
+            "aerosp.env.n02_isa_troposphere_stratosphere"
           ],
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_2",
+          "step_id": "s3_1_1",
           "order": 3,
-          "granularity_level": 2,
-          "parent_step_id": "s1_overview",
-          "from_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right),\\quad H_s := \\frac{R_{\\mathrm{sp}} T}{g_0}",
-          "to_latex": "\\rho(h) = \\rho_0 \\exp\\!\\left(-\\frac{h - h_0}{H_s}\\right),\\qquad H_s := \\frac{R_{\\mathrm{sp}} T}{g_0}",
-          "operation_label": "スケールハイトの定義と代入",
-          "explanation": "密度が 1/e 倍になる高度幅としてスケールハイト H_s を定義し、指数大気密度公式を完成させる。",
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{p}{p_b} = \\exp\\!\\left(-\\frac{g_0(H - H_b)}{R_{\\mathrm{sp}} T_b}\\right)",
+          "to_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0(H - H_0)}{R_{\\mathrm{sp}} T}\\right)",
+          "operation_label": "基準圧力・基準高度・等温温度の記号置換",
+          "explanation": "ISA等温層（L = 0）の式において基準点の記号 b を 0（圧力 p_0、ジオポテンシャル高度 H_0）に置き換え、等温層の一定温度 T_b を T と表記する。",
           "used_node_ids": [
             "aerosp.env.n02_isa_troposphere_stratosphere"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0(H - H_0)}{R_{\\mathrm{sp}} T}\\right),\\quad H := \\frac{R_E h}{R_E + h}",
+          "to_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0}{R_{\\mathrm{sp}} T}\\left(\\frac{R_E h}{R_E + h} - \\frac{R_E h_0}{R_E + h_0}\\right)\\right)",
+          "operation_label": "ジオポテンシャル高度の定義を代入・導入",
+          "explanation": "ジオポテンシャル高度の定義 H := R_E h / (R_E + h) および基準点での H_0 := R_E h_0 / (R_E + h_0) を指数内の高度差 H - H_0 に代入する。",
+          "used_node_ids": [
+            "aerosp.env.n01_isa_hydrostatic_geopotential"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0}{R_{\\mathrm{sp}} T}\\left(\\frac{R_E h}{R_E + h} - \\frac{R_E h_0}{R_E + h_0}\\right)\\right)",
+          "to_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right)",
+          "operation_label": "低高度近似による幾何高度差への置換",
+          "explanation": "仮定 h, h_0 << R_E より R_E h / (R_E + h) = h / (1 + h/R_E) \\approx h および R_E h_0 / (R_E + h_0) \\approx h_0 を適用し、ジオポテンシャル高度差を幾何高度差 h - h_0 で置き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 6,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right),\\quad p = \\rho R_{\\mathrm{sp}} T",
+          "to_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right)",
+          "operation_label": "理想気体の状態方程式による圧力比から密度比への変換",
+          "explanation": "高度 h と基準高度 h_0 のそれぞれに理想気体の状態方程式を代入し、一定因子 R_sp T を約分することで圧力比を密度比へ変換する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_1",
+          "order": 7,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{p}{p_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right),\\quad p = \\rho(h) R_{\\mathrm{sp}} T",
+          "to_latex": "\\frac{\\rho(h) R_{\\mathrm{sp}} T}{p_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right)",
+          "operation_label": "高度 h における理想気体の状態方程式を代入・導入",
+          "explanation": "任意の高度 h における圧力 p に理想気体の状態方程式 p = \\rho(h) R_{\\mathrm{sp}} T を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{\\rho(h) R_{\\mathrm{sp}} T}{p_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right),\\quad p_0 = \\rho_0 R_{\\mathrm{sp}} T",
+          "to_latex": "\\frac{\\rho(h) R_{\\mathrm{sp}} T}{\\rho_0 R_{\\mathrm{sp}} T} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right)",
+          "operation_label": "基準高度 h_0 における理想気体の状態方程式を代入・導入",
+          "explanation": "基準高度 h_0 における圧力 p_0 に等温理想気体の状態方程式 p_0 = \\rho_0 R_{\\mathrm{sp}} T を代入する。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "\\frac{\\rho(h) R_{\\mathrm{sp}} T}{\\rho_0 R_{\\mathrm{sp}} T} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right)",
+          "to_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right)",
+          "operation_label": "分母・分子の共通因子 R_sp T の約分",
+          "explanation": "仮定 R_{\\mathrm{sp}} > 0 および T > 0 より R_{\\mathrm{sp}} T \\neq 0 であるため、左辺の分母と分子から共通因子 R_{\\mathrm{sp}} T を約分する。",
+          "used_node_ids": [],
+          "sympy_check_hint": "(rho*R_sp*T)/(rho_0*R_sp*T) == rho/rho_0"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 10,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right)",
+          "to_latex": "\\rho(h) = \\rho_0 \\exp\\!\\left(-\\frac{h - h_0}{H_s}\\right),\\qquad H_s := \\frac{R_{\\mathrm{sp}} T}{g_0}",
+          "operation_label": "スケールハイトの定義導入と密度式の導出",
+          "explanation": "指数部の係数の逆数としてスケールハイト H_s を定義・代入し、両辺に基準密度 \\rho_0 を掛けて目的の指数関数大気密度式を導く。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{g_0(h - h_0)}{R_{\\mathrm{sp}} T}\\right)",
+          "to_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{h - h_0}{R_{\\mathrm{sp}} T / g_0}\\right)",
+          "operation_label": "指数分子の g_0 を分母側の除数へ変形",
+          "explanation": "非ゼロ条件 g_0 \\neq 0 を用いて、指数部分の分数 g_0(h - h_0)/(R_{\\mathrm{sp}} T) を (h - h_0)/(R_{\\mathrm{sp}} T / g_0) の形に書き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": "exp(-g_0*(h - h_0)/(R_sp*T)) == exp(-(h - h_0)/(R_sp*T/g_0))"
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 12,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{h - h_0}{R_{\\mathrm{sp}} T / g_0}\\right)",
+          "to_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{h - h_0}{H_s}\\right),\\qquad H_s := \\frac{R_{\\mathrm{sp}} T}{g_0}",
+          "operation_label": "スケールハイト H_s の定義と指数分母への代入・導入",
+          "explanation": "大気密度が 1/e 倍となる特性高度幅としてスケールハイト H_s := R_{\\mathrm{sp}} T / g_0 を定義し、右辺の指数分母 R_{\\mathrm{sp}} T / g_0 を H_s で置き換える。",
+          "used_node_ids": [],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "\\frac{\\rho(h)}{\\rho_0} = \\exp\\!\\left(-\\frac{h - h_0}{H_s}\\right),\\qquad H_s := \\frac{R_{\\mathrm{sp}} T}{g_0}",
+          "to_latex": "\\rho(h) = \\rho_0 \\exp\\!\\left(-\\frac{h - h_0}{H_s}\\right),\\qquad H_s := \\frac{R_{\\mathrm{sp}} T}{g_0}",
+          "operation_label": "両辺への基準密度 \\rho_0 の乗算",
+          "explanation": "非ゼロの基準密度 \\rho_0 \\neq 0 を等式の両辺に掛けて左辺の分母 \\rho_0 を払い、指数関数大気密度モデルの目標式を得る。",
+          "used_node_ids": [],
+          "sympy_check_hint": "rho_0*(rho/rho_0) == rho"
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-28T02:01:54.290375+00:00"
     },
     {
       "id": "der_env04_ballistic_coefficient",
@@ -748,8 +877,11 @@
       ],
       "required_math_node_ids": [],
       "assumptions": [
-        "太陽は等方点光源として放射し、1 AU における太陽定数は S_0 である",
-        "宇宙機の反射・吸収特性は実効放射圧係数 C_R で代表される"
+        "太陽は等方点光源として放射し、1 AU の基準距離 r_0 における太陽定数は S_0 である",
+        "宇宙機の反射・吸収特性は実効放射圧係数 C_R で代表される",
+        "太陽からの距離 r > 0、基準距離 r_0 > 0、および入射方向に垂直な宇宙機の有効投影面積 A > 0 とする",
+        "宇宙機の質量 m > 0 は一定であり、太陽放射は真空中を不変の光速 c > 0 で伝播して質量ゼロの光子関係式 p = E/c を満たす",
+        "単位ベクトル \\hat{\\mathbf{s}} は宇宙機から太陽へ向かう方向を正とし、太陽放射は -\\hat{\\mathbf{s}} 方向に伝播する"
       ],
       "steps": [
         {
@@ -757,10 +889,10 @@
           "order": 1,
           "granularity_level": 1,
           "parent_step_id": null,
-          "from_latex": "S(r) = \\frac{P_{\\mathrm{rad}}}{4\\pi r^2} = S_0\\left(\\frac{r_0}{r}\\right)^2,\\quad p_{\\mathrm{photon}} = \\frac{E_{\\mathrm{photon}}}{c}",
+          "from_latex": "S_{\\mathrm{iso}}(R) = \\frac{P_{\\mathrm{rad}}}{4\\pi R^2},\\quad c = \\frac{1}{\\sqrt{\\mu_0\\varepsilon_0}},\\quad \\mathbf{F} = \\frac{d\\mathbf{p}}{dt} = m\\ddot{\\mathbf{r}}",
           "to_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\qquad \\mathbf{a}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R \\frac{A}{m} \\hat{\\mathbf{s}}",
-          "operation_label": "放射フラックスの逆二乗則と運動量輸送の結合",
-          "explanation": "球対称放射電力保存による太陽フラックスの距離依存性を光速 c で割って放射圧を得て、宇宙機の反射係数と面積質量比を掛けて加速度を導く。",
+          "operation_label": "等方放射フラックス保存・光速不変則・運動の第2法則の統合による太陽放射圧加速度の導出",
+          "explanation": "等方放射の電力保存則から太陽フラックスの逆二乗則を導き、光速不変則に基づく運動量輸送関係で太陽放射圧を得た上で、放射圧係数とニュートンの第2法則により摂動加速度を導出する。",
           "used_node_ids": [
             "eng.ant.n01_poynting_isotropic_flux",
             "phys.mech.p02_newton_second_law",
@@ -773,10 +905,80 @@
           "order": 2,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "S(r) = \\frac{P_{\\mathrm{rad}}}{4\\pi r^2} = S_0\\left(\\frac{r_0}{r}\\right)^2",
+          "from_latex": "S_{\\mathrm{iso}}(R) = \\frac{P_{\\mathrm{rad}}}{4\\pi R^2}",
+          "to_latex": "S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2",
+          "operation_label": "球対称放射電力保存からの太陽フラックス逆二乗則の導出",
+          "explanation": "等方ポインティング電力密度を任意距離 r と基準距離 r_0 で評価し、両者の比をとって全放射電力 P_rad を消去することで太陽フラックスの逆二乗則を得る。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_1",
+          "order": 3,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "S_{\\mathrm{iso}}(R) = \\frac{P_{\\mathrm{rad}}}{4\\pi R^2}",
+          "to_latex": "S(r) = \\frac{P_{\\mathrm{rad}}}{4\\pi r^2},\\quad S_0 = \\frac{P_{\\mathrm{rad}}}{4\\pi r_0^2}",
+          "operation_label": "距離 r および基準距離 r_0 におけるフラックスの評価",
+          "explanation": "等方放射電力密度の式に R = r を代入したものを S(r) とおき、R = r_0（1 AU）を代入したものを太陽定数 S_0 として記述する。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_2",
+          "order": 4,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "S(r) = \\frac{P_{\\mathrm{rad}}}{4\\pi r^2},\\quad S_0 = \\frac{P_{\\mathrm{rad}}}{4\\pi r_0^2}",
+          "to_latex": "\\frac{S(r)}{S_0} = \\frac{P_{\\mathrm{rad}} / (4\\pi r^2)}{P_{\\mathrm{rad}} / (4\\pi r_0^2)}",
+          "operation_label": "S(r) の式を S_0 の式で辺々除算",
+          "explanation": "S_0 > 0 であることから、距離 r のフラックスの式を基準距離 r_0 の太陽定数の式で辺々割り、比の形を作る。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_1_3",
+          "order": 5,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{S(r)}{S_0} = \\frac{P_{\\mathrm{rad}} / (4\\pi r^2)}{P_{\\mathrm{rad}} / (4\\pi r_0^2)}",
+          "to_latex": "\\frac{S(r)}{S_0} = \\left(\\frac{r_0}{r}\\right)^2",
+          "operation_label": "共通因子 P_rad / (4*pi) の約分",
+          "explanation": "右辺の分母と分子に共通する定数因子 P_rad / (4*pi) を約分し、r_0^2 / r^2 を 2乗の比としてまとめる。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux"
+          ],
+          "sympy_check_hint": "(P_rad/(4*pi*r**2))/(P_rad/(4*pi*r_0**2)) == (r_0/r)**2"
+        },
+        {
+          "step_id": "s3_1_4",
+          "order": 6,
+          "granularity_level": 3,
+          "parent_step_id": "s2_1",
+          "from_latex": "\\frac{S(r)}{S_0} = \\left(\\frac{r_0}{r}\\right)^2",
+          "to_latex": "S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2",
+          "operation_label": "両辺への太陽定数 S_0 の乗算",
+          "explanation": "等式の両辺に S_0 を掛けて、任意距離 r における太陽放射フラックス S(r) の逆二乗則を得る。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s2_2",
+          "order": 7,
+          "granularity_level": 2,
+          "parent_step_id": "s1_overview",
+          "from_latex": "S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2",
           "to_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2",
-          "operation_label": "単位面積当たり運動量流束への変換",
-          "explanation": "光子のエネルギー E と運動量 E/c の関係から、エネルギー流束 S(r) を光速 c で割ることで太陽放射圧 P_SRP(r) を得る。",
+          "operation_label": "光速不変則を用いたエネルギー流束から太陽放射圧への変換",
+          "explanation": "質量ゼロの放射のエネルギー・運動量関係式 p_rad = E_rad / c を時間微分し、ポインティングエネルギー流束 S(r) と放射圧 P_SRP の定義を用いて距離 r における太陽放射圧を導く。",
           "used_node_ids": [
             "eng.ant.n01_poynting_isotropic_flux",
             "phys.rel.sr01_relativity_postulates"
@@ -784,20 +986,135 @@
           "sympy_check_hint": null
         },
         {
-          "step_id": "s2_2",
-          "order": 3,
+          "step_id": "s3_2_1",
+          "order": 8,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2",
+          "to_latex": "S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2,\\quad p_{\\mathrm{rad}} = \\frac{E_{\\mathrm{rad}}}{c}",
+          "operation_label": "光速不変則に基づく放射のエネルギー・運動量関係式を導入",
+          "explanation": "真空中を不変の光速 c で伝播する電磁波・光子群のエネルギー E_rad と運動量大きさ p_rad の関係式 p_rad = E_rad / c を導入する。",
+          "used_node_ids": [
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_2",
+          "order": 9,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2,\\quad p_{\\mathrm{rad}} = \\frac{E_{\\mathrm{rad}}}{c}",
+          "to_latex": "S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2,\\quad \\frac{dp_{\\mathrm{rad}}}{dt} = \\frac{1}{c}\\frac{dE_{\\mathrm{rad}}}{dt}",
+          "operation_label": "定数光速 c に対する時間微分の適用",
+          "explanation": "光速 c が時間に対し不変の定数であることから、p_rad = E_rad / c の両辺を時刻 t で微分し、定数 1/c を微分の外に出す。",
+          "used_node_ids": [
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": "diff(E(t)/c, t) == diff(E(t), t)/c"
+        },
+        {
+          "step_id": "s3_2_3",
+          "order": 10,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2,\\quad \\frac{dp_{\\mathrm{rad}}}{dt} = \\frac{1}{c}\\frac{dE_{\\mathrm{rad}}}{dt}",
+          "to_latex": "S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2,\\quad P_{\\mathrm{SRP}}(r) = \\frac{S(r)}{c}",
+          "operation_label": "放射圧とエネルギー流束の面積定義を代入・導入",
+          "explanation": "垂直入射面積 A > 0 で両辺を割り、単位面積あたりの入射運動量流束として太陽放射圧 P_SRP(r) := (1/A)(dp_rad/dt) を、単位面積あたりのエネルギー流束としてポインティング電力密度 S(r) = (1/A)(dE_rad/dt) を代入する。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_2_4",
+          "order": 11,
+          "granularity_level": 3,
+          "parent_step_id": "s2_2",
+          "from_latex": "S(r) = S_0\\left(\\frac{r_0}{r}\\right)^2,\\quad P_{\\mathrm{SRP}}(r) = \\frac{S(r)}{c}",
+          "to_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2",
+          "operation_label": "フラックス逆二乗則 S(r) の代入",
+          "explanation": "P_SRP(r) = S(r) / c に前段で求めた S(r) = S_0 (r_0 / r)^2 を代入し、距離 r の関数としての太陽放射圧の式を得る。",
+          "used_node_ids": [
+            "eng.ant.n01_poynting_isotropic_flux",
+            "phys.rel.sr01_relativity_postulates"
+          ],
+          "sympy_check_hint": "(S_0*(r_0/r)**2)/c == (S_0/c)*(r_0/r)**2"
+        },
+        {
+          "step_id": "s2_3",
+          "order": 12,
           "granularity_level": 2,
           "parent_step_id": "s1_overview",
-          "from_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\quad \\mathbf{F}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r) C_R A \\hat{\\mathbf{s}} = m\\mathbf{a}_{\\mathrm{SRP}}",
+          "from_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2",
           "to_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\qquad \\mathbf{a}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R \\frac{A}{m} \\hat{\\mathbf{s}}",
-          "operation_label": "反射率係数とニュートン第2法則の適用",
-          "explanation": "機体表面の吸収・反射による運動量交換を反射圧係数 C_R（完全吸収で 1、鏡面全反射で 2）と投影面積 A で表し、質量 m で割って太陽方向単位ベクトル s_hat の逆向き（反太陽方向）の加速度を得る。",
+          "operation_label": "実効放射圧係数とニュートン第2法則による太陽放射圧加速度の導出",
+          "explanation": "放射圧に有効投影面積と実効放射圧係数 C_R を掛けて宇宙機に働く放射圧力を表し、ニュートンの運動の第2法則を適用して質量 m で割ることで反太陽方向の摂動加速度を導く。",
           "used_node_ids": [
             "phys.mech.p02_newton_second_law"
           ],
           "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_1",
+          "order": 13,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2",
+          "to_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\quad \\mathbf{F}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R A \\hat{\\mathbf{s}}",
+          "operation_label": "実効放射圧係数 C_R と投影面積 A による放射圧力ベクトルを導入",
+          "explanation": "反太陽方向 -s_hat に伝播する運動量流束 P_SRP(r) に有効投影面積 A と表面の吸収・反射特性を表す実効放射圧係数 C_R を掛け、単位時間あたりの運動量授受すなわち太陽放射圧力ベクトル F_SRP を導入する。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_2",
+          "order": 14,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\quad \\mathbf{F}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R A \\hat{\\mathbf{s}}",
+          "to_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\quad \\mathbf{F}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R A \\hat{\\mathbf{s}},\\quad \\mathbf{F}_{\\mathrm{SRP}} = m\\mathbf{a}_{\\mathrm{SRP}}",
+          "operation_label": "運動の第2法則（F = m a）を代入・導入",
+          "explanation": "質量一定の宇宙機に対してニュートンの運動の第2法則を適用し、太陽放射圧力 F_SRP と摂動加速度 a_SRP を結びつける式を導入する。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_3",
+          "order": 15,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\quad \\mathbf{F}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R A \\hat{\\mathbf{s}},\\quad \\mathbf{F}_{\\mathrm{SRP}} = m\\mathbf{a}_{\\mathrm{SRP}}",
+          "to_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\quad m\\mathbf{a}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R A \\hat{\\mathbf{s}}",
+          "operation_label": "力ベクトル F_SRP の等置による消去",
+          "explanation": "太陽放射圧力の2通りの表式を等置し、未知の力ベクトル F_SRP を消去して運動方程式を得る。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": null
+        },
+        {
+          "step_id": "s3_3_4",
+          "order": 16,
+          "granularity_level": 3,
+          "parent_step_id": "s2_3",
+          "from_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\quad m\\mathbf{a}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R A \\hat{\\mathbf{s}}",
+          "to_latex": "P_{\\mathrm{SRP}}(r) = \\frac{S_0}{c}\\left(\\frac{r_0}{r}\\right)^2,\\qquad \\mathbf{a}_{\\mathrm{SRP}} = -P_{\\mathrm{SRP}}(r)\\, C_R \\frac{A}{m} \\hat{\\mathbf{s}}",
+          "operation_label": "両辺の宇宙機質量 m による除算",
+          "explanation": "非ゼロの宇宙機質量 m > 0 で第2式の両辺を割り、面積質量比 A/m に比例する太陽放射圧加速度ベクトル a_SRP の最終式を得る。",
+          "used_node_ids": [
+            "phys.mech.p02_newton_second_law"
+          ],
+          "sympy_check_hint": "(-P_SRP*C_R*A)/m == -P_SRP*C_R*(A/m)"
         }
-      ]
+      ],
+      "rigor_version": 2,
+      "refined_at": "2026-11-28T02:03:06.238689+00:00"
     }
   ]
 }
